@@ -168,20 +168,20 @@ export const OrgAdminMenu = [
   {
     heading: "Administrators",
     route: "/admins",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
+    svgIcon: "media/icons/duotune/communication/com014.svg",
+    fontIcon: "bi-person",
   },
   {
     heading: "Organizations",
     route: "/organizations",
     svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
+    fontIcon: "bi-hospital",
   },
   {
     heading: "Settings",
     route: "/crafted",
     svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-file-text",
+    fontIcon: "bi-gear",
     pages: [
       {
         heading: "Health Fund List",

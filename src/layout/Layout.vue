@@ -24,13 +24,7 @@
       <div id="kt_content" class="content d-flex flex-column flex-column-fluid">
         <!-- begin:: Content Body -->
         <div class="post d-flex flex-column-fluid">
-          <div
-            id="kt_content_container"
-            :class="{
-              'container-fluid': contentWidthFluid,
-              'container-xxl': !contentWidthFluid,
-            }"
-          >
+          <div id="kt_content_container" class="container-fluid">
             <router-view />
           </div>
         </div>
@@ -46,8 +40,6 @@
   <KTUserMenu />
   <KTCreateApp />
   <KTInviteFriendsModal />
-
-  <KTToolButtons />
   <KTDemosDrawer />
   <KTHelpDrawer />
 </template>
@@ -68,7 +60,6 @@ import KTCreateApp from "@/components/modals/wizards/CreateAppModal.vue";
 import KTInviteFriendsModal from "@/components/modals/general/InviteFriendsModal.vue";
 import KTDemosDrawer from "@/layout/extras/DemosDrawer.vue";
 import KTHelpDrawer from "@/layout/extras/HelpDrawer.vue";
-import KTToolButtons from "@/layout/extras/ToolButtons.vue";
 import KTDrawerMessenger from "@/layout/extras/MessengerDrawer.vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { MenuComponent } from "@/assets/ts/components";
@@ -98,7 +89,6 @@ export default defineComponent({
     KTUserMenu,
     KTDemosDrawer,
     KTHelpDrawer,
-    KTToolButtons,
     KTDrawerMessenger,
     KTLoader,
   },
