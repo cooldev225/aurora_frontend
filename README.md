@@ -1,4 +1,4 @@
-# demo6
+# Aurora
 
 ## Project setup
 
