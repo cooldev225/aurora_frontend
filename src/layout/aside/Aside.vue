@@ -15,7 +15,7 @@
     <div class="aside-logo py-8" id="kt_aside_logo">
       <!--begin::Logo-->
       <router-link to="/dashboard" class="d-flex align-items-center">
-        <img alt="Logo" src="media/logos/logo-demo6.svg" class="h-45px logo" />
+        <img alt="Logo" src="media/logos/logo.png" class="h-65px logo" />
       </router-link>
       <!--end::Logo-->
     </div>
