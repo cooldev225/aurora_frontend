@@ -166,6 +166,12 @@ const DocMenuConfig = [
 
 export const OrgAdminMenu = [
   {
+    heading: "Dashboard",
+    route: "/dashboard",
+    svgIcon: "media/icons/duotune/art/art002.svg",
+    fontIcon: "bi-house fs-2",
+  },
+  {
     heading: "Administrators",
     route: "/admins",
     svgIcon: "media/icons/duotune/communication/com014.svg",

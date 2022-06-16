@@ -15,30 +15,40 @@
             role="row"
           >
             <template v-for="(cell, i) in tableHeader" :key="i">
-              <th
-                @click="
-                  sort(
-                    cell.sortingField ? cell.sortingField : cell.key,
-                    cell.sortable
-                  )
-                "
-                :class="[
-                  cell.name && 'min-w-125px',
-                  cell.sortable !== false && 'sorting',
-                  tableHeader.length - 1 === i && 'text-end',
-                  currentSort ===
-                    `${cell.sortingField ? cell.sortingField : cell.key}desc` &&
-                    'sorting_desc',
-                  currentSort ===
-                    `${cell.sortingField ? cell.sortingField : cell.key}asc` &&
-                    'sorting_asc',
-                ]"
-                tabindex="0"
-                rowspan="1"
-                colspan="1"
-                style="cursor: pointer"
-              >
-                {{ cell.name }}
+              <th>
+                <div
+                  @click="
+                    sort(
+                      cell.sortingField ? cell.sortingField : cell.key,
+                      cell.sortable
+                    )
+                  "
+                  :class="[
+                    cell.name && 'min-w-125px',
+                    cell.sortable !== false && 'sorting',
+                    tableHeader.length - 1 === i && 'text-end',
+                    currentSort ===
+                      `${
+                        cell.sortingField ? cell.sortingField : cell.key
+                      }desc` && 'sorting_desc',
+                    currentSort ===
+                      `${
+                        cell.sortingField ? cell.sortingField : cell.key
+                      }asc` && 'sorting_asc',
+                  ]"
+                  tabindex="0"
+                  rowspan="1"
+                  colspan="1"
+                  style="cursor: pointer"
+                >
+                  {{ cell.name }}
+                </div>
+                <input
+                  type="text"
+                  v-model="cell.key"
+                  class="form-control form-control-solid w-250px"
+                  :class="!cell.searchable && 'invisible'"
+                />
               </th>
             </template>
           </tr>
@@ -144,6 +154,7 @@ interface IHeaderConfiguration {
   key: string;
   sortingField?: string;
   sortable?: boolean;
+  searchable?: boolean;
 }
 
 export default defineComponent({
@@ -237,6 +248,10 @@ export default defineComponent({
       currentSort.value = columnName + order.value;
     };
 
+    // const filter = (event, columnName) => {
+    //   console.log(event.target.value);
+    // };
+
     const setItemsPerPage = (event) => {
       if ("onItemsPerPageChange" in vnodeProps) {
         emit("items-per-page-change", parseInt(event.target.value));
@@ -249,6 +264,7 @@ export default defineComponent({
       pagination,
       currentPageChange,
       getItems,
+      // filter,
       sort,
       currentSort,
       setItemsPerPage,

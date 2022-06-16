@@ -1,12 +1,6 @@
 <template>
   <!--begin::Toolbar wrapper-->
   <div class="d-flex align-items-stretch flex-shrink-0">
-    <!--begin::Search-->
-    <div class="d-flex align-items-stretch ms-1 ms-lg-3">
-      <KTSearch></KTSearch>
-    </div>
-    <!--end::Search-->
-
     <!--begin::Activities-->
     <div class="d-flex align-items-center ms-1 ms-lg-3">
       <!--begin::drawer toggle-->
@@ -113,7 +107,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import KTSearch from "@/layout/header/partials/Search.vue";
 import KTNotificationsMenu from "@/layout/header/partials/NotificationsMenu.vue";
 import KTQuickLinksMenu from "@/layout/header/partials/QuickLinksMenu.vue";
 import KTUserMenu from "@/layout/header/partials/UserMenu.vue";
@@ -121,7 +114,6 @@ import KTUserMenu from "@/layout/header/partials/UserMenu.vue";
 export default defineComponent({
   name: "layout-topbar",
   components: {
-    KTSearch,
     KTNotificationsMenu,
     KTQuickLinksMenu,
     KTUserMenu,
