@@ -1,20 +1,44 @@
 <template>
+  <div class="row g-5 g-xl-8">
+    <div class="col-xl-4">
+      <StatsisticsWidget5
+        widget-classes="card-xl-stretch mb-xl-8"
+        svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
+        color="primary"
+        icon-color="white"
+        title="Appartments"
+        description="Flats, Shared Rooms, Duplex"
+      />
+    </div>
+
+    <div class="col-xl-4">
+      <StatsisticsWidget5
+        widget-classes="card-xl-stretch mb-5 mb-xl-8"
+        svg-icon="media/icons/duotune/graphs/gra005.svg"
+        color="success"
+        icon-color="white"
+        title="Sales Stats"
+        description="50% Increased for FY20"
+      />
+    </div>
+
+    <div class="col-xl-4">
+      <StatsisticsWidget5
+        widget-classes="card-xl-stretch mb-xl-8"
+        svg-icon="media/icons/duotune/ecommerce/ecm002.svg"
+        color="danger"
+        icon-color="white"
+        title="Shopping Cart"
+        description="Lands, Houses, Ranchos, Farms"
+      />
+    </div>
+  </div>
   <div class="card">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
-          <span class="svg-icon svg-icon-1 position-absolute ms-6">
-            <inline-svg src="media/icons/duotune/general/gen021.svg" />
-          </span>
-          <input
-            type="text"
-            data-kt-subscription-table-filter="search"
-            class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Subscriptions"
-          />
-        </div>
+        <span>Administrators</span>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -41,15 +65,17 @@
           <!--end::Export-->
 
           <!--begin::Add subscription-->
-          <router-link
-            to="/apps/subscriptions/add-subscription"
-            class="btn btn-primary"
+          <button
+            type="button"
+            class="btn btn-light-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modal_add_admin"
           >
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>
             Add
-          </router-link>
+          </button>
           <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
@@ -60,7 +86,7 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :rows-per-page="10"
+        :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
         <template v-slot:cell-firstname="{ row: admin }">
@@ -111,18 +137,23 @@
       </Datatable>
     </div>
   </div>
+  <AddAdminModal></AddAdminModal>
 </template>
 
 <script>
 import { defineComponent, onMounted, ref } from "vue";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import AddAdminModal from "@/components/modals/forms/AddAdminModal.vue";
+import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 
 export default defineComponent({
   name: "admin-main",
 
   components: {
     Datatable,
+    AddAdminModal,
+    StatsisticsWidget5,
   },
 
   setup() {
@@ -131,28 +162,33 @@ export default defineComponent({
         name: "First Name",
         key: "firstname",
         sortable: true,
+        searchable: true,
       },
       {
         name: "Last Name",
         key: "lastname",
         sortable: true,
+        searchable: true,
       },
       {
         name: "Username",
         key: "username",
         sortingField: "status.label",
         sortable: true,
+        searchable: true,
       },
       {
         name: "Email",
         key: "email",
         sortable: true,
+        searchable: true,
       },
       {
         name: "Status",
         key: "status",
         sortingField: "status.label",
         sortable: true,
+        searchable: true,
       },
       {
         name: "Action",
@@ -283,7 +319,7 @@ export default defineComponent({
       },
     ]);
     onMounted(() => {
-      setCurrentPageTitle("Administrator");
+      setCurrentPageTitle("Administrators");
     });
 
     return { tableHeader, tableData };

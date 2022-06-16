@@ -1,20 +1,44 @@
 <template>
+  <div class="row g-5 g-xl-8">
+    <div class="col-xl-4">
+      <StatsisticsWidget5
+        widget-classes="card-xl-stretch mb-5 mb-xl-8"
+        svg-icon="media/icons/duotune/graphs/gra005.svg"
+        color="success"
+        icon-color="white"
+        title="Sales Stats"
+        description="50% Increased for FY20"
+      />
+    </div>
+
+    <div class="col-xl-4">
+      <StatsisticsWidget5
+        widget-classes="card-xl-stretch mb-xl-8"
+        svg-icon="media/icons/duotune/ecommerce/ecm002.svg"
+        color="danger"
+        icon-color="white"
+        title="Shopping Cart"
+        description="Lands, Houses, Ranchos, Farms"
+      />
+    </div>
+
+    <div class="col-xl-4">
+      <StatsisticsWidget5
+        widget-classes="card-xl-stretch mb-xl-8"
+        svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
+        color="primary"
+        icon-color="white"
+        title="Appartments"
+        description="Flats, Shared Rooms, Duplex"
+      />
+    </div>
+  </div>
   <div class="card">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
-          <span class="svg-icon svg-icon-1 position-absolute ms-6">
-            <inline-svg src="media/icons/duotune/general/gen021.svg" />
-          </span>
-          <input
-            type="text"
-            data-kt-subscription-table-filter="search"
-            class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Subscriptions"
-          />
-        </div>
+        <span>Organizations</span>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -42,7 +66,7 @@
 
           <!--begin::Add subscription-->
           <router-link
-            to="/apps/subscriptions/add-subscription"
+            to="/organizations/addorganization"
             class="btn btn-primary"
           >
             <span class="svg-icon svg-icon-2">
@@ -60,7 +84,7 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :rows-per-page="10"
+        :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
         <template v-slot:cell-organizations="{ row: organizations }">
@@ -114,12 +138,14 @@
 import { defineComponent, onMounted, ref } from "vue";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 
 export default defineComponent({
   name: "organization-main",
 
   components: {
     Datatable,
+    StatsisticsWidget5,
   },
 
   setup() {
@@ -128,23 +154,27 @@ export default defineComponent({
         name: "Organizations",
         key: "organizations",
         sortable: true,
+        searchable: true,
       },
       {
         name: "Username",
         key: "username",
         sortingField: "status.label",
         sortable: true,
+        searchable: true,
       },
       {
         name: "Email",
         key: "email",
         sortable: true,
+        searchable: true,
       },
       {
         name: "Status",
         key: "status",
         sortingField: "status.label",
         sortable: true,
+        searchable: true,
       },
       {
         name: "Action",
@@ -263,7 +293,7 @@ export default defineComponent({
       },
     ]);
     onMounted(() => {
-      setCurrentPageTitle("Administrator");
+      setCurrentPageTitle("Organizations");
     });
 
     return { tableHeader, tableData };
