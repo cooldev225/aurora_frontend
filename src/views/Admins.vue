@@ -6,8 +6,8 @@
         svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
         color="primary"
         icon-color="white"
-        title="Appartments"
-        description="Flats, Shared Rooms, Duplex"
+        :title="'Total : ' + tableData.length + ' Members'"
+        description="Total Administrator"
       />
     </div>
 

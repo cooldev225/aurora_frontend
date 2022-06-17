@@ -45,8 +45,7 @@
                 </div>
                 <input
                   type="text"
-                  v-model="cell.key"
-                  class="form-control form-control-solid w-250px"
+                  class="form-control form-control-solid w-max-250px"
                   :class="!cell.searchable && 'invisible'"
                 />
               </th>

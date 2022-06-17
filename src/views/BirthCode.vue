@@ -38,7 +38,7 @@
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Organizations</span>
+        <span>Birth Code</span>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -87,18 +87,15 @@
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-organizations="{ row: organizations }">
-          {{ organizations.organizations }}
+        <template v-slot:cell-birthCode="{ row: item }">
+          {{ item.birthCode }}
         </template>
-        <template v-slot:cell-username="{ row: organizations }">
-          {{ organizations.username }}
+        <template v-slot:cell-birthDescription="{ row: item }">
+          {{ item.birthDescription }}
         </template>
-        <template v-slot:cell-email="{ row: organizations }">
-          {{ organizations.email }}
-        </template>
-        <template v-slot:cell-status="{ row: organizations }">
-          <span :class="`badge badge-light-${organizations.status.state}`">{{
-            organizations.status.label
+        <template v-slot:cell-status="{ row: item }">
+          <span :class="`badge badge-light-${item.status.state}`">{{
+            item.status.label
           }}</span>
         </template>
         <template v-slot:cell-action>
@@ -151,21 +148,14 @@ export default defineComponent({
   setup() {
     const tableHeader = ref([
       {
-        name: "Organizations",
-        key: "organizations",
+        name: "Birth Code",
+        key: "birthCode",
         sortable: true,
         searchable: true,
       },
       {
-        name: "Username",
-        key: "username",
-        sortingField: "status.label",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Email",
-        key: "email",
+        name: "Birth Code Description",
+        key: "birthDescription",
         sortable: true,
         searchable: true,
       },
@@ -184,116 +174,105 @@ export default defineComponent({
 
     const tableData = ref([
       {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
         status: {
-          label: "Disabled",
-          state: "danger",
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
+        status: {
+          label: "Enabled",
+          state: "success",
         },
       },
     ]);
+
     onMounted(() => {
-      setCurrentPageTitle("Organizations");
+      setCurrentPageTitle("Birth Code");
     });
 
     return { tableHeader, tableData };

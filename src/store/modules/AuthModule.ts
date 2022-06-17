@@ -3,12 +3,15 @@ import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
+import roles from "@/core/data/roles";
+
 export interface User {
   name: string;
   surname: string;
   email: string;
   password: string;
   api_token: string;
+  role: string;
 }
 
 export interface UserAuthInfo {
@@ -82,6 +85,8 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
   [Actions.LOGIN](credentials) {
     return ApiService.post("login", credentials)
       .then(({ data }) => {
+        // data["role"] = roles[(Math.floor(Math.random() * 99999) % 9) + 1];
+        data["role"] = "admin";
         this.context.commit(Mutations.SET_AUTH, data);
       })
       .catch(({ response }) => {
@@ -122,6 +127,8 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
       ApiService.setHeader();
       ApiService.post("verify_token", payload)
         .then(({ data }) => {
+          // data["role"] = roles[Math.floor(Math.random() % 9) + 1];
+          data["role"] = "admin";
           this.context.commit(Mutations.SET_AUTH, data);
         })
         .catch(({ response }) => {

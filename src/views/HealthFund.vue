@@ -38,7 +38,7 @@
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Organizations</span>
+        <span>Health Fund</span>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -87,19 +87,22 @@
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-organizations="{ row: organizations }">
-          {{ organizations.organizations }}
+        <template v-slot:cell-fundCode="{ row: fund }">
+          {{ fund.fundCode }}
         </template>
-        <template v-slot:cell-username="{ row: organizations }">
-          {{ organizations.username }}
+        <template v-slot:cell-fundName="{ row: fund }">
+          {{ fund.fundName }}
         </template>
-        <template v-slot:cell-email="{ row: organizations }">
-          {{ organizations.email }}
+        <template v-slot:cell-onlineSubmission="{ row: fund }">
+          {{ fund.onlineSubmission }}
         </template>
-        <template v-slot:cell-status="{ row: organizations }">
-          <span :class="`badge badge-light-${organizations.status.state}`">{{
-            organizations.status.label
+        <template v-slot:cell-status="{ row: fund }">
+          <span :class="`badge badge-light-${fund.status.state}`">{{
+            fund.status.label
           }}</span>
+        </template>
+        <template v-slot:cell-lastUpdate="{ row: fund }">
+          {{ fund.lastUpdate }}
         </template>
         <template v-slot:cell-action>
           <a
@@ -151,21 +154,20 @@ export default defineComponent({
   setup() {
     const tableHeader = ref([
       {
-        name: "Organizations",
-        key: "organizations",
+        name: "Fund Code",
+        key: "fundCode",
         sortable: true,
         searchable: true,
       },
       {
-        name: "Username",
-        key: "username",
-        sortingField: "status.label",
+        name: "Fund Name",
+        key: "fundName",
         sortable: true,
         searchable: true,
       },
       {
-        name: "Email",
-        key: "email",
+        name: "Online Submission To Eclipse",
+        key: "onlineSubmission",
         sortable: true,
         searchable: true,
       },
@@ -177,6 +179,12 @@ export default defineComponent({
         searchable: true,
       },
       {
+        name: "Last Updated On",
+        key: "lastUpdate",
+        sortable: true,
+        searchable: true,
+      },
+      {
         name: "Action",
         key: "action",
       },
@@ -184,116 +192,89 @@ export default defineComponent({
 
     const tableData = ref([
       {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        fundCode: "ACA",
+        fundName: "ACA Health Benefits Fund",
+        onlineSubmission: "Yes",
         status: {
           label: "Enabled",
           state: "success",
         },
+        lastUpdate: "N/A",
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        fundCode: "AHM",
+        fundName: "AHM Health Insurance",
+        onlineSubmission: "Yes",
         status: {
           label: "Enabled",
           state: "success",
         },
+        lastUpdate: "N/A",
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        fundCode: "ACA",
+        fundName: "ACA Health Benefits Fund",
+        onlineSubmission: "Yes",
         status: {
           label: "Enabled",
           state: "success",
         },
+        lastUpdate: "N/A",
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        fundCode: "AHM",
+        fundName: "AHM Health Insurance",
+        onlineSubmission: "Yes",
         status: {
           label: "Enabled",
           state: "success",
         },
+        lastUpdate: "N/A",
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        fundCode: "ACA",
+        fundName: "ACA Health Benefits Fund",
+        onlineSubmission: "Yes",
         status: {
           label: "Enabled",
           state: "success",
         },
+        lastUpdate: "N/A",
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
+        fundCode: "AHM",
+        fundName: "AHM Health Insurance",
+        onlineSubmission: "Yes",
         status: {
           label: "Enabled",
           state: "success",
         },
+        lastUpdate: "N/A",
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
+        fundCode: "ACA",
+        fundName: "ACA Health Benefits Fund",
+        onlineSubmission: "Yes",
         status: {
-          label: "Disabled",
-          state: "danger",
+          label: "Enabled",
+          state: "success",
         },
+        lastUpdate: "N/A",
+      },
+      {
+        fundCode: "AHM",
+        fundName: "AHM Health Insurance",
+        onlineSubmission: "Yes",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+        lastUpdate: "N/A",
       },
     ]);
+
     onMounted(() => {
-      setCurrentPageTitle("Organizations");
+      setCurrentPageTitle("Health Fund");
     });
 
     return { tableHeader, tableData };

@@ -30,9 +30,24 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/Dashboard.vue"),
       },
       {
-        path: "/builder",
-        name: "builder",
-        component: () => import("@/views/Builder.vue"),
+        path: "/settings/healthfund",
+        name: "healthFund",
+        component: () => import("@/views/HealthFund.vue"),
+      },
+      {
+        path: "/settings/birthCode",
+        name: "birthCode",
+        component: () => import("@/views/BirthCode.vue"),
+      },
+      {
+        path: "/settings/specialist-type",
+        name: "speicalistType",
+        component: () => import("@/views/SpecialistType.vue"),
+      },
+      {
+        path: "/settings/specialist-title",
+        name: "specialistTitle",
+        component: () => import("@/views/SpecialistTitle.vue"),
       },
       {
         path: "/crafted/pages/profile",
