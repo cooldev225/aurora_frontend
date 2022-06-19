@@ -90,36 +90,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, computed } from "vue";
+import { useStore } from "vuex";
 import { useI18n } from "vue-i18n/index";
 import { useRoute } from "vue-router";
 import { version } from "@/core/helpers/documentation";
 import { asideMenuIcons } from "@/core/helpers/config";
-import {
-  OrgAdminMenu,
-  OrgManagerMenu,
-  ReceptionistMenu,
-  SpecialistMenu,
-  AnesthetistMenu,
-  ScientistMenu,
-  TypistMenu,
-  PathologistMenu,
-} from "@/core/config/MainMenuConfig";
+import MenuConfig from "@/core/config/MainMenuConfig";
+import { User } from "@/store/modules/AuthModule";
 
 export default defineComponent({
-  name: "kt-menu",
+  name: "left-menu",
   components: {},
   setup() {
     const { t, te } = useI18n();
     const route = useRoute();
+    const store = useStore();
     const scrollElRef = ref<null | HTMLElement>(null);
-    const MainMenuConfig = ref<null | Array<object>>(null);
+    const curUser = computed(() => store.getters.currentUser);
+
+    // const MainMenuConfig = MenuConfig[curUser.value.role];
+    const MainMenuConfig = MenuConfig["admin"];
 
     onMounted(() => {
       if (scrollElRef.value) {
         scrollElRef.value.scrollTop = 0;
       }
-      MainMenuConfig.value = OrgAdminMenu;
     });
 
     const translate = (text) => {

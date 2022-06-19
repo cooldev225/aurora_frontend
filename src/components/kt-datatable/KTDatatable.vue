@@ -45,8 +45,7 @@
                 </div>
                 <input
                   type="text"
-                  v-model="cell.key"
-                  class="form-control form-control-solid w-250px"
+                  class="form-control form-control-solid w-max-250px"
                   :class="!cell.searchable && 'invisible'"
                 />
               </th>
@@ -181,6 +180,7 @@ export default defineComponent({
     const currentSort = ref<string>("");
     const order = ref(props.order);
     const label = ref(props.sortLabel);
+
     const pagination = ref<IPagination>({
       page: 1,
       total: props.total,

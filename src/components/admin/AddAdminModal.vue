@@ -1,11 +1,5 @@
 <template>
-  <div
-    class="modal fade"
-    id="modal_add_admin"
-    ref="addAdminModalRef"
-    tabindex="-1"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="modal_add_admin" tabindex="-1" aria-hidden="true">
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
       <!--begin::Modal content-->

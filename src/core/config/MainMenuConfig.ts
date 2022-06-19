@@ -1,170 +1,4 @@
-const DocMenuConfig = [
-  // {
-  //   heading: "Dashboard",
-  //   route: "/dashboard",
-  //   svgIcon: "media/icons/duotune/art/art002.svg",
-  //   fontIcon: "bi-house fs-2",
-  // },
-  {
-    heading: "Administrators",
-    role: ["admin", "org_admin"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "Organizations",
-    role: ["admin", "org_admin"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "Switch Clinic",
-    role: ["admin", "org_manager"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "Mailbox",
-    role: ["admin", "org_manager"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "Patient",
-    role: ["admin", "org_manager"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "Check in",
-    role: ["admin", "org_manager"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "Billing",
-    role: ["admin", "org_admin"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "Make Payment",
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "Third Party Comms",
-    route: "/crafted",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-file-text",
-    pages: [
-      {
-        heading: "Sending Report",
-        route: "/crafted/pages/profile/overview",
-        svgIcon: "media/icons/duotune/general/gen022.svg",
-        fontIcon: "bi-archive",
-      },
-      {
-        heading: "HL7 Send History",
-        route: "/crafted/pages/profile/overview",
-        svgIcon: "media/icons/duotune/communication/com006.svg",
-        fontIcon: "bi-person",
-      },
-      {
-        heading: "Patients Results Inbox",
-        route: "/crafted/pages/profile/overview",
-        svgIcon: "media/icons/duotune/technology/teh004.svg",
-        fontIcon: "bi-sticky",
-      },
-      {
-        heading: "Specialist Title",
-        route: "/crafted/pages/profile/overview",
-        svgIcon: "media/icons/duotune/art/art009.svg",
-        fontIcon: "bi-shield-check",
-      },
-    ],
-  },
-  {
-    heading: "Settings",
-    route: "/crafted",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-file-text",
-    pages: [
-      {
-        heading: "Health Fund List",
-        route: "/crafted/pages/profile/overview",
-        svgIcon: "media/icons/duotune/general/gen022.svg",
-        fontIcon: "bi-archive",
-      },
-      {
-        heading: "Birthcode List",
-        route: "/crafted/pages/profile/overview",
-        svgIcon: "media/icons/duotune/communication/com006.svg",
-        fontIcon: "bi-person",
-      },
-      {
-        heading: "Specialist Type",
-        route: "/crafted/pages/profile/overview",
-        svgIcon: "media/icons/duotune/technology/teh004.svg",
-        fontIcon: "bi-sticky",
-      },
-      {
-        heading: "Specialist Title",
-        route: "/crafted/pages/profile/overview",
-        svgIcon: "media/icons/duotune/art/art009.svg",
-        fontIcon: "bi-shield-check",
-      },
-    ],
-  },
-  {
-    heading: "HRM (Admin)",
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "HRM (Empolyee)",
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "apps",
-    route: "/apps",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-window-stack",
-    pages: [
-      {
-        heading: "customers",
-        route: "/apps/customers/getting-started",
-        svgIcon: "media/icons/duotune/finance/fin006.svg",
-        fontIcon: "bi-printer",
-      },
-      {
-        heading: "subscriptions",
-        route: "/apps/customers/getting-started",
-        svgIcon: "media/icons/duotune/ecommerce/ecm002.svg",
-        fontIcon: "bi-cart",
-      },
-      {
-        heading: "chat",
-        route: "/apps/customers/getting-started",
-        svgIcon: "media/icons/duotune/communication/com012.svg",
-        fontIcon: "bi-chat-left",
-      },
-    ],
-  },
-];
-
-export const OrgAdminMenu = [
+const AdminMenu = [
   {
     heading: "Dashboard",
     route: "/dashboard",
@@ -185,31 +19,31 @@ export const OrgAdminMenu = [
   },
   {
     heading: "Settings",
-    route: "/crafted",
+    route: "/settings",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-gear",
     pages: [
       {
         heading: "Health Fund List",
-        route: "/crafted/pages/profile/overview",
+        route: "/settings/health-fund",
         svgIcon: "media/icons/duotune/general/gen022.svg",
         fontIcon: "bi-archive",
       },
       {
         heading: "Birthcode List",
-        route: "/crafted/pages/profile/overview",
+        route: "/settings/birthCode",
         svgIcon: "media/icons/duotune/communication/com006.svg",
         fontIcon: "bi-person",
       },
       {
         heading: "Specialist Type",
-        route: "/crafted/pages/profile/overview",
+        route: "/settings/specialist-type",
         svgIcon: "media/icons/duotune/technology/teh004.svg",
         fontIcon: "bi-sticky",
       },
       {
         heading: "Specialist Title",
-        route: "/crafted/pages/profile/overview",
+        route: "/settings/specialist-title",
         svgIcon: "media/icons/duotune/art/art009.svg",
         fontIcon: "bi-shield-check",
       },
@@ -217,7 +51,40 @@ export const OrgAdminMenu = [
   },
 ];
 
-export const OrgManagerMenu = [
+const OrgAdminMenu = [
+  {
+    heading: "Dashboard",
+    route: "/dashboard",
+    svgIcon: "media/icons/duotune/art/art002.svg",
+    fontIcon: "bi-house fs-2",
+  },
+  {
+    heading: "Administrators",
+    route: "/admins",
+    svgIcon: "media/icons/duotune/communication/com014.svg",
+    fontIcon: "bi-person",
+  },
+  {
+    heading: "Organizations",
+    route: "/organizations",
+    svgIcon: "media/icons/duotune/general/gen019.svg",
+    fontIcon: "bi-hospital",
+  },
+  {
+    heading: "Employees",
+    route: "/organizations",
+    svgIcon: "media/icons/duotune/general/gen019.svg",
+    fontIcon: "bi-hospital",
+  },
+  {
+    heading: "Clinics",
+    route: "/organizations",
+    svgIcon: "media/icons/duotune/general/gen019.svg",
+    fontIcon: "bi-hospital",
+  },
+];
+
+const OrgManagerMenu = [
   {
     heading: "Switch Clinic",
     role: ["admin", "org_manager"],
@@ -343,7 +210,7 @@ export const OrgManagerMenu = [
   },
 ];
 
-export const ReceptionistMenu = [
+const ReceptionistMenu = [
   {
     heading: "Switch Clinic",
     role: ["admin", "org_manager"],
@@ -469,7 +336,7 @@ export const ReceptionistMenu = [
   },
 ];
 
-export const SpecialistMenu = [
+const SpecialistMenu = [
   {
     heading: "Dashboard",
     route: "/dashboard",
@@ -499,7 +366,7 @@ export const SpecialistMenu = [
   },
 ];
 
-export const PathologistMenu = [
+const PathologistMenu = [
   {
     heading: "Dashboard",
     route: "/dashboard",
@@ -536,7 +403,7 @@ export const PathologistMenu = [
   },
 ];
 
-export const ScientistMenu = [
+const ScientistMenu = [
   {
     heading: "Dashboard",
     route: "/dashboard",
@@ -573,7 +440,7 @@ export const ScientistMenu = [
   },
 ];
 
-export const TypistMenu = [
+const TypistMenu = [
   {
     heading: "Dashboard",
     route: "/dashboard",
@@ -610,7 +477,7 @@ export const TypistMenu = [
   },
 ];
 
-export const AnesthetistMenu = [
+const AnesthetistMenu = [
   {
     heading: "Dashboard",
     route: "/dashboard",
@@ -640,4 +507,16 @@ export const AnesthetistMenu = [
   },
 ];
 
-export default DocMenuConfig;
+const MainMenuConfig = {
+  admin: AdminMenu,
+  organizationAdmin: OrgAdminMenu,
+  organizationManager: OrgManagerMenu,
+  receptionist: ReceptionistMenu,
+  specialist: SpecialistMenu,
+  pathologist: PathologistMenu,
+  scientist: ScientistMenu,
+  typist: TypistMenu,
+  anesthetist: AnesthetistMenu,
+};
+
+export default MainMenuConfig;

@@ -20,8 +20,8 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/Organizations.vue"),
       },
       {
-        path: "/organizations/addorganization",
-        name: "add organization",
+        path: "/organizations/create",
+        name: "createOrganization",
         component: () => import("@/views/organizations/AddOrganization.vue"),
       },
       {
@@ -30,9 +30,29 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/Dashboard.vue"),
       },
       {
-        path: "/builder",
-        name: "builder",
-        component: () => import("@/views/Builder.vue"),
+        path: "/settings/health-fund",
+        name: "healthFund",
+        component: () => import("@/views/HealthFund.vue"),
+      },
+      {
+        path: "/settings/health-fund/create",
+        name: "createHealthFund",
+        component: () => import("@/components/health-fund/AddHealthFund.vue"),
+      },
+      {
+        path: "/settings/birthCode",
+        name: "birthCode",
+        component: () => import("@/views/BirthCode.vue"),
+      },
+      {
+        path: "/settings/specialist-type",
+        name: "speicalistType",
+        component: () => import("@/views/SpecialistType.vue"),
+      },
+      {
+        path: "/settings/specialist-title",
+        name: "specialistTitle",
+        component: () => import("@/views/SpecialistTitle.vue"),
       },
       {
         path: "/crafted/pages/profile",

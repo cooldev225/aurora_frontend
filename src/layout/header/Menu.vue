@@ -79,33 +79,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, computed, ref } from "vue";
+import { useStore, mapState } from "vuex";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n/index";
-import {
-  OrgAdminMenu,
-  OrgManagerMenu,
-  ReceptionistMenu,
-  SpecialistMenu,
-  AnesthetistMenu,
-  ScientistMenu,
-  TypistMenu,
-  PathologistMenu,
-} from "@/core/config/MainMenuConfig";
+import MenuConfig from "@/core/config/MainMenuConfig";
 import { headerMenuIcons } from "@/core/helpers/config";
 import { version } from "@/core/helpers/documentation";
 
 export default defineComponent({
   name: "KTMenu",
   components: {},
+
   setup() {
     const { t, te } = useI18n();
     const route = useRoute();
-    const MainMenuConfig = ref<null | Array<object>>(null);
-
-    onMounted(() => {
-      MainMenuConfig.value = OrgAdminMenu;
-    });
+    const store = useStore();
+    const curUser = computed(() => store.getters.currentUser);
+    const MainMenuConfig = MenuConfig[curUser.value.role];
 
     const hasActiveChildren = (match) => {
       return route.path.indexOf(match) !== -1;
@@ -120,6 +111,7 @@ export default defineComponent({
     };
 
     return {
+      curUser,
       hasActiveChildren,
       headerMenuIcons,
       MainMenuConfig,

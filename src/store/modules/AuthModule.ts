@@ -3,12 +3,13 @@ import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
+import roles from "@/core/data/roles";
+
 export interface User {
-  name: string;
-  surname: string;
+  username: string;
   email: string;
-  password: string;
-  api_token: string;
+  access_token: string;
+  role: string;
 }
 
 export interface UserAuthInfo {
@@ -57,7 +58,7 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
     this.isAuthenticated = true;
     this.user = user;
     this.errors = {};
-    JwtService.saveToken(user.api_token);
+    JwtService.saveToken(user.access_token);
   }
 
   @Mutation
@@ -65,10 +66,10 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
     this.user = user;
   }
 
-  @Mutation
-  [Mutations.SET_PASSWORD](password) {
-    this.user.password = password;
-  }
+  // @Mutation
+  // [Mutations.SET_PASSWORD](password) {
+  //   this.user.password = password;
+  // }
 
   @Mutation
   [Mutations.PURGE_AUTH]() {

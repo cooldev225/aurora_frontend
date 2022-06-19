@@ -2,23 +2,12 @@
   <div class="row g-5 g-xl-8">
     <div class="col-xl-4">
       <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
-        color="primary"
-        icon-color="white"
-        :title="'Total : ' + tableData.length + ' Members'"
-        description="Total Administrator"
-      />
-    </div>
-
-    <div class="col-xl-4">
-      <StatsisticsWidget5
         widget-classes="card-xl-stretch mb-5 mb-xl-8"
         svg-icon="media/icons/duotune/graphs/gra005.svg"
         color="success"
         icon-color="white"
-        title="Sales Stats"
-        description="50% Increased for FY20"
+        :title="'Total : ' + tableData.length + ' Members'"
+        description="Total Organization"
       />
     </div>
 
@@ -32,13 +21,24 @@
         description="Lands, Houses, Ranchos, Farms"
       />
     </div>
+
+    <div class="col-xl-4">
+      <StatsisticsWidget5
+        widget-classes="card-xl-stretch mb-xl-8"
+        svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
+        color="primary"
+        icon-color="white"
+        title="Appartments"
+        description="Flats, Shared Rooms, Duplex"
+      />
+    </div>
   </div>
   <div class="card">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Administrators</span>
+        <span>Birth Code</span>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -65,17 +65,15 @@
           <!--end::Export-->
 
           <!--begin::Add subscription-->
-          <button
-            type="button"
-            class="btn btn-light-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modal_add_admin"
+          <router-link
+            to="/organizations/addorganization"
+            class="btn btn-primary"
           >
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>
             Add
-          </button>
+          </router-link>
           <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
@@ -89,21 +87,15 @@
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-firstname="{ row: admin }">
-          {{ admin.firstname }}
+        <template v-slot:cell-birthCode="{ row: item }">
+          {{ item.birthCode }}
         </template>
-        <template v-slot:cell-lastname="{ row: admin }">
-          {{ admin.lastname }}
+        <template v-slot:cell-birthDescription="{ row: item }">
+          {{ item.birthDescription }}
         </template>
-        <template v-slot:cell-username="{ row: admin }">
-          {{ admin.username }}
-        </template>
-        <template v-slot:cell-email="{ row: admin }">
-          {{ admin.email }}
-        </template>
-        <template v-slot:cell-status="{ row: admin }">
-          <span :class="`badge badge-light-${admin.status.state}`">{{
-            admin.status.label
+        <template v-slot:cell-status="{ row: item }">
+          <span :class="`badge badge-light-${item.status.state}`">{{
+            item.status.label
           }}</span>
         </template>
         <template v-slot:cell-action>
@@ -137,51 +129,33 @@
       </Datatable>
     </div>
   </div>
-  <AddAdminModal></AddAdminModal>
-  <ViewAdminModal></ViewAdminModal>
-  <EditAdminModal></EditAdminModal>
 </template>
 
 <script>
 import { defineComponent, onMounted, ref } from "vue";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import AddAdminModal from "@/components/admin/AddAdminModal.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 
 export default defineComponent({
-  name: "admin-main",
+  name: "organization-main",
 
   components: {
     Datatable,
-    AddAdminModal,
     StatsisticsWidget5,
   },
 
   setup() {
     const tableHeader = ref([
       {
-        name: "First Name",
-        key: "firstname",
+        name: "Birth Code",
+        key: "birthCode",
         sortable: true,
         searchable: true,
       },
       {
-        name: "Last Name",
-        key: "lastname",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Username",
-        key: "username",
-        sortingField: "status.label",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Email",
-        key: "email",
+        name: "Birth Code Description",
+        key: "birthDescription",
         sortable: true,
         searchable: true,
       },
@@ -200,129 +174,105 @@ export default defineComponent({
 
     const tableData = ref([
       {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
         status: {
           label: "Enabled",
           state: "success",
         },
       },
       {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
         status: {
-          label: "Disabled",
-          state: "danger",
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        birthCode: "9299",
+        birthDescription: "Southern and East Africa, nec",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        birthCode: "9232",
+        birthDescription: "Zimbabwe",
+        status: {
+          label: "Enabled",
+          state: "success",
         },
       },
     ]);
 
     onMounted(() => {
-      setCurrentPageTitle("Administrators");
+      setCurrentPageTitle("Birth Code");
     });
 
     return { tableHeader, tableData };
