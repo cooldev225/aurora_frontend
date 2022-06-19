@@ -6,11 +6,9 @@ import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 import roles from "@/core/data/roles";
 
 export interface User {
-  name: string;
-  surname: string;
+  username: string;
   email: string;
-  password: string;
-  api_token: string;
+  access_token: string;
   role: string;
 }
 
@@ -60,7 +58,7 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
     this.isAuthenticated = true;
     this.user = user;
     this.errors = {};
-    JwtService.saveToken(user.api_token);
+    JwtService.saveToken(user.access_token);
   }
 
   @Mutation
@@ -68,10 +66,10 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
     this.user = user;
   }
 
-  @Mutation
-  [Mutations.SET_PASSWORD](password) {
-    this.user.password = password;
-  }
+  // @Mutation
+  // [Mutations.SET_PASSWORD](password) {
+  //   this.user.password = password;
+  // }
 
   @Mutation
   [Mutations.PURGE_AUTH]() {
@@ -85,8 +83,6 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
   [Actions.LOGIN](credentials) {
     return ApiService.post("login", credentials)
       .then(({ data }) => {
-        // data["role"] = roles[(Math.floor(Math.random() * 99999) % 9) + 1];
-        data["role"] = "admin";
         this.context.commit(Mutations.SET_AUTH, data);
       })
       .catch(({ response }) => {
@@ -127,8 +123,6 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
       ApiService.setHeader();
       ApiService.post("verify_token", payload)
         .then(({ data }) => {
-          // data["role"] = roles[Math.floor(Math.random() % 9) + 1];
-          data["role"] = "admin";
           this.context.commit(Mutations.SET_AUTH, data);
         })
         .catch(({ response }) => {

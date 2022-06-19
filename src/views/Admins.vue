@@ -138,13 +138,15 @@
     </div>
   </div>
   <AddAdminModal></AddAdminModal>
+  <ViewAdminModal></ViewAdminModal>
+  <EditAdminModal></EditAdminModal>
 </template>
 
 <script>
 import { defineComponent, onMounted, ref } from "vue";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import AddAdminModal from "@/components/modals/forms/AddAdminModal.vue";
+import AddAdminModal from "@/components/admin/AddAdminModal.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 
 export default defineComponent({
@@ -318,6 +320,7 @@ export default defineComponent({
         },
       },
     ]);
+
     onMounted(() => {
       setCurrentPageTitle("Administrators");
     });

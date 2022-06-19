@@ -25,7 +25,7 @@ const AdminMenu = [
     pages: [
       {
         heading: "Health Fund List",
-        route: "/settings/healthfund",
+        route: "/settings/health-fund",
         svgIcon: "media/icons/duotune/general/gen022.svg",
         fontIcon: "bi-archive",
       },

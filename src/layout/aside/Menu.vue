@@ -97,6 +97,7 @@ import { useRoute } from "vue-router";
 import { version } from "@/core/helpers/documentation";
 import { asideMenuIcons } from "@/core/helpers/config";
 import MenuConfig from "@/core/config/MainMenuConfig";
+import { User } from "@/store/modules/AuthModule";
 
 export default defineComponent({
   name: "left-menu",
@@ -106,14 +107,15 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
     const scrollElRef = ref<null | HTMLElement>(null);
-    const MainMenuConfig = ref<null | Array<object>>(null);
     const curUser = computed(() => store.getters.currentUser);
+
+    // const MainMenuConfig = MenuConfig[curUser.value.role];
+    const MainMenuConfig = MenuConfig["admin"];
 
     onMounted(() => {
       if (scrollElRef.value) {
         scrollElRef.value.scrollTop = 0;
       }
-      MainMenuConfig.value = MenuConfig[curUser.value.role];
     });
 
     const translate = (text) => {

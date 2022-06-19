@@ -180,6 +180,7 @@ export default defineComponent({
     const currentSort = ref<string>("");
     const order = ref(props.order);
     const label = ref(props.sortLabel);
+
     const pagination = ref<IPagination>({
       page: 1,
       total: props.total,

@@ -386,7 +386,7 @@ export default defineComponent({
     const currentStepIndex = ref(0);
 
     const formData = ref<CreateAccount>({
-      username: "",
+      username: "string",
       orgname: "string",
       password: "string",
       repassword: "string",

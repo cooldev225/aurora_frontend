@@ -38,7 +38,7 @@
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Specialist Title</span>
+        <span>Specialist Type</span>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -65,15 +65,17 @@
           <!--end::Export-->
 
           <!--begin::Add subscription-->
-          <router-link
-            to="/organizations/addorganization"
-            class="btn btn-primary"
+          <button
+            type="button"
+            class="btn btn-light-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-create-spectype"
           >
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>
             Add
-          </router-link>
+          </button>
           <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
@@ -86,59 +88,63 @@
         :table-data="tableData"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
+        :key="tableKey"
       >
-        <template v-slot:cell-typeName="{ row: item }">
-          {{ item.typeName }}
+        <template v-slot:cell-name="{ row: item }">
+          {{ item.name }}
         </template>
-        <template v-slot:cell-status="{ row: item }">
-          <span :class="`badge badge-light-${item.status.state}`">{{
-            item.status.label
-          }}</span>
-        </template>
-        <template v-slot:cell-action>
-          <a
-            href="#"
+        <template v-slot:cell-action="{ row: item }">
+          <button
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/general/gen019.svg" />
             </span>
-          </a>
+          </button>
 
-          <a
-            href="#"
+          <button
+            @click="handleEdit(item.id)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/art/art005.svg" />
             </span>
-          </a>
+          </button>
 
-          <a
-            href="#"
+          <button
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/general/gen027.svg" />
             </span>
-          </a>
+          </button>
         </template>
       </Datatable>
     </div>
   </div>
+  <CreateModal></CreateModal>
+  <EditModal :dataId="selectedId"></EditModal>
 </template>
 
 <script>
 import { defineComponent, onMounted, ref } from "vue";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
+import { ISpecialistType } from "@/core/data/types";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
+import CreateModal from "@/components/specialist-type/CreateSpecialistType.vue";
+import EditModal from "@/components/specialist-type/EditSpecialistType.vue";
+import { Modal } from "bootstrap";
+import ApiService from "@/core/services/ApiService";
+import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "organization-main",
 
   components: {
     Datatable,
+    CreateModal,
+    EditModal,
     StatsisticsWidget5,
   },
 
@@ -146,14 +152,7 @@ export default defineComponent({
     const tableHeader = ref([
       {
         name: "Type Name",
-        key: "typeName",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Status",
-        key: "status",
-        sortingField: "status.label",
+        key: "name",
         sortable: true,
         searchable: true,
       },
@@ -162,99 +161,37 @@ export default defineComponent({
         key: "action",
       },
     ]);
+    const tableData = ref([]);
+    const tableKey = ref(0);
 
-    const tableData = ref([
-      {
-        typeName: "Cardio",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        typeName: "Dentist",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        typeName: "Cardio",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        typeName: "Dentist",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        typeName: "Cardio",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        typeName: "Dentist",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        typeName: "Cardio",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        typeName: "Dentist",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        typeName: "Cardio",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        typeName: "Dentist",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        typeName: "Cardio",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        typeName: "Dentist",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-    ]);
-
+    function renderTable() {
+      tableKey.value++;
+    }
+    const selectedId = ref("1");
+    const handleEdit = (id) => {
+      // console.log(id);
+      selectedId.value = id;
+      const modal = new Modal(document.getElementById("modal-edit-spectype"));
+      modal.show();
+    };
     onMounted(() => {
       setCurrentPageTitle("Specialist Types");
+      if (JwtService.getToken()) {
+        ApiService.setHeader();
+        ApiService.get("specialist-types")
+          .then(({ data }) => {
+            let token = JSON.parse(JSON.stringify(data.data));
+            tableData.value = [...token];
+            renderTable();
+          })
+          .catch(({ response }) => {
+            console.log(response.data.error);
+          });
+      } else {
+        // this.context.commit(Mutations.PURGE_AUTH);
+      }
     });
-
-    return { tableHeader, tableData };
+    return { tableHeader, tableData, tableKey, handleEdit };
   },
 });
 </script>

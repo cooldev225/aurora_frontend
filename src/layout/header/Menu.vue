@@ -95,12 +95,8 @@ export default defineComponent({
     const { t, te } = useI18n();
     const route = useRoute();
     const store = useStore();
-    const MainMenuConfig = ref<null | Array<object>>(null);
     const curUser = computed(() => store.getters.currentUser);
-
-    onMounted(() => {
-      MainMenuConfig.value = MenuConfig[curUser.value.role];
-    });
+    const MainMenuConfig = MenuConfig[curUser.value.role];
 
     const hasActiveChildren = (match) => {
       return route.path.indexOf(match) !== -1;

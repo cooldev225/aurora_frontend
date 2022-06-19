@@ -15,41 +15,34 @@
         <!--end::Title-->
 
         <!--begin::Link-->
-        <div class="text-gray-400 fw-bold fs-4">
+        <!-- <div class="text-gray-400 fw-bold fs-4">
           New Here?
 
           <router-link to="/sign-up" class="link-primary fw-bolder">
             Create an Account
           </router-link>
-        </div>
+        </div> -->
         <!--end::Link-->
       </div>
       <!--begin::Heading-->
 
-      <div class="mb-10 bg-light-info p-8 rounded">
-        <div class="text-info">
-          Use account <strong>admin@demo.com</strong> and password
-          <strong>demo</strong> to continue.
-        </div>
-      </div>
-
       <!--begin::Input group-->
       <div class="fv-row mb-10">
         <!--begin::Label-->
-        <label class="form-label fs-6 fw-bolder text-dark">Email</label>
+        <label class="form-label fs-6 fw-bolder text-dark">Username</label>
         <!--end::Label-->
 
         <!--begin::Input-->
         <Field
           class="form-control form-control-lg form-control-solid"
           type="text"
-          name="email"
+          name="username"
           autocomplete="off"
         />
         <!--end::Input-->
         <div class="fv-plugins-message-container">
           <div class="fv-help-block">
-            <ErrorMessage name="email" />
+            <ErrorMessage name="username" />
           </div>
         </div>
       </div>
@@ -108,53 +101,7 @@
           </span>
         </button>
         <!--end::Submit button-->
-
-        <!--begin::Separator-->
-        <div class="text-center text-muted text-uppercase fw-bolder mb-5">
-          or
-        </div>
-        <!--end::Separator-->
-
-        <!--begin::Google link-->
-        <a
-          href="#"
-          class="btn btn-flex flex-center btn-light btn-lg w-100 mb-5"
-        >
-          <img
-            alt="Logo"
-            src="media/svg/brand-logos/google-icon.svg"
-            class="h-20px me-3"
-          />
-          Continue with Google
-        </a>
-        <!--end::Google link-->
-
-        <!--begin::Google link-->
-        <a
-          href="#"
-          class="btn btn-flex flex-center btn-light btn-lg w-100 mb-5"
-        >
-          <img
-            alt="Logo"
-            src="media/svg/brand-logos/facebook-4.svg"
-            class="h-20px me-3"
-          />
-          Continue with Facebook
-        </a>
-        <!--end::Google link-->
-
-        <!--begin::Google link-->
-        <a href="#" class="btn btn-flex flex-center btn-light btn-lg w-100">
-          <img
-            alt="Logo"
-            src="media/svg/brand-logos/apple-black.svg"
-            class="h-20px me-3"
-          />
-          Continue with Apple
-        </a>
-        <!--end::Google link-->
       </div>
-      <!--end::Actions-->
     </Form>
     <!--end::Form-->
   </div>
@@ -185,7 +132,7 @@ export default defineComponent({
 
     //Create form validation object
     const login = Yup.object().shape({
-      email: Yup.string().email().required().label("Email"),
+      username: Yup.string().required().label("username"),
       password: Yup.string().min(4).required().label("Password"),
     });
 

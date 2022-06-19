@@ -6,7 +6,7 @@
         svg-icon="media/icons/duotune/graphs/gra005.svg"
         color="success"
         icon-color="white"
-        :title="'Total : ' + tableData.length + ' Members'"
+        :title="'Total : ' + list.length + ' Members'"
         description="Total Organization"
       />
     </div>
@@ -33,270 +33,409 @@
       />
     </div>
   </div>
-  <div class="card">
-    <div class="card-header border-0 pt-6">
-      <!--begin::Card title-->
-      <div class="card-title">
-        <!--begin::Search-->
-        <span>Organizations</span>
-        <!--end::Search-->
-      </div>
-      <!--begin::Card title-->
-
-      <!--begin::Card toolbar-->
-      <div class="card-toolbar">
-        <!--begin::Toolbar-->
-        <div
-          class="d-flex justify-content-end"
-          data-kt-subscription-table-toolbar="base"
+  <div class="card" :class="widgetClasses">
+    <!--begin::Header-->
+    <div class="card-header border-0 pt-5">
+      <h3 class="card-title align-items-start flex-column">
+        <span class="card-label fw-bolder fs-3 mb-1">Organizations</span>
+        <span class="text-muted mt-1 fw-bold fs-7"
+          >{{ list.length }} Members</span
         >
-          <!--begin::Export-->
-          <button
-            type="button"
-            class="btn btn-light-primary me-3"
-            data-bs-toggle="modal"
-            data-bs-target="#kt_subscriptions_export_modal"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr078.svg" />
-            </span>
-            Export
-          </button>
-          <!--end::Export-->
-
-          <!--begin::Add subscription-->
-          <router-link
-            to="/organizations/addorganization"
-            class="btn btn-primary"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
-            </span>
-            Add
-          </router-link>
-          <!--end::Add subscription-->
-        </div>
-        <!--end::Toolbar-->
+      </h3>
+      <div class="card-toolbar">
+        <router-link to="/organizations/create" class="btn btn-light-primary">
+          <span class="svg-icon svg-icon-2">
+            <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
+          </span>
+          Add
+        </router-link>
       </div>
-      <!--end::Card toolbar-->
     </div>
-    <div class="card-body pt-0">
-      <Datatable
-        :table-header="tableHeader"
-        :table-data="tableData"
-        :rows-per-page="5"
-        :enable-items-per-page-dropdown="false"
-      >
-        <template v-slot:cell-organizations="{ row: organizations }">
-          {{ organizations.organizations }}
-        </template>
-        <template v-slot:cell-username="{ row: organizations }">
-          {{ organizations.username }}
-        </template>
-        <template v-slot:cell-email="{ row: organizations }">
-          {{ organizations.email }}
-        </template>
-        <template v-slot:cell-status="{ row: organizations }">
-          <span :class="`badge badge-light-${organizations.status.state}`">{{
-            organizations.status.label
-          }}</span>
-        </template>
-        <template v-slot:cell-action>
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen019.svg" />
-            </span>
-          </a>
-
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/art/art005.svg" />
-            </span>
-          </a>
-
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen027.svg" />
-            </span>
-          </a>
-        </template>
-      </Datatable>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body py-3">
+      <div class="tab-content">
+        <!--begin::Tap pane-->
+        <div class="tab-pane fade active show" id="kt_table_widget_5_tab_1">
+          <!--begin::Table container-->
+          <div class="table-responsive">
+            <!--begin::Table-->
+            <table
+              class="table table-row-dashed table-row-gray-200 align-middle gs-0 gy-4"
+            >
+              <!--begin::Table head-->
+              <thead>
+                <tr class="border-0">
+                  <th class="p-0 w-50px"></th>
+                  <th class="p-0 min-w-150px"></th>
+                  <th class="p-0 min-w-140px"></th>
+                  <th class="p-0 min-w-110px"></th>
+                  <th class="p-0 min-w-50px"></th>
+                </tr>
+              </thead>
+              <!--end::Table head-->
+              <!--begin::Table body-->
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="symbol symbol-45px me-2">
+                      <span class="symbol-label">
+                        <img
+                          src="media/svg/brand-logos/plurk.svg"
+                          class="h-50 align-self-center"
+                          alt=""
+                        />
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <a
+                      href="#"
+                      class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                      >Brad Simmons</a
+                    >
+                    <span class="text-muted fw-bold d-block"
+                      >Movie Creator</span
+                    >
+                  </td>
+                  <td class="text-end text-muted fw-bold">React, HTML</td>
+                  <td class="text-end">
+                    <span class="badge badge-light-success">Approved</span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="#"
+                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
+                    >
+                      <!--begin::Svg Icon | path: -->
+                      <span class="svg-icon svg-icon-2">
+                        <inline-svg
+                          src="media/icons/duotune/arrows/arr064.svg"
+                        />
+                      </span>
+                      <!--end::Svg Icon-->
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="symbol symbol-45px me-2">
+                      <span class="symbol-label">
+                        <img
+                          src="media/svg/brand-logos/telegram.svg"
+                          class="h-50 align-self-center"
+                          alt=""
+                        />
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <a
+                      href="#"
+                      class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                      >Popular Authors</a
+                    >
+                    <span class="text-muted fw-bold d-block"
+                      >Most Successful</span
+                    >
+                  </td>
+                  <td class="text-end text-muted fw-bold">Python, MySQL</td>
+                  <td class="text-end">
+                    <span class="badge badge-light-warning">In Progress</span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="#"
+                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
+                    >
+                      <!--begin::Svg Icon | path: -->
+                      <span class="svg-icon svg-icon-2">
+                        <inline-svg
+                          src="media/icons/duotune/arrows/arr064.svg"
+                        />
+                      </span>
+                      <!--end::Svg Icon-->
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="symbol symbol-45px me-2">
+                      <span class="symbol-label">
+                        <img
+                          src="media/svg/brand-logos/vimeo.svg"
+                          class="h-50 align-self-center"
+                          alt=""
+                        />
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <a
+                      href="#"
+                      class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                      >New Users</a
+                    >
+                    <span class="text-muted fw-bold d-block"
+                      >Awesome Users</span
+                    >
+                  </td>
+                  <td class="text-end text-muted fw-bold">Laravel,Metronic</td>
+                  <td class="text-end">
+                    <span class="badge badge-light-primary">Success</span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="#"
+                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
+                    >
+                      <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
+                      <span class="svg-icon svg-icon-2">
+                        <inline-svg
+                          src="media/icons/duotune/arrows/arr064.svg"
+                        />
+                      </span>
+                      <!--end::Svg Icon-->
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="symbol symbol-45px me-2">
+                      <span class="symbol-label">
+                        <img
+                          src="media/svg/brand-logos/bebo.svg"
+                          class="h-50 align-self-center"
+                          alt=""
+                        />
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <a
+                      href="#"
+                      class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                      >Active Customers</a
+                    >
+                    <span class="text-muted fw-bold d-block"
+                      >Movie Creator</span
+                    >
+                  </td>
+                  <td class="text-end text-muted fw-bold">AngularJS, C#</td>
+                  <td class="text-end">
+                    <span class="badge badge-light-danger">Rejected</span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="#"
+                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
+                    >
+                      <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
+                      <span class="svg-icon svg-icon-2">
+                        <inline-svg
+                          src="media/icons/duotune/arrows/arr064.svg"
+                        />
+                      </span>
+                      <!--end::Svg Icon-->
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="symbol symbol-45px me-2">
+                      <span class="symbol-label">
+                        <img
+                          src="media/svg/brand-logos/kickstarter.svg"
+                          class="h-50 align-self-center"
+                          alt=""
+                        />
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <a
+                      href="#"
+                      class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                      >Bestseller Theme</a
+                    >
+                    <span class="text-muted fw-bold d-block"
+                      >Best Customers</span
+                    >
+                  </td>
+                  <td class="text-end text-muted fw-bold">ReactJS, Ruby</td>
+                  <td class="text-end">
+                    <span class="badge badge-light-warning">In Progress</span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="#"
+                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
+                    >
+                      <span class="svg-icon svg-icon-2">
+                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
+                        <inline-svg
+                          src="media/icons/duotune/arrows/arr064.svg"
+                        />
+                        <!--end::Svg Icon-->
+                      </span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+              <!--end::Table body-->
+            </table>
+          </div>
+          <!--end::Table-->
+        </div>
+        <!--end::Tap pane-->
+      </div>
     </div>
+    <!--end::Body-->
   </div>
 </template>
 
 <script>
 import { defineComponent, onMounted, ref } from "vue";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
-import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
+import ApiService from "@/core/services/ApiService";
+import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "organization-main",
 
   components: {
-    Datatable,
     StatsisticsWidget5,
   },
 
   setup() {
-    const tableHeader = ref([
+    const list = [
       {
-        name: "Organizations",
-        key: "organizations",
-        sortable: true,
-        searchable: true,
+        organizations: "PAUL",
+        username: "test-paul",
+        email: "paul@email.com",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
       },
       {
-        name: "Username",
-        key: "username",
-        sortingField: "status.label",
-        sortable: true,
-        searchable: true,
+        organizations: "KEVIN",
+        username: "test-kevin",
+        email: "kevin@email.com",
+        status: {
+          label: "Disabled",
+          state: "danger",
+        },
       },
       {
-        name: "Email",
-        key: "email",
-        sortable: true,
-        searchable: true,
+        organizations: "PAUL",
+        username: "test-paul",
+        email: "paul@email.com",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
       },
       {
-        name: "Status",
-        key: "status",
-        sortingField: "status.label",
-        sortable: true,
-        searchable: true,
+        organizations: "KEVIN",
+        username: "test-kevin",
+        email: "kevin@email.com",
+        status: {
+          label: "Disabled",
+          state: "danger",
+        },
       },
       {
-        name: "Action",
-        key: "action",
+        organizations: "PAUL",
+        username: "test-paul",
+        email: "paul@email.com",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
       },
-    ]);
+      {
+        organizations: "KEVIN",
+        username: "test-kevin",
+        email: "kevin@email.com",
+        status: {
+          label: "Disabled",
+          state: "danger",
+        },
+      },
+      {
+        organizations: "PAUL",
+        username: "test-paul",
+        email: "paul@email.com",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        organizations: "KEVIN",
+        username: "test-kevin",
+        email: "kevin@email.com",
+        status: {
+          label: "Disabled",
+          state: "danger",
+        },
+      },
+      {
+        organizations: "PAUL",
+        username: "test-paul",
+        email: "paul@email.com",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        organizations: "KEVIN",
+        username: "test-kevin",
+        email: "kevin@email.com",
+        status: {
+          label: "Disabled",
+          state: "danger",
+        },
+      },
+      {
+        organizations: "PAUL",
+        username: "test-paul",
+        email: "paul@email.com",
+        status: {
+          label: "Enabled",
+          state: "success",
+        },
+      },
+      {
+        organizations: "KEVIN",
+        username: "test-kevin",
+        email: "kevin@email.com",
+        status: {
+          label: "Disabled",
+          state: "danger",
+        },
+      },
+    ];
 
-    const tableData = ref([
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-    ]);
     onMounted(() => {
       setCurrentPageTitle("Organizations");
+      if (JwtService.getToken()) {
+        ApiService.setHeader();
+        ApiService.get("organizations")
+          .then(({ data }) => {
+            console.log(data);
+          })
+          .catch(({ response }) => {
+            console.log(response.data.error);
+          });
+      } else {
+        // this.context.commit(Mutations.PURGE_AUTH);
+      }
     });
-
-    return { tableHeader, tableData };
+    return { list };
   },
 });
 </script>
