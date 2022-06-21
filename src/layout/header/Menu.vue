@@ -78,8 +78,8 @@
   <!--end::Menu wrapper-->
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, computed, ref } from "vue";
+<script>
+import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore, mapState } from "vuex";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n/index";
@@ -95,12 +95,19 @@ export default defineComponent({
     const { t, te } = useI18n();
     const route = useRoute();
     const store = useStore();
-    const curUser = computed(() => store.getters.currentUser);
-    const MainMenuConfig = MenuConfig[curUser.value.role];
+    const MainMenuConfig = ref();
 
     const hasActiveChildren = (match) => {
       return route.path.indexOf(match) !== -1;
     };
+
+    onMounted(() => {
+      MainMenuConfig.value = MenuConfig[store.getters.userRole];
+    });
+
+    watchEffect(() => {
+      MainMenuConfig.value = MenuConfig[store.getters.userRole];
+    });
 
     const translate = (text) => {
       if (te(text)) {
@@ -111,7 +118,6 @@ export default defineComponent({
     };
 
     return {
-      curUser,
       hasActiveChildren,
       headerMenuIcons,
       MainMenuConfig,
