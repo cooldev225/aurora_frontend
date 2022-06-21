@@ -95,19 +95,19 @@ export default defineComponent({
     const { t, te } = useI18n();
     const route = useRoute();
     const store = useStore();
-    const MainMenuConfig = ref();
+    const MainMenuConfig = ref(MenuConfig["organizationAdmin"]);
 
     const hasActiveChildren = (match) => {
       return route.path.indexOf(match) !== -1;
     };
 
-    onMounted(() => {
-      MainMenuConfig.value = MenuConfig[store.getters.userRole];
-    });
+    // onMounted(() => {
+    //   MainMenuConfig.value = MenuConfig[store.getters.userRole];
+    // });
 
-    watchEffect(() => {
-      MainMenuConfig.value = MenuConfig[store.getters.userRole];
-    });
+    // watchEffect(() => {
+    //   MainMenuConfig.value = MenuConfig[store.getters.userRole];
+    // });
 
     const translate = (text) => {
       if (te(text)) {

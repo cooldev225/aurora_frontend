@@ -23,6 +23,11 @@ enum Actions {
   DELETE_ORG = "deleteOrg",
   UPDATE_ORG = "updateOrg",
 
+  LIST_ORG_MANAGER = "listOrgManager",
+  CREATE_ORG_MANAGER = "createOrgManager",
+  DELETE_ORG_MANAGER = "deleteOrgManager",
+  UPDATE_ORG_MANAGER = "updateOrgManager",
+
   LIST_SPECIALIST_TYPE = "listSpecialistType",
   CREATE_SPECIALIST_TYPE = "createSpecialistType",
   DELETE_SPECIALIST_TYPE = "deleteSpecialistType",
@@ -59,6 +64,9 @@ enum Mutations {
 
   SET_ORG_LIST = "setOrgList",
   SET_SELECT_ORG = "setSelectOrg",
+
+  SET_ORG_MANAGER_LIST = "setOrgManagerList",
+  SET_SELECT_ORG_MANAGER = "setSelectOrgManager",
 }
 
 export { Actions, Mutations };
