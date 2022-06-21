@@ -150,8 +150,6 @@
       </Datatable>
     </div>
   </div>
-  <CreateModal></CreateModal>
-  <EditModal></EditModal>
 </template>
 
 <script>

@@ -42,7 +42,7 @@ const config: LayoutConfigTypes = {
   },
   aside: {
     display: true,
-    theme: "dark",
+    theme: "light",
     fixed: true,
     menuIcon: "font",
     minimized: false,
