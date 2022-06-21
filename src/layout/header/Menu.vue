@@ -95,7 +95,7 @@ export default defineComponent({
     const { t, te } = useI18n();
     const route = useRoute();
     const store = useStore();
-    const MainMenuConfig = ref(MenuConfig["organizationAdmin"]);
+    const MainMenuConfig = ref(MenuConfig["organizationManager"]);
 
     const hasActiveChildren = (match) => {
       return route.path.indexOf(match) !== -1;

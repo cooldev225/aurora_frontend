@@ -1,44 +1,20 @@
 <template>
-  <div class="row g-5 g-xl-8">
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-5 mb-xl-8"
-        svg-icon="media/icons/duotune/graphs/gra005.svg"
-        color="success"
-        icon-color="white"
-        :title="'Total : ' + tableData.length + ' Members'"
-        description="Total Organization"
-      />
-    </div>
-
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm002.svg"
-        color="danger"
-        icon-color="white"
-        title="Shopping Cart"
-        description="Lands, Houses, Ranchos, Farms"
-      />
-    </div>
-
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
-        color="primary"
-        icon-color="white"
-        title="Appartments"
-        description="Flats, Shared Rooms, Duplex"
-      />
-    </div>
-  </div>
   <div class="card">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Birth Code</span>
+        <div class="d-flex align-items-center position-relative my-1">
+          <span class="svg-icon svg-icon-1 position-absolute ms-6">
+            <inline-svg src="media/icons/duotune/general/gen021.svg" />
+          </span>
+          <input
+            type="text"
+            data-kt-subscription-table-filter="search"
+            class="form-control form-control-solid w-250px ps-14"
+            placeholder="Search Birth Codes"
+          />
+        </div>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -65,15 +41,17 @@
           <!--end::Export-->
 
           <!--begin::Add subscription-->
-          <router-link
-            to="/organizations/addorganization"
-            class="btn btn-primary"
+          <button
+            type="button"
+            class="btn btn-light-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modal-create-birth-code"
           >
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>
             Add
-          </router-link>
+          </button>
           <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
@@ -84,71 +62,72 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :key="tableKey"
-        :rows-per-page="5"
+        :rows-per-page="10"
         :enable-items-per-page-dropdown="false"
       >
         <template v-slot:cell-birthCode="{ row: item }">
-          {{ item.birthCode }}
+          {{ item.code }}
         </template>
         <template v-slot:cell-birthDescription="{ row: item }">
-          {{ item.birthDescription }}
+          {{ item.description }}
         </template>
-        <template v-slot:cell-status="{ row: item }">
-          <span :class="`badge badge-light-${item.status.state}`">{{
-            item.status.label
-          }}</span>
-        </template>
-        <template v-slot:cell-action>
-          <a
+        <template v-slot:cell-action="{ row: item }">
+          <button
             href="#"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/general/gen019.svg" />
             </span>
-          </a>
+          </button>
 
-          <a
-            href="#"
+          <button
+            @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/art/art005.svg" />
             </span>
-          </a>
+          </button>
 
-          <a
-            href="#"
+          <button
+            @click="handleDelete(item.id)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/general/gen027.svg" />
             </span>
-          </a>
+          </button>
         </template>
       </Datatable>
     </div>
   </div>
+  <CreateModal></CreateModal>
+  <EditModal></EditModal>
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
-import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
+import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import { useStore } from "vuex";
+import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
+import CreateModal from "@/components/birth-code/CreateBirthCode.vue";
+import EditModal from "@/components/birth-code/EditBirthCode.vue";
+import { Modal } from "bootstrap";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
-  name: "organization-main",
+  name: "birth-code-main",
 
   components: {
     Datatable,
-    StatsisticsWidget5,
+    CreateModal,
+    EditModal,
   },
 
   setup() {
+    const store = useStore();
     const tableHeader = ref([
       {
         name: "Birth Code",
@@ -163,44 +142,50 @@ export default defineComponent({
         searchable: true,
       },
       {
-        name: "Status",
-        key: "status",
-        sortingField: "status.label",
-        sortable: true,
-        searchable: true,
-      },
-      {
         name: "Action",
         key: "action",
       },
     ]);
-
     const tableData = ref([]);
-    const tableKey = ref(0);
+    const birthCodeList = computed(() => store.getters.birthCodeList);
 
-    const renderTable = () => {
-      tableKey.value++;
+    const handleEdit = (item) => {
+      store.commit(Mutations.SET_SELECT_BIRTH_CODE, item);
+      const modal = new Modal(document.getElementById("modal-edit-birth-code"));
+      modal.show();
     };
 
-    onMounted(() => {
-      setCurrentPageTitle("Birth Code");
-      if (JwtService.getToken()) {
-        ApiService.setHeader();
-        ApiService.get("birth-codes")
-          .then(({ data }) => {
-            let token = JSON.parse(JSON.stringify(data.data));
-            tableData.value = [...token];
-            renderTable();
-          })
-          .catch(({ response }) => {
-            console.log(response.data.error);
+    const handleDelete = (id) => {
+      store
+        .dispatch(Actions.DELETE_BIRTH_CODE, id)
+        .then(() => {
+          store.dispatch(Actions.LIST_BIRTH_CODE);
+          Swal.fire({
+            text: "Successfully Deleted!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
           });
-      } else {
-        // this.context.commit(Mutations.PURGE_AUTH);
-      }
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    };
+
+    watchEffect(() => {
+      tableData.value = birthCodeList;
     });
 
-    return { tableHeader, tableData, tableKey };
+    onMounted(() => {
+      setCurrentPageBreadcrumbs("Birth Codes", []);
+      store.dispatch(Actions.LIST_BIRTH_CODE);
+      tableData.value = birthCodeList;
+    });
+
+    return { tableHeader, tableData, handleEdit, handleDelete };
   },
 });
 </script>

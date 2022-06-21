@@ -38,6 +38,13 @@ enum Actions {
   DELETE_CLINICS = "deleteClinics",
   UPDATE_CLINICS = "updateClinics",
 
+  LIST_BIRTH_CODE = "listBirthCode",
+  CREATE_BIRTH_CODE = "createBirthCode",
+  DELETE_BIRTH_CODE = "deleteBirthCode",
+  UPDATE_BIRTH_CODE = "updateBirthCode",
+
+  LIST_HEALTH_FUNDS = "listHealthFunds",
+
   LIST_SPECIALIST_TYPE = "listSpecialistType",
   CREATE_SPECIALIST_TYPE = "createSpecialistType",
   DELETE_SPECIALIST_TYPE = "deleteSpecialistType",
@@ -83,6 +90,11 @@ enum Mutations {
 
   SET_CLINICS_LIST = "setClinicsList",
   SET_SELECT_CLINICS = "setSelectClinics",
+
+  SET_BIRTH_CODE_LIST = "setClinicsList",
+  SET_SELECT_BIRTH_CODE = "setSelectClinics",
+
+  SET_HEALTH_FUNDS_LIST = "setHealthFundsList",
 }
 
 export { Actions, Mutations };

@@ -38,7 +38,17 @@
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Clinics</span>
+        <div class="d-flex align-items-center position-relative my-1">
+          <span class="svg-icon svg-icon-1 position-absolute ms-6">
+            <inline-svg src="media/icons/duotune/general/gen021.svg" />
+          </span>
+          <input
+            type="text"
+            data-kt-subscription-table-filter="search"
+            class="form-control form-control-solid w-250px ps-14"
+            placeholder="Search Clinic"
+          />
+        </div>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -65,7 +75,7 @@
           <!--end::Export-->
 
           <!--begin::Add subscription-->
-          <router-link to="/clinics/create" class="btn btn-light-primary">
+          <router-link to="/clinics/create" class="btn btn-primary">
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>

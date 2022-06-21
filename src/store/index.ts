@@ -12,6 +12,8 @@ import OrgAdminModule from "@/store/modules/OrgAdminModule";
 import ClinicsModule from "@/store/modules/ClinicsModule";
 import SpecialistTypeModule from "@/store/modules/SpecialistTypeModule";
 import SpecialistTitleModule from "@/store/modules/SpecialistTitleModule";
+import HealthFundModule from "@/store/modules/HealthFundModule";
+import BirthCodeModule from "@/store/modules/BirthCodeModule";
 
 config.rawError = true;
 
@@ -28,6 +30,8 @@ const store = createStore({
     OrgManagerModule,
     OrgAdminModule,
     ClinicsModule,
+    HealthFundModule,
+    BirthCodeModule,
   },
 });
 

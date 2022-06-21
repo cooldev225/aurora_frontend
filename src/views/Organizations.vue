@@ -6,7 +6,7 @@
         svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
         color="primary"
         icon-color="white"
-        :title="'Total : ' + tableData.length + ' Members'"
+        :title="'Total : ' + tableData.value.length + ' Members'"
         description="Total Organizations"
       />
     </div>
@@ -17,8 +17,8 @@
         svg-icon="media/icons/duotune/graphs/gra005.svg"
         color="success"
         icon-color="white"
-        title="Sales Stats"
-        description="50% Increased for FY20"
+        title="TITLE"
+        description="DESCRIPTION"
       />
     </div>
 
@@ -28,8 +28,8 @@
         svg-icon="media/icons/duotune/ecommerce/ecm002.svg"
         color="danger"
         icon-color="white"
-        title="Shopping Cart"
-        description="Lands, Houses, Ranchos, Farms"
+        title="TITLE"
+        description="DESCRIPTION"
       />
     </div>
   </div>
@@ -38,7 +38,17 @@
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Organizations</span>
+        <div class="d-flex align-items-center position-relative my-1">
+          <span class="svg-icon svg-icon-1 position-absolute ms-6">
+            <inline-svg src="media/icons/duotune/general/gen021.svg" />
+          </span>
+          <input
+            type="text"
+            data-kt-subscription-table-filter="search"
+            class="form-control form-control-solid w-250px ps-14"
+            placeholder="Search Organizations"
+          />
+        </div>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -65,7 +75,7 @@
           <!--end::Export-->
 
           <!--begin::Add subscription-->
-          <router-link to="/organizations/create" class="btn btn-light-primary">
+          <router-link to="/organizations/create" class="btn btn-primary">
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>
@@ -82,6 +92,7 @@
         :table-header="tableHeader"
         :table-data="tableData"
         :rows-per-page="5"
+        :loading="loading"
         :enable-items-per-page-dropdown="false"
       >
         <template v-slot:cell-logo="{ row: item }">
@@ -139,15 +150,13 @@
       </Datatable>
     </div>
   </div>
-  <CreateModal></CreateModal>
-  <EditModal></EditModal>
 </template>
 
 <script>
 import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
+import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -202,6 +211,7 @@ export default defineComponent({
     ]);
     const tableData = ref([]);
     const orgList = computed(() => store.getters.orgList);
+    const loading = ref(true);
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_SELECT_ORG, item);
@@ -209,10 +219,12 @@ export default defineComponent({
     };
 
     const handleDelete = (id) => {
+      loading.value = true;
       store
         .dispatch(Actions.DELETE_ORG, id)
         .then(() => {
           store.dispatch(Actions.LIST_ORG);
+          loading.value = false;
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -233,9 +245,12 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      setCurrentPageTitle("Organizations");
-      store.dispatch(Actions.LIST_ORG);
-      tableData.value = orgList;
+      loading.value = true;
+      setCurrentPageBreadcrumbs("Organizations", []);
+      store.dispatch(Actions.LIST_ORG).then(() => {
+        tableData.value = orgList;
+        loading.value = false;
+      });
     });
 
     return { tableHeader, tableData, handleEdit, handleDelete };

@@ -38,7 +38,17 @@
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Organization Managers</span>
+        <div class="d-flex align-items-center position-relative my-1">
+          <span class="svg-icon svg-icon-1 position-absolute ms-6">
+            <inline-svg src="media/icons/duotune/general/gen021.svg" />
+          </span>
+          <input
+            type="text"
+            data-kt-subscription-table-filter="search"
+            class="form-control form-control-solid w-250px ps-14"
+            placeholder="Search Organization Manager"
+          />
+        </div>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -67,7 +77,7 @@
           <!--begin::Add subscription-->
           <button
             type="button"
-            class="btn btn-light-primary"
+            class="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#modal_add_orgManager"
           >
