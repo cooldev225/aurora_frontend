@@ -6,7 +6,7 @@
         svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
         color="primary"
         icon-color="white"
-        :title="'Total : ' + tableData.length + ' Members'"
+        :title="'Total : ' + tableData.value.length + ' Members'"
         description="Total Administrator"
       />
     </div>
@@ -86,27 +86,23 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
+        :key="tableKey"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-firstname="{ row: admin }">
-          {{ admin.firstname }}
+        <template v-slot:cell-first_name="{ row: item }">
+          {{ item.first_name }}
         </template>
-        <template v-slot:cell-lastname="{ row: admin }">
-          {{ admin.lastname }}
+        <template v-slot:cell-last_name="{ row: item }">
+          {{ item.last_name }}
         </template>
-        <template v-slot:cell-username="{ row: admin }">
-          {{ admin.username }}
+        <template v-slot:cell-username="{ row: item }">
+          {{ item.username }}
         </template>
-        <template v-slot:cell-email="{ row: admin }">
-          {{ admin.email }}
+        <template v-slot:cell-email="{ row: item }">
+          {{ item.email }}
         </template>
-        <template v-slot:cell-status="{ row: admin }">
-          <span :class="`badge badge-light-${admin.status.state}`">{{
-            admin.status.label
-          }}</span>
-        </template>
-        <template v-slot:cell-action>
+        <template v-slot:cell-action="{ row: item }">
           <a
             href="#"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
@@ -116,66 +112,71 @@
             </span>
           </a>
 
-          <a
-            href="#"
+          <button
+            @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/art/art005.svg" />
             </span>
-          </a>
+          </button>
 
-          <a
-            href="#"
+          <button
+            @click="handleDelete(item.id)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/general/gen027.svg" />
             </span>
-          </a>
+          </button>
         </template>
       </Datatable>
     </div>
   </div>
-  <AddAdminModal></AddAdminModal>
-  <ViewAdminModal></ViewAdminModal>
-  <EditAdminModal></EditAdminModal>
+  <CreateModal></CreateModal>
+  <EditModal></EditModal>
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import { useStore } from "vuex";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import AddAdminModal from "@/components/admin/AddAdminModal.vue";
+import CreateModal from "@/components/admin/AddAdminModal.vue";
+import EditModal from "@/components/admin/EditAdminModal.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "admin-main",
 
   components: {
     Datatable,
-    AddAdminModal,
+    CreateModal,
+    EditModal,
     StatsisticsWidget5,
   },
 
   setup() {
+    const store = useStore();
     const tableHeader = ref([
       {
         name: "First Name",
-        key: "firstname",
+        key: "first_name",
         sortable: true,
         searchable: true,
       },
       {
         name: "Last Name",
-        key: "lastname",
+        key: "last_name",
         sortable: true,
         searchable: true,
       },
       {
         name: "Username",
         key: "username",
-        sortingField: "status.label",
         sortable: true,
         searchable: true,
       },
@@ -186,146 +187,50 @@ export default defineComponent({
         searchable: true,
       },
       {
-        name: "Status",
-        key: "status",
-        sortingField: "status.label",
-        sortable: true,
-        searchable: true,
-      },
-      {
         name: "Action",
         key: "action",
       },
     ]);
+    const tableData = ref([]);
+    const adminList = computed(() => store.getters.adminList);
 
-    const tableData = ref([
-      {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        firstname: "PAUL",
-        lastname: "SMITH",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        firstname: "KEVIN",
-        lastname: "ALIX",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-    ]);
+    const handleEdit = (item) => {
+      store.commit(Mutations.SET_SELECT_ADMIN, item);
+      const modal = new Modal(document.getElementById("modal_edit_admin"));
+      modal.show();
+    };
+
+    const handleDelete = (id) => {
+      store
+        .dispatch(Actions.DELETE_ADMIN, id)
+        .then(() => {
+          store.dispatch(Actions.LIST_ADMIN);
+          Swal.fire({
+            text: "Successfully Deleted!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    };
+
+    watchEffect(() => {
+      tableData.value = adminList;
+    });
 
     onMounted(() => {
       setCurrentPageTitle("Administrators");
+      store.dispatch(Actions.LIST_ADMIN);
+      tableData.value = adminList;
     });
 
-    return { tableHeader, tableData };
+    return { tableHeader, tableData, handleEdit, handleDelete };
   },
 });
 </script>

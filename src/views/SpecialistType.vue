@@ -6,7 +6,7 @@
         svg-icon="media/icons/duotune/graphs/gra005.svg"
         color="success"
         icon-color="white"
-        :title="'Total : ' + tableData.length + ' Members'"
+        :title="'Total : ' + tableData.value.length + ' Members'"
         description="Total Organization"
       />
     </div>
@@ -88,7 +88,6 @@
         :table-data="tableData"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
-        :key="tableKey"
       >
         <template v-slot:cell-name="{ row: item }">
           {{ item.name }}
@@ -103,7 +102,7 @@
           </button>
 
           <button
-            @click="handleEdit(item.id)"
+            @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
@@ -112,6 +111,7 @@
           </button>
 
           <button
+            @click="handleDelete(item.id)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
           >
             <span class="svg-icon svg-icon-3">
@@ -123,23 +123,23 @@
     </div>
   </div>
   <CreateModal></CreateModal>
-  <EditModal :dataId="selectedId"></EditModal>
+  <EditModal></EditModal>
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
-import { ISpecialistType } from "@/core/data/types";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 import CreateModal from "@/components/specialist-type/CreateSpecialistType.vue";
 import EditModal from "@/components/specialist-type/EditSpecialistType.vue";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { useStore } from "vuex";
 import { Modal } from "bootstrap";
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
-  name: "organization-main",
+  name: "specialist-type",
 
   components: {
     Datatable,
@@ -149,6 +149,7 @@ export default defineComponent({
   },
 
   setup() {
+    const store = useStore();
     const tableHeader = ref([
       {
         name: "Type Name",
@@ -162,36 +163,50 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const tableKey = ref(0);
+    const specTypeList = computed(() => store.getters.specTypeList);
 
-    function renderTable() {
-      tableKey.value++;
-    }
-    const selectedId = ref("1");
-    const handleEdit = (id) => {
-      // console.log(id);
-      selectedId.value = id;
+    const handleEdit = (item) => {
+      store.commit(Mutations.SET_SELECT_SPECALIST_TYPE, item);
       const modal = new Modal(document.getElementById("modal-edit-spectype"));
       modal.show();
     };
+
+    const handleDelete = (id) => {
+      store
+        .dispatch(Actions.DELETE_SPECIALIST_TYPE, id)
+        .then(() => {
+          store.dispatch(Actions.LIST_SPECIALIST_TYPE);
+          Swal.fire({
+            text: "Successfully Deleted!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    };
+
+    watchEffect(() => {
+      tableData.value = specTypeList;
+    });
+
     onMounted(() => {
       setCurrentPageTitle("Specialist Types");
-      if (JwtService.getToken()) {
-        ApiService.setHeader();
-        ApiService.get("specialist-types")
-          .then(({ data }) => {
-            let token = JSON.parse(JSON.stringify(data.data));
-            tableData.value = [...token];
-            renderTable();
-          })
-          .catch(({ response }) => {
-            console.log(response.data.error);
-          });
-      } else {
-        // this.context.commit(Mutations.PURGE_AUTH);
-      }
+      store.dispatch(Actions.LIST_SPECIALIST_TYPE);
+      tableData.value = specTypeList;
     });
-    return { tableHeader, tableData, tableKey, handleEdit };
+
+    return {
+      tableHeader,
+      tableData,
+      handleEdit,
+      handleDelete,
+    };
   },
 });
 </script>

@@ -1,8 +1,8 @@
 <template>
   <div
     class="modal fade"
-    id="modal-edit-spectype"
-    ref="editSpectypeModalRef"
+    id="modal-create-spectitle"
+    ref="addSpectitleModalRef"
     tabindex="-1"
     aria-hidden="true"
   >
@@ -11,14 +11,14 @@
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
-        <div class="modal-header" id="modal_update_spectype_header">
+        <div class="modal-header" id="modal_create_spectitle_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Edit Specialist Type</h2>
+          <h2 class="fw-bolder">Create Specialist Title</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
           <div
-            id="modal_update_spectype_close"
+            id="modal_create_spectitle_close"
             data-bs-dismiss="modal"
             class="btn btn-icon btn-sm btn-active-icon-primary"
           >
@@ -41,18 +41,18 @@
             <!--begin::Scroll-->
             <div
               class="scroll-y me-n7 pe-7"
-              id="modal_update_spectype_scroll"
+              id="modal_create_spectitle_scroll"
               data-kt-scroll="true"
               data-kt-scroll-activate="{default: false, lg: true}"
               data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#modal_update_spectype_header"
-              data-kt-scroll-wrappers="#modal_update_spectype_scroll"
+              data-kt-scroll-dependencies="#modal_create_spectitle_header"
+              data-kt-scroll-wrappers="#modal_create_spectitle_scroll"
               data-kt-scroll-offset="300px"
             >
               <!--begin::Input group-->
               <div class="fv-row mb-7">
                 <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Type Name</label>
+                <label class="required fs-6 fw-bold mb-2">Title</label>
                 <!--end::Label-->
 
                 <!--begin::Input-->
@@ -60,7 +60,7 @@
                   <el-input
                     v-model="formData.name"
                     type="text"
-                    placeholder="Type Name"
+                    placeholder="Title"
                   />
                 </el-form-item>
                 <!--end::Input-->
@@ -90,7 +90,7 @@
               type="submit"
             >
               <span v-if="!loading" class="indicator-label">
-                Update
+                Create
                 <span class="svg-icon svg-icon-3 ms-2 me-0">
                   <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
                 </span>
@@ -113,31 +113,29 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
+import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "edit-specialistType",
+  name: "create-specialistTitle",
   components: {},
   setup() {
-    const store = useStore();
     const formRef = ref(null);
-    const editSpectypeModalRef = ref(null);
+    const addSpectitleModalRef = ref(null);
     const loading = ref(false);
-    const formData = ref({ name: "" });
-
-    watchEffect(() => {
-      formData.value = store.getters.getSpecTypeSelected;
+    const store = useStore();
+    const formData = ref({
+      name: "",
     });
 
     const rules = ref({
       name: [
         {
           required: true,
-          message: "Type Name is required",
+          message: "Title is required",
           trigger: "change",
         },
       ],
@@ -151,13 +149,14 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
+
           store
-            .dispatch(Actions.UPDATE_SPECIALIST_TYPE, formData.value)
+            .dispatch(Actions.CREATE_SPECIALIST_TITLE, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.LIST_SPECIALIST_TYPE);
+              store.dispatch(Actions.LIST_SPECIALIST_TITLE);
               Swal.fire({
-                text: "Successfully Updated!",
+                text: "Successfully Created!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -165,15 +164,13 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(editSpectypeModalRef.value);
+                hideModal(addSpectitleModalRef.value);
               });
             })
             .catch(({ response }) => {
               loading.value = false;
               console.log(response.data.error);
             });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
@@ -184,7 +181,7 @@ export default defineComponent({
       submit,
       formRef,
       loading,
-      editSpectypeModalRef,
+      addSpectitleModalRef,
     };
   },
 });

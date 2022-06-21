@@ -111,6 +111,7 @@ export default defineComponent({
 
     // const MainMenuConfig = MenuConfig[curUser.value.role];
     const MainMenuConfig = MenuConfig["admin"];
+    // const MainMenuConfig = MenuConfig["organizationManager"];
 
     onMounted(() => {
       if (scrollElRef.value) {

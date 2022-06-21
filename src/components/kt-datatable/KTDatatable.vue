@@ -43,11 +43,11 @@
                 >
                   {{ cell.name }}
                 </div>
-                <input
+                <!-- <input
                   type="text"
                   class="form-control form-control-solid w-max-250px"
                   :class="!cell.searchable && 'invisible'"
-                />
+                /> -->
               </th>
             </template>
           </tr>

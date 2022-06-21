@@ -2,12 +2,23 @@
   <div class="row g-5 g-xl-8">
     <div class="col-xl-4">
       <StatsisticsWidget5
+        widget-classes="card-xl-stretch mb-xl-8"
+        svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
+        color="primary"
+        icon-color="white"
+        :title="'Total : ' + tableData.length + ' Members'"
+        description="Total Organizations"
+      />
+    </div>
+
+    <div class="col-xl-4">
+      <StatsisticsWidget5
         widget-classes="card-xl-stretch mb-5 mb-xl-8"
         svg-icon="media/icons/duotune/graphs/gra005.svg"
         color="success"
         icon-color="white"
-        :title="'Total : ' + list.length + ' Members'"
-        description="Total Organization"
+        title="Sales Stats"
+        description="50% Increased for FY20"
       />
     </div>
 
@@ -21,421 +32,213 @@
         description="Lands, Houses, Ranchos, Farms"
       />
     </div>
+  </div>
+  <div class="card">
+    <div class="card-header border-0 pt-6">
+      <!--begin::Card title-->
+      <div class="card-title">
+        <!--begin::Search-->
+        <span>Organizations</span>
+        <!--end::Search-->
+      </div>
+      <!--begin::Card title-->
 
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
-        color="primary"
-        icon-color="white"
-        title="Appartments"
-        description="Flats, Shared Rooms, Duplex"
-      />
-    </div>
-  </div>
-  <div class="card" :class="widgetClasses">
-    <!--begin::Header-->
-    <div class="card-header border-0 pt-5">
-      <h3 class="card-title align-items-start flex-column">
-        <span class="card-label fw-bolder fs-3 mb-1">Organizations</span>
-        <span class="text-muted mt-1 fw-bold fs-7"
-          >{{ list.length }} Members</span
-        >
-      </h3>
+      <!--begin::Card toolbar-->
       <div class="card-toolbar">
-        <router-link to="/organizations/create" class="btn btn-light-primary">
-          <span class="svg-icon svg-icon-2">
-            <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
-          </span>
-          Add
-        </router-link>
-      </div>
-    </div>
-    <!--end::Header-->
-    <!--begin::Body-->
-    <div class="card-body py-3">
-      <div class="tab-content">
-        <!--begin::Tap pane-->
-        <div class="tab-pane fade active show" id="kt_table_widget_5_tab_1">
-          <!--begin::Table container-->
-          <div class="table-responsive">
-            <!--begin::Table-->
-            <table
-              class="table table-row-dashed table-row-gray-200 align-middle gs-0 gy-4"
-            >
-              <!--begin::Table head-->
-              <thead>
-                <tr class="border-0">
-                  <th class="p-0 w-50px"></th>
-                  <th class="p-0 min-w-150px"></th>
-                  <th class="p-0 min-w-140px"></th>
-                  <th class="p-0 min-w-110px"></th>
-                  <th class="p-0 min-w-50px"></th>
-                </tr>
-              </thead>
-              <!--end::Table head-->
-              <!--begin::Table body-->
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="symbol symbol-45px me-2">
-                      <span class="symbol-label">
-                        <img
-                          src="media/svg/brand-logos/plurk.svg"
-                          class="h-50 align-self-center"
-                          alt=""
-                        />
-                      </span>
-                    </div>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
-                      >Brad Simmons</a
-                    >
-                    <span class="text-muted fw-bold d-block"
-                      >Movie Creator</span
-                    >
-                  </td>
-                  <td class="text-end text-muted fw-bold">React, HTML</td>
-                  <td class="text-end">
-                    <span class="badge badge-light-success">Approved</span>
-                  </td>
-                  <td class="text-end">
-                    <a
-                      href="#"
-                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
-                    >
-                      <!--begin::Svg Icon | path: -->
-                      <span class="svg-icon svg-icon-2">
-                        <inline-svg
-                          src="media/icons/duotune/arrows/arr064.svg"
-                        />
-                      </span>
-                      <!--end::Svg Icon-->
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="symbol symbol-45px me-2">
-                      <span class="symbol-label">
-                        <img
-                          src="media/svg/brand-logos/telegram.svg"
-                          class="h-50 align-self-center"
-                          alt=""
-                        />
-                      </span>
-                    </div>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
-                      >Popular Authors</a
-                    >
-                    <span class="text-muted fw-bold d-block"
-                      >Most Successful</span
-                    >
-                  </td>
-                  <td class="text-end text-muted fw-bold">Python, MySQL</td>
-                  <td class="text-end">
-                    <span class="badge badge-light-warning">In Progress</span>
-                  </td>
-                  <td class="text-end">
-                    <a
-                      href="#"
-                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
-                    >
-                      <!--begin::Svg Icon | path: -->
-                      <span class="svg-icon svg-icon-2">
-                        <inline-svg
-                          src="media/icons/duotune/arrows/arr064.svg"
-                        />
-                      </span>
-                      <!--end::Svg Icon-->
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="symbol symbol-45px me-2">
-                      <span class="symbol-label">
-                        <img
-                          src="media/svg/brand-logos/vimeo.svg"
-                          class="h-50 align-self-center"
-                          alt=""
-                        />
-                      </span>
-                    </div>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
-                      >New Users</a
-                    >
-                    <span class="text-muted fw-bold d-block"
-                      >Awesome Users</span
-                    >
-                  </td>
-                  <td class="text-end text-muted fw-bold">Laravel,Metronic</td>
-                  <td class="text-end">
-                    <span class="badge badge-light-primary">Success</span>
-                  </td>
-                  <td class="text-end">
-                    <a
-                      href="#"
-                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
-                    >
-                      <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
-                      <span class="svg-icon svg-icon-2">
-                        <inline-svg
-                          src="media/icons/duotune/arrows/arr064.svg"
-                        />
-                      </span>
-                      <!--end::Svg Icon-->
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="symbol symbol-45px me-2">
-                      <span class="symbol-label">
-                        <img
-                          src="media/svg/brand-logos/bebo.svg"
-                          class="h-50 align-self-center"
-                          alt=""
-                        />
-                      </span>
-                    </div>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
-                      >Active Customers</a
-                    >
-                    <span class="text-muted fw-bold d-block"
-                      >Movie Creator</span
-                    >
-                  </td>
-                  <td class="text-end text-muted fw-bold">AngularJS, C#</td>
-                  <td class="text-end">
-                    <span class="badge badge-light-danger">Rejected</span>
-                  </td>
-                  <td class="text-end">
-                    <a
-                      href="#"
-                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
-                    >
-                      <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
-                      <span class="svg-icon svg-icon-2">
-                        <inline-svg
-                          src="media/icons/duotune/arrows/arr064.svg"
-                        />
-                      </span>
-                      <!--end::Svg Icon-->
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="symbol symbol-45px me-2">
-                      <span class="symbol-label">
-                        <img
-                          src="media/svg/brand-logos/kickstarter.svg"
-                          class="h-50 align-self-center"
-                          alt=""
-                        />
-                      </span>
-                    </div>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
-                      >Bestseller Theme</a
-                    >
-                    <span class="text-muted fw-bold d-block"
-                      >Best Customers</span
-                    >
-                  </td>
-                  <td class="text-end text-muted fw-bold">ReactJS, Ruby</td>
-                  <td class="text-end">
-                    <span class="badge badge-light-warning">In Progress</span>
-                  </td>
-                  <td class="text-end">
-                    <a
-                      href="#"
-                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
-                    >
-                      <span class="svg-icon svg-icon-2">
-                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
-                        <inline-svg
-                          src="media/icons/duotune/arrows/arr064.svg"
-                        />
-                        <!--end::Svg Icon-->
-                      </span>
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-              <!--end::Table body-->
-            </table>
-          </div>
-          <!--end::Table-->
+        <!--begin::Toolbar-->
+        <div
+          class="d-flex justify-content-end"
+          data-kt-subscription-table-toolbar="base"
+        >
+          <!--begin::Export-->
+          <button
+            type="button"
+            class="btn btn-light-primary me-3"
+            data-bs-toggle="modal"
+            data-bs-target="#kt_subscriptions_export_modal"
+          >
+            <span class="svg-icon svg-icon-2">
+              <inline-svg src="media/icons/duotune/arrows/arr078.svg" />
+            </span>
+            Export
+          </button>
+          <!--end::Export-->
+
+          <!--begin::Add subscription-->
+          <router-link to="/organizations/create" class="btn btn-light-primary">
+            <span class="svg-icon svg-icon-2">
+              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
+            </span>
+            Add
+          </router-link>
+          <!--end::Add subscription-->
         </div>
-        <!--end::Tap pane-->
+        <!--end::Toolbar-->
       </div>
+      <!--end::Card toolbar-->
     </div>
-    <!--end::Body-->
+    <div class="card-body pt-0">
+      <Datatable
+        :table-header="tableHeader"
+        :table-data="tableData"
+        :rows-per-page="5"
+        :enable-items-per-page-dropdown="false"
+      >
+        <template v-slot:cell-logo="{ row: item }">
+          <div class="symbol symbol-45px me-2">
+            <span class="symbol-label">
+              <img :src="item.logo" class="h-50 align-self-center" />
+            </span>
+          </div>
+        </template>
+        <template v-slot:cell-name="{ row: item }">
+          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">{{
+            item.username
+          }}</span>
+          <span class="text-muted fw-bold d-block">{{
+            item.mobile_number
+          }}</span>
+        </template>
+        <template v-slot:cell-email="{ row: item }">
+          {{ item.email }}
+        </template>
+        <template v-slot:cell-clinics="{ row: item }">
+          <span class="badge badge-light-success">{{ item.max_clinics }}</span>
+        </template>
+        <template v-slot:cell-users="{ row: item }">
+          <span class="badge badge-light-danger">{{ item.max_employees }}</span>
+        </template>
+        <template v-slot:cell-action="{ row: item }">
+          <a
+            href="#"
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+          >
+            <span class="svg-icon svg-icon-3">
+              <inline-svg src="media/icons/duotune/general/gen019.svg" />
+            </span>
+          </a>
+
+          <button
+            @click="handleEdit(item)"
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+          >
+            <span class="svg-icon svg-icon-3">
+              <inline-svg src="media/icons/duotune/art/art005.svg" />
+            </span>
+          </button>
+
+          <button
+            @click="handleDelete(item.id)"
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+          >
+            <span class="svg-icon svg-icon-3">
+              <inline-svg src="media/icons/duotune/general/gen027.svg" />
+            </span>
+          </button>
+        </template>
+      </Datatable>
+    </div>
   </div>
+  <CreateModal></CreateModal>
+  <EditModal></EditModal>
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
+import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "organization-main",
+  name: "org-main",
 
   components: {
+    Datatable,
     StatsisticsWidget5,
   },
 
   setup() {
-    const list = [
+    const store = useStore();
+    const router = useRouter();
+    const tableHeader = ref([
       {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
+        name: "Logo",
+        key: "logo",
+        sortable: true,
+        searchable: true,
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
+        name: "Name",
+        key: "name",
+        sortable: true,
+        searchable: true,
       },
       {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
+        name: "Email",
+        key: "email",
+        sortable: true,
+        searchable: true,
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
+        name: "Clinics",
+        key: "clinics",
+        sortable: true,
+        searchable: true,
       },
       {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
+        name: "Users",
+        key: "users",
+        sortable: true,
+        searchable: true,
       },
       {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
+        name: "Action",
+        key: "action",
       },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-      {
-        organizations: "PAUL",
-        username: "test-paul",
-        email: "paul@email.com",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        organizations: "KEVIN",
-        username: "test-kevin",
-        email: "kevin@email.com",
-        status: {
-          label: "Disabled",
-          state: "danger",
-        },
-      },
-    ];
+    ]);
+    const tableData = ref([]);
+    const orgList = computed(() => store.getters.orgList);
+
+    const handleEdit = (item) => {
+      store.commit(Mutations.SET_SELECT_ORG, item);
+      router.push({ name: "editOrganization" });
+    };
+
+    const handleDelete = (id) => {
+      store
+        .dispatch(Actions.DELETE_ORG, id)
+        .then(() => {
+          store.dispatch(Actions.LIST_ORG);
+          Swal.fire({
+            text: "Successfully Deleted!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    };
+
+    watchEffect(() => {
+      tableData.value = orgList;
+    });
 
     onMounted(() => {
       setCurrentPageTitle("Organizations");
-      if (JwtService.getToken()) {
-        ApiService.setHeader();
-        ApiService.get("organizations")
-          .then(({ data }) => {
-            console.log(data);
-          })
-          .catch(({ response }) => {
-            console.log(response.data.error);
-          });
-      } else {
-        // this.context.commit(Mutations.PURGE_AUTH);
-      }
+      store.dispatch(Actions.LIST_ORG);
+      tableData.value = orgList;
     });
-    return { list };
+
+    return { tableHeader, tableData, handleEdit, handleDelete };
   },
 });
 </script>

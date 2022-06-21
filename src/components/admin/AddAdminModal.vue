@@ -1,5 +1,11 @@
 <template>
-  <div class="modal fade" id="modal_add_admin" tabindex="-1" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="modal_add_admin"
+    tabindex="-1"
+    aria-hidden="true"
+    ref="addAdminModalRef"
+  >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
       <!--begin::Modal content-->
@@ -50,9 +56,9 @@
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="firstname">
+                <el-form-item prop="first_name">
                   <el-input
-                    v-model="formData.firstname"
+                    v-model="formData.first_name"
                     type="text"
                     placeholder="First Name"
                   />
@@ -68,9 +74,9 @@
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="lastname">
+                <el-form-item prop="last_name">
                   <el-input
-                    v-model="formData.lastname"
+                    v-model="formData.last_name"
                     type="text"
                     placeholder="Last Name"
                   />
@@ -142,9 +148,9 @@
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="repasword">
+                <el-form-item prop="password_confirmation">
                   <el-input
-                    v-model="formData.repassword"
+                    v-model="formData.password_confirmation"
                     type="password"
                     placeholder="Confirm Password"
                   />
@@ -197,67 +203,70 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, ref } from "vue";
+import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "add-admin-modal",
   components: {},
   setup() {
-    const formRef = ref<null | HTMLFormElement>(null);
-    const addAdminModalRef = ref<null | HTMLElement>(null);
-    const loading = ref<boolean>(false);
+    const store = useStore();
+    const formRef = ref(null);
+    const addAdminModalRef = ref(null);
+    const loading = ref(false);
     const formData = ref({
-      firstname: "",
-      lastname: "",
+      first_name: "",
+      last_name: "",
       username: "",
       email: "",
       password: "",
-      repassword: "",
+      password_confirmation: "",
     });
 
     const rules = ref({
-      firstname: [
+      first_name: [
         {
           required: true,
-          message: "First Name is required",
+          message: "First Name cannot be blank",
           trigger: "change",
         },
       ],
-      lastname: [
+      last_name: [
         {
           required: true,
-          message: "Last Name is required",
+          message: "Last Name cannnot be blank",
           trigger: "change",
         },
       ],
       username: [
         {
           required: true,
-          message: "Username is required",
+          message: "Username cannot be blank",
           trigger: "change",
         },
       ],
       email: [
         {
           required: true,
-          message: "Email is required",
+          message: "Email cannot be blank",
           trigger: "change",
         },
       ],
       password: [
         {
           required: true,
-          message: "Password is required",
+          message: "Password cannot be blank",
           trigger: "change",
         },
       ],
-      repassword: [
+      password_confirmation: [
         {
           required: true,
-          message: "Confirm Password is required",
+          message: "Confirm Password cannot be blank.",
           trigger: "change",
         },
       ],
@@ -272,32 +281,29 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
 
-          setTimeout(() => {
-            loading.value = false;
-
-            Swal.fire({
-              text: "Form has been successfully submitted!",
-              icon: "success",
-              buttonsStyling: false,
-              confirmButtonText: "Ok, got it!",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-            }).then(() => {
-              hideModal(addAdminModalRef.value);
+          store
+            .dispatch(Actions.CREATE_ADMIN, formData.value)
+            .then(() => {
+              loading.value = false;
+              store.dispatch(Actions.LIST_ADMIN);
+              Swal.fire({
+                text: "Successfully Created!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                hideModal(addAdminModalRef.value);
+              });
+            })
+            .catch(({ response }) => {
+              loading.value = false;
+              console.log(response.data.error);
             });
-          }, 2000);
         } else {
-          Swal.fire({
-            text: "Sorry, looks like there are some errors detected, please try again.",
-            icon: "error",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          });
-          return false;
+          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };

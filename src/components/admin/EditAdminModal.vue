@@ -4,20 +4,21 @@
     id="modal_edit_admin"
     tabindex="-1"
     aria-hidden="true"
+    ref="editAdminModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_add_customer_header">
+        <div class="modal-header" id="kt_modal_edit_admin_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Edit Administrator</h2>
+          <h2 class="fw-bolder">Add a Administrator</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
           <div
-            id="kt_modal_add_customer_close"
+            id="kt_modal_edit_admin_close"
             data-bs-dismiss="modal"
             class="btn btn-icon btn-sm btn-active-icon-primary"
           >
@@ -40,12 +41,12 @@
             <!--begin::Scroll-->
             <div
               class="scroll-y me-n7 pe-7"
-              id="kt_modal_add_customer_scroll"
+              id="kt_modal_edit_admin_scroll"
               data-kt-scroll="true"
               data-kt-scroll-activate="{default: false, lg: true}"
               data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#kt_modal_add_customer_header"
-              data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
+              data-kt-scroll-dependencies="#kt_modal_edit_admin_header"
+              data-kt-scroll-wrappers="#kt_modal_edit_admin_scroll"
               data-kt-scroll-offset="300px"
             >
               <!--begin::Input group-->
@@ -55,9 +56,9 @@
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="firstname">
+                <el-form-item prop="first_name">
                   <el-input
-                    v-model="formData.firstname"
+                    v-model="formData.first_name"
                     type="text"
                     placeholder="First Name"
                   />
@@ -73,9 +74,9 @@
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="lastname">
+                <el-form-item prop="last_name">
                   <el-input
-                    v-model="formData.lastname"
+                    v-model="formData.last_name"
                     type="text"
                     placeholder="Last Name"
                   />
@@ -122,40 +123,6 @@
                 <!--end::Input-->
               </div>
               <!--end::Input group-->
-
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Password</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="password">
-                  <el-input
-                    v-model="formData.password"
-                    type="password"
-                    placeholder="Password"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2"
-                  >Confirm Password</label
-                >
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="repasword">
-                  <el-input
-                    v-model="formData.repassword"
-                    type="password"
-                    placeholder="Confirm Password"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
             </div>
             <!--end::Scroll-->
           </div>
@@ -166,7 +133,7 @@
             <!--begin::Button-->
             <button
               type="reset"
-              id="kt_modal_add_customer_cancel"
+              id="kt_modal_edit_admin_cancel"
               class="btn btn-light me-3"
             >
               Discard
@@ -202,67 +169,52 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script>
+import { defineComponent, ref, watchEffect } from "vue";
+import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "add-admin-modal",
   components: {},
   setup() {
-    const formRef = ref<null | HTMLFormElement>(null);
-    const addAdminModalRef = ref<null | HTMLElement>(null);
-    const loading = ref<boolean>(false);
+    const store = useStore();
+    const formRef = ref(null);
+    const editAdminModalRef = ref(null);
+    const loading = ref(false);
     const formData = ref({
-      firstname: "",
-      lastname: "",
+      first_name: "",
+      last_name: "",
       username: "",
       email: "",
       password: "",
-      repassword: "",
+    });
+
+    watchEffect(() => {
+      formData.value = store.getters.getAdminSelected;
     });
 
     const rules = ref({
-      firstname: [
+      first_name: [
         {
           required: true,
-          message: "First Name is required",
+          message: "First Name cannot be blank",
           trigger: "change",
         },
       ],
-      lastname: [
+      last_name: [
         {
           required: true,
-          message: "Last Name is required",
-          trigger: "change",
-        },
-      ],
-      username: [
-        {
-          required: true,
-          message: "Username is required",
+          message: "Last Name cannnot be blank",
           trigger: "change",
         },
       ],
       email: [
         {
           required: true,
-          message: "Email is required",
-          trigger: "change",
-        },
-      ],
-      password: [
-        {
-          required: true,
-          message: "Password is required",
-          trigger: "change",
-        },
-      ],
-      repassword: [
-        {
-          required: true,
-          message: "Confirm Password is required",
+          message: "Email cannot be blank",
           trigger: "change",
         },
       ],
@@ -277,32 +229,29 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
 
-          setTimeout(() => {
-            loading.value = false;
-
-            Swal.fire({
-              text: "Form has been successfully submitted!",
-              icon: "success",
-              buttonsStyling: false,
-              confirmButtonText: "Ok, got it!",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-            }).then(() => {
-              hideModal(addAdminModalRef.value);
+          store
+            .dispatch(Actions.UPDATE_ADMIN, formData.value)
+            .then(() => {
+              loading.value = false;
+              store.dispatch(Actions.LIST_ADMIN);
+              Swal.fire({
+                text: "Successfully Updated!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                hideModal(editAdminModalRef.value);
+              });
+            })
+            .catch(({ response }) => {
+              loading.value = false;
+              console.log(response.data.error);
             });
-          }, 2000);
         } else {
-          Swal.fire({
-            text: "Sorry, looks like there are some errors detected, please try again.",
-            icon: "error",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          });
-          return false;
+          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
@@ -313,7 +262,7 @@ export default defineComponent({
       submit,
       formRef,
       loading,
-      addAdminModalRef,
+      editAdminModalRef,
     };
   },
 });

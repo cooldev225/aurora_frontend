@@ -22,7 +22,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/organizations/create",
         name: "createOrganization",
-        component: () => import("@/views/organizations/AddOrganization.vue"),
+        component: () =>
+          import("@/components/organizations/AddOrganization.vue"),
+      },
+      {
+        path: "/organizations/edit",
+        name: "editOrganization",
+        component: () =>
+          import("@/components/organizations/EditOrganization.vue"),
       },
       {
         path: "/dashboard",
@@ -33,11 +40,6 @@ const routes: Array<RouteRecordRaw> = [
         path: "/settings/health-fund",
         name: "healthFund",
         component: () => import("@/views/HealthFund.vue"),
-      },
-      {
-        path: "/settings/health-fund/create",
-        name: "createHealthFund",
-        component: () => import("@/components/health-fund/AddHealthFund.vue"),
       },
       {
         path: "/settings/birthCode",

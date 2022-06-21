@@ -114,10 +114,10 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useStore } from "vuex";
+import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "create-specialistType",
@@ -126,6 +126,7 @@ export default defineComponent({
     const formRef = ref<null | HTMLFormElement>(null);
     const addSpectypeModalRef = ref<null | HTMLElement>(null);
     const loading = ref<boolean>(false);
+    const store = useStore();
     const formData = ref({
       name: "",
     });
@@ -145,34 +146,31 @@ export default defineComponent({
         return;
       }
 
-      formRef.value.validate(async (valid) => {
+      formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
 
-          if (JwtService.getToken()) {
-            ApiService.setHeader();
-            await ApiService.post("specialist-types", formData.value)
-              .then(({ data }) => {
-                loading.value = false;
-                Swal.fire({
-                  text: "Successfully Created!",
-                  icon: "success",
-                  buttonsStyling: false,
-                  confirmButtonText: "Ok, got it!",
-                  customClass: {
-                    confirmButton: "btn btn-primary",
-                  },
-                }).then(() => {
-                  hideModal(addSpectypeModalRef.value);
-                });
-              })
-              .catch(({ response }) => {
-                loading.value = false;
-                console.log(response.data.error);
+          store
+            .dispatch(Actions.CREATE_SPECIALIST_TYPE, formData.value)
+            .then(() => {
+              loading.value = false;
+              store.dispatch(Actions.LIST_SPECIALIST_TYPE);
+              Swal.fire({
+                text: "Successfully Created!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                hideModal(addSpectypeModalRef.value);
               });
-          } else {
-            // this.context.commit(Mutations.PURGE_AUTH);
-          }
+            })
+            .catch(({ response }) => {
+              loading.value = false;
+              console.log(response.data.error);
+            });
         }
       });
     };
