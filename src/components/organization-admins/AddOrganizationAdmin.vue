@@ -1,10 +1,10 @@
 <template>
   <div
     class="modal fade"
-    id="modal_add_orgManager"
+    id="modal_add_org_admin"
     tabindex="-1"
     aria-hidden="true"
-    ref="addOrgManagerModalRef"
+    ref="addOrgAdminModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -13,7 +13,7 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_add_customer_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Create Manager</h2>
+          <h2 class="fw-bolder">Create Administrator</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -216,7 +216,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const formRef = ref(null);
-    const addOrgManagerModalRef = ref(null);
+    const addOrgAdminModalRef = ref(null);
     const loading = ref(false);
     const formData = ref({
       first_name: "",
@@ -282,10 +282,10 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.CREATE_ORG_MANAGER, formData.value)
+            .dispatch(Actions.CREATE_ORG_ADMIN, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.LIST_ORG_MANAGER);
+              store.dispatch(Actions.LIST_ORG_ADMIN);
               Swal.fire({
                 text: "Successfully Created!",
                 icon: "success",
@@ -295,7 +295,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(addOrgManagerModalRef.value);
+                hideModal(addOrgAdminModalRef.value);
               });
             })
             .catch(({ response }) => {
@@ -314,7 +314,7 @@ export default defineComponent({
       submit,
       formRef,
       loading,
-      addOrgManagerModalRef,
+      addOrgAdminModalRef,
     };
   },
 });

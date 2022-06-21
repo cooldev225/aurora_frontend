@@ -72,13 +72,13 @@ const OrgAdminMenu = [
   },
   {
     heading: "Employees",
-    route: "/organizations",
+    route: "/employees",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-hospital",
   },
   {
     heading: "Clinics",
-    route: "/organizations",
+    route: "/clinics",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-hospital",
   },

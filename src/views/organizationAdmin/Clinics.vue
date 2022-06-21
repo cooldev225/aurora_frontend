@@ -38,7 +38,7 @@
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Organization Managers</span>
+        <span>Clinics</span>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -65,17 +65,12 @@
           <!--end::Export-->
 
           <!--begin::Add subscription-->
-          <button
-            type="button"
-            class="btn btn-light-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modal_add_orgManager"
-          >
+          <router-link to="/clinics/create" class="btn btn-light-primary">
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>
             Add
-          </button>
+          </router-link>
           <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
@@ -133,8 +128,6 @@
       </Datatable>
     </div>
   </div>
-  <CreateModal></CreateModal>
-  <EditModal></EditModal>
 </template>
 
 <script>
@@ -142,20 +135,16 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateModal from "@/components/organization-managers/AddOrganizationManager.vue";
-import EditModal from "@/components/organization-managers/EditOrganizationManager.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
 
 export default defineComponent({
-  name: "admin-main",
+  name: "clinics-main",
 
   components: {
     Datatable,
-    CreateModal,
-    EditModal,
     StatsisticsWidget5,
   },
 
@@ -192,19 +181,19 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const orgManagerList = computed(() => store.getters.orgManagerList);
+    const clinicsList = computed(() => store.getters.clinicsList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_ORG_MANAGER, item);
-      const modal = new Modal(document.getElementById("modal_edit_admin"));
+      store.commit(Mutations.SET_SELECT_CLINICS, item);
+      const modal = new Modal(document.getElementById("modal_edit_clinics"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_ORG_MANAGER, id)
+        .dispatch(Actions.DELETE_CLINICS, id)
         .then(() => {
-          store.dispatch(Actions.LIST_ORG_MANAGER);
+          store.dispatch(Actions.LIST_CLINICS);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -221,13 +210,13 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Organization Managers", []);
-      store.dispatch(Actions.LIST_ORG_MANAGER);
-      tableData.value = orgManagerList;
+      setCurrentPageBreadcrumbs("Clinics", []);
+      store.dispatch(Actions.LIST_CLINICS);
+      tableData.value = clinicsList;
     });
 
     watchEffect(() => {
-      tableData.value = orgManagerList;
+      tableData.value = clinicsList;
     });
     return { tableHeader, tableData, handleEdit, handleDelete };
   },

@@ -3,56 +3,53 @@ import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
-export interface IOrgManager {
+export interface IOrgAdmin {
   id: number;
 }
 
-export interface OrgManagerInfo {
-  orgManagerData: Array<IOrgManager>;
-  orgManagerSelectData: IOrgManager;
+export interface OrgAdminInfo {
+  orgAdminData: Array<IOrgAdmin>;
+  orgAdminSelectData: IOrgAdmin;
 }
 
 @Module
-export default class OrgManagerModule
-  extends VuexModule
-  implements OrgManagerInfo
-{
-  orgManagerData = [] as Array<IOrgManager>;
-  orgManagerSelectData = {} as IOrgManager;
+export default class OrgAdminModule extends VuexModule implements OrgAdminInfo {
+  orgAdminData = [] as Array<IOrgAdmin>;
+  orgAdminSelectData = {} as IOrgAdmin;
 
   /**
    * Get current user object
    * @returns AdminList
    */
-  get orgManagerList(): Array<IOrgManager> {
-    return this.orgManagerData;
+  get orgAdminList(): Array<IOrgAdmin> {
+    return this.orgAdminData;
   }
 
   /**
    * Get current user object
-   * @returns SelectedorgManagerData
+   * @returns SelectedorgAdminData
    */
-  get orgManagerSelected(): IOrgManager {
-    return this.orgManagerSelectData;
+  get orgAdminSelected(): IOrgAdmin {
+    return this.orgAdminSelectData;
   }
 
   @Mutation
-  [Mutations.SET_ORG_MANAGER_LIST](orgManagerData) {
-    this.orgManagerData = orgManagerData;
+  [Mutations.SET_ORG_ADMIN_LIST](orgAdminData) {
+    this.orgAdminData = orgAdminData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_ORG_MANAGER](data) {
-    this.orgManagerSelectData = data;
+  [Mutations.SET_SELECT_ORG_ADMIN](data) {
+    this.orgAdminSelectData = data;
   }
 
   @Action
-  [Actions.LIST_ORG_MANAGER]() {
+  [Actions.LIST_ORG_ADMIN]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("organization-managers")
+      ApiService.get("organization-admins")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_ORG_MANAGER_LIST, data.data);
+          this.context.commit(Mutations.SET_ORG_ADMIN_LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -65,10 +62,10 @@ export default class OrgManagerModule
   }
 
   @Action
-  [Actions.CREATE_ORG_MANAGER](payload) {
+  [Actions.CREATE_ORG_ADMIN](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("organization-managers", payload)
+      ApiService.post("organization-admins", payload)
         .then(({ data }) => {
           return data.data;
         })
@@ -81,10 +78,10 @@ export default class OrgManagerModule
   }
 
   @Action
-  [Actions.UPDATE_ORG_MANAGER](item) {
+  [Actions.UPDATE_ORG_ADMIN](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("organization-managers", item.id, item)
+      ApiService.update("organization-admins", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
@@ -98,10 +95,10 @@ export default class OrgManagerModule
   }
 
   @Action
-  [Actions.DELETE_ORG_MANAGER](id) {
+  [Actions.DELETE_ORG_ADMIN](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.delete("organization-managers/" + id)
+      ApiService.delete("organization-admins/" + id)
         .then(({ data }) => {
           return data.data;
         })

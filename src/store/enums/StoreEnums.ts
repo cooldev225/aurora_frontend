@@ -28,6 +28,16 @@ enum Actions {
   DELETE_ORG_MANAGER = "deleteOrgManager",
   UPDATE_ORG_MANAGER = "updateOrgManager",
 
+  LIST_ORG_ADMIN = "listOrgAdmin",
+  CREATE_ORG_ADMIN = "createOrgAdmin",
+  DELETE_ORG_ADMIN = "deleteOrgAdmin",
+  UPDATE_ORG_ADMIN = "updateOrgAdmin",
+
+  LIST_CLINICS = "listClinics",
+  CREATE_CLINICS = "createClinics",
+  DELETE_CLINICS = "deleteClinics",
+  UPDATE_CLINICS = "updateClinics",
+
   LIST_SPECIALIST_TYPE = "listSpecialistType",
   CREATE_SPECIALIST_TYPE = "createSpecialistType",
   DELETE_SPECIALIST_TYPE = "deleteSpecialistType",
@@ -67,6 +77,12 @@ enum Mutations {
 
   SET_ORG_MANAGER_LIST = "setOrgManagerList",
   SET_SELECT_ORG_MANAGER = "setSelectOrgManager",
+
+  SET_ORG_ADMIN_LIST = "setOrgAdminList",
+  SET_SELECT_ORG_ADMIN = "setSelectOrgAdmin",
+
+  SET_CLINICS_LIST = "setClinicsList",
+  SET_SELECT_CLINICS = "setSelectClinics",
 }
 
 export { Actions, Mutations };
