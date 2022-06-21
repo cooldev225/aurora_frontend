@@ -1,44 +1,20 @@
 <template>
-  <div class="row g-5 g-xl-8">
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-5 mb-xl-8"
-        svg-icon="media/icons/duotune/graphs/gra005.svg"
-        color="success"
-        icon-color="white"
-        :title="'Total : ' + tableData.length + ' Members'"
-        description="Total Organization"
-      />
-    </div>
-
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm002.svg"
-        color="danger"
-        icon-color="white"
-        title="Shopping Cart"
-        description="Lands, Houses, Ranchos, Farms"
-      />
-    </div>
-
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
-        color="primary"
-        icon-color="white"
-        title="Appartments"
-        description="Flats, Shared Rooms, Duplex"
-      />
-    </div>
-  </div>
   <div class="card">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Health Fund</span>
+        <div class="d-flex align-items-center position-relative my-1">
+          <span class="svg-icon svg-icon-1 position-absolute ms-6">
+            <inline-svg src="media/icons/duotune/general/gen021.svg" />
+          </span>
+          <input
+            type="text"
+            data-kt-subscription-table-filter="search"
+            class="form-control form-control-solid w-250px ps-14"
+            placeholder="Search Health Funds"
+          />
+        </div>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -127,22 +103,21 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
-import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
+import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import { useStore } from "vuex";
+import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
+import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "organization-main",
 
   components: {
     Datatable,
-    StatsisticsWidget5,
   },
 
   setup() {
+    const store = useStore();
     const tableHeader = ref([
       {
         name: "Fund Code",
@@ -180,33 +155,20 @@ export default defineComponent({
         key: "action",
       },
     ]);
-
     const tableData = ref([]);
-    const tableKey = ref(0);
-
-    const renderTable = () => {
-      tableKey.value++;
-    };
+    const healthFundsList = computed(() => store.getters.healthFundsList);
 
     onMounted(() => {
-      setCurrentPageTitle("Health Fund");
-      if (JwtService.getToken()) {
-        ApiService.setHeader();
-        ApiService.get("health-funds")
-          .then(({ data }) => {
-            let token = JSON.parse(JSON.stringify(data.data));
-            tableData.value = [...token];
-            renderTable();
-          })
-          .catch(({ response }) => {
-            console.log(response.data.error);
-          });
-      } else {
-        // this.context.commit(Mutations.PURGE_AUTH);
-      }
+      setCurrentPageBreadcrumbs("Health Funds", []);
+      store.dispatch(Actions.LIST_HEALTH_FUNDS);
+      tableData.value = healthFundsList;
     });
 
-    return { tableHeader, tableData, tableKey };
+    watchEffect(() => {
+      tableData.value = healthFundsList;
+    });
+
+    return { tableHeader, tableData };
   },
 });
 </script>
