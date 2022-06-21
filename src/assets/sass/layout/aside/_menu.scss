@@ -12,7 +12,9 @@
     // Basic
     .menu {
         // Link padding x
-        @include menu-link-padding-x(get($aside-config, padding-x));
+        // @include menu-link-padding-x(get($aside-config, padding-x));
+        // @include menu-link-padding-x(get($aside-config, padding-x));
+        padding: 0;
 
         // Menu indention
         @include menu-link-indention(get($aside-config, menu-indention), get($aside-config, padding-x));
@@ -23,6 +25,7 @@
 
         > .menu-item {
 			> .menu-link {
+                padding: 0;
 				width: 74px;
                 height: 74px;
                 margin: 0 auto; 
@@ -42,6 +45,8 @@
 
                 .menu-title {					
 					flex-grow: 0;                 
+                    text-align: center;
+                    font-size: 1rem;
 				}   
 			}             
 

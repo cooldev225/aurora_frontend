@@ -63,18 +63,6 @@
             Export
           </button>
           <!--end::Export-->
-
-          <!--begin::Add subscription-->
-          <router-link
-            to="/organizations/addorganization"
-            class="btn btn-primary"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
-            </span>
-            Add
-          </router-link>
-          <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
       </div>
@@ -84,6 +72,7 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
+        :key="tableKey"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
@@ -142,6 +131,8 @@ import { defineComponent, onMounted, ref } from "vue";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
+import ApiService from "@/core/services/ApiService";
+import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "organization-main",
@@ -190,94 +181,32 @@ export default defineComponent({
       },
     ]);
 
-    const tableData = ref([
-      {
-        fundCode: "ACA",
-        fundName: "ACA Health Benefits Fund",
-        onlineSubmission: "Yes",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-        lastUpdate: "N/A",
-      },
-      {
-        fundCode: "AHM",
-        fundName: "AHM Health Insurance",
-        onlineSubmission: "Yes",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-        lastUpdate: "N/A",
-      },
-      {
-        fundCode: "ACA",
-        fundName: "ACA Health Benefits Fund",
-        onlineSubmission: "Yes",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-        lastUpdate: "N/A",
-      },
-      {
-        fundCode: "AHM",
-        fundName: "AHM Health Insurance",
-        onlineSubmission: "Yes",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-        lastUpdate: "N/A",
-      },
-      {
-        fundCode: "ACA",
-        fundName: "ACA Health Benefits Fund",
-        onlineSubmission: "Yes",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-        lastUpdate: "N/A",
-      },
-      {
-        fundCode: "AHM",
-        fundName: "AHM Health Insurance",
-        onlineSubmission: "Yes",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-        lastUpdate: "N/A",
-      },
-      {
-        fundCode: "ACA",
-        fundName: "ACA Health Benefits Fund",
-        onlineSubmission: "Yes",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-        lastUpdate: "N/A",
-      },
-      {
-        fundCode: "AHM",
-        fundName: "AHM Health Insurance",
-        onlineSubmission: "Yes",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-        lastUpdate: "N/A",
-      },
-    ]);
+    const tableData = ref([]);
+    const tableKey = ref(0);
+
+    const renderTable = () => {
+      tableKey.value++;
+    };
 
     onMounted(() => {
       setCurrentPageTitle("Health Fund");
+      if (JwtService.getToken()) {
+        ApiService.setHeader();
+        ApiService.get("health-funds")
+          .then(({ data }) => {
+            let token = JSON.parse(JSON.stringify(data.data));
+            tableData.value = [...token];
+            renderTable();
+          })
+          .catch(({ response }) => {
+            console.log(response.data.error);
+          });
+      } else {
+        // this.context.commit(Mutations.PURGE_AUTH);
+      }
     });
 
-    return { tableHeader, tableData };
+    return { tableHeader, tableData, tableKey };
   },
 });
 </script>

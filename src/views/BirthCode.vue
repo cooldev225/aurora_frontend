@@ -84,6 +84,7 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
+        :key="tableKey"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
@@ -136,6 +137,8 @@ import { defineComponent, onMounted, ref } from "vue";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
+import ApiService from "@/core/services/ApiService";
+import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "organization-main",
@@ -172,110 +175,32 @@ export default defineComponent({
       },
     ]);
 
-    const tableData = ref([
-      {
-        birthCode: "9299",
-        birthDescription: "Southern and East Africa, nec",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        birthCode: "9232",
-        birthDescription: "Zimbabwe",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        birthCode: "9299",
-        birthDescription: "Southern and East Africa, nec",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        birthCode: "9232",
-        birthDescription: "Zimbabwe",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        birthCode: "9299",
-        birthDescription: "Southern and East Africa, nec",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        birthCode: "9232",
-        birthDescription: "Zimbabwe",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        birthCode: "9299",
-        birthDescription: "Southern and East Africa, nec",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        birthCode: "9232",
-        birthDescription: "Zimbabwe",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        birthCode: "9299",
-        birthDescription: "Southern and East Africa, nec",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        birthCode: "9232",
-        birthDescription: "Zimbabwe",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        birthCode: "9299",
-        birthDescription: "Southern and East Africa, nec",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-      {
-        birthCode: "9232",
-        birthDescription: "Zimbabwe",
-        status: {
-          label: "Enabled",
-          state: "success",
-        },
-      },
-    ]);
+    const tableData = ref([]);
+    const tableKey = ref(0);
+
+    const renderTable = () => {
+      tableKey.value++;
+    };
 
     onMounted(() => {
       setCurrentPageTitle("Birth Code");
+      if (JwtService.getToken()) {
+        ApiService.setHeader();
+        ApiService.get("birth-codes")
+          .then(({ data }) => {
+            let token = JSON.parse(JSON.stringify(data.data));
+            tableData.value = [...token];
+            renderTable();
+          })
+          .catch(({ response }) => {
+            console.log(response.data.error);
+          });
+      } else {
+        // this.context.commit(Mutations.PURGE_AUTH);
+      }
     });
 
-    return { tableHeader, tableData };
+    return { tableHeader, tableData, tableKey };
   },
 });
 </script>
