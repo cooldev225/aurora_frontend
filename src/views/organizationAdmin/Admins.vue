@@ -38,7 +38,7 @@
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Organization Managers</span>
+        <span>Organization Administrators</span>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -69,7 +69,7 @@
             type="button"
             class="btn btn-light-primary"
             data-bs-toggle="modal"
-            data-bs-target="#modal_add_orgManager"
+            data-bs-target="#modal_add_org_admin"
           >
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
@@ -142,8 +142,8 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateModal from "@/components/organization-managers/AddOrganizationManager.vue";
-import EditModal from "@/components/organization-managers/EditOrganizationManager.vue";
+import CreateModal from "@/components/organization-admins/AddOrganizationAdmin.vue";
+import EditModal from "@/components/organization-admins/EditOrganizationAdmin.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
@@ -192,19 +192,19 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const orgManagerList = computed(() => store.getters.orgManagerList);
+    const orgAdminList = computed(() => store.getters.orgAdminList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_ORG_MANAGER, item);
-      const modal = new Modal(document.getElementById("modal_edit_admin"));
+      store.commit(Mutations.SET_SELECT_ORG_ADMIN, item);
+      const modal = new Modal(document.getElementById("modal_edit_org_admin"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_ORG_MANAGER, id)
+        .dispatch(Actions.DELETE_ORG_ADMIN, id)
         .then(() => {
-          store.dispatch(Actions.LIST_ORG_MANAGER);
+          store.dispatch(Actions.LIST_ORG_ADMIN);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -221,13 +221,13 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Organization Managers", []);
-      store.dispatch(Actions.LIST_ORG_MANAGER);
-      tableData.value = orgManagerList;
+      setCurrentPageBreadcrumbs("Organization Administrators", []);
+      store.dispatch(Actions.LIST_ORG_ADMIN);
+      tableData.value = orgAdminList;
     });
 
     watchEffect(() => {
-      tableData.value = orgManagerList;
+      tableData.value = orgAdminList;
     });
     return { tableHeader, tableData, handleEdit, handleDelete };
   },

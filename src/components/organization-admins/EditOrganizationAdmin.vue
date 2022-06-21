@@ -1,24 +1,24 @@
 <template>
   <div
     class="modal fade"
-    id="modal_add_orgManager"
+    id="modal_edit_org_admin"
     tabindex="-1"
     aria-hidden="true"
-    ref="addOrgManagerModalRef"
+    ref="editOrgAdminModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_add_customer_header">
+        <div class="modal-header" id="kt_modal_edit_admin_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Create Manager</h2>
+          <h2 class="fw-bolder">Edit Administrator</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
           <div
-            id="kt_modal_add_customer_close"
+            id="kt_modal_edit_admin_close"
             data-bs-dismiss="modal"
             class="btn btn-icon btn-sm btn-active-icon-primary"
           >
@@ -41,12 +41,12 @@
             <!--begin::Scroll-->
             <div
               class="scroll-y me-n7 pe-7"
-              id="kt_modal_add_customer_scroll"
+              id="kt_modal_edit_admin_scroll"
               data-kt-scroll="true"
               data-kt-scroll-activate="{default: false, lg: true}"
               data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#kt_modal_add_customer_header"
-              data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
+              data-kt-scroll-dependencies="#kt_modal_edit_admin_header"
+              data-kt-scroll-wrappers="#kt_modal_edit_admin_scroll"
               data-kt-scroll-offset="300px"
             >
               <!--begin::Input group-->
@@ -123,40 +123,6 @@
                 <!--end::Input-->
               </div>
               <!--end::Input group-->
-
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Password</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="password">
-                  <el-input
-                    v-model="formData.password"
-                    type="password"
-                    placeholder="Password"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2"
-                  >Confirm Password</label
-                >
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="password_confirmation">
-                  <el-input
-                    v-model="formData.password_confirmation"
-                    type="password"
-                    placeholder="Confirm Password"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
             </div>
             <!--end::Scroll-->
           </div>
@@ -167,7 +133,7 @@
             <!--begin::Button-->
             <button
               type="reset"
-              id="kt_modal_add_customer_cancel"
+              id="kt_modal_edit_admin_cancel"
               class="btn btn-light me-3"
             >
               Discard
@@ -181,7 +147,7 @@
               type="submit"
             >
               <span v-if="!loading" class="indicator-label">
-                Submit
+                Update
                 <span class="svg-icon svg-icon-3 ms-2 me-0">
                   <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
                 </span>
@@ -204,19 +170,19 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "add-admin-modal",
+  name: "edit-org-admin-modal",
   components: {},
   setup() {
     const store = useStore();
     const formRef = ref(null);
-    const addOrgManagerModalRef = ref(null);
+    const editOrgAdminModalRef = ref(null);
     const loading = ref(false);
     const formData = ref({
       first_name: "",
@@ -224,7 +190,10 @@ export default defineComponent({
       username: "",
       email: "",
       password: "",
-      password_confirmation: "",
+    });
+
+    watchEffect(() => {
+      formData.value = store.getters.orgAdminSelected;
     });
 
     const rules = ref({
@@ -242,31 +211,10 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      username: [
-        {
-          required: true,
-          message: "Username cannot be blank",
-          trigger: "change",
-        },
-      ],
       email: [
         {
           required: true,
           message: "Email cannot be blank",
-          trigger: "change",
-        },
-      ],
-      password: [
-        {
-          required: true,
-          message: "Password cannot be blank",
-          trigger: "change",
-        },
-      ],
-      password_confirmation: [
-        {
-          required: true,
-          message: "Confirm Password cannot be blank.",
           trigger: "change",
         },
       ],
@@ -282,12 +230,12 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.CREATE_ORG_MANAGER, formData.value)
+            .dispatch(Actions.UPDATE_ORG_MANAGER, formData.value)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.LIST_ORG_MANAGER);
               Swal.fire({
-                text: "Successfully Created!",
+                text: "Successfully Updated!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -295,7 +243,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(addOrgManagerModalRef.value);
+                hideModal(editOrgAdminModalRef.value);
               });
             })
             .catch(({ response }) => {
@@ -314,7 +262,7 @@ export default defineComponent({
       submit,
       formRef,
       loading,
-      addOrgManagerModalRef,
+      editOrgAdminModalRef,
     };
   },
 });

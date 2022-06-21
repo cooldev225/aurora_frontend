@@ -37,6 +37,26 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/organizationAdmin/Managers.vue"),
       },
       {
+        path: "/organizationAdmins",
+        name: "organizationAdmins",
+        component: () => import("@/views/organizationAdmin/Admins.vue"),
+      },
+      {
+        path: "/clinics",
+        name: "clinics",
+        component: () => import("@/views/organizationAdmin/Clinics.vue"),
+      },
+      {
+        path: "/clinics/create",
+        name: "createClinics",
+        component: () => import("@/components/clinics/AddClinics.vue"),
+      },
+      {
+        path: "/clinics/edit",
+        name: "editClinics",
+        component: () => import("@/components/clinics/EditClinics.vue"),
+      },
+      {
         path: "/dashboard",
         name: "dashboard",
         component: () => import("@/views/Dashboard.vue"),
