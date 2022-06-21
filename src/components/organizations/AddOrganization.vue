@@ -423,7 +423,6 @@ export default defineComponent({
       max_clinics: "",
       max_employees: "",
     });
-
     const rules = ref({
       first_name: [
         {
@@ -468,6 +467,7 @@ export default defineComponent({
         },
       ],
     });
+    const imageData = new FormData();
 
     const removeImage = () => {
       formData.value.logo = "media/avatars/blank.png";
@@ -478,7 +478,8 @@ export default defineComponent({
     });
 
     const changeLogo = (e) => {
-      formData.value.logo = e.target.value;
+      debugger;
+      formData.value.logo = e.target.files[0];
     };
 
     const submit = () => {

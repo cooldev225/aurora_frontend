@@ -32,6 +32,11 @@ const routes: Array<RouteRecordRaw> = [
           import("@/components/organizations/EditOrganization.vue"),
       },
       {
+        path: "/organizationManagers",
+        name: "organizationMangers",
+        component: () => import("@/views/organizationAdmin/Managers.vue"),
+      },
+      {
         path: "/dashboard",
         name: "dashboard",
         component: () => import("@/views/Dashboard.vue"),

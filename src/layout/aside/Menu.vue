@@ -90,14 +90,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed } from "vue";
+import { defineComponent, onMounted, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n/index";
 import { useRoute } from "vue-router";
 import { version } from "@/core/helpers/documentation";
 import { asideMenuIcons } from "@/core/helpers/config";
 import MenuConfig from "@/core/config/MainMenuConfig";
-import { User } from "@/store/modules/AuthModule";
 
 export default defineComponent({
   name: "left-menu",
@@ -107,16 +106,17 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
     const scrollElRef = ref<null | HTMLElement>(null);
-    const curUser = computed(() => store.getters.currentUser);
-
-    // const MainMenuConfig = MenuConfig[curUser.value.role];
-    const MainMenuConfig = MenuConfig["admin"];
-    // const MainMenuConfig = MenuConfig["organizationManager"];
+    const MainMenuConfig = ref();
 
     onMounted(() => {
       if (scrollElRef.value) {
         scrollElRef.value.scrollTop = 0;
       }
+      MainMenuConfig.value = MenuConfig[store.getters.userRole];
+    });
+
+    watchEffect(() => {
+      MainMenuConfig.value = MenuConfig[store.getters.userRole];
     });
 
     const translate = (text) => {

@@ -60,13 +60,13 @@ const OrgAdminMenu = [
   },
   {
     heading: "Administrators",
-    route: "/admins",
+    route: "/organizationAdmins",
     svgIcon: "media/icons/duotune/communication/com014.svg",
     fontIcon: "bi-person",
   },
   {
-    heading: "Organizations",
-    route: "/organizations",
+    heading: "Managers",
+    route: "/organizationManagers",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-hospital",
   },
@@ -81,6 +81,38 @@ const OrgAdminMenu = [
     route: "/organizations",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-hospital",
+  },
+  {
+    heading: "Settings",
+    route: "/settings",
+    svgIcon: "media/icons/duotune/general/gen019.svg",
+    fontIcon: "bi-gear",
+    pages: [
+      {
+        heading: "Health Fund List",
+        route: "/settings/health-fund",
+        svgIcon: "media/icons/duotune/general/gen022.svg",
+        fontIcon: "bi-archive",
+      },
+      {
+        heading: "Birthcode List",
+        route: "/settings/birthCode",
+        svgIcon: "media/icons/duotune/communication/com006.svg",
+        fontIcon: "bi-person",
+      },
+      {
+        heading: "Specialist Type",
+        route: "/settings/specialist-type",
+        svgIcon: "media/icons/duotune/technology/teh004.svg",
+        fontIcon: "bi-sticky",
+      },
+      {
+        heading: "Specialist Title",
+        route: "/settings/specialist-title",
+        svgIcon: "media/icons/duotune/art/art009.svg",
+        fontIcon: "bi-shield-check",
+      },
+    ],
   },
 ];
 

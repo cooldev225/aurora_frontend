@@ -38,7 +38,7 @@
       <!--begin::Card title-->
       <div class="card-title">
         <!--begin::Search-->
-        <span>Administrators</span>
+        <span>Organization Managers</span>
         <!--end::Search-->
       </div>
       <!--begin::Card title-->
@@ -69,7 +69,7 @@
             type="button"
             class="btn btn-light-primary"
             data-bs-toggle="modal"
-            data-bs-target="#modal_add_admin"
+            data-bs-target="#modal_add_orgManager"
           >
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
@@ -142,8 +142,8 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateModal from "@/components/admin/AddAdminModal.vue";
-import EditModal from "@/components/admin/EditAdminModal.vue";
+import CreateModal from "@/components/organization-managers/AddOrganizationManager.vue";
+import EditModal from "@/components/organization-managers/EditOrganizationManager.vue";
 import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
@@ -192,19 +192,19 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const adminList = computed(() => store.getters.adminList);
+    const orgManagerList = computed(() => store.getters.orgManagerList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_ADMIN, item);
+      store.commit(Mutations.SET_SELECT_ORG_MANAGER, item);
       const modal = new Modal(document.getElementById("modal_edit_admin"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_ADMIN, id)
+        .dispatch(Actions.DELETE_ORG_MANAGER, id)
         .then(() => {
-          store.dispatch(Actions.LIST_ADMIN);
+          store.dispatch(Actions.LIST_ORG_MANAGER);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -221,13 +221,13 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageTitle("Administrators");
-      store.dispatch(Actions.LIST_ADMIN);
-      tableData.value = adminList;
+      setCurrentPageTitle("Organization Managers");
+      store.dispatch(Actions.LIST_ORG_MANAGER);
+      tableData.value = orgManagerList;
     });
 
     watchEffect(() => {
-      tableData.value = adminList;
+      tableData.value = orgManagerList;
     });
     return { tableHeader, tableData, handleEdit, handleDelete };
   },

@@ -3,67 +3,53 @@ import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
-export interface IOrg {
+export interface IOrgManager {
   id: number;
-  first_name: string;
-  last_name: string;
-  username: string;
-  name: string;
-  password: string;
-  email: string;
-  logo: string;
-  max_clinics: number;
-  max_employees: number;
-  device_name: string;
-  otac: string;
-  device_expiry: string;
-  key_expiry: string;
-  mobile_number: string;
 }
 
 export interface OrgInfo {
-  orgData: Array<IOrg>;
-  orgSelectData: IOrg;
+  orgManagerData: Array<IOrgManager>;
+  orgManagerSelectData: IOrgManager;
 }
 
 @Module
 export default class OrganizationModule extends VuexModule implements OrgInfo {
-  orgData = [] as Array<IOrg>;
-  orgSelectData = {} as IOrg;
+  orgManagerData = [] as Array<IOrgManager>;
+  orgManagerSelectData = {} as IOrgManager;
 
   /**
    * Get current user object
    * @returns AdminList
    */
-  get orgList(): Array<IOrg> {
-    return this.orgData;
+  get orgManagerList(): Array<IOrgManager> {
+    return this.orgManagerData;
   }
 
   /**
    * Get current user object
-   * @returns SelectedOrgData
+   * @returns SelectedorgManagerData
    */
-  get getOrgSelected(): IOrg {
-    return this.orgSelectData;
+  get orgManagerSelected(): IOrgManager {
+    return this.orgManagerSelectData;
   }
 
   @Mutation
-  [Mutations.SET_ORG_LIST](orgData) {
-    this.orgData = orgData;
+  [Mutations.SET_ORG_MANAGER_LIST](orgManagerData) {
+    this.orgManagerData = orgManagerData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_ORG](data) {
-    this.orgSelectData = data;
+  [Mutations.SET_SELECT_ORG_MANAGER](data) {
+    this.orgManagerSelectData = data;
   }
 
   @Action
-  [Actions.LIST_ORG]() {
+  [Actions.LIST_ORG_MANAGER]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("organizations")
+      ApiService.get("organization-managers")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_ORG_LIST, data.data);
+          this.context.commit(Mutations.SET_ORG_MANAGER_LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -76,13 +62,10 @@ export default class OrganizationModule extends VuexModule implements OrgInfo {
   }
 
   @Action
-  [Actions.CREATE_ORG](payload) {
-    const config = {
-      headers: { "content-type": "multipart/form-data" },
-    };
+  [Actions.CREATE_ORG_MANAGER](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("organizations", payload, config)
+      ApiService.post("organization-managers", payload)
         .then(({ data }) => {
           return data.data;
         })
@@ -95,10 +78,10 @@ export default class OrganizationModule extends VuexModule implements OrgInfo {
   }
 
   @Action
-  [Actions.UPDATE_ORG](item) {
+  [Actions.UPDATE_ORG_MANAGER](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("organizations", item.id, item)
+      ApiService.update("organization-managers", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
@@ -112,10 +95,10 @@ export default class OrganizationModule extends VuexModule implements OrgInfo {
   }
 
   @Action
-  [Actions.DELETE_ORG](id) {
+  [Actions.DELETE_ORG_MANAGER](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.delete("organizations/" + id)
+      ApiService.delete("organization-managers/" + id)
         .then(({ data }) => {
           return data.data;
         })
