@@ -13,7 +13,7 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_edit_admin_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Add a Administrator</h2>
+          <h2 class="fw-bolder">Update Administrator</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -132,11 +132,12 @@
           <div class="modal-footer flex-center">
             <!--begin::Button-->
             <button
-              type="reset"
+              type="button"
+              data-bs-dismiss="modal"
               id="kt_modal_edit_admin_cancel"
               class="btn btn-light me-3"
             >
-              Discard
+              Cancel
             </button>
             <!--end::Button-->
 
