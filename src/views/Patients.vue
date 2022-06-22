@@ -39,15 +39,6 @@
             Export
           </button>
           <!--end::Export-->
-
-          <!--begin::Add subscription-->
-          <router-link to="/organizations/create" class="btn btn-primary">
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
-            </span>
-            Add
-          </router-link>
-          <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
       </div>
@@ -116,8 +107,6 @@
       </Datatable>
     </div>
   </div>
-  <CreateModal></CreateModal>
-  <EditModal></EditModal>
 </template>
 
 <script>
@@ -176,50 +165,28 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const orgList = computed(() => store.getters.orgList);
+    const list = computed(() => store.getters.patientsList);
     const loading = ref(true);
 
-    const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_ORG, item);
-      router.push({ name: "editOrganization" });
-    };
-
-    const handleDelete = (id) => {
-      loading.value = true;
-      store
-        .dispatch(Actions.DELETE_ORG, id)
-        .then(() => {
-          store.dispatch(Actions.LIST_ORG);
-          loading.value = false;
-          Swal.fire({
-            text: "Successfully Deleted!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          });
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
+    const handleSelect = (item) => {
+      store.commit(Mutations.SET_PATIENT.SELECT, item);
+      router.push({ name: "view-patient" });
     };
 
     watchEffect(() => {
-      tableData.value = orgList;
+      tableData.value = list;
     });
 
     onMounted(() => {
       loading.value = true;
-      setCurrentPageBreadcrumbs("Organizations", []);
-      store.dispatch(Actions.LIST_ORG).then(() => {
-        tableData.value = orgList;
+      setCurrentPageBreadcrumbs("Patients", []);
+      store.dispatch(Actions.PATIENTS.LIST).then(() => {
+        tableData.value = list;
         loading.value = false;
       });
     });
 
-    return { tableHeader, tableData, handleEdit, handleDelete };
+    return { tableHeader, tableData, handleSelect };
   },
 });
 </script>
