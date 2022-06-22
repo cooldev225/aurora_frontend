@@ -64,7 +64,7 @@
         :table-data="tableData"
         :loading="loading"
         :rows-per-page="10"
-        :enable-items-per-page-dropdown="false"
+        :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-first_name="{ row: item }">
           {{ item.first_name }}
@@ -206,6 +206,7 @@ export default defineComponent({
 
     watchEffect(() => {
       tableData.value = adminList;
+      loading.value = false;
     });
     return { tableHeader, tableData, handleEdit, handleDelete };
   },

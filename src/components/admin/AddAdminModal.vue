@@ -13,7 +13,7 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_add_customer_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Add a Administrator</h2>
+          <h2 class="fw-bolder">Create Administrator</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->

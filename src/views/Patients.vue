@@ -3,7 +3,7 @@
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
-        <!--begin::Search-->
+        <!--begin::Search -->
         <div class="d-flex align-items-center position-relative my-1">
           <span class="svg-icon svg-icon-1 position-absolute ms-6">
             <inline-svg src="media/icons/duotune/general/gen021.svg" />
