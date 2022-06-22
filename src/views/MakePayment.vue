@@ -212,7 +212,7 @@ export default defineComponent({
 
     onMounted(() => {
       loading.value = true;
-      setCurrentPageBreadcrumbs("Organizations", []);
+      setCurrentPageBreadcrumbs("Make Payment", []);
       store.dispatch(Actions.LIST_ORG).then(() => {
         tableData.value = orgList;
         loading.value = false;
