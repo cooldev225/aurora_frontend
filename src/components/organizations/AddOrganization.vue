@@ -19,331 +19,306 @@
         <div class="modal-body py-10 px-lg-17">
           <!--begin::Scroll-->
           <div class="scroll-y me-n7 pe-7 row">
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="required fs-6 fw-bold mb-2">Username</label>
-              <!--end::Label-->
+            <div class="card-info">
+              <div class="fs-3 fw-bold text-muted mb-6">Details</div>
 
-              <!--begin::Input-->
-              <el-form-item prop="username">
-                <el-input
-                  v-model="formData.username"
-                  type="text"
-                  placeholder="Username"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
+              <div class="row">
+                <div class="col-sm-4">
+                  <label class="required fs-6 fw-bold mb-2">Username</label>
 
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="required fs-6 fw-bold mb-2">Password</label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="password">
-                <el-input
-                  v-model="formData.password"
-                  type="password"
-                  placeholder="Password"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="required fs-6 fw-bold mb-2">Confirm Password</label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="password_confirmation">
-                <el-input
-                  v-model="formData.password_confirmation"
-                  type="password"
-                  placeholder="Confirm Password"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-
-            <!--begin::Input group-->
-            <div class="mb-7 col-sm-4">
-              <!--begin::Label-->
-              <label class="required fs-6 fw-bold mb-2"
-                >Organization Name</label
-              >
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="name">
-                <el-input
-                  v-model="formData.name"
-                  type="text"
-                  placeholder="Organization Name"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="mb-7 col-sm-4">
-              <!--begin::Label-->
-              <label class="required fs-6 fw-bold mb-2">First Name</label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="first_name">
-                <el-input
-                  v-model="formData.first_name"
-                  type="text"
-                  placeholder="First Name"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="required fs-6 fw-bold mb-2">Last Name</label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="last_name">
-                <el-input
-                  v-model="formData.last_name"
-                  type="text"
-                  placeholder="Last Name"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="required">Email</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="email">
-                <el-input
-                  type="email"
-                  v-model="formData.email"
-                  placeholder="admin@gmail.com"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="required">Mobile Number</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="mobile_number">
-                <el-input
-                  type="tel"
-                  v-model="formData.mobile_number"
-                  placeholder=""
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <div class="col-sm-4 row mb-7">
-              <!--begin::Label-->
-              <label class="col-sm-4 col-form-label fw-bold fs-6">Logo</label>
-              <!--end::Label-->
-
-              <!--begin::Col-->
-              <div class="col-sm-8">
-                <!--begin::Image input-->
-                <div
-                  class="image-input image-input-outline"
-                  data-kt-image-input="true"
-                  style="background-image: url(media/avatars/blank.png)"
-                >
-                  <!--begin::Preview existing avatar-->
-                  <div
-                    class="image-input-wrapper w-125px h-125px"
-                    :style="`background-image: url(${formData.logo})`"
-                  ></div>
-                  <!--end::Preview existing avatar-->
-
-                  <!--begin::Label-->
-                  <label
-                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow"
-                    data-kt-image-input-action="change"
-                    data-bs-toggle="tooltip"
-                    title="Change Logo"
-                  >
-                    <i class="bi bi-pencil-fill fs-7"></i>
-
-                    <!--begin::Inputs-->
-                    <input
-                      type="file"
-                      name="logo"
-                      accept=".png, .jpg, .jpeg"
-                      @change="changeLogo"
+                  <el-form-item prop="username">
+                    <el-input
+                      v-model="formData.username"
+                      type="text"
+                      placeholder="Username"
                     />
-                    <input type="hidden" name="avatar_remove" />
-                    <!--end::Inputs-->
+                  </el-form-item>
+                </div>
+
+                <div class="col-sm-4">
+                  <label class="required fs-6 fw-bold mb-2">Password</label>
+
+                  <el-form-item prop="password">
+                    <el-input
+                      v-model="formData.password"
+                      type="password"
+                      placeholder="Password"
+                    />
+                  </el-form-item>
+                </div>
+
+                <div class="col-sm-4">
+                  <label class="required fs-6 fw-bold mb-2"
+                    >Confirm Password</label
+                  >
+
+                  <el-form-item prop="password_confirmation">
+                    <el-input
+                      v-model="formData.password_confirmation"
+                      type="password"
+                      placeholder="Confirm Password"
+                    />
+                  </el-form-item>
+                </div>
+              </div>
+            </div>
+
+            <div class="separator separator-dashed mb-8 mt-2"></div>
+
+            <div class="card-info">
+              <div class="fs-3 fw-bold text-muted mb-6">Primary Details</div>
+
+              <div class="row">
+                <div class="col-sm-4">
+                  <label class="required fs-6 fw-bold mb-2">First Name</label>
+
+                  <el-form-item prop="first_name">
+                    <el-input
+                      v-model="formData.first_name"
+                      type="text"
+                      placeholder="First Name"
+                    />
+                  </el-form-item>
+                </div>
+
+                <div class="col-sm-4">
+                  <label class="required fs-6 fw-bold mb-2">Last Name</label>
+
+                  <el-form-item prop="last_name">
+                    <el-input
+                      v-model="formData.last_name"
+                      type="text"
+                      placeholder="Last Name"
+                    />
+                  </el-form-item>
+                </div>
+                <div class="col-sm-4">
+                  <label class="fs-6 fw-bold mb-2">
+                    <span class="required">Email</span>
+                  </label>
+
+                  <el-form-item prop="email">
+                    <el-input
+                      type="email"
+                      v-model="formData.email"
+                      placeholder="admin@gmail.com"
+                    />
+                  </el-form-item>
+                </div>
+
+                <div class="col-sm-4">
+                  <label class="fs-6 fw-bold mb-2">
+                    <span class="required">Mobile Number</span>
+                  </label>
+
+                  <el-form-item prop="mobile_number">
+                    <el-input
+                      type="tel"
+                      v-model="formData.mobile_number"
+                      placeholder=""
+                    />
+                  </el-form-item>
+                </div>
+
+                <div class="col-sm-4">
+                  <label class="required fs-6 fw-bold mb-2"
+                    >Organization Name</label
+                  >
+
+                  <el-form-item prop="name">
+                    <el-input
+                      v-model="formData.name"
+                      type="text"
+                      placeholder="Organization Name"
+                    />
+                  </el-form-item>
+                </div>
+              </div>
+            </div>
+
+            <div class="separator separator-dashed mb-8 mt-2"></div>
+
+            <div class="card-info">
+              <div class="fs-3 fw-bold text-muted mb-6">Images</div>
+
+              <div class="row">
+                <div class="col-sm-4 row">
+                  <label class="col-sm-4 col-form-label fw-bold fs-6"
+                    >Logo</label
+                  >
+
+                  <div class="col-sm-8">
+                    <div
+                      class="image-input image-input-outline"
+                      data-kt-image-input="true"
+                      style="background-image: url(media/avatars/blank.png)"
+                    >
+                      <div
+                        class="image-input-wrapper w-125px h-125px"
+                        :style="`background-image: url(${formData.logo})`"
+                      ></div>
+
+                      <label
+                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow"
+                        data-kt-image-input-action="change"
+                        data-bs-toggle="tooltip"
+                        title="Change Logo"
+                      >
+                        <i class="bi bi-pencil-fill fs-7"></i>
+
+                        <input
+                          type="file"
+                          name="logo"
+                          accept=".png, .jpg, .jpeg"
+                          @change="changeLogo"
+                        />
+                        <input type="hidden" name="avatar_remove" />
+                      </label>
+
+                      <span
+                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow"
+                        data-kt-image-input-action="remove"
+                        data-bs-toggle="tooltip"
+                        @click="removeImage()"
+                        title="Remove Logo"
+                      >
+                        <i class="bi bi-x fs-2"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="separator separator-dashed mb-8 mt-2"></div>
+
+            <div class="card-info">
+              <div class="fs-3 fw-bold text-muted mb-6">Extra information</div>
+
+              <div class="row">
+                <!--begin::Input group-->
+                <div class="col-sm-4">
+                  <!--begin::Label-->
+                  <label class="fs-6 fw-bold mb-2">
+                    <span class="required">Max Clinics</span>
                   </label>
                   <!--end::Label-->
 
-                  <!--begin::Remove-->
-                  <span
-                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow"
-                    data-kt-image-input-action="remove"
-                    data-bs-toggle="tooltip"
-                    @click="removeImage()"
-                    title="Remove Logo"
-                  >
-                    <i class="bi bi-x fs-2"></i>
-                  </span>
-                  <!--end::Remove-->
+                  <!--begin::Input-->
+                  <el-form-item prop="max_clinics">
+                    <el-input
+                      type="number"
+                      v-model="formData.max_clinics"
+                      placeholder="Max Clinics"
+                    />
+                  </el-form-item>
+                  <!--end::Input-->
                 </div>
-                <!--end::Image input-->
+                <!--end::Input group-->
+
+                <!--begin::Input group-->
+                <div class="col-sm-4">
+                  <!--begin::Label-->
+                  <label class="fs-6 fw-bold mb-2">
+                    <span class="required">Max Employee</span>
+                  </label>
+                  <!--end::Label-->
+
+                  <!--begin::Input-->
+                  <el-form-item prop="max_employees">
+                    <el-input
+                      type="number"
+                      v-model="formData.max_employees"
+                      placeholder="Max Employee"
+                    />
+                  </el-form-item>
+                  <!--end::Input-->
+                </div>
+                <!--end::Input group-->
+
+                <!--begin::Input group-->
+                <div class="col-sm-4">
+                  <!--begin::Label-->
+                  <label class="fs-6 fw-bold mb-2">
+                    <span class="">Device Name</span>
+                  </label>
+                  <!--end::Label-->
+
+                  <!--begin::Input-->
+                  <el-form-item prop="device_name">
+                    <el-input
+                      type="text"
+                      v-model="formData.device_name"
+                      placeholder="Enter Device Name"
+                    />
+                  </el-form-item>
+                  <!--end::Input-->
+                </div>
+                <!--end::Input group-->
+
+                <!--begin::Input group-->
+                <div class="col-sm-4">
+                  <!--begin::Label-->
+                  <label class="fs-6 fw-bold mb-2">
+                    <span class="">OTAC</span>
+                  </label>
+                  <!--end::Label-->
+
+                  <!--begin::Input-->
+                  <el-form-item prop="otac">
+                    <el-input
+                      type="text"
+                      v-model="formData.otac"
+                      placeholder="Enter OTAC"
+                    />
+                  </el-form-item>
+                  <!--end::Input-->
+                </div>
+                <!--end::Input group-->
+
+                <!--begin::Input group-->
+                <div class="col-sm-4">
+                  <!--begin::Label-->
+                  <label class="fs-6 fw-bold mb-2">
+                    <span class="">Expire day of key</span>
+                  </label>
+                  <!--end::Label-->
+
+                  <!--begin::Input-->
+                  <el-form-item prop="key_expiry">
+                    <el-date-picker
+                      type="text"
+                      class="w-100"
+                      v-model="formData.key_expiry"
+                    >
+                    </el-date-picker>
+                  </el-form-item>
+                  <!--end::Input-->
+                </div>
+                <!--end::Input group-->
+
+                <!--begin::Input group-->
+                <div class="col-sm-4">
+                  <!--begin::Label-->
+                  <label class="fs-6 fw-bold mb-2">
+                    <span class="">Expire day of device</span>
+                  </label>
+                  <!--end::Label-->
+
+                  <!--begin::Input-->
+                  <el-form-item prop="device_expiry">
+                    <el-date-picker
+                      type="text"
+                      class="w-100"
+                      v-model="formData.device_expiry"
+                    >
+                    </el-date-picker>
+                  </el-form-item>
+                  <!--end::Input-->
+                </div>
+                <!--end::Input group-->
               </div>
-              <!--end::Col-->
             </div>
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="required">Max Clinics</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="max_clinics">
-                <el-input
-                  type="number"
-                  v-model="formData.max_clinics"
-                  placeholder="Max Clinics"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="required">Max Employee</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="max_employees">
-                <el-input
-                  type="number"
-                  v-model="formData.max_employees"
-                  placeholder="Max Employee"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="">Device Name</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="device_name">
-                <el-input
-                  type="text"
-                  v-model="formData.device_name"
-                  placeholder="Enter Device Name"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="">OTAC</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="otac">
-                <el-input
-                  type="text"
-                  v-model="formData.otac"
-                  placeholder="Enter OTAC"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="">Expire day of key</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="key_expiry">
-                <el-date-picker
-                  type="text"
-                  class="w-100"
-                  v-model="formData.key_expiry"
-                >
-                </el-date-picker>
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="">Expire day of device</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="device_expiry">
-                <el-date-picker
-                  type="text"
-                  class="w-100"
-                  v-model="formData.device_expiry"
-                >
-                </el-date-picker>
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
           </div>
           <!--end::Scroll-->
         </div>
