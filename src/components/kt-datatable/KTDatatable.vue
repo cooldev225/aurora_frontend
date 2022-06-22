@@ -190,7 +190,6 @@ export default defineComponent({
     const vnodeProps = getCurrentInstance()?.vnode.props || {};
 
     watchEffect(() => {
-      console.log(data.value, data.value.length);
       if ("onCurrentChange" in vnodeProps) {
         currentSort.value = label.value + order.value;
       } else {

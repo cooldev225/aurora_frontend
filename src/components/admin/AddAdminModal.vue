@@ -167,10 +167,11 @@
             <!--begin::Button-->
             <button
               type="reset"
+              data-bs-dismiss="modal"
               id="kt_modal_add_customer_cancel"
               class="btn btn-light me-3"
             >
-              Discard
+              Cancel
             </button>
             <!--end::Button-->
 
@@ -180,12 +181,7 @@
               class="btn btn-lg btn-primary"
               type="submit"
             >
-              <span v-if="!loading" class="indicator-label">
-                Submit
-                <span class="svg-icon svg-icon-3 ms-2 me-0">
-                  <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
-                </span>
-              </span>
+              <span v-if="!loading" class="indicator-label"> Create </span>
               <span v-if="loading" class="indicator-progress">
                 Please wait...
                 <span
@@ -227,6 +223,27 @@ export default defineComponent({
       password_confirmation: "",
     });
 
+    const validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Please input the password"));
+      } else {
+        if (formData.value.password_confirmation !== "") {
+          formRef.value.validateField("checkPass", () => null);
+        }
+        callback();
+      }
+    };
+
+    const validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Please input the password again"));
+      } else if (value !== formData.value.password) {
+        callback(new Error("Password doesn't match!"));
+      } else {
+        callback();
+      }
+    };
+
     const rules = ref({
       first_name: [
         {
@@ -255,20 +272,29 @@ export default defineComponent({
           message: "Email cannot be blank",
           trigger: "change",
         },
+        {
+          type: "email",
+          message: "Please input correct email address",
+          trigger: ["blur", "change"],
+        },
       ],
       password: [
+        { validator: validatePass, trigger: "blur" },
         {
           required: true,
           message: "Password cannot be blank",
           trigger: "change",
         },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
       password_confirmation: [
+        { validator: validatePass2, trigger: "blur" },
         {
           required: true,
           message: "Confirm Password cannot be blank.",
           trigger: "change",
         },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
     });
 
@@ -280,7 +306,6 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-
           store
             .dispatch(Actions.CREATE_ADMIN, formData.value)
             .then(() => {
@@ -302,6 +327,7 @@ export default defineComponent({
               loading.value = false;
               console.log(response.data.error);
             });
+          formRef.value.resetFields();
         } else {
           // this.context.commit(Mutations.PURGE_AUTH);
         }

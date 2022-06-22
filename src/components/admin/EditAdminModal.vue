@@ -148,7 +148,7 @@
               type="submit"
             >
               <span v-if="!loading" class="indicator-label">
-                Submit
+                Update
                 <span class="svg-icon svg-icon-3 ms-2 me-0">
                   <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
                 </span>
@@ -212,11 +212,23 @@ export default defineComponent({
           trigger: "change",
         },
       ],
+      username: [
+        {
+          required: true,
+          message: "Username cannot be blank",
+          trigger: "change",
+        },
+      ],
       email: [
         {
           required: true,
           message: "Email cannot be blank",
           trigger: "change",
+        },
+        {
+          type: "email",
+          message: "Please input correct email address",
+          trigger: ["blur", "change"],
         },
       ],
     });
