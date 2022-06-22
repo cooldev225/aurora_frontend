@@ -154,18 +154,8 @@ export default defineComponent({
       const error = store.getters.getErrors[errorName];
 
       if (!error) {
-        Swal.fire({
-          text: "You have successfully logged in!",
-          icon: "success",
-          buttonsStyling: false,
-          confirmButtonText: "Ok, got it!",
-          customClass: {
-            confirmButton: "btn fw-bold btn-light-primary",
-          },
-        }).then(function () {
-          // Go to page after successfully login
-          router.push({ name: "dashboard" });
-        });
+        // Go to page after successfully login
+        router.push({ name: "dashboard" });
       } else {
         Swal.fire({
           text: error[0],
