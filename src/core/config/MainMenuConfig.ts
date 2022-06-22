@@ -71,14 +71,14 @@ const OrgAdminMenu = [
     fontIcon: "bi-hospital",
   },
   {
-    heading: "Employees",
-    route: "/employees",
+    heading: "Clinics",
+    route: "/clinics",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-hospital",
   },
   {
-    heading: "Clinics",
-    route: "/clinics",
+    heading: "Employees",
+    route: "/employees",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-hospital",
   },
