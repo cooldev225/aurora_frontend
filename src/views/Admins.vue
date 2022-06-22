@@ -166,8 +166,13 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
+    const tableKey = ref(0);
     const adminList = computed(() => store.getters.adminList);
     const loading = ref(true);
+
+    const renderTable = () => {
+      tableKey.value++;
+    };
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_SELECT_ADMIN, item);
@@ -201,12 +206,14 @@ export default defineComponent({
       store.dispatch(Actions.LIST_ADMIN).then(() => {
         tableData.value = adminList;
         loading.value = false;
+        renderTable();
       });
     });
 
     watchEffect(() => {
       tableData.value = adminList;
       loading.value = false;
+      renderTable();
     });
     return { tableHeader, tableData, handleEdit, handleDelete };
   },
