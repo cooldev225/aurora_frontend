@@ -37,38 +37,6 @@
             </div>
             <!--end::Input group-->
 
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="required fs-6 fw-bold mb-2">Password</label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="password">
-                <el-input
-                  v-model="formData.password"
-                  type="password"
-                  placeholder="Password"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="required fs-6 fw-bold mb-2">Confirm Password</label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="password_confirmation">
-                <el-input
-                  v-model="formData.password_confirmation"
-                  type="password"
-                  placeholder="Confirm Password"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-
             <!--begin::Input group-->
             <div class="mb-7 col-sm-4">
               <!--begin::Label-->
@@ -83,6 +51,26 @@
                   v-model="formData.name"
                   type="text"
                   placeholder="Organization Name"
+                />
+              </el-form-item>
+              <!--end::Input-->
+            </div>
+            <!--end::Input group-->
+
+            <!--begin::Input group-->
+            <div class="col-sm-4 mb-7">
+              <!--begin::Label-->
+              <label class="fs-6 fw-bold mb-2">
+                <span class="required">Email</span>
+              </label>
+              <!--end::Label-->
+
+              <!--begin::Input-->
+              <el-form-item prop="email">
+                <el-input
+                  type="email"
+                  v-model="formData.email"
+                  placeholder="admin@gmail.com"
                 />
               </el-form-item>
               <!--end::Input-->
@@ -119,46 +107,6 @@
                   v-model="formData.last_name"
                   type="text"
                   placeholder="Last Name"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="required">Email</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="email">
-                <el-input
-                  type="email"
-                  v-model="formData.email"
-                  placeholder="admin@gmail.com"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="required">Mobile Number</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="mobile_number">
-                <el-input
-                  type="tel"
-                  v-model="formData.mobile_number"
-                  placeholder=""
                 />
               </el-form-item>
               <!--end::Input-->
@@ -222,6 +170,26 @@
               </div>
               <!--end::Col-->
             </div>
+
+            <!--begin::Input group-->
+            <div class="col-sm-4 mb-7">
+              <!--begin::Label-->
+              <label class="fs-6 fw-bold mb-2">
+                <span class="required">Mobile Number</span>
+              </label>
+              <!--end::Label-->
+
+              <!--begin::Input-->
+              <el-form-item prop="mobile_number">
+                <el-input
+                  type="tel"
+                  v-model="formData.mobile_number"
+                  placeholder=""
+                />
+              </el-form-item>
+              <!--end::Input-->
+            </div>
+            <!--end::Input group-->
 
             <!--begin::Input group-->
             <div class="col-sm-4 mb-7">
@@ -452,6 +420,11 @@ export default defineComponent({
           message: "Email cannot be blank.",
           trigger: "change",
         },
+        {
+          type: "email",
+          message: "Please input correct email address",
+          trigger: ["blur", "change"],
+        },
       ],
       password: [
         {
@@ -478,7 +451,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Create Organization", ["Organization"]);
+      setCurrentPageBreadcrumbs("Edit Organization", ["Organization"]);
     });
 
     const changeLogo = (e) => {

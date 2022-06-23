@@ -62,6 +62,13 @@ const Actions = {
     UPDATE: "updatePatients",
   },
 
+  EMPLOYEE: {
+    LIST: "listEmployee",
+    CREATE: "createEmployee",
+    DELETE: "deleteEmployee",
+    UPDATE: "updateEmployee",
+  },
+
   LIST_MAKE_PAYMENT: "listPatients",
   CREATE_MAKE_PAYMENT: "createPatients",
   DELETE_MAKE_PAYMENT: "deletePatients",
@@ -111,6 +118,11 @@ const Mutations = {
   SET_PATIENT: {
     LIST: "setPatientList",
     SELECT: "setSelectPatients",
+  },
+
+  SET_EMPLOYEE: {
+    LIST: "setEmployeeList",
+    SELECT: "setSelectEmployee",
   },
 };
 

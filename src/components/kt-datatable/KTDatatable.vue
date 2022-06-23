@@ -137,7 +137,7 @@ import {
   defineComponent,
   ref,
   onMounted,
-  watch,
+  watchEffect,
   getCurrentInstance,
 } from "vue";
 import arraySort from "array-sort";
@@ -189,7 +189,7 @@ export default defineComponent({
 
     const vnodeProps = getCurrentInstance()?.vnode.props || {};
 
-    watch(data.value, () => {
+    watchEffect(() => {
       if ("onCurrentChange" in vnodeProps) {
         currentSort.value = label.value + order.value;
       } else {
@@ -248,10 +248,6 @@ export default defineComponent({
       currentSort.value = columnName + order.value;
     };
 
-    // const filter = (event, columnName) => {
-    //   console.log(event.target.value);
-    // };
-
     const setItemsPerPage = (event) => {
       if ("onItemsPerPageChange" in vnodeProps) {
         emit("items-per-page-change", parseInt(event.target.value));
@@ -264,7 +260,6 @@ export default defineComponent({
       pagination,
       currentPageChange,
       getItems,
-      // filter,
       sort,
       currentSort,
       setItemsPerPage,
