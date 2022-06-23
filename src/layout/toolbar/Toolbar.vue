@@ -58,59 +58,7 @@
       <!--end::Page title-->
 
       <!--begin::Actions-->
-      <div class="d-flex align-items-center flex-wrap">
-        <!--begin::Wrapper-->
-        <div class="flex-shrink-0 me-2">
-          <ul class="nav">
-            <li class="nav-item">
-              <a
-                class="nav-link btn btn-sm btn-color-muted btn-active-color-primary btn-active-light active fw-bold fs-7 px-4 me-1"
-                data-bs-toggle="tab"
-                href="#"
-                >Day</a
-              >
-            </li>
-
-            <li class="nav-item">
-              <a
-                class="nav-link btn btn-sm btn-color-muted btn-active-color-primary btn-active-light fw-bold fs-7 px-4 me-1"
-                data-bs-toggle="tab"
-                href=""
-                >Week</a
-              >
-            </li>
-
-            <li class="nav-item">
-              <a
-                class="nav-link btn btn-sm btn-color-muted btn-active-color-primary btn-active-light fw-bold fs-7 px-4"
-                data-bs-toggle="tab"
-                href="#"
-                >Year</a
-              >
-            </li>
-          </ul>
-        </div>
-        <!--end::Wrapper-->
-
-        <!--begin::Wrapper-->
-        <div class="d-flex align-items-center">
-          <!--begin::Actions-->
-          <div class="d-flex align-items-center">
-            <button
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#kt_modal_create_app"
-              class="btn btn-sm btn-icon btn-color-primary btn-active-light btn-active-color-primary"
-            >
-              <span class="svg-icon svg-icon-2x">
-                <inline-svg src="media/icons/duotune/files/fil005.svg" />
-              </span>
-            </button>
-          </div>
-          <!--end::Actions-->
-        </div>
-        <!--end::Wrapper-->
-      </div>
+      <div class="d-flex align-items-center flex-wrap"></div>
       <!--end::Actions-->
     </div>
     <!--end::Container-->
