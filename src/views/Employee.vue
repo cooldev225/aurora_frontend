@@ -111,25 +111,22 @@
 <script>
 import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateModal from "@/components/admin/AddAdminModal.vue";
-import EditModal from "@/components/admin/EditAdminModal.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import { Modal } from "bootstrap";
 
 export default defineComponent({
-  name: "admin-main",
+  name: "employee-main",
 
   components: {
     Datatable,
-    CreateModal,
-    EditModal,
   },
 
   setup() {
     const store = useStore();
+    const router = useRouter();
     const tableHeader = ref([
       {
         name: "First Name",
@@ -161,20 +158,19 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const adminList = computed(() => store.getters.adminList);
+    const list = computed(() => store.getters.employeeList);
     const loading = ref(true);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_ADMIN, item);
-      const modal = new Modal(document.getElementById("modal_edit_admin"));
-      modal.show();
+      store.commit(Mutations.SET_EMPLOYEE.SELECT, item);
+      router.push({ name: "employees-edit" });
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_ADMIN, id)
+        .dispatch(Actions.EMPLOYEE.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LIST_ADMIN);
+          store.dispatch(Actions.EMPLOYEE.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -193,14 +189,14 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Administrators", []);
-      store.dispatch(Actions.LIST_ADMIN).then(() => {
-        tableData.value = adminList;
+      store.dispatch(Actions.EMPLOYEE.LIST).then(() => {
+        tableData.value = list;
         loading.value = false;
       });
     });
 
     watchEffect(() => {
-      tableData.value = adminList;
+      tableData.value = list;
       loading.value = false;
     });
     return { tableHeader, tableData, handleEdit, handleDelete };

@@ -3,7 +3,7 @@
   <div
     class="stepper stepper-pills stepper-column d-flex flex-column flex-xl-row flex-row-fluid"
     id="edit_employee_stepper"
-    ref="createEmployeeRef"
+    ref="editEmployeeRef"
   >
     <!--begin::Aside-->
     <div
@@ -229,6 +229,7 @@
           </div>
           <el-form
             class="py-20 w-100 w-xl-700px w-xxl-800px px-9"
+            id="kt_create_account_form"
             :rules="rules"
             :model="formData"
             ref="formRef_2"
@@ -719,7 +720,7 @@
   <!--end::Stepper-->
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -728,7 +729,7 @@ import { useRouter } from "vue-router";
 import { StepperComponent } from "@/assets/ts/components";
 
 export default defineComponent({
-  name: "kt-vertical-wizard",
+  name: "edit-employees",
   components: {},
   setup() {
     const store = useStore();
@@ -822,15 +823,19 @@ export default defineComponent({
       ],
     });
     const _stepperObj = ref<StepperComponent | null>(null);
-    const createEmployeeRef = ref<HTMLElement | null>(null);
+    const editEmployeeRef = ref<HTMLElement | null>(null);
     const currentStepIndex = ref(0);
 
     onMounted(() => {
       _stepperObj.value = StepperComponent.createInsance(
-        createEmployeeRef.value as HTMLElement
+        editEmployeeRef.value as HTMLElement
       );
 
-      setCurrentPageBreadcrumbs("Create Employee", ["Employee"]);
+      setCurrentPageBreadcrumbs("Edit Employee", ["Employee"]);
+    });
+
+    watchEffect(() => {
+      formData.value = store.getters.employeeSelected;
     });
 
     const handleStep_1 = () => {
@@ -881,7 +886,7 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.EMPLOYEE.CREATE, formData.value)
+            .dispatch(Actions.EMPLOYEE.UPDATE, formData.value)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.EMPLOYEE.LIST);
@@ -918,7 +923,7 @@ export default defineComponent({
       previousStep,
       handleStep_1,
       handleStep_2,
-      createEmployeeRef,
+      editEmployeeRef,
       currentStepIndex,
     };
   },
