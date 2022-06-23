@@ -302,11 +302,87 @@
                 </el-form-item>
                 <!--end::Input-->
               </div>
-              <div class="card">
-                <div class="card-header">
-                  <span>Monday</span>
+              <div class="col-md-4">
+                <div class="card border border-primary border-dashed">
+                  <div class="card-header border-bottom-dashed border-primary">
+                    <div class="card-title">
+                      <span>Monday</span>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="fv-row mb-2">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2"
+                          >Start Time</label
+                        >
+                        <!--end::Label-->
+
+                        <!--begin::Input-->
+                        <el-form-item prop="monday_start_time">
+                          <el-time-picker
+                            v-model="formData.moday_start_time"
+                            type="text"
+                          />
+                        </el-form-item>
+                        <!--end::Input-->
+                      </div>
+                      <div class="fv-row mb-2">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2"
+                          >End Time</label
+                        >
+                        <!--end::Label-->
+
+                        <!--begin::Input-->
+                        <el-form-item prop="monday_end_time">
+                          <el-time-picker
+                            v-model="formData.moday_end_time"
+                            type="text"
+                          />
+                        </el-form-item>
+                        <!--end::Input-->
+                      </div>
+                      <div class="fv-row mb-2">
+                        <!--begin::Label-->
+                        <label class="required fs-6 fw-bold mb-2"
+                          >Locations</label
+                        >
+                        <!--end::Label-->
+
+                        <!--begin::Input-->
+                        <el-form-item prop="monday_start_time">
+                          <el-select
+                            v-model="formData.moday_locations"
+                            type="text"
+                          >
+                          </el-select>
+                        </el-form-item>
+                        <!--end::Input-->
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="card-body"></div>
+              </div>
+              <div class="col-md-4">
+                <div class="card">
+                  <label
+                    class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-10"
+                    for="kt_create_account_form_account_type_personal"
+                  >
+                    <!--end::Info-->
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card">
+                  <label
+                    class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-10"
+                    for="kt_create_account_form_account_type_personal"
+                  >
+                    <!--end::Info-->
+                  </label>
+                </div>
               </div>
             </div>
             <div class="d-flex justify-content-between">
@@ -360,7 +436,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 import { StepperComponent } from "@/assets/ts/components";
 import { useForm } from "vee-validate";
-
+import { Field, ErrorMessage } from "vee-validate";
 export default defineComponent({
   name: "kt-vertical-wizard",
   components: {},
