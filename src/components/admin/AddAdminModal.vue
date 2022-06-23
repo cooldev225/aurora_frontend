@@ -49,6 +49,24 @@
               data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
               data-kt-scroll-offset="300px"
             >
+              <!--begin::Alert-->
+              <div class="alert alert-warning">
+                <!--begin::Wrapper-->
+                <div class="d-flex flex-column">
+                  <!--begin::Title-->
+                  <h4 class="mb-1 text-dark">Warning</h4>
+                  <!--end::Title-->
+                  <!--begin::Content-->
+                  <span
+                    >Creating admins at this level will give that user
+                    authority, to add, edit and disable Organizations.</span
+                  >
+                  <!--end::Content-->
+                </div>
+                <!--end::Wrapper-->
+              </div>
+              <!--end::Alert-->
+
               <!--begin::Input group-->
               <div class="fv-row mb-7">
                 <!--begin::Label-->

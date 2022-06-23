@@ -26,20 +26,6 @@
           class="d-flex justify-content-end"
           data-kt-subscription-table-toolbar="base"
         >
-          <!--begin::Export-->
-          <button
-            type="button"
-            class="btn btn-light-primary me-3"
-            data-bs-toggle="modal"
-            data-bs-target="#kt_subscriptions_export_modal"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr078.svg" />
-            </span>
-            Export
-          </button>
-          <!--end::Export-->
-
           <!--begin::Add subscription-->
           <button
             type="button"
@@ -66,11 +52,8 @@
         :rows-per-page="10"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-first_name="{ row: item }">
-          {{ item.first_name }}
-        </template>
-        <template v-slot:cell-last_name="{ row: item }">
-          {{ item.last_name }}
+        <template v-slot:cell-full_name="{ row: item }">
+          {{ item.first_name }} {{ item.last_name }}
         </template>
         <template v-slot:cell-username="{ row: item }">
           {{ item.username }}
@@ -137,14 +120,8 @@ export default defineComponent({
     const store = useStore();
     const tableHeader = ref([
       {
-        name: "First Name",
-        key: "first_name",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Last Name",
-        key: "last_name",
+        name: "Full Name",
+        key: "full_name",
         sortable: true,
         searchable: true,
       },
