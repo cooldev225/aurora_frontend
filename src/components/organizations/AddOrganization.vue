@@ -142,51 +142,21 @@
               <div class="fs-3 fw-bold text-muted mb-6">Images</div>
 
               <div class="row">
-                <div class="col-sm-4 row">
-                  <label class="col-sm-4 col-form-label fw-bold fs-6"
-                    >Logo</label
+                <el-form-item label="Logo">
+                  <el-upload
+                    action="a"
+                    ref="upload"
+                    :class="{ disabled: uploadDisabled }"
+                    list-type="picture-card"
+                    :limit="1"
+                    :on-change="handleChange"
+                    :on-remove="handleRemove"
+                    :auto-upload="false"
+                    accept="image/*"
                   >
-
-                  <div class="col-sm-8">
-                    <div
-                      class="image-input image-input-outline"
-                      data-kt-image-input="true"
-                      style="background-image: url(media/avatars/blank.png)"
-                    >
-                      <div
-                        class="image-input-wrapper w-125px h-125px"
-                        :style="`background-image: url(${formData.logo})`"
-                      ></div>
-
-                      <label
-                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow"
-                        data-kt-image-input-action="change"
-                        data-bs-toggle="tooltip"
-                        title="Change Logo"
-                      >
-                        <i class="bi bi-pencil-fill fs-7"></i>
-
-                        <input
-                          type="file"
-                          name="logo"
-                          accept=".png, .jpg, .jpeg"
-                          @change="changeLogo"
-                        />
-                        <input type="hidden" name="avatar_remove" />
-                      </label>
-
-                      <span
-                        class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow"
-                        data-kt-image-input-action="remove"
-                        data-bs-toggle="tooltip"
-                        @click="removeImage()"
-                        title="Remove Logo"
-                      >
-                        <i class="bi bi-x fs-2"></i>
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                    <i class="fa fa-plus"></i>
+                  </el-upload>
+                </el-form-item>
               </div>
             </div>
 
@@ -365,7 +335,7 @@
   <!--end::Stepper-->
 </template>
 
-<script lang="ts">
+<script>
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
@@ -379,9 +349,9 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
-    const formRef = ref<null | HTMLFormElement>(null);
-    const loading = ref<boolean>(false);
-    const formData = ref({
+    const formRef = ref(null);
+    const loading = ref(false);
+    let formData = ref({
       first_name: "",
       last_name: "",
       username: "",
@@ -394,7 +364,6 @@ export default defineComponent({
       otac: "",
       key_expiry: "",
       device_expiry: "",
-      logo: "media/avatars/300-1.jpg",
       max_clinics: "",
       max_employees: "",
     });
@@ -442,20 +411,23 @@ export default defineComponent({
         },
       ],
     });
-    const imageData = new FormData();
+    const uploadDisabled = ref(false);
+    const upload = ref(null);
 
-    const removeImage = () => {
-      formData.value.logo = "media/avatars/blank.png";
+    const handleChange = (file, fileList) => {
+      // upload.value.clearFiles();
+      // uploadDisabled.value = false;
+      uploadDisabled.value = fileList.length >= 1;
+      formData.value["logo"] = file.raw;
+    };
+
+    const handleRemove = (file, fileList) => {
+      uploadDisabled.value = fileList.length - 1;
     };
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Create Organization", ["Organization"]);
     });
-
-    const changeLogo = (e) => {
-      debugger;
-      formData.value.logo = e.target.files[0];
-    };
 
     const submit = () => {
       if (!formRef.value) {
@@ -465,7 +437,7 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-
+          console.log(formData.value);
           store
             .dispatch(Actions.CREATE_ORG, formData.value)
             .then(() => {
@@ -499,8 +471,9 @@ export default defineComponent({
       submit,
       formRef,
       loading,
-      removeImage,
-      changeLogo,
+      upload,
+      handleChange,
+      handleRemove,
     };
   },
 });
