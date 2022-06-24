@@ -78,7 +78,7 @@ export default class OrganizationModule extends VuexModule implements OrgInfo {
   @Action
   [Actions.CREATE_ORG](payload) {
     const config = {
-      headers: { "content-type": "multipart/form-data" },
+      headers: { "Content-Type": "multipart/form-data" },
     };
     if (JwtService.getToken()) {
       ApiService.setHeader();

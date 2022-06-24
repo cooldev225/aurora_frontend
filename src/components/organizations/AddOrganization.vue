@@ -144,18 +144,23 @@
               <div class="row">
                 <el-form-item label="Logo">
                   <el-upload
-                    action="a"
+                    action="#"
                     ref="upload"
-                    :class="{ disabled: uploadDisabled }"
                     list-type="picture-card"
+                    :class="{ disabled: uploadDisabled }"
                     :limit="1"
                     :on-change="handleChange"
                     :on-remove="handleRemove"
+                    :on-preview="handlePreview"
                     :auto-upload="false"
                     accept="image/*"
                   >
                     <i class="fa fa-plus"></i>
                   </el-upload>
+
+                  <el-dialog v-model="dialogVisible">
+                    <img w-full :src="dialogImageUrl" alt="Preview Image" />
+                  </el-dialog>
                 </el-form-item>
               </div>
             </div>
@@ -336,7 +341,7 @@
 </template>
 
 <script>
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -351,7 +356,7 @@ export default defineComponent({
     const router = useRouter();
     const formRef = ref(null);
     const loading = ref(false);
-    let formData = ref({
+    const formData = ref({
       first_name: "",
       last_name: "",
       username: "",
@@ -367,6 +372,33 @@ export default defineComponent({
       max_clinics: "",
       max_employees: "",
     });
+    const uploadDisabled = ref(false);
+    const upload = ref(null);
+    const Data = new FormData();
+    const dialogImageUrl = ref("");
+    const dialogVisible = ref(false);
+
+    const validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Please input the password"));
+      } else {
+        if (formData.value.password_confirmation !== "") {
+          formRef.value.validateField("checkPass", () => null);
+        }
+        callback();
+      }
+    };
+
+    const validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Please input the password again"));
+      } else if (value !== formData.value.password) {
+        callback(new Error("Password doesn't match!"));
+      } else {
+        callback();
+      }
+    };
+
     const rules = ref({
       first_name: [
         {
@@ -392,37 +424,49 @@ export default defineComponent({
       email: [
         {
           required: true,
-          message: "Email cannot be blank.",
+          message: "Email cannot be blank",
           trigger: "change",
+        },
+        {
+          type: "email",
+          message: "Please input correct email address",
+          trigger: ["blur", "change"],
         },
       ],
       password: [
+        { validator: validatePass, trigger: "blur" },
         {
           required: true,
-          message: "Password cannot be blank.",
+          message: "Password cannot be blank",
           trigger: "change",
         },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
       password_confirmation: [
+        { validator: validatePass2, trigger: "blur" },
         {
           required: true,
           message: "Confirm Password cannot be blank.",
           trigger: "change",
         },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
     });
-    const uploadDisabled = ref(false);
-    const upload = ref(null);
 
     const handleChange = (file, fileList) => {
-      // upload.value.clearFiles();
-      // uploadDisabled.value = false;
+      upload.value.clearFiles();
+      uploadDisabled.value = false;
+      Data.append("logo", file.raw);
       uploadDisabled.value = fileList.length >= 1;
-      formData.value["logo"] = file.raw;
     };
 
     const handleRemove = (file, fileList) => {
       uploadDisabled.value = fileList.length - 1;
+    };
+
+    const handlePreview = (uploadFile) => {
+      dialogImageUrl.value = uploadFile.url;
+      dialogVisible.value = true;
     };
 
     onMounted(() => {
@@ -436,10 +480,12 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
+          Object.keys(formData.value).forEach((key) => {
+            Data.append(key, formData.value[key]);
+          });
           loading.value = true;
-          console.log(formData.value);
           store
-            .dispatch(Actions.CREATE_ORG, formData.value)
+            .dispatch(Actions.CREATE_ORG, Data)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.LIST_ORG);
@@ -474,7 +520,16 @@ export default defineComponent({
       upload,
       handleChange,
       handleRemove,
+      handlePreview,
+      dialogVisible,
+      dialogImageUrl,
     };
   },
 });
 </script>
+
+<style>
+.el-dialog {
+  width: fit-content;
+}
+</style>
