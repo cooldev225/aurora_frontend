@@ -103,12 +103,24 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/patients/details",
-        name: "Details",
+        name: "patient-details",
         component: () => import("@/components/patients/ViewPatient.vue"),
         children: [
           {
-            path: "/overview",
-            name: "patient-overview",
+            path: "overivew",
+            name: "personal-details",
+            component: () =>
+              import("@/components/patients/PersonalDetails.vue"),
+          },
+          {
+            path: "appointments",
+            name: "patient-appointment",
+            component: () =>
+              import("@/views/crafted/authentication/basic-flow/SignIn.vue"),
+          },
+          {
+            path: "/billings",
+            name: "patient-appointment",
             component: () =>
               import("@/views/crafted/authentication/basic-flow/SignIn.vue"),
           },

@@ -27,23 +27,17 @@
             <div class="d-flex flex-column">
               <!--begin::Name-->
               <div class="d-flex align-items-center mb-2">
-                <a
-                  href="#"
+                <span
                   class="text-gray-800 text-hover-primary fs-2 fw-bolder me-1"
-                  >Max Smith</a
                 >
-                <a href="#">
-                  <span class="svg-icon svg-icon-1 svg-icon-primary">
-                    <inline-svg src="media/icons/duotune/general/gen026.svg" />
-                  </span>
-                </a>
+                  {{ formData.first_name }} {{ formData.last_name }}
+                </span>
               </div>
               <!--end::Name-->
 
               <!--begin::Info-->
               <div class="d-flex flex-wrap fw-bold fs-6 mb-4 pe-2">
-                <a
-                  href="#"
+                <span
                   class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2"
                 >
                   <span class="svg-icon svg-icon-4 me-1">
@@ -52,16 +46,16 @@
                     />
                   </span>
                   Developer
-                </a>
-                <a
+                </span>
+                <span
                   href="#"
                   class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2"
                 >
                   <span class="svg-icon svg-icon-4 me-1">
                     <inline-svg src="media/icons/duotune/general/gen018.svg" />
                   </span>
-                  SF, Bay Area
-                </a>
+                  {{ formData.address }}
+                </span>
                 <a
                   href="#"
                   class="d-flex align-items-center text-gray-400 text-hover-primary mb-2"
@@ -71,7 +65,7 @@
                       src="media/icons/duotune/communication/com011.svg"
                     />
                   </span>
-                  max@kt.com
+                  {{ formData.email }}
                 </a>
               </div>
               <!--end::Info-->
@@ -315,13 +309,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, watchEffect } from "vue";
+import { useStore } from "vuex";
 import Dropdown3 from "@/components/dropdown/Dropdown3.vue";
 
 export default defineComponent({
   name: "profile-page-layout",
   components: {
     Dropdown3,
+  },
+
+  setup() {
+    const store = useStore();
+    const formData = ref({
+      first_name: "",
+      last_name: "",
+      username: "",
+      email: "",
+      address: "",
+    });
+
+    watchEffect(() => {
+      formData.value = store.getters.selectedPatient;
+    });
+
+    return {
+      formData,
+    };
   },
 });
 </script>

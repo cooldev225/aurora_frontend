@@ -59,48 +59,24 @@
             </span>
           </div>
         </template>
-        <template v-slot:cell-name="{ row: item }">
-          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">{{
-            item.username
-          }}</span>
+        <template v-slot:cell-full_name="{ row: item }">
+          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
+            {{ item.first_name }} {{ item.last_name }}
+          </span>
           <span class="text-muted fw-bold d-block">{{
-            item.mobile_number
+            item.phone_number
           }}</span>
         </template>
         <template v-slot:cell-email="{ row: item }">
           {{ item.email }}
         </template>
-        <template v-slot:cell-clinics="{ row: item }">
-          <span class="badge badge-light-success">{{ item.max_clinics }}</span>
-        </template>
-        <template v-slot:cell-users="{ row: item }">
-          <span class="badge badge-light-danger">{{ item.max_employees }}</span>
-        </template>
         <template v-slot:cell-action="{ row: item }">
-          <a
-            href="#"
+          <button
+            @click="handleSelect(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/general/gen019.svg" />
-            </span>
-          </a>
-
-          <button
-            @click="handleEdit(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/art/art005.svg" />
-            </span>
-          </button>
-
-          <button
-            @click="handleDelete(item.id)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen027.svg" />
             </span>
           </button>
         </template>
@@ -136,26 +112,14 @@ export default defineComponent({
         searchable: true,
       },
       {
-        name: "Name",
-        key: "name",
+        name: "Full Name",
+        key: "full_name",
         sortable: true,
         searchable: true,
       },
       {
         name: "Email",
         key: "email",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Clinics",
-        key: "clinics",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Users",
-        key: "users",
         sortable: true,
         searchable: true,
       },
@@ -170,7 +134,7 @@ export default defineComponent({
 
     const handleSelect = (item) => {
       store.commit(Mutations.SET_PATIENT.SELECT, item);
-      router.push({ name: "view-patient" });
+      router.push({ name: "personal-details" });
     };
 
     watchEffect(() => {
