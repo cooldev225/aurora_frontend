@@ -193,7 +193,7 @@ const OrgManagerMenu = [
     ],
   },
   {
-    heading: "HRM (Admin)",
+    heading: "HRM",
     route: "/builder",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-layers",

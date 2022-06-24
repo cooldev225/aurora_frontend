@@ -240,7 +240,7 @@
               class="nav-link text-active-primary me-6"
               active-class="active"
             >
-              Overview
+              Personal Details
             </router-link>
           </li>
           <!--end::Nav item-->

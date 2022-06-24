@@ -132,6 +132,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/MailBox.vue"),
       },
       {
+        path: "/booking/dashboard",
+        name: "booking-dashboard",
+        component: () => import("@/views/Bookings.vue"),
+      },
+      {
         path: "/make-payment",
         name: "make-payment",
         component: () => import("@/views/MakePayment.vue"),
