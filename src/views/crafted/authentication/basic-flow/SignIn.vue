@@ -11,7 +11,7 @@
       <!--begin::Heading-->
       <div class="text-center mb-10">
         <!--begin::Title-->
-        <h1 class="text-dark mb-3">Aurora</h1>
+        <img alt="Logo" src="aurora-logo.png" class="h-75px logo" />
         <!--end::Title-->
 
         <!--begin::Link-->
