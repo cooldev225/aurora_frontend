@@ -33,7 +33,7 @@ $header-config: (
 			desktop: 65px,
 			tablet-and-mobile: 55px
 		),
-		bg-color: if(isDarkMode(),#1E1E2D, $white),
+		bg-color: if(isDarkMode(),#1D3557, $white),
 	),
 
 	// Fixed Mode
@@ -43,7 +43,7 @@ $header-config: (
 			tablet-and-mobile: 55px
 		),
 		z-index: 100,
-		bg-color: if(isDarkMode(), #1E1E2D, $white),
+		bg-color: if(isDarkMode(), #1D3557, $white),
 		box-shadow: 0px 10px 30px 0px rgba(82,63,105,0.05)
 	)
 ) !default;

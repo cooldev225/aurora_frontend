@@ -1,22 +1,27 @@
 <template>
   <div class="card">
+    <!--begin::Alert-->
+    <div class="alert alert-warning m-4 mb-0">
+      <!--begin::Wrapper-->
+      <div class="d-flex flex-column">
+        <!--begin::Title-->
+        <h4 class="mb-1 text-dark"></h4>
+        <!--end::Title-->
+        <!--begin::Content-->
+        <span
+          >Admins at this level have authority, to add, edit and disable
+          Organizations. Please eunsure only trusted and trained aurora team
+          members are in this list</span
+        >
+        <!--end::Content-->
+      </div>
+      <!--end::Wrapper-->
+    </div>
+    <!--end::Alert-->
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
-      <div class="card-title">
-        <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
-          <span class="svg-icon svg-icon-1 position-absolute ms-6">
-            <inline-svg src="media/icons/duotune/general/gen021.svg" />
-          </span>
-          <input
-            type="text"
-            data-kt-subscription-table-filter="search"
-            class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Administrators"
-          />
-        </div>
-        <!--end::Search-->
-      </div>
+      <div class="card-title"></div>
+
       <!--begin::Card title-->
 
       <!--begin::Card toolbar-->

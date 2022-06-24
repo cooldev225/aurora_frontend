@@ -4,7 +4,7 @@
     <div class="d-flex flex-column flex-column-fluid text-center p-10 py-lg-15">
       <!--begin::Logo-->
       <router-link to="/dashboard" class="mb-10 pt-lg-10">
-        <img alt="Logo" src="media/logos/logo-1.svg" class="h-40px mb-5" />
+        <img alt="Logo" src="aurora-sml-logo.svg" class="h-40px mb-5" />
       </router-link>
       <!--end::Logo-->
 

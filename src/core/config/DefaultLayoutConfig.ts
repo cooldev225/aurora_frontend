@@ -6,17 +6,17 @@ const config: LayoutConfigTypes = {
   demo: "demo6",
   main: {
     type: "default",
-    primaryColor: "#009EF7",
+    primaryColor: "#3D7EA1",
     logo: {
-      dark: "media/logos/logo-1-dark.svg",
-      light: "media/logos/logo-1.svg",
+      dark: "aurora-sml-logo.svg",
+      light: "aurora-sml-logo.svg",
     },
   },
   illustrations: {
     set: "sketchy-1",
   },
   loader: {
-    logo: "media/logos/logo-1-dark.svg",
+    logo: "aurora-sml-logo.svg",
     display: true,
     type: "default",
   },
@@ -42,7 +42,7 @@ const config: LayoutConfigTypes = {
   },
   aside: {
     display: true,
-    theme: "light",
+    theme: "dark",
     fixed: true,
     menuIcon: "font",
     minimized: false,

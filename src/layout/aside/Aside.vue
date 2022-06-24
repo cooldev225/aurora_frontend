@@ -15,7 +15,7 @@
     <div class="aside-logo py-8" id="kt_aside_logo">
       <!--begin::Logo-->
       <router-link to="/dashboard" class="d-flex align-items-center">
-        <img alt="Logo" src="media/logos/logo.png" class="h-75px logo" />
+        <img alt="Logo" src="aurora-sml-logo.png" class="h-75px logo" />
       </router-link>
       <!--end::Logo-->
     </div>
@@ -30,24 +30,7 @@
     <!--begin::Footer-->
     <div class="aside-footer flex-column-auto" id="kt_aside_footer">
       <!--begin::Menu-->
-      <div class="d-flex justify-content-center">
-        <button
-          type="button"
-          class="btn btm-sm btn-icon btn-active-color-primary"
-          data-kt-menu-trigger="click"
-          data-kt-menu-overflow="true"
-          data-kt-menu-placement="top-start"
-          data-bs-toggle="tooltip"
-          data-bs-placement="right"
-          data-bs-dismiss="click"
-          title="Quick actions"
-        >
-          <span class="svg-icon svg-icon-1">
-            <inline-svg src="media/icons/duotune/general/gen008.svg" />
-          </span>
-        </button>
-        <Dropdown2 />
-      </div>
+      <div class="d-flex justify-content-center"></div>
       <!--end::Menu-->
     </div>
     <!--end::Footer-->
@@ -59,14 +42,12 @@
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n/index";
 import KTMenu from "@/layout/aside/Menu.vue";
-import Dropdown2 from "@/components/dropdown/Dropdown2.vue";
 import { asideTheme } from "@/core/helpers/config";
 
 export default defineComponent({
   name: "KTAside",
   components: {
     KTMenu,
-    Dropdown2,
   },
   props: {
     lightLogo: String,
