@@ -39,19 +39,19 @@
                     margin-bottom: 0.5rem;                  
                     
                     i {                        
-                        font-size: 22px !important;				
+                        font-size: 35px !important;				
                     }					
 				} 
 
                 .menu-title {					
 					flex-grow: 0;                 
                     text-align: center;
-                    font-size: 1rem;
+                    font-size: 1.1rem;
 				}   
 			}             
 
             //$title-color, $icon-color, $bullet-color, $arrow-color, $bg-color, $all-links
-            @include menu-link-default-state( #9899ac, #3A3A5D, #3A3A5D, #3A3A5D, null, false);
+            @include menu-link-default-state( #8f8f9b, #7c7c99, #3A3A5D, #3A3A5D, null, false);
             @include menu-link-hover-state( $white, $primary, $primary, $primary, null, false);
             @include menu-link-here-state( $white, $primary, $primary, $primary, null, false);
             @include menu-link-show-state( $white, $primary, $primary, $primary, null, false);

@@ -1,39 +1,4 @@
 <template>
-  <div class="row g-5 g-xl-8">
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm002.svg"
-        color="danger"
-        icon-color="white"
-        title="Shopping Cart"
-        description="Lands, Houses, Ranchos, Farms"
-      />
-    </div>
-
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
-        color="primary"
-        icon-color="white"
-        title="Appartments"
-        description="Flats, Shared Rooms, Duplex"
-      />
-    </div>
-
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-5 mb-xl-8"
-        svg-icon="media/icons/duotune/graphs/gra005.svg"
-        color="success"
-        icon-color="white"
-        title="Sales Stats"
-        description="50% Increased for FY20"
-      />
-    </div>
-  </div>
-
   <div class="row gy-5 g-xl-8">
     <div class="col-xl-4">
       <MixedWidget3
@@ -106,7 +71,6 @@ import { setCurrentPageTitle } from "@/core/helpers/breadcrumb";
 export default defineComponent({
   name: "dashboard-main",
   components: {
-    StatsisticsWidget5,
     MixedWidget3,
     MixedWidget4,
     MixedWidget5,

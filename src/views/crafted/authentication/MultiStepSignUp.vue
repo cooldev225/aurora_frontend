@@ -19,7 +19,7 @@
         >
           <!--begin::Logo-->
           <router-link to="/dashboard" class="mb-10 mb-lg-20">
-            <img alt="Logo" src="media/logos/logo-1.svg" class="h-40px" />
+            <img alt="Logo" src="aurora-sml-logo.png" class="h-40px" />
           </router-link>
           <!--end::Logo-->
 
