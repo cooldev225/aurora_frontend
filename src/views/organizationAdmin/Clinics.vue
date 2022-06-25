@@ -91,21 +91,20 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :key="tableKey"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-first_name="{ row: item }">
-          {{ item.first_name }}
-        </template>
-        <template v-slot:cell-last_name="{ row: item }">
-          {{ item.last_name }}
-        </template>
-        <template v-slot:cell-username="{ row: item }">
-          {{ item.username }}
+        <template v-slot:cell-name="{ row: item }">
+          {{ item.name }}
         </template>
         <template v-slot:cell-email="{ row: item }">
           {{ item.email }}
+        </template>
+        <template v-slot:cell-city="{ row: item }">
+          {{ item.city }}
+        </template>
+        <template v-slot:cell-state="{ row: item }">
+          {{ item.state }}
         </template>
         <template v-slot:cell-action="{ row: item }">
           <a
@@ -162,28 +161,24 @@ export default defineComponent({
     const store = useStore();
     const tableHeader = ref([
       {
-        name: "First Name",
-        key: "first_name",
+        name: "Clinic Name",
+        key: "name",
         sortable: true,
-        searchable: true,
       },
       {
-        name: "Last Name",
-        key: "last_name",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Username",
-        key: "username",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Email",
+        name: "Email Address",
         key: "email",
         sortable: true,
-        searchable: true,
+      },
+      {
+        name: "City",
+        key: "city",
+        sortable: true,
+      },
+      {
+        name: "State",
+        key: "state",
+        sortable: true,
       },
       {
         name: "Action",
@@ -194,16 +189,16 @@ export default defineComponent({
     const clinicsList = computed(() => store.getters.clinicsList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_CLINICS, item);
+      store.commit(Mutations.SET_CLINICS.SELECT, item);
       const modal = new Modal(document.getElementById("modal_edit_clinics"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_CLINICS, id)
+        .dispatch(Actions.CLINICS.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LIST_CLINICS);
+          store.dispatch(Actions.CLINICS.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -221,7 +216,7 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Clinics", []);
-      store.dispatch(Actions.LIST_CLINICS);
+      store.dispatch(Actions.CLINICS.LIST);
       tableData.value = clinicsList;
     });
 

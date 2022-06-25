@@ -64,7 +64,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/clinics/create",
         name: "createClinics",
-        component: () => import("@/components/clinics/AddClinics.vue"),
+        component: () => import("@/components/clinics/CreateClinics.vue"),
       },
       {
         path: "/clinics/edit",

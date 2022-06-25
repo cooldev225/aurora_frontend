@@ -34,22 +34,22 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
   }
 
   @Mutation
-  [Mutations.SET_CLINICS_LIST](clinicsData) {
+  [Mutations.SET_CLINICS.LIST](clinicsData) {
     this.clinicsData = clinicsData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_CLINICS](data) {
+  [Mutations.SET_CLINICS.SELECT](data) {
     this.clinicsSelectData = data;
   }
 
   @Action
-  [Actions.LIST_CLINICS]() {
+  [Actions.CLINICS.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("clinics")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_CLINICS_LIST, data.data);
+          this.context.commit(Mutations.SET_CLINICS.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -62,7 +62,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
   }
 
   @Action
-  [Actions.CREATE_CLINICS](payload) {
+  [Actions.CLINICS.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("clinics", payload)
@@ -78,7 +78,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
   }
 
   @Action
-  [Actions.UPDATE_CLINICS](item) {
+  [Actions.CLINICS.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("clinics", item.id, item)
@@ -95,7 +95,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
   }
 
   @Action
-  [Actions.DELETE_CLINICS](id) {
+  [Actions.CLINICS.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("clinics/" + id)

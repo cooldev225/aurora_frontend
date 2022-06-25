@@ -33,10 +33,12 @@ const Actions = {
   DELETE_ORG_ADMIN: "deleteOrgAdmin",
   UPDATE_ORG_ADMIN: "updateOrgAdmin",
 
-  LIST_CLINICS: "listClinics",
-  CREATE_CLINICS: "createClinics",
-  DELETE_CLINICS: "deleteClinics",
-  UPDATE_CLINICS: "updateClinics",
+  CLINICS: {
+    LIST: "listClinics",
+    CREATE: "createClinics",
+    DELETE: "deleteClinics",
+    UPDATE: "updateClinics",
+  },
 
   LIST_BIRTH_CODE: "listBirthCode",
   CREATE_BIRTH_CODE: "createBirthCode",
@@ -107,8 +109,10 @@ const Mutations = {
   SET_ORG_ADMIN_LIST: "setOrgAdminList",
   SET_SELECT_ORG_ADMIN: "setSelectOrgAdmin",
 
-  SET_CLINICS_LIST: "setClinicsList",
-  SET_SELECT_CLINICS: "setSelectClinics",
+  SET_CLINICS: {
+    LIST: "setClinicsList",
+    SELECT: "setSelectClinics",
+  },
 
   SET_BIRTH_CODE_LIST: "setClinicsList",
   SET_SELECT_BIRTH_CODE: "setSelectClinics",
