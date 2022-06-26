@@ -162,272 +162,83 @@
   <div class="card mt-5">
     <div class="card-body">
       <div style="overflow-x: scroll">
-        <table
-          class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4 border border-dark my-0"
-        >
+        <table class="table align-middle gs-0 gy-4 my-0">
           <thead>
-            <tr class="fw-bolder center-row">
+            <tr
+              class="fw-bolder center-row text-white"
+              style="background: linear-gradient(45deg, #4d94ff, #ff30bf)"
+            >
               <th
-                style="
-                  width: 120px;
-                  min-width: 120px;
-                  background-color: rgb(187, 139, 172);
-                  position: relative;
-                  left: 0px;
-                "
+                class="cell-120px border-0"
+                style="position: relative; left: 0px"
               ></th>
-              <th style="width: 35px; min-width: 35px"></th>
-              <th colspan="5" style="background: #e47c1c !important">
+              <th class="cell-35px border-0"></th>
+              <th colspan="7" class="text-xxl-center text-xl-left border-0">
                 Casey Day Procedure & Specialist Centre (Mon, Jun 27)
               </th>
             </tr>
-            <tr class="doctor-row text-center">
-              <th
-                style="
-                  width: 120px;
-                  min-width: 120px;
-                  background-color: rgb(244, 247, 249);
-                  position: relative;
-                  left: 0px;
-                "
-              ></th>
-              <th style="width: 35px; min-width: 35px; border: 1px solid"></th>
-              <th colspan="1" style="border: 1px solid">DR ELHAM AMINI</th>
-              <th colspan="2" style="border: 1px solid">DR ELHAM AMINI</th>
-              <th colspan="2" style="border: 1px solid">DR ELHAM AMINI</th>
+            <tr class="bg-light-warning doctor-row text-center text-primary">
+              <th class="cell-120px" style="position: relative; left: 0px"></th>
+              <th class="cell-35px"></th>
+              <th colspan="1" class="fw-bolder">DR ELHAM AMINI</th>
+              <th colspan="2" class="fw-bolder">DR ELHAM AMINI</th>
+              <th colspan="2" class="fw-bolder">DR ELHAM AMINI</th>
+              <th colspan="2" class="fw-bolder">DR ELHAM AMINI</th>
             </tr>
-            <tr>
+            <tr class="fw-bolder">
               <th
-                style="
-                  width: 120px;
-                  min-width: 120px;
-                  background-color: rgb(244, 247, 249);
-                  position: relative;
-                  left: 0px;
-                "
+                class="cell-120px text-center"
+                style="position: relative; left: 0px"
               >
                 START TIME
               </th>
-              <th style="width: 35px; min-width: 35px; border: 1px solid"></th>
+              <th class="cell-35px"></th>
               <th clsss="text-left" style="min-width: 441px">
                 PATIENT DETAILS
               </th>
-              <th style="width: 35px; min-width: 35px; border: 1px solid"></th>
+              <th class="cell-35px"></th>
               <th clsss="text-left" style="min-width: 441px">
                 PATIENT DETAILS
               </th>
-              <th style="width: 35px; min-width: 35px; border: 1px solid"></th>
+              <th class="cell-35px"></th>
+              <th clsss="text-left" style="min-width: 441px">
+                PATIENT DETAILS
+              </th>
+              <th class="cell-35px"></th>
               <th clsss="text-left" style="min-width: 441px">
                 PATIENT DETAILS
               </th>
             </tr>
           </thead>
         </table>
-        <div style="max-height: 300px">
-          <table
-            class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4 border border-dark"
-          >
+        <div
+          style="
+            max-height: 300px;
+            overflow: scroll visible;
+            width: max-content;
+            min-width: 100%;
+          "
+        >
+          <table class="table align-middle gs-0 gy-4 my-0 bg-light">
             <tbody>
-              <tr>
-                <td
-                  style="
-                    width: 120px;
-                    min-width: 120px;
-                    background-color: rgb(244, 247, 249);
-                    position: relative;
-                    left: 0px;
-                  "
-                >
-                  07:00 AM
-                </td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-              </tr>
-              <tr>
-                <td
-                  style="
-                    width: 120px;
-                    min-width: 120px;
-                    background-color: rgb(244, 247, 249);
-                    position: relative;
-                    left: 0px;
-                  "
-                >
-                  07:00 AM
-                </td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-              </tr>
-              <tr>
-                <td
-                  style="
-                    width: 120px;
-                    min-width: 120px;
-                    background-color: rgb(244, 247, 249);
-                    position: relative;
-                    left: 0px;
-                  "
-                >
-                  07:00 AM
-                </td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-              </tr>
-              <tr>
-                <td
-                  style="
-                    width: 120px;
-                    min-width: 120px;
-                    background-color: rgb(244, 247, 249);
-                    position: relative;
-                    left: 0px;
-                  "
-                >
-                  07:00 AM
-                </td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-              </tr>
-              <tr>
-                <td
-                  style="
-                    width: 120px;
-                    min-width: 120px;
-                    background-color: rgb(244, 247, 249);
-                    position: relative;
-                    left: 0px;
-                  "
-                >
-                  07:00 AM
-                </td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-              </tr>
-              <tr>
-                <td
-                  style="
-                    width: 120px;
-                    min-width: 120px;
-                    background-color: rgb(244, 247, 249);
-                    position: relative;
-                    left: 0px;
-                  "
-                >
-                  07:00 AM
-                </td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-              </tr>
-              <tr>
-                <td
-                  style="
-                    width: 120px;
-                    min-width: 120px;
-                    background-color: rgb(244, 247, 249);
-                    position: relative;
-                    left: 0px;
-                  "
-                >
-                  07:00 AM
-                </td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-              </tr>
-              <tr>
-                <td
-                  style="
-                    width: 120px;
-                    min-width: 120px;
-                    background-color: rgb(244, 247, 249);
-                    position: relative;
-                    left: 0px;
-                  "
-                >
-                  07:00 AM
-                </td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-                <td
-                  style="width: 35px; min-width: 35px; border: 1px solid"
-                ></td>
-                <td class="border border-dark" style="min-width: 441px"></td>
-              </tr>
+              <template v-for="index in 10" :key="index">
+                <tr class="text-center">
+                  <td
+                    class="cell-120px bg-white"
+                    style="position: relative; left: 0px"
+                  >
+                    07:00 AM
+                  </td>
+                  <td class="cell-35px bg-white"></td>
+                  <td style="min-width: 441px"></td>
+                  <td class="cell-35px bg-white"></td>
+                  <td style="min-width: 441px"></td>
+                  <td class="cell-35px bg-white"></td>
+                  <td style="min-width: 441px"></td>
+                  <td class="cell-35px bg-white"></td>
+                  <td style="min-width: 441px"></td>
+                </tr>
+              </template>
             </tbody>
           </table>
         </div>
@@ -558,3 +369,30 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+.cell-35px {
+  width: 35px;
+  min-width: 35px;
+  max-width: 35px;
+}
+
+.cell-120px {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+}
+
+td,
+th {
+  border: 1px dashed gray !important;
+}
+
+table tr:first-child th:first-child {
+  border-radius: 50px 0 0 0;
+}
+
+table tr:first-child th:last-child {
+  border-radius: 0 50px 0 0;
+}
+</style>
