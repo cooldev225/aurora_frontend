@@ -10,6 +10,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/layout/Layout.vue"),
     children: [
       {
+        path: "/dashboard",
+        name: "dashboard",
+        component: () => import("@/views/Dashboard.vue"),
+      },
+      {
         path: "/admins",
         name: "administrator",
         component: () => import("@/views/Admins.vue"),
@@ -72,11 +77,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/components/clinics/EditClinics.vue"),
       },
       {
-        path: "/dashboard",
-        name: "dashboard",
-        component: () => import("@/views/Dashboard.vue"),
-      },
-      {
         path: "/settings/health-fund",
         name: "healthFund",
         component: () => import("@/views/HealthFund.vue"),
@@ -135,6 +135,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/booking/dashboard",
         name: "booking-dashboard",
         component: () => import("@/views/Bookings.vue"),
+      },
+      {
+        path: "/booking/apt-pro",
+        name: "create-patient",
+        component: () => import("@/components/booking/CreatePatient.vue"),
       },
       {
         path: "/make-payment",

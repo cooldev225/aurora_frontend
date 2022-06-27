@@ -45,7 +45,7 @@
                   </div>
                 </div>
               </div>
-              <button class="btn btn-light-danger w-100 mt-2">SEARCH</button>
+              <button class="btn btn-primary w-100 mt-2">SEARCH</button>
             </div>
             <div class="col-md-4">
               <div class="card border border-dashed border-primary">
@@ -149,7 +149,7 @@
                 type="reset"
                 data-bs-dismiss="modal"
                 id="kt_modal_add_customer_cancel"
-                class="btn btn-light me-3"
+                class="btn btn-light-primary me-3"
               >
                 CLEAR FILTER
               </button>
@@ -162,11 +162,11 @@
   <div class="card mt-5">
     <div class="card-body">
       <div style="overflow-x: scroll">
-        <table class="table align-middle gs-0 gy-4 my-0">
+        <table class="table align-middle gs-0 gy-4 my-0 booking-table-header">
           <thead>
             <tr
               class="fw-bolder center-row text-white"
-              style="background: linear-gradient(45deg, #4d94ff, #ff30bf)"
+              style="background: #1e90ff"
             >
               <th
                 class="cell-120px border-0"
@@ -219,7 +219,9 @@
             min-width: 100%;
           "
         >
-          <table class="table align-middle gs-0 gy-4 my-0 bg-light">
+          <table
+            class="booking-table-body table align-middle gs-0 gy-4 my-0 bg-light"
+          >
             <tbody>
               <template v-for="index in 10" :key="index">
                 <tr class="text-center">
@@ -229,7 +231,15 @@
                   >
                     07:00 AM
                   </td>
-                  <td class="cell-35px bg-white"></td>
+                  <td class="cell-35px bg-white">
+                    <a
+                      class="cursor-pointer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modal_create_patient"
+                    >
+                      <i class="fa fa-plus text-primary"></i>
+                    </a>
+                  </td>
                   <td style="min-width: 441px"></td>
                   <td class="cell-35px bg-white"></td>
                   <td style="min-width: 441px"></td>
@@ -334,26 +344,30 @@
       </label>
     </a>
   </div>
+  <CreateModal></CreateModal>
 </template>
 <script>
 import { defineComponent, ref } from "vue";
 import VueCtkDateTimePicker from "vue-ctk-date-time-picker";
 import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
+import CreateModal from "@/components/booking/CreatePatient.vue";
 import moment from "moment";
 
 export default defineComponent({
   name: "bookings-dashboard",
   components: {
     VueCtkDateTimePicker,
+    CreateModal,
   },
   setup() {
     const format = ref("MM/D/YY");
-    const date_value = ref("");
+    const date_value = ref(new Date());
     const _Specialist = ref([
       "DR DAVID BADOV",
       "DR CHAMARA BASNAYAKE",
       "DR STUART ROBERTS",
     ]);
+
     const SearchPatient = ref({
       patient_name: "",
       ur_number: "",
@@ -383,16 +397,16 @@ export default defineComponent({
   max-width: 120px;
 }
 
-td,
-th {
-  border: 1px dashed gray !important;
+.booking-table-body td,
+.booking-table-body th {
+  border: 1px dashed gray;
 }
 
-table tr:first-child th:first-child {
+.booking-table-header tr:first-child th:first-child {
   border-radius: 50px 0 0 0;
 }
 
-table tr:first-child th:last-child {
+.booking-table-header tr:first-child th:last-child {
   border-radius: 0 50px 0 0;
 }
 </style>
