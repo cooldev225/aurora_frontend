@@ -1,39 +1,5 @@
 <template>
-  <div class="row g-5 g-xl-8">
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
-        color="primary"
-        icon-color="white"
-        :title="'Total : ' + tableData.value.length + ' Members'"
-        description="Total Organizations"
-      />
-    </div>
-
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-5 mb-xl-8"
-        svg-icon="media/icons/duotune/graphs/gra005.svg"
-        color="success"
-        icon-color="white"
-        title="TITLE"
-        description="DESCRIPTION"
-      />
-    </div>
-
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm002.svg"
-        color="danger"
-        icon-color="white"
-        title="TITLE"
-        description="DESCRIPTION"
-      />
-    </div>
-  </div>
-  <div class="card">
+  <div class="card w-75 mx-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
@@ -60,26 +26,12 @@
           class="d-flex justify-content-end"
           data-kt-subscription-table-toolbar="base"
         >
-          <!--begin::Export-->
-          <button
-            type="button"
-            class="btn btn-light-primary me-3"
-            data-bs-toggle="modal"
-            data-bs-target="#kt_subscriptions_export_modal"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr078.svg" />
-            </span>
-            Export
-          </button>
-          <!--end::Export-->
-
           <!--begin::Add subscription-->
           <router-link to="/organizations/create" class="btn btn-primary">
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>
-            Add
+            Add New Organization
           </router-link>
           <!--end::Add subscription-->
         </div>
@@ -95,30 +47,38 @@
         :loading="loading"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-logo="{ row: item }">
-          <div class="symbol symbol-45px me-2">
-            <span class="symbol-label">
+        <template v-slot:cell-name="{ row: item }">
+          <div class="d-flex align-items-center">
+            <div class="symbol symbol-50px me-2">
               <img :src="item.logo" class="h-50 align-self-center" />
+            </div>
+            <span class="text-dark fw-bolder text-hover-primary m-2 fs-3">
+              {{ item.name }}
             </span>
           </div>
         </template>
-        <template v-slot:cell-name="{ row: item }">
+        <template v-slot:cell-contact="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">{{
             item.username
           }}</span>
           <span class="text-muted fw-bold d-block">{{
             item.mobile_number
           }}</span>
+          <span class="text-muted fw-bold d-block">{{ item.email }}</span>
         </template>
-        <template v-slot:cell-email="{ row: item }">
-          {{ item.email }}
+        <template v-slot:cell-stats="{ row: item }">
+          <div class="d-flex flex-column">
+            <div class="mb-2">
+              <i class="bi bi-person-fill fs-1x"></i>
+              <span class=""> 0 / {{ item.max_clinics }}</span>
+            </div>
+            <div>
+              <i class="bi bi-building fs-1x"></i>
+              <span class=""> 0 / {{ item.max_employees }}</span>
+            </div>
+          </div>
         </template>
-        <template v-slot:cell-clinics="{ row: item }">
-          <span class="badge badge-light-success">{{ item.max_clinics }}</span>
-        </template>
-        <template v-slot:cell-users="{ row: item }">
-          <span class="badge badge-light-danger">{{ item.max_employees }}</span>
-        </template>
+
         <template v-slot:cell-action="{ row: item }">
           <a
             href="#"
@@ -158,7 +118,6 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 
@@ -167,7 +126,6 @@ export default defineComponent({
 
   components: {
     Datatable,
-    StatsisticsWidget5,
   },
 
   setup() {
@@ -175,34 +133,22 @@ export default defineComponent({
     const router = useRouter();
     const tableHeader = ref([
       {
-        name: "Logo",
-        key: "logo",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Name",
+        name: "Organization Name",
         key: "name",
         sortable: true,
         searchable: true,
       },
       {
-        name: "Email",
-        key: "email",
+        name: "Contact",
+        key: "contact",
         sortable: true,
         searchable: true,
       },
       {
-        name: "Clinics",
-        key: "clinics",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Users",
-        key: "users",
-        sortable: true,
-        searchable: true,
+        name: "Stats",
+        key: "stats",
+        sortable: false,
+        searchable: false,
       },
       {
         name: "Action",
