@@ -1,25 +1,26 @@
 <template>
   <div class="row">
-    <div class="card">
+    <div class="card card-flush">
       <div class="card-header">
         <div class="card-title">
           <span>SEARCH NEXT AVAILABLE APPOINTMENT</span>
-          <!-- <div class="row mb-2">
-            <el-select
-              class="col-3"
-              v-model="procedure"
-              placeholder="Select Procedure Type/Consultation"
-            ></el-select>
-          </div> -->
         </div>
       </div>
       <div class="card-body">
+        <div class="row mb-2">
+          <el-select
+            class="col-4"
+            v-model="procedure"
+            placeholder="Select Procedure Type/Consultation"
+          ></el-select>
+        </div>
         <div class="row">
           <div class="col-md-4">
             <VueCtkDateTimePicker
               :format="format"
-              v-model="date_value"
+              v-model="filterData.date"
               inline="false"
+              noKeyboard
               onlyDate
             />
           </div>
@@ -32,15 +33,21 @@
               </div>
               <div class="card-body card-scroll h-300px">
                 <div class="d-flex flex-column">
-                  <el-checkbox size="large" label="DR AARON THORNTON" />
-                  <el-checkbox size="large" label="DR ANTONY JACOB" />
-                  <el-checkbox size="large" label="DR DAVID BADOV" />
-                  <el-checkbox size="large" label="DR AARON THORNTON" />
-                  <el-checkbox size="large" label="DR ANTONY JACOB" />
-                  <el-checkbox size="large" label="DR DAVID BADOV" />
-                  <el-checkbox size="large" label="DR AARON THORNTON" />
-                  <el-checkbox size="large" label="DR ANTONY JACOB" />
-                  <el-checkbox size="large" label="DR DAVID BADOV" />
+                  <el-checkbox-group
+                    v-model="filterData.specialists"
+                    class="d-flex flex-column"
+                  >
+                    <template
+                      v-for="(item, index) in specialist_ava"
+                      :key="index"
+                    >
+                      <el-checkbox
+                        size="large"
+                        :value="item.id"
+                        :label="item.name + item.first_name"
+                      />
+                    </template>
+                  </el-checkbox-group>
                 </div>
               </div>
             </div>
@@ -135,7 +142,14 @@
                   </td>
                   <td style="min-width: 441px"></td>
                   <td class="cell-35px bg-white"></td>
-                  <td style="min-width: 441px"></td>
+                  <td
+                    style="min-width: 441px"
+                    :class="index % 3 === 0 ? 'bg-primary' : ''"
+                  >
+                    <span class="text-white" v-if="index % 3 === 0"
+                      >MONICA BADOV +61 423 012 796</span
+                    >
+                  </td>
                   <td class="cell-35px bg-white"></td>
                   <td style="min-width: 441px"></td>
                   <td class="cell-35px bg-white"></td>
@@ -206,11 +220,13 @@
   <CreateModal></CreateModal>
 </template>
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch, reactive } from "vue";
+import CreateModal from "@/components/booking/CreatePatient.vue";
 import VueCtkDateTimePicker from "vue-ctk-date-time-picker";
 import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
-import CreateModal from "@/components/booking/CreatePatient.vue";
 import moment from "moment";
+import ApiService from "@/core/services/ApiService";
+import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -219,25 +235,50 @@ export default defineComponent({
     CreateModal,
   },
   setup() {
-    const format = ref("MM/D/YY");
-    const date_value = ref(new Date());
+    const format = ref("YYYY-MM-DD");
+    const filterData = reactive({
+      date: new Date(),
+      specialists: [],
+    });
+
     const _Specialist = ref([
       "DR DAVID BADOV",
       "DR CHAMARA BASNAYAKE",
       "DR STUART ROBERTS",
     ]);
 
-    const SearchPatient = ref({
-      patient_name: "",
-      ur_number: "",
-      date_of_birth: "",
+    const specialist_ava = ref([]);
+
+    const handleSearch = () => {
+      console.log("search");
+    };
+
+    watch(_Specialist, () => {
+      console.log(_Specialist.value);
+    });
+
+    watch(filterData, () => {
+      if (JwtService.getToken()) {
+        ApiService.setHeader();
+        ApiService.query("work-hours", { params: filterData })
+          .then(({ data }) => {
+            specialist_ava.value = data.data;
+          })
+          .catch(({ response }) => {
+            console.log(response.data.errors);
+            // this.context.commit(Mutations.PURGE_AUTH);
+          });
+      } else {
+        // this.context.commit(Mutations.PURGE_AUTH);
+      }
     });
 
     return {
       format,
-      date_value,
-      SearchPatient,
+      filterData,
       _Specialist,
+      specialist_ava,
+      handleSearch,
     };
   },
 });

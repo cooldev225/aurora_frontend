@@ -170,6 +170,7 @@
                 <div class="w-100">
                   <el-form
                     class="w-100"
+                    :rules="rules"
                     :model="formData"
                     ref="formRef_1"
                     @submit.prevent="handleStep_1"
@@ -179,7 +180,7 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
+                          <label class="fs-6 fw-bold mb-2">
                             Service Reference Number
                           </label>
                           <!--end::Label-->
@@ -187,8 +188,9 @@
                           <!--begin::Input-->
                           <el-form-item prop="service_number">
                             <el-input
-                              v-model="formData.service_number"
                               type="text"
+                              v-model="formData.service_number"
+                              readonly
                               placeholder=""
                             />
                           </el-form-item>
@@ -208,8 +210,8 @@
                           <!--begin::Input-->
                           <el-form-item prop="clinic_name">
                             <el-input
-                              v-model="formData.clinic_name"
                               type="text"
+                              v-model="formData.clinic_name"
                               placeholder=""
                             />
                           </el-form-item>
@@ -221,9 +223,7 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Date
-                          </label>
+                          <label class="fs-6 fw-bold mb-2"> Date </label>
                           <!--end::Label-->
 
                           <!--begin::Input-->
@@ -231,6 +231,7 @@
                             <el-date-picker
                               class="w-100"
                               v-model="formData.date"
+                              readonly
                               placeholder=""
                             />
                           </el-form-item>
@@ -242,7 +243,7 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
+                          <label class="fs-6 fw-bold mb-2">
                             Arrival Time
                           </label>
                           <!--end::Label-->
@@ -263,9 +264,7 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Time
-                          </label>
+                          <label class="fs-6 fw-bold mb-2"> Time </label>
                           <!--end::Label-->
 
                           <!--begin::Input-->
@@ -274,6 +273,7 @@
                               class="w-100"
                               v-model="formData.time_slot"
                               placeholder=""
+                              disabled-seconds
                               is-range
                             />
                           </el-form-item>
@@ -310,7 +310,7 @@
                     @submit.prevent="handleStep_2"
                   >
                     <div class="row">
-                      <div class="fv-row">
+                      <div class="col-sm-6">
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
@@ -336,46 +336,6 @@
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
                           <label class="required fs-6 fw-bold mb-2">
-                            Clinical Code
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="clinical_code">
-                            <el-input
-                              v-model="formData.clinical_code"
-                              placeholder=""
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            MBS Code
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="mbs_code">
-                            <el-input
-                              v-model="formData.mbs_code"
-                              placeholder=""
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
                             Specialist
                           </label>
                           <!--end::Label-->
@@ -384,7 +344,7 @@
                           <el-form-item prop="specialist">
                             <el-select
                               class="w-100"
-                              v-model="formData.specialist"
+                              v-model="formData.specialists"
                               placeholder=""
                             />
                           </el-form-item>
@@ -396,9 +356,47 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Room
+                          <label class="fs-6 fw-bold mb-2">
+                            Clinical Code
                           </label>
+                          <!--end::Label-->
+
+                          <!--begin::Input-->
+                          <el-form-item prop="clinical_code">
+                            <el-input
+                              v-model="formData.clinical_code"
+                              readonly
+                              placeholder=""
+                            />
+                          </el-form-item>
+                          <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+                      </div>
+                      <div class="col-sm-6">
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                          <!--begin::Label-->
+                          <label class="fs-6 fw-bold mb-2"> MBS Code </label>
+                          <!--end::Label-->
+
+                          <!--begin::Input-->
+                          <el-form-item prop="mbs_code">
+                            <el-input
+                              v-model="formData.mbs_code"
+                              readonly
+                              placeholder=""
+                            />
+                          </el-form-item>
+                          <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+                      </div>
+                      <div class="col-sm-6">
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                          <!--begin::Label-->
+                          <label class="fs-6 fw-bold mb-2"> Room </label>
                           <!--end::Label-->
 
                           <!--begin::Input-->
@@ -406,6 +404,27 @@
                             <el-select
                               class="w-100"
                               v-model="formData.room"
+                              placeholder=""
+                            />
+                          </el-form-item>
+                          <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+                      </div>
+                      <div class="col-sm-6">
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                          <!--begin::Label-->
+                          <label class="fs-6 fw-bold mb-2">
+                            Anaesthetist
+                          </label>
+                          <!--end::Label-->
+
+                          <!--begin::Input-->
+                          <el-form-item prop="anaesthetist">
+                            <el-select
+                              class="w-100"
+                              v-model="formData.anaesthetist"
                               placeholder=""
                             />
                           </el-form-item>
@@ -507,10 +526,10 @@
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="date_of_birth">
+                          <el-form-item prop="birth_date">
                             <el-date-picker
                               class="w-100"
-                              v-model="formData.date_of_birh"
+                              v-model="formData.birth_date"
                               placeholder=""
                             />
                           </el-form-item>
@@ -863,7 +882,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Medicare Number
                               </label>
                               <!--end::Label-->
@@ -884,7 +903,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Medicare Reference Number
                               </label>
                               <!--end::Label-->
@@ -915,6 +934,7 @@
                                 <el-date-picker
                                   class="w-100"
                                   v-model="formData.medicare_expiry"
+                                  format="YYYY-MM"
                                   placeholder="Enter Expiry Date"
                                 />
                               </el-form-item>
@@ -934,7 +954,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Account Holder Type
                               </label>
                               <!--end::Label-->
@@ -961,7 +981,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Account Holder
                               </label>
                               <!--end::Label-->
@@ -992,6 +1012,7 @@
                                 <el-select
                                   class="w-100"
                                   v-model="formData.procedure"
+                                  readonly
                                   placeholder="Select Procedure"
                                 />
                               </el-form-item>
@@ -1013,6 +1034,7 @@
                                 <el-input
                                   type="text"
                                   v-model="formData.clinical_code"
+                                  readonly
                                   placeholder="Enter Clinical Code"
                                 />
                               </el-form-item>
@@ -1064,7 +1086,7 @@
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
                               <label class="required fs-6 fw-bold mb-2">
-                                Reffering Doctor
+                                Referring Doctor
                               </label>
                               <!--end::Label-->
 
@@ -1185,7 +1207,12 @@
                                   class="w-100"
                                   v-model="formData.appointment_confirm"
                                   placeholder="Select Appointment Confirm"
-                                />
+                                >
+                                  <el-option value="email" label="Email" />
+                                  <el-option value="phone" label="Phone" />
+                                  <el-option value="person" label="Person" />
+                                  <el-option value="other" label="Other" />
+                                </el-select>
                               </el-form-item>
                               <!--end::Input-->
                             </div>
@@ -1492,33 +1519,56 @@ export default defineComponent({
     const formRef_5 = ref(null);
     const loading = ref(false);
     const formData = ref({
-      name: "",
+      service_number: 22100349,
+      clinic_name: "",
+      date: new Date(),
+      arrival_time: "",
+      time_slot: "",
+      procedure: "",
+      clinical_code: "",
+      mbs_code: "",
+      specialists: "",
+      room: "",
+      anaesthetist: "",
+      first_name: "",
+      last_name: "",
+      birth_date: "",
+      title: "",
       email: "",
-      phone_number: "",
-      fax_number: "",
-      VAED_number: "",
-      hospital_provider_number: "",
+      gender: "",
       address: "",
-      city: "",
       street: "",
-      state: "",
+      suburb: "",
       postcode: "",
+      state: "",
       country: "",
-      longitude: "",
-      latitude: "",
-      timezone: "",
-      default_meal_time: "",
-      default_start_time: "",
-      default_end_time: "",
-      device_expiry: "",
-      device_name: "",
-      key_expiry: "",
-      otac: "",
-      lspn_id: "",
-      specimen_collection_point_number: "",
+      home_number: "",
+      work_number: "",
+      mobile_number: "",
+      charge_type: "",
+      medicare_number: "",
+      medicare_ref_number: "",
+      medicare_expiry: "",
+      account_holder_type: "",
+      account_holder: "",
+      procedure_price: "",
+      referring_doctor: "",
+      referral_duration: "",
+      referral_date: "",
+      appointment_confirm: "",
+      note: "",
+      important_details: "",
+      allergies: "",
+      clinical_alerts: "",
+      cancelled_appointments: "",
+      missed_appintments: "",
+      past_appointments: "",
+      recall: "",
+      recall_send: "",
     });
+
     const rules = ref({
-      name: [
+      clinic_name: [
         {
           required: true,
           message: "Clinic Name cannot be blank.",
@@ -1626,19 +1676,21 @@ export default defineComponent({
     });
 
     const handleStep_1 = () => {
-      // if (!formRef_1.value) {
-      //   return;
-      // }
-
-      // formRef_1.value.validate((valid) => {
-      //   if (valid) {
-      currentStepIndex.value++;
-      if (!_stepperObj.value) {
+      if (!formRef_1.value) {
         return;
       }
-      _stepperObj.value.goNext();
-      // }
-      // });
+
+      formRef_1.value.validate((valid) => {
+        if (valid) {
+          console.log(formData.value);
+
+          currentStepIndex.value++;
+          if (!_stepperObj.value) {
+            return;
+          }
+          _stepperObj.value.goNext();
+        }
+      });
     };
 
     const handleStep_2 = () => {
