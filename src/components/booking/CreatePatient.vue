@@ -212,6 +212,7 @@
                             <el-input
                               type="text"
                               v-model="formData.clinic_name"
+                              readonly
                               placeholder=""
                             />
                           </el-form-item>
@@ -1681,8 +1682,12 @@ export default defineComponent({
     watchEffect(() => {
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
-      if (bookingData.selected_specialist)
+      if (bookingData.selected_specialist) {
         formData.value.specialists = bookingData.selected_specialist.id;
+        if (bookingData.selected_specialist.work_hours.locations)
+          formData.value.clinic_name =
+            bookingData.selected_specialist.work_hours.locations.name;
+      }
     });
 
     onMounted(() => {
