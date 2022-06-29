@@ -65,23 +65,31 @@ const OrgAdminMenu = [
     fontIcon: "bi-hospital",
   },
   {
-    heading: "Administrators",
-    route: "/organizationAdmins",
-    svgIcon: "media/icons/duotune/communication/com014.svg",
-    fontIcon: "bi-person",
-  },
-  {
-    heading: "Managers",
-    route: "/organizationManagers",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-hospital",
-  },
-
-  {
     heading: "Employees",
     route: "/employees",
     svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-hospital",
+    fontIcon: "bi-people",
+    pages: [
+      {
+        heading: "All Employees",
+        route: "/employees",
+      },
+      {
+        heading: "Administrators",
+        route: "/organizationAdmins",
+      },
+      {
+        heading: "Managers",
+        route: "/organizationManagers",
+      },
+    ],
+  },
+  {
+    heading: "Settings",
+    route: "/settings",
+    svgIcon: "media/icons/duotune/general/gen019.svg",
+    fontIcon: "bi-gear",
+    pages: [],
   },
 ];
 
