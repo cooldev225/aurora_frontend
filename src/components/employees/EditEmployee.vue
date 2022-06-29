@@ -469,8 +469,8 @@
                   <div class="card-header border-bottom-dashed border-primary">
                     <div class="card-title">
                       <el-checkbox
-                        v-model="formData.work_hours.tursday.available"
-                        label="Tursday"
+                        v-model="formData.work_hours.thursday.available"
+                        label="thursday"
                         size="large"
                       />
                     </div>
@@ -485,9 +485,9 @@
                         <!--end::Label-->
 
                         <!--begin::Input-->
-                        <el-form-item prop="tursday_time">
+                        <el-form-item prop="thursday_time">
                           <el-time-picker
-                            v-model="formData.work_hours.tursday.time_slot"
+                            v-model="formData.work_hours.thursday.time_slot"
                             class="w-100"
                             is-range
                             range-separator="-"
@@ -505,9 +505,9 @@
                         <!--end::Label-->
 
                         <!--begin::Input-->
-                        <el-form-item prop="tursday_locations">
+                        <el-form-item prop="thursday_locations">
                           <el-select
-                            v-model="formData.work_hours.tursday.locations"
+                            v-model="formData.work_hours.thursday.locations"
                             type="text"
                           >
                           </el-select>
@@ -762,7 +762,7 @@ export default defineComponent({
           time_slot: "",
           locations: "",
         },
-        tursday: {
+        thursday: {
           available: false,
           time_slot: "",
           locations: "",

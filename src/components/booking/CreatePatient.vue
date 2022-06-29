@@ -346,7 +346,17 @@
                               class="w-100"
                               v-model="formData.specialists"
                               placeholder=""
-                            />
+                            >
+                              <template
+                                v-for="(item, index) in ava_specialist"
+                                :key="index"
+                              >
+                                <el-option
+                                  :value="item.id"
+                                  :label="item.name"
+                                />
+                              </template>
+                            </el-select>
                           </el-form-item>
                           <!--end::Input-->
                         </div>
@@ -1184,7 +1194,7 @@
                     class="w-100"
                     :model="formData"
                     ref="formRef_5"
-                    @submit.prevent="handleStep_5"
+                    @submit.prevent="submit"
                   >
                     <div class="row scroll h-450px">
                       <div class="card-info">
@@ -1497,7 +1507,7 @@
 </style> -->
 
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -1505,7 +1515,6 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
-
 export default defineComponent({
   name: "create-app-modal",
   components: {},
@@ -1667,6 +1676,15 @@ export default defineComponent({
     const createPatientRef = ref(null);
     const currentStepIndex = ref(0);
 
+    const ava_specialist = ref([]);
+
+    watchEffect(() => {
+      const bookingData = store.getters.bookingDatas;
+      ava_specialist.value = bookingData.ava_specialist;
+      if (bookingData.selected_specialist)
+        formData.value.specialists = bookingData.selected_specialist.id;
+    });
+
     onMounted(() => {
       _stepperObj.value = StepperComponent.createInsance(
         createPatientRef.value
@@ -1787,6 +1805,7 @@ export default defineComponent({
     return {
       formData,
       rules,
+      ava_specialist,
       submit,
       formRef_1,
       formRef_2,

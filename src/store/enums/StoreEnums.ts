@@ -40,6 +40,13 @@ const Actions = {
     UPDATE: "updateClinics",
   },
 
+  BOOKING: {
+    LIST: "listBooking",
+    CREATE: "createBooking",
+    DELETE: "deleteBooking",
+    UPDATE: "updateBooking",
+  },
+
   LIST_BIRTH_CODE: "listBirthCode",
   CREATE_BIRTH_CODE: "createBirthCode",
   DELETE_BIRTH_CODE: "deleteBirthCode",
@@ -70,6 +77,13 @@ const Actions = {
     DELETE: "deleteEmployee",
     UPDATE: "updateEmployee",
   },
+
+  // EMPLOYEE_ROLE: {
+  //   LIST: "listEmployeeRoles",
+  //   CREATE: "createEmployeeRoles",
+  //   DELETE: "deleteEmployeeRoles",
+  //   UPDATE: "updateEmployeeRoles",
+  // },
 
   LIST_MAKE_PAYMENT: "listPatients",
   CREATE_MAKE_PAYMENT: "createPatients",
@@ -128,6 +142,16 @@ const Mutations = {
     LIST: "setEmployeeList",
     SELECT: "setSelectEmployee",
   },
+
+  SET_BOOKING: {
+    LIST: "setBookingList",
+    SELECT: "setSelectBooking",
+  },
+
+  // SET_EMPLOYEE_ROLES: {
+  //   LIST: "setEmployeeRolesList",
+  //   SELECT: "setSelectBooking",
+  // },
 };
 
 export { Actions, Mutations };

@@ -16,6 +16,7 @@ import HealthFundModule from "@/store/modules/HealthFundModule";
 import BirthCodeModule from "@/store/modules/BirthCodeModule";
 import PatientsModule from "@/store/modules/PatientsModule";
 import EmployeeModule from "@/store/modules/EmployeeModule";
+import BookingModule from "@/store/modules/BookingModule";
 
 config.rawError = true;
 
@@ -36,6 +37,7 @@ const store = createStore({
     BirthCodeModule,
     PatientsModule,
     EmployeeModule,
+    BookingModule,
   },
 });
 

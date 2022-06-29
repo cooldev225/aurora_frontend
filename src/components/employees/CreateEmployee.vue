@@ -279,7 +279,7 @@
             ref="formRef_3"
           >
             <div class="row">
-              <div class="row">
+              <div class="col-md-6">
                 <!--begin::Label-->
                 <label class="required fs-6 fw-bold mb-2">
                   Select Employee Type
@@ -287,19 +287,39 @@
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="employee_type">
-                  <el-select
-                    class="w-100"
-                    v-model="formData.employee_type"
-                    filterable
-                  >
+                <el-form-item prop="type">
+                  <el-select class="w-100" v-model="formData.type" filterable>
                     <el-option value="part-time" label="Part-Time" />
                     <el-option value="full-time" label="Full-Time" />
                     <el-option value="casual" label="Casual" />
-                    <el-option value="contractor" label="Contractor" />
+                    <el-option value="contract" label="Contract" />
                   </el-select>
                 </el-form-item>
                 <!--end::Input-->
+              </div>
+              <div class="col-md-6">
+                <!--begin::Input group-->
+                <div class="fv-row mb-7">
+                  <!--begin::Label-->
+                  <label class="required fs-6 fw-bold mb-2"
+                    >Employee Roles</label
+                  >
+                  <!--end::Label-->
+
+                  <!--begin::Input-->
+                  <el-form-item prop="role">
+                    <el-select v-model="formData.role" class="w-100">
+                      <el-option value="receptionist" label="Receptionist" />
+                      <el-option value="specialist" label="Specialist" />
+                      <el-option value="pathologist" label="Pathologist" />
+                      <el-option value="scientist" label="Scientist" />
+                      <el-option value="typist" label="Typist" />
+                      <el-option value="anesthetist" label="Anesthetist" />
+                    </el-select>
+                  </el-form-item>
+                  <!--end::Input-->
+                </div>
+                <!--end::Input group-->
               </div>
               <div class="col-md-4 mb-3">
                 <div class="card border border-primary border-dashed">
@@ -347,6 +367,12 @@
                             v-model="formData.work_hours.monday.locations"
                             type="text"
                           >
+                            <template
+                              v-for="(item, index) in clinicsList"
+                              :key="index"
+                            >
+                              <el-option :value="item.id" :label="item.name" />
+                            </template>
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -401,6 +427,12 @@
                             v-model="formData.work_hours.tuesday.locations"
                             type="text"
                           >
+                            <template
+                              v-for="(item, index) in clinicsList"
+                              :key="index"
+                            >
+                              <el-option :value="item.id" :label="item.name" />
+                            </template>
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -455,6 +487,12 @@
                             v-model="formData.work_hours.wednesday.locations"
                             type="text"
                           >
+                            <template
+                              v-for="(item, index) in clinicsList"
+                              :key="index"
+                            >
+                              <el-option :value="item.id" :label="item.name" />
+                            </template>
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -468,8 +506,8 @@
                   <div class="card-header border-bottom-dashed border-primary">
                     <div class="card-title">
                       <el-checkbox
-                        v-model="formData.work_hours.tursday.available"
-                        label="Tursday"
+                        v-model="formData.work_hours.thursday.available"
+                        label="Thursday"
                         size="large"
                       />
                     </div>
@@ -484,9 +522,9 @@
                         <!--end::Label-->
 
                         <!--begin::Input-->
-                        <el-form-item prop="tursday_time">
+                        <el-form-item prop="thursday_time">
                           <el-time-picker
-                            v-model="formData.work_hours.tursday.time_slot"
+                            v-model="formData.work_hours.thursday.time_slot"
                             class="w-100"
                             is-range
                             range-separator="-"
@@ -504,11 +542,17 @@
                         <!--end::Label-->
 
                         <!--begin::Input-->
-                        <el-form-item prop="tursday_locations">
+                        <el-form-item prop="thursday_locations">
                           <el-select
-                            v-model="formData.work_hours.tursday.locations"
+                            v-model="formData.work_hours.thursday.locations"
                             type="text"
                           >
+                            <template
+                              v-for="(item, index) in clinicsList"
+                              :key="index"
+                            >
+                              <el-option :value="item.id" :label="item.name" />
+                            </template>
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -563,6 +607,12 @@
                             v-model="formData.work_hours.friday.locations"
                             type="text"
                           >
+                            <template
+                              v-for="(item, index) in clinicsList"
+                              :key="index"
+                            >
+                              <el-option :value="item.id" :label="item.name" />
+                            </template>
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -617,6 +667,12 @@
                             v-model="formData.work_hours.saturday.locations"
                             type="text"
                           >
+                            <template
+                              v-for="(item, index) in clinicsList"
+                              :key="index"
+                            >
+                              <el-option :value="item.id" :label="item.name" />
+                            </template>
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -667,6 +723,12 @@
                             v-model="formData.work_hours.sunday.locations"
                             type="text"
                           >
+                            <template
+                              v-for="(item, index) in clinicsList"
+                              :key="index"
+                            >
+                              <el-option :value="item.id" :label="item.name" />
+                            </template>
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -719,7 +781,7 @@
   <!--end::Stepper-->
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -743,8 +805,8 @@ export default defineComponent({
       mobile_number: "",
       first_name: "",
       last_name: "",
-      role: "",
-      employee_type: "",
+      role: "specialist",
+      type: "full-time",
       work_hours: {
         monday: {
           available: false,
@@ -761,7 +823,7 @@ export default defineComponent({
           time_slot: "",
           locations: "",
         },
-        tursday: {
+        thursday: {
           available: false,
           time_slot: "",
           locations: "",
@@ -824,6 +886,7 @@ export default defineComponent({
     const _stepperObj = ref<StepperComponent | null>(null);
     const createEmployeeRef = ref<HTMLElement | null>(null);
     const currentStepIndex = ref(0);
+    const clinicsList = computed(() => store.getters.clinicsList);
 
     onMounted(() => {
       _stepperObj.value = StepperComponent.createInsance(
@@ -831,6 +894,8 @@ export default defineComponent({
       );
 
       setCurrentPageBreadcrumbs("Create Employee", ["Employee"]);
+
+      store.dispatch(Actions.CLINICS.LIST);
     });
 
     const handleStep_1 = () => {
@@ -920,6 +985,7 @@ export default defineComponent({
       handleStep_2,
       createEmployeeRef,
       currentStepIndex,
+      clinicsList,
     };
   },
 });
