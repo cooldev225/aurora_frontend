@@ -27,17 +27,17 @@ export default class HealthFundsModule
   }
 
   @Mutation
-  [Mutations.SET_HEALTH_FUNDS_LIST](healthFundsData) {
+  [Mutations.SET_HEALTH_FUND.LIST](healthFundsData) {
     this.healthFundsData = healthFundsData;
   }
 
   @Action
-  [Actions.LIST_HEALTH_FUNDS]() {
+  [Actions.HEALTH_FUND.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("health-funds")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_HEALTH_FUNDS_LIST, data.data);
+          this.context.commit(Mutations.SET_HEALTH_FUND.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {

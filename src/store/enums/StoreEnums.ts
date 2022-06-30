@@ -52,7 +52,9 @@ const Actions = {
   DELETE_BIRTH_CODE: "deleteBirthCode",
   UPDATE_BIRTH_CODE: "updateBirthCode",
 
-  LIST_HEALTH_FUNDS: "listHealthFunds",
+  HEALTH_FUND: {
+    LIST: "listHealthFunds",
+  },
 
   LIST_SPECIALIST_TYPE: "listSpecialistType",
   CREATE_SPECIALIST_TYPE: "createSpecialistType",
@@ -131,7 +133,9 @@ const Mutations = {
   SET_BIRTH_CODE_LIST: "setClinicsList",
   SET_SELECT_BIRTH_CODE: "setSelectClinics",
 
-  SET_HEALTH_FUNDS_LIST: "setHealthFundsList",
+  SET_HEALTH_FUND: {
+    LIST: "setHealthFundsList",
+  },
 
   SET_PATIENT: {
     LIST: "setPatientList",

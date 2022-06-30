@@ -883,7 +883,44 @@
                                   class="w-100"
                                   v-model="formData.charge_type"
                                   placeholder="Select Charge Type"
-                                />
+                                >
+                                  <el-option
+                                    value="self-insured"
+                                    label="Self-insured"
+                                  />
+                                  <el-option
+                                    value="private-health-excess"
+                                    label="Private Health Insurance with excess"
+                                  />
+                                  <el-option
+                                    value="private-health-excess-0"
+                                    label="Private Health Insureance with $0 excess"
+                                  />
+                                  <el-option
+                                    value="private-health-pension"
+                                    label="Private Health Insreance + Pension/Healthcare Card"
+                                  />
+                                  <el-option
+                                    value="pension-card"
+                                    label="Pension Card"
+                                  />
+                                  <el-option
+                                    value="healthcare-card"
+                                    label="Healthcare Card"
+                                  />
+                                  <el-option
+                                    value="deaprtment-veteran"
+                                    label="Department of Veteran Affair s"
+                                  />
+                                  <el-option
+                                    value="work-cover"
+                                    label="Work Cover"
+                                  />
+                                  <el-option
+                                    value="transport-accident"
+                                    label="Transport Accident Commision"
+                                  />
+                                </el-select>
                               </el-form-item>
                               <!--end::Input-->
                             </div>
@@ -948,6 +985,308 @@
                                   format="YYYY-MM"
                                   placeholder="Enter Expiry Date"
                                 />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div
+                            class="col-sm-6"
+                            v-if="
+                              formData.charge_type ===
+                                'private-health-excess' ||
+                              formData.charge_type ===
+                                'private-health-excess-0' ||
+                              formData.charge_type === 'private-health-pension'
+                            "
+                          >
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                Health Fund
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="health_fund">
+                                <el-select
+                                  class="w-100"
+                                  v-model="formData.health_fund"
+                                >
+                                  <template
+                                    v-for="(item, idx) in healthFundsList"
+                                    :key="idx"
+                                  >
+                                    <el-option
+                                      :value="item.id"
+                                      :label="item.code + '-' + item.name"
+                                    />
+                                  </template>
+                                </el-select>
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div
+                            class="col-sm-6"
+                            v-if="
+                              formData.charge_type ===
+                                'private-health-excess' ||
+                              formData.charge_type ===
+                                'private-health-excess-0' ||
+                              formData.charge_type === 'private-health-pension'
+                            "
+                          >
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                Health Fund Membership Number
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="health_fund_mem_number">
+                                <el-input
+                                  type="text"
+                                  v-model="formData.health_fund_mem_number"
+                                  placeholder="12345678"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div
+                            class="col-sm-6"
+                            v-if="
+                              formData.charge_type ===
+                                'private-health-excess' ||
+                              formData.charge_type ===
+                                'private-health-excess-0' ||
+                              formData.charge_type === 'private-health-pension'
+                            "
+                          >
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                Health Fund Reference Number
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="health_fund_ref_number">
+                                <el-input
+                                  type="text"
+                                  v-model="formData.health_fund_ref_number"
+                                  placeholder="00"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div
+                            class="col-sm-6"
+                            v-if="
+                              formData.charge_type ===
+                                'private-health-excess' ||
+                              formData.charge_type ===
+                                'private-health-excess-0' ||
+                              formData.charge_type === 'private-health-pension'
+                            "
+                          >
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                Health Fund Expiry Date
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="health_fund_expiry">
+                                <el-date-picker
+                                  class="w-100"
+                                  v-model="formData.health_fund_expiry"
+                                  format="YYYY-MM"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div
+                            class="col-sm-6"
+                            v-if="
+                              formData.charge_type === 'private-health-excess'
+                            "
+                          >
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                Fund Excess
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="fund_excess">
+                                <el-input
+                                  type="text"
+                                  v-model="formData.fund_excess"
+                                  placeholder="00"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div
+                            class="col-sm-6"
+                            v-if="formData.charge_type === 'pension-card'"
+                          >
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                Pension Card Number
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="pension_card_number">
+                                <el-input
+                                  class="w-100"
+                                  v-model="formData.pension_card_number"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div
+                            class="col-sm-6"
+                            v-if="formData.charge_type === 'healthcare-card'"
+                          >
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                Healthcare Card Number
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="healthcare_card_number">
+                                <el-input
+                                  class="w-100"
+                                  v-model="formData.healthcare_card_number"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div
+                            class="col-sm-6"
+                            v-if="
+                              formData.charge_type === 'healthcare-card' ||
+                              formData.charge_type === 'pension-card'
+                            "
+                          >
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                Expiry Date
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="expiry_date">
+                                <el-date-picker
+                                  class="w-100"
+                                  format="YYYY-MM"
+                                  v-model="formData.expiry_date"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div
+                            class="col-sm-6"
+                            v-if="formData.charge_type === 'department-veteran'"
+                          >
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                DVA Number
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="pension_card_number">
+                                <el-input
+                                  class="w-100"
+                                  v-model="formData.pension_card_number"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div
+                            class="col-sm-6"
+                            v-if="formData.charge_type === 'department-veteran'"
+                          >
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                DVA Expiry Date
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="dva_expiry">
+                                <el-date-picker
+                                  class="w-100"
+                                  format="YYYY-MM"
+                                  v-model="formData.dva_expiry"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div
+                            class="col-sm-6"
+                            v-if="formData.charge_type === 'department-veteran'"
+                          >
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                DVA Type
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="dva_type">
+                                <el-select
+                                  class="w-100"
+                                  v-model="formData.dva_type"
+                                >
+                                  <el-option value="white" label="White" />
+                                  <el-option value="gold" label="Gold" />
+                                  <el-option value="orange" label="Orange" />
+                                </el-select>
                               </el-form-item>
                               <!--end::Input-->
                             </div>
@@ -1203,6 +1542,55 @@
                           Other Information
                         </div>
                         <div class="row">
+                          <div class="col-sm-6">
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Input-->
+                              <el-form-item prop="anesthetis_questions">
+                                <el-checkbox
+                                  class="w-100"
+                                  v-model="formData.anesthetis_questions"
+                                  label="Anaesthetis Questions"
+                                  data-bs-toggle="collapse"
+                                  href="#toogle_ane_ques"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div class="col-sm-12 collapse" id="toogle_ane_ques">
+                            <div class="row">
+                              <div class="col-9">Are you diabetic?</div>
+                              <div class="col-3">
+                                <el-switch
+                                  v-model="formData.question"
+                                  class="ml-2"
+                                  style="
+                                    --el-switch-on-color: #13ce66;
+                                    --el-switch-off-color: #ff4949;
+                                  "
+                                  active-text="Y"
+                                  inactive-text="N"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-6">
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Input-->
+                              <el-form-item prop="procedure_questions">
+                                <el-checkbox
+                                  class="w-100"
+                                  v-model="formData.procedure_questions"
+                                  label="Procedure Questions"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
                           <div class="fv-row">
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
@@ -1508,7 +1896,7 @@
 </style> -->
 
 <script>
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
+import { defineComponent, onMounted, ref, watchEffect, computed } from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -1516,6 +1904,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
+
 export default defineComponent({
   name: "create-app-modal",
   components: {},
@@ -1678,6 +2067,7 @@ export default defineComponent({
     const currentStepIndex = ref(0);
 
     const ava_specialist = ref([]);
+    const healthFundsList = computed(() => store.getters.healthFundsList);
 
     watchEffect(() => {
       const bookingData = store.getters.bookingDatas;
@@ -1695,7 +2085,8 @@ export default defineComponent({
         createPatientRef.value
       );
 
-      setCurrentPageBreadcrumbs("Create Clinics", ["Clinics"]);
+      store.dispatch(Actions.HEALTH_FUND.LIST);
+      setCurrentPageBreadcrumbs("Add Appointment", ["Bookings"]);
     });
 
     const handleStep_1 = () => {
@@ -1811,6 +2202,7 @@ export default defineComponent({
       formData,
       rules,
       ava_specialist,
+      healthFundsList,
       submit,
       formRef_1,
       formRef_2,
