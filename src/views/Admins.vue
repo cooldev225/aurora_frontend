@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card w-75 mx-auto">
     <!--begin::Alert-->
     <div class="alert alert-warning m-4 mb-0">
       <!--begin::Wrapper-->
@@ -10,7 +10,7 @@
         <!--begin::Content-->
         <span
           >Admins at this level have authority, to add, edit and disable
-          Organizations. Please eunsure only trusted and trained aurora team
+          Organizations. Please ensure only trusted and trained aurora team
           members are in this list</span
         >
         <!--end::Content-->
