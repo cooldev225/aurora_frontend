@@ -232,6 +232,7 @@ export default defineComponent({
     const formRef = ref(null);
     const addAdminModalRef = ref(null);
     const loading = ref(false);
+
     const formData = ref({
       first_name: "",
       last_name: "",
