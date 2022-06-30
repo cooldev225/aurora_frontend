@@ -213,13 +213,17 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="clinic_name">
-                                <el-input
-                                  type="text"
-                                  v-model="formData.clinic_name"
+                              <el-form-item prop="clinic_id">
+                                <el-select
+                                  class="w-100"
+                                  v-model="formData.clinic_id"
                                   readonly
-                                  placeholder=""
-                                />
+                                >
+                                  <el-option
+                                    :value="clinic.id"
+                                    :label="clinic.name"
+                                  />
+                                </el-select>
                               </el-form-item>
                               <!--end::Input-->
                             </div>
@@ -406,10 +410,10 @@
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="procedure">
+                          <el-form-item prop="procedure_id">
                             <el-select
                               class="w-100"
-                              v-model="formData.procedure"
+                              v-model="formData.procedure_id"
                               placeholder=""
                             />
                           </el-form-item>
@@ -496,12 +500,15 @@
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="room">
-                            <el-select
-                              class="w-100"
-                              v-model="formData.room"
-                              placeholder=""
-                            />
+                          <el-form-item prop="room_id">
+                            <el-select class="w-100" v-model="formData.room_id">
+                              <template v-for="(room, idx) in rooms" :key="idx">
+                                <el-option
+                                  :value="room.id"
+                                  :label="room.name"
+                                />
+                              </template>
+                            </el-select>
                           </el-form-item>
                           <!--end::Input-->
                         </div>
@@ -511,16 +518,14 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2">
-                            Anaesthetist
-                          </label>
+                          <label class="fs-6 fw-bold mb-2"> Anesthetist </label>
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="anaesthetist">
+                          <el-form-item prop="anesthetist_id">
                             <el-select
                               class="w-100"
-                              v-model="formData.anaesthetist"
+                              v-model="formData.anesthetist_id"
                               placeholder=""
                             />
                           </el-form-item>
@@ -1443,12 +1448,12 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="procedure">
+                              <el-form-item prop="procedure_id">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.procedure"
+                                  v-model="formData.procedure_id"
                                   readonly
-                                  placeholder="Select Procedure"
+                                  placeholder="Select Procedure_id"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1539,11 +1544,11 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Input-->
-                              <el-form-item prop="anesthetis_questions">
+                              <el-form-item prop="anesthetic_questions">
                                 <el-checkbox
                                   class="w-100"
-                                  v-model="formData.anesthetis_questions"
-                                  label="Anaesthetis Questions"
+                                  v-model="formData.anesthetic_questions"
+                                  label="Anesthetic Questions"
                                   data-bs-toggle="collapse"
                                   href="#toogle_ane_ques"
                                 />
@@ -1703,143 +1708,6 @@
                           </div>
                         </div>
                       </div>
-                      <el-divider />
-                      <div class="card-info">
-                        <div class="fs-3 fw-bold text-muted mb-6">
-                          Appointment History
-                        </div>
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Cancelled Appointments
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="cancelled_appointments">
-                                <el-input
-                                  type="text"
-                                  v-model="formData.cancelled_appointments"
-                                  placeholder="0"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Missed Appointments
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="missed_appointments">
-                                <el-input
-                                  type="text"
-                                  v-model="formData.missed_appintments"
-                                  placeholder=""
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Future Appointments
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="future_appointments">
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Past Appointments
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="past_appintments">
-                                <el-input
-                                  type="text"
-                                  v-model="formData.past_appointments"
-                                  placeholder=""
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                        </div>
-                      </div>
-                      <el-divider />
-                      <div class="card-info">
-                        <div class="fs-3 fw-bold text-muted mb-6">
-                          Recall Information
-                        </div>
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Recall
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="recall">
-                                <el-input
-                                  type="text"
-                                  v-model="formData.recall"
-                                  placeholder=""
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Recall Send
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="recall_send">
-                                <el-select
-                                  class="w-100"
-                                  v-model="formData.recall_send"
-                                  placeholder=""
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                        </div>
-                      </div>
                     </div>
                     <div class="d-flex justify-content-between">
                       <button
@@ -1896,7 +1764,14 @@
 </style> -->
 
 <script>
-import { defineComponent, onMounted, ref, watchEffect, computed } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  watchEffect,
+  computed,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -1904,6 +1779,8 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
+import ApiService from "@/core/services/ApiService";
+import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "create-app-modal",
@@ -1919,16 +1796,16 @@ export default defineComponent({
     const loading = ref(false);
     const formData = ref({
       service_number: 22100349,
-      clinic_name: "",
+      clinic_id: "",
       date: new Date(),
       arrival_time: "",
       time_slot: ["2022-06-20T09:00", "2022-06-20T17:00"],
-      procedure: "",
+      procedure_id: "",
       clinical_code: "",
       mbs_code: "",
       specialists: "",
-      room: "",
-      anaesthetist: "",
+      room_id: "",
+      anesthetist_id: "",
       first_name: "",
       last_name: "",
       birth_date: "",
@@ -1959,17 +1836,12 @@ export default defineComponent({
       important_details: "",
       allergies: "",
       clinical_alerts: "",
-      cancelled_appointments: "",
-      missed_appintments: "",
-      past_appointments: "",
-      recall: "",
-      recall_send: "",
       anesthetic_questions: false,
       anesthetic_answers: [],
     });
 
     const rules = ref({
-      clinic_name: [
+      clinic_id: [
         {
           required: true,
           message: "Clinic Name cannot be blank.",
@@ -2073,6 +1945,8 @@ export default defineComponent({
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
 
     const aneAnswers = ref([]);
+    const clinic = ref([]);
+    const rooms = ref([]);
     const handleQuestions = () => {
       formData.value.aneQuestions = aneAnswers.value;
       let temp = [];
@@ -2081,7 +1955,7 @@ export default defineComponent({
           temp.push(aneQuestions.value[i].id);
         }
       }
-      formData.value.anesthetis_answers = temp;
+      formData.value.anesthetic_answers = temp;
     };
 
     watchEffect(() => {
@@ -2090,9 +1964,24 @@ export default defineComponent({
       formData.value.time_slot = bookingData.time_slots;
       if (bookingData.selected_specialist) {
         formData.value.specialists = bookingData.selected_specialist.id;
-        if (bookingData.selected_specialist.work_hours.locations)
-          formData.value.clinic_name =
-            bookingData.selected_specialist.work_hours.locations.name;
+        if (bookingData.selected_specialist.work_hours.locations) {
+          clinic.value = bookingData.selected_specialist.work_hours.locations;
+          formData.value.clinic_id =
+            bookingData.selected_specialist.work_hours.locations.id;
+          if (JwtService.getToken()) {
+            ApiService.setHeader();
+            ApiService.get("clinics/" + clinic.value.id + "/rooms")
+              .then(({ data }) => {
+                rooms.value = data.data;
+              })
+              .catch(({ response }) => {
+                console.log(response.data.errors);
+                // this.context.commit(Mutations.PURGE_AUTH);
+              });
+          } else {
+            // this.context.commit(Mutations.PURGE_AUTH);
+          }
+        }
       }
     });
 
@@ -2113,8 +2002,6 @@ export default defineComponent({
 
       formRef_1.value.validate((valid) => {
         if (valid) {
-          console.log(formData.value);
-
           currentStepIndex.value++;
           if (!_stepperObj.value) {
             return;
@@ -2218,6 +2105,8 @@ export default defineComponent({
     return {
       formData,
       rules,
+      clinic,
+      rooms,
       ava_specialist,
       healthFundsList,
       aneQuestions,
