@@ -80,6 +80,14 @@ const Actions = {
     UPDATE: "updateEmployee",
   },
 
+  ANESTHETIST_QUES: {
+    LIST: "listAnesthetist",
+    CREATE: "createAnesthetist",
+    DELETE: "deleteAnesthetist",
+    UPDATE: "updateAnesthetist",
+    ACTIVE_LIST: "listActiveAnesthetist",
+  },
+
   // EMPLOYEE_ROLE: {
   //   LIST: "listEmployeeRoles",
   //   CREATE: "createEmployeeRoles",
@@ -150,6 +158,12 @@ const Mutations = {
   SET_BOOKING: {
     LIST: "setBookingList",
     SELECT: "setSelectBooking",
+  },
+
+  SET_ANESTHETIST_QUES: {
+    LIST: "setAnesQuesList",
+    SELECT: "setSelectAnesQuesSelect",
+    ACTIVE_LIST: "setAnesQuesActiveList",
   },
 
   // SET_EMPLOYEE_ROLES: {

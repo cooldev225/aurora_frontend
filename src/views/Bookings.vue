@@ -254,13 +254,10 @@ export default defineComponent({
     const _date_search = reactive({
       date: new Date(),
     });
-
     const _specialists_search = reactive({
       specialists: [],
     });
-
     const _ava_specialists = ref([]);
-
     const _specialists = ref([]);
 
     onMounted(() => {
@@ -270,10 +267,14 @@ export default defineComponent({
 
     const handleAddApt = (specialist, startTime, endTime) => {
       const item = {
-        time_slots: [startTime, endTime],
+        time_slots: [
+          _date_search.date.toISOString().slice(0, 10) + "T" + startTime,
+          _date_search.date.toISOString().slice(0, 10) + "T" + endTime,
+        ],
         ava_specialist: _ava_specialists,
         selected_specialist: specialist,
       };
+      console.log(item);
       store.commit(Mutations.SET_BOOKING.SELECT, item);
       const modal = new Modal(document.getElementById("modal_create_patient"));
       modal.show();
