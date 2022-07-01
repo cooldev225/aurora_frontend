@@ -410,12 +410,21 @@
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="procedure_id">
+                          <el-form-item prop="appointment_type_id">
                             <el-select
                               class="w-100"
-                              v-model="formData.procedure_id"
-                              placeholder=""
-                            />
+                              v-model="formData.appointment_type_id"
+                            >
+                              <template
+                                v-for="(item, idx) in aptTypeList"
+                                :key="idx"
+                              >
+                                <el-option
+                                  :value="item.id"
+                                  :label="item.name"
+                                />
+                              </template>
+                            </el-select>
                           </el-form-item>
                           <!--end::Input-->
                         </div>
@@ -1448,13 +1457,23 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="procedure_id">
+                              <el-form-item prop="appointment_type_id">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.procedure_id"
+                                  v-model="formData.appointment_type_id"
                                   readonly
-                                  placeholder="Select Procedure_id"
-                                />
+                                  placeholder="Select Appointment Type"
+                                >
+                                  <template
+                                    v-for="(item, idx) in aptTypeList"
+                                    :key="idx"
+                                  >
+                                    <el-option
+                                      :value="item.id"
+                                      :label="item.name"
+                                    />
+                                  </template>
+                                </el-select>
                               </el-form-item>
                               <!--end::Input-->
                             </div>
@@ -1800,7 +1819,7 @@ export default defineComponent({
       date: new Date(),
       arrival_time: "",
       time_slot: ["2022-06-20T09:00", "2022-06-20T17:00"],
-      procedure_id: "",
+      appointment_type_id: "",
       clinical_code: "",
       mbs_code: "",
       specialists: "",
@@ -1943,6 +1962,7 @@ export default defineComponent({
     const ava_specialist = ref([]);
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
+    const aptTypeList = computed(() => store.getters.getAptTypeList);
 
     const aneAnswers = ref([]);
     const clinic = ref([]);
@@ -1992,6 +2012,7 @@ export default defineComponent({
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
+      store.dispatch(Actions.APT.TYPE_LIST);
       setCurrentPageBreadcrumbs("Add Appointment", ["Bookings"]);
     });
 
@@ -2111,6 +2132,7 @@ export default defineComponent({
       healthFundsList,
       aneQuestions,
       aneAnswers,
+      aptTypeList,
       submit,
       formRef_1,
       formRef_2,

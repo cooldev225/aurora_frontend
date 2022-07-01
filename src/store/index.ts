@@ -18,6 +18,7 @@ import PatientsModule from "@/store/modules/PatientsModule";
 import EmployeeModule from "@/store/modules/EmployeeModule";
 import BookingModule from "@/store/modules/BookingModule";
 import AnesthetistModule from "@/store/modules/AnesthetistModule";
+import AppointmentModule from "@/store/modules/AppointmentModule";
 
 config.rawError = true;
 
@@ -40,6 +41,7 @@ const store = createStore({
     EmployeeModule,
     BookingModule,
     AnesthetistModule,
+    AppointmentModule,
   },
 });
 

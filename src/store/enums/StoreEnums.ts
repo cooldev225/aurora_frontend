@@ -88,6 +88,14 @@ const Actions = {
     ACTIVE_LIST: "listActiveAnesthetist",
   },
 
+  APT: {
+    LIST: "listApt",
+    CREATE: "createApt",
+    DELETE: "deleteApt",
+    UPDATE: "updateApt",
+    TYPE_LIST: "listTypeApt",
+  },
+
   // EMPLOYEE_ROLE: {
   //   LIST: "listEmployeeRoles",
   //   CREATE: "createEmployeeRoles",
@@ -164,6 +172,12 @@ const Mutations = {
     LIST: "setAnesQuesList",
     SELECT: "setSelectAnesQuesSelect",
     ACTIVE_LIST: "setAnesQuesActiveList",
+  },
+
+  SET_APT: {
+    LIST: "setApt",
+    SELECT: "setSelectApt",
+    TYPE_LIST: "setAnesQpt",
   },
 
   // SET_EMPLOYEE_ROLES: {
