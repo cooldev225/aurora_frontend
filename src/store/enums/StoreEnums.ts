@@ -83,11 +83,19 @@ const Actions = {
   },
 
   ANESTHETIST_QUES: {
-    LIST: "listAnesthetist",
-    CREATE: "createAnesthetist",
-    DELETE: "deleteAnesthetist",
-    UPDATE: "updateAnesthetist",
-    ACTIVE_LIST: "listActiveAnesthetist",
+    LIST: "listAnesthetistQues",
+    CREATE: "createAnesthetistQues",
+    DELETE: "deleteAnesthetistQues",
+    UPDATE: "updateAnesthetistQues",
+    ACTIVE_LIST: "listActiveAnesthetistQues",
+  },
+
+  PROCEDURE_QUES: {
+    LIST: "listProcedureQues",
+    CREATE: "createProcedureQues",
+    DELETE: "deleteProcedureQues",
+    UPDATE: "updateProcedureQues",
+    ACTIVE_LIST: "listActiveProcedureQues",
   },
 
   APT: {
@@ -178,6 +186,12 @@ const Mutations = {
     LIST: "setAnesQuesList",
     SELECT: "setSelectAnesQuesSelect",
     ACTIVE_LIST: "setAnesQuesActiveList",
+  },
+
+  SET_PROCEDURE_QUES: {
+    LIST: "setProQuesList",
+    SELECT: "setSelectProQuesSelect",
+    ACTIVE_LIST: "setProQuesActiveList",
   },
 
   SET_APT: {

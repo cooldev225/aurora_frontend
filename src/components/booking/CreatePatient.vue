@@ -191,12 +191,11 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="service_number">
+                              <el-form-item prop="reference_number">
                                 <el-input
                                   type="text"
-                                  v-model="formData.service_number"
-                                  readonly
-                                  placeholder=""
+                                  v-model="formData.reference_number"
+                                  disabled
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -217,7 +216,7 @@
                                 <el-select
                                   class="w-100"
                                   v-model="formData.clinic_id"
-                                  readonly
+                                  disabled
                                 >
                                   <el-option
                                     :value="clinic.id"
@@ -241,8 +240,7 @@
                                 <el-date-picker
                                   class="w-100"
                                   v-model="formData.date"
-                                  readonly
-                                  placeholder=""
+                                  disabled
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -263,7 +261,6 @@
                                 <el-time-picker
                                   class="w-100"
                                   v-model="formData.arrival_time"
-                                  placeholder=""
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -284,7 +281,7 @@
                                   v-model="formData.time_slot"
                                   format="HH:mm"
                                   disabled-seconds
-                                  readonly
+                                  disabled
                                   is-range
                                 />
                               </el-form-item>
@@ -440,11 +437,10 @@
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="specialist">
+                          <el-form-item prop="specialist_id">
                             <el-select
                               class="w-100"
-                              v-model="formData.specialists"
-                              placeholder=""
+                              v-model="formData.specialist_id"
                             >
                               <template
                                 v-for="(item, index) in ava_specialist"
@@ -474,8 +470,7 @@
                           <el-form-item prop="clinical_code">
                             <el-input
                               v-model="formData.clinical_code"
-                              readonly
-                              placeholder=""
+                              disabled
                             />
                           </el-form-item>
                           <!--end::Input-->
@@ -491,11 +486,7 @@
 
                           <!--begin::Input-->
                           <el-form-item prop="mbs_code">
-                            <el-input
-                              v-model="formData.mbs_code"
-                              readonly
-                              placeholder=""
-                            />
+                            <el-input v-model="formData.mbs_code" disabled />
                           </el-form-item>
                           <!--end::Input-->
                         </div>
@@ -535,8 +526,13 @@
                             <el-select
                               class="w-100"
                               v-model="formData.anesthetist_id"
-                              placeholder=""
-                            />
+                              disabled
+                            >
+                              <el-option
+                                :value="anesthetist.id"
+                                :label="anesthetist.name"
+                              />
+                            </el-select>
                           </el-form-item>
                           <!--end::Input-->
                         </div>
@@ -1461,7 +1457,7 @@
                                 <el-select
                                   class="w-100"
                                   v-model="formData.appointment_type_id"
-                                  readonly
+                                  disabled
                                   placeholder="Select Appointment Type"
                                 >
                                   <template
@@ -1559,7 +1555,7 @@
                           Other Information
                         </div>
                         <div class="row">
-                          <div class="col-sm-6">
+                          <div v-if="apt_type == 'Procedure'" class="col-sm-6">
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Input-->
@@ -1576,7 +1572,11 @@
                             </div>
                             <!--end::Input group-->
                           </div>
-                          <div class="col-sm-12 collapse" id="toogle_ane_ques">
+                          <div
+                            v-if="apt_type == 'Procedure'"
+                            class="col-sm-12 collapse"
+                            id="toogle_ane_ques"
+                          >
                             <template
                               v-for="(item, idx) in aneQuestions"
                               :key="idx"
@@ -1588,7 +1588,7 @@
                                     v-model="aneAnswers[idx]"
                                     :active-value="true"
                                     :inactive-value="false"
-                                    @change="handleQuestions"
+                                    @change="handleAneQuestions"
                                     style="
                                       --el-switch-on-color: #13ce66;
                                       --el-switch-off-color: #ff4949;
@@ -1600,7 +1600,7 @@
                               </div>
                             </template>
                           </div>
-                          <div class="col-sm-6">
+                          <div v-if="apt_type == 'Procedure'" class="col-sm-6">
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Input-->
@@ -1609,11 +1609,41 @@
                                   class="w-100"
                                   v-model="formData.procedure_questions"
                                   label="Procedure Questions"
+                                  data-bs-toggle="collapse"
+                                  href="#toogle_pro_ques"
                                 />
                               </el-form-item>
                               <!--end::Input-->
                             </div>
                             <!--end::Input group-->
+                          </div>
+                          <div
+                            v-if="apt_type == 'Procedure'"
+                            class="col-sm-12 collapse"
+                            id="toogle_pro_ques"
+                          >
+                            <template
+                              v-for="(item, idx) in proQuestions"
+                              :key="idx"
+                            >
+                              <div class="row mb-2">
+                                <div class="col-10">{{ item.question }}</div>
+                                <div class="col-2">
+                                  <el-switch
+                                    v-model="proAnswers[idx]"
+                                    :active-value="true"
+                                    :inactive-value="false"
+                                    @change="handleProQuestions"
+                                    style="
+                                      --el-switch-on-color: #13ce66;
+                                      --el-switch-off-color: #ff4949;
+                                    "
+                                    active-text="Y"
+                                    inactive-text="N"
+                                  />
+                                </div>
+                              </div>
+                            </template>
                           </div>
                           <div class="fv-row">
                             <!--begin::Input group-->
@@ -1814,7 +1844,7 @@ export default defineComponent({
     const formRef_5 = ref(null);
     const loading = ref(false);
     const formData = ref({
-      service_number: 22100349,
+      reference_number: 22100349,
       clinic_id: "",
       date: new Date(),
       arrival_time: "",
@@ -1822,7 +1852,7 @@ export default defineComponent({
       appointment_type_id: "",
       clinical_code: "",
       mbs_code: "",
-      specialists: "",
+      specialist_id: "",
       room_id: "",
       anesthetist_id: "",
       first_name: "",
@@ -1857,6 +1887,8 @@ export default defineComponent({
       clinical_alerts: "",
       anesthetic_questions: false,
       anesthetic_answers: [],
+      procedure_questions: false,
+      procedure_answers: [],
     });
 
     const rules = ref({
@@ -1960,15 +1992,30 @@ export default defineComponent({
     const currentStepIndex = ref(0);
 
     const ava_specialist = ref([]);
-    const healthFundsList = computed(() => store.getters.healthFundsList);
-    const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
-    const aptTypeList = computed(() => store.getters.getAptTypeList);
+    const apt_type = ref("");
 
     const aneAnswers = ref([]);
+    const proAnswers = ref([]);
+    const anesthetist = ref([]);
     const clinic = ref([]);
     const rooms = ref([]);
-    const handleQuestions = () => {
-      formData.value.aneQuestions = aneAnswers.value;
+
+    const healthFundsList = computed(() => store.getters.healthFundsList);
+    const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
+    const proQuestions = computed(() => store.getters.getProQuestionActiveList);
+    const aptTypeList = computed(() => store.getters.getAptTypeList);
+
+    watch(formData.value.specialist_id, () => {
+      const selectedSpecialist = formData.value.specialist_id;
+      anesthetist.value = ava_specialist.value.filter((specialist) => {
+        if (selectedSpecialist == specialist.id) return true;
+      })[0];
+      formData.value.anesthetist_id = anesthetist.value.id;
+      console.log(formData);
+    });
+
+    const handleAneQuestions = () => {
+      // formData.value.aneQuestions = aneAnswers.value;
       let temp = [];
       for (let i in aneAnswers.value) {
         if (aneAnswers.value[i] === true) {
@@ -1978,12 +2025,27 @@ export default defineComponent({
       formData.value.anesthetic_answers = temp;
     };
 
+    const handleProQuestions = () => {
+      // formData.value.proQuestions = proAnswers.value;
+      let temp = [];
+      for (let i in proAnswers.value) {
+        if (proAnswers.value[i] === true) {
+          temp.push(proQuestions.value[i].id);
+        }
+      }
+      formData.value.procedure_answers = temp;
+    };
+
     watchEffect(() => {
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
       formData.value.time_slot = bookingData.time_slots;
       if (bookingData.selected_specialist) {
-        formData.value.specialists = bookingData.selected_specialist.id;
+        formData.value.specialist_id = bookingData.selected_specialist.id;
+        if (bookingData.selected_specialist.anesthetist) {
+          anesthetist.value = bookingData.selected_specialist.anesthetist;
+          formData.value.anesthetist_id = anesthetist.value.id;
+        }
         if (bookingData.selected_specialist.work_hours.locations) {
           clinic.value = bookingData.selected_specialist.work_hours.locations;
           formData.value.clinic_id =
@@ -2003,6 +2065,19 @@ export default defineComponent({
           }
         }
       }
+      const apt_type_id = formData.value.appointment_type_id;
+      const aptSelected = aptTypeList.value.filter((aptType) => {
+        if (aptType.id == apt_type_id) return true;
+      })[0];
+      if (aptSelected) {
+        formData.value.clinical_code = aptSelected.clinical_code;
+        formData.value.mbs_code = aptSelected.mbs_code;
+        apt_type.value = aptSelected.type;
+        if (apt_type.value === "Consultation") {
+          formData.value.anesthetic_questions = false;
+          formData.value.procedure_questions = false;
+        }
+      }
     });
 
     onMounted(() => {
@@ -2012,6 +2087,7 @@ export default defineComponent({
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
+      store.dispatch(Actions.PROCEDURE_QUES.ACTIVE_LIST);
       store.dispatch(Actions.APT.TYPE_LIST);
       setCurrentPageBreadcrumbs("Add Appointment", ["Bookings"]);
     });
@@ -2097,10 +2173,10 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.CLINICS.CREATE, formData.value)
+            .dispatch(Actions.APT.CREATE, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.CLINICS.LIST);
+              store.dispatch(Actions.APT.LIST);
               Swal.fire({
                 text: "Successfully Created!",
                 icon: "success",
@@ -2131,8 +2207,12 @@ export default defineComponent({
       ava_specialist,
       healthFundsList,
       aneQuestions,
+      proQuestions,
       aneAnswers,
+      proAnswers,
       aptTypeList,
+      anesthetist,
+      apt_type,
       submit,
       formRef_1,
       formRef_2,
@@ -2149,7 +2229,8 @@ export default defineComponent({
       currentStepIndex,
       countryList,
       timeZoneList,
-      handleQuestions,
+      handleAneQuestions,
+      handleProQuestions,
     };
   },
 });
