@@ -1326,10 +1326,10 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="pension_card_number">
+                              <el-form-item prop="dva_number">
                                 <el-input
                                   class="w-100"
-                                  v-model="formData.pension_card_number"
+                                  v-model="formData.dva_number"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1874,6 +1874,17 @@ export default defineComponent({
       medicare_number: "",
       medicare_ref_number: "",
       medicare_expiry: "",
+      health_fund: "",
+      health_fund_mem_number: "",
+      health_fund_ref_number: "",
+      health_fund_expiry: "",
+      fund_excess: "",
+      pension_card_number: "",
+      healthcare_card_number: "",
+      expiry_date: "",
+      dva_number: "",
+      dva_expiry: "",
+      dva_type: "",
       account_holder_type: "",
       account_holder: "",
       procedure_price: "",
