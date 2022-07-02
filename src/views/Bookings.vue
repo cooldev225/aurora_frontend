@@ -105,7 +105,8 @@
                   class="fw-bolder"
                   :style="index === 0 ? 'min-width: 441px' : 'min-width: 476px'"
                 >
-                  {{ item.name }}
+                  <span class="fs-5 d-block">{{ item.name }}</span>
+                  <span class="fs-8">{{ item.work_hours.locations.name }}</span>
                 </th>
               </template>
             </tr>

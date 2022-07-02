@@ -1531,7 +1531,7 @@
                         type="submit"
                         class="btn btn-lg btn-primary align-self-end"
                       >
-                        Continue
+                        Submit
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr064.svg"

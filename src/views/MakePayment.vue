@@ -141,38 +141,29 @@ export default defineComponent({
     const router = useRouter();
     const tableHeader = ref([
       {
-        name: "Logo",
-        key: "logo",
+        name: "Time",
+        key: "time",
         sortable: true,
-        searchable: true,
       },
       {
-        name: "Name",
-        key: "name",
+        name: "Patient Name",
+        key: "patient_name",
         sortable: true,
-        searchable: true,
       },
       {
-        name: "Email",
-        key: "email",
+        name: "Attendance Status",
+        key: "attendance_status",
         sortable: true,
-        searchable: true,
+        sortingField: "status.label",
       },
       {
-        name: "Clinics",
-        key: "clinics",
+        name: "Appointment Date",
+        key: "apt-date",
         sortable: true,
-        searchable: true,
       },
       {
-        name: "Users",
-        key: "users",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Action",
-        key: "action",
+        name: "Actions",
+        key: "actions",
       },
     ]);
     const tableData = ref([]);
@@ -180,16 +171,16 @@ export default defineComponent({
     const loading = ref(true);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_ORG, item);
+      store.commit(Mutations.SET_MAKE_PAYMENT.SELECT, item);
       router.push({ name: "editOrganization" });
     };
 
     const handleDelete = (id) => {
       loading.value = true;
       store
-        .dispatch(Actions.DELETE_ORG, id)
+        .dispatch(Actions.MAKE_PAYMENT.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LIST_ORG);
+          store.dispatch(Actions.MAKE_PAYMENT.LIST);
           loading.value = false;
           Swal.fire({
             text: "Successfully Deleted!",
@@ -212,8 +203,8 @@ export default defineComponent({
 
     onMounted(() => {
       loading.value = true;
-      setCurrentPageBreadcrumbs("Make Payment", []);
-      store.dispatch(Actions.LIST_ORG).then(() => {
+      setCurrentPageBreadcrumbs("Make Paymenet", ["Billing"]);
+      store.dispatch(Actions.MAKE_PAYMENT.LIST).then(() => {
         tableData.value = orgList;
         loading.value = false;
       });
