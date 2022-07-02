@@ -632,10 +632,10 @@
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="birth_date">
+                          <el-form-item prop="date_of_birth">
                             <el-date-picker
                               class="w-100"
-                              v-model="formData.birth_date"
+                              v-model="formData.date_of_birth"
                               placeholder=""
                             />
                           </el-form-item>
@@ -1857,7 +1857,7 @@ export default defineComponent({
       anesthetist_id: "",
       first_name: "",
       last_name: "",
-      birth_date: "",
+      date_of_birth: "",
       title: "",
       email: "",
       gender: "",
