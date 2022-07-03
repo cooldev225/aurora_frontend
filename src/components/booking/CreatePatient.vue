@@ -711,7 +711,7 @@
                               <el-option value="female" label="Female" />
                               <el-option value="other" label="Other" />
                               <el-option
-                                value="not_stated"
+                                value="undisclosed"
                                 label="Not Stated / Inadequately Desribed"
                               />
                             </el-select>
