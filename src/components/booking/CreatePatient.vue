@@ -334,10 +334,7 @@
                                   v-model="formData.referral_duration"
                                   placeholder="Enter Referral Duration"
                                 >
-                                  <el-option
-                                    value="indefinite"
-                                    label="Indefinite"
-                                  />
+                                  <el-option value="0" label="Indefinite" />
                                   <el-option value="3" label="3 Months" />
                                   <el-option value="12" label="12 Months" />
                                 </el-select>
