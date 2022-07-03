@@ -707,11 +707,11 @@
                               v-model="formData.gender"
                               placeholder="Select Gender"
                             >
-                              <el-option key="male" label="Male" />
-                              <el-option key="female" label="Female" />
-                              <el-option key="other" label="Other" />
+                              <el-option value="male" label="Male" />
+                              <el-option value="female" label="Female" />
+                              <el-option value="other" label="Other" />
                               <el-option
-                                key="not_stated"
+                                value="not_stated"
                                 label="Not Stated / Inadequately Desribed"
                               />
                             </el-select>
@@ -1527,7 +1527,7 @@
                         type="submit"
                         class="btn btn-lg btn-primary align-self-end"
                       >
-                        Submit
+                        Continue
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr064.svg"
@@ -1776,7 +1776,7 @@
                         type="submit"
                         class="btn btn-lg btn-primary align-self-end"
                       >
-                        Continue
+                        Submit
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr064.svg"
