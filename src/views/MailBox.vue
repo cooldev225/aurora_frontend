@@ -34,7 +34,12 @@
                 <!--begin::Menu item-->
                 <div class="menu-item mb-3">
                   <!--begin::Inbox-->
-                  <span class="menu-link active">
+                  <span
+                    :class="`menu-link ${
+                      emailType.data === 'inbox' ? 'active' : ''
+                    }`"
+                    @click="switchType('inbox')"
+                  >
                     <span class="menu-icon">
                       <!--begin::Svg Icon | path: icons/duotune/communication/com010.svg-->
                       <span class="svg-icon svg-icon-2 me-3">
@@ -53,7 +58,12 @@
                 <!--begin::Menu item-->
                 <div class="menu-item mb-3">
                   <!--begin::Marked-->
-                  <span class="menu-link">
+                  <span
+                    :class="`menu-link ${
+                      emailType.data === 'marked' ? 'active' : ''
+                    }`"
+                    @click="switchType('marked')"
+                  >
                     <span class="menu-icon">
                       <!--begin::Svg Icon | path: icons/duotune/abstract/abs024.svg-->
                       <span class="svg-icon svg-icon-2 me-3">
@@ -71,7 +81,12 @@
                 <!--begin::Menu item-->
                 <div class="menu-item mb-3">
                   <!--begin::Sent-->
-                  <span class="menu-link">
+                  <span
+                    :class="`menu-link ${
+                      emailType.data === 'sent' ? 'active' : ''
+                    }`"
+                    @click="switchType('sent')"
+                  >
                     <span class="menu-icon">
                       <!--begin::Svg Icon | path: icons/duotune/general/gen016.svg-->
                       <span class="svg-icon svg-icon-2 me-3">
@@ -89,7 +104,12 @@
                 <!--begin::Menu item-->
                 <div class="menu-item">
                   <!--begin::Trash-->
-                  <span class="menu-link">
+                  <span
+                    :class="`menu-link ${
+                      emailType.data === 'trash' ? 'active' : ''
+                    }`"
+                    @click="switchType('trash')"
+                  >
                     <span class="menu-icon">
                       <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
                       <span class="svg-icon svg-icon-2 me-3">
@@ -220,23 +240,6 @@
                   <!--end::Svg Icon-->
                 </a>
                 <!--end::Reload-->
-                <!--begin::Archive-->
-                <a
-                  href="#"
-                  class="btn btn-sm btn-icon btn-light btn-active-light-primary"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Archive"
-                >
-                  <!--begin::Svg Icon | path: icons/duotune/communication/com010.svg-->
-                  <span class="svg-icon svg-icon-2">
-                    <inline-svg
-                      src="media/icons/duotune/communication/com010.svg"
-                    />
-                  </span>
-                  <!--end::Svg Icon-->
-                </a>
-                <!--end::Archive-->
                 <!--begin::Delete-->
                 <a
                   href="#"
@@ -289,7 +292,7 @@
                 <!--begin::Sort-->
                 <span>
                   <a
-                    href="#"
+                    href=""
                     class="btn btn-sm btn-icon btn-light btn-active-light-primary"
                     data-kt-menu-trigger="click"
                     data-kt-menu-placement="bottom-end"
@@ -359,22 +362,26 @@
                 <template v-slot:cell-checkbox>
                   <!--begin::Checkbox-->
                   <div
-                    class="form-check form-check-sm form-check-custom form-check-solid mt-3"
+                    class="form-check form-check-sm form-check-custom form-check-solid"
                   >
                     <input class="form-check-input" type="checkbox" value="1" />
                   </div>
                   <!--end::Checkbox-->
                 </template>
-                <template v-slot:cell-actions>
+                <template v-slot:cell-actions="{ row: item }">
                   <!--begin::Star-->
                   <a
                     href="#"
-                    class="btn btn-icon btn-color-gray-400 btn-sm btn-active-color-primary"
+                    class="btn btn-icon btn-sm btn-active-color-primary"
                     data-bs-toggle="tooltip"
                     data-bs-placement="right"
                     title="Star"
                   >
-                    <span class="svg-icon svg-icon-2">
+                    <span
+                      :class="`svg-icon svg-icon-2 ${
+                        item.marked ? 'svg-icon-warning' : ''
+                      }`"
+                    >
                       <inline-svg
                         src="media/icons/duotune/general/gen029.svg"
                       />
@@ -397,17 +404,48 @@
                     <!--begin::Avatar-->
                     <div v-else class="symbol symbol-35px me-3">
                       <div class="symbol-label bg-light-danger">
-                        <span class="text-danger">M</span>
+                        <span class="text-danger">U</span>
                       </div>
                     </div>
                     <!--end::Avatar-->
                     <!--begin::Name-->
-                    <span class="fw-bold">{{ item.name }}</span>
+                    <span :class="`${item.unread ? 'fw-bolder' : 'fw-normal'}`">
+                      {{ item.name }}
+                    </span>
                     <!--end::Name-->
                   </a>
                 </template>
                 <template v-slot:cell-message="{ row: item }">
-                  {{ item.message }}
+                  <div class="text-dark mb-1">
+                    <!--begin::Heading-->
+                    <a href="" class="text-dark">
+                      <span
+                        :class="`${item.unread ? 'fw-bolder' : 'fw-normal'}`"
+                      >
+                        {{ item.subject }}
+                      </span>
+                      <span class="fw-normal"> - </span>
+                      <span class="fw-normal text-muted">
+                        {{ item.message.slice(0, 90) }}
+                        ...
+                      </span>
+                    </a>
+                    <!--end::Heading-->
+                  </div>
+                  <!--begin::Badges-->
+                  <div
+                    v-if="emailType.data === 'marked'"
+                    :class="`badge badge-light-${
+                      item.type === 'sent'
+                        ? 'warning'
+                        : item.type === 'trash'
+                        ? 'danger'
+                        : 'primary'
+                    }`"
+                  >
+                    {{ item.type }}
+                  </div>
+                  <!--end::Badges-->
                 </template>
                 <template v-slot:cell-date="{ row: item }">
                   {{ item.date }}
@@ -426,8 +464,16 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  watch,
+  ref,
+  watchEffect,
+  reactive,
+} from "vue";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import DummyData from "@/store/email/DummyData";
 
 export default defineComponent({
   name: "organization-main",
@@ -437,92 +483,6 @@ export default defineComponent({
   },
 
   setup() {
-    const dummyData = [
-      {
-        name: "Melody Macy",
-        avatar: "",
-        message: "Hello, how are you today?",
-        date: "8:30 PM",
-        marked: false,
-      },
-      {
-        name: "Max Smith",
-        avatar: "/media/avatars/300-1.jpg",
-        message: "Hello, how are you today?",
-        date: "day ago",
-        marked: false,
-      },
-      {
-        name: "Sean Bean",
-        avatar: "/media/avatars/300-2.jpg",
-        message: "Hello, how are you today?",
-        date: "11:20 PM",
-        marked: false,
-      },
-      {
-        name: "Olivia Wild",
-        avatar: "",
-        message: "Hello, how are you today?",
-        date: "8:30 PM",
-        marked: false,
-      },
-      {
-        name: "Neil Owen",
-        avatar: "/media/avatars/300-3.jpg",
-        message: "Hello, how are you today?",
-        date: "day ago",
-        marked: false,
-      },
-      {
-        name: "Dan Wilson",
-        avatar: "/media/avatars/300-4.jpg",
-        message: "Hello, how are you today?",
-        date: "11:20 PM",
-        marked: false,
-      },
-      {
-        name: "Emma Bold",
-        avatar: "",
-        message: "Hello, how are you today?",
-        date: "8:30 PM",
-        marked: false,
-      },
-      {
-        name: "Ana Crown",
-        avatar: "/media/avatars/300-5.jpg",
-        message: "Hello, how are you today?",
-        date: "day ago",
-        marked: false,
-      },
-      {
-        name: "Robert Doe",
-        avatar: "/media/avatars/300-6.jpg",
-        message: "Hello, how are you today?",
-        date: "11:20 PM",
-        marked: false,
-      },
-      {
-        name: "Brian Cox",
-        avatar: "",
-        message: "Hello, how are you today?",
-        date: "8:30 PM",
-        marked: false,
-      },
-      {
-        name: "Mikaela Collins",
-        avatar: "/media/avatars/300-7.jpg",
-        message: "Hello, how are you today?",
-        date: "day ago",
-        marked: false,
-      },
-      {
-        name: "Francis Mitcham",
-        avatar: "/media/avatars/300-8.jpg",
-        message: "Hello, how are you today?",
-        date: "11:20 PM",
-        marked: false,
-      },
-    ];
     const tableHeader = ref([
       {
         name: "Checkbox",
@@ -546,16 +506,34 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
+    const emailData = ref(DummyData);
+    const emailType = reactive({
+      data: "inbox",
+    });
+
+    const switchType = (type) => {
+      emailType.data = type;
+    };
+
+    watch(emailType, () => {
+      if (emailType.data === "marked") {
+        emailData.value = DummyData.filter((data) => data.marked);
+      } else {
+        emailData.value = DummyData.filter(
+          (data) => data.type === emailType.data
+        );
+      }
+    });
 
     watchEffect(() => {
-      tableData.value = dummyData;
+      tableData.value = emailData;
     });
 
     onMounted(() => {
-      tableData.value = dummyData;
+      tableData.value = emailData;
     });
 
-    return { tableHeader, tableData };
+    return { tableHeader, tableData, emailType, switchType };
   },
 });
 </script>
