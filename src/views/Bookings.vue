@@ -142,7 +142,7 @@
                         v-if="
                           timeStr2Number(item_1.work_hours.time_slot[0]) <=
                             item.number &&
-                          timeStr2Number(item_1.work_hours.time_slot[1]) >=
+                          timeStr2Number(item_1.work_hours.time_slot[1]) >
                             item.number
                         "
                         @click="
@@ -156,13 +156,22 @@
                         <i class="fa fa-plus text-primary"></i>
                       </a>
                     </td>
-                    <td
-                      style="min-width: 441px"
-                      :class="index % 3 === 4 ? 'bg-primary' : ''"
-                    >
-                      <span class="text-white" v-if="index % 3 === 0"
-                        >MONICA BADOV +61 423 012 796</span
+                    <td style="min-width: 441px">
+                      <template
+                        v-for="(item_2, idx_2) in item_1.appointments"
+                        :key="idx_2"
                       >
+                        <span
+                          v-if="
+                            timeStr2Number(item_2.start_time) <= item.number &&
+                            timeStr2Number(item_2.end_time) > item.number
+                          "
+                          class="text-primary fw-bold d-block cursor-pointer"
+                          @click="handleEdit(item_2, item_1)"
+                          >{{ item_2.first_name }} {{ item_2.last_name }}
+                          {{ item_2.mobile_number }}</span
+                        >
+                      </template>
                     </td>
                   </template>
                 </tr>
@@ -229,11 +238,14 @@
     </a>
   </div>
   <CreateModal></CreateModal>
+  <EditModal></EditModal>
 </template>
 <script>
 import { defineComponent, ref, watch, reactive, onMounted } from "vue";
 import { useStore } from "vuex";
-import CreateModal from "@/components/booking/CreatePatient.vue";
+import { useRouter } from "vue-router";
+import CreateModal from "@/components/booking/CreateApt.vue";
+import EditModal from "@/components/booking/EditApt.vue";
 import VueCtkDateTimePicker from "vue-ctk-date-time-picker";
 import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
 import moment from "moment";
@@ -248,8 +260,10 @@ export default defineComponent({
   components: {
     VueCtkDateTimePicker,
     CreateModal,
+    EditModal,
   },
   setup() {
+    const router = useRouter();
     const store = useStore();
     const format = ref("YYYY-MM-DD");
     const _date_search = reactive({
@@ -275,9 +289,19 @@ export default defineComponent({
         ava_specialist: _ava_specialists,
         selected_specialist: specialist,
       };
-      console.log(item);
       store.commit(Mutations.SET_BOOKING.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_create_patient"));
+      const modal = new Modal(document.getElementById("modal_create_apt"));
+      modal.show();
+    };
+
+    const handleEdit = (item, specialist) => {
+      const data = {
+        ava_specialist: _ava_specialists,
+        selected_specialist: specialist,
+      };
+      store.commit(Mutations.SET_BOOKING.SELECT, data);
+      store.commit(Mutations.SET_APT.SELECT, item);
+      const modal = new Modal(document.getElementById("modal_edit_apt"));
       modal.show();
     };
 
@@ -331,6 +355,7 @@ export default defineComponent({
       _specialists,
       handleSearch,
       handleAddApt,
+      handleEdit,
       timeStr2Number,
       aptTimeList,
     };

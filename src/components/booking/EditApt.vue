@@ -2,8 +2,8 @@
   <!--begin::Modal - Create App-->
   <div
     class="modal fade"
-    id="modal_create_patient"
-    ref="createPatientModalRef"
+    id="modal_edit_apt"
+    ref="editAptModalRef"
     tabindex="-1"
     aria-hidden="true"
   >
@@ -14,7 +14,7 @@
         <!--begin::Modal header-->
         <div class="modal-header">
           <!--begin::Modal title-->
-          <h2>Create Patient</h2>
+          <h2>Edit Appointment</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -35,8 +35,8 @@
           <!--begin::Stepper-->
           <div
             class="stepper stepper-pills stepper-column d-flex flex-column flex-xl-row flex-row-fluid"
-            id="modal_create_patient_stepper"
-            ref="createPatientRef"
+            id="modal_edit_apt_stepper"
+            ref="editAptRef"
           >
             <!--begin::Aside-->
             <div
@@ -1822,18 +1822,17 @@ import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
-import { useRouter } from "vue-router";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
+import { hideModal } from "@/core/helpers/dom";
 
 export default defineComponent({
   name: "create-app-modal",
   components: {},
   setup() {
     const store = useStore();
-    const router = useRouter();
     const formRef_1 = ref(null);
     const formRef_2 = ref(null);
     const formRef_3 = ref(null);
@@ -1996,7 +1995,7 @@ export default defineComponent({
       ],
     });
     const _stepperObj = ref(null);
-    const createPatientRef = ref(null);
+    const editAptRef = ref(null);
     const currentStepIndex = ref(0);
 
     const ava_specialist = ref([]);
@@ -2045,9 +2044,18 @@ export default defineComponent({
     };
 
     watchEffect(() => {
+      const aptData = store.getters.getAptSelected;
+      console.log(aptData);
+      formData.value = aptData;
+      if (aptData.arrival_time)
+        formData.value.arrival_time = aptData.date + "T" + aptData.arrival_time;
+      if (aptData.start_time)
+        formData.value.time_slot = [
+          aptData.date + "T" + aptData.start_time,
+          aptData.date + "T" + aptData.end_time,
+        ];
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
-      formData.value.time_slot = bookingData.time_slots;
       if (bookingData.selected_specialist) {
         formData.value.specialist_id = bookingData.selected_specialist.id;
         if (bookingData.selected_specialist.anesthetist) {
@@ -2089,15 +2097,13 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      _stepperObj.value = StepperComponent.createInsance(
-        createPatientRef.value
-      );
+      _stepperObj.value = StepperComponent.createInsance(editAptRef.value);
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(Actions.PROCEDURE_QUES.ACTIVE_LIST);
       store.dispatch(Actions.APT.TYPE_LIST);
-      setCurrentPageBreadcrumbs("Add Appointment", ["Bookings"]);
+      setCurrentPageBreadcrumbs("Edit Appointment", ["Bookings"]);
     });
 
     const handleStep_1 = () => {
@@ -2181,7 +2187,7 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.APT.CREATE, formData.value)
+            .dispatch(Actions.APT.UPDATE, formData.value)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.APT.LIST);
@@ -2194,7 +2200,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                router.push({ name: "employees" });
+                hideModal(editAptRef.value);
               });
             })
             .catch(({ response }) => {
@@ -2233,7 +2239,7 @@ export default defineComponent({
       handleStep_2,
       handleStep_3,
       handleStep_4,
-      createPatientRef,
+      editAptRef,
       currentStepIndex,
       countryList,
       timeZoneList,
