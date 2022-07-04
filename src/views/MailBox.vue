@@ -1,113 +1,433 @@
 <template>
-  <div class="card">
-    <div class="card-header border-0 pt-6">
-      <!--begin::Card title-->
-      <div class="card-title">
-        <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
-          <span class="svg-icon svg-icon-1 position-absolute ms-6">
-            <inline-svg src="media/icons/duotune/general/gen021.svg" />
-          </span>
-          <input
-            type="text"
-            data-kt-subscription-table-filter="search"
-            class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Health Funds"
-          />
-        </div>
-        <!--end::Search-->
-      </div>
-      <!--begin::Card title-->
-
-      <!--begin::Card toolbar-->
-      <div class="card-toolbar">
-        <!--begin::Toolbar-->
+  <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <!--begin::Container-->
+    <div id="kt_content_container">
+      <!--begin::Inbox App - Messages -->
+      <div class="d-flex flex-column flex-lg-row">
+        <!--begin::Sidebar-->
         <div
-          class="d-flex justify-content-end"
-          data-kt-subscription-table-toolbar="base"
+          class="flex-column flex-lg-row-auto w-100 w-lg-275px mb-10 mb-lg-0"
         >
-          <!--begin::Export-->
-          <button
-            type="button"
-            class="btn btn-light-primary me-3"
-            data-bs-toggle="modal"
-            data-bs-target="#kt_subscriptions_export_modal"
+          <!--begin::Sticky aside-->
+          <div
+            class="card card-flush mb-0"
+            data-kt-sticky="false"
+            data-kt-sticky-name="inbox-aside-sticky"
+            data-kt-sticky-offset="{default: false, xl: '0px'}"
+            data-kt-sticky-width="{lg: '275px'}"
+            data-kt-sticky-left="auto"
+            data-kt-sticky-top="150px"
+            data-kt-sticky-animation="false"
+            data-kt-sticky-zindex="95"
           >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr078.svg" />
-            </span>
-            Export
-          </button>
-          <!--end::Export-->
+            <!--begin::Aside content-->
+            <div class="card-body">
+              <!--begin::Button-->
+              <a href="#" class="btn btn-primary text-uppercase w-100 mb-10">
+                New Message
+              </a>
+              <!--end::Button-->
+              <!--begin::Menu-->
+              <div
+                class="menu menu-column menu-rounded menu-state-bg menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary mb-10"
+              >
+                <!--begin::Menu item-->
+                <div class="menu-item mb-3">
+                  <!--begin::Inbox-->
+                  <span class="menu-link active">
+                    <span class="menu-icon">
+                      <!--begin::Svg Icon | path: icons/duotune/communication/com010.svg-->
+                      <span class="svg-icon svg-icon-2 me-3">
+                        <inline-svg
+                          src="media/icons/duotune/communication/com010.svg"
+                        />
+                      </span>
+                      <!--end::Svg Icon-->
+                    </span>
+                    <span class="menu-title fw-bolder">Inbox</span>
+                    <span class="badge badge-light-success">3</span>
+                  </span>
+                  <!--end::Inbox-->
+                </div>
+                <!--end::Menu item-->
+                <!--begin::Menu item-->
+                <div class="menu-item mb-3">
+                  <!--begin::Marked-->
+                  <span class="menu-link">
+                    <span class="menu-icon">
+                      <!--begin::Svg Icon | path: icons/duotune/abstract/abs024.svg-->
+                      <span class="svg-icon svg-icon-2 me-3">
+                        <inline-svg
+                          src="media/icons/duotune/abstract/abs024.svg"
+                        />
+                      </span>
+                      <!--end::Svg Icon-->
+                    </span>
+                    <span class="menu-title fw-bolder">Marked</span>
+                  </span>
+                  <!--end::Marked-->
+                </div>
+                <!--end::Menu item-->
+                <!--begin::Menu item-->
+                <div class="menu-item mb-3">
+                  <!--begin::Sent-->
+                  <span class="menu-link">
+                    <span class="menu-icon">
+                      <!--begin::Svg Icon | path: icons/duotune/general/gen016.svg-->
+                      <span class="svg-icon svg-icon-2 me-3">
+                        <inline-svg
+                          src="media/icons/duotune/general/gen016.svg"
+                        />
+                      </span>
+                      <!--end::Svg Icon-->
+                    </span>
+                    <span class="menu-title fw-bolder">Sent</span>
+                  </span>
+                  <!--end::Sent-->
+                </div>
+                <!--end::Menu item-->
+                <!--begin::Menu item-->
+                <div class="menu-item">
+                  <!--begin::Trash-->
+                  <span class="menu-link">
+                    <span class="menu-icon">
+                      <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
+                      <span class="svg-icon svg-icon-2 me-3">
+                        <inline-svg
+                          src="media/icons/duotune/general/gen027.svg"
+                        />
+                      </span>
+                      <!--end::Svg Icon-->
+                    </span>
+                    <span class="menu-title fw-bolder">Trash</span>
+                  </span>
+                  <!--end::Trash-->
+                </div>
+                <!--end::Menu item-->
+              </div>
+              <!--end::Menu-->
+            </div>
+            <!--end::Aside content-->
+          </div>
+          <!--end::Sticky aside-->
         </div>
-        <!--end::Toolbar-->
+        <!--end::Sidebar-->
+        <!--begin::Content-->
+        <div class="flex-lg-row-fluid ms-lg-7 ms-xl-10">
+          <!--begin::Card-->
+          <div class="card">
+            <div class="card-header align-items-center py-5 gap-2 gap-md-5">
+              <!--begin::Actions-->
+              <div class="d-flex flex-wrap gap-1">
+                <!--begin::Checkbox-->
+                <div
+                  class="form-check form-check-sm form-check-custom form-check-solid me-3"
+                >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    data-kt-check="true"
+                    data-kt-check-target="#kt_inbox_listing .form-check-input"
+                    value="1"
+                  />
+                </div>
+                <!--end::Checkbox-->
+                <!--begin::Filter-->
+                <div>
+                  <a
+                    href="#"
+                    class="btn btn-sm btn-icon btn-clear btn-active-light-primary"
+                    data-kt-menu-trigger="click"
+                    data-kt-menu-placement="bottom-start"
+                  >
+                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
+                    <span class="svg-icon svg-icon-2">
+                      <inline-svg src="media/icons/duotune/arrows/arr072.svg" />
+                    </span>
+                    <!--end::Svg Icon-->
+                  </a>
+                  <!--begin::Menu-->
+                  <div
+                    class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-125px py-4"
+                    data-kt-menu="true"
+                  >
+                    <!--begin::Menu item-->
+                    <div class="menu-item px-3">
+                      <a
+                        href="#"
+                        class="menu-link px-3"
+                        data-kt-inbox-listing-filter="show_all"
+                        >All</a
+                      >
+                    </div>
+                    <!--end::Menu item-->
+                    <!--begin::Menu item-->
+                    <div class="menu-item px-3">
+                      <a
+                        href="#"
+                        class="menu-link px-3"
+                        data-kt-inbox-listing-filter="show_read"
+                        >Read</a
+                      >
+                    </div>
+                    <!--end::Menu item-->
+                    <!--begin::Menu item-->
+                    <div class="menu-item px-3">
+                      <a
+                        href="#"
+                        class="menu-link px-3"
+                        data-kt-inbox-listing-filter="show_unread"
+                        >Unread</a
+                      >
+                    </div>
+                    <!--end::Menu item-->
+                    <!--begin::Menu item-->
+                    <div class="menu-item px-3">
+                      <a
+                        href="#"
+                        class="menu-link px-3"
+                        data-kt-inbox-listing-filter="show_starred"
+                        >Starred</a
+                      >
+                    </div>
+                    <!--end::Menu item-->
+                    <!--begin::Menu item-->
+                    <div class="menu-item px-3">
+                      <a
+                        href="#"
+                        class="menu-link px-3"
+                        data-kt-inbox-listing-filter="show_unstarred"
+                        >Unstarred</a
+                      >
+                    </div>
+                    <!--end::Menu item-->
+                  </div>
+                  <!--end::Menu-->
+                </div>
+                <!--end::Filter-->
+                <!--begin::Reload-->
+                <a
+                  href="#"
+                  class="btn btn-sm btn-icon btn-clear btn-active-light-primary"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Reload"
+                >
+                  <!--begin::Svg Icon | path: icons/duotune/arrows/arr029.svg-->
+                  <span class="svg-icon svg-icon-2">
+                    <inline-svg src="media/icons/duotune/arrows/arr029.svg" />
+                  </span>
+                  <!--end::Svg Icon-->
+                </a>
+                <!--end::Reload-->
+                <!--begin::Archive-->
+                <a
+                  href="#"
+                  class="btn btn-sm btn-icon btn-light btn-active-light-primary"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Archive"
+                >
+                  <!--begin::Svg Icon | path: icons/duotune/communication/com010.svg-->
+                  <span class="svg-icon svg-icon-2">
+                    <inline-svg
+                      src="media/icons/duotune/communication/com010.svg"
+                    />
+                  </span>
+                  <!--end::Svg Icon-->
+                </a>
+                <!--end::Archive-->
+                <!--begin::Delete-->
+                <a
+                  href="#"
+                  class="btn btn-sm btn-icon btn-light btn-active-light-primary"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Delete"
+                >
+                  <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
+                  <span class="svg-icon svg-icon-2">
+                    <inline-svg src="media/icons/duotune/general/gen027.svg" />
+                  </span>
+                  <!--end::Svg Icon-->
+                </a>
+                <!--end::Delete-->
+                <!--begin::Mark as read-->
+                <a
+                  href="#"
+                  class="btn btn-sm btn-icon btn-light btn-active-light-primary"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Mark as read"
+                >
+                  <!--begin::Svg Icon | path: icons/duotune/general/gen028.svg-->
+                  <span class="svg-icon svg-icon-2">
+                    <inline-svg src="media/icons/duotune/general/gen028.svg" />
+                  </span>
+                  <!--end::Svg Icon-->
+                </a>
+                <!--end::Mark as read-->
+              </div>
+              <!--end::Actions-->
+              <!--begin::Pagination-->
+              <div class="d-flex align-items-center flex-wrap gap-2">
+                <!--begin::Search-->
+                <div class="d-flex align-items-center position-relative">
+                  <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+                  <span class="svg-icon svg-icon-2 position-absolute ms-4">
+                    <inline-svg src="media/icons/duotune/general/gen021.svg" />
+                  </span>
+                  <!--end::Svg Icon-->
+                  <input
+                    type="text"
+                    data-kt-inbox-listing-filter="search"
+                    class="form-control form-control-sm form-control-solid mw-100 min-w-150px min-w-md-200px ps-12"
+                    placeholder="Search Inbox"
+                  />
+                </div>
+                <!--end::Search-->
+                <!--begin::Sort-->
+                <span>
+                  <a
+                    href="#"
+                    class="btn btn-sm btn-icon btn-light btn-active-light-primary"
+                    data-kt-menu-trigger="click"
+                    data-kt-menu-placement="bottom-end"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Sort"
+                  >
+                    <!--begin::Svg Icon | path: icons/duotune/general/gen059.svg-->
+                    <span class="svg-icon svg-icon-2 m-0">
+                      <inline-svg
+                        src="media/icons/duotune/general/gen059.svg"
+                      />
+                    </span>
+                    <!--end::Svg Icon-->
+                  </a>
+                  <!--begin::Menu-->
+                  <div
+                    class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-125px py-4"
+                    data-kt-menu="true"
+                  >
+                    <!--begin::Menu item-->
+                    <div class="menu-item px-3">
+                      <a
+                        href="#"
+                        class="menu-link px-3"
+                        data-kt-inbox-listing-filter="filter_newest"
+                        >Newest</a
+                      >
+                    </div>
+                    <!--end::Menu item-->
+                    <!--begin::Menu item-->
+                    <div class="menu-item px-3">
+                      <a
+                        href="#"
+                        class="menu-link px-3"
+                        data-kt-inbox-listing-filter="filter_oldest"
+                        >Oldest</a
+                      >
+                    </div>
+                    <!--end::Menu item-->
+                    <!--begin::Menu item-->
+                    <div class="menu-item px-3">
+                      <a
+                        href="#"
+                        class="menu-link px-3"
+                        data-kt-inbox-listing-filter="filter_unread"
+                        >Unread</a
+                      >
+                    </div>
+                    <!--end::Menu item-->
+                  </div>
+                  <!--end::Menu-->
+                </span>
+                <!--end::Sort-->
+              </div>
+              <!--end::Pagination-->
+            </div>
+            <div class="card-body pt-0">
+              <Datatable
+                :table-header="tableHeader"
+                :table-data="tableData"
+                :rows-per-page="10"
+                :loading="loading"
+                :enable-items-per-page-dropdown="true"
+                :disable-table-header="true"
+              >
+                <template v-slot:cell-checkbox>
+                  <!--begin::Checkbox-->
+                  <div
+                    class="form-check form-check-sm form-check-custom form-check-solid mt-3"
+                  >
+                    <input class="form-check-input" type="checkbox" value="1" />
+                  </div>
+                  <!--end::Checkbox-->
+                </template>
+                <template v-slot:cell-actions>
+                  <!--begin::Star-->
+                  <a
+                    href="#"
+                    class="btn btn-icon btn-color-gray-400 btn-sm btn-active-color-primary"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="right"
+                    title="Star"
+                  >
+                    <span class="svg-icon svg-icon-2">
+                      <inline-svg
+                        src="media/icons/duotune/general/gen029.svg"
+                      />
+                    </span>
+                  </a>
+                  <!--end::Star-->
+                </template>
+                <template v-slot:cell-name="{ row: item }">
+                  <a
+                    href="../../demo6/dist/apps/inbox/reply.html"
+                    class="d-flex align-items-center text-dark"
+                  >
+                    <div v-if="item.avatar" class="symbol symbol-35px me-3">
+                      <span
+                        class="symbol-label"
+                        :style="`background-image: url(${item.avatar})`"
+                      >
+                      </span>
+                    </div>
+                    <!--begin::Avatar-->
+                    <div v-else class="symbol symbol-35px me-3">
+                      <div class="symbol-label bg-light-danger">
+                        <span class="text-danger">M</span>
+                      </div>
+                    </div>
+                    <!--end::Avatar-->
+                    <!--begin::Name-->
+                    <span class="fw-bold">{{ item.name }}</span>
+                    <!--end::Name-->
+                  </a>
+                </template>
+                <template v-slot:cell-message="{ row: item }">
+                  {{ item.message }}
+                </template>
+                <template v-slot:cell-date="{ row: item }">
+                  {{ item.date }}
+                </template>
+              </Datatable>
+            </div>
+          </div>
+          <!--end::Card-->
+        </div>
+        <!--end::Content-->
       </div>
-      <!--end::Card toolbar-->
+      <!--end::Inbox App - Messages -->
     </div>
-    <div class="card-body pt-0">
-      <Datatable
-        :table-header="tableHeader"
-        :table-data="tableData"
-        :key="tableKey"
-        :rows-per-page="10"
-        :enable-items-per-page-dropdown="false"
-      >
-        <template v-slot:cell-fundCode="{ row: fund }">
-          {{ fund.fundCode }}
-        </template>
-        <template v-slot:cell-fundName="{ row: fund }">
-          {{ fund.fundName }}
-        </template>
-        <template v-slot:cell-onlineSubmission="{ row: fund }">
-          {{ fund.onlineSubmission }}
-        </template>
-        <template v-slot:cell-status="{ row: fund }">
-          <span :class="`badge badge-light-${fund.status.state}`">{{
-            fund.status.label
-          }}</span>
-        </template>
-        <template v-slot:cell-lastUpdate="{ row: fund }">
-          {{ fund.lastUpdate }}
-        </template>
-        <template v-slot:cell-action>
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen019.svg" />
-            </span>
-          </a>
-
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/art/art005.svg" />
-            </span>
-          </a>
-
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen027.svg" />
-            </span>
-          </a>
-        </template>
-      </Datatable>
-    </div>
+    <!--end::Container-->
   </div>
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
-import { useStore } from "vuex";
-import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import { defineComponent, onMounted, ref, watchEffect } from "vue";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "organization-main",
@@ -117,55 +437,122 @@ export default defineComponent({
   },
 
   setup() {
-    const store = useStore();
+    const dummyData = [
+      {
+        name: "Melody Macy",
+        avatar: "",
+        message: "Hello, how are you today?",
+        date: "8:30 PM",
+        marked: false,
+      },
+      {
+        name: "Max Smith",
+        avatar: "/media/avatars/300-1.jpg",
+        message: "Hello, how are you today?",
+        date: "day ago",
+        marked: false,
+      },
+      {
+        name: "Sean Bean",
+        avatar: "/media/avatars/300-2.jpg",
+        message: "Hello, how are you today?",
+        date: "11:20 PM",
+        marked: false,
+      },
+      {
+        name: "Olivia Wild",
+        avatar: "",
+        message: "Hello, how are you today?",
+        date: "8:30 PM",
+        marked: false,
+      },
+      {
+        name: "Neil Owen",
+        avatar: "/media/avatars/300-3.jpg",
+        message: "Hello, how are you today?",
+        date: "day ago",
+        marked: false,
+      },
+      {
+        name: "Dan Wilson",
+        avatar: "/media/avatars/300-4.jpg",
+        message: "Hello, how are you today?",
+        date: "11:20 PM",
+        marked: false,
+      },
+      {
+        name: "Emma Bold",
+        avatar: "",
+        message: "Hello, how are you today?",
+        date: "8:30 PM",
+        marked: false,
+      },
+      {
+        name: "Ana Crown",
+        avatar: "/media/avatars/300-5.jpg",
+        message: "Hello, how are you today?",
+        date: "day ago",
+        marked: false,
+      },
+      {
+        name: "Robert Doe",
+        avatar: "/media/avatars/300-6.jpg",
+        message: "Hello, how are you today?",
+        date: "11:20 PM",
+        marked: false,
+      },
+      {
+        name: "Brian Cox",
+        avatar: "",
+        message: "Hello, how are you today?",
+        date: "8:30 PM",
+        marked: false,
+      },
+      {
+        name: "Mikaela Collins",
+        avatar: "/media/avatars/300-7.jpg",
+        message: "Hello, how are you today?",
+        date: "day ago",
+        marked: false,
+      },
+      {
+        name: "Francis Mitcham",
+        avatar: "/media/avatars/300-8.jpg",
+        message: "Hello, how are you today?",
+        date: "11:20 PM",
+        marked: false,
+      },
+    ];
     const tableHeader = ref([
       {
-        name: "Fund Code",
-        key: "fundCode",
-        sortable: true,
-        searchable: true,
+        name: "Checkbox",
+        key: "checkbox",
       },
       {
-        name: "Fund Name",
-        key: "fundName",
-        sortable: true,
-        searchable: true,
+        name: "Actions",
+        key: "actions",
       },
       {
-        name: "Online Submission To Eclipse",
-        key: "onlineSubmission",
-        sortable: true,
-        searchable: true,
+        name: "Name",
+        key: "name",
       },
       {
-        name: "Status",
-        key: "status",
-        sortingField: "status.label",
-        sortable: true,
-        searchable: true,
+        name: "Message",
+        key: "message",
       },
       {
-        name: "Last Updated On",
-        key: "lastUpdate",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Action",
-        key: "action",
+        name: "Date",
+        key: "date",
       },
     ]);
     const tableData = ref([]);
-    const healthFundsList = computed(() => store.getters.healthFundsList);
-
-    onMounted(() => {
-      setCurrentPageBreadcrumbs("Health Funds", []);
-      store.dispatch(Actions.LIST_HEALTH_FUNDS);
-      tableData.value = healthFundsList;
-    });
 
     watchEffect(() => {
-      tableData.value = healthFundsList;
+      tableData.value = dummyData;
+    });
+
+    onMounted(() => {
+      tableData.value = dummyData;
     });
 
     return { tableHeader, tableData };

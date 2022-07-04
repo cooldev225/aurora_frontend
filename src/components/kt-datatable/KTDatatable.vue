@@ -8,7 +8,7 @@
         role="grid"
       >
         <!--begin::Table head-->
-        <thead>
+        <thead v-if="!disableTableHeader">
           <!--begin::Table row-->
           <tr
             class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0"
@@ -173,6 +173,7 @@ export default defineComponent({
     rowsPerPage: { type: Number, default: 10 },
     order: { type: String, default: "asc" },
     sortLabel: { type: String, default: "" },
+    disableTableHeader: { type: Boolean, default: false },
   },
   components: {},
   setup(props, { emit }) {
