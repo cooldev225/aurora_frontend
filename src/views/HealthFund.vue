@@ -160,7 +160,7 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Health Funds", []);
-      store.dispatch(Actions.LIST_HEALTH_FUNDS);
+      store.dispatch(Actions.HEALTH_FUND.LIST);
       tableData.value = healthFundsList;
     });
 

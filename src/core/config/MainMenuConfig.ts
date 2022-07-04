@@ -112,7 +112,7 @@ const OrgManagerMenu = [
       },
       {
         heading: "Uniconfirmed Appointments",
-        route: "/booking/uniconfirmed-appointments",
+        route: "/booking/uniconfirmed-apts",
       },
       {
         heading: "Unapproved Procedures",

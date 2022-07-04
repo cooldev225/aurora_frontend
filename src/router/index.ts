@@ -137,10 +137,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/Bookings.vue"),
       },
       {
-        path: "/booking/apt-pro",
-        name: "create-patient",
-        component: () => import("@/components/booking/CreatePatient.vue"),
+        path: "/booking/uniconfirmed-apts",
+        name: "unconfirmed-apts",
+        component: () => import("@/views/booking/UnconfirmedApts.vue"),
       },
+
       {
         path: "/make-payment",
         name: "make-payment",
