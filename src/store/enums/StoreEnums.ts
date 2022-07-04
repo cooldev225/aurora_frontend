@@ -13,10 +13,12 @@ const Actions = {
   FORGOT_PASSWORD: "forgotPassword",
   SET_BREADCRUMB_ACTION: "setBreadcrumbAction",
 
-  LIST_ADMIN: "listAdmin",
-  CREATE_ADMIN: "createAdmin",
-  DELETE_ADMIN: "deleteAdmin",
-  UPDATE_ADMIN: "updateAdmin",
+  ADMIN: {
+    LIST: "listAdmin",
+    CREATE: "createAdmin",
+    DELETE: "deleteAdmin",
+    UPDATE: "updateAdmin",
+  },
 
   LIST_ORG: "listOrg",
   CREATE_ORG: "createOrg",
@@ -81,11 +83,19 @@ const Actions = {
   },
 
   ANESTHETIST_QUES: {
-    LIST: "listAnesthetist",
-    CREATE: "createAnesthetist",
-    DELETE: "deleteAnesthetist",
-    UPDATE: "updateAnesthetist",
-    ACTIVE_LIST: "listActiveAnesthetist",
+    LIST: "listAnesthetistQues",
+    CREATE: "createAnesthetistQues",
+    DELETE: "deleteAnesthetistQues",
+    UPDATE: "updateAnesthetistQues",
+    ACTIVE_LIST: "listActiveAnesthetistQues",
+  },
+
+  PROCEDURE_QUES: {
+    LIST: "listProcedureQues",
+    CREATE: "createProcedureQues",
+    DELETE: "deleteProcedureQues",
+    UPDATE: "updateProcedureQues",
+    ACTIVE_LIST: "listActiveProcedureQues",
   },
 
   APT: {
@@ -103,10 +113,12 @@ const Actions = {
   //   UPDATE: "updateEmployeeRoles",
   // },
 
-  LIST_MAKE_PAYMENT: "listPatients",
-  CREATE_MAKE_PAYMENT: "createPatients",
-  DELETE_MAKE_PAYMENT: "deletePatients",
-  UPDATE_MAKE_PAYMENT: "updatePatients",
+  MAKE_PAYMENT: {
+    LIST: "listMakePayment",
+    CREATE: "createMakePayment",
+    DELETE: "deleteMakePayment",
+    UPDATE: "updateMakePayment",
+  },
 };
 
 const Mutations = {
@@ -129,8 +141,10 @@ const Mutations = {
   SET_SPECIALIST_TITLE_LIST: "setSpecialistTitleList",
   SET_SELECT_SPECALIST_TITLE: "setSelectSpecialistTitle",
 
-  SET_ADMIN_LIST: "setAdminList",
-  SET_SELECT_ADMIN: "setSelectAdmin",
+  SET_ADMIN: {
+    LIST: "setAdminList",
+    SELECT: "setSelectAdmin",
+  },
 
   SET_ORG_LIST: "setOrgList",
   SET_SELECT_ORG: "setSelectOrg",
@@ -174,10 +188,21 @@ const Mutations = {
     ACTIVE_LIST: "setAnesQuesActiveList",
   },
 
+  SET_PROCEDURE_QUES: {
+    LIST: "setProQuesList",
+    SELECT: "setSelectProQuesSelect",
+    ACTIVE_LIST: "setProQuesActiveList",
+  },
+
   SET_APT: {
     LIST: "setApt",
     SELECT: "setSelectApt",
     TYPE_LIST: "setAnesQpt",
+  },
+
+  SET_MAKE_PAYMENT: {
+    LIST: "setMakePayment",
+    SELECT: "setSelectMakePayment",
   },
 
   // SET_EMPLOYEE_ROLES: {

@@ -3,58 +3,53 @@ import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
-export interface IAdmin {
-  id: string;
-  first_name: string;
-  last_name: string;
-  username: string;
-  password: string;
-  email: string;
+export interface IMPayment {
+  id: number;
 }
 
-export interface AdminInfo {
-  adminData: Array<IAdmin>;
-  adminSelectData: IAdmin;
+export interface MPaymentInfo {
+  paymentData: Array<IMPayment>;
+  paymentSelectData: IMPayment;
 }
 
 @Module
-export default class AdminModule extends VuexModule implements AdminInfo {
-  adminData = [] as Array<IAdmin>;
-  adminSelectData = {} as IAdmin;
+export default class MPaymentModule extends VuexModule implements MPaymentInfo {
+  paymentData = [] as Array<IMPayment>;
+  paymentSelectData = {} as IMPayment;
 
   /**
    * Get current user object
    * @returns AdminList
    */
-  get adminList(): Array<IAdmin> {
-    return this.adminData;
+  get getPaymentList(): Array<IMPayment> {
+    return this.paymentData;
   }
 
   /**
    * Get current user object
-   * @returns SelectedAdminData
+   * @returns SelectedpaymentData
    */
-  get getAdminSelected(): IAdmin {
-    return this.adminSelectData;
+  get getPaymentSelected(): IMPayment {
+    return this.paymentSelectData;
   }
 
   @Mutation
-  [Mutations.SET_ADMIN.LIST](adminData) {
-    this.adminData = adminData;
+  [Mutations.SET_MAKE_PAYMENT.LIST](paymentData) {
+    this.paymentData = paymentData;
   }
 
   @Mutation
-  [Mutations.SET_ADMIN.SELECT](data) {
-    this.adminSelectData = data;
+  [Mutations.SET_MAKE_PAYMENT.SELECT](data) {
+    this.paymentSelectData = data;
   }
 
   @Action
-  [Actions.ADMIN.LIST]() {
+  [Actions.MAKE_PAYMENT.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("admins")
+      ApiService.get("make-payment")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_ADMIN.LIST, data.data);
+          this.context.commit(Mutations.SET_MAKE_PAYMENT.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -67,10 +62,10 @@ export default class AdminModule extends VuexModule implements AdminInfo {
   }
 
   @Action
-  [Actions.ADMIN.CREATE](payload) {
+  [Actions.MAKE_PAYMENT.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("admins", payload)
+      ApiService.post("make-payment", payload)
         .then(({ data }) => {
           return data.data;
         })
@@ -83,10 +78,10 @@ export default class AdminModule extends VuexModule implements AdminInfo {
   }
 
   @Action
-  [Actions.ADMIN.UPDATE](item) {
+  [Actions.MAKE_PAYMENT.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("admins", item.id, item)
+      ApiService.update("make-payment", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
@@ -100,10 +95,10 @@ export default class AdminModule extends VuexModule implements AdminInfo {
   }
 
   @Action
-  [Actions.ADMIN.DELETE](id) {
+  [Actions.MAKE_PAYMENT.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.delete("admins/" + id)
+      ApiService.delete("make-payment/" + id)
         .then(({ data }) => {
           return data.data;
         })

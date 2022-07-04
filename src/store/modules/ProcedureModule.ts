@@ -3,71 +3,71 @@ import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
-export interface IAnesthetist {
+export interface IProcedure {
   id: number;
 }
 
-export interface AnesthetistInfo {
-  aneQuestionData: Array<IAnesthetist>;
-  aneQuestionSelected: IAnesthetist;
-  aneQuestionActiveData: Array<IAnesthetist>;
+export interface ProcedureInfo {
+  proQuestionData: Array<IProcedure>;
+  proQuestionSelected: IProcedure;
+  proQuestionActiveData: Array<IProcedure>;
 }
 
 @Module
-export default class AnesthetistModule
+export default class ProcedureModule
   extends VuexModule
-  implements AnesthetistInfo
+  implements ProcedureInfo
 {
-  aneQuestionData = [] as Array<IAnesthetist>;
-  aneQuestionSelected = {} as IAnesthetist;
-  aneQuestionActiveData = {} as Array<IAnesthetist>;
+  proQuestionData = [] as Array<IProcedure>;
+  proQuestionSelected = {} as IProcedure;
+  proQuestionActiveData = {} as Array<IProcedure>;
 
   /**
    * Get Active Anesthetist List
-   * @returns aneQuestionData
+   * @returns proQuestionData
    */
-  get getAneQuestionList(): Array<IAnesthetist> {
-    return this.aneQuestionData;
+  get getProQuestionList(): Array<IProcedure> {
+    return this.proQuestionData;
   }
 
   /**
    * Get Active Anesthetist Question List
-   * @returns aneQuestionActiveData
+   * @returns proQuestionActiveData
    */
-  get getAneQuestionActiveList(): Array<IAnesthetist> {
-    return this.aneQuestionActiveData;
+  get getProQuestionActiveList(): Array<IProcedure> {
+    return this.proQuestionActiveData;
   }
 
   /**
    * Get current user object
-   * @returns aneQuestionSelected
+   * @returns proQuestionSelected
    */
-  get getAneQuestionSelected(): IAnesthetist {
-    return this.aneQuestionSelected;
+  get getProQuestionSelected(): IProcedure {
+    return this.proQuestionSelected;
   }
 
   @Mutation
-  [Mutations.SET_ANESTHETIST_QUES.LIST](aneQuestionData) {
-    this.aneQuestionData = aneQuestionData;
+  [Mutations.SET_PROCEDURE_QUES.LIST](proQuestionData) {
+    this.proQuestionData = proQuestionData;
   }
 
   @Mutation
-  [Mutations.SET_ANESTHETIST_QUES.ACTIVE_LIST](aneQuestionActiveData) {
-    this.aneQuestionActiveData = aneQuestionActiveData;
+  [Mutations.SET_PROCEDURE_QUES.ACTIVE_LIST](proQuestionActiveData) {
+    this.proQuestionActiveData = proQuestionActiveData;
   }
 
   @Mutation
-  [Mutations.SET_ANESTHETIST_QUES.SELECT](data) {
-    this.aneQuestionSelected = data;
+  [Mutations.SET_PROCEDURE_QUES.SELECT](data) {
+    this.proQuestionSelected = data;
   }
 
   @Action
-  [Actions.ANESTHETIST_QUES.LIST]() {
+  [Actions.PROCEDURE_QUES.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("anesthetic-questions")
+      ApiService.get("procedure-questions")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_ANESTHETIST_QUES.LIST, data.data);
+          this.context.commit(Mutations.SET_PROCEDURE_QUES.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -80,15 +80,15 @@ export default class AnesthetistModule
   }
 
   @Action
-  [Actions.ANESTHETIST_QUES.ACTIVE_LIST]() {
+  [Actions.PROCEDURE_QUES.ACTIVE_LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("anesthetic-questions", {
+      ApiService.query("procedure-questions", {
         params: { status: "enabled" },
       })
         .then(({ data }) => {
           this.context.commit(
-            Mutations.SET_ANESTHETIST_QUES.ACTIVE_LIST,
+            Mutations.SET_PROCEDURE_QUES.ACTIVE_LIST,
             data.data
           );
           return data.data;
@@ -103,10 +103,10 @@ export default class AnesthetistModule
   }
 
   @Action
-  [Actions.ANESTHETIST_QUES.CREATE](payload) {
+  [Actions.PROCEDURE_QUES.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("anesthetic-questions", payload)
+      ApiService.post("procedure-questions", payload)
         .then(({ data }) => {
           return data.data;
         })
@@ -119,10 +119,10 @@ export default class AnesthetistModule
   }
 
   @Action
-  [Actions.ANESTHETIST_QUES.UPDATE](item) {
+  [Actions.PROCEDURE_QUES.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("anesthetic-questions", item.id, item)
+      ApiService.update("procedure-questions", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
@@ -136,10 +136,10 @@ export default class AnesthetistModule
   }
 
   @Action
-  [Actions.ANESTHETIST_QUES.DELETE](id) {
+  [Actions.PROCEDURE_QUES.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.delete("anesthetic-questions/" + id)
+      ApiService.delete("procedure-questions/" + id)
         .then(({ data }) => {
           return data.data;
         })
