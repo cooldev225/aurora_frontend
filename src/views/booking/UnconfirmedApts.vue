@@ -152,16 +152,16 @@ export default defineComponent({
     const loading = ref(true);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_ADMIN.SELECT, item);
+      store.commit(Mutations.SET_SELECT_ADMIN, item);
       const modal = new Modal(document.getElementById("modal_edit_admin"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.ADMIN.DELETE, id)
+        .dispatch(Actions.DELETE_ADMIN, id)
         .then(() => {
-          store.dispatch(Actions.ADMIN.LIST);
+          store.dispatch(Actions.LIST_ADMIN);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -180,7 +180,7 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Administrators", []);
-      store.dispatch(Actions.ADMIN.LIST).then(() => {
+      store.dispatch(Actions.LIST_ADMIN).then(() => {
         tableData.value = adminList;
         loading.value = false;
       });

@@ -4,7 +4,7 @@ import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
 export interface IAdmin {
-  id: string;
+  id: number;
   first_name: string;
   last_name: string;
   username: string;
