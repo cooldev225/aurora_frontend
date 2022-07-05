@@ -125,17 +125,17 @@ const routes: Array<RouteRecordRaw> = [
         children: [
           {
             path: "list",
-            name: "mailbox",
+            name: "mailbox-list",
             component: () => import("@/views/apps/email/List.vue"),
           },
           {
             path: "compose",
-            name: "compose",
+            name: "mailbox-compose",
             component: () => import("@/views/apps/email/Compose.vue"),
           },
           {
             path: "reply",
-            name: "reply",
+            name: "mailbox-reply",
             component: () => import("@/views/apps/email/Reply.vue"),
           },
         ],
