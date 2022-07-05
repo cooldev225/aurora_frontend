@@ -177,7 +177,7 @@
                           >
                             <div class="d-flex justify-content-between">
                               <span
-                                class="text-primary fw-bold d-block cursor-pointer fs-5"
+                                class="text-primary px-2 fw-bold d-block cursor-pointer fs-5"
                                 >{{ item_2.first_name }}
                                 {{ item_2.last_name }} ({{
                                   item_2.mobile_number
