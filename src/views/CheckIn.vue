@@ -80,7 +80,10 @@
       <div style="overflow-x: scroll">
         <table class="table align-middle gs-0 gy-4 my-0 booking-table-header">
           <thead>
-            <tr class="fw-bolder center-row text-white bg-primary">
+            <tr
+              class="fw-bolder center-row text-white"
+              style="background: #1e90ff"
+            >
               <th
                 class="cell-120px border-0"
                 style="position: relative; left: 0px"
@@ -88,106 +91,74 @@
               <th class="cell-35px border-0"></th>
               <th
                 :colspan="_specialists.length * 2 - 1"
-                class="text-xl-left border-0 fw-bold fs-4"
+                class="text-xxl-center text-xl-left border-0"
               >
-                {{ tableTitle }}
+                Casey Day Procedure & Specialist Centre (Mon, Jun 27)
               </th>
             </tr>
-            <template v-if="_specialists.length !== 0">
-              <tr class="bg-light-warning doctor-row text-center text-primary">
+            <tr class="bg-light-warning doctor-row text-center text-primary">
+              <th class="cell-120px" style="position: relative; left: 0px"></th>
+              <th class="cell-35px"></th>
+              <template v-for="(item, index) in _specialists" :key="index">
                 <th
-                  class="cell-120px"
-                  style="position: relative; left: 0px"
-                ></th>
-                <th class="cell-35px"></th>
-                <template v-for="(item, index) in _specialists" :key="index">
-                  <th
-                    :colspan="index === 0 ? 1 : 2"
-                    class="fw-bolder"
-                    :style="
-                      index === 0 ? 'min-width: 441px' : 'min-width: 476px'
-                    "
-                  >
-                    <span class="fs-5 d-block">{{ item.name }}</span>
-                    <span class="fs-8">{{
-                      item.work_hours.locations.name
-                    }}</span>
-                  </th>
-                </template>
-              </tr>
-            </template>
+                  :colspan="index === 0 ? 1 : 2"
+                  class="fw-bolder"
+                  :style="index === 0 ? 'min-width: 441px' : 'min-width: 476px'"
+                >
+                  <span class="fs-5 d-block">{{ item.name }}</span>
+                  <span class="fs-8">{{ item.work_hours.locations.name }}</span>
+                </th>
+              </template>
+            </tr>
           </thead>
         </table>
-        <template v-if="_specialists.length !== 0">
-          <div
-            style="
-              max-height: 400px;
-              overflow: scroll visible;
-              width: max-content;
-              min-width: 100%;
-            "
+        <div
+          style="
+            max-height: 400px;
+            overflow: scroll visible;
+            width: max-content;
+            min-width: 100%;
+          "
+        >
+          <table
+            class="booking-table-body table align-middle gs-0 gy-4 my-0 bg-light"
           >
-            <table
-              class="booking-table-body table align-middle gs-0 gy-4 my-0 bg-light"
-            >
-              <tbody>
-                <template v-for="(item, index) in aptTimeList" :key="index">
-                  <tr class="text-center">
-                    <td
-                      class="cell-120px bg-white"
-                      style="position: relative; left: 0px"
-                    >
-                      {{ item.value }}
-                    </td>
-                    <template
-                      v-for="(item_1, index_1) in _specialists"
-                      :key="index_1"
-                    >
-                      <td class="cell-35px bg-white">
-                        <a
-                          class="cursor-pointer"
+            <tbody>
+              <template v-for="(item, index) in aptTimeList" :key="index">
+                <tr class="text-center">
+                  <td
+                    class="cell-120px bg-white"
+                    style="position: relative; left: 0px"
+                  >
+                    {{ item.value }}
+                  </td>
+                  <template
+                    v-for="(item_1, index_1) in _specialists"
+                    :key="index_1"
+                  >
+                    <td style="min-width: 441px">
+                      <template
+                        v-for="(item_2, idx_2) in item_1.appointments"
+                        :key="idx_2"
+                      >
+                        <span
                           v-if="
-                            timeStr2Number(item_1.work_hours.time_slot[0]) <=
-                              item.number &&
-                            timeStr2Number(item_1.work_hours.time_slot[1]) >
-                              item.number
+                            timeStr2Number(item_2.start_time) <= item.number &&
+                            timeStr2Number(item_2.end_time) > item.number
                           "
-                          @click="
-                            handleAddApt(
-                              item_1,
-                              item.value,
-                              aptTimeList[index + 1].value
-                            )
-                          "
+                          class="text-primary fw-bold d-block cursor-pointer"
+                          @click="handleEdit(item_2, item_1)"
+                          >{{ item_2.first_name }} {{ item_2.last_name }}
+                          {{ item_2.mobile_number }}</span
                         >
-                          <i class="fa fa-plus text-primary"></i>
-                        </a>
-                      </td>
-                      <td style="min-width: 441px">
-                        <template
-                          v-for="(item_2, idx_2) in item_1.appointments"
-                          :key="idx_2"
-                        >
-                          <span
-                            v-if="
-                              timeStr2Number(item_2.start_time) <=
-                                item.number &&
-                              timeStr2Number(item_2.end_time) > item.number
-                            "
-                            class="text-primary fw-bold d-block cursor-pointer"
-                            @click="handleEdit(item_2, item_1)"
-                            >{{ item_2.first_name }} {{ item_2.last_name }}
-                            {{ item_2.mobile_number }}</span
-                          >
-                        </template>
-                      </td>
-                    </template>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
-          </div>
-        </template>
+                      </template>
+                    </td>
+                  </template>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -283,7 +254,6 @@ export default defineComponent({
     });
     const _ava_specialists = ref([]);
     const _specialists = ref([]);
-    const tableTitle = ref("");
 
     onMounted(() => {
       getAvaSpecialist();
@@ -335,7 +305,6 @@ export default defineComponent({
       } else {
         // this.context.commit(Mutations.PURGE_AUTH);
       }
-      tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     };
 
     const getAvaSpecialist = () => {
@@ -364,7 +333,6 @@ export default defineComponent({
       _specialists_search,
       _ava_specialists,
       _specialists,
-      tableTitle,
       handleSearch,
       handleAddApt,
       handleEdit,
@@ -393,11 +361,11 @@ export default defineComponent({
   border: 1px dashed gray;
 }
 
-.booking-table-header tr:first-child th:first-child {
-  border-radius: 10px 0 0 0;
+/* .booking-table-header tr:first-child th:first-child {
+  border-radius: 50px 0 0 0;
 }
 
 .booking-table-header tr:first-child th:last-child {
-  border-radius: 0 10px 0 0;
-}
+  border-radius: 0 50px 0 0;
+} */
 </style>

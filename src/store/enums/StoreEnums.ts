@@ -104,6 +104,12 @@ const Actions = {
     DELETE: "deleteApt",
     UPDATE: "updateApt",
     TYPE_LIST: "listTypeApt",
+    UNCONFIRMED: {
+      LIST: "listUnconfirmedApt",
+      CREATE: "createUnconfirmedApt",
+      DELETE: "deleteUnconfirmedApt",
+      UPDATE: "updateUnconfirmedApt",
+    },
   },
 
   // EMPLOYEE_ROLE: {
