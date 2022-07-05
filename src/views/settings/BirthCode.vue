@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card w-75 mx-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
@@ -12,7 +12,7 @@
             type="text"
             data-kt-subscription-table-filter="search"
             class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Specialist Type"
+            placeholder="Search Birth Codes"
           />
         </div>
         <!--end::Search-->
@@ -45,7 +45,7 @@
             type="button"
             class="btn btn-light-primary"
             data-bs-toggle="modal"
-            data-bs-target="#modal-create-spectype"
+            data-bs-target="#modal-create-birth-code"
           >
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
@@ -62,14 +62,18 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :rows-per-page="5"
+        :rows-per-page="10"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-name="{ row: item }">
-          {{ item.name }}
+        <template v-slot:cell-birthCode="{ row: item }">
+          {{ item.code }}
+        </template>
+        <template v-slot:cell-birthDescription="{ row: item }">
+          {{ item.description }}
         </template>
         <template v-slot:cell-action="{ row: item }">
           <button
+            href="#"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
@@ -104,17 +108,17 @@
 
 <script>
 import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateModal from "@/components/specialist-type/CreateSpecialistType.vue";
-import EditModal from "@/components/specialist-type/EditSpecialistType.vue";
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import { useStore } from "vuex";
+import CreateModal from "@/components/birth-code/CreateBirthCode.vue";
+import EditModal from "@/components/birth-code/EditBirthCode.vue";
 import { Modal } from "bootstrap";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
-  name: "specialist-type",
+  name: "birth-code-main",
 
   components: {
     Datatable,
@@ -126,8 +130,14 @@ export default defineComponent({
     const store = useStore();
     const tableHeader = ref([
       {
-        name: "Type Name",
-        key: "name",
+        name: "Birth Code",
+        key: "birthCode",
+        sortable: true,
+        searchable: true,
+      },
+      {
+        name: "Birth Code Description",
+        key: "birthDescription",
         sortable: true,
         searchable: true,
       },
@@ -137,19 +147,19 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const specTypeList = computed(() => store.getters.specTypeList);
+    const birthCodeList = computed(() => store.getters.birthCodeList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_SPECALIST_TYPE, item);
-      const modal = new Modal(document.getElementById("modal-edit-spectype"));
+      store.commit(Mutations.SET_SELECT_BIRTH_CODE, item);
+      const modal = new Modal(document.getElementById("modal-edit-birth-code"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_SPECIALIST_TYPE, id)
+        .dispatch(Actions.DELETE_BIRTH_CODE, id)
         .then(() => {
-          store.dispatch(Actions.LIST_SPECIALIST_TYPE);
+          store.dispatch(Actions.LIST_BIRTH_CODE);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -166,21 +176,16 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      tableData.value = specTypeList;
+      tableData.value = birthCodeList;
     });
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Specialist Type", []);
-      store.dispatch(Actions.LIST_SPECIALIST_TYPE);
-      tableData.value = specTypeList;
+      setCurrentPageBreadcrumbs("Birth Codes", []);
+      store.dispatch(Actions.LIST_BIRTH_CODE);
+      tableData.value = birthCodeList;
     });
 
-    return {
-      tableHeader,
-      tableData,
-      handleEdit,
-      handleDelete,
-    };
+    return { tableHeader, tableData, handleEdit, handleDelete };
   },
 });
 </script>

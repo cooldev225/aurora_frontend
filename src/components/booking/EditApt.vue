@@ -1829,7 +1829,7 @@ import JwtService from "@/core/services/JwtService";
 import { hideModal } from "@/core/helpers/dom";
 
 export default defineComponent({
-  name: "create-app-modal",
+  name: "edit-apt-modal",
   components: {},
   setup() {
     const store = useStore();

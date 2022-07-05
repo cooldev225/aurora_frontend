@@ -79,22 +79,22 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/settings/health-fund",
         name: "healthFund",
-        component: () => import("@/views/HealthFund.vue"),
+        component: () => import("@/views/settings/HealthFund.vue"),
       },
       {
         path: "/settings/birthCode",
         name: "birthCode",
-        component: () => import("@/views/BirthCode.vue"),
+        component: () => import("@/views/settings/BirthCode.vue"),
       },
       {
         path: "/settings/specialist-type",
         name: "speicalistType",
-        component: () => import("@/views/SpecialistType.vue"),
+        component: () => import("@/views/settings/SpecialistType.vue"),
       },
       {
         path: "/settings/specialist-title",
         name: "specialistTitle",
-        component: () => import("@/views/SpecialistTitle.vue"),
+        component: () => import("@/views/settings/SpecialistTitle.vue"),
       },
       {
         path: "/patients",
@@ -143,7 +143,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/booking/dashboard",
         name: "booking-dashboard",
-        component: () => import("@/views/Bookings.vue"),
+        component: () => import("@/views/booking/Bookings.vue"),
       },
       {
         path: "/booking/uniconfirmed-apts",

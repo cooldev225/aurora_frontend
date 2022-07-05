@@ -136,26 +136,6 @@
                     v-for="(item_1, index_1) in _specialists"
                     :key="index_1"
                   >
-                    <td class="cell-35px bg-white">
-                      <a
-                        class="cursor-pointer"
-                        v-if="
-                          timeStr2Number(item_1.work_hours.time_slot[0]) <=
-                            item.number &&
-                          timeStr2Number(item_1.work_hours.time_slot[1]) >
-                            item.number
-                        "
-                        @click="
-                          handleAddApt(
-                            item_1,
-                            item.value,
-                            aptTimeList[index + 1].value
-                          )
-                        "
-                      >
-                        <i class="fa fa-plus text-primary"></i>
-                      </a>
-                    </td>
                     <td style="min-width: 441px">
                       <template
                         v-for="(item_2, idx_2) in item_1.appointments"
@@ -381,11 +361,11 @@ export default defineComponent({
   border: 1px dashed gray;
 }
 
-.booking-table-header tr:first-child th:first-child {
+/* .booking-table-header tr:first-child th:first-child {
   border-radius: 50px 0 0 0;
 }
 
 .booking-table-header tr:first-child th:last-child {
   border-radius: 0 50px 0 0;
-}
+} */
 </style>

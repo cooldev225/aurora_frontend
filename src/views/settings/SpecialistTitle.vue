@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card w-75 mx-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">

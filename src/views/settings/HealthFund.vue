@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card w-75 mx-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
@@ -52,22 +52,17 @@
         :rows-per-page="10"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-fundCode="{ row: fund }">
-          {{ fund.fundCode }}
+        <template v-slot:cell-fundCode="{ row: item }">
+          {{ item.code }}
         </template>
-        <template v-slot:cell-fundName="{ row: fund }">
-          {{ fund.fundName }}
+        <template v-slot:cell-fundName="{ row: item }">
+          {{ item.name }}
         </template>
-        <template v-slot:cell-onlineSubmission="{ row: fund }">
-          {{ fund.onlineSubmission }}
+        <template v-slot:cell-onlineSubmission="{ row: item }">
+          {{ item.is_online_clipse === 1 ? "Yes" : "No" }}
         </template>
-        <template v-slot:cell-status="{ row: fund }">
-          <span :class="`badge badge-light-${fund.status.state}`">{{
-            fund.status.label
-          }}</span>
-        </template>
-        <template v-slot:cell-lastUpdate="{ row: fund }">
-          {{ fund.lastUpdate }}
+        <template v-slot:cell-lastUpdate="{ row: item }">
+          {{ formatDate(item.updaed_at) }}
         </template>
         <template v-slot:cell-action>
           <a
@@ -108,6 +103,7 @@ import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Actions } from "@/store/enums/StoreEnums";
+import moment from "moment";
 
 export default defineComponent({
   name: "organization-main",
@@ -123,32 +119,21 @@ export default defineComponent({
         name: "Fund Code",
         key: "fundCode",
         sortable: true,
-        searchable: true,
       },
       {
         name: "Fund Name",
         key: "fundName",
         sortable: true,
-        searchable: true,
       },
       {
         name: "Online Submission To Eclipse",
         key: "onlineSubmission",
         sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Status",
-        key: "status",
-        sortingField: "status.label",
-        sortable: true,
-        searchable: true,
       },
       {
         name: "Last Updated On",
         key: "lastUpdate",
         sortable: true,
-        searchable: true,
       },
       {
         name: "Action",
@@ -157,6 +142,10 @@ export default defineComponent({
     ]);
     const tableData = ref([]);
     const healthFundsList = computed(() => store.getters.healthFundsList);
+
+    const formatDate = (data) => {
+      return moment(data).format("dddd, MMMM Do YYYY");
+    };
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Health Funds", []);
@@ -168,7 +157,7 @@ export default defineComponent({
       tableData.value = healthFundsList;
     });
 
-    return { tableHeader, tableData };
+    return { tableHeader, tableData, formatDate };
   },
 });
 </script>
