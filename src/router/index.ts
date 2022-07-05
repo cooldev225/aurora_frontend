@@ -99,30 +99,22 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/patients",
         name: "patients",
-        component: () => import("@/views/Patients.vue"),
+        component: () => import("@/views/patient/PatientList.vue"),
       },
       {
         path: "/patients/details",
         name: "patient-details",
-        component: () => import("@/components/patients/ViewPatient.vue"),
+        component: () => import("@/views/patient/PatientView.vue"),
         children: [
           {
-            path: "overivew",
-            name: "personal-details",
-            component: () =>
-              import("@/components/patients/PersonalDetails.vue"),
-          },
-          {
             path: "appointments",
-            name: "patient-appointment",
-            component: () =>
-              import("@/views/crafted/authentication/basic-flow/SignIn.vue"),
+            name: "patient-details-appointments",
+            component: () => import("@/components/patients/Appointments.vue"),
           },
           {
-            path: "/billings",
-            name: "patient-appointment",
-            component: () =>
-              import("@/views/crafted/authentication/basic-flow/SignIn.vue"),
+            path: "billing",
+            name: "patient-details-billing",
+            component: () => import("@/components/patients/Billing.vue"),
           },
         ],
       },
@@ -133,17 +125,17 @@ const routes: Array<RouteRecordRaw> = [
         children: [
           {
             path: "list",
-            name: "mailbox",
+            name: "mailbox-list",
             component: () => import("@/views/apps/email/List.vue"),
           },
           {
             path: "compose",
-            name: "compose",
+            name: "mailbox-compose",
             component: () => import("@/views/apps/email/Compose.vue"),
           },
           {
             path: "reply",
-            name: "reply",
+            name: "mailbox-reply",
             component: () => import("@/views/apps/email/Reply.vue"),
           },
         ],
