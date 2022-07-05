@@ -3,7 +3,7 @@
   <div
     class="modal fade"
     id="modal_create_apt"
-    ref="editAptModalRef"
+    ref="createAptRef"
     tabindex="-1"
     aria-hidden="true"
   >
@@ -1827,6 +1827,7 @@ import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
+import { hideModal } from "@/core/helpers/dom";
 
 export default defineComponent({
   name: "create-app-modal",
@@ -1996,7 +1997,7 @@ export default defineComponent({
       ],
     });
     const _stepperObj = ref(null);
-    const createPatientRef = ref(null);
+    const createAptRef = ref(null);
     const currentStepIndex = ref(0);
 
     const ava_specialist = ref([]);
@@ -2089,9 +2090,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      _stepperObj.value = StepperComponent.createInsance(
-        createPatientRef.value
-      );
+      _stepperObj.value = StepperComponent.createInsance(createAptRef.value);
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
@@ -2194,7 +2193,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                router.push({ name: "booking-dashboard" });
+                hideModal(createAptRef.value);
               });
             })
             .catch(({ response }) => {
@@ -2233,8 +2232,8 @@ export default defineComponent({
       handleStep_2,
       handleStep_3,
       handleStep_4,
-      createPatientRef,
       currentStepIndex,
+      createAptRef,
       countryList,
       timeZoneList,
       handleAneQuestions,

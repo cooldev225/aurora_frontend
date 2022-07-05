@@ -168,17 +168,49 @@
                           v-for="(item_2, idx_2) in item_1.appointments"
                           :key="idx_2"
                         >
-                          <span
+                          <template
                             v-if="
                               timeStr2Number(item_2.start_time) <=
                                 item.number &&
                               timeStr2Number(item_2.end_time) > item.number
                             "
-                            class="text-primary fw-bold d-block cursor-pointer"
-                            @click="handleEdit(item_2, item_1)"
-                            >{{ item_2.first_name }} {{ item_2.last_name }}
-                            {{ item_2.mobile_number }}</span
                           >
+                            <div class="d-flex justify-content-between">
+                              <span
+                                class="text-primary fw-bold d-block cursor-pointer fs-5"
+                                >{{ item_2.first_name }}
+                                {{ item_2.last_name }} ({{
+                                  item_2.mobile_number
+                                }})</span
+                              >
+                              <el-dropdown trigger="click">
+                                <span class="svg-icon svg-icon-2 m-0">
+                                  <inline-svg
+                                    src="media/icons/duotune/general/gen059.svg"
+                                  />
+                                </span>
+                                <span class="el-dropdown-link">
+                                  <el-icon class="el-icon--right">
+                                    <arrow-down />
+                                  </el-icon>
+                                </span>
+                                <template #dropdown>
+                                  <el-dropdown-menu>
+                                    <el-dropdown-item>
+                                      <span @click="handleEdit(item_2, item_1)">
+                                        Edit
+                                      </span>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                      <span @click="handleEdit(item_2, item_1)">
+                                        Cancel
+                                      </span>
+                                    </el-dropdown-item>
+                                  </el-dropdown-menu>
+                                </template>
+                              </el-dropdown>
+                            </div>
+                          </template>
                         </template>
                       </td>
                     </template>
@@ -263,6 +295,7 @@ import JwtService from "@/core/services/JwtService";
 import { aptTimeList } from "@/core/data/apt-time";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
+import { MenuComponent } from "@/assets/ts/components";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -327,6 +360,7 @@ export default defineComponent({
         })
           .then(({ data }) => {
             _specialists.value = data.data;
+            MenuComponent.reinitialization();
           })
           .catch(({ response }) => {
             console.log(response.data.errors);
