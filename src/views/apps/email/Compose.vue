@@ -149,6 +149,7 @@
                     data-kt-check="true"
                     data-kt-check-target="#kt_inbox_listing .form-check-input"
                     value="1"
+                    v-model="checkAll"
                   />
                 </div>
                 <!--end::Checkbox-->
@@ -174,9 +175,9 @@
                     <!--begin::Menu item-->
                     <div class="menu-item px-3">
                       <a
-                        href="#"
                         class="menu-link px-3"
                         data-kt-inbox-listing-filter="show_all"
+                        @click="selectByType('all')"
                         >All</a
                       >
                     </div>
@@ -184,9 +185,19 @@
                     <!--begin::Menu item-->
                     <div class="menu-item px-3">
                       <a
-                        href="#"
+                        class="menu-link px-3"
+                        data-kt-inbox-listing-filter="show_none"
+                        @click="selectByType('none')"
+                        >None</a
+                      >
+                    </div>
+                    <!--end::Menu item-->
+                    <!--begin::Menu item-->
+                    <div class="menu-item px-3">
+                      <a
                         class="menu-link px-3"
                         data-kt-inbox-listing-filter="show_read"
+                        @click="selectByType('read')"
                         >Read</a
                       >
                     </div>
@@ -194,9 +205,9 @@
                     <!--begin::Menu item-->
                     <div class="menu-item px-3">
                       <a
-                        href="#"
                         class="menu-link px-3"
                         data-kt-inbox-listing-filter="show_unread"
+                        @click="selectByType('unread')"
                         >Unread</a
                       >
                     </div>
@@ -204,9 +215,9 @@
                     <!--begin::Menu item-->
                     <div class="menu-item px-3">
                       <a
-                        href="#"
                         class="menu-link px-3"
                         data-kt-inbox-listing-filter="show_starred"
+                        @click="selectByType('marked')"
                         >Starred</a
                       >
                     </div>
@@ -214,9 +225,9 @@
                     <!--begin::Menu item-->
                     <div class="menu-item px-3">
                       <a
-                        href="#"
                         class="menu-link px-3"
                         data-kt-inbox-listing-filter="show_unstarred"
+                        @click="selectByType('unmarked')"
                         >Unstarred</a
                       >
                     </div>
@@ -286,6 +297,7 @@
                     data-kt-inbox-listing-filter="search"
                     class="form-control form-control-sm form-control-solid mw-100 min-w-150px min-w-md-200px ps-12"
                     placeholder="Search Inbox"
+                    v-model="searchText"
                   />
                 </div>
                 <!--end::Search-->
@@ -316,9 +328,9 @@
                     <!--begin::Menu item-->
                     <div class="menu-item px-3">
                       <a
-                        href="#"
                         class="menu-link px-3"
                         data-kt-inbox-listing-filter="filter_newest"
+                        @click="sortByDate(true)"
                         >Newest</a
                       >
                     </div>
@@ -326,9 +338,9 @@
                     <!--begin::Menu item-->
                     <div class="menu-item px-3">
                       <a
-                        href="#"
                         class="menu-link px-3"
                         data-kt-inbox-listing-filter="filter_oldest"
+                        @click="sortByDate(false)"
                         >Oldest</a
                       >
                     </div>
@@ -336,9 +348,9 @@
                     <!--begin::Menu item-->
                     <div class="menu-item px-3">
                       <a
-                        href="#"
                         class="menu-link px-3"
                         data-kt-inbox-listing-filter="filter_unread"
+                        @click="sortByUnread()"
                         >Unread</a
                       >
                     </div>
@@ -359,12 +371,18 @@
                 :enable-items-per-page-dropdown="true"
                 :disable-table-header="true"
               >
-                <template v-slot:cell-checkbox>
+                <template v-slot:cell-checkbox="{ row: item }">
                   <!--begin::Checkbox-->
                   <div
                     class="form-check form-check-sm form-check-custom form-check-solid"
                   >
-                    <input class="form-check-input" type="checkbox" value="1" />
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value="1"
+                      :checked="item.checked"
+                      @change="selectMessage(item.id)"
+                    />
                   </div>
                   <!--end::Checkbox-->
                 </template>
@@ -426,7 +444,7 @@
                       </span>
                       <span class="fw-normal"> - </span>
                       <span class="fw-normal text-muted">
-                        {{ item.message.slice(0, 90) }}
+                        {{ item.message.slice(0, 120 - item.subject.length) }}
                         ...
                       </span>
                     </a>
@@ -448,7 +466,7 @@
                   <!--end::Badges-->
                 </template>
                 <template v-slot:cell-date="{ row: item }">
-                  {{ item.date }}
+                  {{ moment.unix(item.date).format("DD/MM/YYYY hh:mm") }}
                 </template>
               </Datatable>
             </div>
@@ -474,9 +492,10 @@ import {
 } from "vue";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import DummyData from "@/store/email/DummyData";
+import moment from "moment";
 
 export default defineComponent({
-  name: "organization-main",
+  name: "email-compose",
 
   components: {
     Datatable,
@@ -510,12 +529,22 @@ export default defineComponent({
     const emailType = reactive({
       data: "inbox",
     });
+    const searchText = ref("");
+    const checkAll = ref(false);
+
+    // sort data by unread default
+    emailData.value = emailData.value.sort((a, b) => {
+      return b.unread - a.unread;
+    });
+
+    // set check status of all data by false default
+    emailData.value.forEach((item) => {
+      item.checked = false;
+    });
 
     const switchType = (type) => {
       emailType.data = type;
-    };
 
-    watch(emailType, () => {
       if (emailType.data === "marked") {
         emailData.value = DummyData.filter((data) => data.marked);
       } else {
@@ -523,6 +552,88 @@ export default defineComponent({
           (data) => data.type === emailType.data
         );
       }
+    };
+
+    const sortByDate = (order) => {
+      if (order) {
+        emailData.value = emailData.value.sort((a, b) => {
+          return b.date - a.date;
+        });
+      } else {
+        emailData.value = emailData.value.sort((a, b) => {
+          return a.date - b.date;
+        });
+      }
+    };
+
+    const sortByUnread = () => {
+      emailData.value = emailData.value.sort((a, b) => {
+        return b.unread - a.unread;
+      });
+    };
+
+    const selectByType = (type) => {
+      emailData.value.forEach((item) => {
+        item.checked = false;
+      });
+
+      switch (type) {
+        case "all":
+          emailData.value.forEach((item) => {
+            item.checked = true;
+          });
+          checkAll.value = true;
+          break;
+        case "none":
+          emailData.value.forEach((item) => {
+            item.checked = false;
+          });
+          checkAll.value = false;
+          break;
+        case "read":
+          emailData.value.forEach((item) => {
+            if (!item.unread) item.checked = true;
+          });
+          break;
+        case "unread":
+          emailData.value.forEach((item) => {
+            if (item.unread) item.checked = true;
+          });
+          break;
+        case "marked":
+          emailData.value.forEach((item) => {
+            if (item.marked) item.checked = true;
+          });
+          break;
+        case "unmarked":
+          emailData.value.forEach((item) => {
+            if (!item.marked) item.checked = true;
+          });
+          break;
+        default:
+          break;
+      }
+    };
+
+    const selectMessage = (idx) => {
+      emailData.value.forEach((item) => {
+        if (item.id === idx) {
+          item.checked = !item.checked;
+          return;
+        }
+      });
+    };
+
+    watch(searchText, () => {
+      emailData.value = emailData.value.filter((data) =>
+        data.subject.toLowerCase().includes(searchText.value)
+      );
+    });
+
+    watch(checkAll, () => {
+      emailData.value.forEach((item) => {
+        item.checked = checkAll.value;
+      });
     });
 
     watchEffect(() => {
@@ -533,7 +644,19 @@ export default defineComponent({
       tableData.value = emailData;
     });
 
-    return { tableHeader, tableData, emailType, switchType };
+    return {
+      moment,
+      tableHeader,
+      tableData,
+      emailType,
+      searchText,
+      checkAll,
+      switchType,
+      sortByDate,
+      sortByUnread,
+      selectByType,
+      selectMessage,
+    };
   },
 });
 </script>

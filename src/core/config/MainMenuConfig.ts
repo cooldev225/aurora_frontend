@@ -96,7 +96,7 @@ const OrgAdminMenu = [
 const OrgManagerMenu = [
   {
     heading: "Mailbox",
-    route: "/mailbox",
+    route: "/mailbox/list",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-envelope",
   },
