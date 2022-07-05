@@ -495,7 +495,7 @@ import DummyData from "@/store/email/DummyData";
 import moment from "moment";
 
 export default defineComponent({
-  name: "organization-main",
+  name: "email-compose",
 
   components: {
     Datatable,
