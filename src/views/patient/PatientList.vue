@@ -134,7 +134,7 @@ export default defineComponent({
 
     const handleSelect = (item) => {
       store.commit(Mutations.SET_PATIENT.SELECT, item);
-      router.push({ name: "personal-details" });
+      router.push({ name: "patient-details-appointments" });
     };
 
     watchEffect(() => {

@@ -9,7 +9,7 @@
           <div
             class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative"
           >
-            <img src="media/avatars/300-1.jpg" alt="image" />
+            <img src="media/avatars/blank.png" alt="image" />
             <div
               class="position-absolute translate-middle bottom-0 start-100 mb-6 bg-success rounded-circle border border-4 border-white h-20px w-20px"
             ></div>
@@ -32,21 +32,26 @@
                 >
                   {{ formData.first_name }} {{ formData.last_name }}
                 </span>
+                <span
+                  class="btn btn-sm btn-light-success fw-bolder ms-2 fs-8 py-1 px-3"
+                  >{{ formData.UR_number }}</span
+                >
               </div>
               <!--end::Name-->
 
               <!--begin::Info-->
               <div class="d-flex flex-wrap fw-bold fs-6 mb-4 pe-2">
-                <span
+                <a
+                  href="#"
                   class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2"
                 >
                   <span class="svg-icon svg-icon-4 me-1">
                     <inline-svg
-                      src="media/icons/duotune/communication/com006.svg"
+                      src="media/icons/duotune/communication/com011.svg"
                     />
                   </span>
-                  Developer
-                </span>
+                  {{ formData.email }}
+                </a>
                 <span
                   href="#"
                   class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2"
@@ -56,56 +61,58 @@
                   </span>
                   {{ formData.address }}
                 </span>
-                <a
-                  href="#"
+                <span
                   class="d-flex align-items-center text-gray-400 text-hover-primary mb-2"
                 >
                   <span class="svg-icon svg-icon-4 me-1">
-                    <inline-svg
-                      src="media/icons/duotune/communication/com011.svg"
-                    />
+                    <inline-svg src="media/icons/duotune/general/gen014.svg" />
                   </span>
-                  {{ formData.email }}
-                </a>
+                  {{ formData.date_of_birth }}
+                </span>
               </div>
               <!--end::Info-->
             </div>
             <!--end::User-->
 
             <!--begin::Actions-->
-            <div class="d-flex my-4">
-              <a
-                href="#"
-                class="btn btn-sm btn-light me-2"
-                id="kt_user_follow_button"
-              >
-                <span class="svg-icon svg-icon-3 d-none">
-                  <inline-svg src="media/icons/duotune/arrows/arr012.svg" />
-                </span>
-                Follow
-              </a>
+            <div class="my-4">
+              <div class="d-flex mb-3">
+                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+                  <i class="bi bi-printer fs-3"></i>
+                  Labels
+                </a>
 
-              <a
-                href="#"
-                class="btn btn-sm btn-primary me-3"
-                data-bs-toggle="modal"
-                data-bs-target="#kt_modal_offer_a_deal"
-                >Hire Me</a
-              >
+                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+                  <i class="bi bi-printer fs-3"></i>
+                  Details
+                </a>
 
-              <!--begin::Menu-->
-              <div class="me-0">
-                <button
-                  class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
-                  data-kt-menu-trigger="click"
-                  data-kt-menu-placement="bottom-end"
-                  data-kt-menu-flip="top-end"
-                >
-                  <i class="bi bi-three-dots fs-3"></i>
-                </button>
-                <Dropdown3></Dropdown3>
+                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+                  <i class="bi bi-printer fs-3"></i>
+                  Hospital Certificate
+                </a>
               </div>
-              <!--end::Menu-->
+              <div class="d-flex">
+                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+                  <i class="bi bi-file-plus fs-3"></i>
+                  Document
+                </a>
+
+                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+                  <i class="bi bi-file-plus fs-3"></i>
+                  Recall Reminder
+                </a>
+
+                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+                  <i class="bi bi-send fs-3"></i>
+                  Fax
+                </a>
+
+                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+                  <i class="bi bi-send fs-3"></i>
+                  Referral
+                </a>
+              </div>
             </div>
             <!--end::Actions-->
           </div>
@@ -124,7 +131,9 @@
                   <!--begin::Number-->
                   <div class="d-flex align-items-center">
                     <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                      <inline-svg src="media/icons/duotune/arrows/arr066.svg" />
+                      <inline-svg
+                        src="media/icons/duotune/electronics/elc003.svg"
+                      />
                     </span>
                     <div
                       class="fs-2 fw-bolder"
@@ -132,13 +141,13 @@
                       data-kt-countup-value="4500"
                       data-kt-countup-prefix="$"
                     >
-                      4,500$
+                      {{ formData.home_number }}
                     </div>
                   </div>
                   <!--end::Number-->
 
                   <!--begin::Label-->
-                  <div class="fw-bold fs-6 text-gray-400">Earnings</div>
+                  <div class="fw-bold fs-6 text-gray-400">Home Number</div>
                   <!--end::Label-->
                 </div>
                 <!--end::Stat-->
@@ -150,20 +159,22 @@
                   <!--begin::Number-->
                   <div class="d-flex align-items-center">
                     <span class="svg-icon svg-icon-3 svg-icon-danger me-2">
-                      <inline-svg src="media/icons/duotune/arrows/arr065.svg" />
+                      <inline-svg
+                        src="media/icons/duotune/electronics/elc003.svg"
+                      />
                     </span>
                     <div
                       class="fs-2 fw-bolder"
                       data-kt-countup="true"
                       data-kt-countup-value="75"
                     >
-                      75
+                      {{ formData.mobile_number }}
                     </div>
                   </div>
                   <!--end::Number-->
 
                   <!--begin::Label-->
-                  <div class="fw-bold fs-6 text-gray-400">Projects</div>
+                  <div class="fw-bold fs-6 text-gray-400">Mobile Number</div>
                   <!--end::Label-->
                 </div>
                 <!--end::Stat-->
@@ -174,8 +185,10 @@
                 >
                   <!--begin::Number-->
                   <div class="d-flex align-items-center">
-                    <span class="svg-icon svg-icon-3 svg-icon-success me-2">
-                      <inline-svg src="media/icons/duotune/arrows/arr066.svg" />
+                    <span class="svg-icon svg-icon-3 svg-icon-warning me-2">
+                      <inline-svg
+                        src="media/icons/duotune/electronics/elc003.svg"
+                      />
                     </span>
                     <div
                       class="fs-2 fw-bolder"
@@ -183,13 +196,13 @@
                       data-kt-countup-value="60"
                       data-kt-countup-prefix="%"
                     >
-                      60%
+                      {{ formData.work_number }}
                     </div>
                   </div>
                   <!--end::Number-->
 
                   <!--begin::Label-->
-                  <div class="fw-bold fs-6 text-gray-400">Success Rate</div>
+                  <div class="fw-bold fs-6 text-gray-400">Work Number</div>
                   <!--end::Label-->
                 </div>
                 <!--end::Stat-->
@@ -236,41 +249,8 @@
           <!--begin::Nav item-->
           <li class="nav-item">
             <router-link
-              to="/crafted/pages/profile/overview"
+              to="/patients/details/documents"
               class="nav-link text-active-primary me-6"
-              active-class="active"
-            >
-              Personal Details
-            </router-link>
-          </li>
-          <!--end::Nav item-->
-          <!--begin::Nav item-->
-          <li class="nav-item">
-            <router-link
-              class="nav-link text-active-primary me-6"
-              to="/crafted/pages/profile/projects"
-              active-class="active"
-            >
-              Projects
-            </router-link>
-          </li>
-          <!--end::Nav item-->
-          <!--begin::Nav item-->
-          <li class="nav-item">
-            <router-link
-              class="nav-link text-active-primary me-6"
-              to="/crafted/pages/profile/campaigns"
-              active-class="active"
-            >
-              Campaigns
-            </router-link>
-          </li>
-          <!--end::Nav item-->
-          <!--begin::Nav item-->
-          <li class="nav-item">
-            <router-link
-              class="nav-link text-active-primary me-6"
-              to="/crafted/pages/profile/documents"
               active-class="active"
             >
               Documents
@@ -281,10 +261,10 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              to="/crafted/pages/profile/connections"
+              to="/patients/details/appointments"
               active-class="active"
             >
-              Connections
+              Appointments
             </router-link>
           </li>
           <!--end::Nav item-->
@@ -292,10 +272,32 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              to="/crafted/pages/profile/activity"
+              to="/patients/details/billing"
               active-class="active"
             >
-              Activity
+              Billing
+            </router-link>
+          </li>
+          <!--end::Nav item-->
+          <!--begin::Nav item-->
+          <li class="nav-item">
+            <router-link
+              class="nav-link text-active-primary me-6"
+              to="/patients/details/clinical"
+              active-class="active"
+            >
+              Clinical Information
+            </router-link>
+          </li>
+          <!--end::Nav item-->
+          <!--begin::Nav item-->
+          <li class="nav-item">
+            <router-link
+              class="nav-link text-active-primary me-6"
+              to="/patients/details/administration"
+              active-class="active"
+            >
+              Administration
             </router-link>
           </li>
           <!--end::Nav item-->
@@ -311,23 +313,14 @@
 <script lang="ts">
 import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
-import Dropdown3 from "@/components/dropdown/Dropdown3.vue";
 
 export default defineComponent({
   name: "profile-page-layout",
-  components: {
-    Dropdown3,
-  },
+  components: {},
 
   setup() {
     const store = useStore();
-    const formData = ref({
-      first_name: "",
-      last_name: "",
-      username: "",
-      email: "",
-      address: "",
-    });
+    const formData = ref({});
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
