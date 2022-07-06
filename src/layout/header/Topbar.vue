@@ -1,6 +1,17 @@
 <template>
   <!--begin::Toolbar wrapper-->
   <div class="d-flex align-items-stretch flex-shrink-0">
+    <!--begin::Mailbox-->
+    <div class="d-flex align-items-center ms-1 ms-lg-3">
+      <div
+        class="btn btn-icon btn-active-light-primary position-relative w-30px h-30px w-md-40px h-md-40px"
+        id="kt_drawer_chat_toggle"
+      >
+        <i class="bi bi-envelope fs-2"></i>
+      </div>
+    </div>
+    <!--end::Mailbox-->
+
     <!--begin::Activities-->
     <div class="d-flex align-items-center ms-1 ms-lg-3">
       <!--begin::drawer toggle-->
@@ -15,8 +26,7 @@
     <!--end::Activities-->
 
     <!--begin::Quick links-->
-    <div class="d-flex align-items-center ms-1 ms-lg-3">
-      <!--begin::Menu-->
+    <!-- <div class="d-flex align-items-center ms-1 ms-lg-3">
       <div
         class="btn btn-icon btn-active-light-primary w-30px h-30px w-md-40px h-md-40px"
         data-kt-menu-trigger="click"
@@ -27,13 +37,11 @@
         <i class="bi bi-clipboard-check fs-2"></i>
       </div>
       <KTQuickLinksMenu></KTQuickLinksMenu>
-      <!--end::Menu-->
-    </div>
+    </div> -->
     <!--end::Quick links-->
 
     <!--begin::Chat-->
-    <div class="d-flex align-items-center ms-1 ms-lg-3">
-      <!--begin::Menu wrapper-->
+    <!-- <div class="d-flex align-items-center ms-1 ms-lg-3">
       <div
         class="btn btn-icon btn-active-light-primary position-relative w-30px h-30px w-md-40px h-md-40px"
         id="kt_drawer_chat_toggle"
@@ -45,13 +53,11 @@
         >
         </span>
       </div>
-      <!--end::Menu wrapper-->
-    </div>
+    </div> -->
     <!--end::Chat-->
 
     <!--begin::Notifications-->
-    <div class="d-flex align-items-center ms-1 ms-lg-3">
-      <!--begin::Menu-->
+    <!-- <div class="d-flex align-items-center ms-1 ms-lg-3">
       <div
         class="btn btn-icon btn-active-light-primary position-relative w-30px h-30px w-md-40px h-md-40px"
         data-kt-menu-trigger="click"
@@ -62,8 +68,7 @@
         <i class="bi bi-grid fs-2"></i>
       </div>
       <KTNotificationsMenu></KTNotificationsMenu>
-      <!--end::Menu-->
-    </div>
+    </div> -->
     <!--end::Notifications-->
 
     <!--begin::User-->
@@ -107,15 +112,15 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import KTNotificationsMenu from "@/layout/header/partials/NotificationsMenu.vue";
-import KTQuickLinksMenu from "@/layout/header/partials/QuickLinksMenu.vue";
+// import KTNotificationsMenu from "@/layout/header/partials/NotificationsMenu.vue";
+// import KTQuickLinksMenu from "@/layout/header/partials/QuickLinksMenu.vue";
 import KTUserMenu from "@/layout/header/partials/UserMenu.vue";
 
 export default defineComponent({
   name: "layout-topbar",
   components: {
-    KTNotificationsMenu,
-    KTQuickLinksMenu,
+    // KTNotificationsMenu,
+    // KTQuickLinksMenu,
     KTUserMenu,
   },
 });
