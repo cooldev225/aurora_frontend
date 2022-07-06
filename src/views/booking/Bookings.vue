@@ -336,6 +336,7 @@ export default defineComponent({
         ..._date_search,
         ..._specialists_search,
       });
+      tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     });
 
     const handleAddApt = (specialist, startTime, endTime) => {
@@ -385,7 +386,6 @@ export default defineComponent({
       } else {
         // this.context.commit(Mutations.PURGE_AUTH);
       }
-      tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     };
 
     // const getAvaSpecialist = () => {};
@@ -400,6 +400,7 @@ export default defineComponent({
         ..._specialists_search,
       });
       _specialists_search.specialists = [];
+      tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     });
 
     watch(_specialists_search, () => {
