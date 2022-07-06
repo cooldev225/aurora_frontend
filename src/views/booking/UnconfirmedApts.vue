@@ -17,9 +17,9 @@
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
-        :table-data="tableData.today ? tableData.today : []"
+        :table-data="todayData"
         :loading="loading"
-        :rows-per-page="10"
+        :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-full_name="{ row: item }">
@@ -76,9 +76,9 @@
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
-        :table-data="tableData.tomorrow ? tableData.tomorrow : []"
+        :table-data="tomorrowData"
         :loading="loading"
-        :rows-per-page="10"
+        :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-full_name="{ row: item }">
@@ -135,9 +135,9 @@
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
-        :table-data="tableData.future ? tableData.future : []"
+        :table-data="futureData"
         :loading="loading"
-        :rows-per-page="10"
+        :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-full_name="{ row: item }">
@@ -183,7 +183,14 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  watchEffect,
+  reactive,
+} from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
@@ -243,9 +250,12 @@ export default defineComponent({
         key: "actions",
       },
     ]);
-    const tableData = ref([]);
-    const Unconfied_Apts = computed(() => store.getters.getUnconfiremdAptList);
-    const loading = ref(true);
+    const todayData = ref([]);
+    const tomorrowData = ref([]);
+    const futureData = ref([]);
+    const unConfirmed_Apts = computed(
+      () => store.getters.getUnconfirmedAptList
+    );
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_APT.UNCONFIRMED.SELECT, item);
@@ -274,19 +284,37 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      loading.value = true;
       setCurrentPageBreadcrumbs("Unconfirmed Appointments", ["Booking"]);
       store.dispatch(Actions.APT.UNCONFIRMED.LIST).then(() => {
-        tableData.value = Unconfied_Apts;
-        loading.value = false;
+        if (unConfirmed_Apts.value.today)
+          todayData.value = unConfirmed_Apts.value.today;
+        if (unConfirmed_Apts.value.tomorrow)
+          todayData.value = unConfirmed_Apts.value.tomorrow;
+        if (unConfirmed_Apts.value.future)
+          todayData.value = unConfirmed_Apts.value.future;
+        // tomorrowData.value = unConfirmed_Apts.value.tomorrow;
+        // futureData.value = unConfirmed_Apts.value.future;
       });
     });
 
     watchEffect(() => {
-      tableData.value = Unconfied_Apts;
-      loading.value = false;
+      if (unConfirmed_Apts.value.today)
+        todayData.value = unConfirmed_Apts.value.today;
+      if (unConfirmed_Apts.value.tomorrow)
+        todayData.value = unConfirmed_Apts.value.tomorrow;
+      if (unConfirmed_Apts.value.future)
+        todayData.value = unConfirmed_Apts.value.future;
+      // tomorrowData.value = unConfirmed_Apts.value.tomorrow;
+      // futureData.value = unConfirmed_Apts.value.future;
     });
-    return { tableHeader, tableData, handleEdit, handleDelete };
+    return {
+      tableHeader,
+      todayData,
+      tomorrowData,
+      futureData,
+      handleEdit,
+      handleDelete,
+    };
   },
 });
 </script>
