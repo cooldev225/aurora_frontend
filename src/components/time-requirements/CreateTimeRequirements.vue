@@ -95,8 +95,8 @@
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="time">
-                  <el-time-picker v-model="formData.time" class="w-100" />
+                <el-form-item prop="base_time">
+                  <el-time-picker v-model="formData.base_time" class="w-100" />
                 </el-form-item>
                 <!--end::Input-->
               </div>
@@ -160,33 +160,30 @@ export default defineComponent({
     const loading = ref(false);
 
     const formData = ref({
-      first_name: "",
-      last_name: "",
-      username: "",
-      email: "",
-      password: "",
-      password_confirmation: "",
+      title: "",
+      type: "",
+      base_time: "",
     });
 
     const rules = ref({
       title: [
         {
           required: true,
-          message: "First Name cannot be blank",
+          message: "Title cannot be blank",
           trigger: "change",
         },
       ],
       type: [
         {
           required: true,
-          message: "Last Name cannnot be blank",
+          message: "Type cannnot be blank",
           trigger: "change",
         },
       ],
-      time: [
+      base_time: [
         {
           required: true,
-          message: "Username cannot be blank",
+          message: "Time cannot be blank",
           trigger: "change",
         },
       ],

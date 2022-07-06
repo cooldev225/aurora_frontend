@@ -68,6 +68,12 @@
         <template v-slot:cell-title="{ row: item }">
           {{ item.title }}
         </template>
+        <template v-slot:cell-type="{ row: item }">
+          {{ item.type }}
+        </template>
+        <template v-slot:cell-base_time="{ row: item }">
+          {{ item.base_time }}
+        </template>
         <template v-slot:cell-action="{ row: item }">
           <button
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
@@ -112,6 +118,7 @@ import EditModal from "@/components/time-requirements/EditTimeRequirements.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import moment from "moment";
 
 export default defineComponent({
   name: "apt-time-requirements",
@@ -137,7 +144,7 @@ export default defineComponent({
       },
       {
         name: "Time",
-        key: "time",
+        key: "base_time",
         sortable: true,
       },
       {
@@ -147,10 +154,12 @@ export default defineComponent({
     ]);
     const tableData = ref([]);
     const aptTimeRequireList = computed(
-      () => store.getters.getAptTimeRequireSelected
+      () => store.getters.getAptTimeRequireList
     );
 
     const handleEdit = (item) => {
+      item.base_time =
+        moment(new Date()).format("YYYY-MM-DD") + "T" + item.base_time;
       store.commit(Mutations.SET_APT_TIME_REQUIREMENT.SELECT, item);
       const modal = new Modal(
         document.getElementById("modal_edit_time_requirements")
@@ -178,14 +187,14 @@ export default defineComponent({
         });
     };
 
-    watchEffect(() => {
-      // tableData.value = aptTimeRequireList;
-    });
-
     onMounted(() => {
       setCurrentPageBreadcrumbs("Appointment Time Requirements", ["Settings"]);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
-      // tableData.value = aptTimeRequireList;
+      tableData.value = aptTimeRequireList;
+    });
+
+    watchEffect(() => {
+      tableData.value = aptTimeRequireList;
     });
 
     return { tableHeader, tableData, handleEdit, handleDelete };

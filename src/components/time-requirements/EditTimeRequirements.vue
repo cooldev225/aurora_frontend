@@ -91,8 +91,8 @@
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="time">
-                  <el-time-picker v-model="formData.time" class="w-100" />
+                <el-form-item prop="base_time">
+                  <el-time-picker v-model="formData.base_time" class="w-100" />
                 </el-form-item>
                 <!--end::Input-->
               </div>
@@ -145,6 +145,7 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
+import moment from "moment";
 
 export default defineComponent({
   name: "edit-time-requirement",
@@ -158,7 +159,7 @@ export default defineComponent({
     const formData = ref({
       title: "",
       type: "",
-      time: "",
+      base_time: "",
     });
 
     const rules = ref({
@@ -176,7 +177,7 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      time: [
+      base_time: [
         {
           required: true,
           message: "Username cannot be blank",
@@ -186,7 +187,7 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      // formData.value = store.getters.getAptTimeRequireSelected;
+      formData.value = store.getters.getAptTimeRequireSelected;
     });
 
     const submit = () => {

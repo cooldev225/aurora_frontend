@@ -50,7 +50,7 @@
                   <el-select
                     class="w-100"
                     placeholder="Select Appintment Type"
-                    :model="_search_next_apts.appointment_type_id"
+                    v-model="_search_next_apts.appointment_type_id"
                   >
                     <template v-for="(item, idx) in _aptTypelist" :key="idx">
                       <el-option :value="item.id" :label="item.name" />
@@ -60,10 +60,10 @@
                   <el-select
                     class="w-100"
                     placeholder="Select Specialist"
-                    :model="_search_next_apts.specialist_id"
+                    v-model="_search_next_apts.specialist_id"
                   >
                     <template
-                      v-for="(item, index) in _ava_specialists"
+                      v-for="(item, index) in _allSpecialists"
                       :key="index"
                     >
                       <el-option :value="item.id" :label="item.name" />
@@ -73,7 +73,15 @@
                   <el-select
                     class="w-100"
                     placeholder="Select Appintment Time Requirement"
-                  ></el-select>
+                    v-model="_search_next_apts.time_requirement"
+                  >
+                    <template
+                      v-for="(item, idx) in _aptTimeRequireList"
+                      :key="idx"
+                    >
+                      <el-option :value="item.id" :label="item.title" />
+                    </template>
+                  </el-select>
                 </div>
               </div>
             </div>
@@ -338,15 +346,20 @@ export default defineComponent({
     const _specialists_search = reactive({
       specialists: [],
     });
+    const _search_next_apts = reactive({
+      appointment_type_id: "",
+      specialist_id: "",
+      time_requirement: "",
+    });
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
     const _aptTypelist = computed(() => store.getters.getAptTypeList);
+    const _allSpecialists = computed(() => store.getters.getSpecialistList);
+    const _aptTimeRequireList = computed(
+      () => store.getters.getAptTimeRequireList
+    );
     const tableTitle = ref("");
-    const _search_next_apts = reactive({
-      apt_type_id: "",
-      specialist_id: "",
-      apt_time_requirement: "",
-    });
+
     onMounted(() => {
       store.dispatch(Actions.BOOKING.SEARCH.DATE, {
         ..._date_search,
@@ -358,6 +371,8 @@ export default defineComponent({
       });
       setCurrentPageBreadcrumbs("Dashboard", ["Bookings"]);
       store.dispatch(Actions.APT.TYPE_LIST);
+      store.dispatch(Actions.SPECIALIST.LIST);
+      store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     });
 
@@ -394,8 +409,8 @@ export default defineComponent({
     const handleSearch = () => {
       if (JwtService.getToken()) {
         ApiService.setHeader();
-        ApiService.query("work-hours", {
-          // params: { ,  },
+        ApiService.query("work-hours-by-week", {
+          params: { ..._search_next_apts },
         })
           .then(({ data }) => {
             _specialists.value = data.data;
@@ -437,6 +452,9 @@ export default defineComponent({
       _ava_specialists,
       _specialists,
       _aptTypelist,
+      _allSpecialists,
+      _aptTimeRequireList,
+      _search_next_apts,
       tableTitle,
       handleSearch,
       handleAddApt,

@@ -3,62 +3,59 @@ import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
-export interface IAptTimeRequirement {
+export interface ISpecialist {
   id: number;
-  title: string;
-  type: string;
-  time: string;
+  name: string;
+  updated_at: string;
+  created_at: string;
 }
 
-export interface AptTimeRequireInfo {
-  aptTimeRequireData: Array<IAptTimeRequirement>;
-  aptTimeRequireSelectData: IAptTimeRequirement;
+export interface SpecalistInfo {
+  specialistsData: Array<ISpecialist>;
+  specialistsSelectData: ISpecialist;
 }
 
 @Module
-export default class AptTimeRequireModule
+export default class SpecialistModule
   extends VuexModule
-  implements AptTimeRequireInfo
+  implements SpecalistInfo
 {
-  aptTimeRequireData = [] as Array<IAptTimeRequirement>;
-  aptTimeRequireSelectData = {} as IAptTimeRequirement;
+  specialistsData = [] as Array<ISpecialist>;
+  specialistsSelectData = {} as ISpecialist;
 
   /**
    * Get current user object
-   * @returns AdminList
+   * @returns SpecalistList
    */
-  get getAptTimeRequireList(): Array<IAptTimeRequirement> {
-    return this.aptTimeRequireData;
+  get getSpecialistList(): Array<ISpecialist> {
+    return this.specialistsData;
   }
 
   /**
    * Get current user object
-   * @returns SelectedaptTimeRequireData
+   * @returns SpecalistList
    */
-  get getAptTimeRequireSelected(): IAptTimeRequirement {
-    return this.aptTimeRequireSelectData;
+  get getSpecialistSelected(): ISpecialist {
+    return this.specialistsSelectData;
   }
 
   @Mutation
-  [Mutations.SET_APT_TIME_REQUIREMENT.LIST](aptTimeRequireData) {
-    this.aptTimeRequireData = aptTimeRequireData;
+  [Mutations.SET_SPECIALIST.LIST](specialistsData) {
+    this.specialistsData = specialistsData;
   }
 
   @Mutation
-  [Mutations.SET_APT_TIME_REQUIREMENT.SELECT](data) {
-    this.aptTimeRequireSelectData = data;
+  [Mutations.SET_SPECIALIST.SELECT](data) {
+    this.specialistsSelectData = data;
   }
 
   @Action
-  [Actions.APT_TIME_REQUIREMENT.LIST]() {
+  [Actions.SPECIALIST.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("appointment-time-requirements")
+      ApiService.get("specialists")
         .then(({ data }) => {
-          this.context.commit(
-            Mutations.SET_APT_TIME_REQUIREMENT.LIST,
-            data.data
-          );
+          this.context.commit(Mutations.SET_SPECIALIST.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -71,10 +68,10 @@ export default class AptTimeRequireModule
   }
 
   @Action
-  [Actions.APT_TIME_REQUIREMENT.CREATE](payload) {
+  [Actions.SPECIALIST.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("appointment-time-requirements", payload)
+      ApiService.post("specialists", payload)
         .then(({ data }) => {
           return data.data;
         })
@@ -87,10 +84,10 @@ export default class AptTimeRequireModule
   }
 
   @Action
-  [Actions.APT_TIME_REQUIREMENT.UPDATE](item) {
+  [Actions.SPECIALIST.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("appointment-time-requirements", item.id, item)
+      ApiService.update("specialists", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
@@ -104,10 +101,10 @@ export default class AptTimeRequireModule
   }
 
   @Action
-  [Actions.APT_TIME_REQUIREMENT.DELETE](id) {
+  [Actions.SPECIALIST.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.delete("appointment-time-requirements/" + id)
+      ApiService.delete("specialists/" + id)
         .then(({ data }) => {
           return data.data;
         })
