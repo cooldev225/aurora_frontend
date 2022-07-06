@@ -353,7 +353,7 @@
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
                               <label class="required fs-6 fw-bold mb-2">
-                                Procedure / Consultation
+                                Appointment Type
                               </label>
                               <!--end::Label-->
 
@@ -529,6 +529,7 @@
                   <el-form
                     class="w-100"
                     :model="formData"
+                    :rules="rules"
                     ref="formRef_2"
                     @submit.prevent="handleStep_2"
                   >
@@ -612,11 +613,11 @@
                               v-model="formData.title"
                               placeholder="Select Title"
                             >
-                              <el-option key="mr" label="Mr" />
-                              <el-option key="mrs" label="Mrs" />
-                              <el-option key="ms" label="Ms" />
-                              <el-option key="master" label="Master" />
-                              <el-option key="miss" label="Miss" />
+                              <el-option value="mr" label="Mr" />
+                              <el-option value="mrs" label="Mrs" />
+                              <el-option value="ms" label="Ms" />
+                              <el-option value="master" label="Master" />
+                              <el-option value="miss" label="Miss" />
                             </el-select>
                           </el-form-item>
                           <!--end::Input-->
@@ -1308,11 +1309,11 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="dva_expiry">
+                              <el-form-item prop="dva_expiry_date">
                                 <el-date-picker
                                   class="w-100"
                                   format="YYYY-MM"
-                                  v-model="formData.dva_expiry"
+                                  v-model="formData.dva_expiry_date"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1868,6 +1869,55 @@ export default defineComponent({
           trigger: "change",
         },
       ],
+      arrival_time: [
+        {
+          required: true,
+          message: "Arrival time cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      appointment_type_id: [
+        {
+          required: true,
+          message: "Appointment Type cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      specialist_id: [
+        {
+          required: true,
+          message: "Specialist cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      first_name: [
+        {
+          required: true,
+          message: "First name cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      last_name: [
+        {
+          required: true,
+          message: "Last name cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      date_of_birth: [
+        {
+          required: true,
+          message: "Date of birth cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      title: [
+        {
+          required: true,
+          message: "Title cannot be blank.",
+          trigger: "change",
+        },
+      ],
       email: [
         {
           required: true,
@@ -1880,78 +1930,124 @@ export default defineComponent({
           trigger: ["blur", "change"],
         },
       ],
-      phone_number: [
+      gender: [
         {
           required: true,
-          message: "Phone Number cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      hospital_provider_number: [
-        {
-          required: true,
-          message: "Provider Number cannot be blank",
-          trigger: "change",
-        },
-        {
-          min: 8,
-          message: "Provider Number must be at least 8 characters",
-          trigger: "blur",
-        },
-      ],
-      VAED_number: [
-        {
-          required: true,
-          message: "VAED Number cannot be blank",
+          message: "Gender cannot be blank.",
           trigger: "change",
         },
       ],
       address: [
         {
           required: true,
-          message: "Address cannot be blank",
+          message: "Address cannot be blank.",
           trigger: "change",
         },
       ],
       street: [
         {
           required: true,
-          message: "Street cannot be blank",
+          message: "Street cannot be blank.",
           trigger: "change",
         },
       ],
-      state: [
+      suburb: [
         {
           required: true,
-          message: "State cannot be blank",
-          trigger: "change",
-        },
-      ],
-      city: [
-        {
-          required: true,
-          message: "City cannot be blank",
-          trigger: "change",
-        },
-      ],
-      country: [
-        {
-          required: true,
-          message: "Country cannot be blank",
+          message: "Suburb cannot be blank.",
           trigger: "change",
         },
       ],
       postcode: [
         {
           required: true,
-          message: "Postcode cannot be blank",
+          message: "Postcode cannot be blank.",
           trigger: "change",
         },
       ],
-      timezone: [
+      state: [
         {
           required: true,
-          message: "Postcode cannot be blank",
+          message: "State cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      country: [
+        {
+          required: true,
+          message: "Country cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      home_number: [
+        {
+          required: true,
+          message: "Home number cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      work_number: [
+        {
+          required: true,
+          message: "Work Number cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      mobile_number: [
+        {
+          required: true,
+          message: "Mobile Number cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      charge_type: [
+        {
+          required: true,
+          message: "Charge Type cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      procedure_price: [
+        {
+          type: "number",
+          message: "Procedure price must be a number",
+          trigger: "change",
+          min: 0,
+        },
+      ],
+      fund_excess: [
+        {
+          type: "number",
+          message: "Fund excess must be a number",
+          trigger: "change",
+          min: 0,
+        },
+      ],
+      medicare_number: [
+        {
+          required: true,
+          message: "Medicare number cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      medicare_reference_number: [
+        {
+          required: true,
+          message: "Medicare Reference Number cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      medicare_expiry_date: [
+        {
+          required: true,
+          message: "Medicare expiry date cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      appointment_confirm: [
+        {
+          required: true,
+          message: "Appointmentconfirm cannot be blank.",
           trigger: "change",
         },
       ],
@@ -2060,7 +2156,6 @@ export default defineComponent({
     });
 
     const handleStep_1 = () => {
-      debugger;
       if (!formRef_1.value) {
         return;
       }

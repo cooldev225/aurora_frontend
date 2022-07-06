@@ -49,17 +49,22 @@
                 <div class="card-info">
                   <el-select
                     class="w-100"
-                    v-model="procedure"
                     placeholder="Select Procedure Type/Consultation"
                   ></el-select>
                   <el-divider />
-                  <div class="fs-3 fw-bold text-muted mb-6">
-                    Specialist Requirements
-                  </div>
-                  <div class="d-flex flex-column">
-                    <el-checkbox size="large" label="DR AARON THORNTON" />
-                    <el-checkbox size="large" label="DR ANTONY JACOB" />
-                  </div>
+                  <el-select class="w-100" placeholder="Select Specialist">
+                    <template
+                      v-for="(item, index) in _ava_specialists"
+                      :key="index"
+                    >
+                      <el-option :value="item.id" :label="item.name" />
+                    </template>
+                  </el-select>
+                  <el-divider />
+                  <el-select
+                    class="w-100"
+                    placeholder="Select Specialist Requirement"
+                  ></el-select>
                 </div>
               </div>
             </div>
@@ -442,7 +447,7 @@ export default defineComponent({
 
 .booking-table-body td,
 .booking-table-body th {
-  border: 1px dashed gray;
+  border: 0.5px dashed gray;
 }
 
 .booking-table-header tr:first-child th:first-child {
