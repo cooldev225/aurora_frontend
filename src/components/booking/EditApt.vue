@@ -1055,10 +1055,10 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="health_fund">
+                              <el-form-item prop="health_fund_id">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.health_fund"
+                                  v-model="formData.health_fund_id"
                                 >
                                   <template
                                     v-for="(item, idx) in healthFundsList"
@@ -1094,10 +1094,14 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="health_fund_mem_number">
+                              <el-form-item
+                                prop="health_fund_membership_number"
+                              >
                                 <el-input
                                   type="text"
-                                  v-model="formData.health_fund_mem_number"
+                                  v-model="
+                                    formData.health_fund_membership_number
+                                  "
                                   placeholder="12345678"
                                 />
                               </el-form-item>
@@ -1124,10 +1128,12 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="health_fund_ref_number">
+                              <el-form-item prop="health_fund_reference_number">
                                 <el-input
                                   type="text"
-                                  v-model="formData.health_fund_ref_number"
+                                  v-model="
+                                    formData.health_fund_reference_number
+                                  "
                                   placeholder="00"
                                 />
                               </el-form-item>
@@ -1813,9 +1819,9 @@ export default defineComponent({
       medicare_number: "",
       medicare_ref_number: "",
       medicare_expiry: "",
-      health_fund: "",
-      health_fund_mem_number: "",
-      health_fund_ref_number: "",
+      health_fund_id: "",
+      health_fund_membership_number: "",
+      health_fund_reference_number: "",
       health_fund_expiry: "",
       fund_excess: "",
       pension_card_number: "",

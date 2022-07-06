@@ -86,14 +86,16 @@
                 style="position: relative; left: 0px"
               ></th>
               <th class="cell-35px border-0"></th>
-              <th
-                :colspan="_specialists.length * 2 - 1"
-                class="text-xl-left border-0 fw-bold fs-4"
-              >
-                {{ tableTitle }}
-              </th>
+              <template v-if="_specialists">
+                <th
+                  :colspan="_specialists.length * 2 - 1"
+                  class="text-xl-left border-0 fw-bold fs-4"
+                >
+                  {{ tableTitle }}
+                </th>
+              </template>
             </tr>
-            <template v-if="_specialists.length !== 0">
+            <template v-if="_specialists">
               <tr class="bg-light-warning doctor-row text-center text-primary">
                 <th
                   class="cell-120px"
@@ -118,7 +120,7 @@
             </template>
           </thead>
         </table>
-        <template v-if="_specialists.length !== 0">
+        <template v-if="_specialists">
           <div
             style="
               max-height: 400px;
@@ -282,7 +284,14 @@
   <EditModal></EditModal>
 </template>
 <script>
-import { defineComponent, ref, watch, reactive, onMounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  watch,
+  reactive,
+  onMounted,
+  computed,
+} from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import CreateModal from "@/components/booking/CreateApt.vue";
@@ -314,21 +323,29 @@ export default defineComponent({
     const _specialists_search = reactive({
       specialists: [],
     });
-    const _ava_specialists = ref([]);
-    const _specialists = ref([]);
+    // const _ava_specialists = computed(() => store.getters.getFilteredData);
+    const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
+    const _specialists = computed(() => store.getters.getFilteredData);
     const tableTitle = ref("");
 
     onMounted(() => {
-      getAvaSpecialist();
-      handleSearch();
+      store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+        ..._date_search,
+        ..._specialists_search,
+      });
+      store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+        ..._date_search,
+        ..._specialists_search,
+      });
     });
 
     const handleAddApt = (specialist, startTime, endTime) => {
       const item = {
         time_slots: [
-          _date_search.date.toISOString().slice(0, 10) + "T" + startTime,
-          _date_search.date.toISOString().slice(0, 10) + "T" + endTime,
+          moment(_date_search.date).format("YYYY-MM-DD") + "T" + startTime,
+          moment(_date_search.date).format("YYYY-MM-DD") + "T" + endTime,
         ],
+        date: moment(_date_search.date).format("YYYY-MM-DD"),
         ava_specialist: _ava_specialists,
         selected_specialist: specialist,
       };
@@ -372,24 +389,24 @@ export default defineComponent({
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     };
 
-    const getAvaSpecialist = () => {
-      if (JwtService.getToken()) {
-        ApiService.setHeader();
-        ApiService.query("work-hours", { params: _date_search })
-          .then(({ data }) => {
-            _ava_specialists.value = data.data;
-          })
-          .catch(({ response }) => {
-            console.log(response.data.errors);
-            // this.context.commit(Mutations.PURGE_AUTH);
-          });
-      } else {
-        // this.context.commit(Mutations.PURGE_AUTH);
-      }
-    };
+    // const getAvaSpecialist = () => {};
 
     watch(_date_search, () => {
-      getAvaSpecialist();
+      store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+        ..._date_search,
+        ..._specialists_search,
+      });
+      store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+        ..._date_search,
+        ..._specialists_search,
+      });
+    });
+
+    watch(_specialists_search, () => {
+      store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+        ..._date_search,
+        ..._specialists_search,
+      });
     });
 
     return {

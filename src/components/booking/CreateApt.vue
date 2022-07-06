@@ -1057,10 +1057,10 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="health_fund">
+                              <el-form-item prop="health_fund_id">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.health_fund"
+                                  v-model="formData.health_fund_id"
                                 >
                                   <template
                                     v-for="(item, idx) in healthFundsList"
@@ -1096,10 +1096,14 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="health_fund_mem_number">
+                              <el-form-item
+                                prop="health_fund_membership_number"
+                              >
                                 <el-input
                                   type="text"
-                                  v-model="formData.health_fund_mem_number"
+                                  v-model="
+                                    formData.health_fund_membership_number
+                                  "
                                   placeholder="12345678"
                                 />
                               </el-form-item>
@@ -1126,10 +1130,12 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="health_fund_ref_number">
+                              <el-form-item prop="health_fund_reference_number">
                                 <el-input
                                   type="text"
-                                  v-model="formData.health_fund_ref_number"
+                                  v-model="
+                                    formData.health_fund_reference_number
+                                  "
                                   placeholder="00"
                                 />
                               </el-form-item>
@@ -1826,9 +1832,9 @@ export default defineComponent({
       medicare_number: "",
       medicare_ref_number: "",
       medicare_expiry: "",
-      health_fund: "",
-      health_fund_mem_number: "",
-      health_fund_ref_number: "",
+      health_fund_id: "",
+      health_fund_membership_number: "",
+      health_fund_reference_number: "",
       health_fund_expiry: "",
       fund_excess: "",
       pension_card_number: "",
@@ -1968,6 +1974,7 @@ export default defineComponent({
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
     const aptTypeList = computed(() => store.getters.getAptTypeList);
+    const searchVal = computed(() => store.getters.getSearchVariable);
 
     watch(formData.value.specialist_id, () => {
       const selectedSpecialist = formData.value.specialist_id;
@@ -2001,6 +2008,7 @@ export default defineComponent({
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
       formData.value.time_slot = bookingData.time_slots;
+      formData.value.date = bookingData.date;
       if (bookingData.selected_specialist) {
         formData.value.specialist_id = bookingData.selected_specialist.id;
         if (bookingData.selected_specialist.anesthetist) {
@@ -2052,6 +2060,7 @@ export default defineComponent({
     });
 
     const handleStep_1 = () => {
+      debugger;
       if (!formRef_1.value) {
         return;
       }
@@ -2111,7 +2120,6 @@ export default defineComponent({
       if (!formRef_4.value) {
         return;
       }
-
       formRef_4.value.validate((valid) => {
         if (valid) {
           loading.value = true;
@@ -2130,6 +2138,12 @@ export default defineComponent({
                 },
               }).then(() => {
                 hideModal(createAptModalRef.value);
+                store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+                  ...searchVal.value,
+                });
+                store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+                  ...searchVal.value,
+                });
               });
             })
             .catch(({ response }) => {

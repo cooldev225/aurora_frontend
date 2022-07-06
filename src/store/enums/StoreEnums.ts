@@ -47,6 +47,10 @@ const Actions = {
     CREATE: "createBooking",
     DELETE: "deleteBooking",
     UPDATE: "updateBooking",
+    SEARCH: {
+      DATE: "searchBookingByDate",
+      SPECIALISTS: "searchBookingBySPT",
+    },
   },
 
   LIST_BIRTH_CODE: "listBirthCode",
@@ -200,6 +204,11 @@ const Mutations = {
   SET_BOOKING: {
     LIST: "setBookingList",
     SELECT: "setSelectBooking",
+    SEARCH: {
+      VARIABLE: "setSearchVariable",
+      DATE: "setFilteredBookingByDate",
+      SPECIALISTS: "setFilteredBookingBySPT",
+    },
   },
 
   SET_ANESTHETIST_QUES: {
