@@ -1005,10 +1005,10 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="medicare_ref_number">
+                              <el-form-item prop="medicare_reference_number">
                                 <el-input
                                   type="text"
-                                  v-model="formData.medicare_ref_number"
+                                  v-model="formData.medicare_reference_number"
                                   placeholder=""
                                 />
                               </el-form-item>
@@ -1026,10 +1026,10 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="medicare_expiry">
+                              <el-form-item prop="medicare_expiry_date">
                                 <el-date-picker
                                   class="w-100"
-                                  v-model="formData.medicare_expiry"
+                                  v-model="formData.medicare_expiry_date"
                                   format="YYYY-MM"
                                   placeholder="Enter Expiry Date"
                                 />
@@ -1162,10 +1162,10 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="health_fund_expiry">
+                              <el-form-item prop="health_fund_expiry_date">
                                 <el-date-picker
                                   class="w-100"
-                                  v-model="formData.health_fund_expiry"
+                                  v-model="formData.health_fund_expiry_date"
                                   format="YYYY-MM"
                                 />
                               </el-form-item>
@@ -1830,12 +1830,12 @@ export default defineComponent({
       mobile_number: "",
       charge_type: "",
       medicare_number: "",
-      medicare_ref_number: "",
-      medicare_expiry: "",
+      medicare_reference_number: "",
+      medicare_expiry_date: "",
       health_fund_id: "",
       health_fund_membership_number: "",
       health_fund_reference_number: "",
-      health_fund_expiry: "",
+      health_fund_expiry_date: "",
       fund_excess: "",
       pension_card_number: "",
       healthcare_card_number: "",
