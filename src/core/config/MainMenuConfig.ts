@@ -89,7 +89,12 @@ const OrgAdminMenu = [
     route: "/settings",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-gear",
-    pages: [],
+    pages: [
+      {
+        heading: "Appointment Time Requirements",
+        route: "/settings/time-requirements",
+      },
+    ],
   },
 ];
 

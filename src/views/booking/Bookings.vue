@@ -19,7 +19,7 @@
                   <span>SPECIALISTS</span>
                 </div>
               </div>
-              <div class="card-body card-scroll h-300px">
+              <div class="card-body card-scroll h-350px">
                 <div class="d-flex flex-column">
                   <el-checkbox-group
                     v-model="_specialists_search.specialists"
@@ -47,15 +47,23 @@
               </div>
               <div class="card-body card-scroll h-300px">
                 <div class="card-info">
-                  <el-select class="w-100" placeholder="Select Appintment Type">
+                  <el-select
+                    class="w-100"
+                    placeholder="Select Appintment Type"
+                    v-model="_search_next_apts.appointment_type_id"
+                  >
                     <template v-for="(item, idx) in _aptTypelist" :key="idx">
                       <el-option :value="item.id" :label="item.name" />
                     </template>
                   </el-select>
                   <el-divider />
-                  <el-select class="w-100" placeholder="Select Specialist">
+                  <el-select
+                    class="w-100"
+                    placeholder="Select Specialist"
+                    v-model="_search_next_apts.specialist_id"
+                  >
                     <template
-                      v-for="(item, index) in _ava_specialists"
+                      v-for="(item, index) in _allSpecialists"
                       :key="index"
                     >
                       <el-option :value="item.id" :label="item.name" />
@@ -65,15 +73,25 @@
                   <el-select
                     class="w-100"
                     placeholder="Select Appintment Time Requirement"
-                  ></el-select>
+                    v-model="_search_next_apts.time_requirement"
+                  >
+                    <template
+                      v-for="(item, idx) in _aptTimeRequireList"
+                      :key="idx"
+                    >
+                      <el-option :value="item.id" :label="item.title" />
+                    </template>
+                  </el-select>
                 </div>
               </div>
             </div>
-            <div class="d-flex justify-content-md-between">
-              <button class="btn btn-primary mt-2" @click="handleSearch">
+            <div class="d-flex justify-content-md-between gap-2">
+              <button class="btn btn-primary mt-2 w-100" @click="handleSearch">
                 SEARCH
               </button>
-              <button class="btn btn-light-primary mt-2">CLEAR FILTERS</button>
+              <button class="btn btn-light-primary w-100 mt-2">
+                CLEAR FILTERS
+              </button>
             </div>
           </div>
         </div>
@@ -310,6 +328,7 @@ import { aptTimeList } from "@/core/data/apt-time";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
 import { MenuComponent } from "@/assets/ts/components";
+import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -327,9 +346,18 @@ export default defineComponent({
     const _specialists_search = reactive({
       specialists: [],
     });
+    const _search_next_apts = reactive({
+      appointment_type_id: "",
+      specialist_id: "",
+      time_requirement: "",
+    });
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
     const _aptTypelist = computed(() => store.getters.getAptTypeList);
+    const _allSpecialists = computed(() => store.getters.getSpecialistList);
+    const _aptTimeRequireList = computed(
+      () => store.getters.getAptTimeRequireList
+    );
     const tableTitle = ref("");
 
     onMounted(() => {
@@ -341,7 +369,10 @@ export default defineComponent({
         ..._date_search,
         ..._specialists_search,
       });
+      setCurrentPageBreadcrumbs("Dashboard", ["Bookings"]);
       store.dispatch(Actions.APT.TYPE_LIST);
+      store.dispatch(Actions.SPECIALIST.LIST);
+      store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     });
 
@@ -378,8 +409,8 @@ export default defineComponent({
     const handleSearch = () => {
       if (JwtService.getToken()) {
         ApiService.setHeader();
-        ApiService.query("work-hours", {
-          params: { ..._date_search, ..._specialists_search },
+        ApiService.query("work-hours-by-week", {
+          params: { ..._search_next_apts },
         })
           .then(({ data }) => {
             _specialists.value = data.data;
@@ -421,6 +452,9 @@ export default defineComponent({
       _ava_specialists,
       _specialists,
       _aptTypelist,
+      _allSpecialists,
+      _aptTimeRequireList,
+      _search_next_apts,
       tableTitle,
       handleSearch,
       handleAddApt,

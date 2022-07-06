@@ -20,6 +20,8 @@ import BookingModule from "@/store/modules/BookingModule";
 import AnesthetistModule from "@/store/modules/AnesthetistModule";
 import AppointmentModule from "@/store/modules/AppointmentModule";
 import ProcedureModule from "@/store/modules/ProcedureModule";
+import AptTimeRequireModule from "@/store/modules/AptTimeRequireModule";
+import SpecialistsModule from "@/store/modules/SpecialistsModule";
 
 config.rawError = true;
 
@@ -44,6 +46,8 @@ const store = createStore({
     AnesthetistModule,
     AppointmentModule,
     ProcedureModule,
+    AptTimeRequireModule,
+    SpecialistsModule,
   },
 });
 

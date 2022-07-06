@@ -62,6 +62,13 @@ const Actions = {
     LIST: "listHealthFunds",
   },
 
+  SPECIALIST: {
+    LIST: "listSpecialists",
+    CREATE: "createSpecialists",
+    DELETE: "deleteSpecialists",
+    UPDATE: "updateSpecialists",
+  },
+
   LIST_SPECIALIST_TYPE: "listSpecialistType",
   CREATE_SPECIALIST_TYPE: "createSpecialistType",
   DELETE_SPECIALIST_TYPE: "deleteSpecialistType",
@@ -100,6 +107,13 @@ const Actions = {
     DELETE: "deleteProcedureQues",
     UPDATE: "updateProcedureQues",
     ACTIVE_LIST: "listActiveProcedureQues",
+  },
+
+  APT_TIME_REQUIREMENT: {
+    LIST: "listAptTimeRequirement",
+    CREATE: "createAptTimeRequirement",
+    DELETE: "deleteAptTimeRequirement",
+    UPDATE: "updateAptTimeRequirement",
   },
 
   APT: {
@@ -158,6 +172,11 @@ const Mutations = {
   RESET_LAYOUT_CONFIG: "resetLayoutConfig",
   OVERRIDE_LAYOUT_CONFIG: "overrideLayoutConfig",
   OVERRIDE_PAGE_LAYOUT_CONFIG: "overridePageLayoutConfig",
+
+  SET_SPECIALIST: {
+    LIST: "setSpecialists",
+    SELECT: "setSelectSpecialists",
+  },
 
   SET_SPECIALIST_TYPE_LIST: "setSpecialistTypeList",
   SET_SELECT_SPECALIST_TYPE: "setSelectSpecialistType",
@@ -248,6 +267,11 @@ const Mutations = {
   SET_MAKE_PAYMENT: {
     LIST: "setMakePayment",
     SELECT: "setSelectMakePayment",
+  },
+
+  SET_APT_TIME_REQUIREMENT: {
+    LIST: "setAptTimeRequirement",
+    SELECT: "setSelectAptTimeRequirement",
   },
 
   // SET_EMPLOYEE_ROLES: {

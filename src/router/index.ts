@@ -6,7 +6,7 @@ import JwtService from "@/core/services/JwtService";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/dashboard",
+    redirect: "/sign-in",
     component: () => import("@/layout/Layout.vue"),
     children: [
       {
@@ -95,6 +95,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/settings/specialist-title",
         name: "specialistTitle",
         component: () => import("@/views/settings/SpecialistTitle.vue"),
+      },
+      {
+        path: "/settings/time-requirements",
+        name: "timeRequirements",
+        component: () => import("@/views/settings/AptTimeRequirement.vue"),
       },
       {
         path: "/patients",
