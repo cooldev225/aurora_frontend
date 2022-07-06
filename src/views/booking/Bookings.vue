@@ -1,19 +1,7 @@
 <template>
   <div class="row">
     <div class="card card-flush">
-      <div class="card-header">
-        <div class="card-title">
-          <span>SEARCH NEXT AVAILABLE APPOINTMENT</span>
-        </div>
-      </div>
       <div class="card-body">
-        <div class="row mb-2">
-          <el-select
-            class="col-4"
-            v-model="procedure"
-            placeholder="Select Procedure Type/Consultation"
-          ></el-select>
-        </div>
         <div class="row">
           <div class="col-md-4">
             <VueCtkDateTimePicker
@@ -28,7 +16,7 @@
             <div class="card border border-dashed border-primary">
               <div class="card-header">
                 <div class="card-title">
-                  <span>AVAILABLE SPECAILIST</span>
+                  <span>SPECIALISTS</span>
                 </div>
               </div>
               <div class="card-body card-scroll h-300px">
@@ -49,27 +37,38 @@
                 </div>
               </div>
             </div>
-            <button class="btn btn-primary w-100 mt-2" @click="handleSearch">
-              SEARCH
-            </button>
           </div>
           <div class="col-md-4">
             <div class="card border border-dashed border-primary">
               <div class="card-header">
                 <div class="card-title">
-                  <span>SPECAILIST REQUIREMENTS</span>
+                  <span>SEARCH NEXT AVAILABLE APPOINTMENT</span>
                 </div>
               </div>
               <div class="card-body card-scroll h-300px">
-                <div class="d-flex flex-column">
-                  <el-checkbox size="large" label="DR AARON THORNTON" />
-                  <el-checkbox size="large" label="DR ANTONY JACOB" />
+                <div class="card-info">
+                  <el-select
+                    class="w-100"
+                    v-model="procedure"
+                    placeholder="Select Procedure Type/Consultation"
+                  ></el-select>
+                  <el-divider />
+                  <div class="fs-3 fw-bold text-muted mb-6">
+                    Specialist Requirements
+                  </div>
+                  <div class="d-flex flex-column">
+                    <el-checkbox size="large" label="DR AARON THORNTON" />
+                    <el-checkbox size="large" label="DR ANTONY JACOB" />
+                  </div>
                 </div>
               </div>
             </div>
-            <button class="btn btn-light-primary w-100 mt-2">
-              CLEAR FILTERS
-            </button>
+            <div class="d-flex justify-content-md-between">
+              <button class="btn btn-primary mt-2" @click="handleSearch">
+                SEARCH
+              </button>
+              <button class="btn btn-light-primary mt-2">CLEAR FILTERS</button>
+            </div>
           </div>
         </div>
       </div>
@@ -394,12 +393,13 @@ export default defineComponent({
     watch(_date_search, () => {
       store.dispatch(Actions.BOOKING.SEARCH.DATE, {
         ..._date_search,
-        ..._specialists_search,
+        specialists: [],
       });
       store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
         ..._date_search,
         ..._specialists_search,
       });
+      _specialists_search.specialists = [];
     });
 
     watch(_specialists_search, () => {
