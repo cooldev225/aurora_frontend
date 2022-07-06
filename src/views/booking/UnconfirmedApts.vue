@@ -17,7 +17,7 @@
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
-        :table-data="tableData"
+        :table-data="tableData.today ? tableData.today : []"
         :loading="loading"
         :rows-per-page="10"
         :enable-items-per-page-dropdown="true"
@@ -70,34 +70,13 @@
       <!--begin::Card title-->
 
       <!--begin::Card toolbar-->
-      <div class="card-toolbar">
-        <!--begin::Toolbar-->
-        <div
-          class="d-flex justify-content-end"
-          data-kt-subscription-table-toolbar="base"
-        >
-          <!--begin::Add subscription-->
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modal_add_admin"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
-            </span>
-            Add
-          </button>
-          <!--end::Add subscription-->
-        </div>
-        <!--end::Toolbar-->
-      </div>
+      <div class="card-toolbar"></div>
       <!--end::Card toolbar-->
     </div>
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
-        :table-data="tableData"
+        :table-data="tableData.tomorrow ? tableData.tomorrow : []"
         :loading="loading"
         :rows-per-page="10"
         :enable-items-per-page-dropdown="true"
@@ -150,34 +129,13 @@
       <!--begin::Card title-->
 
       <!--begin::Card toolbar-->
-      <div class="card-toolbar">
-        <!--begin::Toolbar-->
-        <div
-          class="d-flex justify-content-end"
-          data-kt-subscription-table-toolbar="base"
-        >
-          <!--begin::Add subscription-->
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modal_add_admin"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
-            </span>
-            Add
-          </button>
-          <!--end::Add subscription-->
-        </div>
-        <!--end::Toolbar-->
-      </div>
+      <div class="card-toolbar"></div>
       <!--end::Card toolbar-->
     </div>
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
-        :table-data="tableData"
+        :table-data="tableData.future ? tableData.future : []"
         :loading="loading"
         :rows-per-page="10"
         :enable-items-per-page-dropdown="true"
@@ -286,20 +244,20 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const adminList = computed(() => store.getters.adminList);
+    const Unconfied_Apts = computed(() => store.getters.getUnconfiremdAptList);
     const loading = ref(true);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_APT.UNCONFIRMED_SELECT, item);
+      store.commit(Mutations.SET_APT.UNCONFIRMED.SELECT, item);
       const modal = new Modal(document.getElementById("modal_edit_admin"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.APT.UNCONFIRMED_DELETE, id)
+        .dispatch(Actions.APT.UNCONFIRMED.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.APT.UNCONFIRMED_LIST);
+          store.dispatch(Actions.APT.UNCONFIRMED.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -317,15 +275,15 @@ export default defineComponent({
 
     onMounted(() => {
       loading.value = true;
-      setCurrentPageBreadcrumbs("Administrators", []);
-      store.dispatch(Actions.APT.UNCONFIRMED_LIST).then(() => {
-        tableData.value = adminList;
+      setCurrentPageBreadcrumbs("Unconfirmed Appointments", ["Booking"]);
+      store.dispatch(Actions.APT.UNCONFIRMED.LIST).then(() => {
+        tableData.value = Unconfied_Apts;
         loading.value = false;
       });
     });
 
     watchEffect(() => {
-      tableData.value = adminList;
+      tableData.value = Unconfied_Apts;
       loading.value = false;
     });
     return { tableHeader, tableData, handleEdit, handleDelete };

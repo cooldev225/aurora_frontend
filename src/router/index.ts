@@ -146,11 +146,25 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/booking/Bookings.vue"),
       },
       {
-        path: "/booking/uniconfirmed-apts",
+        path: "/booking/unconfirmed-apts",
         name: "unconfirmed-apts",
         component: () => import("@/views/booking/UnconfirmedApts.vue"),
       },
-
+      {
+        path: "/booking/unapproved-procedures",
+        name: "unapproved-procedures",
+        component: () => import("@/views/booking/UnapprovedProcedure.vue"),
+      },
+      {
+        path: "/booking/waitlisted-apts",
+        name: "waitlisted-apts",
+        component: () => import("@/views/booking/WaitlistedApts.vue"),
+      },
+      {
+        path: "/booking/cancellation-list",
+        name: "cancellation-list",
+        component: () => import("@/views/booking/CancellationList.vue"),
+      },
       {
         path: "/make-payment",
         name: "make-payment",

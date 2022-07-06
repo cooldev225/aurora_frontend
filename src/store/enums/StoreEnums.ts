@@ -106,9 +106,23 @@ const Actions = {
     TYPE_LIST: "listTypeApt",
     UNCONFIRMED: {
       LIST: "listUnconfirmedApt",
-      CREATE: "createUnconfirmedApt",
       DELETE: "deleteUnconfirmedApt",
       UPDATE: "updateUnconfirmedApt",
+    },
+    WAITLISTED: {
+      LIST: "listWaitlistedApt",
+      DELETE: "deleteWaitlistedApt",
+      UPDATE: "updateWaitlistedApt",
+    },
+    UNAPPROVED: {
+      LIST: "listUnapprovedApt",
+      DELETE: "deleteUnapprovedApt",
+      UPDATE: "updateUnapprovedApt",
+    },
+    CANCELLATION: {
+      LIST: "listCancellationApt",
+      DELETE: "deleteCancellationApt",
+      UPDATE: "updateCancellationApt",
     },
   },
 
@@ -204,6 +218,22 @@ const Mutations = {
     LIST: "setApt",
     SELECT: "setSelectApt",
     TYPE_LIST: "setAnesQpt",
+    UNCONFIRMED: {
+      LIST: "setUnConfirmedApt",
+      SELECT: "setSelectUnconfirmedApt",
+    },
+    WAITLISTED: {
+      LIST: "setWaitlistedApt",
+      SELECT: "setSelectWaitlistedApt",
+    },
+    UNAPPROVED: {
+      LIST: "setUnapprovedApt",
+      SELECT: "setSelectUnapprovedApt",
+    },
+    CANCELLATION: {
+      LIST: "setCancellationApt",
+      SELECT: "setSelectCancellationApt",
+    },
   },
 
   SET_MAKE_PAYMENT: {
