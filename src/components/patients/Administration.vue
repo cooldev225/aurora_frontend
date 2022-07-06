@@ -162,7 +162,6 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
-      console.log(formData.value);
     });
 
     onMounted(() => {

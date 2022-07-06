@@ -121,6 +121,16 @@ const routes: Array<RouteRecordRaw> = [
             name: "patient-details-administration",
             component: () => import("@/components/patients/Administration.vue"),
           },
+          {
+            path: "documents",
+            name: "patient-details-documents",
+            component: () => import("@/components/patients/Documents.vue"),
+          },
+          {
+            path: "clinical",
+            name: "patient-details-clinical",
+            component: () => import("@/components/patients/Clinical.vue"),
+          },
         ],
       },
       {
