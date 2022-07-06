@@ -47,19 +47,25 @@
               </div>
               <div class="card-body card-scroll h-300px">
                 <div class="card-info">
+                  <el-select class="w-100" placeholder="Select Appintment Type">
+                    <template v-for="(item, idx) in _aptTypelist" :key="idx">
+                      <el-option :value="item.id" :label="item.name" />
+                    </template>
+                  </el-select>
+                  <el-divider />
+                  <el-select class="w-100" placeholder="Select Specialist">
+                    <template
+                      v-for="(item, index) in _ava_specialists"
+                      :key="index"
+                    >
+                      <el-option :value="item.id" :label="item.name" />
+                    </template>
+                  </el-select>
+                  <el-divider />
                   <el-select
                     class="w-100"
-                    v-model="procedure"
-                    placeholder="Select Procedure Type/Consultation"
+                    placeholder="Select Appintment Time Requirement"
                   ></el-select>
-                  <el-divider />
-                  <div class="fs-3 fw-bold text-muted mb-6">
-                    Specialist Requirements
-                  </div>
-                  <div class="d-flex flex-column">
-                    <el-checkbox size="large" label="DR AARON THORNTON" />
-                    <el-checkbox size="large" label="DR ANTONY JACOB" />
-                  </div>
                 </div>
               </div>
             </div>
@@ -313,7 +319,6 @@ export default defineComponent({
     EditModal,
   },
   setup() {
-    const router = useRouter();
     const store = useStore();
     const format = ref("YYYY-MM-DD");
     const _date_search = reactive({
@@ -322,9 +327,9 @@ export default defineComponent({
     const _specialists_search = reactive({
       specialists: [],
     });
-    // const _ava_specialists = computed(() => store.getters.getFilteredData);
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
+    const _aptTypelist = computed(() => store.getters.getAptTypeList);
     const tableTitle = ref("");
 
     onMounted(() => {
@@ -336,6 +341,7 @@ export default defineComponent({
         ..._date_search,
         ..._specialists_search,
       });
+      store.dispatch(Actions.APT.TYPE_LIST);
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     });
 
@@ -388,8 +394,6 @@ export default defineComponent({
       }
     };
 
-    // const getAvaSpecialist = () => {};
-
     watch(_date_search, () => {
       store.dispatch(Actions.BOOKING.SEARCH.DATE, {
         ..._date_search,
@@ -416,6 +420,7 @@ export default defineComponent({
       _specialists_search,
       _ava_specialists,
       _specialists,
+      _aptTypelist,
       tableTitle,
       handleSearch,
       handleAddApt,
@@ -442,7 +447,7 @@ export default defineComponent({
 
 .booking-table-body td,
 .booking-table-body th {
-  border: 1px dashed gray;
+  border: 0.5px dashed gray;
 }
 
 .booking-table-header tr:first-child th:first-child {
