@@ -19,7 +19,7 @@
                   <span>SPECIALISTS</span>
                 </div>
               </div>
-              <div class="card-body card-scroll h-300px">
+              <div class="card-body card-scroll h-350px">
                 <div class="d-flex flex-column">
                   <el-checkbox-group
                     v-model="_specialists_search.specialists"
@@ -47,13 +47,21 @@
               </div>
               <div class="card-body card-scroll h-300px">
                 <div class="card-info">
-                  <el-select class="w-100" placeholder="Select Appintment Type">
+                  <el-select
+                    class="w-100"
+                    placeholder="Select Appintment Type"
+                    :model="_search_next_apts.appointment_type_id"
+                  >
                     <template v-for="(item, idx) in _aptTypelist" :key="idx">
                       <el-option :value="item.id" :label="item.name" />
                     </template>
                   </el-select>
                   <el-divider />
-                  <el-select class="w-100" placeholder="Select Specialist">
+                  <el-select
+                    class="w-100"
+                    placeholder="Select Specialist"
+                    :model="_search_next_apts.specialist_id"
+                  >
                     <template
                       v-for="(item, index) in _ava_specialists"
                       :key="index"
@@ -69,11 +77,13 @@
                 </div>
               </div>
             </div>
-            <div class="d-flex justify-content-md-between">
-              <button class="btn btn-primary mt-2" @click="handleSearch">
+            <div class="d-flex justify-content-md-between gap-2">
+              <button class="btn btn-primary mt-2 w-100" @click="handleSearch">
                 SEARCH
               </button>
-              <button class="btn btn-light-primary mt-2">CLEAR FILTERS</button>
+              <button class="btn btn-light-primary w-100 mt-2">
+                CLEAR FILTERS
+              </button>
             </div>
           </div>
         </div>
@@ -310,6 +320,7 @@ import { aptTimeList } from "@/core/data/apt-time";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
 import { MenuComponent } from "@/assets/ts/components";
+import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -331,7 +342,11 @@ export default defineComponent({
     const _specialists = computed(() => store.getters.getFilteredData);
     const _aptTypelist = computed(() => store.getters.getAptTypeList);
     const tableTitle = ref("");
-
+    const _search_next_apts = reactive({
+      apt_type_id: "",
+      specialist_id: "",
+      apt_time_requirement: "",
+    });
     onMounted(() => {
       store.dispatch(Actions.BOOKING.SEARCH.DATE, {
         ..._date_search,
@@ -341,6 +356,7 @@ export default defineComponent({
         ..._date_search,
         ..._specialists_search,
       });
+      setCurrentPageBreadcrumbs("Dashboard", ["Bookings"]);
       store.dispatch(Actions.APT.TYPE_LIST);
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     });
@@ -379,7 +395,7 @@ export default defineComponent({
       if (JwtService.getToken()) {
         ApiService.setHeader();
         ApiService.query("work-hours", {
-          params: { ..._date_search, ..._specialists_search },
+          // params: { ,  },
         })
           .then(({ data }) => {
             _specialists.value = data.data;

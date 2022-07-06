@@ -102,6 +102,13 @@ const Actions = {
     ACTIVE_LIST: "listActiveProcedureQues",
   },
 
+  APT_TIME_REQUIREMENT: {
+    LIST: "listAptTimeRequirement",
+    CREATE: "createAptTimeRequirement",
+    DELETE: "deleteAptTimeRequirement",
+    UPDATE: "updateAptTimeRequirement",
+  },
+
   APT: {
     LIST: "listApt",
     CREATE: "createApt",
@@ -248,6 +255,11 @@ const Mutations = {
   SET_MAKE_PAYMENT: {
     LIST: "setMakePayment",
     SELECT: "setSelectMakePayment",
+  },
+
+  SET_APT_TIME_REQUIREMENT: {
+    LIST: "setAptTimeRequirement",
+    SELECT: "setSelectAptTimeRequirement",
   },
 
   // SET_EMPLOYEE_ROLES: {

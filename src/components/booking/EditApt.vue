@@ -2081,7 +2081,6 @@ export default defineComponent({
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(Actions.PROCEDURE_QUES.ACTIVE_LIST);
       store.dispatch(Actions.APT.TYPE_LIST);
-      setCurrentPageBreadcrumbs("Edit Appointment", ["Bookings"]);
     });
 
     const handleStep_1 = () => {
