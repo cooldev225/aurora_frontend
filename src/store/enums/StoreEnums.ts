@@ -47,6 +47,10 @@ const Actions = {
     CREATE: "createBooking",
     DELETE: "deleteBooking",
     UPDATE: "updateBooking",
+    SEARCH: {
+      DATE: "searchBookingByDate",
+      SPECIALISTS: "searchBookingBySPT",
+    },
   },
 
   LIST_BIRTH_CODE: "listBirthCode",
@@ -106,9 +110,23 @@ const Actions = {
     TYPE_LIST: "listTypeApt",
     UNCONFIRMED: {
       LIST: "listUnconfirmedApt",
-      CREATE: "createUnconfirmedApt",
       DELETE: "deleteUnconfirmedApt",
       UPDATE: "updateUnconfirmedApt",
+    },
+    WAITLISTED: {
+      LIST: "listWaitlistedApt",
+      DELETE: "deleteWaitlistedApt",
+      UPDATE: "updateWaitlistedApt",
+    },
+    UNAPPROVED: {
+      LIST: "listUnapprovedApt",
+      DELETE: "deleteUnapprovedApt",
+      UPDATE: "updateUnapprovedApt",
+    },
+    CANCELLATION: {
+      LIST: "listCancellationApt",
+      DELETE: "deleteCancellationApt",
+      UPDATE: "updateCancellationApt",
     },
   },
 
@@ -186,6 +204,11 @@ const Mutations = {
   SET_BOOKING: {
     LIST: "setBookingList",
     SELECT: "setSelectBooking",
+    SEARCH: {
+      VARIABLE: "setSearchVariable",
+      DATE: "setFilteredBookingByDate",
+      SPECIALISTS: "setFilteredBookingBySPT",
+    },
   },
 
   SET_ANESTHETIST_QUES: {
@@ -204,6 +227,22 @@ const Mutations = {
     LIST: "setApt",
     SELECT: "setSelectApt",
     TYPE_LIST: "setAnesQpt",
+    UNCONFIRMED: {
+      LIST: "setUnConfirmedApt",
+      SELECT: "setSelectUnconfirmedApt",
+    },
+    WAITLISTED: {
+      LIST: "setWaitlistedApt",
+      SELECT: "setSelectWaitlistedApt",
+    },
+    UNAPPROVED: {
+      LIST: "setUnapprovedApt",
+      SELECT: "setSelectUnapprovedApt",
+    },
+    CANCELLATION: {
+      LIST: "setCancellationApt",
+      SELECT: "setSelectCancellationApt",
+    },
   },
 
   SET_MAKE_PAYMENT: {

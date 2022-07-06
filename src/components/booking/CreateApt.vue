@@ -3,7 +3,7 @@
   <div
     class="modal fade"
     id="modal_create_apt"
-    ref="createAptRef"
+    ref="createAptModalRef"
     tabindex="-1"
     aria-hidden="true"
   >
@@ -36,7 +36,7 @@
           <div
             class="stepper stepper-pills stepper-column d-flex flex-column flex-xl-row flex-row-fluid"
             id="modal_create_apt_stepper"
-            ref="createPatientRef"
+            ref="createAptRef"
           >
             <!--begin::Aside-->
             <div
@@ -78,15 +78,15 @@
                     <i class="stepper-check fas fa-check"></i>
                     <span class="stepper-number">2</span>
                   </div>
-                  <!--end::Icon-->
+                  <!--begin::Icon-->
 
                   <!--begin::Label-->
                   <div class="stepper-label">
-                    <h3 class="stepper-title">Procedure/Consultation</h3>
+                    <h3 class="stepper-title">Personal Info</h3>
 
-                    <div class="stepper-desc">Setup Procedure/Consultation</div>
+                    <div class="stepper-desc">Setup Personal Details</div>
                   </div>
-                  <!--end::Label-->
+                  <!--begin::Label-->
                 </div>
                 <!--end::Step 2-->
 
@@ -100,29 +100,6 @@
                   <div class="stepper-icon w-40px h-40px">
                     <i class="stepper-check fas fa-check"></i>
                     <span class="stepper-number">3</span>
-                  </div>
-                  <!--begin::Icon-->
-
-                  <!--begin::Label-->
-                  <div class="stepper-label">
-                    <h3 class="stepper-title">Personal Info</h3>
-
-                    <div class="stepper-desc">Setup Personal Details</div>
-                  </div>
-                  <!--begin::Label-->
-                </div>
-                <!--end::Step 3-->
-
-                <!--begin::Step 3-->
-                <div class="stepper-item" data-kt-stepper-element="nav">
-                  <!--begin::Line-->
-                  <div class="stepper-line w-40px"></div>
-                  <!--end::Line-->
-
-                  <!--begin::Icon-->
-                  <div class="stepper-icon w-40px h-40px">
-                    <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">4</span>
                   </div>
                   <!--end::Icon-->
 
@@ -145,7 +122,7 @@
                   <!--begin::Icon-->
                   <div class="stepper-icon w-40px h-40px">
                     <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">5</span>
+                    <span class="stepper-number">4</span>
                   </div>
                   <!--end::Icon-->
 
@@ -365,6 +342,168 @@
                           </div>
                         </div>
                       </div>
+                      <el-divider />
+                      <div class="card-info">
+                        <div class="fs-3 fw-bold text-muted mb-6">
+                          Appointment Type
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                Procedure / Consultation
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="appointment_type_id">
+                                <el-select
+                                  class="w-100"
+                                  v-model="formData.appointment_type_id"
+                                >
+                                  <template
+                                    v-for="(item, idx) in aptTypeList"
+                                    :key="idx"
+                                  >
+                                    <el-option
+                                      :value="item.id"
+                                      :label="item.name"
+                                    />
+                                  </template>
+                                </el-select>
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div class="col-sm-6">
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                Specialist
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="specialist_id">
+                                <el-select
+                                  class="w-100"
+                                  v-model="formData.specialist_id"
+                                >
+                                  <template
+                                    v-for="(item, index) in ava_specialist"
+                                    :key="index"
+                                  >
+                                    <el-option
+                                      :value="item.id"
+                                      :label="item.name"
+                                    />
+                                  </template>
+                                </el-select>
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div class="col-sm-6">
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="fs-6 fw-bold mb-2">
+                                Clinical Code
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="clinical_code">
+                                <el-input
+                                  v-model="formData.clinical_code"
+                                  disabled
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div class="col-sm-6">
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="fs-6 fw-bold mb-2">
+                                MBS Code
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="mbs_code">
+                                <el-input
+                                  v-model="formData.mbs_code"
+                                  disabled
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div class="col-sm-6">
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="fs-6 fw-bold mb-2"> Room </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="room_id">
+                                <el-select
+                                  class="w-100"
+                                  v-model="formData.room_id"
+                                >
+                                  <template
+                                    v-for="(room, idx) in rooms"
+                                    :key="idx"
+                                  >
+                                    <el-option
+                                      :value="room.id"
+                                      :label="room.name"
+                                    />
+                                  </template>
+                                </el-select>
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div class="col-sm-6">
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="fs-6 fw-bold mb-2">
+                                Anesthetist
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="anesthetist_id">
+                                <el-select
+                                  class="w-100"
+                                  v-model="formData.anesthetist_id"
+                                  disabled
+                                >
+                                  <el-option
+                                    :value="anesthetist.id"
+                                    :label="anesthetist.name"
+                                  />
+                                </el-select>
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div class="text-end">
                       <button
@@ -392,189 +531,6 @@
                     :model="formData"
                     ref="formRef_2"
                     @submit.prevent="handleStep_2"
-                  >
-                    <div class="row">
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Procedure / Consultation
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="appointment_type_id">
-                            <el-select
-                              class="w-100"
-                              v-model="formData.appointment_type_id"
-                            >
-                              <template
-                                v-for="(item, idx) in aptTypeList"
-                                :key="idx"
-                              >
-                                <el-option
-                                  :value="item.id"
-                                  :label="item.name"
-                                />
-                              </template>
-                            </el-select>
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Specialist
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="specialist_id">
-                            <el-select
-                              class="w-100"
-                              v-model="formData.specialist_id"
-                            >
-                              <template
-                                v-for="(item, index) in ava_specialist"
-                                :key="index"
-                              >
-                                <el-option
-                                  :value="item.id"
-                                  :label="item.name"
-                                />
-                              </template>
-                            </el-select>
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2">
-                            Clinical Code
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="clinical_code">
-                            <el-input
-                              v-model="formData.clinical_code"
-                              disabled
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2"> MBS Code </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="mbs_code">
-                            <el-input v-model="formData.mbs_code" disabled />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2"> Room </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="room_id">
-                            <el-select class="w-100" v-model="formData.room_id">
-                              <template v-for="(room, idx) in rooms" :key="idx">
-                                <el-option
-                                  :value="room.id"
-                                  :label="room.name"
-                                />
-                              </template>
-                            </el-select>
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2"> Anesthetist </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="anesthetist_id">
-                            <el-select
-                              class="w-100"
-                              v-model="formData.anesthetist_id"
-                              disabled
-                            >
-                              <el-option
-                                :value="anesthetist.id"
-                                :label="anesthetist.name"
-                              />
-                            </el-select>
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-light-primary me-3"
-                        data-kt-stepper-action="previous"
-                        @click="previousStep"
-                      >
-                        <span class="svg-icon svg-icon-4 me-1">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr063.svg"
-                          />
-                        </span>
-                        Back
-                      </button>
-                      <button
-                        type="submit"
-                        class="btn btn-lg btn-primary align-self-end"
-                      >
-                        Continue
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
-                        </span>
-                      </button>
-                    </div>
-                  </el-form>
-                </div>
-              </div>
-              <!--end::Step 2-->
-
-              <!--begin::Step 3-->
-              <div data-kt-stepper-element="content">
-                <div class="w-100">
-                  <el-form
-                    class="w-100"
-                    :model="formData"
-                    ref="formRef_3"
-                    @submit.prevent="handleStep_3"
                   >
                     <div class="row scroll h-450px">
                       <div class="col-sm-6">
@@ -943,16 +899,16 @@
                   </el-form>
                 </div>
               </div>
-              <!--end::Step 3-->
+              <!--end::Step 2-->
 
-              <!--begin::Step 4 -->
+              <!--begin::Step 3 -->
               <div data-kt-stepper-element="content">
                 <div class="w-100">
                   <el-form
                     class="w-100"
                     :model="formData"
-                    ref="formRef_4"
-                    @submit.prevent="handleStep_4"
+                    ref="formRef_3"
+                    @submit.prevent="handleStep_3"
                   >
                     <div class="row scroll h-450px">
                       <div class="card-info">
@@ -1049,10 +1005,10 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="medicare_ref_number">
+                              <el-form-item prop="medicare_reference_number">
                                 <el-input
                                   type="text"
-                                  v-model="formData.medicare_ref_number"
+                                  v-model="formData.medicare_reference_number"
                                   placeholder=""
                                 />
                               </el-form-item>
@@ -1070,10 +1026,10 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="medicare_expiry">
+                              <el-form-item prop="medicare_expiry_date">
                                 <el-date-picker
                                   class="w-100"
-                                  v-model="formData.medicare_expiry"
+                                  v-model="formData.medicare_expiry_date"
                                   format="YYYY-MM"
                                   placeholder="Enter Expiry Date"
                                 />
@@ -1101,10 +1057,10 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="health_fund">
+                              <el-form-item prop="health_fund_id">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.health_fund"
+                                  v-model="formData.health_fund_id"
                                 >
                                   <template
                                     v-for="(item, idx) in healthFundsList"
@@ -1140,10 +1096,14 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="health_fund_mem_number">
+                              <el-form-item
+                                prop="health_fund_membership_number"
+                              >
                                 <el-input
                                   type="text"
-                                  v-model="formData.health_fund_mem_number"
+                                  v-model="
+                                    formData.health_fund_membership_number
+                                  "
                                   placeholder="12345678"
                                 />
                               </el-form-item>
@@ -1170,10 +1130,12 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="health_fund_ref_number">
+                              <el-form-item prop="health_fund_reference_number">
                                 <el-input
                                   type="text"
-                                  v-model="formData.health_fund_ref_number"
+                                  v-model="
+                                    formData.health_fund_reference_number
+                                  "
                                   placeholder="00"
                                 />
                               </el-form-item>
@@ -1200,10 +1162,10 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="health_fund_expiry">
+                              <el-form-item prop="health_fund_expiry_date">
                                 <el-date-picker
                                   class="w-100"
-                                  v-model="formData.health_fund_expiry"
+                                  v-model="formData.health_fund_expiry_date"
                                   format="YYYY-MM"
                                 />
                               </el-form-item>
@@ -1535,7 +1497,7 @@
                   </el-form>
                 </div>
               </div>
-              <!--end::Step 4-->
+              <!--end::Step 3-->
 
               <!--begin::Step 4 -->
               <div data-kt-stepper-element="content">
@@ -1543,7 +1505,7 @@
                   <el-form
                     class="w-100"
                     :model="formData"
-                    ref="formRef_5"
+                    ref="formRef_4"
                     @submit.prevent="submit"
                   >
                     <div class="row scroll h-450px">
@@ -1834,12 +1796,10 @@ export default defineComponent({
   components: {},
   setup() {
     const store = useStore();
-    const router = useRouter();
     const formRef_1 = ref(null);
     const formRef_2 = ref(null);
     const formRef_3 = ref(null);
     const formRef_4 = ref(null);
-    const formRef_5 = ref(null);
     const loading = ref(false);
     const formData = ref({
       reference_number: 22100349,
@@ -1870,12 +1830,12 @@ export default defineComponent({
       mobile_number: "",
       charge_type: "",
       medicare_number: "",
-      medicare_ref_number: "",
-      medicare_expiry: "",
-      health_fund: "",
-      health_fund_mem_number: "",
-      health_fund_ref_number: "",
-      health_fund_expiry: "",
+      medicare_reference_number: "",
+      medicare_expiry_date: "",
+      health_fund_id: "",
+      health_fund_membership_number: "",
+      health_fund_reference_number: "",
+      health_fund_expiry_date: "",
       fund_excess: "",
       pension_card_number: "",
       healthcare_card_number: "",
@@ -1998,6 +1958,7 @@ export default defineComponent({
     });
     const _stepperObj = ref(null);
     const createAptRef = ref(null);
+    const createAptModalRef = ref(null);
     const currentStepIndex = ref(0);
 
     const ava_specialist = ref([]);
@@ -2013,6 +1974,7 @@ export default defineComponent({
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
     const aptTypeList = computed(() => store.getters.getAptTypeList);
+    const searchVal = computed(() => store.getters.getSearchVariable);
 
     watch(formData.value.specialist_id, () => {
       const selectedSpecialist = formData.value.specialist_id;
@@ -2020,11 +1982,9 @@ export default defineComponent({
         if (selectedSpecialist == specialist.id) return true;
       })[0];
       formData.value.anesthetist_id = anesthetist.value.id;
-      console.log(formData);
     });
 
     const handleAneQuestions = () => {
-      // formData.value.aneQuestions = aneAnswers.value;
       let temp = [];
       for (let i in aneAnswers.value) {
         if (aneAnswers.value[i] === true) {
@@ -2035,7 +1995,6 @@ export default defineComponent({
     };
 
     const handleProQuestions = () => {
-      // formData.value.proQuestions = proAnswers.value;
       let temp = [];
       for (let i in proAnswers.value) {
         if (proAnswers.value[i] === true) {
@@ -2049,6 +2008,7 @@ export default defineComponent({
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
       formData.value.time_slot = bookingData.time_slots;
+      formData.value.date = bookingData.date;
       if (bookingData.selected_specialist) {
         formData.value.specialist_id = bookingData.selected_specialist.id;
         if (bookingData.selected_specialist.anesthetist) {
@@ -2100,6 +2060,7 @@ export default defineComponent({
     });
 
     const handleStep_1 = () => {
+      debugger;
       if (!formRef_1.value) {
         return;
       }
@@ -2147,22 +2108,6 @@ export default defineComponent({
       });
     };
 
-    const handleStep_4 = () => {
-      if (!formRef_4.value) {
-        return;
-      }
-
-      formRef_4.value.validate((valid) => {
-        if (valid) {
-          currentStepIndex.value++;
-          if (!_stepperObj.value) {
-            return;
-          }
-          _stepperObj.value.goNext();
-        }
-      });
-    };
-
     const previousStep = () => {
       if (!_stepperObj.value) {
         return;
@@ -2172,11 +2117,10 @@ export default defineComponent({
     };
 
     const submit = () => {
-      if (!formRef_5.value) {
+      if (!formRef_4.value) {
         return;
       }
-
-      formRef_5.value.validate((valid) => {
+      formRef_4.value.validate((valid) => {
         if (valid) {
           loading.value = true;
           store
@@ -2193,7 +2137,13 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(createAptRef.value);
+                hideModal(createAptModalRef.value);
+                store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+                  ...searchVal.value,
+                });
+                store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+                  ...searchVal.value,
+                });
               });
             })
             .catch(({ response }) => {
@@ -2225,15 +2175,14 @@ export default defineComponent({
       formRef_2,
       formRef_3,
       formRef_4,
-      formRef_5,
       loading,
       previousStep,
       handleStep_1,
       handleStep_2,
       handleStep_3,
-      handleStep_4,
       currentStepIndex,
       createAptRef,
+      createAptModalRef,
       countryList,
       timeZoneList,
       handleAneQuestions,

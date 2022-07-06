@@ -21,21 +21,55 @@ export interface IBookingData {
   selected_specialist: ISpecialist;
 }
 
+export interface ISearchVariable {
+  date: string;
+  specialists: Array<string>;
+}
+
 export interface BookingInfo {
   bookingData: IBookingData;
+  filteredData: IBookingData;
+  availableSPT: IBookingData;
+  searchVal: ISearchVariable;
   // clinicsSelectData: IApt;
 }
 
 @Module
 export default class BooingModule extends VuexModule implements BookingInfo {
   bookingData = {} as IBookingData;
-
+  filteredData = {} as IBookingData;
+  availableSPT = {} as IBookingData;
+  searchVal = {} as ISearchVariable;
   /**
    * Get current user object
    * @returns SelectedclinicsData
    */
   get bookingDatas(): IBookingData {
     return this.bookingData;
+  }
+
+  /**
+   * Get current user object
+   * @returns SelectedclinicsData
+   */
+  get getFilteredData(): IBookingData {
+    return this.filteredData;
+  }
+
+  /**
+   * Get current user object
+   * @returns SelectedclinicsData
+   */
+  get getAvailableSPTData(): IBookingData {
+    return this.availableSPT;
+  }
+
+  /**
+   * Get current user object
+   * @returns SelectedclinicsData
+   */
+  get getSearchVariable(): ISearchVariable {
+    return this.searchVal;
   }
 
   // @Mutation
@@ -48,23 +82,20 @@ export default class BooingModule extends VuexModule implements BookingInfo {
     this.bookingData = data;
   }
 
-  // @Action
-  // [Actions.CLINICS.LIST]() {
-  //   if (JwtService.getToken()) {
-  //     ApiService.setHeader();
-  //     ApiService.get("clinics")
-  //       .then(({ data }) => {
-  //         this.context.commit(Mutations.SET_CLINICS.LIST, data.data);
-  //         return data.data;
-  //       })
-  //       .catch(({ response }) => {
-  //         console.log(response.data.error);
-  //         // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-  //       });
-  //   } else {
-  //     this.context.commit(Mutations.PURGE_AUTH);
-  //   }
-  // }
+  @Mutation
+  [Mutations.SET_BOOKING.SEARCH.DATE](data: IBookingData) {
+    this.availableSPT = data;
+  }
+
+  @Mutation
+  [Mutations.SET_BOOKING.SEARCH.SPECIALISTS](data: IBookingData) {
+    this.filteredData = data;
+  }
+
+  @Mutation
+  [Mutations.SET_BOOKING.SEARCH.VARIABLE](data: ISearchVariable) {
+    this.searchVal = data;
+  }
 
   @Action
   [Actions.BOOKING.CREATE](payload) {
@@ -73,6 +104,43 @@ export default class BooingModule extends VuexModule implements BookingInfo {
       ApiService.post("clinics", payload)
         .then(({ data }) => {
           return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.BOOKING.SEARCH.DATE](payload) {
+    this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.query("work-hours", { params: payload })
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_BOOKING.SEARCH.DATE, data.data);
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.BOOKING.SEARCH.SPECIALISTS](payload) {
+    this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.query("work-hours", { params: payload })
+        .then(({ data }) => {
+          this.context.commit(
+            Mutations.SET_BOOKING.SEARCH.SPECIALISTS,
+            data.data
+          );
         })
         .catch(({ response }) => {
           console.log(response.data.error);

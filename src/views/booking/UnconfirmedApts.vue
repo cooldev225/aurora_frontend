@@ -17,9 +17,9 @@
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
-        :table-data="tableData"
+        :table-data="todayData"
         :loading="loading"
-        :rows-per-page="10"
+        :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-full_name="{ row: item }">
@@ -70,36 +70,15 @@
       <!--begin::Card title-->
 
       <!--begin::Card toolbar-->
-      <div class="card-toolbar">
-        <!--begin::Toolbar-->
-        <div
-          class="d-flex justify-content-end"
-          data-kt-subscription-table-toolbar="base"
-        >
-          <!--begin::Add subscription-->
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modal_add_admin"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
-            </span>
-            Add
-          </button>
-          <!--end::Add subscription-->
-        </div>
-        <!--end::Toolbar-->
-      </div>
+      <div class="card-toolbar"></div>
       <!--end::Card toolbar-->
     </div>
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
-        :table-data="tableData"
+        :table-data="tomorrowData"
         :loading="loading"
-        :rows-per-page="10"
+        :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-full_name="{ row: item }">
@@ -150,36 +129,15 @@
       <!--begin::Card title-->
 
       <!--begin::Card toolbar-->
-      <div class="card-toolbar">
-        <!--begin::Toolbar-->
-        <div
-          class="d-flex justify-content-end"
-          data-kt-subscription-table-toolbar="base"
-        >
-          <!--begin::Add subscription-->
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modal_add_admin"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
-            </span>
-            Add
-          </button>
-          <!--end::Add subscription-->
-        </div>
-        <!--end::Toolbar-->
-      </div>
+      <div class="card-toolbar"></div>
       <!--end::Card toolbar-->
     </div>
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
-        :table-data="tableData"
+        :table-data="futureData"
         :loading="loading"
-        :rows-per-page="10"
+        :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-full_name="{ row: item }">
@@ -225,7 +183,14 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  watchEffect,
+  reactive,
+} from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
@@ -285,21 +250,24 @@ export default defineComponent({
         key: "actions",
       },
     ]);
-    const tableData = ref([]);
-    const adminList = computed(() => store.getters.adminList);
-    const loading = ref(true);
+    const todayData = ref([]);
+    const tomorrowData = ref([]);
+    const futureData = ref([]);
+    const unConfirmed_Apts = computed(
+      () => store.getters.getUnconfirmedAptList
+    );
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_APT.UNCONFIRMED_SELECT, item);
+      store.commit(Mutations.SET_APT.UNCONFIRMED.SELECT, item);
       const modal = new Modal(document.getElementById("modal_edit_admin"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.APT.UNCONFIRMED_DELETE, id)
+        .dispatch(Actions.APT.UNCONFIRMED.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.APT.UNCONFIRMED_LIST);
+          store.dispatch(Actions.APT.UNCONFIRMED.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -316,19 +284,37 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      loading.value = true;
-      setCurrentPageBreadcrumbs("Administrators", []);
-      store.dispatch(Actions.APT.UNCONFIRMED_LIST).then(() => {
-        tableData.value = adminList;
-        loading.value = false;
+      setCurrentPageBreadcrumbs("Unconfirmed Appointments", ["Booking"]);
+      store.dispatch(Actions.APT.UNCONFIRMED.LIST).then(() => {
+        if (unConfirmed_Apts.value.today)
+          todayData.value = unConfirmed_Apts.value.today;
+        if (unConfirmed_Apts.value.tomorrow)
+          todayData.value = unConfirmed_Apts.value.tomorrow;
+        if (unConfirmed_Apts.value.future)
+          todayData.value = unConfirmed_Apts.value.future;
+        // tomorrowData.value = unConfirmed_Apts.value.tomorrow;
+        // futureData.value = unConfirmed_Apts.value.future;
       });
     });
 
     watchEffect(() => {
-      tableData.value = adminList;
-      loading.value = false;
+      if (unConfirmed_Apts.value.today)
+        todayData.value = unConfirmed_Apts.value.today;
+      if (unConfirmed_Apts.value.tomorrow)
+        todayData.value = unConfirmed_Apts.value.tomorrow;
+      if (unConfirmed_Apts.value.future)
+        todayData.value = unConfirmed_Apts.value.future;
+      // tomorrowData.value = unConfirmed_Apts.value.tomorrow;
+      // futureData.value = unConfirmed_Apts.value.future;
     });
-    return { tableHeader, tableData, handleEdit, handleDelete };
+    return {
+      tableHeader,
+      todayData,
+      tomorrowData,
+      futureData,
+      handleEdit,
+      handleDelete,
+    };
   },
 });
 </script>

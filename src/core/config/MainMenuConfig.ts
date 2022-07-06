@@ -111,8 +111,8 @@ const OrgManagerMenu = [
         route: "/booking/dashboard",
       },
       {
-        heading: "Uniconfirmed Appointments",
-        route: "/booking/uniconfirmed-apts",
+        heading: "Unconfirmed Appointments",
+        route: "/booking/unconfirmed-apts",
       },
       {
         heading: "Unapproved Procedures",
@@ -120,7 +120,7 @@ const OrgManagerMenu = [
       },
       {
         heading: "Waitlisted Appointments",
-        route: "/booking/waitlisted-appointments",
+        route: "/booking/waitlisted-apts",
       },
       {
         heading: "Cancellation List",
@@ -128,7 +128,7 @@ const OrgManagerMenu = [
       },
       {
         heading: "Draft Appointments",
-        route: "/booking/draft-appointments",
+        route: "/booking/draft-apts",
       },
       {
         heading: "Patient Recall",
