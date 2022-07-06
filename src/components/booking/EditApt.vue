@@ -353,7 +353,7 @@
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
                               <label class="required fs-6 fw-bold mb-2">
-                                Procedure / Consultation
+                                Appointment Type
                               </label>
                               <!--end::Label-->
                               <!--begin::Input-->
@@ -527,6 +527,7 @@
                   <el-form
                     class="w-100"
                     :model="formData"
+                    :rules="rules"
                     ref="formRef_2"
                     @submit.prevent="handleStep_2"
                   >
@@ -610,11 +611,11 @@
                               v-model="formData.title"
                               placeholder="Select Title"
                             >
-                              <el-option key="mr" label="Mr" />
-                              <el-option key="mrs" label="Mrs" />
-                              <el-option key="ms" label="Ms" />
-                              <el-option key="master" label="Master" />
-                              <el-option key="miss" label="Miss" />
+                              <el-option value="mr" label="Mr" />
+                              <el-option value="mrs" label="Mrs" />
+                              <el-option value="ms" label="Ms" />
+                              <el-option value="master" label="Master" />
+                              <el-option value="miss" label="Miss" />
                             </el-select>
                           </el-form-item>
                           <!--end::Input-->
@@ -905,6 +906,7 @@
                   <el-form
                     class="w-100"
                     :model="formData"
+                    :rules="rules"
                     ref="formRef_3"
                     @submit.prevent="handleStep_3"
                   >
@@ -1306,11 +1308,11 @@
                               <!--end::Label-->
 
                               <!--begin::Input-->
-                              <el-form-item prop="dva_expiry">
+                              <el-form-item prop="dva_expiry_date">
                                 <el-date-picker
                                   class="w-100"
                                   format="YYYY-MM"
-                                  v-model="formData.dva_expiry"
+                                  v-model="formData.dva_expiry_date"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1503,6 +1505,7 @@
                   <el-form
                     class="w-100"
                     :model="formData"
+                    :rules="rules"
                     ref="formRef_4"
                     @submit.prevent="submit"
                   >
@@ -1855,90 +1858,117 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      email: [
+      arrival_time: [
         {
           required: true,
-          message: "Email cannot be blank",
+          message: "Arrival time cannot be blank.",
           trigger: "change",
         },
+      ],
+      appointment_type_id: [
+        {
+          required: true,
+          message: "Appointment Type cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      specialist_id: [
+        {
+          required: true,
+          message: "Specialist cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      first_name: [
+        {
+          required: true,
+          message: "First name cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      last_name: [
+        {
+          required: true,
+          message: "Last name cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      date_of_birth: [
+        {
+          required: true,
+          message: "Date of birth cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      title: [
+        {
+          required: true,
+          message: "Title cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      email: [
         {
           type: "email",
           message: "Please input correct email address",
           trigger: ["blur", "change"],
         },
       ],
-      phone_number: [
+      mobile_number: [
         {
           required: true,
-          message: "Phone Number cannot be blank.",
+          message: "Mobile Number cannot be blank.",
           trigger: "change",
         },
       ],
-      hospital_provider_number: [
+      charge_type: [
         {
           required: true,
-          message: "Provider Number cannot be blank",
-          trigger: "change",
-        },
-        {
-          min: 8,
-          message: "Provider Number must be at least 8 characters",
-          trigger: "blur",
-        },
-      ],
-      VAED_number: [
-        {
-          required: true,
-          message: "VAED Number cannot be blank",
+          message: "Charge Type cannot be blank.",
           trigger: "change",
         },
       ],
-      address: [
+      procedure_price: [
+        {
+          type: "number",
+          message: "Procedure price must be a number",
+          trigger: "change",
+          min: 0,
+        },
+      ],
+      fund_excess: [
+        {
+          type: "number",
+          message: "Fund excess must be a number",
+          trigger: "change",
+          min: 0,
+        },
+      ],
+      medicare_number: [
         {
           required: true,
-          message: "Address cannot be blank",
+          message: "Medicare number cannot be blank.",
           trigger: "change",
         },
       ],
-      street: [
+      medicare_reference_number: [
         {
           required: true,
-          message: "Street cannot be blank",
+          message: "Medicare Reference Number cannot be blank.",
           trigger: "change",
         },
       ],
-      state: [
+      medicare_expiry_date: [
         {
           required: true,
-          message: "State cannot be blank",
+          message: "Medicare expiry date cannot be blank.",
           trigger: "change",
         },
       ],
-      city: [
+      appointment_confirm: [
         {
           required: true,
-          message: "City cannot be blank",
-          trigger: "change",
-        },
-      ],
-      country: [
-        {
-          required: true,
-          message: "Country cannot be blank",
-          trigger: "change",
-        },
-      ],
-      postcode: [
-        {
-          required: true,
-          message: "Postcode cannot be blank",
-          trigger: "change",
-        },
-      ],
-      timezone: [
-        {
-          required: true,
-          message: "Postcode cannot be blank",
+          message: "Appointmentconfirm cannot be blank.",
           trigger: "change",
         },
       ],
@@ -1961,6 +1991,7 @@ export default defineComponent({
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
     const aptTypeList = computed(() => store.getters.getAptTypeList);
+    const searchVal = computed(() => store.getters.getSearchVariable);
 
     watch(formData.value.specialist_id, () => {
       const selectedSpecialist = formData.value.specialist_id;
@@ -1968,11 +1999,9 @@ export default defineComponent({
         if (selectedSpecialist == specialist.id) return true;
       })[0];
       formData.value.anesthetist_id = anesthetist.value.id;
-      console.log(formData);
     });
 
     const handleAneQuestions = () => {
-      // formData.value.aneQuestions = aneAnswers.value;
       let temp = [];
       for (let i in aneAnswers.value) {
         if (aneAnswers.value[i] === true) {
@@ -1983,7 +2012,6 @@ export default defineComponent({
     };
 
     const handleProQuestions = () => {
-      // formData.value.proQuestions = proAnswers.value;
       let temp = [];
       for (let i in proAnswers.value) {
         if (proAnswers.value[i] === true) {
@@ -2135,6 +2163,12 @@ export default defineComponent({
                 },
               }).then(() => {
                 hideModal(editAptModalRef.value);
+                store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+                  ...searchVal.value,
+                });
+                store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+                  ...searchVal.value,
+                });
               });
             })
             .catch(({ response }) => {

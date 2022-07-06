@@ -14,6 +14,8 @@ import ApiService from "@/core/services/ApiService";
 import { initApexCharts } from "@/core/plugins/apexcharts";
 import { initInlineSvg } from "@/core/plugins/inline-svg";
 import { initVeeValidate } from "@/core/plugins/vee-validate";
+import "@imengyu/vue3-context-menu/lib/vue3-context-menu.css";
+import ContextMenu from "@imengyu/vue3-context-menu";
 
 import "@/core/plugins/prismjs";
 import "bootstrap";
@@ -23,6 +25,7 @@ const app = createApp(App);
 app.use(store);
 app.use(router);
 app.use(ElementPlus);
+app.use(ContextMenu);
 
 ApiService.init(app);
 initApexCharts(app);

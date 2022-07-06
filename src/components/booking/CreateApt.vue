@@ -908,6 +908,7 @@
                   <el-form
                     class="w-100"
                     :model="formData"
+                    :rules="rules"
                     ref="formRef_3"
                     @submit.prevent="handleStep_3"
                   >
@@ -1506,6 +1507,7 @@
                   <el-form
                     class="w-100"
                     :model="formData"
+                    :rules="rules"
                     ref="formRef_4"
                     @submit.prevent="submit"
                   >
@@ -1762,16 +1764,6 @@
   <!--end::Modal - Create App-->
 </template>
 
-<!-- <style lang="scss" scoped>
-.el-input--suffix .el-input__inner {
-  background-color: #f5f8fa;
-}
-
-.el-input__inner {
-  background-color: #f5f8fa;
-}
-</style> -->
-
 <script>
 import {
   defineComponent,
@@ -1785,7 +1777,6 @@ import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
-import { useRouter } from "vue-router";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
 import ApiService from "@/core/services/ApiService";
@@ -1920,77 +1911,9 @@ export default defineComponent({
       ],
       email: [
         {
-          required: true,
-          message: "Email cannot be blank",
-          trigger: "change",
-        },
-        {
           type: "email",
           message: "Please input correct email address",
           trigger: ["blur", "change"],
-        },
-      ],
-      gender: [
-        {
-          required: true,
-          message: "Gender cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      address: [
-        {
-          required: true,
-          message: "Address cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      street: [
-        {
-          required: true,
-          message: "Street cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      suburb: [
-        {
-          required: true,
-          message: "Suburb cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      postcode: [
-        {
-          required: true,
-          message: "Postcode cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      state: [
-        {
-          required: true,
-          message: "State cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      country: [
-        {
-          required: true,
-          message: "Country cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      home_number: [
-        {
-          required: true,
-          message: "Home number cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      work_number: [
-        {
-          required: true,
-          message: "Work Number cannot be blank.",
-          trigger: "change",
         },
       ],
       mobile_number: [
