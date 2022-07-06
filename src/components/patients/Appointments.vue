@@ -60,31 +60,66 @@
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Service Reference Number
                     </td>
-                    <td class="text-gray-800">22100341</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.reference_number
+                          ? formData.current_appointment.reference_number
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Date
                     </td>
-                    <td class="text-gray-800">27/06/2022</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.date
+                          ? formData.current_appointment.date
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Arrival Time
                     </td>
-                    <td class="text-gray-800">11:45 AM</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.arrival_time
+                          ? formData.current_appointment.arrival_time
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Start Time
                     </td>
-                    <td class="text-gray-800">12:00 PM</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.start_time
+                          ? formData.current_appointment.start_time
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       End Time
                     </td>
-                    <td class="text-gray-800">12:30 PM</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.end_time
+                          ? formData.current_appointment.end_time
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -98,26 +133,52 @@
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Procedure Name
                     </td>
-                    <td class="text-gray-800">Colonoscopy and Gastroscopy</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.procedure_name
+                          ? formData.current_appointment.procedure_name
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Clinical Code
                     </td>
-                    <td class="text-gray-800">(not applicable)</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.clinical_code
+                          ? formData.current_appointment.clinical_code
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
-                      MBS Cod3
+                      MBS Code
                     </td>
-                    <td class="text-gray-800">123456</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.mbs_code
+                          ? formData.current_appointment.mbs_code
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Clinic
                     </td>
                     <td class="text-gray-800">
-                      Bayside Day Procedure And Specialist Centre
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.clinic_name
+                          ? formData.current_appointment.clinic_name
+                          : "(not applicable)"
+                      }}
                     </td>
                   </tr>
                 </tbody>
@@ -178,7 +239,7 @@
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Specialist Name
                     </td>
-                    <td class="text-gray-800">DR AARON THORNTON</td>
+                    <td class="text-gray-800">(not applicable)</td>
                   </tr>
                 </tbody>
               </table>
@@ -192,7 +253,7 @@
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Specialist Provider Number
                     </td>
-                    <td class="text-gray-800">2272847A</td>
+                    <td class="text-gray-800">(not applicable)</td>
                   </tr>
                 </tbody>
               </table>
@@ -252,19 +313,40 @@
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Referral date
                     </td>
-                    <td class="text-gray-800">25/08/2022</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.referral_date
+                          ? formData.current_appointment.referral_date
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Referral Duration
                     </td>
-                    <td class="text-gray-800">1 Month</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.referral_duration
+                          ? formData.current_appointment.referral_duration
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Referral Expiry Date
                     </td>
-                    <td class="text-gray-800">25/09/2022</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.referral_expiry_date
+                          ? formData.current_appointment.referral_expiry_date
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -278,13 +360,7 @@
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Referral Details
                     </td>
-                    <td class="text-gray-800">
-                      Name: DR SAMANTHA MIMERAN, <br />
-                      Address: 209 Balaclava Road, Caulfield North VIC,
-                      Australia, <br />
-                      Phone number: 0399998888, <br />
-                      Provider number: 282828GG
-                    </td>
+                    <td class="text-gray-800">(not applicable)</td>
                   </tr>
                 </tbody>
               </table>
@@ -344,25 +420,46 @@
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Charge Type
                     </td>
-                    <td class="text-gray-800">Healthcare Card</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.charge_type
+                          ? formData.current_appointment.charge_type
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Concession Number
                     </td>
-                    <td class="text-gray-800">(not applicable)</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.concession_number
+                          ? formData.current_appointment.concession_number
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Concession Expiry Date
                     </td>
-                    <td class="text-gray-800">(not applicable)</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.concession_expiry_date
+                          ? formData.current_appointment.concession_expiry_date
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Has co-payment
                     </td>
-                    <td class="text-gray-800">No</td>
+                    <td class="text-gray-800">(not applicable)</td>
                   </tr>
                 </tbody>
               </table>
@@ -376,13 +473,20 @@
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Patient Pay
                     </td>
-                    <td class="text-gray-800">$250</td>
+                    <td class="text-gray-800">(not applicable)</td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Payment Status
                     </td>
-                    <td class="text-gray-800">(not applicable)</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.payment_status
+                          ? formData.current_appointment.payment_status
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                   <tr>
                     <td class="text-muted min-w-125px w-125px w-md-200px">
@@ -394,7 +498,14 @@
                     <td class="text-muted min-w-125px w-125px w-md-200px">
                       Note
                     </td>
-                    <td class="text-gray-800">(not applicable)</td>
+                    <td class="text-gray-800">
+                      {{
+                        formData.current_appointment &&
+                        formData.current_appointment.note
+                          ? formData.current_appointment.note
+                          : "(not applicable)"
+                      }}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -406,7 +517,6 @@
         <!--end::Body-->
       </div>
       <!--end::Option-->
-      <div class="separator separator-dashed"></div>
     </div>
     <!--end::Card body-->
   </div>
@@ -534,16 +644,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, watchEffect, ref, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "patient-appointments",
   components: {},
   setup() {
+    const store = useStore();
+    const formData = ref({});
+
+    watchEffect(() => {
+      formData.value = store.getters.selectedPatient;
+      console.log(formData.value);
+    });
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("Appointments", ["Patients"]);
     });
+
+    return {
+      formData,
+    };
   },
 });
 </script>
