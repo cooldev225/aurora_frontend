@@ -18,11 +18,11 @@
         <div class="py-5 d-flex flex-stack flex-wrap">
           <!--begin::Toggle-->
           <div
-            class="d-flex justify-content-between w-100 align-items-center collapsible rotate collapsed"
+            class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
             data-bs-toggle="collapse"
             href="#patient_view_administration_account"
             role="button"
-            aria-expanded="false"
+            aria-expanded="true"
             aria-controls="patient_view_administration_account"
           >
             <!--begin::Summary-->
@@ -46,7 +46,7 @@
         <!--begin::Body-->
         <div
           id="patient_view_administration_account"
-          class="fs-6 ps-10 collapse"
+          class="fs-6 ps-10 collapse show"
           data-bs-parent="#patient_view_administration"
         >
           <!--begin::Details-->

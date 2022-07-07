@@ -19,11 +19,11 @@
         <div class="py-5 d-flex flex-stack flex-wrap">
           <!--begin::Toggle-->
           <div
-            class="d-flex justify-content-between w-100 align-items-center collapsible rotate collapsed"
+            class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
             data-bs-toggle="collapse"
             href="#patient_view_appointments_details"
             role="button"
-            aria-expanded="false"
+            aria-expanded="true"
             aria-controls="patient_view_appointments_details"
           >
             <!--begin::Summary-->
@@ -47,7 +47,7 @@
         <!--begin::Body-->
         <div
           id="patient_view_appointments_details"
-          class="fs-6 ps-10 collapse"
+          class="fs-6 ps-10 collapse show"
           data-bs-parent="#patient_view_appointments"
         >
           <!--begin::Details-->
@@ -198,11 +198,11 @@
         <div class="py-5 d-flex flex-stack flex-wrap">
           <!--begin::Toggle-->
           <div
-            class="d-flex justify-content-between w-100 align-items-center collapsible rotate collapsed"
+            class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
             data-bs-toggle="collapse"
             href="#patient_view_appointments_specialist_details"
             role="button"
-            aria-expanded="false"
+            aria-expanded="true"
             aria-controls="patient_view_appointments_specialist_details"
           >
             <!--begin::Summary-->
@@ -226,7 +226,7 @@
         <!--begin::Body-->
         <div
           id="patient_view_appointments_specialist_details"
-          class="fs-6 ps-10 collapse"
+          class="fs-6 ps-10 collapse show"
           data-bs-parent="#patient_view_appointments_2"
         >
           <!--begin::Details-->
@@ -272,11 +272,11 @@
         <div class="py-5 d-flex flex-stack flex-wrap">
           <!--begin::Toggle-->
           <div
-            class="d-flex justify-content-between w-100 align-items-center collapsible rotate collapsed"
+            class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
             data-bs-toggle="collapse"
             href="#patient_view_appointments_referral_details"
             role="button"
-            aria-expanded="false"
+            aria-expanded="true"
             aria-controls="patient_view_appointments_referral_details"
           >
             <!--begin::Summary-->
@@ -300,7 +300,7 @@
         <!--begin::Body-->
         <div
           id="patient_view_appointments_referral_details"
-          class="fs-6 ps-10 collapse"
+          class="fs-6 ps-10 collapse show"
           data-bs-parent="#patient_view_appointments_3"
         >
           <!--begin::Details-->
@@ -379,11 +379,11 @@
         <div class="py-5 d-flex flex-stack flex-wrap">
           <!--begin::Toggle-->
           <div
-            class="d-flex justify-content-between w-100 align-items-center collapsible rotate collapsed"
+            class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
             data-bs-toggle="collapse"
             href="#patient_view_appointments_appointment_billing"
             role="button"
-            aria-expanded="false"
+            aria-expanded="true"
             aria-controls="patient_view_appointments_appointment_billing"
           >
             <!--begin::Summary-->
@@ -407,7 +407,7 @@
         <!--begin::Body-->
         <div
           id="patient_view_appointments_appointment_billing"
-          class="fs-6 ps-10 collapse"
+          class="fs-6 ps-10 collapse show"
           data-bs-parent="#patient_view_appointments_4"
         >
           <!--begin::Details-->
@@ -541,11 +541,11 @@
         <div class="py-5 d-flex flex-stack flex-wrap">
           <!--begin::Toggle-->
           <div
-            class="d-flex justify-content-between w-100 align-items-center collapsible rotate collapsed"
+            class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
             data-bs-toggle="collapse"
             href="#patient_view_appointments_history"
             role="button"
-            aria-expanded="false"
+            aria-expanded="true"
             aria-controls="patient_view_appointments_history"
           >
             <!--begin::Summary-->
@@ -569,7 +569,7 @@
         <!--begin::Body-->
         <div
           id="patient_view_appointments_history"
-          class="fs-6 ps-10 collapse"
+          class="fs-6 ps-10 collapse show"
           data-bs-parent="#patient_view_appointments_5"
         >
           <!--begin::Details-->
