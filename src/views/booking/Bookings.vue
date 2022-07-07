@@ -314,6 +314,9 @@ export default defineComponent({
     });
 
     watch(_specialists_search, () => {
+      // _specialists_search.map((item, key) => {
+      //   _ava_specialists.map()
+      // });
       store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
         ..._date_search,
         ..._specialists_search,
