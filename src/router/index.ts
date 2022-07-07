@@ -114,65 +114,27 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "appointments",
             name: "patients-view-appointments",
-            component: () =>
-              import("@/components/patients/view/Appointments.vue"),
+            component: () => import("@/components/patients/Appointments.vue"),
           },
           {
             path: "billing",
             name: "patients-view-billing",
-            component: () => import("@/components/patients/view/Billing.vue"),
+            component: () => import("@/components/patients/Billing.vue"),
           },
           {
             path: "administration",
             name: "patients-view-administration",
-            component: () =>
-              import("@/components/patients/view/Administration.vue"),
+            component: () => import("@/components/patients/Administration.vue"),
           },
           {
             path: "documents",
             name: "patients-view-documents",
-            component: () => import("@/components/patients/view/Documents.vue"),
+            component: () => import("@/components/patients/Documents.vue"),
           },
           {
             path: "clinical",
             name: "patients-view-clinical",
-            component: () => import("@/components/patients/view/Clinical.vue"),
-          },
-        ],
-      },
-      {
-        path: "/patients/update",
-        name: "patients-update",
-        component: () => import("@/views/patients/PatientUpdate.vue"),
-        children: [
-          {
-            path: "appointments",
-            name: "patients-update-appointments",
-            component: () =>
-              import("@/components/patients/update/Appointments.vue"),
-          },
-          {
-            path: "billing",
-            name: "patients-update-billing",
-            component: () => import("@/components/patients/update/Billing.vue"),
-          },
-          {
-            path: "administration",
-            name: "patients-update-administration",
-            component: () =>
-              import("@/components/patients/update/Administration.vue"),
-          },
-          {
-            path: "documents",
-            name: "patients-update-documents",
-            component: () =>
-              import("@/components/patients/update/Documents.vue"),
-          },
-          {
-            path: "clinical",
-            name: "patients-update-clinical",
-            component: () =>
-              import("@/components/patients/update/Clinical.vue"),
+            component: () => import("@/components/patients/Clinical.vue"),
           },
         ],
       },

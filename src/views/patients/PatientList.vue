@@ -79,14 +79,6 @@
               <inline-svg src="media/icons/duotune/general/gen019.svg" />
             </span>
           </button>
-          <button
-            @click="handleUpdate(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/art/art005.svg" />
-            </span>
-          </button>
         </template>
       </Datatable>
     </div>
@@ -144,11 +136,6 @@ export default defineComponent({
       router.push({ name: "patients-view-appointments" });
     };
 
-    const handleUpdate = (item) => {
-      store.commit(Mutations.SET_PATIENT.SELECT, item);
-      router.push({ name: "patients-update-appointments" });
-    };
-
     watchEffect(() => {
       tableData.value = list;
     });
@@ -162,7 +149,7 @@ export default defineComponent({
       });
     });
 
-    return { tableHeader, tableData, handleView, handleUpdate };
+    return { tableHeader, tableData, handleView };
   },
 });
 </script>
