@@ -72,11 +72,19 @@
         </template>
         <template v-slot:cell-action="{ row: item }">
           <button
-            @click="handleSelect(item)"
+            @click="handleView(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/general/gen019.svg" />
+            </span>
+          </button>
+          <button
+            @click="handleUpdate(item)"
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+          >
+            <span class="svg-icon svg-icon-3">
+              <inline-svg src="media/icons/duotune/art/art005.svg" />
             </span>
           </button>
         </template>
@@ -94,7 +102,7 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "org-main",
+  name: "patients-list",
 
   components: {
     Datatable,
@@ -131,9 +139,14 @@ export default defineComponent({
     const list = computed(() => store.getters.patientsList);
     const loading = ref(true);
 
-    const handleSelect = (item) => {
+    const handleView = (item) => {
       store.commit(Mutations.SET_PATIENT.SELECT, item);
-      router.push({ name: "patient-details-appointments" });
+      router.push({ name: "patients-view-appointments" });
+    };
+
+    const handleUpdate = (item) => {
+      store.commit(Mutations.SET_PATIENT.SELECT, item);
+      router.push({ name: "patients-update-appointments" });
     };
 
     watchEffect(() => {
@@ -149,7 +162,7 @@ export default defineComponent({
       });
     });
 
-    return { tableHeader, tableData, handleSelect };
+    return { tableHeader, tableData, handleView, handleUpdate };
   },
 });
 </script>

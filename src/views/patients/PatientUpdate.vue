@@ -249,7 +249,7 @@
           <!--begin::Nav item-->
           <li class="nav-item">
             <router-link
-              to="/patients/details/documents"
+              to="/patients/update/documents"
               class="nav-link text-active-primary me-6"
               active-class="active"
             >
@@ -261,7 +261,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              to="/patients/details/appointments"
+              to="/patients/update/appointments"
               active-class="active"
             >
               Appointments
@@ -272,7 +272,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              to="/patients/details/billing"
+              to="/patients/update/billing"
               active-class="active"
             >
               Billing
@@ -283,7 +283,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              to="/patients/details/clinical"
+              to="/patients/update/clinical"
               active-class="active"
             >
               Clinical Information
@@ -294,7 +294,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              to="/patients/details/administration"
+              to="/patients/update/administration"
               active-class="active"
             >
               Administration
@@ -315,7 +315,7 @@ import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 
 export default defineComponent({
-  name: "profile-page-layout",
+  name: "patients-update",
   components: {},
 
   setup() {
