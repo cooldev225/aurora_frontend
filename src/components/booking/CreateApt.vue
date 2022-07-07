@@ -145,9 +145,27 @@
                       formData.clinic_name
                     }}</span></label
                   >
-                  <label class="fs-5 text-primary">Time:</label>
-                  <label class="fs-5 text-primary">Appointment Type:</label>
-                  <label class="fs-5 text-primary">Specialist:</label>
+                  <label class="fs-5 text-primary"
+                    >Time:
+                    <span class="text-black fs-5"
+                      >{{ _start_time }} - {{ _end_time }}</span
+                    >
+                    <span v-if="formData.arrival_time" class="text-black fs-5"
+                      >(Arrival: {{ formData.arrival_time }})</span
+                    ></label
+                  >
+                  <label class="fs-5 text-primary"
+                    >Appointment Type:
+                    <span class="text-black fs-5">{{
+                      _appointment_name
+                    }}</span></label
+                  >
+                  <label class="fs-5 text-primary"
+                    >Specialist:
+                    <span class="text-black fs-5">{{
+                      _specialist_name
+                    }}</span></label
+                  >
                 </div>
               </div>
               <!--end::Nav-->
@@ -177,16 +195,56 @@
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
                               <label class="required fs-6 fw-bold mb-2">
+                                Start Time
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="start_time">
+                                <el-time-picker
+                                  class="w-100"
+                                  v-model="formData.time_slot[0]"
+                                  disabled-seconds
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div class="col-sm-6">
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                End time
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="end_time">
+                                <el-time-picker
+                                  class="w-100"
+                                  v-model="formData.time_slot[1]"
+                                  disabled
+                                  disabled-seconds
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
+                          <div class="col-sm-6">
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
                                 Appointment Type
                               </label>
                               <!--end::Label-->
 
                               <!--begin::Input-->
                               <el-form-item prop="appointment_type_id">
-                                <el-select
-                                  class="w-100"
-                                  v-model="formData.appointment_type_id"
-                                >
+                                <el-select class="w-100" v-model="_appointment">
                                   <template
                                     v-for="(item, idx) in aptTypeList"
                                     :key="idx"
@@ -213,10 +271,7 @@
 
                               <!--begin::Input-->
                               <el-form-item prop="specialist_id">
-                                <el-select
-                                  class="w-100"
-                                  v-model="formData.specialist_id"
-                                >
+                                <el-select class="w-100" v-model="_specialist">
                                   <template
                                     v-for="(item, index) in ava_specialist"
                                     :key="index"
@@ -1346,9 +1401,8 @@
                               <el-form-item prop="appointment_type_id">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.appointment_type_id"
+                                  v-model="formData._appointment"
                                   disabled
-                                  placeholder="Select Appointment Type"
                                 >
                                   <template
                                     v-for="(item, idx) in aptTypeList"
@@ -1690,6 +1744,7 @@ import {
   watchEffect,
   computed,
   watch,
+  reactive,
 } from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
@@ -1891,6 +1946,12 @@ export default defineComponent({
         },
       ],
     });
+    const appointment_length = reactive({
+      Single: 15,
+      Double: 30,
+      Triple: 45,
+    });
+
     const _stepperObj = ref(null);
     const createAptRef = ref(null);
     const createAptModalRef = ref(null);
@@ -1904,6 +1965,14 @@ export default defineComponent({
     const anesthetist = ref([]);
     const clinic = ref([]);
     const rooms = ref([]);
+    const _appointment = ref("");
+    const _specialist = ref("");
+    const _start_time = ref("");
+    const _end_time = ref("");
+    const _appointment_name = ref("");
+    const _specialist_name = ref("");
+    const _appointment_time = ref(15);
+    const _arrival_time = ref(15);
 
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
@@ -1911,12 +1980,54 @@ export default defineComponent({
     const aptTypeList = computed(() => store.getters.getAptTypeList);
     const searchVal = computed(() => store.getters.getSearchVariable);
 
-    watch(formData.value.specialist_id, () => {
-      const selectedSpecialist = formData.value.specialist_id;
-      anesthetist.value = ava_specialist.value.filter((specialist) => {
-        if (selectedSpecialist == specialist.id) return true;
-      })[0];
-      formData.value.anesthetist_id = anesthetist.value.id;
+    watch(_appointment, () => {
+      formData.value.appointment_type_id = _appointment.value;
+      const _selected = aptTypeList.value.filter(
+        (aptType) => aptType.id === _appointment.value
+      )[0];
+      _appointment_name.value = _selected.name;
+      const _temp_time = formData.value.time_slot[0];
+      _appointment_time.value = Number(
+        appointment_length[_selected.appointment_time]
+      );
+      formData.value.time_slot[1] = moment(_temp_time)
+        .add(_appointment_time.value, "minutes")
+        .toString();
+      _end_time.value = moment(formData.value.time_slot[1]).format("HH:mm");
+      _arrival_time.value = Number(_selected.arrival_time);
+      formData.value.arrival_time = moment(_temp_time)
+        .subtract(_arrival_time.value, "minutes")
+        .format("HH:mm")
+        .toString();
+      formData.value.procedure_price = _selected.procedure_price;
+      formData.value.clinical_code = _selected.clinical_code;
+      formData.value.mbs_code = _selected.mbs_code;
+      apt_type.value = _selected.type;
+      if (apt_type.value === "Consultation") {
+        formData.value.anesthetic_questions = false;
+        formData.value.procedure_questions = false;
+      }
+    });
+
+    watch(_specialist, () => {
+      formData.value.specialist_id = _specialist.value;
+      const _selected = ava_specialist.value.filter(
+        (item) => item.id === _specialist.value
+      )[0];
+      _specialist_name.value = _selected.name;
+      anesthetist.value = _selected.anesthetist;
+      formData.value.anesthetist_id = _selected.anesthetist.id;
+    });
+
+    watch(_start_time, () => {
+      const _temp_time = formData.value.time_slot[0];
+      formData.value.arrival_time = moment(_temp_time)
+        .subtract(_arrival_time.value, "minutes")
+        .format("HH:mm")
+        .toString();
+      formData.value.time_slot[1] = moment(_temp_time)
+        .add(_appointment_time.value, "minutes")
+        .toString();
     });
 
     const handleAneQuestions = () => {
@@ -1942,13 +2053,17 @@ export default defineComponent({
     watchEffect(() => {
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
-      formData.value.time_slot = bookingData.time_slots;
+      if (bookingData.time_slots) {
+        formData.value.time_slot = bookingData.time_slots;
+        _start_time.value = moment(bookingData.time_slots[0]).format("HH:mm");
+        _end_time.value = moment(bookingData.time_slots[1]).format("HH:mm");
+      }
       formData.value.date = bookingData.date;
       if (bookingData.selected_specialist) {
-        formData.value.specialist_id = bookingData.selected_specialist.id;
+        _specialist.value = bookingData.selected_specialist.id;
         if (bookingData.selected_specialist.anesthetist) {
           anesthetist.value = bookingData.selected_specialist.anesthetist;
-          formData.value.anesthetist_id = anesthetist.value.id;
+          // formData.value.anesthetist_id = anesthetist.value.id;
         }
         if (bookingData.selected_specialist.work_hours.locations) {
           clinic.value = bookingData.selected_specialist.work_hours.locations;
@@ -1969,19 +2084,6 @@ export default defineComponent({
           }
         }
       }
-      const apt_type_id = formData.value.appointment_type_id;
-      const aptSelected = aptTypeList.value.filter((aptType) => {
-        if (aptType.id == apt_type_id) return true;
-      })[0];
-      if (aptSelected) {
-        formData.value.clinical_code = aptSelected.clinical_code;
-        formData.value.mbs_code = aptSelected.mbs_code;
-        apt_type.value = aptSelected.type;
-        if (apt_type.value === "Consultation") {
-          formData.value.anesthetic_questions = false;
-          formData.value.procedure_questions = false;
-        }
-      }
     });
 
     onMounted(() => {
@@ -1994,19 +2096,35 @@ export default defineComponent({
     });
 
     const handleStep_1 = () => {
-      debugger;
-      console.log(moment(formData.value.time_slot[0]).format("HH:mm"));
       if (!formRef_1.value) {
         return;
       }
 
       formRef_1.value.validate((valid) => {
         if (valid) {
-          currentStepIndex.value++;
-          if (!_stepperObj.value) {
-            return;
+          if (_appointment_time.value > 15) {
+            Swal.fire({
+              text: "Are you sure you want to double book this time slot?",
+              icon: "info",
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+              confirmButtonText: "Confirm",
+            }).then((result) => {
+              if (result.value) {
+                currentStepIndex.value++;
+                if (!_stepperObj.value) {
+                  return;
+                }
+                _stepperObj.value.goNext();
+              }
+            });
+          } else {
+            currentStepIndex.value++;
+            if (!_stepperObj.value) {
+              return;
+            }
+            _stepperObj.value.goNext();
           }
-          _stepperObj.value.goNext();
         }
       });
     };
@@ -2111,6 +2229,12 @@ export default defineComponent({
       aptTypeList,
       anesthetist,
       apt_type,
+      _appointment,
+      _specialist,
+      _start_time,
+      _end_time,
+      _appointment_name,
+      _specialist_name,
       submit,
       formRef_1,
       formRef_2,

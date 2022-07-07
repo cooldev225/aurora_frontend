@@ -75,7 +75,6 @@
                       @click="
                         handleAddApt(
                           item_1,
-                          item.number,
                           item.value,
                           aptTimeList[index + 1].value
                         )
@@ -167,13 +166,11 @@ export default defineComponent({
     const store = useStore();
     const format = ref("YYYY-MM-DD");
 
-    const handleAddApt = (specialist, curTime, startTime, endTime) => {
+    const handleAddApt = (specialist, startTime, endTime) => {
+      const _date = moment(_apt_date.value).format("YYYY-MM-DD").toString();
       const item = {
-        time_slots: [
-          moment(_apt_date.value).format("YYYY-MM-DD") + "T" + startTime,
-          moment(_apt_date.value).format("YYYY-MM-DD") + "T" + endTime,
-        ],
-        date: moment(_apt_date.value).format("YYYY-MM-DD"),
+        time_slots: [_date + "T" + startTime, _date + "T" + endTime],
+        date: _date,
         ava_specialist: _ava_specialists,
         selected_specialist: specialist,
       };

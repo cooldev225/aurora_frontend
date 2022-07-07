@@ -228,7 +228,6 @@ export default defineComponent({
     });
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
-    // const _specialists = ref({});
     const _aptTypelist = computed(() => store.getters.getAptTypeList);
     const _allSpecialists = computed(() => store.getters.getSpecialistList);
     const _aptTimeRequireList = computed(
