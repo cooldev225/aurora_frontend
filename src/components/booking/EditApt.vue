@@ -115,10 +115,6 @@
 
                 <!--begin::Step 4-->
                 <div class="stepper-item" data-kt-stepper-element="nav">
-                  <!--begin::Line-->
-                  <div class="stepper-line w-40px"></div>
-                  <!--end::Line-->
-
                   <!--begin::Icon-->
                   <div class="stepper-icon w-40px h-40px">
                     <i class="stepper-check fas fa-check"></i>
@@ -135,6 +131,24 @@
                   <!--end::Label-->
                 </div>
                 <!--end::Step 4-->
+                <div class="d-flex flex-column gap-2">
+                  <h3>Appointment Information</h3>
+                  <label class="fs-5 text-primary"
+                    >Service Reference Number:
+                    <span class="text-black fs-5">{{
+                      formData.reference_number
+                    }}</span></label
+                  >
+                  <label class="fs-5 text-primary"
+                    >Clinic Name:
+                    <span class="text-black fs-5">{{
+                      formData.clinic_name
+                    }}</span></label
+                  >
+                  <label class="fs-5 text-primary">Time:</label>
+                  <label class="fs-5 text-primary">Appointment Type:</label>
+                  <label class="fs-5 text-primary">Specialist:</label>
+                </div>
               </div>
               <!--end::Nav-->
             </div>
@@ -155,194 +169,6 @@
                     <div class="row scroll h-450px">
                       <div class="card-info">
                         <div class="fs-3 fw-bold text-muted mb-6">
-                          Appointment Information
-                        </div>
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Service Reference Number
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="reference_number">
-                                <el-input
-                                  type="text"
-                                  v-model="formData.reference_number"
-                                  disabled
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Clinic Name
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="clinic_id">
-                                <el-select
-                                  class="w-100"
-                                  v-model="formData.clinic_id"
-                                  disabled
-                                >
-                                  <el-option
-                                    :value="clinic.id"
-                                    :label="clinic.name"
-                                  />
-                                </el-select>
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2"> Date </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="date">
-                                <el-date-picker
-                                  class="w-100"
-                                  v-model="formData.date"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Arrival Time
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="arrival_time">
-                                <el-time-picker
-                                  class="w-100"
-                                  v-model="formData.arrival_time"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="fv-row">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2"> Time </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="time_slot">
-                                <el-time-picker
-                                  class="w-100"
-                                  v-model="formData.time_slot"
-                                  format="HH:mm"
-                                  disabled-seconds
-                                  is-range
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                        </div>
-                      </div>
-                      <el-divider />
-                      <div class="card-info">
-                        <div class="fs-3 fw-bold text-muted mb-6">
-                          Referral Information
-                        </div>
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Referring Doctor
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="reffering_doctor">
-                                <el-select
-                                  class="w-100"
-                                  v-model="formData.reffering_doctor"
-                                  placeholder="Select Reffering Doctor"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Referral Duration
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="referral_duration">
-                                <el-select
-                                  class="w-100"
-                                  v-model="formData.referral_duration"
-                                  placeholder="Enter Referral Duration"
-                                >
-                                  <el-option value="0" label="Indefinite" />
-                                  <el-option value="3" label="3 Months" />
-                                  <el-option value="12" label="12 Months" />
-                                </el-select>
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Referral Date
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="referral_date">
-                                <el-date-picker
-                                  class="w-100"
-                                  v-model="formData.referral_date"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                        </div>
-                      </div>
-                      <el-divider />
-                      <div class="card-info">
-                        <div class="fs-3 fw-bold text-muted mb-6">
                           Appointment Type
                         </div>
                         <div class="row">
@@ -354,6 +180,7 @@
                                 Appointment Type
                               </label>
                               <!--end::Label-->
+
                               <!--begin::Input-->
                               <el-form-item prop="appointment_type_id">
                                 <el-select
@@ -383,6 +210,7 @@
                                 Specialist
                               </label>
                               <!--end::Label-->
+
                               <!--begin::Input-->
                               <el-form-item prop="specialist_id">
                                 <el-select
@@ -498,6 +326,112 @@
                             </div>
                             <!--end::Input group-->
                           </div>
+                        </div>
+                      </div>
+                      <el-divider />
+                      <div class="card-info">
+                        <div class="mb-6 d-flex justify-content-between">
+                          <span class="fs-3 fw-bold text-muted"
+                            >Referral Information</span
+                          >
+                          <el-checkbox
+                            type="checkbox"
+                            v-model="formData.no_referral"
+                            label="No Referral"
+                          />
+                        </div>
+                        <div class="row">
+                          <template v-if="formData.no_referral">
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">
+                                  No Referral Reason
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="no_referral_reason">
+                                  <el-input
+                                    type="text"
+                                    v-model="formData.no_referral_reason"
+                                    placeholder="Please Enter Reason"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                          </template>
+                          <template v-else>
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">
+                                  Referring Doctor
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="reffering_doctor">
+                                  <el-select
+                                    class="w-100"
+                                    v-model="formData.reffering_doctor"
+                                    placeholder="Select Reffering Doctor"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">
+                                  Referral Duration
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="referral_duration">
+                                  <el-select
+                                    class="w-100"
+                                    v-model="formData.referral_duration"
+                                    placeholder="Enter Referral Duration"
+                                  >
+                                    <el-option value="0" label="Indefinite" />
+                                    <el-option value="3" label="3 Months" />
+                                    <el-option value="12" label="12 Months" />
+                                  </el-select>
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="required fs-6 fw-bold mb-2">
+                                  Referral Date
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="referral_date">
+                                  <el-date-picker
+                                    class="w-100"
+                                    v-model="formData.referral_date"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                          </template>
                         </div>
                       </div>
                     </div>
@@ -1846,6 +1780,8 @@ export default defineComponent({
       anesthetic_answers: [],
       procedure_questions: false,
       procedure_answers: [],
+      no_referral: false,
+      no_referral_reason: "",
     });
 
     const rules = ref({
