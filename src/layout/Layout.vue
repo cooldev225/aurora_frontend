@@ -125,7 +125,7 @@ export default defineComponent({
       setTimeout(() => {
         // Remove page loader after some time
         store.dispatch(Actions.REMOVE_BODY_CLASSNAME, "page-loading");
-      }, 500);
+      }, 1000);
     });
 
     watch(

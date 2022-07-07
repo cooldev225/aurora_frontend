@@ -1,4 +1,5 @@
 <template>
+  <KTLoader v-if="loaderEnabled" :logo="loaderLogo" />
   <div class="row">
     <div class="card card-flush">
       <div class="card-body">
@@ -8,6 +9,7 @@
               :format="format"
               v-model="_date_search.date"
               inline="false"
+              color="#3E7BA0"
               noKeyboard
               onlyDate
             />
@@ -199,6 +201,7 @@ import { Modal } from "bootstrap";
 import { MenuComponent } from "@/assets/ts/components";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import KTLoader from "@/components/Loader.vue";
+import { loaderEnabled, loaderLogo } from "@/core/helpers/config";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -207,6 +210,7 @@ export default defineComponent({
     CreateModal,
     EditModal,
     AptTable,
+    KTLoader,
   },
   setup() {
     const store = useStore();
@@ -241,7 +245,6 @@ export default defineComponent({
         ..._date_search,
         ..._specialists_search,
       });
-      // handleSearch();
       setCurrentPageBreadcrumbs("Dashboard", ["Bookings"]);
       store.dispatch(Actions.APT.TYPE_LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
@@ -279,28 +282,15 @@ export default defineComponent({
       return Number(time.split(":")[0] + time.split(":")[1]);
     };
 
-    const handleSearch = () => {
-      store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, { ..._search_next_apts });
-      // if (JwtService.getToken()) {
-      //   ApiService.setHeader();
-      //   ApiService.query("work-hours-by-week", {
-      //     params: { ..._search_next_apts },
-      //   })
-      //     .then(({ data }) => {
-      //       console.log(data);
-      //       _specialists.value = data.data;
-      //       console.log(_specialists.value);
-      //     })
-      //     .catch(({ response }) => {
-      //       console.log(response.data.errors);
-      //       // this.context.commit(Mutations.PURGE_AUTH);
-      //     });
-      // } else {
-      //   // this.context.commit(Mutations.PURGE_AUTH);
-      // }
+    const handleSearch = async () => {
+      store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
+      await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+        ..._search_next_apts,
+      });
     };
 
     watch(_date_search, () => {
+      store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
       store.dispatch(Actions.BOOKING.SEARCH.DATE, {
         ..._date_search,
         specialists: [],
@@ -311,16 +301,21 @@ export default defineComponent({
       });
       _specialists_search.specialist_ids = [];
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
+      setTimeout(() => {
+        store.dispatch(Actions.REMOVE_BODY_CLASSNAME, "page-loading");
+      }, 700);
     });
 
     watch(_specialists_search, () => {
-      // _specialists_search.map((item, key) => {
-      //   _ava_specialists.map()
-      // });
+      store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
       store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
         ..._date_search,
         ..._specialists_search,
       });
+    });
+
+    watch(_specialists, () => {
+      store.dispatch(Actions.REMOVE_BODY_CLASSNAME, "page-loading");
     });
 
     return {
@@ -336,6 +331,8 @@ export default defineComponent({
       tableTitle,
       handleSearch,
       moment,
+      loaderLogo,
+      loaderEnabled,
       // handleAddApt,
       // handleEdit,
       timeStr2Number,
