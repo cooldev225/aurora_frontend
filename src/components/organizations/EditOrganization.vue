@@ -4,7 +4,7 @@
     <div class="card-header">
       <div class="card-title">
         <!--begin::Search-->
-        <span>Edit Organization</span>
+        <span>Edit Organisation</span>
         <!--end::Search-->
       </div>
     </div>
@@ -41,7 +41,7 @@
             <div class="mb-7 col-sm-4">
               <!--begin::Label-->
               <label class="required fs-6 fw-bold mb-2"
-                >Organization Name</label
+                >Organisation Name</label
               >
               <!--end::Label-->
 
@@ -50,7 +50,7 @@
                 <el-input
                   v-model="formData.name"
                   type="text"
-                  placeholder="Organization Name"
+                  placeholder="Organisation Name"
                 />
               </el-form-item>
               <!--end::Input-->
@@ -451,7 +451,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Edit Organization", ["Organization"]);
+      setCurrentPageBreadcrumbs("Edit Organisation", ["Organisation"]);
     });
 
     const changeLogo = (e) => {

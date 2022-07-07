@@ -4,7 +4,7 @@
     <div class="card-header">
       <div class="card-title">
         <!--begin::Search-->
-        <span>Create Organization</span>
+        <span>Create Organisation</span>
         <!--end::Search-->
       </div>
     </div>
@@ -21,7 +21,7 @@
           <div class="scroll-y me-n7 pe-7 row">
             <div class="card-info">
               <div class="fs-3 fw-bold text-muted mb-6">
-                Organization Information
+                Organisation Information
               </div>
               <div
                 class="mt-2 alert alert-primary d-flex align-items-center justify-between p-5 mb-10"
@@ -29,21 +29,21 @@
                 <i class="bi bi-info-circle fs-2x"></i>
                 <div class="d-flex flex-column">
                   <span
-                    >An organization is the client as a whole. It will conatain
+                    >An organisation is the client as a whole. It will conatain
                     all the patients, clinics and employees.</span
                   >
                 </div>
               </div>
               <div class="col-sm-4">
                 <label class="required fs-6 fw-bold mb-2"
-                  >Organization Name</label
+                  >Organisation Name</label
                 >
 
                 <el-form-item prop="name">
                   <el-input
                     v-model="formData.name"
                     type="text"
-                    placeholder="Organization Name"
+                    placeholder="Organisation Name"
                   />
                 </el-form-item>
               </div>
@@ -101,7 +101,7 @@
                 <div class="d-flex flex-column">
                   <span
                     >The contact details for the main point of contact for this
-                    organization.</span
+                    organisation.</span
                   >
                 </div>
               </div>
@@ -169,7 +169,7 @@
                 <i class="bi bi-info-circle fs-2x"></i>
                 <div class="d-flex flex-column">
                   <span
-                    >Creates a user account with the role of Organization
+                    >Creates a user account with the role of Organisation
                     Admin.</span
                   >
                 </div>
@@ -225,7 +225,7 @@
                 <i class="bi bi-info-circle fs-2x"></i>
                 <div class="d-flex flex-column">
                   <span
-                    >While not requred, Adding a logo for the organization adds
+                    >While not requred, Adding a logo for the organisation adds
                     an element of customization to their experience.</span
                   >
                 </div>
@@ -430,7 +430,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Create Organization", ["Organization"]);
+      setCurrentPageBreadcrumbs("Create Organisation", ["Organisation"]);
     });
 
     const submit = () => {

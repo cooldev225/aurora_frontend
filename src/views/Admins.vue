@@ -10,7 +10,7 @@
         <!--begin::Content-->
         <span
           >Admins at this level have authority, to add, edit and disable
-          Organizations. Please ensure only trusted and trained aurora team
+          Organisations. Please ensure only trusted and trained aurora team
           members are in this list</span
         >
         <!--end::Content-->

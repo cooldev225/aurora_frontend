@@ -46,7 +46,7 @@
             type="text"
             data-kt-subscription-table-filter="search"
             class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Organization Manager"
+            placeholder="Search Organisation Manager"
           />
         </div>
         <!--end::Search-->
@@ -231,7 +231,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Organization Managers", []);
+      setCurrentPageBreadcrumbs("Organisation Managers", []);
       store.dispatch(Actions.LIST_ORG_MANAGER);
       tableData.value = orgManagerList;
     });

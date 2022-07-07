@@ -12,7 +12,7 @@
             type="text"
             data-kt-subscription-table-filter="search"
             class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Organizations"
+            placeholder="Search Organisations"
           />
         </div>
         <!--end::Search-->
@@ -31,7 +31,7 @@
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>
-            Add New Organization
+            Add New Organisation
           </router-link>
           <!--end::Add subscription-->
         </div>
@@ -133,7 +133,7 @@ export default defineComponent({
     const router = useRouter();
     const tableHeader = ref([
       {
-        name: "Organization Name",
+        name: "Organisation Name",
         key: "name",
         sortable: true,
         searchable: true,
@@ -192,7 +192,7 @@ export default defineComponent({
 
     onMounted(() => {
       loading.value = true;
-      setCurrentPageBreadcrumbs("Organizations", []);
+      setCurrentPageBreadcrumbs("Organisations", []);
       store.dispatch(Actions.LIST_ORG).then(() => {
         tableData.value = orgList;
         loading.value = false;

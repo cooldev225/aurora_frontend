@@ -59,7 +59,7 @@
                   <!--begin::Content-->
                   <span
                     >Creating admins at this level will give that user
-                    authority, to add, edit and disable Organizations.</span
+                    authority, to add, edit and disable Organisations.</span
                   >
                   <!--end::Content-->
                 </div>

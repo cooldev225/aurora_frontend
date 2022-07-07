@@ -6,7 +6,7 @@ const AdminMenu = [
     fontIcon: "bi-house fs-2",
   },
   {
-    heading: "Organizations",
+    heading: "Organisations",
     route: "/organizations",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-hospital",

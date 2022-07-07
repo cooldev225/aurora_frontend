@@ -12,7 +12,7 @@
             type="text"
             data-kt-subscription-table-filter="search"
             class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Organizations"
+            placeholder="Search Organisations"
           />
         </div>
         <!--end::Search-->
