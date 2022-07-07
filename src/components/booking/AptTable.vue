@@ -179,27 +179,7 @@ export default defineComponent({
       };
       store.commit(Mutations.SET_BOOKING.SELECT, item);
       const modal = new Modal(document.getElementById("modal_create_apt"));
-      let double_status = false;
-      for (let i in specialist.appointments) {
-        if (
-          timeStr2Number(specialist.appointments[i].start_time) <= curTime &&
-          timeStr2Number(specialist.appointments[i].end_time) > curTime
-        )
-          double_status = true;
-      }
-      if (double_status) {
-        Swal.fire({
-          text: "Are you sure you want to double book this time slot?",
-          icon: "info",
-          showCancelButton: true,
-          confirmButtonText: "Confirm",
-          cancelButtonText: "Cancel",
-        }).then((result) => {
-          if (result.value) {
-            modal.show();
-          }
-        });
-      } else modal.show();
+      modal.show();
     };
 
     const handleEdit = (item, specialist) => {
