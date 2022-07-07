@@ -98,12 +98,16 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   }
 
   @Action
-  [Actions.BOOKING.CREATE](payload) {
+  [Actions.BOOKING.SEARCH.DATE](payload) {
+    this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("clinics", payload)
+      ApiService.query("work-hours", { params: payload })
         .then(({ data }) => {
-          return data.data;
+          this.context.commit(
+            Mutations.SET_BOOKING.SEARCH.DATE,
+            data.data[Object.keys(data.data)[0]]
+          );
         })
         .catch(({ response }) => {
           console.log(response.data.error);
@@ -114,13 +118,17 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   }
 
   @Action
-  [Actions.BOOKING.SEARCH.DATE](payload) {
+  [Actions.BOOKING.SEARCH.NEXT_APT](payload) {
     this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("work-hours", { params: payload })
+      ApiService.query("work-hours-by-week", { params: payload })
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_BOOKING.SEARCH.DATE, data.data);
+          // this.context.commit(Mutations.SET_BOOKING.SEARCH.DATE, data.data);
+          this.context.commit(
+            Mutations.SET_BOOKING.SEARCH.SPECIALISTS,
+            data.data
+          );
         })
         .catch(({ response }) => {
           console.log(response.data.error);
