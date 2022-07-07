@@ -198,6 +198,7 @@ import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
 import { MenuComponent } from "@/assets/ts/components";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import KTLoader from "@/components/Loader.vue";
 
 export default defineComponent({
   name: "bookings-dashboard",

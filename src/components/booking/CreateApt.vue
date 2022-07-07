@@ -1827,7 +1827,7 @@ export default defineComponent({
       health_fund_membership_number: "",
       health_fund_reference_number: "",
       health_fund_expiry_date: "",
-      fund_excess: "",
+      fund_excess: 0,
       pension_card_number: "",
       healthcare_card_number: "",
       expiry_date: "",
@@ -1836,7 +1836,7 @@ export default defineComponent({
       dva_type: "",
       account_holder_type: "",
       account_holder: "",
-      procedure_price: "",
+      procedure_price: 0,
       referring_doctor: "",
       referral_duration: "",
       referral_date: "",
@@ -2154,12 +2154,18 @@ export default defineComponent({
                 },
               }).then(() => {
                 hideModal(createAptModalRef.value);
-                store.dispatch(Actions.BOOKING.SEARCH.DATE, {
-                  ...searchVal.value,
-                });
-                store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-                  ...searchVal.value,
-                });
+                if (searchVal.value.date) {
+                  store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+                    ...searchVal.value,
+                  });
+                  store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+                    ...searchVal.value,
+                  });
+                } else {
+                  store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+                    ...searchVal.value,
+                  });
+                }
               });
             })
             .catch(({ response }) => {
