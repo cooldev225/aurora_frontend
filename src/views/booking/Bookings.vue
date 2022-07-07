@@ -92,7 +92,10 @@
               <button class="btn btn-primary mt-2 w-100" @click="handleSearch">
                 SEARCH
               </button>
-              <button class="btn btn-light-primary w-100 mt-2">
+              <button
+                class="btn btn-light-primary w-100 mt-2"
+                @click="handleReset"
+              >
                 CLEAR FILTERS
               </button>
             </div>
@@ -283,6 +286,11 @@ export default defineComponent({
       });
     };
 
+    const handleReset = () => {
+      _specialists_search.specialist_ids = [];
+      _date_search.date = new Date();
+    };
+
     watch(_date_search, () => {
       store.dispatch(Actions.BOOKING.SEARCH.DATE, {
         ..._date_search,
@@ -343,6 +351,7 @@ export default defineComponent({
       _search_next_apts,
       tableTitle,
       handleSearch,
+      handleReset,
       moment,
       timeStr2Number,
       aptTimeList,
