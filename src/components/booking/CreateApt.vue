@@ -1769,6 +1769,7 @@ import { countryList, timeZoneList } from "@/core/data/country";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { hideModal } from "@/core/helpers/dom";
+import moment from "moment";
 
 export default defineComponent({
   name: "create-app-modal",
@@ -2061,6 +2062,8 @@ export default defineComponent({
     });
 
     const handleStep_1 = () => {
+      debugger;
+      console.log(moment(formData.value.time_slot[0]).format("HH:mm"));
       if (!formRef_1.value) {
         return;
       }

@@ -75,6 +75,7 @@
                       @click="
                         handleAddApt(
                           item_1,
+                          item.number,
                           item.value,
                           aptTimeList[index + 1].value
                         )
@@ -148,6 +149,7 @@ import moment from "moment";
 import { aptTimeList } from "@/core/data/apt-time";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -165,7 +167,7 @@ export default defineComponent({
     const store = useStore();
     const format = ref("YYYY-MM-DD");
 
-    const handleAddApt = (specialist, startTime, endTime) => {
+    const handleAddApt = (specialist, curTime, startTime, endTime) => {
       const item = {
         time_slots: [
           moment(_apt_date.value).format("YYYY-MM-DD") + "T" + startTime,
