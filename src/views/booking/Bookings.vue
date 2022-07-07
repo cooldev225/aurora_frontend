@@ -22,7 +22,7 @@
               <div class="card-body card-scroll h-350px">
                 <div class="d-flex flex-column">
                   <el-checkbox-group
-                    v-model="_specialists_search.specialists"
+                    v-model="_specialists_search.specialist_ids"
                     class="d-flex flex-column"
                   >
                     <template
@@ -60,7 +60,9 @@
                   <el-select
                     class="w-100"
                     placeholder="Select Specialist"
-                    v-model="_search_next_apts.specialist_id"
+                    v-model="_search_next_apts.specialist_ids"
+                    multiple
+                    filterable
                   >
                     <template
                       v-for="(item, index) in _allSpecialists"
@@ -212,11 +214,11 @@ export default defineComponent({
       date: new Date(),
     });
     const _specialists_search = reactive({
-      specialists: [],
+      specialist_ids: [],
     });
     const _search_next_apts = reactive({
       appointment_type_id: "",
-      specialist_id: "",
+      specialist_ids: "",
       time_requirement: "",
     });
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
@@ -306,7 +308,7 @@ export default defineComponent({
         ..._date_search,
         ..._specialists_search,
       });
-      _specialists_search.specialists = [];
+      _specialists_search.specialist_ids = [];
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     });
 
