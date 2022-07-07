@@ -278,7 +278,6 @@ export default defineComponent({
 
     const handleSearch = () => {
       store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, { ..._search_next_apts });
-      _specialists_search.specialists = [];
       // if (JwtService.getToken()) {
       //   ApiService.setHeader();
       //   ApiService.query("work-hours-by-week", {
