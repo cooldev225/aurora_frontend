@@ -50,6 +50,7 @@ const Actions = {
     SEARCH: {
       DATE: "searchBookingByDate",
       SPECIALISTS: "searchBookingBySPT",
+      NEXT_APT: "searchNextApt",
     },
   },
 
@@ -227,6 +228,7 @@ const Mutations = {
       VARIABLE: "setSearchVariable",
       DATE: "setFilteredBookingByDate",
       SPECIALISTS: "setFilteredBookingBySPT",
+      NEXT_APTS: "setNextAptList",
     },
   },
 

@@ -22,7 +22,7 @@
               <div class="card-body card-scroll h-350px">
                 <div class="d-flex flex-column">
                   <el-checkbox-group
-                    v-model="_specialists_search.specialists"
+                    v-model="_specialists_search.specialist_ids"
                     class="d-flex flex-column"
                   >
                     <template
@@ -60,7 +60,9 @@
                   <el-select
                     class="w-100"
                     placeholder="Select Specialist"
-                    v-model="_search_next_apts.specialist_id"
+                    v-model="_search_next_apts.specialist_ids"
+                    multiple
+                    filterable
                   >
                     <template
                       v-for="(item, index) in _allSpecialists"
@@ -100,151 +102,17 @@
   </div>
   <div class="card mt-5">
     <div class="card-body">
-      <div style="overflow-x: scroll">
-        <table class="table align-middle gs-0 gy-4 my-0 booking-table-header">
-          <thead>
-            <tr class="fw-bolder center-row text-white bg-primary">
-              <th
-                class="cell-120px border-0"
-                style="position: relative; left: 0px"
-              ></th>
-              <th class="cell-35px border-0"></th>
-              <template v-if="_specialists">
-                <th
-                  :colspan="_specialists.length * 2 - 1"
-                  class="text-xl-left border-0 fw-bold fs-4"
-                >
-                  {{ tableTitle }}
-                </th>
-              </template>
-            </tr>
-            <template v-if="_specialists">
-              <tr class="bg-light-warning doctor-row text-center text-primary">
-                <th
-                  class="cell-120px"
-                  style="position: relative; left: 0px"
-                ></th>
-                <th class="cell-35px"></th>
-                <template v-for="(item, index) in _specialists" :key="index">
-                  <th
-                    :colspan="index === 0 ? 1 : 2"
-                    class="fw-bolder"
-                    :style="
-                      index === 0 ? 'min-width: 441px' : 'min-width: 476px'
-                    "
-                  >
-                    <span class="fs-5 d-block">{{ item.name }}</span>
-                    <span class="fs-8">{{
-                      item.work_hours.locations.name
-                    }}</span>
-                  </th>
-                </template>
-              </tr>
-            </template>
-          </thead>
-        </table>
-        <template v-if="_specialists">
-          <div
-            style="
-              max-height: 400px;
-              overflow: scroll visible;
-              width: max-content;
-              min-width: 100%;
-            "
-          >
-            <table
-              class="booking-table-body table align-middle gs-0 gy-4 my-0 bg-light"
-            >
-              <tbody>
-                <template v-for="(item, index) in aptTimeList" :key="index">
-                  <tr class="text-center">
-                    <td
-                      class="cell-120px bg-white"
-                      style="position: relative; left: 0px"
-                    >
-                      {{ item.value }}
-                    </td>
-                    <template
-                      v-for="(item_1, index_1) in _specialists"
-                      :key="index_1"
-                    >
-                      <td class="cell-35px bg-white">
-                        <a
-                          class="cursor-pointer"
-                          v-if="
-                            timeStr2Number(item_1.work_hours.time_slot[0]) <=
-                              item.number &&
-                            timeStr2Number(item_1.work_hours.time_slot[1]) >
-                              item.number
-                          "
-                          @click="
-                            handleAddApt(
-                              item_1,
-                              item.value,
-                              aptTimeList[index + 1].value
-                            )
-                          "
-                        >
-                          <i class="fa fa-plus text-primary"></i>
-                        </a>
-                      </td>
-                      <td style="min-width: 441px">
-                        <template
-                          v-for="(item_2, idx_2) in item_1.appointments"
-                          :key="idx_2"
-                        >
-                          <template
-                            v-if="
-                              timeStr2Number(item_2.start_time) <=
-                                item.number &&
-                              timeStr2Number(item_2.end_time) > item.number
-                            "
-                          >
-                            <div class="d-flex justify-content-between">
-                              <span
-                                class="text-primary px-2 fw-bold d-block cursor-pointer fs-5"
-                                >{{ item_2.first_name }}
-                                {{ item_2.last_name }} ({{
-                                  item_2.mobile_number
-                                }})</span
-                              >
-                              <el-dropdown trigger="click">
-                                <span class="svg-icon svg-icon-2 m-0">
-                                  <inline-svg
-                                    src="media/icons/duotune/general/gen059.svg"
-                                  />
-                                </span>
-                                <span class="el-dropdown-link">
-                                  <el-icon class="el-icon--right">
-                                    <arrow-down />
-                                  </el-icon>
-                                </span>
-                                <template #dropdown>
-                                  <el-dropdown-menu>
-                                    <el-dropdown-item>
-                                      <span @click="handleEdit(item_2, item_1)">
-                                        Edit
-                                      </span>
-                                    </el-dropdown-item>
-                                    <el-dropdown-item>
-                                      <span @click="handleEdit(item_2, item_1)">
-                                        Cancel
-                                      </span>
-                                    </el-dropdown-item>
-                                  </el-dropdown-menu>
-                                </template>
-                              </el-dropdown>
-                            </div>
-                          </template>
-                        </template>
-                      </td>
-                    </template>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
-          </div>
-        </template>
+      <div class="scroll h-500px">
+        <div class="d-flex flex-row" style="width: min-content">
+          <template v-for="(item, key) in _specialists" :key="key">
+            <AptTable
+              :ava_SPTData="item"
+              :date="moment(key.toString()).format('YYYY-MM-DD')"
+              :SPTData="item"
+              :Title="moment(key.toString()).format('dddd, MMMM Do YYYY')"
+            />
+          </template>
+        </div>
       </div>
     </div>
   </div>
@@ -319,6 +187,7 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import CreateModal from "@/components/booking/CreateApt.vue";
 import EditModal from "@/components/booking/EditApt.vue";
+import AptTable from "@/components/booking/AptTable.vue";
 import VueCtkDateTimePicker from "vue-ctk-date-time-picker";
 import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
 import moment from "moment";
@@ -329,6 +198,7 @@ import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
 import { MenuComponent } from "@/assets/ts/components";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import KTLoader from "@/components/Loader.vue";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -336,6 +206,7 @@ export default defineComponent({
     VueCtkDateTimePicker,
     CreateModal,
     EditModal,
+    AptTable,
   },
   setup() {
     const store = useStore();
@@ -344,15 +215,16 @@ export default defineComponent({
       date: new Date(),
     });
     const _specialists_search = reactive({
-      specialists: [],
+      specialist_ids: [],
     });
     const _search_next_apts = reactive({
       appointment_type_id: "",
-      specialist_id: "",
+      specialist_ids: "",
       time_requirement: "",
     });
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
+    // const _specialists = ref({});
     const _aptTypelist = computed(() => store.getters.getAptTypeList);
     const _allSpecialists = computed(() => store.getters.getSpecialistList);
     const _aptTimeRequireList = computed(
@@ -369,6 +241,7 @@ export default defineComponent({
         ..._date_search,
         ..._specialists_search,
       });
+      // handleSearch();
       setCurrentPageBreadcrumbs("Dashboard", ["Bookings"]);
       store.dispatch(Actions.APT.TYPE_LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
@@ -376,53 +249,55 @@ export default defineComponent({
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     });
 
-    const handleAddApt = (specialist, startTime, endTime) => {
-      const item = {
-        time_slots: [
-          moment(_date_search.date).format("YYYY-MM-DD") + "T" + startTime,
-          moment(_date_search.date).format("YYYY-MM-DD") + "T" + endTime,
-        ],
-        date: moment(_date_search.date).format("YYYY-MM-DD"),
-        ava_specialist: _ava_specialists,
-        selected_specialist: specialist,
-      };
-      store.commit(Mutations.SET_BOOKING.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_create_apt"));
-      modal.show();
-    };
+    // const handleAddApt = (specialist, startTime, endTime) => {
+    //   const item = {
+    //     time_slots: [
+    //       moment(_date_search.date).format("YYYY-MM-DD") + "T" + startTime,
+    //       moment(_date_search.date).format("YYYY-MM-DD") + "T" + endTime,
+    //     ],
+    //     date: moment(_date_search.date).format("YYYY-MM-DD"),
+    //     ava_specialist: _ava_specialists,
+    //     selected_specialist: specialist,
+    //   };
+    //   store.commit(Mutations.SET_BOOKING.SELECT, item);
+    //   const modal = new Modal(document.getElementById("modal_create_apt"));
+    //   modal.show();
+    // };
 
-    const handleEdit = (item, specialist) => {
-      const data = {
-        ava_specialist: _ava_specialists,
-        selected_specialist: specialist,
-      };
-      store.commit(Mutations.SET_BOOKING.SELECT, data);
-      store.commit(Mutations.SET_APT.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_edit_apt"));
-      modal.show();
-    };
+    // const handleEdit = (item, specialist) => {
+    //   const data = {
+    //     ava_specialist: _ava_specialists,
+    //     selected_specialist: specialist,
+    //   };
+    //   store.commit(Mutations.SET_BOOKING.SELECT, data);
+    //   store.commit(Mutations.SET_APT.SELECT, item);
+    //   const modal = new Modal(document.getElementById("modal_edit_apt"));
+    //   modal.show();
+    // };
 
     const timeStr2Number = (time) => {
       return Number(time.split(":")[0] + time.split(":")[1]);
     };
 
     const handleSearch = () => {
-      if (JwtService.getToken()) {
-        ApiService.setHeader();
-        ApiService.query("work-hours-by-week", {
-          params: { ..._search_next_apts },
-        })
-          .then(({ data }) => {
-            _specialists.value = data.data;
-            MenuComponent.reinitialization();
-          })
-          .catch(({ response }) => {
-            console.log(response.data.errors);
-            // this.context.commit(Mutations.PURGE_AUTH);
-          });
-      } else {
-        // this.context.commit(Mutations.PURGE_AUTH);
-      }
+      store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, { ..._search_next_apts });
+      // if (JwtService.getToken()) {
+      //   ApiService.setHeader();
+      //   ApiService.query("work-hours-by-week", {
+      //     params: { ..._search_next_apts },
+      //   })
+      //     .then(({ data }) => {
+      //       console.log(data);
+      //       _specialists.value = data.data;
+      //       console.log(_specialists.value);
+      //     })
+      //     .catch(({ response }) => {
+      //       console.log(response.data.errors);
+      //       // this.context.commit(Mutations.PURGE_AUTH);
+      //     });
+      // } else {
+      //   // this.context.commit(Mutations.PURGE_AUTH);
+      // }
     };
 
     watch(_date_search, () => {
@@ -434,11 +309,14 @@ export default defineComponent({
         ..._date_search,
         ..._specialists_search,
       });
-      _specialists_search.specialists = [];
+      _specialists_search.specialist_ids = [];
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     });
 
     watch(_specialists_search, () => {
+      // _specialists_search.map((item, key) => {
+      //   _ava_specialists.map()
+      // });
       store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
         ..._date_search,
         ..._specialists_search,
@@ -457,8 +335,9 @@ export default defineComponent({
       _search_next_apts,
       tableTitle,
       handleSearch,
-      handleAddApt,
-      handleEdit,
+      moment,
+      // handleAddApt,
+      // handleEdit,
       timeStr2Number,
       aptTimeList,
     };

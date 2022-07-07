@@ -1193,8 +1193,7 @@
                               <el-form-item prop="fund_excess">
                                 <el-input
                                   type="text"
-                                  v-model="formData.fund_excess"
-                                  placeholder="00"
+                                  v-model.number="formData.fund_excess"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1449,18 +1448,7 @@
                               <el-form-item prop="procedure_price">
                                 <el-input
                                   type="text"
-                                  v-model="formData.procedure_price"
-                                  :formatter="
-                                    (value) =>
-                                      `$ ${value}`.replace(
-                                        /\B(?=(\d{3})+(?!\d))/g,
-                                        ','
-                                      )
-                                  "
-                                  :parser="
-                                    (value) => value.replace(/\$\s?|(,*)/g, '')
-                                  "
-                                  placeholder="0"
+                                  v-model.number="formData.procedure_price"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1933,16 +1921,12 @@ export default defineComponent({
         {
           type: "number",
           message: "Procedure price must be a number",
-          trigger: "change",
-          min: 0,
         },
       ],
       fund_excess: [
         {
           type: "number",
           message: "Fund excess must be a number",
-          trigger: "change",
-          min: 0,
         },
       ],
       medicare_number: [
@@ -2154,12 +2138,18 @@ export default defineComponent({
                 },
               }).then(() => {
                 hideModal(createAptModalRef.value);
-                store.dispatch(Actions.BOOKING.SEARCH.DATE, {
-                  ...searchVal.value,
-                });
-                store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-                  ...searchVal.value,
-                });
+                if (searchVal.value.date) {
+                  store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+                    ...searchVal.value,
+                  });
+                  store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+                    ...searchVal.value,
+                  });
+                } else {
+                  store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+                    ...searchVal.value,
+                  });
+                }
               });
             })
             .catch(({ response }) => {
