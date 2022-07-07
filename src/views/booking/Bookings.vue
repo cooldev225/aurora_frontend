@@ -1,5 +1,4 @@
 <template>
-  <KTLoader v-if="loaderEnabled" :logo="loaderLogo" />
   <div class="row">
     <div class="card card-flush">
       <div class="card-body">
@@ -200,8 +199,6 @@ import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
 import { MenuComponent } from "@/assets/ts/components";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import KTLoader from "@/components/Loader.vue";
-import { loaderEnabled, loaderLogo } from "@/core/helpers/config";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -210,7 +207,6 @@ export default defineComponent({
     CreateModal,
     EditModal,
     AptTable,
-    KTLoader,
   },
   setup() {
     const store = useStore();
@@ -282,23 +278,18 @@ export default defineComponent({
     };
 
     const handleSearch = async () => {
-      store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
       await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
         ..._search_next_apts,
       });
     };
 
     watch(_date_search, () => {
-      store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
       store.dispatch(Actions.BOOKING.SEARCH.DATE, {
         ..._date_search,
         specialists: [],
       });
       // _specialists_search.specialist_ids = [];
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
-      setTimeout(() => {
-        store.dispatch(Actions.REMOVE_BODY_CLASSNAME, "page-loading");
-      }, 700);
     });
 
     watch(_ava_specialists, () => {
@@ -340,10 +331,6 @@ export default defineComponent({
       // });
     });
 
-    watch(_specialists, () => {
-      store.dispatch(Actions.REMOVE_BODY_CLASSNAME, "page-loading");
-    });
-
     return {
       format,
       _date_search,
@@ -357,10 +344,6 @@ export default defineComponent({
       tableTitle,
       handleSearch,
       moment,
-      loaderLogo,
-      loaderEnabled,
-      // handleAddApt,
-      // handleEdit,
       timeStr2Number,
       aptTimeList,
     };
