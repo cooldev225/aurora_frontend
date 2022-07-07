@@ -1,6 +1,9 @@
 <template>
   <!--begin::details View-->
-  <div class="card mb-5 mb-xl-10" id="patient_view_administration_demographic">
+  <div
+    class="card mb-5 mb-xl-10"
+    id="patient_update_administration_demographic"
+  >
     <!--begin::Card header-->
     <div class="card-header cursor-pointer">
       <!--begin::Card title-->
@@ -11,7 +14,7 @@
     </div>
     <!--begin::Card header-->
     <!--begin::Card body-->
-    <div id="patient_view_administration" class="card-body pt-0">
+    <div id="patient_update_administration" class="card-body pt-0">
       <!--begin::Option-->
       <div class="py-0">
         <!--begin::Header-->
@@ -20,10 +23,10 @@
           <div
             class="d-flex justify-content-between w-100 align-items-center collapsible rotate collapsed"
             data-bs-toggle="collapse"
-            href="#patient_view_administration_account"
+            href="#patient_update_administration_account"
             role="button"
             aria-expanded="false"
-            aria-controls="patient_view_administration_account"
+            aria-controls="patient_update_administration_account"
           >
             <!--begin::Summary-->
             <div class="me-3">
@@ -45,9 +48,9 @@
         <!--end::Header-->
         <!--begin::Body-->
         <div
-          id="patient_view_administration_account"
+          id="patient_update_administration_account"
           class="fs-6 ps-10 collapse"
-          data-bs-parent="#patient_view_administration"
+          data-bs-parent="#patient_update_administration"
         >
           <!--begin::Details-->
           <div class="d-flex flex-wrap py-5">
@@ -162,7 +165,6 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
-      console.log(formData.value);
     });
 
     onMounted(() => {
