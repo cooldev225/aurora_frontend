@@ -217,7 +217,6 @@
                                 <el-date-picker
                                   class="w-100"
                                   v-model="formData.date"
-                                  disabled
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -258,7 +257,6 @@
                                   v-model="formData.time_slot"
                                   format="HH:mm"
                                   disabled-seconds
-                                  disabled
                                   is-range
                                 />
                               </el-form-item>
