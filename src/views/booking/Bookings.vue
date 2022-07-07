@@ -295,11 +295,27 @@ export default defineComponent({
         ..._date_search,
         specialists: [],
       });
-      _specialists_search.specialist_ids = [];
+      // _specialists_search.specialist_ids = [];
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
       setTimeout(() => {
         store.dispatch(Actions.REMOVE_BODY_CLASSNAME, "page-loading");
       }, 700);
+    });
+
+    watch(_ava_specialists, () => {
+      let temp = [];
+      _ava_specialists.value.forEach((item) => {
+        _specialists_search.specialist_ids.forEach((selected) => {
+          if (item.id === selected) temp.push(item);
+        });
+      });
+      if (temp.length === 0) temp = _ava_specialists.value;
+      const data = ref({});
+      const data_key = moment(_date_search.date)
+        .format("YYYY-MM-DD")
+        .toString();
+      data.value[data_key] = temp;
+      store.commit(Mutations.SET_BOOKING.SEARCH.SPECIALISTS, data.value);
     });
 
     watch(_specialists_search, () => {
@@ -317,7 +333,6 @@ export default defineComponent({
         .format("YYYY-MM-DD")
         .toString();
       data.value[data_key] = temp;
-      console.log(data.value);
       store.commit(Mutations.SET_BOOKING.SEARCH.SPECIALISTS, data.value);
       // store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
       // store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
