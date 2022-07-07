@@ -139,7 +139,19 @@
           {{ item.mobile_number }}
         </template>
         <template v-slot:cell-upcoming="{ row: item }">
-          {{ item.upcoming_appointment }}
+          <span
+            class="badge"
+            :style="`width: fit-content; background-color: ${
+              item.upcoming_appointment
+                ? item.upcoming_appointment.color
+                : 'black'
+            }`"
+            >{{
+              item.upcoming_appointment
+                ? item.upcoming_appointment.name
+                : "(not applicable)"
+            }}</span
+          >
         </template>
         <template v-slot:cell-action="{ row: item }">
           <button
@@ -232,7 +244,6 @@ export default defineComponent({
 
     watchEffect(() => {
       tableData.value = list;
-      console.log(tableData.value);
     });
 
     onMounted(() => {
