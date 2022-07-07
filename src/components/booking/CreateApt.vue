@@ -1193,8 +1193,7 @@
                               <el-form-item prop="fund_excess">
                                 <el-input
                                   type="text"
-                                  v-model="formData.fund_excess"
-                                  placeholder="00"
+                                  v-model.number="formData.fund_excess"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1449,18 +1448,7 @@
                               <el-form-item prop="procedure_price">
                                 <el-input
                                   type="text"
-                                  v-model="formData.procedure_price"
-                                  :formatter="
-                                    (value) =>
-                                      `$ ${value}`.replace(
-                                        /\B(?=(\d{3})+(?!\d))/g,
-                                        ','
-                                      )
-                                  "
-                                  :parser="
-                                    (value) => value.replace(/\$\s?|(,*)/g, '')
-                                  "
-                                  placeholder="0"
+                                  v-model.number="formData.procedure_price"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1827,7 +1815,7 @@ export default defineComponent({
       health_fund_membership_number: "",
       health_fund_reference_number: "",
       health_fund_expiry_date: "",
-      fund_excess: 0,
+      fund_excess: "",
       pension_card_number: "",
       healthcare_card_number: "",
       expiry_date: "",
@@ -1836,7 +1824,7 @@ export default defineComponent({
       dva_type: "",
       account_holder_type: "",
       account_holder: "",
-      procedure_price: 0,
+      procedure_price: "",
       referring_doctor: "",
       referral_duration: "",
       referral_date: "",
@@ -1933,16 +1921,12 @@ export default defineComponent({
         {
           type: "number",
           message: "Procedure price must be a number",
-          trigger: "change",
-          min: 0,
         },
       ],
       fund_excess: [
         {
           type: "number",
           message: "Fund excess must be a number",
-          trigger: "change",
-          min: 0,
         },
       ],
       medicare_number: [
