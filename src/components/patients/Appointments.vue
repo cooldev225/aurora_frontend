@@ -312,7 +312,7 @@
                   <tbody>
                     <tr>
                       <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Referral date
+                        Referral Date
                       </td>
                       <td class="text-gray-800">
                         {{

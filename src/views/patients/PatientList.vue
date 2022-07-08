@@ -100,7 +100,7 @@
         :table-data="tableData"
         :rows-per-page="5"
         :loading="loading"
-        :enable-items-per-page-dropdown="false"
+        :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-UR_number="{ row: item }">
           {{ item.UR_number }}
@@ -108,6 +108,11 @@
         <template v-slot:cell-full_name="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
             {{ item.first_name }} {{ item.last_name }}
+          </span>
+        </template>
+        <template v-slot:cell-dob="{ row: item }">
+          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
+            {{ item.date_of_birth }}
           </span>
         </template>
         <template v-slot:cell-contact_number="{ row: item }">
@@ -134,7 +139,7 @@
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen019.svg" />
+              <i class="fas fa-eye"></i>
             </span>
           </button>
         </template>
@@ -182,17 +187,23 @@ export default defineComponent({
         searchable: true,
       },
       {
+        name: "Date of Birth",
+        key: "dob",
+        sortable: true,
+        searchable: true,
+      },
+      {
         name: "Contact Number",
         key: "contact_number",
         sortable: true,
         searchable: true,
       },
       {
-        name: "Upcoming Appointments",
+        name: "Upcoming Appointment",
         key: "upcoming",
       },
       {
-        name: "Action",
+        name: "",
         key: "action",
       },
     ]);
