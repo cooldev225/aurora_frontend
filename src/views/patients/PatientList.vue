@@ -4,7 +4,7 @@
       <div class="card border border-dashed border-primary w-100">
         <div class="card-header">
           <div class="card-title">
-            <span>SEARCH PATIENT</span>
+            <span>SEARCH PATIENTS</span>
           </div>
         </div>
         <div class="card-body">
@@ -120,16 +120,16 @@
         </template>
         <template v-slot:cell-upcoming="{ row: item }">
           <span
-            class="badge"
+            :class="`badge ${
+              !item.upcoming_appointment ? 'badge-light-success' : ''
+            }`"
             :style="`width: fit-content; background-color: ${
-              item.upcoming_appointment
-                ? item.upcoming_appointment.color
-                : 'black'
+              item.upcoming_appointment ? item.upcoming_appointment.color : ''
             }`"
             >{{
               item.upcoming_appointment
                 ? item.upcoming_appointment.name
-                : "(not applicable)"
+                : "none"
             }}</span
           >
         </template>
