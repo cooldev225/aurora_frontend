@@ -312,7 +312,7 @@
                   <tbody>
                     <tr>
                       <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Referral date
+                        Referral Date
                       </td>
                       <td class="text-gray-800">
                         {{
@@ -590,19 +590,25 @@
                       <td class="text-muted min-w-125px w-125px w-md-200px">
                         Cancelled Appointments
                       </td>
-                      <td class="text-gray-800">0</td>
+                      <td class="text-gray-800">
+                        {{ formData.canceled_appointments }}
+                      </td>
                     </tr>
                     <tr>
                       <td class="text-muted min-w-125px w-125px w-md-200px">
                         Missed Appointments
                       </td>
-                      <td class="text-gray-800">1</td>
+                      <td class="text-gray-800">
+                        {{ formData.missed_appointments }}
+                      </td>
                     </tr>
                     <tr>
                       <td class="text-muted min-w-125px w-125px w-md-200px">
                         Future Appointments
                       </td>
-                      <td class="text-gray-800">0</td>
+                      <td class="text-gray-800">
+                        {{ formData.future_appointments }}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -618,20 +624,11 @@
                       </td>
                       <td class="text-gray-800">
                         <span
-                          class="badge badge-light-success d-block mb-3"
-                          style="width: fit-content"
-                          >27 Aug 2019 09:00 AM (Colonoscopy)</span
-                        >
-                        <span
-                          class="badge badge-light-success d-block mb-3"
-                          style="width: fit-content"
-                          >16 Jun 2020 12:00 PM (Gastroscopy)</span
-                        >
-                        <span
-                          class="badge badge-light-danger d-block"
-                          style="width: fit-content"
-                          >27 Jun 2022 12:00 PM (Colonoscopy and
-                          Gastroscopy)</span
+                          v-for="apt in formData.past_appointments"
+                          :key="apt.id"
+                          class="badge d-block mb-3"
+                          :style="`width: fit-content; background-color: ${apt.color}`"
+                          >{{ apt.date + "(" + apt.procedure_name + ")" }}</span
                         >
                       </td>
                     </tr>
@@ -671,6 +668,7 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
+      console.log(formData.value);
     });
 
     onMounted(() => {
