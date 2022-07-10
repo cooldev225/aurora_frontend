@@ -635,35 +635,6 @@
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
                           <label class="required fs-6 fw-bold mb-2">
-                            Gender
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="gender">
-                            <el-select
-                              class="w-100"
-                              v-model="formData.gender"
-                              placeholder="Select Gender"
-                            >
-                              <el-option value="male" label="Male" />
-                              <el-option value="female" label="Female" />
-                              <el-option value="other" label="Other" />
-                              <el-option
-                                value="undisclosed"
-                                label="Not Stated / Inadequately Desribed"
-                              />
-                            </el-select>
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
                             Address
                           </label>
                           <!--end::Label-->
@@ -674,160 +645,6 @@
                               type="text"
                               v-model="formData.address"
                               placeholder="Enter Address"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Street
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="street">
-                            <el-input
-                              type="text"
-                              v-model="formData.street"
-                              placeholder="Enter Street"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Suburb
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="suburb">
-                            <el-input
-                              type="text"
-                              v-model="formData.suburb"
-                              placeholder="Enter Suburb"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Postcode
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="postcode">
-                            <el-input
-                              type="text"
-                              v-model="formData.postcode"
-                              placeholder="Enter Postcode"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            State
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="state">
-                            <el-input
-                              type="text"
-                              v-model="formData.state"
-                              placeholder="Enter State"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Country
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="country">
-                            <el-select
-                              class="w-100"
-                              v-model="formData.country"
-                              filterable
-                            >
-                              <template
-                                v-for="(country, index) in countryList"
-                                :key="index"
-                              >
-                                <el-option :value="country" :label="country" />
-                              </template>
-                            </el-select>
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Home Number
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="home_number">
-                            <el-input
-                              type="text"
-                              v-model="formData.home_number"
-                              placeholder="Enter Home Number"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Work Number
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="work_number">
-                            <el-input
-                              type="text"
-                              v-model="formData.work_number"
-                              placeholder="Enter Work Number"
                             />
                           </el-form-item>
                           <!--end::Input-->
@@ -903,6 +720,26 @@
                           Billing Details
                         </div>
                         <div class="row">
+                          <div class="col-sm-6">
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-7">
+                              <!--begin::Label-->
+                              <label class="required fs-6 fw-bold mb-2">
+                                Procedure Price
+                              </label>
+                              <!--end::Label-->
+
+                              <!--begin::Input-->
+                              <el-form-item prop="procedure_price">
+                                <el-input
+                                  type="text"
+                                  v-model.number="formData.procedure_price"
+                                />
+                              </el-form-item>
+                              <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+                          </div>
                           <div class="col-sm-6">
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
@@ -1336,8 +1173,15 @@
                       </div>
                       <div class="separator separator-dashed mb-8 mt-2"></div>
                       <div class="card-info">
-                        <div class="fs-3 fw-bold text-muted mb-6">
-                          Account Holder Details
+                        <div class="mb-6 d-flex justify-content-between">
+                          <span class="fs-3 fw-bold text-muted"
+                            >Account Holder Details</span
+                          >
+                          <el-checkbox
+                            type="checkbox"
+                            v-model="formData.add_other_account_holder"
+                            label="Add nother account holder"
+                          />
                         </div>
                         <div class="row">
                           <div class="col-sm-4">
@@ -1382,57 +1226,6 @@
                                   type="text"
                                   v-model="formData.account_holder"
                                   placeholder="Select Account Holder"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Procedure
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="appointment_type_id">
-                                <el-select
-                                  class="w-100"
-                                  v-model="formData._appointment"
-                                  disabled
-                                >
-                                  <template
-                                    v-for="(item, idx) in aptTypeList"
-                                    :key="idx"
-                                  >
-                                    <el-option
-                                      :value="item.id"
-                                      :label="item.name"
-                                    />
-                                  </template>
-                                </el-select>
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Procedure Price
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="procedure_price">
-                                <el-input
-                                  type="text"
-                                  v-model.number="formData.procedure_price"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1769,6 +1562,7 @@ export default defineComponent({
     const formData = ref({
       reference_number: 22100349,
       clinic_name: "",
+      clinic_id: "",
       date: new Date(),
       arrival_time: "",
       time_slot: ["2022-06-20T09:00", "2022-06-20T17:00"],
@@ -2069,6 +1863,8 @@ export default defineComponent({
           clinic.value = bookingData.selected_specialist.work_hours.locations;
           formData.value.clinic_name =
             bookingData.selected_specialist.work_hours.locations.name;
+          formData.value.clinic_id =
+            bookingData.selected_specialist.work_hours.locations.id;
           if (JwtService.getToken()) {
             ApiService.setHeader();
             ApiService.get("clinics/" + clinic.value.id + "/rooms")
