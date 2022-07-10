@@ -121,13 +121,15 @@
         <template v-slot:cell-upcoming="{ row: item }">
           <span
             :class="`badge ${
-              !item.upcoming_appointment ? 'badge-light-success' : ''
+              item.upcoming_appointment.id ? '' : 'badge-light-success'
             }`"
             :style="`width: fit-content; background-color: ${
-              item.upcoming_appointment ? item.upcoming_appointment.color : ''
+              item.upcoming_appointment.id
+                ? item.upcoming_appointment.color
+                : ''
             }`"
             >{{
-              item.upcoming_appointment
+              item.upcoming_appointment.id
                 ? item.upcoming_appointment.name
                 : "none"
             }}</span
