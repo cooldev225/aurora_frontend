@@ -1769,6 +1769,7 @@ export default defineComponent({
     const formData = ref({
       reference_number: 22100349,
       clinic_name: "",
+      clinic_id: "",
       date: new Date(),
       arrival_time: "",
       time_slot: ["2022-06-20T09:00", "2022-06-20T17:00"],
@@ -2069,6 +2070,8 @@ export default defineComponent({
           clinic.value = bookingData.selected_specialist.work_hours.locations;
           formData.value.clinic_name =
             bookingData.selected_specialist.work_hours.locations.name;
+          formData.value.clinic_id =
+            bookingData.selected_specialist.work_hours.locations.id;
           if (JwtService.getToken()) {
             ApiService.setHeader();
             ApiService.get("clinics/" + clinic.value.id + "/rooms")
