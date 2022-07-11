@@ -130,7 +130,12 @@
             }`"
             >{{
               item.upcoming_appointment.id
-                ? item.upcoming_appointment.name
+                ? item.upcoming_appointment.date +
+                  " " +
+                  item.upcoming_appointment.start_time +
+                  "(" +
+                  item.upcoming_appointment.procedure_name +
+                  ")"
                 : "none"
             }}</span
           >
