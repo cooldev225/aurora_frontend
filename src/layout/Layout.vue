@@ -42,6 +42,7 @@
   <KTInviteFriendsModal />
   <KTDemosDrawer />
   <KTHelpDrawer />
+  <BookingDrawer />
 </template>
 
 <script lang="ts">
@@ -61,6 +62,7 @@ import KTInviteFriendsModal from "@/components/modals/general/InviteFriendsModal
 import KTDemosDrawer from "@/layout/extras/DemosDrawer.vue";
 import KTHelpDrawer from "@/layout/extras/HelpDrawer.vue";
 import KTDrawerMessenger from "@/layout/extras/MessengerDrawer.vue";
+import BookingDrawer from "@/components/booking/BookingDrawer.vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { MenuComponent } from "@/assets/ts/components";
 import { removeModalBackdrop } from "@/core/helpers/dom";
@@ -91,6 +93,7 @@ export default defineComponent({
     KTHelpDrawer,
     KTDrawerMessenger,
     KTLoader,
+    BookingDrawer,
   },
   setup() {
     const store = useStore();
