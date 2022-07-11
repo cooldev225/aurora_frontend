@@ -201,12 +201,13 @@
 
                               <!--begin::Input-->
                               <el-form-item prop="start_time">
-                                <el-time-picker
-                                  class="w-100"
-                                  v-model="formData.time_slot[0]"
-                                  format="HH:mm"
-                                  teleported
-                                  disabled-seconds
+                                <el-time-select
+                                  v-model="_start_time"
+                                  start="00:00"
+                                  step="00:15"
+                                  end="23:59"
+                                  clearable="false"
+                                  placeholder="Select time"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -224,11 +225,13 @@
 
                               <!--begin::Input-->
                               <el-form-item prop="end_time">
-                                <el-time-picker
-                                  class="w-100"
-                                  v-model="formData.time_slot[1]"
+                                <el-time-select
+                                  v-model="_end_time"
+                                  start="00:00"
+                                  step="00:15"
+                                  end="23:59"
                                   disabled
-                                  disabled-seconds
+                                  placeholder="Select time"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1491,6 +1494,7 @@ import JwtService from "@/core/services/JwtService";
 import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
 import chargeTypes from "@/core/data/charge-types";
+import { ElMessageBox } from "element-plus";
 
 export default defineComponent({
   name: "create-app-modal",
@@ -1715,16 +1719,15 @@ export default defineComponent({
         (aptType) => aptType.id === _appointment.value
       )[0];
       _appointment_name.value = _selected.name;
-      const _temp_time = formData.value.time_slot[0];
       _appointment_time.value = Number(
         appointment_length[_selected.appointment_time]
       );
-      formData.value.time_slot[1] = moment(_temp_time)
+      _end_time.value = moment(_start_time.value, "HH:mm")
         .add(_appointment_time.value, "minutes")
         .toString();
-      _end_time.value = moment(formData.value.time_slot[1]).format("HH:mm");
+      formData.value.time_slot[1] = _end_time.value;
       _arrival_time.value = Number(_selected.arrival_time);
-      formData.value.arrival_time = moment(_temp_time)
+      formData.value.arrival_time = moment(_start_time.value, "HH:mm")
         .subtract(_arrival_time.value, "minutes")
         .format("HH:mm")
         .toString();
@@ -1749,14 +1752,16 @@ export default defineComponent({
     });
 
     watch(_start_time, () => {
-      const _temp_time = formData.value.time_slot[0];
-      formData.value.arrival_time = moment(_temp_time)
+      formData.value.time_slot[0] = _start_time.value;
+      formData.value.arrival_time = moment(_start_time.value, "HH:mm")
         .subtract(_arrival_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      formData.value.time_slot[1] = moment(_temp_time)
+      _end_time.value = moment(_start_time.value, "HH:mm")
         .add(_appointment_time.value, "minutes")
+        .format("HH:mm")
         .toString();
+      formData.value.time_slot[1] = _end_time.value;
     });
 
     const handleAneQuestions = () => {
@@ -1783,7 +1788,6 @@ export default defineComponent({
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
       if (bookingData.time_slots) {
-        formData.value.time_slot = bookingData.time_slots;
         _start_time.value = moment(bookingData.time_slots[0]).format("HH:mm");
         _end_time.value = moment(bookingData.time_slots[1]).format("HH:mm");
       }
@@ -1792,7 +1796,6 @@ export default defineComponent({
         _specialist.value = bookingData.selected_specialist.id;
         if (bookingData.selected_specialist.anesthetist) {
           anesthetist.value = bookingData.selected_specialist.anesthetist;
-          // formData.value.anesthetist_id = anesthetist.value.id;
         }
         if (bookingData.selected_specialist.work_hours.locations) {
           clinic.value = bookingData.selected_specialist.work_hours.locations;
@@ -1833,29 +1836,29 @@ export default defineComponent({
 
       formRef_1.value.validate((valid) => {
         if (valid) {
-          if (_appointment_time.value > 15) {
-            Swal.fire({
-              text: "Are you sure you want to double book this time slot?",
-              icon: "info",
-              showCancelButton: true,
-              cancelButtonText: "Cancel",
-              confirmButtonText: "Confirm",
-            }).then((result) => {
-              if (result.value) {
-                currentStepIndex.value++;
-                if (!_stepperObj.value) {
-                  return;
-                }
-                _stepperObj.value.goNext();
+          // if (_appointment_time.value > 15) {
+          Swal.fire({
+            text: "Are you sure you want to double book this time slot?",
+            icon: "info",
+            showCancelButton: true,
+            cancelButtonText: "Cancel",
+            confirmButtonText: "Confirm",
+          }).then((result) => {
+            if (result.value) {
+              currentStepIndex.value++;
+              if (!_stepperObj.value) {
+                return;
               }
-            });
-          } else {
-            currentStepIndex.value++;
-            if (!_stepperObj.value) {
-              return;
+              _stepperObj.value.goNext();
             }
-            _stepperObj.value.goNext();
-          }
+          });
+          // } else {
+          //   currentStepIndex.value++;
+          //   if (!_stepperObj.value) {
+          //     return;
+          //   }
+          //   _stepperObj.value.goNext();
+          // }
         }
       });
     };
