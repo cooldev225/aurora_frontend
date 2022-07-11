@@ -314,7 +314,7 @@
                       <td class="text-muted min-w-125px w-125px w-md-200px">
                         Referral Date
                       </td>
-                      <td class="text-gray-800">
+                      <!-- <td class="text-gray-800">
                         <el-form-item prop="referral_date">
                           <el-date-picker
                             class="w-50"
@@ -322,13 +322,13 @@
                             placeholder="Referral Date"
                           />
                         </el-form-item>
-                      </td>
+                      </td> -->
                     </tr>
                     <tr>
                       <td class="text-muted min-w-125px w-125px w-md-200px">
                         Referral Duration
                       </td>
-                      <td class="text-gray-800">
+                      <!-- <td class="text-gray-800">
                         <el-form-item prop="referral_date">
                           <el-select
                             class="w-50"
@@ -343,13 +343,13 @@
                             <el-option :value="12" label="12 Months" />
                           </el-select>
                         </el-form-item>
-                      </td>
+                      </td> -->
                     </tr>
                     <tr>
                       <td class="text-muted min-w-125px w-125px w-md-200px">
                         Referral Expiry Date
                       </td>
-                      <td class="text-gray-800">
+                      <!-- <td class="text-gray-800">
                         <el-date-picker
                           class="w-50"
                           v-model="
@@ -357,7 +357,7 @@
                           "
                           placeholder="Referral Expiry Date"
                         />
-                      </td>
+                      </td> -->
                     </tr>
                   </tbody>
                 </table>
@@ -371,7 +371,7 @@
                       <td class="text-muted min-w-125px w-125px w-md-200px">
                         Referral Details
                       </td>
-                      <td class="text-gray-800">
+                      <!-- <td class="text-gray-800">
                         <el-form-item prop="referral_details">
                           <el-input
                             v-model="
@@ -383,7 +383,7 @@
                             placeholder="Referral Details"
                           />
                         </el-form-item>
-                      </td>
+                      </td> -->
                     </tr>
                   </tbody>
                 </table>
