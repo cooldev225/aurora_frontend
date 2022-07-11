@@ -95,38 +95,16 @@
                         "
                       >
                         <div class="d-flex justify-content-between">
-                          <span
+                          <button
                             class="text-primary px-2 fw-bold d-block cursor-pointer fs-5"
-                            >{{ item_2.first_name }} {{ item_2.last_name }} ({{
-                              item_2.mobile_number
-                            }})</span
+                            data-kt-drawer-toggle="true"
+                            data-kt-drawer-target="#kt_drawer_chat"
+                            @click="handleEdit(item_2, item_1)"
                           >
-                          <el-dropdown trigger="click">
-                            <span class="svg-icon svg-icon-2 m-0">
-                              <inline-svg
-                                src="media/icons/duotune/general/gen059.svg"
-                              />
-                            </span>
-                            <span class="el-dropdown-link">
-                              <el-icon class="el-icon--right">
-                                <arrow-down />
-                              </el-icon>
-                            </span>
-                            <template #dropdown>
-                              <el-dropdown-menu>
-                                <el-dropdown-item>
-                                  <span @click="handleEdit(item_2, item_1)">
-                                    Edit
-                                  </span>
-                                </el-dropdown-item>
-                                <el-dropdown-item>
-                                  <span @click="handleEdit(item_2, item_1)">
-                                    Cancel
-                                  </span>
-                                </el-dropdown-item>
-                              </el-dropdown-menu>
-                            </template>
-                          </el-dropdown>
+                            {{ item_2.first_name }} {{ item_2.last_name }} ({{
+                              item_2.mobile_number
+                            }})
+                          </button>
                         </div>
                       </template>
                     </template>
@@ -149,6 +127,7 @@ import { aptTimeList } from "@/core/data/apt-time";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
+import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -180,14 +159,15 @@ export default defineComponent({
     };
 
     const handleEdit = (item, specialist) => {
-      const data = {
-        ava_specialist: _ava_specialists,
-        selected_specialist: specialist,
-      };
-      store.commit(Mutations.SET_BOOKING.SELECT, data);
+      // const data = {
+      //   ava_specialist: _ava_specialists,
+      //   selected_specialist: specialist,
+      // };
+      // store.commit(Mutations.SET_BOOKING.SELECT, specialist);
+      // const modal = new Modal(document.getElementById("modal_edit_apt"));
+      // modal.show();
       store.commit(Mutations.SET_APT.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_edit_apt"));
-      modal.show();
+      DrawerComponent?.getInstance("booking-drawer")?.toggle();
     };
 
     const timeStr2Number = (time) => {

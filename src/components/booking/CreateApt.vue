@@ -204,6 +204,8 @@
                                 <el-time-picker
                                   class="w-100"
                                   v-model="formData.time_slot[0]"
+                                  format="HH:mm"
+                                  teleported
                                   disabled-seconds
                                 />
                               </el-form-item>

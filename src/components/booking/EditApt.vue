@@ -205,7 +205,6 @@
                                   class="w-100"
                                   format="HH:mm"
                                   v-model="_formData.start_time"
-                                  disabled-seconds
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -227,7 +226,6 @@
                                   class="w-100"
                                   v-model="_formData.end_time"
                                   disabled
-                                  disabled-seconds
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1778,6 +1776,8 @@ export default defineComponent({
       clinic_name: "",
       date: new Date(),
       arrival_time: "",
+      start_time: "",
+      end_time: "",
       time_slot: ["2022-06-20T09:00", "2022-06-20T17:00"],
       appointment_type_id: "",
       clinical_code: "",
@@ -1987,25 +1987,26 @@ export default defineComponent({
     const aptTypeList = computed(() => store.getters.getAptTypeList);
     const searchVal = computed(() => store.getters.getSearchVariable);
     const aptData = computed(() => store.getters.getAptSelected);
+
     watch(_appointment, () => {
       _formData.value.appointment_type_id = _appointment.value;
       const _selected = aptTypeList.value.filter(
         (aptType) => aptType.id === _appointment.value
       )[0];
       _appointment_name.value = _selected.name;
-      const _temp_time = _formData.value.time_slot[0];
-      _appointment_time.value = Number(
-        appointment_length[_selected.appointment_time]
-      );
-      _formData.value.time_slot[1] = moment(_temp_time)
-        .add(_appointment_time.value, "minutes")
-        .toString();
-      _end_time.value = moment(_formData.value.time_slot[1]).format("HH:mm");
-      _arrival_time.value = Number(_selected.arrival_time);
-      _formData.value.arrival_time = moment(_temp_time)
-        .subtract(_arrival_time.value, "minutes")
-        .format("HH:mm")
-        .toString();
+      // const _temp_time = _formData.value.time_slot[0];
+      // _appointment_time.value = Number(
+      //   appointment_length[_selected.appointment_time]
+      // );
+      // _formData.value.time_slot[1] = moment(_temp_time)
+      //   .add(_appointment_time.value, "minutes")
+      //   .toString();
+      // _end_time.value = moment(_formData.value.time_slot[1]).format("HH:mm");
+      // _arrival_time.value = Number(_selected.arrival_time);
+      // _formData.value.arrival_time = moment(_temp_time)
+      //   .subtract(_arrival_time.value, "minutes")
+      //   .format("HH:mm")
+      //   .toString();
       _formData.value.procedure_price = _selected.procedure_price;
       _formData.value.clinical_code = _selected.clinical_code;
       _formData.value.mbs_code = _selected.mbs_code;
@@ -2016,15 +2017,15 @@ export default defineComponent({
       }
     });
 
-    watch(_specialist, () => {
-      _formData.value.specialist_id = _specialist.value;
-      const _selected = ava_specialist.value.filter(
-        (item) => item.id === _specialist.value
-      )[0];
-      _specialist_name.value = _selected.name;
-      anesthetist.value = _selected.anesthetist;
-      _formData.value.anesthetist_id = _selected.anesthetist.id;
-    });
+    // watch(_specialist, () => {
+    //   _formData.value.specialist_id = _specialist.value;
+    //   const _selected = ava_specialist.value.filter(
+    //     (item) => item.id === _specialist.value
+    //   )[0];
+    //   _specialist_name.value = _selected.name;
+    //   anesthetist.value = _selected.anesthetist;
+    //   _formData.value.anesthetist_id = _selected.anesthetist.id;
+    // });
 
     // watch(_start_time, () => {
     //   const _temp_time = _formData.value.time_slot[0];
@@ -2038,23 +2039,17 @@ export default defineComponent({
     // });
 
     watch(aptData, () => {
-      if (aptData.value) _formData.value = aptData;
-      if (aptData.value.start_time) {
-        _formData.value.start_time =
-          aptData.value.date + "T" + aptData.value.start_time;
-        _formData.value.end_time =
-          aptData.value.date + "T" + aptData.value.end_time;
-        _start_time.value = moment(
-          aptData.value.date + "T" + aptData.value.start_time
-        ).format("HH:mm");
-        _end_time.value = moment(
-          aptData.value.date + "T" + aptData.value.end_time
-        ).format("HH:mm");
-      }
-      if (aptData.value.arrival_time)
-        _formData.value.arrival_time =
-          aptData.value.date + "T" + aptData.value.arrival_time;
-      _formData.value = aptData;
+      _formData.value = aptData.value;
+      _formData.value.start_time =
+        aptData.value.date + "T" + aptData.value.start_time;
+      _formData.value.end_time =
+        aptData.value.date + "T" + aptData.value.end_time;
+      _appointment.value = aptData.value.appointment_type_id;
+      // _start_time.value = moment(_formData.value.start_time).format("HH:mm");
+      // _end_time.value = moment(_formData.value.end_time).format("HH:mm");
+      // if (aptData.value.arrival_time)
+      //   _formData.value.arrival_time =
+      //     aptData.value.date + "T" + aptData.value.arrival_time;
     });
 
     const handleAneQuestions = () => {

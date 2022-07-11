@@ -120,61 +120,6 @@
       </div>
     </div>
   </div>
-  <div
-    class="d-flex justify-content-xxl-evenly justify-content-xl-between mt-5"
-  >
-    <a>
-      <label
-        class="btn btn-light-danger border border-danger shadow p-8 d-flex align-items-center mb-10"
-        for="kt_create_account_form_account_type_personal"
-      >
-        <span class="svg-icon svg-icon-3x me-5">
-          <inline-svg src="media/icons/duotune/general/gen056.svg" />
-        </span>
-
-        <!--begin::Info-->
-        <span class="d-block fw-bold text-start">
-          <span class="text-dark fw-bolder d-block fs-4 mb-2"> BOOK </span>
-          <span class="text-gray-400 fw-bold fs-6">ANAESTHETIST</span>
-        </span>
-        <!--end::Info-->
-      </label>
-    </a>
-    <a>
-      <label
-        class="btn btn-light-success border border-success shadow p-8 d-flex align-items-center mb-10"
-        for="kt_create_account_form_account_type_personal"
-      >
-        <span class="svg-icon svg-icon-3x me-5">
-          <inline-svg src="media/icons/duotune/general/gen055.svg" />
-        </span>
-
-        <!--begin::Info-->
-        <span class="d-block fw-bold text-start">
-          <span class="text-dark fw-bolder d-block fs-4 mb-2"> EDIT </span>
-          <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-        </span>
-        <!--end::Info-->
-      </label>
-    </a>
-    <a>
-      <label
-        class="btn btn-light-danger border border-danger shadow p-8 d-flex align-items-center mb-10"
-        for="kt_create_account_form_account_type_personal"
-      >
-        <span class="svg-icon svg-icon-3x me-5">
-          <inline-svg src="media/icons/duotune/general/gen027.svg" />
-        </span>
-
-        <!--begin::Info-->
-        <span class="d-block fw-bold text-start">
-          <span class="text-dark fw-bolder d-block fs-4 mb-2"> CANCEL </span>
-          <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-        </span>
-        <!--end::Info-->
-      </label>
-    </a>
-  </div>
   <CreateModal></CreateModal>
   <EditModal></EditModal>
 </template>
