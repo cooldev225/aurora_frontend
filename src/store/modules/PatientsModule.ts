@@ -60,4 +60,22 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.PATIENTS.VIEW](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.get("patients/" + id)
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_PATIENT.SELECT, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }

@@ -182,6 +182,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import moment from "moment";
+import { Action } from "vuex-module-decorators";
 
 export default defineComponent({
   name: "patients-list",
@@ -238,7 +239,7 @@ export default defineComponent({
     const tableKey = ref(0);
 
     const handleView = (item) => {
-      store.commit(Mutations.SET_PATIENT.SELECT, item);
+      store.dispatch(Actions.PATIENTS.VIEW, item.id);
       router.push({ name: "patients-view-appointments" });
     };
 
@@ -262,7 +263,6 @@ export default defineComponent({
           let searchDate = moment(filterBirth.value)
             .format("YYYY-MM-DD")
             .toString();
-          console.log(searchDate);
           result = result && data.date_of_birth === searchDate;
         }
         if (filterUR.value) {
@@ -287,6 +287,7 @@ export default defineComponent({
     watch(list, () => {
       patientData.value = list.value;
       tableData.value = patientData.value;
+      console.log(patientData.value);
       renderTable();
     });
 

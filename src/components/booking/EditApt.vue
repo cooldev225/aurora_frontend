@@ -919,40 +919,10 @@
                                   placeholder="Select Charge Type"
                                 >
                                   <el-option
-                                    value="self-insured"
-                                    label="Self-insured"
-                                  />
-                                  <el-option
-                                    value="private-health-excess"
-                                    label="Private Health Insurance with excess"
-                                  />
-                                  <el-option
-                                    value="private-health-excess-0"
-                                    label="Private Health Insureance with $0 excess"
-                                  />
-                                  <el-option
-                                    value="private-health-pension"
-                                    label="Private Health Insreance + Pension/Healthcare Card"
-                                  />
-                                  <el-option
-                                    value="pension-card"
-                                    label="Pension Card"
-                                  />
-                                  <el-option
-                                    value="healthcare-card"
-                                    label="Healthcare Card"
-                                  />
-                                  <el-option
-                                    value="department-veteran"
-                                    label="Department of Veteran Affair s"
-                                  />
-                                  <el-option
-                                    value="work-cover"
-                                    label="Work Cover"
-                                  />
-                                  <el-option
-                                    value="transport-accident"
-                                    label="Transport Accident Commision"
+                                    v-for="type in chargeTypes"
+                                    :key="type.value"
+                                    :value="type.value"
+                                    :label="type.label"
                                   />
                                 </el-select>
                               </el-form-item>
@@ -1760,6 +1730,7 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
+import chargeTypes from "@/core/data/charge-types";
 
 export default defineComponent({
   name: "edit-apt-modal",
@@ -2216,6 +2187,7 @@ export default defineComponent({
 
     return {
       _formData,
+      chargeTypes,
       rules,
       clinic,
       rooms,
