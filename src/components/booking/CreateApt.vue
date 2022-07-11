@@ -670,16 +670,16 @@
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
                           <label class="required fs-6 fw-bold mb-2">
-                            Mobile Number
+                            Contact Number
                           </label>
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="mobile_number">
+                          <el-form-item prop="contact_number">
                             <el-input
                               type="text"
-                              v-model="formData.mobile_number"
-                              placeholder="Enter Mobile Number"
+                              v-model="formData.contact_number"
+                              placeholder="Enter Contact Number"
                             />
                           </el-form-item>
                           <!--end::Input-->
@@ -1520,16 +1520,8 @@ export default defineComponent({
       date_of_birth: "",
       title: "",
       email: "",
-      gender: "",
       address: "",
-      street: "",
-      suburb: "",
-      postcode: "",
-      state: "",
-      country: "",
-      home_number: "",
-      work_number: "",
-      mobile_number: "",
+      contact_number: "",
       charge_type: "",
       medicare_number: "",
       medicare_reference_number: "",
@@ -1628,7 +1620,7 @@ export default defineComponent({
           trigger: ["blur", "change"],
         },
       ],
-      mobile_number: [
+      contact_number: [
         {
           required: true,
           message: "Mobile Number cannot be blank.",

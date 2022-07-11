@@ -104,7 +104,7 @@
                             @click="handleEdit(item_2, item_1)"
                           >
                             {{ item_2.first_name }} {{ item_2.last_name }} ({{
-                              item_2.mobile_number
+                              item_2.contact_number
                             }})
                           </span>
                         </div>
