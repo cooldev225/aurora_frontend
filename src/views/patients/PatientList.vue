@@ -22,7 +22,11 @@
                         >First Name</label
                       >
                       <el-form-item prop="first_name">
-                        <el-input type="text" />
+                        <el-input
+                          type="text"
+                          v-model="filterFirstName"
+                          placeholder="First Name"
+                        />
                       </el-form-item>
                     </div>
                     <!--end::Col-->
@@ -32,7 +36,11 @@
                         >Last Name</label
                       >
                       <el-form-item prop="last_name">
-                        <el-input type="text" />
+                        <el-input
+                          type="text"
+                          v-model="filterLastName"
+                          placeholder="Last Name"
+                        />
                       </el-form-item>
                     </div>
                     <!--end::Col-->
@@ -47,13 +55,14 @@
                     <!--begin::Col-->
                     <div class="col-lg-6">
                       <label class="fs-6 form-label fw-bolder text-dark"
-                        >Date Of Birth</label
+                        >Date of Birth</label
                       >
                       <el-form-item prop="date">
                         <el-date-picker
                           class="w-100"
-                          format="YYYY-MM"
-                          placeholder="2022-01-01"
+                          v-model="filterBirth"
+                          format="YYYY-MM-DD"
+                          placeholder="1990-01-01"
                         />
                       </el-form-item>
                     </div>
@@ -63,19 +72,28 @@
                       <label class="fs-6 form-label fw-bolder text-dark"
                         >UR Number</label
                       >
-                      <el-form-item prop="last_name">
-                        <el-input type="text" />
+                      <el-form-item prop="ur_number">
+                        <el-input
+                          type="text"
+                          v-model="filterUR"
+                          placeholder="UR Number"
+                        />
                       </el-form-item>
 
                       <div
                         class="d-flex align-items-center justify-content-end mt-5"
                       >
-                        <button type="submit" class="btn btn-primary me-5 w-50">
+                        <button
+                          type="submit"
+                          class="btn btn-primary me-5 w-50"
+                          @click="searchPatient"
+                        >
                           SEARCH
                         </button>
                         <button
                           type="submit"
                           class="btn btn-light-primary w-50"
+                          @click="clearFilters"
                         >
                           CLEAR FILTERS
                         </button>
@@ -99,6 +117,7 @@
         :table-header="tableHeader"
         :table-data="tableData"
         :rows-per-page="5"
+        :key="tableKey"
         :loading="loading"
         :enable-items-per-page-dropdown="true"
       >
@@ -156,19 +175,13 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  onMounted,
-  ref,
-  watch,
-  computed,
-  watchEffect,
-} from "vue";
+import { defineComponent, onMounted, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import moment from "moment";
 
 export default defineComponent({
   name: "patients-list",
@@ -214,41 +227,87 @@ export default defineComponent({
         key: "action",
       },
     ]);
+    const patientData = ref([]);
     const tableData = ref([]);
     const list = computed(() => store.getters.patientsList);
     const loading = ref(true);
-    const searchName = ref("");
+    const filterFirstName = ref("");
+    const filterLastName = ref("");
+    const filterBirth = ref("");
+    const filterUR = ref("");
+    const tableKey = ref(0);
 
     const handleView = (item) => {
       store.commit(Mutations.SET_PATIENT.SELECT, item);
       router.push({ name: "patients-view-appointments" });
     };
 
-    watch(searchName, () => {
-      console.log(searchName.value);
-      // tableData.value = tableData.value.filter(
-      //   (data) =>
-      //     data.first_name
-      //       .toLowerCase()
-      //       .includes(searchName.value.toLowerCase()) ||
-      //     data.last_name.toLowerCase().includes(searchName.value.toLowerCase())
-      // );
-    });
+    const renderTable = () => tableKey.value++;
 
-    watchEffect(() => {
-      tableData.value = list;
+    const searchPatient = () => {
+      tableData.value = patientData.value.filter((data) => {
+        let result = true;
+        if (filterFirstName.value) {
+          result =
+            result &&
+            data.first_name.toLowerCase() ===
+              filterFirstName.value.toLowerCase();
+        }
+        if (filterLastName.value) {
+          result =
+            result &&
+            data.last_name.toLowerCase() === filterLastName.value.toLowerCase();
+        }
+        if (filterBirth.value) {
+          let searchDate = moment(filterBirth.value)
+            .format("YYYY-MM-DD")
+            .toString();
+          console.log(searchDate);
+          result = result && data.date_of_birth === searchDate;
+        }
+        if (filterUR.value) {
+          result =
+            result &&
+            data.ur_number.toLowerCase() === filterUR.value.toLowerCase();
+        }
+        return result;
+      });
+      renderTable();
+    };
+
+    const clearFilters = () => {
+      filterFirstName.value = "";
+      filterLastName.value = "";
+      filterBirth.value = "";
+      filterUR.value = "";
+      tableData.value = patientData.value;
+      renderTable();
+    };
+
+    watch(list, () => {
+      patientData.value = list.value;
+      tableData.value = patientData.value;
+      renderTable();
     });
 
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Patients", []);
-      store.dispatch(Actions.PATIENTS.LIST).then(() => {
-        tableData.value = list;
-        loading.value = false;
-      });
+      store.dispatch(Actions.PATIENTS.LIST);
     });
 
-    return { tableHeader, tableData, searchName, handleView };
+    return {
+      tableHeader,
+      tableData,
+      filterFirstName,
+      filterLastName,
+      filterBirth,
+      filterUR,
+      tableKey,
+      handleView,
+      searchPatient,
+      clearFilters,
+    };
   },
 });
 </script>
