@@ -748,6 +748,7 @@
                                 <el-input
                                   type="text"
                                   v-model.number="formData.procedure_price"
+                                  disabled
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1183,63 +1184,20 @@
                             </div>
                             <!--end::Input group-->
                           </div>
-                        </div>
-                      </div>
-                      <div class="separator separator-dashed mb-8 mt-2"></div>
-                      <div class="card-info">
-                        <div class="mb-6 d-flex justify-content-between">
-                          <span class="fs-3 fw-bold text-muted"
-                            >Account Holder Details</span
+                          <div
+                            class="col-sm-6 d-flex align-items-center justify-content-center"
                           >
-                          <el-checkbox
-                            type="checkbox"
-                            v-model="formData.add_other_account_holder"
-                            label="Add nother account holder"
-                          />
-                        </div>
-                        <div class="row">
-                          <div class="col-sm-4">
                             <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Account Holder Type
-                              </label>
-                              <!--end::Label-->
-
+                            <div class="fv-row">
                               <!--begin::Input-->
-                              <el-form-item prop="account_holder_type">
-                                <el-radio-group
-                                  v-model="formData.account_holder_type"
-                                  class="ml-4"
-                                >
-                                  <el-radio label="1" size="large"
-                                    >Self</el-radio
-                                  >
-                                  <el-radio label="2" size="large"
-                                    >Other</el-radio
-                                  >
-                                </el-radio-group>
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-8">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Account Holder
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="account_holder">
-                                <el-input
-                                  type="text"
-                                  v-model="formData.account_holder"
-                                  placeholder="Select Account Holder"
+                              <el-form-item
+                                class="m-0"
+                                prop="add_other_account_holder"
+                              >
+                                <el-checkbox
+                                  type="checkbox"
+                                  v-model="formData.add_other_account_holder"
+                                  label="Add other account holder"
                                 />
                               </el-form-item>
                               <!--end::Input-->
