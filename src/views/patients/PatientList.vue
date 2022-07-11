@@ -262,7 +262,6 @@ export default defineComponent({
           let searchDate = moment(filterBirth.value)
             .format("YYYY-MM-DD")
             .toString();
-          console.log(searchDate);
           result = result && data.date_of_birth === searchDate;
         }
         if (filterUR.value) {
@@ -287,6 +286,7 @@ export default defineComponent({
     watch(list, () => {
       patientData.value = list.value;
       tableData.value = patientData.value;
+      console.log(patientData.value);
       renderTable();
     });
 
