@@ -79,7 +79,14 @@
                   v-if="formData.upcoming_appointment"
                   class="badge"
                   :style="`width: fit-content; background-color: ${formData.upcoming_appointment.color}`"
-                  >{{ formData.upcoming_appointment.name }}</span
+                  >{{
+                    formData.upcoming_appointment.date +
+                    " " +
+                    formData.upcoming_appointment.start_time +
+                    "(" +
+                    formData.upcoming_appointment.procedure_name +
+                    ")"
+                  }}</span
                 >
                 <!--end::Progress-->
               </div>

@@ -315,12 +315,13 @@
                         Referral Date
                       </td>
                       <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.referral_date
-                            ? formData.current_appointment.referral_date
-                            : "(not applicable)"
-                        }}
+                        <el-form-item prop="referral_date">
+                          <el-date-picker
+                            class="w-50"
+                            v-model="formData.current_appointment.referral_date"
+                            placeholder="Referral Date"
+                          />
+                        </el-form-item>
                       </td>
                     </tr>
                     <tr>
@@ -328,12 +329,20 @@
                         Referral Duration
                       </td>
                       <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.referral_duration
-                            ? formData.current_appointment.referral_duration
-                            : "(not applicable)"
-                        }}
+                        <el-form-item prop="referral_date">
+                          <el-select
+                            class="w-50"
+                            v-model="
+                              formData.current_appointment.referral_duration
+                            "
+                            placeholder="Referral Duration"
+                          >
+                            <el-option :value="0" label="Indefinite" />
+                            <el-option :value="1" label="1 Month" />
+                            <el-option :value="3" label="3 Months" />
+                            <el-option :value="12" label="12 Months" />
+                          </el-select>
+                        </el-form-item>
                       </td>
                     </tr>
                     <tr>
@@ -341,12 +350,13 @@
                         Referral Expiry Date
                       </td>
                       <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.referral_expiry_date
-                            ? formData.current_appointment.referral_expiry_date
-                            : "(not applicable)"
-                        }}
+                        <el-date-picker
+                          class="w-50"
+                          v-model="
+                            formData.current_appointment.referral_expiry_date
+                          "
+                          placeholder="Referral Expiry Date"
+                        />
                       </td>
                     </tr>
                   </tbody>
@@ -361,7 +371,19 @@
                       <td class="text-muted min-w-125px w-125px w-md-200px">
                         Referral Details
                       </td>
-                      <td class="text-gray-800">(not applicable)</td>
+                      <td class="text-gray-800">
+                        <el-form-item prop="referral_details">
+                          <el-input
+                            v-model="
+                              formData.current_appointment.referral_details
+                            "
+                            class="w-50"
+                            type="textarea"
+                            rows="3"
+                            placeholder="Referral Details"
+                          />
+                        </el-form-item>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -422,18 +444,36 @@
                         Charge Type
                       </td>
                       <td class="text-gray-800">
-                        <el-form-item prop="first_name">
+                        <el-form-item prop="charge_type">
+                          <el-select
+                            class="w-50"
+                            v-model="formData.current_appointment.charge_type"
+                            placeholder="Select Charge Type"
+                            :disabled="
+                              formData.current_appointment.payment_status !=
+                              'pending'
+                            "
+                          >
+                            <el-option
+                              v-for="type in chargeTypes"
+                              :key="type.value"
+                              :value="type.value"
+                              :label="type.label"
+                            />
+                          </el-select>
+                        </el-form-item>
+                        <!-- <el-form-item prop="charge_type">
                           <el-input
                             v-model="formData.current_appointment.charge_type"
                             class="w-50"
                             type="text"
-                            placeholder="First Name"
+                            placeholder="Charge Type"
                             :disabled="
                               formData.current_appointment.payment_status !=
                               'pending'
                             "
                           />
-                        </el-form-item>
+                        </el-form-item> -->
                       </td>
                     </tr>
                     <tr>
@@ -653,6 +693,7 @@
 import { defineComponent, watchEffect, ref, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
+import chargeTypes from "@/core/data/charge-types";
 
 export default defineComponent({
   name: "patient-appointments",
@@ -663,6 +704,10 @@ export default defineComponent({
     const formData = ref({
       current_appointment: {
         charge_type: "",
+        referral_date: "",
+        referral_duration: "",
+        referral_expiry_date: "",
+        referral_details: "",
       },
     });
 
@@ -685,6 +730,7 @@ export default defineComponent({
     return {
       formRef,
       formData,
+      chargeTypes,
       submit,
     };
   },
