@@ -492,7 +492,19 @@
                         </div>
                       </div>
                     </div>
-                    <div class="text-end">
+                    <div class="d-flex justify-content-between">
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-light-primary me-3"
+                        data-bs-dismiss="modal"
+                      >
+                        <span class="svg-icon svg-icon-4 me-1">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr063.svg"
+                          />
+                        </span>
+                        Cancel
+                      </button>
                       <button
                         type="submit"
                         class="btn btn-lg btn-primary align-self-end"
