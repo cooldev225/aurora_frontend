@@ -94,9 +94,11 @@
                           timeStr2Number(item_2.end_time) > item.number
                         "
                       >
-                        <div class="d-flex justify-content-between">
-                          <button
-                            class="text-primary px-2 fw-bold d-block cursor-pointer fs-5"
+                        <div
+                          class="d-flex justify-content-center align-items-center"
+                        >
+                          <span
+                            class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-5"
                             data-kt-drawer-toggle="true"
                             data-kt-drawer-target="#kt_drawer_chat"
                             @click="handleEdit(item_2, item_1)"
@@ -104,7 +106,7 @@
                             {{ item_2.first_name }} {{ item_2.last_name }} ({{
                               item_2.mobile_number
                             }})
-                          </button>
+                          </span>
                         </div>
                       </template>
                     </template>

@@ -47,24 +47,36 @@
           <div class="d-flex flex-column gap-3">
             <label class="fs-3 text-primary"
               >Service Reference Number:
-              <span class="text-black fs-5">12313123</span></label
+              <span class="text-black fs-5">{{
+                displayData.reference_number
+              }}</span></label
             >
             <label class="fs-3 text-primary"
-              >Clinic Name: <span class="text-black fs-5">123312</span></label
+              >Clinic Name:
+              <span class="text-black fs-5">{{
+                displayData.clinic_name
+              }}</span></label
             >
             <label class="fs-3 text-primary"
               >Time:
-              <span class="text-black fs-5">123123 - 12312</span>
+              <span class="text-black fs-5"
+                >{{ displayData.start_time }} - {{ displayData.end_time }}</span
+              >
               <span v-if="true" class="text-black fs-5"
-                >(Arrival: 12312)</span
+                >(Arrival: {{ displayData.arrival_time }})</span
               ></label
             >
             <label class="fs-3 text-primary"
               >Appointment Type:
-              <span class="text-black fs-5">sdsd</span></label
+              <span class="text-black fs-5">{{
+                displayData.appointment_type_name
+              }}</span></label
             >
             <label class="fs-3 text-primary"
-              >Specialist: <span class="text-black fs-5">sdssss</span></label
+              >Specialist:
+              <span class="text-black fs-5">{{
+                displayData.specialist_name
+              }}</span></label
             >
           </div>
           <el-divider />
@@ -175,7 +187,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watchEffect, watch } from "vue";
+import {
+  defineComponent,
+  reactive,
+  computed,
+  watchEffect,
+  watch,
+  onMounted,
+} from "vue";
 import { useStore } from "vuex";
 
 export default defineComponent({
@@ -184,12 +203,31 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const aptData = computed(() => store.getters.getAptSelected);
-
-    watch(aptData.value, () => {
-      debugger;
+    const displayData = reactive({
+      reference_number: "",
+      clinic_name: "",
+      start_time: "",
+      end_time: "",
+      arrival_time: "",
+      appointment_type_name: "",
+      specialist_name: "",
     });
 
-    return {};
+    watchEffect(() => {
+      console.log(aptData.value);
+      displayData.reference_number = aptData.value.reference_number;
+      displayData.clinic_name = aptData.value.clinic_name;
+      displayData.start_time = aptData.value.start_time;
+      displayData.start_time = aptData.value.start_time;
+      displayData.end_time = aptData.value.end_time;
+      displayData.arrival_time = aptData.value.arrival_time;
+      displayData.appointment_type_name = aptData.value.appointment_type_name;
+      displayData.specialist_name = aptData.value.specialist_name;
+    });
+
+    return {
+      displayData,
+    };
   },
 });
 </script>

@@ -121,7 +121,7 @@
     </div>
   </div>
   <CreateModal></CreateModal>
-  <EditModal></EditModal>
+  <!-- <EditModal></EditModal> -->
 </template>
 <script>
 import {
@@ -135,7 +135,7 @@ import {
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import CreateModal from "@/components/booking/CreateApt.vue";
-import EditModal from "@/components/booking/EditApt.vue";
+// import EditModal from "@/components/booking/EditApt.vue";
 import AptTable from "@/components/booking/AptTable.vue";
 import VueCtkDateTimePicker from "vue-ctk-date-time-picker";
 import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
@@ -153,7 +153,7 @@ export default defineComponent({
   components: {
     VueCtkDateTimePicker,
     CreateModal,
-    EditModal,
+    // EditModal,
     AptTable,
   },
   setup() {
