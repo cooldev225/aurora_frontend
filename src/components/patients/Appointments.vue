@@ -445,6 +445,24 @@
                       </td>
                       <td class="text-gray-800">
                         <el-form-item prop="charge_type">
+                          <el-select
+                            class="w-50"
+                            v-model="formData.current_appointment.charge_type"
+                            placeholder="Select Charge Type"
+                            :disabled="
+                              formData.current_appointment.payment_status !=
+                              'pending'
+                            "
+                          >
+                            <el-option
+                              v-for="type in chargeTypes"
+                              :key="type.value"
+                              :value="type.value"
+                              :label="type.label"
+                            />
+                          </el-select>
+                        </el-form-item>
+                        <!-- <el-form-item prop="charge_type">
                           <el-input
                             v-model="formData.current_appointment.charge_type"
                             class="w-50"
@@ -455,7 +473,7 @@
                               'pending'
                             "
                           />
-                        </el-form-item>
+                        </el-form-item> -->
                       </td>
                     </tr>
                     <tr>
@@ -675,6 +693,7 @@
 import { defineComponent, watchEffect, ref, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
+import chargeTypes from "@/core/data/charge-types";
 
 export default defineComponent({
   name: "patient-appointments",
@@ -685,6 +704,10 @@ export default defineComponent({
     const formData = ref({
       current_appointment: {
         charge_type: "",
+        referral_date: "",
+        referral_duration: "",
+        referral_expiry_date: "",
+        referral_details: "",
       },
     });
 
@@ -707,6 +730,7 @@ export default defineComponent({
     return {
       formRef,
       formData,
+      chargeTypes,
       submit,
     };
   },
