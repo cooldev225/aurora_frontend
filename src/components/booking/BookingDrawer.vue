@@ -80,6 +80,43 @@
             >
           </div>
           <el-divider />
+          <!--begin::Approval Status Badges-->
+          <div v-if="displayData.procedure_approval_status != 'NOT_RELEVANT'">
+            <div
+              v-if="displayData.procedure_approval_status === 'NOT_APPROVED'"
+              class="alert bg-light-danger border border-danger d-flex flex-column flex-sm-row w-100 p-5 mb-10"
+            >
+              <span class="svg-icon svg-icon-2hx svg-icon-danger">
+                <inline-svg src="media/icons/duotune/files/fil024.svg" />
+              </span>
+              <h5 class="mx-2 my-auto">This procedure has not been approved</h5>
+            </div>
+
+            <div
+              v-if="displayData.procedure_approval_status === 'NOT_ACCESSED'"
+              class="alert bg-light-warning border border-warning d-flex flex-column flex-sm-row w-100 p-5 mb-10"
+            >
+              <span class="svg-icon svg-icon-2hx svg-icon-warning">
+                <inline-svg src="media/icons/duotune/files/fil024.svg" />
+              </span>
+              <h5 class="mx-2 my-auto">
+                This procedure has not yet been accessed
+              </h5>
+            </div>
+
+            <div
+              v-if="displayData.procedure_approval_status === 'APPROVED'"
+              class="alert bg-light-success border border-success d-flex flex-column flex-sm-row w-100 p-5 mb-10"
+            >
+              <span class="svg-icon svg-icon-2hx svg-icon-success">
+                <inline-svg src="media/icons/duotune/files/fil024.svg" />
+              </span>
+              <h5 class="mx-2 my-auto">This procedure has been approved</h5>
+            </div>
+
+            <!--end::Approval Status Badges-->
+            <el-divider />
+          </div>
           <div class="d-flex flex-column gap-5 mt-5">
             <a>
               <label
@@ -211,10 +248,11 @@ export default defineComponent({
       arrival_time: "",
       appointment_type_name: "",
       specialist_name: "",
+      procedure_approval_status: "",
     });
 
     watchEffect(() => {
-      console.log(aptData.value);
+      console.log(aptData.value.procedure_approval_status);
       displayData.reference_number = aptData.value.reference_number;
       displayData.clinic_name = aptData.value.clinic_name;
       displayData.start_time = aptData.value.start_time;
@@ -223,6 +261,8 @@ export default defineComponent({
       displayData.arrival_time = aptData.value.arrival_time;
       displayData.appointment_type_name = aptData.value.appointment_type_name;
       displayData.specialist_name = aptData.value.specialist_name;
+      displayData.procedure_approval_status =
+        aptData.value.procedure_approval_status;
     });
 
     return {
