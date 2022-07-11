@@ -446,7 +446,7 @@
                       <td class="text-gray-800">
                         <el-form-item prop="charge_type">
                           <el-select
-                            class="w-50"
+                            class="w-75"
                             v-model="formData.current_appointment.charge_type"
                             placeholder="Select Charge Type"
                             :disabled="
@@ -462,18 +462,6 @@
                             />
                           </el-select>
                         </el-form-item>
-                        <!-- <el-form-item prop="charge_type">
-                          <el-input
-                            v-model="formData.current_appointment.charge_type"
-                            class="w-50"
-                            type="text"
-                            placeholder="Charge Type"
-                            :disabled="
-                              formData.current_appointment.payment_status !=
-                              'pending'
-                            "
-                          />
-                        </el-form-item> -->
                       </td>
                     </tr>
                     <tr>
