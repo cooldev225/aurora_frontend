@@ -58,7 +58,7 @@
               <table class="table table-flush fw-bold gy-1">
                 <tbody>
                   <tr>
-                    <td class="text-muted min-w-125px w-125px w-md-200px">
+                    <!-- <td class="text-muted min-w-125px w-125px w-md-200px">
                       Account Holder Type
                     </td>
                     <td class="text-gray-800">
@@ -67,7 +67,8 @@
                           ? formData.account_holder_type
                           : "(not applicable)"
                       }}
-                    </td>
+                    </td> -->
+                    TBC
                   </tr>
                 </tbody>
               </table>
@@ -78,7 +79,7 @@
               <table class="table table-flush fw-bold gy-1">
                 <tbody>
                   <tr>
-                    <td class="text-muted min-w-125px w-125px w-md-200px">
+                    <!-- <td class="text-muted min-w-125px w-125px w-md-200px">
                       Account Holder
                     </td>
                     <td class="text-gray-800">
@@ -87,7 +88,7 @@
                           ? formData.account_holder_id
                           : "(not applicable)"
                       }}
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
               </table>
@@ -101,7 +102,8 @@
       <!--end::Option-->
       <div class="separator separator-dashed"></div>
       <!--begin::Option-->
-      <div v-if="formData.medicare_number">
+      <!-- <div v-if="formData.medicare_number"> -->
+      <div>
         <div class="py-0">
           <!--begin::Header-->
           <div class="py-5 d-flex flex-stack flex-wrap">
@@ -438,12 +440,13 @@
             <div class="flex-equal me-5">
               <table class="table table-flush fw-bold gy-1">
                 <tbody>
-                  <!-- <tr>
-                    <td class="text-muted min-w-125px w-125px w-md-200px">
+                  <tr>
+                    <!-- <td class="text-muted min-w-125px w-125px w-md-200px">
                       Cancelled billing
                     </td>
-                    <td class="text-gray-800">0</td>
-                  </tr> -->
+                    <td class="text-gray-800">0</td> -->
+                    TBC
+                  </tr>
                 </tbody>
               </table>
             </div>

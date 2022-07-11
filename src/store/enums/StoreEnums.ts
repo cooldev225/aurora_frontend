@@ -85,6 +85,7 @@ const Actions = {
     CREATE: "createPatients",
     DELETE: "deletePatients",
     UPDATE: "updatePatients",
+    VIEW: "viewPatient",
   },
 
   EMPLOYEE: {
