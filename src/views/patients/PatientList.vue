@@ -180,9 +180,8 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { Actions } from "@/store/enums/StoreEnums";
 import moment from "moment";
-import { Action } from "vuex-module-decorators";
 
 export default defineComponent({
   name: "patients-list",

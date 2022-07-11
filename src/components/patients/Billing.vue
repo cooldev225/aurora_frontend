@@ -568,7 +568,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect, onMounted } from "vue";
+import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -592,8 +592,7 @@ export default defineComponent({
       health_fund_reference_number: "",
       health_fund_expiry_date: "",
     });
-    const healthFundsList = ref([]);
-
+    const healthFundsList = computed(() => store.getters.healthFundsList);
     const submit = () => {
       if (!formRef.value) {
         return;
@@ -603,8 +602,6 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
-      healthFundsList.value = store.getters.healthFundsList;
-      console.log(healthFundsList);
     });
 
     onMounted(() => {
