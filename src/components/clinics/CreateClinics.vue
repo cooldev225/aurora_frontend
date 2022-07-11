@@ -36,7 +36,7 @@
           </div>
           <!--end::Step 1-->
 
-          <!--begin::Step 2 -->
+          <!--begin::Step 2-->
           <div class="stepper-item" data-kt-stepper-element="nav">
             <!--begin::Line-->
             <div class="stepper-line w-40px"></div>
@@ -51,12 +51,12 @@
 
             <!--begin::Label-->
             <div class="stepper-label">
-              <h3 class="stepper-title">Address Details</h3>
-              <div class="stepper-desc fw-bold">Setup Address Details</div>
+              <h3 class="stepper-title">Time</h3>
+              <div class="stepper-desc fw-bold">Setup Time Details</div>
             </div>
             <!--end::Label-->
           </div>
-          <!--end::Step 2 -->
+          <!--end::Step 2-->
 
           <!--begin::Step 3-->
           <div class="stepper-item" data-kt-stepper-element="nav">
@@ -73,14 +73,14 @@
 
             <!--begin::Label-->
             <div class="stepper-label">
-              <h3 class="stepper-title">Time</h3>
-              <div class="stepper-desc fw-bold">Setup Time Details</div>
+              <h3 class="stepper-title">Prova Device</h3>
+              <div class="stepper-desc fw-bold">Setup Prova Device</div>
             </div>
             <!--end::Label-->
           </div>
           <!--end::Step 3-->
 
-          <!--begin::Step 4-->
+          <!--begin::Step 4 -->
           <div class="stepper-item" data-kt-stepper-element="nav">
             <!--begin::Line-->
             <div class="stepper-line w-40px"></div>
@@ -95,34 +95,12 @@
 
             <!--begin::Label-->
             <div class="stepper-label">
-              <h3 class="stepper-title">Prova Device</h3>
-              <div class="stepper-desc fw-bold">Setup Prova Device</div>
-            </div>
-            <!--end::Label-->
-          </div>
-          <!--end::Step 4-->
-
-          <!--begin::Step 5 -->
-          <div class="stepper-item" data-kt-stepper-element="nav">
-            <!--begin::Line-->
-            <div class="stepper-line w-40px"></div>
-            <!--end::Line-->
-
-            <!--begin::Icon-->
-            <div class="stepper-icon w-40px h-40px">
-              <i class="stepper-check fas fa-check"></i>
-              <span class="stepper-number">5</span>
-            </div>
-            <!--end::Icon-->
-
-            <!--begin::Label-->
-            <div class="stepper-label">
               <h3 class="stepper-title">Other Details</h3>
               <div class="stepper-desc fw-bold">Setup Other Details</div>
             </div>
             <!--end::Label-->
           </div>
-          <!--end::Step 5 -->
+          <!--end::Step 4 -->
         </div>
         <!--end::Nav-->
       </div>
@@ -172,7 +150,7 @@
                 <!--begin::Input group-->
                 <div class="fv-row mb-7">
                   <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">Email</label>
+                  <label class="required fs-6 fw-bold mb-2">Clinic Email</label>
                   <!--end::Label-->
 
                   <!--begin::Input-->
@@ -191,7 +169,26 @@
                 <!--begin::Input group-->
                 <div class="fv-row mb-7">
                   <!--begin::Label-->
-                  <label class="fs-6 fw-bold mb-2">Phone Number</label>
+                  <label class="required fs-6 fw-bold mb-2">Address</label>
+                  <!--end::Label-->
+
+                  <!--begin::Input-->
+                  <el-form-item prop="address">
+                    <el-input
+                      v-model="formData.address"
+                      type="text"
+                      placeholder="Address"
+                    />
+                  </el-form-item>
+                  <!--end::Input-->
+                </div>
+                <!--end::Input group-->
+              </div>
+              <div class="col-md-6">
+                <!--begin::Input group-->
+                <div class="fv-row mb-7">
+                  <!--begin::Label-->
+                  <label class="required fs-6 fw-bold mb-2">Phone Number</label>
                   <!--end::Label-->
 
                   <!--begin::Input-->
@@ -225,47 +222,6 @@
                 </div>
                 <!--end::Input group-->
               </div>
-              <div class="col-md-6">
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">VAED number</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="VAED_number">
-                    <el-input
-                      v-model="formData.VAED_number"
-                      maxlength="3  "
-                      type="text"
-                      placeholder="VAED Number"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-              </div>
-              <div class="col-md-6">
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Provider Number</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="hospital_provider_number">
-                    <el-input
-                      v-model="formData.hospital_provider_number"
-                      type="text"
-                      placeholder="Provider Number"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-              </div>
             </div>
             <div class="text-end">
               <button
@@ -284,209 +240,6 @@
       <!--end::Step 1 -->
 
       <!--begin::Step 2 -->
-      <div data-kt-stepper-element="content">
-        <div class="w-100 py-20 px-9">
-          <div class="pb-10 pb-lg-15">
-            <h2 class="fw-bolder d-flex align-items-center text-dark">
-              Setup Address Details
-            </h2>
-          </div>
-          <el-form
-            class="w-100 w-xl-700px w-xxl-800px"
-            :rules="rules"
-            :model="formData"
-            ref="formRef_2"
-            @submit.prevent="handleStep_2"
-          >
-            <div class="row">
-              <div class="col-md-6">
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">Address</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="address">
-                    <el-input
-                      v-model="formData.address"
-                      type="text"
-                      placeholder="Address"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-              </div>
-              <div class="col-md-6">
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">Street</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="street">
-                    <el-input
-                      v-model="formData.street"
-                      type="text"
-                      placeholder="Street"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-              </div>
-              <div class="col-md-6">
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">State</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="state">
-                    <el-input
-                      v-model="formData.state"
-                      type="text"
-                      placeholder="State"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-              </div>
-              <div class="col-md-6">
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">Country</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="country">
-                    <el-select
-                      class="w-100"
-                      v-model="formData.country"
-                      filterable
-                    >
-                      <template
-                        v-for="(country, index) in countryList"
-                        :key="index"
-                      >
-                        <el-option :value="country" :label="country" />
-                      </template>
-                    </el-select>
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-              </div>
-              <div class="col-md-6">
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">City</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="city">
-                    <el-input
-                      v-model="formData.city"
-                      type="text"
-                      placeholder="city"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-              </div>
-              <div class="col-md-6">
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">Postcode</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="postcode">
-                    <el-input
-                      v-model="formData.postcode"
-                      type="text"
-                      placeholder="Postcode"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-              </div>
-              <div class="col-md-6">
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                  <!--begin::Label-->
-                  <label class="fs-6 fw-bold mb-2">Latitude</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="latitude">
-                    <el-input
-                      v-model="formData.latitude"
-                      type="text"
-                      placeholder="Latitude"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-              </div>
-              <div class="col-md-6">
-                <!--begin::Input group-->
-                <div class="fv-row mb-7">
-                  <!--begin::Label-->
-                  <label class="fs-6 fw-bold mb-2">Longitude</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="longitude">
-                    <el-input
-                      v-model="formData.longitude"
-                      type="text"
-                      placeholder="Longitude"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-              </div>
-            </div>
-            <div class="d-flex justify-content-between">
-              <button
-                type="button"
-                class="btn btn-lg btn-light-primary me-3"
-                data-kt-stepper-action="previous"
-                @click="previousStep"
-              >
-                <span class="svg-icon svg-icon-4 me-1">
-                  <inline-svg src="media/icons/duotune/arrows/arr063.svg" />
-                </span>
-                Back
-              </button>
-              <button
-                type="submit"
-                class="btn btn-lg btn-primary align-self-end"
-              >
-                Continue
-                <span class="svg-icon svg-icon-4 ms-1 me-0">
-                  <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
-                </span>
-              </button>
-            </div>
-          </el-form>
-        </div>
-      </div>
-      <!--end::Step 2-->
-
-      <!--begin::Step 3 -->
       <div data-kt-stepper-element="content">
         <div class="w-100 py-20 px-9">
           <div class="pb-10 pb-lg-15">
@@ -632,9 +385,9 @@
           </el-form>
         </div>
       </div>
-      <!--end::Step 3 -->
+      <!--end::Step 2 -->
 
-      <!--begin::Step 4 -->
+      <!--begin::Step 3 -->
       <div data-kt-stepper-element="content">
         <div class="w-100 py-20 px-9">
           <div class="pb-10 pb-lg-15">
@@ -756,9 +509,9 @@
           </el-form>
         </div>
       </div>
-      <!--end::Step 4 -->
+      <!--end::Step 3 -->
 
-      <!--begin::Step 5 -->
+      <!--begin::Step 4 -->
       <div data-kt-stepper-element="content">
         <div class="w-100 py-20 px-9">
           <div class="pb-10">
@@ -807,6 +560,45 @@
                   <el-input type="text" v-model="formData.lspn_id" />
                 </el-form-item>
                 <!--end::Input-->
+              </div>
+              <div class="col-md-6">
+                <!--begin::Input group-->
+                <div class="fv-row mb-7">
+                  <!--begin::Label-->
+                  <label class="fs-6 fw-bold mb-2">VAED number</label>
+                  <!--end::Label-->
+
+                  <!--begin::Input-->
+                  <el-form-item prop="VAED_number">
+                    <el-input
+                      v-model="formData.VAED_number"
+                      maxlength="3  "
+                      type="text"
+                      placeholder="VAED Number"
+                    />
+                  </el-form-item>
+                  <!--end::Input-->
+                </div>
+                <!--end::Input group-->
+              </div>
+              <div class="col-md-6">
+                <!--begin::Input group-->
+                <div class="fv-row mb-7">
+                  <!--begin::Label-->
+                  <label class="fs-6 fw-bold mb-2">Provider Number</label>
+                  <!--end::Label-->
+
+                  <!--begin::Input-->
+                  <el-form-item prop="hospital_provider_number">
+                    <el-input
+                      v-model="formData.hospital_provider_number"
+                      type="text"
+                      placeholder="Provider Number"
+                    />
+                  </el-form-item>
+                  <!--end::Input-->
+                </div>
+                <!--end::Input group-->
               </div>
               <div class="row">
                 <!--begin::Label-->
@@ -861,7 +653,7 @@
           </el-form>
         </div>
       </div>
-      <!--end::Step 5-->
+      <!--end::Step 4-->
       <!--end::Form-->
     </div>
     <!--end::Content-->
@@ -888,7 +680,7 @@ export default defineComponent({
     const formRef_2 = ref(null);
     const formRef_3 = ref(null);
     const formRef_4 = ref(null);
-    const formRef_5 = ref(null);
+
     const loading = ref(false);
     const formData = ref({
       name: "",
@@ -1118,11 +910,11 @@ export default defineComponent({
     };
 
     const submit = () => {
-      if (!formRef_5.value) {
+      if (!formRef_4.value) {
         return;
       }
 
-      formRef_5.value.validate((valid) => {
+      formRef_4.value.validate((valid) => {
         if (valid) {
           loading.value = true;
           Object.keys(formData.value).forEach((key) => {
@@ -1142,7 +934,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                router.push({ name: "employees" });
+                router.push({ name: "clinics" });
               });
             })
             .catch(({ response }) => {
@@ -1163,7 +955,6 @@ export default defineComponent({
       formRef_2,
       formRef_3,
       formRef_4,
-      formRef_5,
       loading,
       previousStep,
       handleStep_1,
