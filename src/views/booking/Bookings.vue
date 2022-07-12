@@ -121,6 +121,7 @@
     </div>
   </div>
   <CreateModal></CreateModal>
+  <AppointmentListPopup :appointments_by_date="_appointments_by_date" />
   <!-- <EditModal></EditModal> -->
 </template>
 <script>
@@ -134,6 +135,7 @@ import {
 } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import AppointmentListPopup from "@/components/booking/AppointmentListPopup.vue";
 import CreateModal from "@/components/booking/CreateApt.vue";
 // import EditModal from "@/components/booking/EditApt.vue";
 import AptTable from "@/components/booking/AptTable.vue";
@@ -155,6 +157,7 @@ export default defineComponent({
     CreateModal,
     // EditModal,
     AptTable,
+    AppointmentListPopup,
   },
   setup() {
     const store = useStore();
@@ -172,6 +175,9 @@ export default defineComponent({
     });
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
+    const _appointments_by_date = computed(
+      () => store.getters.getAvailableAppointmentList
+    );
     const _aptTypelist = computed(() => store.getters.getAptTypeList);
     const _allSpecialists = computed(() => store.getters.getSpecialistList);
     const _aptTimeRequireList = computed(
@@ -228,7 +234,14 @@ export default defineComponent({
     const handleSearch = async () => {
       await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
         ..._search_next_apts,
+        status: "available",
       });
+
+      const modal = new Modal(
+        document.getElementById("modal_appointment_list_popup")
+      );
+
+      modal.show();
     };
 
     const handleReset = () => {
@@ -290,6 +303,7 @@ export default defineComponent({
       _specialists_search,
       _ava_specialists,
       _specialists,
+      _appointments_by_date,
       _aptTypelist,
       _allSpecialists,
       _aptTimeRequireList,
