@@ -266,8 +266,8 @@
                             v-model="formData.aborginality"
                             placeholder="Aborginality"
                           >
-                            <el-option value="0" label="No" />
-                            <el-option value="1" label="Yes" />
+                            <el-option :value="0" label="No" />
+                            <el-option :value="1" label="Yes" />
                           </el-select>
                         </el-form-item>
                       </td>
@@ -459,7 +459,7 @@ export default defineComponent({
   components: {},
   setup() {
     const store = useStore();
-    const formRef = ref(null);
+    const formRef = ref<null | HTMLFormElement>(null);
     const formData = ref({
       title: "",
       first_name: "",
@@ -546,28 +546,36 @@ export default defineComponent({
       if (!formRef.value) {
         return;
       }
-      store
-        .dispatch(Actions.PATIENTS.UPDATE, formData.value)
-        .then(() => {
-          loading.value = false;
-          store.dispatch(Actions.PATIENTS.LIST);
-          Swal.fire({
-            text: "Successfully Updated!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          }).then(() => {
-            console.log("Updated");
-            // router.push({ name: "organizations" });
-          });
-        })
-        .catch(({ response }) => {
-          loading.value = false;
-          console.log(response.data.error);
-        });
+
+      formRef.value.validate((valid) => {
+        if (valid) {
+          loading.value = true;
+          store
+            .dispatch(Actions.PATIENTS.UPDATE, formData.value)
+            .then(() => {
+              loading.value = false;
+              store.dispatch(Actions.PATIENTS.LIST);
+              Swal.fire({
+                text: "Successfully Updated!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                console.log("Updated");
+                // router.push({ name: "organizations" });
+              });
+            })
+            .catch(({ response }) => {
+              loading.value = false;
+              console.log(response.data.error);
+            });
+        } else {
+          // this.context.commit(Mutations.PURGE_AUTH);
+        }
+      });
     };
 
     watchEffect(() => {
