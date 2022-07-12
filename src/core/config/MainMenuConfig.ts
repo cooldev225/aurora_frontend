@@ -102,13 +102,13 @@ const OrgManagerMenu = [
   {
     heading: "Mailbox",
     route: "/mailbox/list",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/communication/com002.svg",
     fontIcon: "bi-envelope",
   },
   {
     heading: "Booking",
     route: "/booking",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/general/gen014.svg",
     fontIcon: "bi-calendar-week",
     pages: [
       {
@@ -144,13 +144,13 @@ const OrgManagerMenu = [
   {
     heading: "Patients",
     route: "/patients",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/medicine/med001.svg",
     fontIcon: "bi-clipboard2-pulse",
   },
   {
     heading: "Billing",
     route: "/billing",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/finance/fin002.svg",
     fontIcon: "bi-receipt",
     pages: [
       {
@@ -164,9 +164,9 @@ const OrgManagerMenu = [
     ],
   },
   {
-    heading: "External Communication",
+    heading: "Communication",
     route: "/third-party-comms",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/general/gen016.svg",
     fontIcon: "bi-send",
     pages: [
       {
@@ -176,7 +176,7 @@ const OrgManagerMenu = [
         fontIcon: "bi-archive",
       },
       {
-        heading: "Document Outbox",
+        heading: "Document Inbox",
         route: "/third-party-comms/patient-result-inbox",
         svgIcon: "media/icons/duotune/communication/com006.svg",
         fontIcon: "bi-person",
@@ -186,7 +186,7 @@ const OrgManagerMenu = [
   {
     heading: "HRM",
     route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-people",
   },
 ];
