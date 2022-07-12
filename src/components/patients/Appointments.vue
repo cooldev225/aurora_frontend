@@ -11,7 +11,6 @@
         <!--end::Card title-->
       </div>
       <!--begin::Card header-->
-
       <!--begin::Card body-->
       <div id="patient_view_appointments" class="card-body pt-0">
         <!--begin::Option-->
@@ -687,6 +686,12 @@
       <!--end::Card body-->
     </div>
     <!--end::details View-->
+    <div class="d-flex ms-auto justify-content-end w-25">
+      <button type="submit" class="btn btn-primary w-25">Save</button>
+      <button type="reset" class="btn btn-light-primary w-25 ms-2">
+        Cancel
+      </button>
+    </div>
   </el-form>
 </template>
 
@@ -695,6 +700,8 @@ import { defineComponent, watchEffect, ref, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import chargeTypes from "@/core/data/charge-types";
+import { Actions } from "@/store/enums/StoreEnums";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
   name: "patient-appointments",
@@ -705,12 +712,9 @@ export default defineComponent({
     const formData = ref({
       current_appointment: {
         charge_type: "self-insured",
-        referral_date: "",
-        referral_duration: "",
-        referral_expiry_date: "",
-        referral_details: "",
       },
     });
+    const loading = ref(false);
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
@@ -724,7 +728,30 @@ export default defineComponent({
       if (!formRef.value) {
         return;
       }
-      console.log(formRef.value);
+      console.log(formData.value);
+
+      store
+        .dispatch(Actions.PATIENTS.UPDATE, formData.value)
+        .then(() => {
+          loading.value = false;
+          store.dispatch(Actions.PATIENTS.LIST);
+          Swal.fire({
+            text: "Successfully Updated!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          }).then(() => {
+            console.log("Updated");
+            // router.push({ name: "organizations" });
+          });
+        })
+        .catch(({ response }) => {
+          loading.value = false;
+          console.log(response.data.error);
+        });
     };
 
     return {
