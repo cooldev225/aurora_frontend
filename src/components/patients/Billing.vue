@@ -593,6 +593,7 @@ export default defineComponent({
       health_fund_expiry_date: "",
     });
     const healthFundsList = computed(() => store.getters.healthFundsList);
+
     const submit = () => {
       if (!formRef.value) {
         return;
