@@ -57,7 +57,7 @@
                   class="cell-120px bg-white"
                   style="position: relative; left: 0px"
                 >
-                  {{ item.value }}
+                  {{ item }}
                 </td>
                 <template
                   v-for="(item_1, index_1) in _specialists"
@@ -68,16 +68,12 @@
                       class="cursor-pointer"
                       v-if="
                         timeStr2Number(item_1.work_hours.time_slot[0]) <=
-                          item.number &&
+                          timeStr2Number(item) &&
                         timeStr2Number(item_1.work_hours.time_slot[1]) >
-                          item.number
+                          timeStr2Number(item)
                       "
                       @click="
-                        handleAddApt(
-                          item_1,
-                          item.value,
-                          aptTimeList[index + 1].value
-                        )
+                        handleAddApt(item_1, item, aptTimeList[index + 1])
                       "
                     >
                       <i class="fa fa-plus text-primary"></i>
@@ -90,8 +86,9 @@
                     >
                       <template
                         v-if="
-                          timeStr2Number(item_2.start_time) <= item.number &&
-                          timeStr2Number(item_2.end_time) > item.number
+                          timeStr2Number(item_2.start_time) <=
+                            timeStr2Number(item) &&
+                          timeStr2Number(item_2.end_time) > timeStr2Number(item)
                         "
                       >
                         <div
@@ -122,13 +119,19 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from "vue";
+import {
+  defineComponent,
+  ref,
+  computed,
+  onMounted,
+  reactive,
+  watchEffect,
+} from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
-import { aptTimeList } from "@/core/data/apt-time";
+// import { aptTimeList } from "@/core/data/apt-time";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
-import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
@@ -146,6 +149,28 @@ export default defineComponent({
     const _apt_date = computed(() => props.date);
     const store = useStore();
     const format = ref("YYYY-MM-DD");
+    const aptTimeList = ref([]);
+
+    const appointment_length = reactive({
+      Single: 15,
+      Double: 30,
+      Triple: 45,
+    });
+
+    const timeStr2Number = (time) => {
+      return Number(time.split(":")[0] + time.split(":")[1]);
+    };
+
+    watchEffect(() => {
+      let _val = "07:00";
+      while (timeStr2Number(_val) <= timeStr2Number("18:00")) {
+        aptTimeList.value.push(_val);
+        _val = moment(_val, "HH:mm")
+          .add(appointment_length.Single, "minutes")
+          .format("HH:mm")
+          .toString();
+      }
+    });
 
     const handleAddApt = (specialist, startTime, endTime) => {
       const _date = moment(_apt_date.value).format("YYYY-MM-DD").toString();
@@ -170,10 +195,6 @@ export default defineComponent({
       // modal.show();
       store.commit(Mutations.SET_APT.SELECT, item);
       DrawerComponent?.getInstance("booking-drawer")?.toggle();
-    };
-
-    const timeStr2Number = (time) => {
-      return Number(time.split(":")[0] + time.split(":")[1]);
     };
 
     return {

@@ -1494,7 +1494,6 @@ import JwtService from "@/core/services/JwtService";
 import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
 import chargeTypes from "@/core/data/charge-types";
-import { ElMessageBox } from "element-plus";
 
 export default defineComponent({
   name: "create-app-modal",
@@ -1541,8 +1540,7 @@ export default defineComponent({
       dva_number: "",
       dva_expiry: "",
       dva_type: "",
-      account_holder_type: "",
-      account_holder: "",
+      add_other_account_holder: false,
       procedure_price: "",
       referring_doctor: "",
       referral_duration: "",
