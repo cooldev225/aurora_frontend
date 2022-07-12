@@ -25,7 +25,7 @@ const config: LayoutConfigTypes = {
   },
   header: {
     display: true,
-    menuIcon: "font",
+    menuIcon: "svg",
     width: "fluid",
     fixed: {
       desktop: true,
@@ -44,7 +44,7 @@ const config: LayoutConfigTypes = {
     display: true,
     theme: "dark",
     fixed: true,
-    menuIcon: "font",
+    menuIcon: "svg",
     minimized: false,
     minimize: true,
     hoverable: true,

@@ -1,5 +1,5 @@
 <template>
-  <!--begin::Chat drawer-->
+  <!--begin::Appointment Drawer drawer-->
   <div
     id="booking-drawer"
     class="bg-white"
@@ -12,7 +12,6 @@
     data-kt-drawer-toggle="#booking_edit_toggle"
     data-kt-drawer-close="#booing_edit_close"
   >
-    <!--begin::Messenger-->
     <div class="card w-100" id="booking-drawer">
       <!--begin::Card header-->
       <div class="card-header pe-5" id="booking-drawer_header">
@@ -40,10 +39,45 @@
         <!--end::Card toolbar-->
       </div>
       <!--end::Card header-->
+      <div class="card-body d-flex flex-column justify-content-between">
+        <!--begin::Appointment Info-->
+        <div>
+          <!--begin::Approval Status Badges-->
+          <div v-if="displayData.procedure_approval_status != 'NOT_RELEVANT'">
+            <div
+              v-if="displayData.procedure_approval_status === 'NOT_APPROVED'"
+              class="alert bg-light-danger border border-danger d-flex flex-column flex-sm-row w-100 p-5 mb-10"
+            >
+              <span class="svg-icon svg-icon-2hx svg-icon-danger">
+                <inline-svg src="media/icons/duotune/arrows/arr015.svg" />
+              </span>
+              <h5 class="mx-2 my-auto">This procedure has not been approved</h5>
+            </div>
 
-      <!--begin::Card body-->
-      <div class="card-body">
-        <div class="card-info">
+            <div
+              v-if="displayData.procedure_approval_status === 'NOT_ACCESSED'"
+              class="alert bg-light-warning border border-warning d-flex flex-column flex-sm-row w-100 p-5 mb-10"
+            >
+              <span class="svg-icon svg-icon-2hx svg-icon-warning">
+                <inline-svg src="media/icons/duotune/arrows/arr015.svg" />
+              </span>
+              <h5 class="mx-2 my-auto">
+                This procedure has not yet been accessed
+              </h5>
+            </div>
+
+            <div
+              v-if="displayData.procedure_approval_status === 'APPROVED'"
+              class="alert bg-light-success border border-success d-flex flex-column flex-sm-row w-100 p-5 mb-10"
+            >
+              <span class="svg-icon svg-icon-2hx svg-icon-success">
+                <inline-svg src="media/icons/duotune/arrows/arr016.svg" />
+              </span>
+              <h5 class="mx-2 my-auto">This procedure has been approved</h5>
+            </div>
+          </div>
+          <!--end::Approval Status Badges-->
+          <!--begin::Appointment Info-->
           <div class="d-flex flex-column gap-3">
             <label class="fs-3 text-primary"
               >Service Reference Number:
@@ -79,111 +113,113 @@
               }}</span></label
             >
           </div>
+          <!--end::Appointment Info-->
+
           <el-divider />
-          <div class="d-flex flex-column gap-5 mt-5">
-            <a>
-              <label
-                class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
-                for="kt_create_account_form_account_type_personal"
-              >
-                <span class="svg-icon svg-icon-3x me-5">
-                  <inline-svg src="media/icons/duotune/general/gen056.svg" />
-                </span>
-
-                <!--begin::Info-->
-                <span class="d-block fw-bold text-start">
-                  <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                    MOVE
-                  </span>
-                  <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-                </span>
-                <!--end::Info-->
-              </label>
-            </a>
-            <a>
-              <label
-                class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
-                for="kt_create_account_form_account_type_personal"
-              >
-                <span class="svg-icon svg-icon-3x me-5">
-                  <inline-svg src="media/icons/duotune/general/gen055.svg" />
-                </span>
-
-                <!--begin::Info-->
-                <span class="d-block fw-bold text-start">
-                  <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                    VIEW
-                  </span>
-                  <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-                </span>
-                <!--end::Info-->
-              </label>
-            </a>
-            <a>
-              <label
-                class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
-                for="kt_create_account_form_account_type_personal"
-              >
-                <span class="svg-icon svg-icon-3x me-5">
-                  <inline-svg src="media/icons/duotune/general/gen027.svg" />
-                </span>
-
-                <!--begin::Info-->
-                <span class="d-block fw-bold text-start">
-                  <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                    MAKE PAYMENT
-                  </span>
-                  <span class="text-gray-400 fw-bold fs-6">BILLING</span>
-                </span>
-                <!--end::Info-->
-              </label>
-            </a>
-            <a>
-              <label
-                class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
-                for="kt_create_account_form_account_type_personal"
-              >
-                <span class="svg-icon svg-icon-3x me-5">
-                  <inline-svg src="media/icons/duotune/general/gen027.svg" />
-                </span>
-
-                <!--begin::Info-->
-                <span class="d-block fw-bold text-start">
-                  <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                    CHECK IN / CHECK OUT
-                  </span>
-                  <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-                </span>
-                <!--end::Info-->
-              </label>
-            </a>
-            <a>
-              <label
-                class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
-                for="kt_create_account_form_account_type_personal"
-              >
-                <span class="svg-icon svg-icon-3x me-5">
-                  <inline-svg src="media/icons/duotune/general/gen027.svg" />
-                </span>
-
-                <!--begin::Info-->
-                <span class="d-block fw-bold text-start">
-                  <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                    CANCEL
-                  </span>
-                  <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-                </span>
-                <!--end::Info-->
-              </label>
-            </a>
-          </div>
         </div>
+        <!--end::Appointment Info-->
+        <!--begin::Appointment Actions-->
+        <div class="d-flex flex-column gap-5 mt-5">
+          <a>
+            <label
+              class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
+              for="kt_create_account_form_account_type_personal"
+            >
+              <span class="svg-icon svg-icon-3x me-5">
+                <inline-svg src="media/icons/duotune/general/gen056.svg" />
+              </span>
+
+              <!--begin::Info-->
+              <span class="d-block fw-bold text-start">
+                <span class="text-dark fw-bolder d-block fs-4 mb-2">
+                  MOVE
+                </span>
+                <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
+              </span>
+              <!--end::Info-->
+            </label>
+          </a>
+          <a>
+            <label
+              class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
+              for="kt_create_account_form_account_type_personal"
+            >
+              <span class="svg-icon svg-icon-3x me-5">
+                <inline-svg src="media/icons/duotune/general/gen055.svg" />
+              </span>
+
+              <!--begin::Info-->
+              <span class="d-block fw-bold text-start">
+                <span class="text-dark fw-bolder d-block fs-4 mb-2">
+                  VIEW
+                </span>
+                <span class="text-gray-400 fw-bold fs-6">PATIENT</span>
+              </span>
+              <!--end::Info-->
+            </label>
+          </a>
+          <a>
+            <label
+              class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
+              for="kt_create_account_form_account_type_personal"
+            >
+              <span class="svg-icon svg-icon-3x me-5">
+                <inline-svg src="media/icons/duotune/general/gen027.svg" />
+              </span>
+
+              <!--begin::Info-->
+              <span class="d-block fw-bold text-start">
+                <span class="text-dark fw-bolder d-block fs-4 mb-2">
+                  MAKE PAYMENT
+                </span>
+                <span class="text-gray-400 fw-bold fs-6">BILLING</span>
+              </span>
+              <!--end::Info-->
+            </label>
+          </a>
+          <a>
+            <label
+              class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
+              for="kt_create_account_form_account_type_personal"
+            >
+              <span class="svg-icon svg-icon-3x me-5">
+                <inline-svg src="media/icons/duotune/general/gen027.svg" />
+              </span>
+
+              <!--begin::Info-->
+              <span class="d-block fw-bold text-start">
+                <span class="text-dark fw-bolder d-block fs-4 mb-2">
+                  CHECK IN / CHECK OUT
+                </span>
+                <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
+              </span>
+              <!--end::Info-->
+            </label>
+          </a>
+          <a>
+            <label
+              class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
+              for="kt_create_account_form_account_type_personal"
+            >
+              <span class="svg-icon svg-icon-3x me-5">
+                <inline-svg src="media/icons/duotune/general/gen027.svg" />
+              </span>
+
+              <!--begin::Info-->
+              <span class="d-block fw-bold text-start">
+                <span class="text-dark fw-bolder d-block fs-4 mb-2">
+                  CANCEL
+                </span>
+                <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
+              </span>
+              <!--end::Info-->
+            </label>
+          </a>
+        </div>
+        <!--end::Appointment Actions-->
       </div>
-      <!--end::Card body-->
     </div>
-    <!--end::Messenger-->
   </div>
-  <!--end::Chat drawer-->
 </template>
 
 <script lang="ts">
@@ -211,10 +247,11 @@ export default defineComponent({
       arrival_time: "",
       appointment_type_name: "",
       specialist_name: "",
+      procedure_approval_status: "",
     });
 
     watchEffect(() => {
-      console.log(aptData.value);
+      console.log(aptData.value.procedure_approval_status);
       displayData.reference_number = aptData.value.reference_number;
       displayData.clinic_name = aptData.value.clinic_name;
       displayData.start_time = aptData.value.start_time;
@@ -223,6 +260,8 @@ export default defineComponent({
       displayData.arrival_time = aptData.value.arrival_time;
       displayData.appointment_type_name = aptData.value.appointment_type_name;
       displayData.specialist_name = aptData.value.specialist_name;
+      displayData.procedure_approval_status =
+        aptData.value.procedure_approval_status;
     });
 
     return {
