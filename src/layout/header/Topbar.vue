@@ -2,24 +2,28 @@
   <!--begin::Toolbar wrapper-->
   <div class="d-flex align-items-stretch flex-shrink-0">
     <!--begin::Mailbox-->
-    <div class="d-flex align-items-center ms-1 ms-lg-3">
+    <div class="d-flex align-items-center">
       <div
         class="btn btn-icon btn-active-light-primary position-relative w-30px h-30px w-md-40px h-md-40px"
         id="kt_drawer_chat_toggle"
       >
-        <i class="bi bi-envelope fs-2"></i>
+        <span class="svg-icon svg-icon-2x">
+          <inline-svg src="media/icons/duotune/communication/com002.svg" />
+        </span>
       </div>
     </div>
     <!--end::Mailbox-->
 
     <!--begin::Activities-->
-    <div class="d-flex align-items-center ms-1 ms-lg-3">
+    <div class="d-flex align-items-center">
       <!--begin::drawer toggle-->
       <div
         class="btn btn-icon btn-active-light-primary w-30px h-30px w-md-40px h-md-40px"
         id="kt_activities_toggle"
       >
-        <i class="bi bi-bell fs-2"></i>
+        <span class="svg-icon svg-icon-2x">
+          <inline-svg src="media/icons/duotune/general/gen007.svg" />
+        </span>
       </div>
       <!--end::drawer toggle-->
     </div>

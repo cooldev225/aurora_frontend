@@ -49,7 +49,7 @@
               class="alert bg-light-danger border border-danger d-flex flex-column flex-sm-row w-100 p-5 mb-10"
             >
               <span class="svg-icon svg-icon-2hx svg-icon-danger">
-                <inline-svg src="media/icons/duotune/files/fil024.svg" />
+                <inline-svg src="media/icons/duotune/arrows/arr015.svg" />
               </span>
               <h5 class="mx-2 my-auto">This procedure has not been approved</h5>
             </div>
@@ -59,7 +59,7 @@
               class="alert bg-light-warning border border-warning d-flex flex-column flex-sm-row w-100 p-5 mb-10"
             >
               <span class="svg-icon svg-icon-2hx svg-icon-warning">
-                <inline-svg src="media/icons/duotune/files/fil024.svg" />
+                <inline-svg src="media/icons/duotune/arrows/arr015.svg" />
               </span>
               <h5 class="mx-2 my-auto">
                 This procedure has not yet been accessed
@@ -71,7 +71,7 @@
               class="alert bg-light-success border border-success d-flex flex-column flex-sm-row w-100 p-5 mb-10"
             >
               <span class="svg-icon svg-icon-2hx svg-icon-success">
-                <inline-svg src="media/icons/duotune/files/fil024.svg" />
+                <inline-svg src="media/icons/duotune/arrows/arr016.svg" />
               </span>
               <h5 class="mx-2 my-auto">This procedure has been approved</h5>
             </div>
@@ -153,7 +153,7 @@
                 <span class="text-dark fw-bolder d-block fs-4 mb-2">
                   VIEW
                 </span>
-                <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
+                <span class="text-gray-400 fw-bold fs-6">PATIENT</span>
               </span>
               <!--end::Info-->
             </label>

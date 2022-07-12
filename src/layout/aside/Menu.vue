@@ -10,7 +10,7 @@
         <template v-if="item.heading">
           <div
             :class="{ 'show here': currentActive(item.route) }"
-            class="menu-item py-3"
+            class="menu-item py-5"
           >
             <router-link class="menu-link menu-center" :to="item.route">
               <span v-if="item.svgIcon || item.fontIcon" class="menu-icon me-0">
@@ -21,7 +21,7 @@
                 ></i>
                 <span
                   v-else-if="asideMenuIcons === 'svg'"
-                  class="svg-icon svg-icon-2"
+                  class="svg-icon svg-icon-4x"
                 >
                   <inline-svg :src="item.svgIcon" />
                 </span>
@@ -48,7 +48,7 @@
               ></i>
               <span
                 v-else-if="asideMenuIcons === 'svg'"
-                class="svg-icon svg-icon-2"
+                class="svg-icon svg-icon-4x"
               >
                 <inline-svg :src="item.svgIcon" />
               </span>
