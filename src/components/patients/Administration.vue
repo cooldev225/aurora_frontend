@@ -266,8 +266,8 @@
                             v-model="formData.aborginality"
                             placeholder="Aborginality"
                           >
-                            <el-option :value="0" label="No" />
-                            <el-option :value="1" label="Yes" />
+                            <el-option value="0" label="No" />
+                            <el-option value="1" label="Yes" />
                           </el-select>
                         </el-form-item>
                       </td>
@@ -437,6 +437,12 @@
       <!--end::Card body-->
     </div>
     <!--end::details View-->
+    <div class="d-flex ms-auto justify-content-end w-25">
+      <button type="submit" class="btn btn-primary w-25">Save</button>
+      <button type="reset" class="btn btn-light-primary w-25 ms-2">
+        Cancel
+      </button>
+    </div>
   </el-form>
 </template>
 
@@ -445,6 +451,8 @@ import { defineComponent, ref, watchEffect, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import maritalStatus from "@/core/data/marital-status";
+import { Actions } from "@/store/enums/StoreEnums";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
   name: "patient-administration",
@@ -452,7 +460,22 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const formRef = ref(null);
-    const formData = ref({});
+    const formData = ref({
+      title: "",
+      first_name: "",
+      last_name: "",
+      date_of_birth: "",
+      contact_number: "",
+      email: "",
+      address: "",
+      gender: "",
+      aborginality: "",
+      occupation: "",
+      marital_status: "",
+      kin_name: "",
+      kin_phone_number: "",
+      kin_relationship: "",
+    });
 
     const rules = ref({
       first_name: [
@@ -517,12 +540,34 @@ export default defineComponent({
         },
       ],
     });
+    const loading = ref(false);
 
     const submit = () => {
       if (!formRef.value) {
         return;
       }
-      console.log(formRef.value);
+      store
+        .dispatch(Actions.PATIENTS.UPDATE, formData.value)
+        .then(() => {
+          loading.value = false;
+          store.dispatch(Actions.PATIENTS.LIST);
+          Swal.fire({
+            text: "Successfully Updated!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          }).then(() => {
+            console.log("Updated");
+            // router.push({ name: "organizations" });
+          });
+        })
+        .catch(({ response }) => {
+          loading.value = false;
+          console.log(response.data.error);
+        });
     };
 
     watchEffect(() => {

@@ -711,7 +711,7 @@ export default defineComponent({
     const formRef = ref(null);
     const formData = ref({
       current_appointment: {
-        charge_type: "self-insured",
+        charge_type: "",
       },
     });
     const loading = ref(false);
@@ -728,8 +728,6 @@ export default defineComponent({
       if (!formRef.value) {
         return;
       }
-      console.log(formData.value);
-
       store
         .dispatch(Actions.PATIENTS.UPDATE, formData.value)
         .then(() => {
