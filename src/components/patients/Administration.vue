@@ -1,5 +1,10 @@
 <template>
-  <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
+  <el-form
+    @submit.prevent="submit()"
+    :model="formData"
+    :rules="rules"
+    ref="formRef"
+  >
     <!--begin::details View-->
     <div class="card mb-5 mb-xl-10" id="patient_view_administration_patient">
       <!--begin::Card header-->
@@ -311,21 +316,6 @@
                         </el-form-item>
                       </td>
                     </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Address
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="address">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.address"
-                            placeholder="Address"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -464,6 +454,70 @@ export default defineComponent({
     const formRef = ref(null);
     const formData = ref({});
 
+    const rules = ref({
+      first_name: [
+        {
+          required: true,
+          message: "First Name cannot be blank",
+          trigger: "change",
+        },
+      ],
+      last_name: [
+        {
+          required: true,
+          message: "Last Name cannnot be blank",
+          trigger: "change",
+        },
+      ],
+      contact_number: [
+        {
+          required: true,
+          message: "Contact Number cannot be blank",
+          trigger: "change",
+        },
+      ],
+      email: [
+        {
+          required: true,
+          message: "Email cannot be blank",
+          trigger: "change",
+        },
+        {
+          type: "email",
+          message: "Please input correct email address",
+          trigger: ["blur", "change"],
+        },
+      ],
+      address: [
+        {
+          required: true,
+          message: "Address cannot be blank",
+          trigger: "change",
+        },
+      ],
+      kin_name: [
+        {
+          required: true,
+          message: "Kin Name cannot be blank",
+          trigger: "change",
+        },
+      ],
+      kin_phone_number: [
+        {
+          required: true,
+          message: "Kin Number cannnot be blank",
+          trigger: "change",
+        },
+      ],
+      kin_relationship: [
+        {
+          required: true,
+          message: "Kin Relationship cannot be blank",
+          trigger: "change",
+        },
+      ],
+    });
+
     const submit = () => {
       if (!formRef.value) {
         return;
@@ -482,6 +536,7 @@ export default defineComponent({
     return {
       formData,
       formRef,
+      rules,
       submit,
       maritalStatus,
     };
