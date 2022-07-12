@@ -238,7 +238,7 @@ export default defineComponent({
       });
 
       const modal = new Modal(
-        document.getElementById("modal_appointment_list_popup")
+        document.getElementById("modal_available_time_slot_popup")
       );
 
       modal.show();
