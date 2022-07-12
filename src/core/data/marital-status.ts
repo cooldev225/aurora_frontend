@@ -1,16 +1,17 @@
 interface IMaritalStatus {
-  value: number;
+  value: string;
   label: string;
 }
 
 export const chargeTypes: Array<IMaritalStatus> = [
-  { value: 1, label: "Married" },
-  { value: 2, label: "Not Stated" },
-  { value: 3, label: "Divorced" },
-  { value: 4, label: "Widowed" },
-  { value: 5, label: "Never married" },
-  { value: 6, label: "Separated" },
-  { value: 7, label: "De Facto" },
+  { value: "single", label: "Single" },
+  { value: "married", label: "Married" },
+  { value: "not-stated", label: "Not Stated" },
+  { value: "divorced", label: "Divorced" },
+  { value: "widowed", label: "Widowed" },
+  { value: "never-married", label: "Never married" },
+  { value: "separated", label: "Separated" },
+  { value: "de-facto", label: "De Facto" },
 ];
 
 export { IMaritalStatus };
