@@ -444,7 +444,20 @@
                         Charge Type
                       </td>
                       <td class="text-gray-800">
-                        <el-form-item prop="charge_type">
+                        <!-- {{
+                          formData.current_appointment &&
+                          formData.current_appointment.charge_type
+                            ? formData.current_appointment.charge_type
+                            : ""
+                        }} -->
+                        <el-form-item
+                          prop="charge_type"
+                          v-if="
+                            formData.current_appointment &&
+                            formData.current_appointment.charge_type &&
+                            formData.current_appointment.payment_status
+                          "
+                        >
                           <el-select
                             class="w-75"
                             v-model="formData.current_appointment.charge_type"
@@ -691,7 +704,7 @@ export default defineComponent({
     const formRef = ref(null);
     const formData = ref({
       current_appointment: {
-        charge_type: "",
+        charge_type: "self-insured",
         referral_date: "",
         referral_duration: "",
         referral_expiry_date: "",
@@ -701,7 +714,6 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
-      console.log(formData.value);
     });
 
     onMounted(() => {
