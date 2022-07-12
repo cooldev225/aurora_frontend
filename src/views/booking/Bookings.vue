@@ -247,6 +247,10 @@ export default defineComponent({
     const handleReset = () => {
       _specialists_search.specialist_ids = [];
       _date_search.date = new Date();
+
+      _search_next_apts.appointment_type_id = "";
+      _search_next_apts.specialist_ids = "";
+      _search_next_apts.time_requirement = "";
     };
 
     watch(_date_search, () => {
