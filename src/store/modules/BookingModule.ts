@@ -29,6 +29,7 @@ export interface ISearchVariable {
 export interface BookingInfo {
   bookingData: IBookingData;
   filteredData: IBookingData;
+  availableAppointmentList: IBookingData;
   availableSPT: IBookingData;
   searchVal: ISearchVariable;
   // clinicsSelectData: IApt;
@@ -38,6 +39,7 @@ export interface BookingInfo {
 export default class BooingModule extends VuexModule implements BookingInfo {
   bookingData = {} as IBookingData;
   filteredData = {} as IBookingData;
+  availableAppointmentList = {} as IBookingData;
   availableSPT = {} as IBookingData;
   searchVal = {} as ISearchVariable;
   /**
@@ -54,6 +56,14 @@ export default class BooingModule extends VuexModule implements BookingInfo {
    */
   get getFilteredData(): IBookingData {
     return this.filteredData;
+  }
+
+  /**
+   * Get current user object
+   * @returns availableAppointmentList
+   */
+  get getAvailableAppointmentList(): IBookingData {
+    return this.availableAppointmentList;
   }
 
   /**
@@ -93,6 +103,11 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   }
 
   @Mutation
+  [Mutations.SET_BOOKING.SEARCH.NEXT_APTS](data: IBookingData) {
+    this.availableAppointmentList = data;
+  }
+
+  @Mutation
   [Mutations.SET_BOOKING.SEARCH.VARIABLE](data: ISearchVariable) {
     this.searchVal = data;
   }
@@ -122,11 +137,10 @@ export default class BooingModule extends VuexModule implements BookingInfo {
     this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("work-hours-by-week", { params: payload })
+      ApiService.query("appointments", { params: payload })
         .then(({ data }) => {
-          // this.context.commit(Mutations.SET_BOOKING.SEARCH.DATE, data.data);
           this.context.commit(
-            Mutations.SET_BOOKING.SEARCH.SPECIALISTS,
+            Mutations.SET_BOOKING.SEARCH.NEXT_APTS,
             data.data
           );
         })
