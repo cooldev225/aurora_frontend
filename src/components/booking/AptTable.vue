@@ -203,7 +203,6 @@ export default defineComponent({
           .toString();
         console.log(appointment);
       }
-      debugger;
     });
 
     const handleAddApt = (specialist, startTime, endTime) => {
