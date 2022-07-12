@@ -121,7 +121,7 @@
     </div>
   </div>
   <CreateModal></CreateModal>
-  <AppointmentListPopup :appointments_by_date="_appointments_by_date" />
+  <AppointmentListPopup :appointments_by_date="_available_slots_by_date" />
   <!-- <EditModal></EditModal> -->
 </template>
 <script>
@@ -175,7 +175,7 @@ export default defineComponent({
     });
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
-    const _appointments_by_date = computed(
+    const _available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
     );
     const _aptTypelist = computed(() => store.getters.getAptTypeList);
@@ -307,7 +307,7 @@ export default defineComponent({
       _specialists_search,
       _ava_specialists,
       _specialists,
-      _appointments_by_date,
+      _available_slots_by_date,
       _aptTypelist,
       _allSpecialists,
       _aptTimeRequireList,
