@@ -33,8 +33,9 @@
         <!--begin::Modal body-->
         <div class="modal-body py-lg-10 px-lg-10">
           <template v-if="_appointments_by_date">
-            <div class="d-flex flex-row gap-5">
+            <div class="pb-lg-15 d-flex flex-row gap-5">
               <div
+                class="ps-lg-10"
                 v-for="(
                   appointment_item_for_date, apt_date
                 ) in _appointments_by_date"
@@ -45,7 +46,7 @@
                   v-for="(appointment_item, idx_2) in appointment_item_for_date"
                   :key="idx_2"
                 >
-                  <div class="justify-content-center align-items-center">
+                  <div class="mt-5 justify-content-center align-items-center">
                     <span
                       class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-5"
                       data-kt-drawer-toggle="true"
