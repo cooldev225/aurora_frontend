@@ -2,7 +2,7 @@
   <!--begin::Modal - AppointmentList Popup -->
   <div
     class="modal fade"
-    id="modal_appointment_list_popup"
+    id="modal_available_time_slot_popup"
     ref="AppointmentListPopupModalRef"
     tabindex="-1"
     aria-hidden="true"
@@ -123,7 +123,7 @@ export default defineComponent({
       modal.show();
 
       const current_modal = Modal.getInstance(
-        document.getElementById("modal_appointment_list_popup")
+        document.getElementById("modal_available_time_slot_popup")
       );
       current_modal.hide();
     };
