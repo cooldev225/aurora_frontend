@@ -103,9 +103,7 @@
         <!--end::Option-->
         <div class="separator separator-dashed"></div>
         <!--begin::Option-->
-
-        <div>
-          <!-- v-if="formData.medicare_number" -->
+        <div v-if="formData.medicare_number">
           <div class="py-0">
             <!--begin::Header-->
             <div class="py-5 d-flex flex-stack flex-wrap">
@@ -213,8 +211,7 @@
           <div class="separator separator-dashed"></div>
         </div>
         <!--begin::Option-->
-        <div>
-          <!-- v-if="formData.pension_number || formData.healthcare_card_number" -->
+        <div v-if="formData.pension_number || formData.healthcare_card_number">
           <div class="py-0">
             <!--begin::Header-->
             <div class="py-5 d-flex flex-stack flex-wrap">
@@ -336,8 +333,7 @@
           <div class="separator separator-dashed"></div>
         </div>
         <!--begin::Option-->
-        <div>
-          <!-- v-if="formData.health_fund_id" -->
+        <div v-if="formData.health_fund_id">
           <div class="py-0">
             <!--begin::Header-->
             <div class="py-5 d-flex flex-stack flex-wrap">
