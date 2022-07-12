@@ -149,7 +149,7 @@ const OrgManagerMenu = [
   },
   {
     heading: "Billing",
-    route: "/billing",
+    route: "#/billing",
     svgIcon: "media/icons/duotune/finance/fin002.svg",
     fontIcon: "bi-receipt",
     pages: [

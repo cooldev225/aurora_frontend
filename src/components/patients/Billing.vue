@@ -103,9 +103,7 @@
         <!--end::Option-->
         <div class="separator separator-dashed"></div>
         <!--begin::Option-->
-
-        <div>
-          <!-- v-if="formData.medicare_number" -->
+        <div v-if="formData.medicare_number">
           <div class="py-0">
             <!--begin::Header-->
             <div class="py-5 d-flex flex-stack flex-wrap">
@@ -213,8 +211,7 @@
           <div class="separator separator-dashed"></div>
         </div>
         <!--begin::Option-->
-        <div>
-          <!-- v-if="formData.pension_number || formData.healthcare_card_number" -->
+        <div v-if="formData.pension_number || formData.healthcare_card_number">
           <div class="py-0">
             <!--begin::Header-->
             <div class="py-5 d-flex flex-stack flex-wrap">
@@ -336,8 +333,7 @@
           <div class="separator separator-dashed"></div>
         </div>
         <!--begin::Option-->
-        <div>
-          <!-- v-if="formData.health_fund_id" -->
+        <div v-if="formData.health_fund_id">
           <div class="py-0">
             <!--begin::Header-->
             <div class="py-5 d-flex flex-stack flex-wrap">
@@ -572,6 +568,7 @@ import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
   name: "patient-billing",
@@ -593,11 +590,34 @@ export default defineComponent({
       health_fund_expiry_date: "",
     });
     const healthFundsList = computed(() => store.getters.healthFundsList);
+    const loading = ref(false);
 
     const submit = () => {
       if (!formRef.value) {
         return;
       }
+
+      store
+        .dispatch(Actions.PATIENTS.UPDATE, formData.value)
+        .then(() => {
+          loading.value = false;
+          store.dispatch(Actions.PATIENTS.LIST);
+          Swal.fire({
+            text: "Successfully Updated!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          }).then(() => {
+            console.log("Updated");
+          });
+        })
+        .catch(({ response }) => {
+          loading.value = false;
+          console.log(response.data.error);
+        });
       console.log(formRef.value);
     };
 
