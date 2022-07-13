@@ -15,6 +15,7 @@ import SpecialistTitleModule from "@/store/modules/SpecialistTitleModule";
 import HealthFundModule from "@/store/modules/HealthFundModule";
 import BirthCodeModule from "@/store/modules/BirthCodeModule";
 import PatientsModule from "@/store/modules/PatientsModule";
+import PatientsRecallModule from "@/store/modules/PatientsRecallModule";
 import EmployeeModule from "@/store/modules/EmployeeModule";
 import BookingModule from "@/store/modules/BookingModule";
 import AnesthetistModule from "@/store/modules/AnesthetistModule";
@@ -42,6 +43,7 @@ const store = createStore({
     HealthFundModule,
     BirthCodeModule,
     PatientsModule,
+    PatientsRecallModule,
     EmployeeModule,
     BookingModule,
     AnesthetistModule,

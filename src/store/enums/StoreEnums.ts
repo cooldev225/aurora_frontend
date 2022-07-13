@@ -88,6 +88,13 @@ const Actions = {
     VIEW: "viewPatient",
   },
 
+  PATIENTS_RECALL: {
+    LIST: "listPatientsRecall",
+    CREATE: "createPatientsRecall",
+    UPDATE: "updatePatientsRecall",
+    VIEW: "viewPatientsRecall",
+  },
+
   EMPLOYEE: {
     LIST: "listEmployee",
     CREATE: "createEmployee",
@@ -218,8 +225,13 @@ const Mutations = {
   },
 
   SET_PATIENT: {
-    LIST: "setPatientList",
-    SELECT: "setSelectPatients",
+    LIST: "setPatientsList",
+    SELECT: "setSelectPatient",
+  },
+
+  SET_PATIENT_RECALL: {
+    LIST: "setPatientsRecallList",
+    SELECT: "setSelectPatientRecall",
   },
 
   SET_EMPLOYEE: {

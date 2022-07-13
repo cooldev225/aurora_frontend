@@ -233,7 +233,6 @@ export default defineComponent({
     const formData = ref({});
 
     const handleRecallReminder = () => {
-      console.log("123");
       const modal = new Modal(
         document.getElementById("modal_patient_recall_reminder")
       );
