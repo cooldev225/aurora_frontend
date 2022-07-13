@@ -1988,27 +1988,6 @@ export default defineComponent({
       }
     });
 
-    // watch(_specialist, () => {
-    //   _formData.value.specialist_id = _specialist.value;
-    //   const _selected = ava_specialist.value.filter(
-    //     (item) => item.id === _specialist.value
-    //   )[0];
-    //   _specialist_name.value = _selected.name;
-    //   anesthetist.value = _selected.anesthetist;
-    //   _formData.value.anesthetist_id = _selected.anesthetist.id;
-    // });
-
-    // watch(_start_time, () => {
-    //   const _temp_time = _formData.value.time_slot[0];
-    //   _formData.value.arrival_time = moment(_temp_time)
-    //     .subtract(_arrival_time.value, "minutes")
-    //     .format("HH:mm")
-    //     .toString();
-    //   _formData.value.time_slot[1] = moment(_temp_time)
-    //     .add(_appointment_time.value, "minutes")
-    //     .toString();
-    // });
-
     watch(aptData, () => {
       _formData.value = aptData.value;
       _formData.value.start_time =

@@ -11,20 +11,20 @@
             style="position: relative; left: 0px"
           ></th>
           <th class="cell-35px border-0"></th>
-          <template v-if="_specialists">
+          <template v-if="_tableData">
             <th
-              :colspan="_specialists.length * 2 - 1"
+              :colspan="_tableData.length * 2 - 1"
               class="text-xl-left border-0 fw-bold fs-4"
             >
               {{ tableTitle }}
             </th>
           </template>
         </tr>
-        <template v-if="_specialists">
+        <template v-if="_tableData">
           <tr class="bg-light-warning doctor-row text-center text-primary">
             <th class="cell-120px" style="position: relative; left: 0px"></th>
             <th class="cell-35px"></th>
-            <template v-for="(item, index) in _specialists" :key="index">
+            <template v-for="(item, index) in _tableData" :key="index">
               <th
                 :colspan="index === 0 ? 1 : 2"
                 class="fw-bolder"
@@ -38,7 +38,7 @@
         </template>
       </thead>
     </table>
-    <template v-if="_specialists">
+    <template v-if="_tableData">
       <div
         style="
           /* max-height: 400px; */
@@ -141,7 +141,10 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const _specialists = computed(() => props.SPTData);
+    // const _specialists = computed(() => props.SPTData);
+    // const _specialists = computed(() => store.getters.getAptTableData);
+    const _temp_specialists = computed(() => store.getters.getFilteredData);
+    const _tableData = ref({});
     const tableTitle = computed(() => props.Title);
     const _ava_specialists = computed(() => props.ava_SPTData);
     const _apt_date = computed(() => props.date);
@@ -162,15 +165,14 @@ export default defineComponent({
       store.dispatch(Actions.LIST_ORG);
     });
 
-    watch(_specialists, () => {
+    watch(_tableData, () => {
       let _val = "07:00";
       let _appointment = {};
-      // debugger;
-      while (timeStr2Number(_val) <= timeStr2Number("18:00")) {
+      while (timeStr2Number(_val) < timeStr2Number("18:00")) {
         _appointment[_val.toString()] = [];
-        if (_specialists.value) {
-          for (let i in _specialists.value) {
-            let specialist = _specialists.value[i];
+        if (_tableData.value) {
+          for (let i in _tableData.value) {
+            let specialist = _tableData.value[i];
             let temp = {};
             for (let j in specialist.appointments) {
               let _apt = specialist.appointments[j];
@@ -212,6 +214,11 @@ export default defineComponent({
     watchEffect(() => {
       if (organization.value.appointment_length)
         appointment_length.value = organization.value.appointment_length;
+      if (_temp_specialists.value) {
+        _tableData.value =
+          _temp_specialists.value[Object.keys(_temp_specialists.value)[0]];
+      }
+      console.log(_tableData.value);
     });
 
     const handleAddApt = (specialist, startTime, endTime) => {
@@ -241,7 +248,7 @@ export default defineComponent({
 
     return {
       format,
-      _specialists,
+      _tableData,
       tableTitle,
       handleAddApt,
       handleEdit,
