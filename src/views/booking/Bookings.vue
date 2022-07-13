@@ -96,16 +96,16 @@
                     </template>
                   </el-select>
                   <el-divider />
-                  <el-checkbox-group
-                    v-model="_available_slots_search.day_of_weeks"
-                    class="d-flex flex-column"
+
+                  <el-select
+                    class="w-100"
+                    placeholder="Select Time frame"
+                    v-model="_available_slots_search.x_weeks"
                   >
-                    <template v-for="(item, index) in _week_days" :key="index">
-                      <el-checkbox size="large" :label="index">{{
-                        item
-                      }}</el-checkbox>
+                    <template v-for="(item, index) in _x_weeks" :key="index">
+                      <el-option :value="index" :label="item" />
                     </template>
-                  </el-checkbox-group>
+                  </el-select>
                 </div>
               </div>
             </div>
@@ -190,7 +190,7 @@ export default defineComponent({
       specialist_ids: [],
     });
     const _available_slots_search = reactive({
-      day_of_weeks: [],
+      x_weeks: "",
       clinic_id: "",
     });
     const _search_next_apts = reactive({
@@ -200,14 +200,14 @@ export default defineComponent({
     });
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
-    const _week_days = ref({
-      monday: "Monday",
-      tuesday: "Tuesday",
-      wednesday: "Wednesday",
-      thursday: "Thursday",
-      friday: "Friday",
-      saturday: "Saturday",
-      sunday: "Sunday",
+    const _x_weeks = ref({
+      1: "A week",
+      2: "2 weeks",
+      3: "3 weeks",
+      4: "4 weeks",
+      5: "5 weeks",
+      6: "6 weeks",
+      7: "7 weeks",
     });
     const _available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
@@ -349,7 +349,7 @@ export default defineComponent({
       _allSpecialists,
       _aptTimeRequireList,
       _search_next_apts,
-      _week_days,
+      _x_weeks,
       _clinic_list,
       tableTitle,
       handleSearch,
