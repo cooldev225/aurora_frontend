@@ -345,7 +345,7 @@
                               <el-form-item prop="room_id">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.room_id"
+                                  v-model.number="formData.room_id"
                                 >
                                   <template
                                     v-for="(room, idx) in rooms"
@@ -633,9 +633,7 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Email
-                          </label>
+                          <label class="fs-6 fw-bold mb-2"> Email </label>
                           <!--end::Label-->
 
                           <!--begin::Input-->
@@ -654,9 +652,7 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Address
-                          </label>
+                          <label class="fs-6 fw-bold mb-2"> Address </label>
                           <!--end::Label-->
 
                           <!--begin::Input-->
@@ -1614,6 +1610,13 @@ export default defineComponent({
           trigger: "change",
         },
       ],
+      room_id: [
+        {
+          required: true,
+          message: "Room cannot be blank.",
+          trigger: "change",
+        },
+      ],
       arrival_time: [
         {
           required: true,
@@ -1726,10 +1729,11 @@ export default defineComponent({
       ],
     });
     const appointment_length = reactive({
-      Single: 15,
-      Double: 30,
-      Triple: 45,
+      SINGLE: 1,
+      DOUBLE: 2,
+      TRIPLE: 3,
     });
+    const appointment_time = ref(30);
 
     const _stepperObj = ref(null);
     const createAptRef = ref(null);
@@ -1750,14 +1754,15 @@ export default defineComponent({
     const _end_time = ref("");
     const _appointment_name = ref("");
     const _specialist_name = ref("");
-    const _appointment_time = ref(15);
-    const _arrival_time = ref(15);
+    const _appointment_time = ref(30);
+    const _arrival_time = ref(30);
 
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
     const aptTypeList = computed(() => store.getters.getAptTypeList);
     const searchVal = computed(() => store.getters.getSearchVariable);
+    const organization = computed(() => store.getters.orgList);
 
     watch(_appointment, () => {
       formData.value.appointment_type_id = _appointment.value;
@@ -1766,10 +1771,11 @@ export default defineComponent({
       )[0];
       _appointment_name.value = _selected.name;
       _appointment_time.value = Number(
-        appointment_length[_selected.appointment_time]
+        appointment_length[_selected.appointment_time] * appointment_time.value
       );
       _end_time.value = moment(_start_time.value, "HH:mm")
         .add(_appointment_time.value, "minutes")
+        .format("HH:mm")
         .toString();
       formData.value.time_slot[1] = _end_time.value;
       _arrival_time.value = Number(_selected.arrival_time);
@@ -1831,6 +1837,8 @@ export default defineComponent({
     };
 
     watchEffect(() => {
+      if (organization.value.appointment_length)
+        appointment_time.value = organization.value.appointment_length;
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
       if (bookingData.time_slots) {
@@ -1873,6 +1881,7 @@ export default defineComponent({
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(Actions.PROCEDURE_QUES.ACTIVE_LIST);
       store.dispatch(Actions.APT.TYPE_LIST);
+      store.dispatch(Actions.LIST_ORG);
     });
 
     const handleStep_1 = () => {
