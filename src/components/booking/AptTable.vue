@@ -140,19 +140,17 @@ export default defineComponent({
     date: { type: String, required: true },
   },
   setup(props) {
+    const store = useStore();
     const _specialists = computed(() => props.SPTData);
     const tableTitle = computed(() => props.Title);
     const _ava_specialists = computed(() => props.ava_SPTData);
     const _apt_date = computed(() => props.date);
-    const store = useStore();
+    const organization = computed(() => store.getters.orgList);
+
     const format = ref("YYYY-MM-DD");
     const aptTimeList = ref([]);
 
-    const appointment_length = reactive({
-      Single: 30,
-      Double: 60,
-      Triple: 90,
-    });
+    const appointment_length = ref(45);
 
     const timeStr2Number = (time) => {
       return Number(time.split(":")[0] + time.split(":")[1]);
@@ -160,8 +158,17 @@ export default defineComponent({
 
     const appointment = reactive({});
 
+    onMounted(() => {
+      store.dispatch(Actions.LIST_ORG);
+    });
+
+    watch(_specialists, () => {
+      console.log("sssssssssssssssssssssss");
+    });
+
     watchEffect(() => {
       let _val = "07:00";
+      // debugger;
       while (timeStr2Number(_val) <= timeStr2Number("18:00")) {
         appointment[_val.toString()] = [];
         if (_specialists.value) {
@@ -198,10 +205,9 @@ export default defineComponent({
         }
         aptTimeList.value.push(_val);
         _val = moment(_val, "HH:mm")
-          .add(appointment_length.Single, "minutes")
+          .add(appointment_length.value, "minutes")
           .format("HH:mm")
           .toString();
-        console.log(appointment);
       }
     });
 
