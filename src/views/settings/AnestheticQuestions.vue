@@ -107,7 +107,6 @@ import EditModal from "@/components/anesthetic-questions/EditAnestheticQuestion.
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import moment from "moment";
 
 export default defineComponent({
   name: "anesthetic-questions",
