@@ -239,7 +239,14 @@
                       <td class="text-muted min-w-125px w-125px w-md-200px">
                         Specialist Name
                       </td>
-                      <td class="text-gray-800">(not applicable)</td>
+                      <td class="text-gray-800">
+                        {{
+                          formData.current_appointment &&
+                          formData.current_appointment.specialist_name
+                            ? formData.current_appointment.specialist_name
+                            : "(not applicable)"
+                        }}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -253,7 +260,16 @@
                       <td class="text-muted min-w-125px w-125px w-md-200px">
                         Specialist Provider Number
                       </td>
-                      <td class="text-gray-800">(not applicable)</td>
+                      <td class="text-gray-800">
+                        {{
+                          formData.current_appointment &&
+                          formData.current_appointment
+                            .specialist_provider_number
+                            ? formData.current_appointment
+                                .specialist_provider_number
+                            : "(not applicable)"
+                        }}
+                      </td>
                     </tr>
                   </tbody>
                 </table>

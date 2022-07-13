@@ -118,7 +118,11 @@
                   Document
                 </a>
 
-                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+                <a
+                  class="btn btn-sm btn-light me-2"
+                  id="kt_user_follow_button"
+                  @click="handleRecallReminder"
+                >
                   <i class="bi bi-file-plus fs-3"></i>
                   Recall Reminder
                 </a>
@@ -208,20 +212,33 @@
     </div>
   </div>
   <!--end::Navbar-->
+  <RecallReminderModal></RecallReminderModal>
   <router-view></router-view>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
+import { Modal } from "bootstrap";
+import RecallReminderModal from "@/components/patients/RecallReminderModal.vue";
 
 export default defineComponent({
   name: "patients-view",
-  components: {},
+  components: {
+    RecallReminderModal,
+  },
 
   setup() {
     const store = useStore();
     const formData = ref({});
+
+    const handleRecallReminder = () => {
+      console.log("123");
+      const modal = new Modal(
+        document.getElementById("modal_patient_recall_reminder")
+      );
+      modal.show();
+    };
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
@@ -229,6 +246,7 @@ export default defineComponent({
 
     return {
       formData,
+      handleRecallReminder,
     };
   },
 });

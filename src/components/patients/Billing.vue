@@ -103,7 +103,7 @@
         <!--end::Option-->
         <div class="separator separator-dashed"></div>
         <!--begin::Option-->
-        <div v-if="formData.medicare_number">
+        <div>
           <div class="py-0">
             <!--begin::Header-->
             <div class="py-5 d-flex flex-stack flex-wrap">
@@ -211,7 +211,7 @@
           <div class="separator separator-dashed"></div>
         </div>
         <!--begin::Option-->
-        <div v-if="formData.pension_number || formData.healthcare_card_number">
+        <div>
           <div class="py-0">
             <!--begin::Header-->
             <div class="py-5 d-flex flex-stack flex-wrap">
@@ -333,7 +333,7 @@
           <div class="separator separator-dashed"></div>
         </div>
         <!--begin::Option-->
-        <div v-if="formData.health_fund_id">
+        <div>
           <div class="py-0">
             <!--begin::Header-->
             <div class="py-5 d-flex flex-stack flex-wrap">
@@ -560,6 +560,12 @@
       <!--end::Card body-->
     </div>
     <!--end::details View-->
+    <div class="d-flex ms-auto justify-content-end w-25">
+      <button type="submit" class="btn btn-primary w-25">Save</button>
+      <button type="reset" class="btn btn-light-primary w-25 ms-2">
+        Cancel
+      </button>
+    </div>
   </el-form>
 </template>
 

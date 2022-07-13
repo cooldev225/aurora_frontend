@@ -31,7 +31,7 @@
         <!--end::Modal header-->
 
         <!--begin::Modal body-->
-        <div class="modal-body py-lg-10 px-lg-10">
+        <div class="scroll modal-body py-lg-10 px-lg-10">
           <template v-if="_available_slots_by_date">
             <div class="pb-lg-15 d-flex flex-row gap-5">
               <div
@@ -39,7 +39,9 @@
                 v-for="(slot_list, apt_date) in _available_slots_by_date"
                 :key="apt_date"
               >
-                <h3>{{ slot_list.formatted_date }}</h3>
+                <h3 style="white-space: nowrap">
+                  {{ slot_list.formatted_date }}
+                </h3>
                 <template
                   v-for="(slot_item, idx_2) in slot_list.time_slot_list"
                   :key="idx_2"
