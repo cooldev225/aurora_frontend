@@ -31,7 +31,7 @@
         <!--end::Modal header-->
 
         <!--begin::Modal body-->
-        <div class="scroll modal-body py-lg-10 px-lg-10">
+        <div class="scroll modal-body py-lg-10 px-lg-10 h-500px">
           <template v-if="_available_slots_by_date">
             <div class="pb-lg-15 d-flex flex-row gap-5">
               <div
