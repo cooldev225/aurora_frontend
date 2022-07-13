@@ -6,6 +6,7 @@
     ref="createAptModalRef"
     tabindex="-1"
     aria-hidden="true"
+    data-bs-backdrop="static"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-1000px">
@@ -20,6 +21,7 @@
           <!--begin::Close-->
           <div
             class="btn btn-sm btn-icon btn-active-color-primary"
+            @click="handleCancel"
             data-bs-dismiss="modal"
           >
             <span class="svg-icon svg-icon-1">
@@ -499,6 +501,7 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
+                        @click="handleCancel"
                         data-bs-dismiss="modal"
                       >
                         <span class="svg-icon svg-icon-4 me-1">
@@ -694,27 +697,42 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
-                        data-kt-stepper-action="previous"
-                        @click="previousStep"
+                        @click="handleCancel"
+                        data-bs-dismiss="modal"
                       >
                         <span class="svg-icon svg-icon-4 me-1">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr063.svg"
                           />
                         </span>
-                        Back
+                        Cancel
                       </button>
-                      <button
-                        type="submit"
-                        class="btn btn-lg btn-primary align-self-end"
-                      >
-                        Continue
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
-                        </span>
-                      </button>
+                      <div class="d-flex flex-row gap-3">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          data-kt-stepper-action="previous"
+                          @click="previousStep"
+                        >
+                          <span class="svg-icon svg-icon-4 me-1">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr063.svg"
+                            />
+                          </span>
+                          Back
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-lg btn-primary align-self-end"
+                        >
+                          Continue
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </el-form>
                 </div>
@@ -1184,27 +1202,42 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
-                        data-kt-stepper-action="previous"
-                        @click="previousStep"
+                        @click="handleCancel"
+                        data-bs-dismiss="modal"
                       >
                         <span class="svg-icon svg-icon-4 me-1">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr063.svg"
                           />
                         </span>
-                        Back
+                        Cancel
                       </button>
-                      <button
-                        type="submit"
-                        class="btn btn-lg btn-primary align-self-end"
-                      >
-                        Continue
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
-                        </span>
-                      </button>
+                      <div class="d-flex flex-row gap-3">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          data-kt-stepper-action="previous"
+                          @click="previousStep"
+                        >
+                          <span class="svg-icon svg-icon-4 me-1">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr063.svg"
+                            />
+                          </span>
+                          Back
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-lg btn-primary align-self-end"
+                        >
+                          Continue
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </el-form>
                 </div>
@@ -1434,27 +1467,42 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
-                        data-kt-stepper-action="previous"
-                        @click="previousStep"
+                        @click="handleCancel"
+                        data-bs-dismiss="modal"
                       >
                         <span class="svg-icon svg-icon-4 me-1">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr063.svg"
                           />
                         </span>
-                        Back
+                        Cancel
                       </button>
-                      <button
-                        type="submit"
-                        class="btn btn-lg btn-primary align-self-end"
-                      >
-                        Submit
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
-                        </span>
-                      </button>
+                      <div class="d-flex flex-row gap-3">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          data-kt-stepper-action="previous"
+                          @click="previousStep"
+                        >
+                          <span class="svg-icon svg-icon-4 me-1">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr063.svg"
+                            />
+                          </span>
+                          Back
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-lg btn-primary align-self-end"
+                        >
+                          Submit
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </el-form>
                 </div>
@@ -1835,27 +1883,27 @@ export default defineComponent({
       formRef_1.value.validate((valid) => {
         if (valid) {
           // if (_appointment_time.value > 15) {
-          Swal.fire({
-            text: "Are you sure you want to double book this time slot?",
-            icon: "info",
-            showCancelButton: true,
-            cancelButtonText: "Cancel",
-            confirmButtonText: "Confirm",
-          }).then((result) => {
-            if (result.value) {
-              currentStepIndex.value++;
-              if (!_stepperObj.value) {
-                return;
-              }
-              _stepperObj.value.goNext();
-            }
-          });
-          // } else {
-          //   currentStepIndex.value++;
-          //   if (!_stepperObj.value) {
-          //     return;
+          // Swal.fire({
+          //   text: "Are you sure you want to double book this time slot?",
+          //   icon: "info",
+          //   showCancelButton: true,
+          //   cancelButtonText: "Cancel",
+          //   confirmButtonText: "Confirm",
+          // }).then((result) => {
+          //   if (result.value) {
+          //     currentStepIndex.value++;
+          //     if (!_stepperObj.value) {
+          //       return;
+          //     }
+          //     _stepperObj.value.goNext();
           //   }
-          //   _stepperObj.value.goNext();
+          // });
+          // } else {
+          currentStepIndex.value++;
+          if (!_stepperObj.value) {
+            return;
+          }
+          _stepperObj.value.goNext();
           // }
         }
       });
@@ -1891,6 +1939,15 @@ export default defineComponent({
           _stepperObj.value.goNext();
         }
       });
+    };
+
+    const handleCancel = () => {
+      currentStepIndex.value = 0;
+      _stepperObj.value.goFirst();
+      formRef_1.value.resetFields();
+      formRef_2.value.resetFields();
+      formRef_3.value.resetFields();
+      formRef_4.value.resetFields();
     };
 
     const previousStep = () => {
@@ -1978,6 +2035,7 @@ export default defineComponent({
       handleStep_1,
       handleStep_2,
       handleStep_3,
+      handleCancel,
       currentStepIndex,
       createAptRef,
       createAptModalRef,

@@ -75,7 +75,11 @@
                         ) > timeStr2Number(item)
                       "
                       @click="
-                        handleAddApt(item_1, item, aptTimeList[index + 1])
+                        handleAddApt(
+                          item_1.specialist,
+                          item,
+                          aptTimeList[index + 1]
+                        )
                       "
                     >
                       <i class="fa fa-plus text-primary"></i>

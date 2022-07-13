@@ -201,13 +201,14 @@ export default defineComponent({
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
     const _x_weeks = ref({
-      1: "A week",
-      2: "2 weeks",
-      3: "3 weeks",
-      4: "4 weeks",
-      5: "5 weeks",
-      6: "6 weeks",
-      7: "7 weeks",
+      0: "this week",
+      1: "After a week",
+      2: "After 2 weeks",
+      3: "After 3 weeks",
+      4: "After 4 weeks",
+      5: "After 5 weeks",
+      6: "After 6 weeks",
+      7: "After 7 weeks",
     });
     const _available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
