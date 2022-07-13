@@ -60,17 +60,19 @@
                   {{ item }}
                 </td>
                 <template
-                  v-for="(item_1, index_1) in _specialists"
+                  v-for="(item_1, index_1) in appointment[item]"
                   :key="index_1"
                 >
                   <td class="cell-35px bg-white">
                     <a
                       class="cursor-pointer"
                       v-if="
-                        timeStr2Number(item_1.work_hours.time_slot[0]) <=
-                          timeStr2Number(item) &&
-                        timeStr2Number(item_1.work_hours.time_slot[1]) >
-                          timeStr2Number(item)
+                        timeStr2Number(
+                          item_1.specialist.work_hours.time_slot[0]
+                        ) <= timeStr2Number(item) &&
+                        timeStr2Number(
+                          item_1.specialist.work_hours.time_slot[1]
+                        ) > timeStr2Number(item)
                       "
                       @click="
                         handleAddApt(item_1, item, aptTimeList[index + 1])
@@ -79,35 +81,29 @@
                       <i class="fa fa-plus text-primary"></i>
                     </a>
                   </td>
-                  <td style="min-width: 441px">
-                    <template
-                      v-for="(item_2, idx_2) in item_1.appointments"
-                      :key="idx_2"
-                    >
-                      <template
-                        v-if="
-                          timeStr2Number(item_2.start_time) <=
-                            timeStr2Number(item) &&
-                          timeStr2Number(item_2.end_time) > timeStr2Number(item)
-                        "
+                  <template v-if="item_1.time_length === 4">
+                    <td style="min-width: 441px"></td>
+                  </template>
+                  <template v-else-if="item_1.time_length === 0"></template>
+                  <template v-else>
+                    <td :rowspan="item_1.time_length" style="min-width: 441px">
+                      <div
+                        class="d-flex justify-content-center align-items-center"
                       >
-                        <div
-                          class="d-flex justify-content-center align-items-center"
+                        <span
+                          class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-5"
+                          data-kt-drawer-toggle="true"
+                          data-kt-drawer-target="#kt_drawer_chat"
+                          @click="handleEdit(item_1.appointment)"
                         >
-                          <span
-                            class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-5"
-                            data-kt-drawer-toggle="true"
-                            data-kt-drawer-target="#kt_drawer_chat"
-                            @click="handleEdit(item_2, item_1)"
-                          >
-                            {{ item_2.first_name }} {{ item_2.last_name }} ({{
-                              item_2.contact_number
-                            }})
-                          </span>
-                        </div>
-                      </template>
-                    </template>
-                  </td>
+                          {{ item_1.appointment.first_name }}
+                          {{ item_1.appointment.last_name }} ({{
+                            item_1.appointment.contact_number
+                          }})
+                        </span>
+                      </div>
+                    </td>
+                  </template>
                 </template>
               </tr>
             </template>
@@ -126,6 +122,7 @@ import {
   onMounted,
   reactive,
   watchEffect,
+  watch,
 } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
@@ -143,33 +140,78 @@ export default defineComponent({
     date: { type: String, required: true },
   },
   setup(props) {
+    const store = useStore();
     const _specialists = computed(() => props.SPTData);
     const tableTitle = computed(() => props.Title);
     const _ava_specialists = computed(() => props.ava_SPTData);
     const _apt_date = computed(() => props.date);
-    const store = useStore();
+    const organization = computed(() => store.getters.orgList);
+
     const format = ref("YYYY-MM-DD");
     const aptTimeList = ref([]);
 
-    const appointment_length = reactive({
-      Single: 15,
-      Double: 30,
-      Triple: 45,
-    });
+    const appointment_length = ref(30);
 
     const timeStr2Number = (time) => {
       return Number(time.split(":")[0] + time.split(":")[1]);
     };
 
-    watchEffect(() => {
+    const appointment = ref();
+
+    onMounted(() => {
+      store.dispatch(Actions.LIST_ORG);
+    });
+
+    watch(_specialists, () => {
       let _val = "07:00";
+      let _appointment = {};
+      // debugger;
       while (timeStr2Number(_val) <= timeStr2Number("18:00")) {
+        _appointment[_val.toString()] = [];
+        if (_specialists.value) {
+          for (let i in _specialists.value) {
+            let specialist = _specialists.value[i];
+            let temp = {};
+            for (let j in specialist.appointments) {
+              let _apt = specialist.appointments[j];
+              if (timeStr2Number(_apt.start_time) === timeStr2Number(_val)) {
+                temp = {
+                  specialist: specialist,
+                  appointment: _apt,
+                  time_length:
+                    _apt.appointment_time === "SINGLE"
+                      ? 1
+                      : _apt.appointment_time === "DOUBLE"
+                      ? 2
+                      : 3,
+                };
+              } else if (
+                timeStr2Number(_apt.start_time) < timeStr2Number(_val) &&
+                timeStr2Number(_apt.end_time) > timeStr2Number(_val)
+              ) {
+                temp = {
+                  specialist: specialist,
+                  time_length: 0,
+                };
+              }
+            }
+            if (Object.keys(temp).length === 0)
+              temp = { specialist: specialist, time_length: 4 };
+            _appointment[_val.toString()].push(temp);
+          }
+        }
         aptTimeList.value.push(_val);
         _val = moment(_val, "HH:mm")
-          .add(appointment_length.Single, "minutes")
+          .add(appointment_length.value, "minutes")
           .format("HH:mm")
           .toString();
       }
+      appointment.value = _appointment;
+    });
+
+    watchEffect(() => {
+      if (organization.value.appointment_length)
+        appointment_length.value = organization.value.appointment_length;
     });
 
     const handleAddApt = (specialist, startTime, endTime) => {
@@ -205,6 +247,7 @@ export default defineComponent({
       handleEdit,
       timeStr2Number,
       aptTimeList,
+      appointment,
     };
   },
 });
