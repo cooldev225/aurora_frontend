@@ -150,27 +150,24 @@ export default defineComponent({
     const format = ref("YYYY-MM-DD");
     const aptTimeList = ref([]);
 
-    const appointment_length = ref(45);
+    const appointment_length = ref(30);
 
     const timeStr2Number = (time) => {
       return Number(time.split(":")[0] + time.split(":")[1]);
     };
 
-    const appointment = reactive({});
+    const appointment = ref();
 
     onMounted(() => {
       store.dispatch(Actions.LIST_ORG);
     });
 
     watch(_specialists, () => {
-      console.log("sssssssssssssssssssssss");
-    });
-
-    watchEffect(() => {
       let _val = "07:00";
+      let _appointment = {};
       // debugger;
       while (timeStr2Number(_val) <= timeStr2Number("18:00")) {
-        appointment[_val.toString()] = [];
+        _appointment[_val.toString()] = [];
         if (_specialists.value) {
           for (let i in _specialists.value) {
             let specialist = _specialists.value[i];
@@ -200,7 +197,7 @@ export default defineComponent({
             }
             if (Object.keys(temp).length === 0)
               temp = { specialist: specialist, time_length: 4 };
-            appointment[_val.toString()].push(temp);
+            _appointment[_val.toString()].push(temp);
           }
         }
         aptTimeList.value.push(_val);
@@ -209,6 +206,12 @@ export default defineComponent({
           .format("HH:mm")
           .toString();
       }
+      appointment.value = _appointment;
+    });
+
+    watchEffect(() => {
+      if (organization.value.appointment_length)
+        appointment_length.value = organization.value.appointment_length;
     });
 
     const handleAddApt = (specialist, startTime, endTime) => {

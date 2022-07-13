@@ -225,6 +225,7 @@ const Mutations = {
   SET_BOOKING: {
     LIST: "setBookingList",
     SELECT: "setSelectBooking",
+    APT_LENGTH: "setAppointmentLength",
     SEARCH: {
       VARIABLE: "setSearchVariable",
       DATE: "setFilteredBookingByDate",

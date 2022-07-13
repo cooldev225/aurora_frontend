@@ -32,6 +32,7 @@ export interface BookingInfo {
   availableAppointmentList: IBookingData;
   availableSPT: IBookingData;
   searchVal: ISearchVariable;
+  apt_length: number;
   // clinicsSelectData: IApt;
 }
 
@@ -42,6 +43,7 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   availableAppointmentList = {} as IBookingData;
   availableSPT = {} as IBookingData;
   searchVal = {} as ISearchVariable;
+  apt_length = 30;
   /**
    * Get current user object
    * @returns SelectedclinicsData
@@ -56,6 +58,14 @@ export default class BooingModule extends VuexModule implements BookingInfo {
    */
   get getFilteredData(): IBookingData {
     return this.filteredData;
+  }
+
+  /**
+   * Get current user object
+   * @returns SelectedclinicsData
+   */
+  get getAptLength(): number {
+    return this.apt_length;
   }
 
   /**
@@ -110,6 +120,11 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   @Mutation
   [Mutations.SET_BOOKING.SEARCH.VARIABLE](data: ISearchVariable) {
     this.searchVal = data;
+  }
+
+  @Mutation
+  [Mutations.SET_BOOKING.APT_LENGTH](data: number) {
+    this.apt_length = data;
   }
 
   @Action
