@@ -94,6 +94,10 @@ const OrgAdminMenu = [
         heading: "Appointment Time Requirements",
         route: "/settings/time-requirements",
       },
+      {
+        heading: "Anesthetic Questions",
+        route: "/settings/anesthetic-questions",
+      },
     ],
   },
 ];
