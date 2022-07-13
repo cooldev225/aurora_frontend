@@ -22,6 +22,7 @@ import AppointmentModule from "@/store/modules/AppointmentModule";
 import ProcedureModule from "@/store/modules/ProcedureModule";
 import AptTimeRequireModule from "@/store/modules/AptTimeRequireModule";
 import SpecialistsModule from "@/store/modules/SpecialistsModule";
+import NtfTemplatesModule from "@/store/modules/NtfTemplatesModule";
 
 config.rawError = true;
 
@@ -44,6 +45,7 @@ const store = createStore({
     EmployeeModule,
     BookingModule,
     AnesthetistModule,
+    NtfTemplatesModule,
     AppointmentModule,
     ProcedureModule,
     AptTimeRequireModule,

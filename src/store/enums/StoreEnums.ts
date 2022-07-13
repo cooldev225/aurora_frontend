@@ -103,6 +103,11 @@ const Actions = {
     ACTIVE_LIST: "listActiveAnesthetistQues",
   },
 
+  NTF_TEMPLATES: {
+    LIST: "listNtfyTemplates",
+    UPDATE: "updateNtfyTemplates",
+  },
+
   PROCEDURE_QUES: {
     LIST: "listProcedureQues",
     CREATE: "createProcedureQues",
@@ -275,6 +280,11 @@ const Mutations = {
   SET_APT_TIME_REQUIREMENT: {
     LIST: "setAptTimeRequirement",
     SELECT: "setSelectAptTimeRequirement",
+  },
+
+  SET_NTF_TEMPLATES: {
+    LIST: "setNtfTemplates",
+    SELECT: "setSelectNtfTemplates",
   },
 
   // SET_EMPLOYEE_ROLES: {

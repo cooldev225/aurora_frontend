@@ -98,6 +98,10 @@ const OrgAdminMenu = [
         heading: "Anesthetic Questions",
         route: "/settings/anesthetic-questions",
       },
+      {
+        heading: "Notification Templates",
+        route: "/settings/notification-templates",
+      },
     ],
   },
 ];
