@@ -50,7 +50,17 @@
                 <div class="card-info">
                   <el-select
                     class="w-100"
-                    placeholder="Select Appintment Type"
+                    placeholder="Select Clinic"
+                    v-model="_available_slots_search.clinic_id"
+                  >
+                    <template v-for="(item, idx) in _clinic_list" :key="idx">
+                      <el-option :value="item.id" :label="item.name" />
+                    </template>
+                  </el-select>
+                  <el-divider />
+                  <el-select
+                    class="w-100"
+                    placeholder="Select Appointment Type"
                     v-model="_search_next_apts.appointment_type_id"
                   >
                     <template v-for="(item, idx) in _aptTypelist" :key="idx">
@@ -75,7 +85,7 @@
                   <el-divider />
                   <el-select
                     class="w-100"
-                    placeholder="Select Appintment Time Requirement"
+                    placeholder="Select Appointment Time Requirement"
                     v-model="_search_next_apts.time_requirement"
                   >
                     <template
@@ -85,6 +95,17 @@
                       <el-option :value="item.id" :label="item.title" />
                     </template>
                   </el-select>
+                  <el-divider />
+                  <el-checkbox-group
+                    v-model="_available_slots_search.day_of_weeks"
+                    class="d-flex flex-column"
+                  >
+                    <template v-for="(item, index) in _week_days" :key="index">
+                      <el-checkbox size="large" :label="index">{{
+                        item
+                      }}</el-checkbox>
+                    </template>
+                  </el-checkbox-group>
                 </div>
               </div>
             </div>
@@ -121,7 +142,7 @@
     </div>
   </div>
   <CreateModal></CreateModal>
-  <AppointmentListPopup :appointments_by_date="_appointments_by_date" />
+  <AppointmentListPopup :appointments_by_date="_available_slots_by_date" />
   <!-- <EditModal></EditModal> -->
 </template>
 <script>
@@ -168,6 +189,10 @@ export default defineComponent({
     const _specialists_search = reactive({
       specialist_ids: [],
     });
+    const _available_slots_search = reactive({
+      day_of_weeks: [],
+      clinic_id: "",
+    });
     const _search_next_apts = reactive({
       appointment_type_id: "",
       specialist_ids: "",
@@ -175,7 +200,16 @@ export default defineComponent({
     });
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
-    const _appointments_by_date = computed(
+    const _week_days = ref({
+      monday: "Monday",
+      tuesday: "Tuesday",
+      wednesday: "Wednesday",
+      thursday: "Thursday",
+      friday: "Friday",
+      saturday: "Saturday",
+      sunday: "Sunday",
+    });
+    const _available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
     );
     const _aptTypelist = computed(() => store.getters.getAptTypeList);
@@ -183,6 +217,7 @@ export default defineComponent({
     const _aptTimeRequireList = computed(
       () => store.getters.getAptTimeRequireList
     );
+    const _clinic_list = computed(() => store.getters.clinicsList);
     const tableTitle = ref("");
 
     onMounted(() => {
@@ -198,6 +233,7 @@ export default defineComponent({
       store.dispatch(Actions.APT.TYPE_LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
+      store.dispatch(Actions.CLINICS.LIST);
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     });
 
@@ -234,11 +270,11 @@ export default defineComponent({
     const handleSearch = async () => {
       await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
         ..._search_next_apts,
-        status: "available",
+        ..._available_slots_search,
       });
 
       const modal = new Modal(
-        document.getElementById("modal_appointment_list_popup")
+        document.getElementById("modal_available_time_slot_popup")
       );
 
       modal.show();
@@ -307,11 +343,14 @@ export default defineComponent({
       _specialists_search,
       _ava_specialists,
       _specialists,
-      _appointments_by_date,
+      _available_slots_by_date,
+      _available_slots_search,
       _aptTypelist,
       _allSpecialists,
       _aptTimeRequireList,
       _search_next_apts,
+      _week_days,
+      _clinic_list,
       tableTitle,
       handleSearch,
       handleReset,

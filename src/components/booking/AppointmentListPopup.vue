@@ -2,7 +2,7 @@
   <!--begin::Modal - AppointmentList Popup -->
   <div
     class="modal fade"
-    id="modal_appointment_list_popup"
+    id="modal_available_time_slot_popup"
     ref="AppointmentListPopupModalRef"
     tabindex="-1"
     aria-hidden="true"
@@ -32,18 +32,16 @@
 
         <!--begin::Modal body-->
         <div class="modal-body py-lg-10 px-lg-10">
-          <template v-if="_appointments_by_date">
+          <template v-if="_available_slots_by_date">
             <div class="pb-lg-15 d-flex flex-row gap-5">
               <div
                 class="ps-lg-10"
-                v-for="(
-                  appointment_item_for_date, apt_date
-                ) in _appointments_by_date"
+                v-for="(slot_list, apt_date) in _available_slots_by_date"
                 :key="apt_date"
               >
-                <h3>{{ apt_date }}</h3>
+                <h3>{{ slot_list.formatted_date }}</h3>
                 <template
-                  v-for="(appointment_item, idx_2) in appointment_item_for_date"
+                  v-for="(slot_item, idx_2) in slot_list.time_slot_list"
                   :key="idx_2"
                 >
                   <div class="mt-5 justify-content-center align-items-center">
@@ -51,9 +49,16 @@
                       class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-5"
                       data-kt-drawer-toggle="true"
                       data-kt-drawer-target="#kt_drawer_chat"
-                      @click="handleShow(appointment_item)"
+                      @click="
+                        handleAddApt(
+                          slot_item.specialist_ids,
+                          apt_date,
+                          slot_item.start_time,
+                          slot_item.end_time
+                        )
+                      "
                     >
-                      {{ appointment_item.start_time }}
+                      {{ slot_item.start_time }}
                     </span>
                   </div>
                 </template>
@@ -72,13 +77,11 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, computed } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
-import Swal from "sweetalert2/dist/sweetalert2.min.js";
-import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
   name: "appointment-list-popup",
@@ -86,12 +89,43 @@ export default defineComponent({
     appointments_by_date: { type: Array, required: true },
   },
   setup(props) {
-    const _appointments_by_date = computed(() => props.appointments_by_date);
+    const _available_slots_by_date = computed(() => props.appointments_by_date);
+    const _allSpecialists = computed(() => store.getters.getSpecialistList);
     const store = useStore();
 
-    const handleShow = (item) => {
-      store.commit(Mutations.SET_APT.SELECT, item);
-      DrawerComponent?.getInstance("booking-drawer")?.toggle();
+    const handleAddApt = (specialist_ids, date, startTime, endTime) => {
+      const _date = moment(date).format("YYYY-MM-DD").toString();
+
+      let selected_specialist = null;
+      let selected_specialist_id = 0;
+
+      for (let specialist_id in specialist_ids) {
+        selected_specialist_id = specialist_id;
+        break;
+      }
+
+      for (let specialist in _allSpecialists) {
+        if (specialist.id == selected_specialist_id) {
+          selected_specialist = specialist;
+        }
+      }
+
+      const item = {
+        time_slots: [_date + "T" + startTime, _date + "T" + endTime],
+        date: _date,
+        ava_specialist: selected_specialist,
+        selected_specialist: selected_specialist,
+      };
+
+      store.commit(Mutations.SET_BOOKING.SELECT, item);
+
+      const modal = new Modal(document.getElementById("modal_create_apt"));
+      modal.show();
+
+      const current_modal = Modal.getInstance(
+        document.getElementById("modal_available_time_slot_popup")
+      );
+      current_modal.hide();
     };
 
     const timeStr2Number = (time) => {
@@ -99,8 +133,8 @@ export default defineComponent({
     };
 
     return {
-      _appointments_by_date,
-      handleShow,
+      _available_slots_by_date,
+      handleAddApt,
       timeStr2Number,
     };
   },
