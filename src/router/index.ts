@@ -102,6 +102,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/settings/AptTimeRequirement.vue"),
       },
       {
+        path: "/settings/anesthetic-questions",
+        name: "anestheticQuestions",
+        component: () => import("@/views/settings/AnestheticQuestions.vue"),
+      },
+      {
         path: "/patients",
         name: "patients",
         component: () => import("@/views/patients/PatientList.vue"),

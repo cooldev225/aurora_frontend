@@ -103,10 +103,10 @@ export default class AnesthetistModule
   }
 
   @Action
-  [Actions.ANESTHETIST_QUES.CREATE](payload) {
+  [Actions.ANESTHETIST_QUES.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("anesthetic-questions", payload)
+      ApiService.post("anesthetic-questions", item)
         .then(({ data }) => {
           return data.data;
         })
