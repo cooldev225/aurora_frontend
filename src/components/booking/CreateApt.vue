@@ -252,15 +252,12 @@
                               <!--begin::Input-->
                               <el-form-item prop="appointment_type_id">
                                 <el-select class="w-100" v-model="_appointment">
-                                  <template
-                                    v-for="(item, idx) in aptTypeList"
-                                    :key="idx"
-                                  >
-                                    <el-option
-                                      :value="item.id"
-                                      :label="item.name"
-                                    />
-                                  </template>
+                                  <el-option
+                                    v-for="item in aptTypeList"
+                                    :value="item.id"
+                                    :label="item.name"
+                                    :key="item.id"
+                                  />
                                 </el-select>
                               </el-form-item>
                               <!--end::Input-->
@@ -279,15 +276,12 @@
                               <!--begin::Input-->
                               <el-form-item prop="specialist_id">
                                 <el-select class="w-100" v-model="_specialist">
-                                  <template
-                                    v-for="(item, index) in ava_specialist"
-                                    :key="index"
-                                  >
-                                    <el-option
-                                      :value="item.id"
-                                      :label="item.name"
-                                    />
-                                  </template>
+                                  <el-option
+                                    v-for="item in ava_specialist"
+                                    :value="item.id"
+                                    :label="item.name"
+                                    :key="item.id"
+                                  />
                                 </el-select>
                               </el-form-item>
                               <!--end::Input-->
@@ -347,15 +341,12 @@
                                   class="w-100"
                                   v-model.number="formData.room_id"
                                 >
-                                  <template
-                                    v-for="(room, idx) in rooms"
-                                    :key="idx"
-                                  >
-                                    <el-option
-                                      :value="room.id"
-                                      :label="room.name"
-                                    />
-                                  </template>
+                                  <el-option
+                                    v-for="item in rooms"
+                                    :value="item.id"
+                                    :label="item.name"
+                                    :key="item.id"
+                                  />
                                 </el-select>
                               </el-form-item>
                               <!--end::Input-->
@@ -867,15 +858,12 @@
                                   class="w-100"
                                   v-model="formData.health_fund_id"
                                 >
-                                  <template
-                                    v-for="(item, idx) in healthFundsList"
-                                    :key="idx"
-                                  >
-                                    <el-option
-                                      :value="item.id"
-                                      :label="item.code + '-' + item.name"
-                                    />
-                                  </template>
+                                  <el-option
+                                    v-for="item in healthFundsList"
+                                    :value="item.id"
+                                    :label="item.code + '-' + item.name"
+                                    :key="item.id"
+                                  />
                                 </el-select>
                               </el-form-item>
                               <!--end::Input-->

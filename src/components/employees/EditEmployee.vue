@@ -294,10 +294,12 @@
                     v-model="formData.employee_type"
                     filterable
                   >
-                    <el-option value="part-time" label="Part-Time" />
-                    <el-option value="full-time" label="Full-Time" />
-                    <el-option value="casual" label="Casual" />
-                    <el-option value="contractor" label="Contractor" />
+                    <el-option
+                      v-for="item in employeeTypes"
+                      :value="item.value"
+                      :label="item.label"
+                      :key="item.value"
+                    />
                   </el-select>
                 </el-form-item>
                 <!--end::Input-->
@@ -727,6 +729,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 import { StepperComponent } from "@/assets/ts/components";
+import employeeTypes from "@/core/data/employee-types";
 
 export default defineComponent({
   name: "edit-employees",
@@ -925,6 +928,7 @@ export default defineComponent({
       handleStep_2,
       editEmployeeRef,
       currentStepIndex,
+      employeeTypes,
     };
   },
 });

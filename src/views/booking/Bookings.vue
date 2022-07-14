@@ -53,9 +53,12 @@
                     placeholder="Select Appointment Type"
                     v-model="_search_next_apts.appointment_type_id"
                   >
-                    <template v-for="(item, idx) in _aptTypelist" :key="idx">
-                      <el-option :value="item.id" :label="item.name" />
-                    </template>
+                    <el-option
+                      v-for="item in _aptTypelist"
+                      :value="item.id"
+                      :label="item.name"
+                      :key="item.id"
+                    />
                   </el-select>
                   <el-divider />
                   <div>
@@ -65,11 +68,13 @@
                       v-model="_search_next_apts.clinic_id"
                     >
                       <el-option value="" label="Any Clinic" />
-                      <template v-for="(item, idx) in _clinic_list" :key="idx">
-                        <el-option :value="item.id" :label="item.name" />
-                      </template>
+                      <el-option
+                        v-for="item in _clinic_list"
+                        :value="item.id"
+                        :label="item.name"
+                        :key="item.id"
+                      />
                     </el-select>
-
                     <el-select
                       class="w-50 p-2"
                       placeholder="Select Specialist"
@@ -77,12 +82,12 @@
                       filterable
                     >
                       <el-option value="" label="Any Specialist" />
-                      <template
-                        v-for="(item, index) in _allSpecialists"
-                        :key="index"
-                      >
-                        <el-option :value="item.id" :label="item.name" />
-                      </template>
+                      <el-option
+                        v-for="item in _allSpecialists"
+                        :value="item.id"
+                        :label="item.name"
+                        :key="item.id"
+                      />
                     </el-select>
                   </div>
                   <el-divider />
@@ -92,21 +97,24 @@
                       placeholder="Select Appointment Time Requirement"
                       v-model="_search_next_apts.time_requirement"
                     >
-                      <template
-                        v-for="(item, idx) in _aptTimeRequireList"
-                        :key="idx"
-                      >
-                        <el-option :value="item.id" :label="item.title" />
-                      </template>
+                      <el-option
+                        v-for="item in _aptTimeRequireList"
+                        :value="item.id"
+                        :label="item.title"
+                        :key="item.id"
+                      />
                     </el-select>
                     <el-select
                       class="w-50 p-2"
                       placeholder="Select Time frame"
                       v-model="_search_next_apts.x_weeks"
                     >
-                      <template v-for="(item, index) in _x_weeks" :key="index">
-                        <el-option :value="index" :label="item" />
-                      </template>
+                      <el-option
+                        v-for="item in _x_weeks"
+                        :value="index"
+                        :label="item"
+                        :key="item.id"
+                      />
                     </el-select>
                   </div>
                 </div>

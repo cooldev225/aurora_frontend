@@ -289,10 +289,12 @@
                 <!--begin::Input-->
                 <el-form-item prop="type">
                   <el-select class="w-100" v-model="formData.type" filterable>
-                    <el-option value="part-time" label="Part-Time" />
-                    <el-option value="full-time" label="Full-Time" />
-                    <el-option value="casual" label="Casual" />
-                    <el-option value="contract" label="Contract" />
+                    <el-option
+                      v-for="item in employeeTypes"
+                      :value="item.value"
+                      :label="item.label"
+                      :key="item.value"
+                    />
                   </el-select>
                 </el-form-item>
                 <!--end::Input-->
@@ -309,12 +311,12 @@
                   <!--begin::Input-->
                   <el-form-item prop="role">
                     <el-select v-model="formData.role" class="w-100">
-                      <el-option value="receptionist" label="Receptionist" />
-                      <el-option value="specialist" label="Specialist" />
-                      <el-option value="pathologist" label="Pathologist" />
-                      <el-option value="scientist" label="Scientist" />
-                      <el-option value="typist" label="Typist" />
-                      <el-option value="anesthetist" label="Anesthetist" />
+                      <el-option
+                        v-for="item in employeeRoles"
+                        :value="item.value"
+                        :label="item.label"
+                        :key="item.value"
+                      />
                     </el-select>
                   </el-form-item>
                   <!--end::Input-->
@@ -367,12 +369,12 @@
                             v-model="formData.work_hours.monday.locations"
                             type="text"
                           >
-                            <template
-                              v-for="(item, index) in clinicsList"
-                              :key="index"
-                            >
-                              <el-option :value="item.id" :label="item.name" />
-                            </template>
+                            <el-option
+                              v-for="item in clinicsList"
+                              :value="item.id"
+                              :label="item.name"
+                              :key="item.id"
+                            />
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -427,12 +429,12 @@
                             v-model="formData.work_hours.tuesday.locations"
                             type="text"
                           >
-                            <template
-                              v-for="(item, index) in clinicsList"
-                              :key="index"
-                            >
-                              <el-option :value="item.id" :label="item.name" />
-                            </template>
+                            <el-option
+                              v-for="item in clinicsList"
+                              :value="item.id"
+                              :label="item.name"
+                              :key="item.id"
+                            />
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -487,12 +489,12 @@
                             v-model="formData.work_hours.wednesday.locations"
                             type="text"
                           >
-                            <template
-                              v-for="(item, index) in clinicsList"
-                              :key="index"
-                            >
-                              <el-option :value="item.id" :label="item.name" />
-                            </template>
+                            <el-option
+                              v-for="item in clinicsList"
+                              :value="item.id"
+                              :label="item.name"
+                              :key="item.id"
+                            />
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -547,12 +549,12 @@
                             v-model="formData.work_hours.thursday.locations"
                             type="text"
                           >
-                            <template
-                              v-for="(item, index) in clinicsList"
-                              :key="index"
-                            >
-                              <el-option :value="item.id" :label="item.name" />
-                            </template>
+                            <el-option
+                              v-for="item in clinicsList"
+                              :value="item.id"
+                              :label="item.name"
+                              :key="item.id"
+                            />
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -607,12 +609,12 @@
                             v-model="formData.work_hours.friday.locations"
                             type="text"
                           >
-                            <template
-                              v-for="(item, index) in clinicsList"
-                              :key="index"
-                            >
-                              <el-option :value="item.id" :label="item.name" />
-                            </template>
+                            <el-option
+                              v-for="item in clinicsList"
+                              :value="item.id"
+                              :label="item.name"
+                              :key="item.id"
+                            />
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -667,12 +669,12 @@
                             v-model="formData.work_hours.saturday.locations"
                             type="text"
                           >
-                            <template
-                              v-for="(item, index) in clinicsList"
-                              :key="index"
-                            >
-                              <el-option :value="item.id" :label="item.name" />
-                            </template>
+                            <el-option
+                              v-for="item in clinicsList"
+                              :value="item.id"
+                              :label="item.name"
+                              :key="item.id"
+                            />
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -723,12 +725,12 @@
                             v-model="formData.work_hours.sunday.locations"
                             type="text"
                           >
-                            <template
-                              v-for="(item, index) in clinicsList"
-                              :key="index"
-                            >
-                              <el-option :value="item.id" :label="item.name" />
-                            </template>
+                            <el-option
+                              v-for="item in clinicsList"
+                              :value="item.id"
+                              :label="item.name"
+                              :key="item.id"
+                            />
                           </el-select>
                         </el-form-item>
                         <!--end::Input-->
@@ -788,6 +790,8 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 import { StepperComponent } from "@/assets/ts/components";
+import employeeTypes from "@/core/data/employee-types";
+import employeeRoles from "@/core/data/employee-roles";
 
 export default defineComponent({
   name: "kt-vertical-wizard",
@@ -986,6 +990,8 @@ export default defineComponent({
       createEmployeeRef,
       currentStepIndex,
       clinicsList,
+      employeeTypes,
+      employeeRoles,
     };
   },
 });

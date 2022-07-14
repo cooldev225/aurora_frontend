@@ -81,8 +81,8 @@
                     class="w-100"
                     placeholder="Select Status"
                   >
-                    <el-option value="Enabled" label="Enabled" />
-                    <el-option value="Disabled" label="Disabled" />
+                    <el-option value="enabled" label="Enabled" />
+                    <el-option value="disabled" label="Disabled" />
                   </el-select>
                 </el-form-item>
                 <!--end::Input-->
