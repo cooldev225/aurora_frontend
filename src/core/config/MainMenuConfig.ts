@@ -79,6 +79,10 @@ const OrgAdminMenu = [
     fontIcon: "bi-gear",
     pages: [
       {
+        heading: "Appointment Types",
+        route: "/settings/apt-types",
+      },
+      {
         heading: "Appointment Time Requirements",
         route: "/settings/time-requirements",
       },

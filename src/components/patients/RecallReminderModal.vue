@@ -167,7 +167,7 @@ export default defineComponent({
       patient_id: 0,
       organization_id: 0,
       time_frame: 1,
-      reason: " ",
+      reason: "",
     });
     const patientData = ref([]);
 
