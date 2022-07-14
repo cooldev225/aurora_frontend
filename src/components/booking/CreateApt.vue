@@ -621,7 +621,7 @@
                         </div>
                         <!--end::Input group-->
                       </div>
-                      <div class="col-sm-6">
+                      <div class="fv-row">
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
@@ -630,17 +630,18 @@
 
                           <!--begin::Input-->
                           <el-form-item prop="address">
-                            <el-input
-                              type="text"
-                              v-model="formData.address"
-                              placeholder="Enter Address"
-                            />
+                            <GMapAutocomplete
+                              ref="addressRef"
+                              placeholder="Enter the Address"
+                              @place_changed="handleAddressChange"
+                            >
+                            </GMapAutocomplete>
                           </el-form-item>
                           <!--end::Input-->
                         </div>
                         <!--end::Input group-->
                       </div>
-                      <div class="col-sm-6">
+                      <div class="fv-row">
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
@@ -718,7 +719,7 @@
                     ref="formRef_3"
                     @submit.prevent="handleStep_3"
                   >
-                    <div class="row scroll h-450px">
+                    <div class="row">
                       <div class="card-info">
                         <div class="fs-3 fw-bold text-muted mb-6">
                           Billing Details
@@ -1716,6 +1717,8 @@ export default defineComponent({
     const _appointment_time = ref(30);
     const _arrival_time = ref(30);
 
+    const addressRef = ref(null);
+
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
@@ -1918,6 +1921,11 @@ export default defineComponent({
       formRef_4.value.resetFields();
     };
 
+    const handleAddressChange = (e) => {
+      formData.value.address = e.formatted_address;
+      console.log(formData.value);
+    };
+
     const previousStep = () => {
       if (!_stepperObj.value) {
         return;
@@ -2011,7 +2019,31 @@ export default defineComponent({
       timeZoneList,
       handleAneQuestions,
       handleProQuestions,
+      handleAddressChange,
+      addressRef,
     };
   },
 });
 </script>
+<style>
+.pac-container {
+  z-index: 10000 !important;
+}
+.pac-target-input {
+  -webkit-appearance: none;
+  background-color: var(--el-input-bg-color, var(--el-color-white));
+  background-image: none;
+  border-radius: var(--el-input-border-radius, var(--el-border-radius-base));
+  border: var(--el-input-border, var(--el-border-base));
+  box-sizing: border-box;
+  color: var(--el-input-text-color, var(--el-text-color-regular));
+  display: inline-block;
+  font-size: inherit;
+  height: 40px;
+  line-height: 40px;
+  outline: 0;
+  padding: 0 15px;
+  transition: var(--el-transition-border);
+  width: 100%;
+}
+</style>

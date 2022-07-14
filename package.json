@@ -9,6 +9,7 @@
     "serve": "vue-cli-service serve"
   },
   "dependencies": {
+    "@fawmi/vue-google-maps": "^0.9.72",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@fullcalendar/core": "^5.9.0",
     "@fullcalendar/daygrid": "^5.9.0",
