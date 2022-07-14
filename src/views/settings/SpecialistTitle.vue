@@ -141,7 +141,7 @@ export default defineComponent({
     const specTitleList = computed(() => store.getters.specTitleList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_SPECALIST_TITLE, item);
+      store.commit(Mutations.SET_SPECIALIST.TITLE.SELECT, item);
       const modal = new Modal(document.getElementById("modal-edit-spectitle"));
       modal.show();
     };

@@ -34,12 +34,12 @@ export default class OrgAdminModule extends VuexModule implements OrgAdminInfo {
   }
 
   @Mutation
-  [Mutations.SET_ORG_ADMIN_LIST](orgAdminData) {
+  [Mutations.SET_ORG_ADMIN.LIST](orgAdminData) {
     this.orgAdminData = orgAdminData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_ORG_ADMIN](data) {
+  [Mutations.SET_ORG_ADMIN.SELECT](data) {
     this.orgAdminSelectData = data;
   }
 
@@ -49,7 +49,7 @@ export default class OrgAdminModule extends VuexModule implements OrgAdminInfo {
       ApiService.setHeader();
       ApiService.get("organization-admins")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_ORG_ADMIN_LIST, data.data);
+          this.context.commit(Mutations.SET_ORG_ADMIN.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {

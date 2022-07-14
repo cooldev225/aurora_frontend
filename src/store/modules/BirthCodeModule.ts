@@ -37,12 +37,12 @@ export default class BirthCodeModule
   }
 
   @Mutation
-  [Mutations.SET_BIRTH_CODE_LIST](birthCodeData) {
+  [Mutations.SET_BIRTH_CODE.LIST](birthCodeData) {
     this.birthCodeData = birthCodeData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_BIRTH_CODE](data) {
+  [Mutations.SET_BIRTH_CODE.SELECT](data) {
     this.birthCodeSelectData = data;
   }
 
@@ -52,7 +52,7 @@ export default class BirthCodeModule
       ApiService.setHeader();
       ApiService.get("birth-codes")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_BIRTH_CODE_LIST, data.data);
+          this.context.commit(Mutations.SET_BIRTH_CODE.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {

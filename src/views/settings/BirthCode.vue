@@ -150,7 +150,7 @@ export default defineComponent({
     const birthCodeList = computed(() => store.getters.birthCodeList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_BIRTH_CODE, item);
+      store.commit(Mutations.SET_BIRTH_CODE.SELECT, item);
       const modal = new Modal(document.getElementById("modal-edit-birth-code"));
       modal.show();
     };

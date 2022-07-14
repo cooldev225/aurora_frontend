@@ -40,12 +40,12 @@ export default class SpecialistTitleModule
   }
 
   @Mutation
-  [Mutations.SET_SPECIALIST_TITLE_LIST](specTitleData) {
+  [Mutations.SET_SPECIALIST.TITLE.LIST](specTitleData) {
     this.specTitleData = specTitleData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_SPECALIST_TITLE](data) {
+  [Mutations.SET_SPECIALIST.TITLE.SELECT](data) {
     this.specTitleSelectData = data;
   }
 
@@ -55,7 +55,7 @@ export default class SpecialistTitleModule
       ApiService.setHeader();
       ApiService.get("specialist-titles")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_SPECIALIST_TITLE_LIST, data.data);
+          this.context.commit(Mutations.SET_SPECIALIST.TITLE.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {

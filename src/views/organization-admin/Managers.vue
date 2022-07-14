@@ -140,7 +140,7 @@ export default defineComponent({
     const orgManagerList = computed(() => store.getters.orgManagerList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_ORG_MANAGER, item);
+      store.commit(Mutations.SET_ORG_MANAGER.SELECT, item);
       const modal = new Modal(document.getElementById("modal_edit_admin"));
       modal.show();
     };

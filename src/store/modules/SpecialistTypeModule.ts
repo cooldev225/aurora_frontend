@@ -40,12 +40,12 @@ export default class SpecialistTypeModule
   }
 
   @Mutation
-  [Mutations.SET_SPECIALIST_TYPE_LIST](specTypeData) {
+  [Mutations.SET_SPECIALIST.TYPE.LIST](specTypeData) {
     this.specTypeData = specTypeData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_SPECALIST_TYPE](data) {
+  [Mutations.SET_SPECIALIST.TYPE.SELECT](data) {
     this.specTypeSelectData = data;
   }
 
@@ -55,7 +55,7 @@ export default class SpecialistTypeModule
       ApiService.setHeader();
       ApiService.get("specialist-types")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_SPECIALIST_TYPE_LIST, data.data);
+          this.context.commit(Mutations.SET_SPECIALIST.TYPE.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {

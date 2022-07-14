@@ -207,35 +207,47 @@ const Mutations = {
   SET_SPECIALIST: {
     LIST: "setSpecialists",
     SELECT: "setSelectSpecialists",
+
+    TYPE: {
+      LIST: "setSpecialistTypeList",
+      SELECT: "setSelectSpecialistType",
+    },
+
+    TITLE: {
+      LIST: "setSpecialistTitleList",
+      SELECT: "setSelectSpecialistTitle",
+    },
   },
-
-  SET_SPECIALIST_TYPE_LIST: "setSpecialistTypeList",
-  SET_SELECT_SPECALIST_TYPE: "setSelectSpecialistType",
-
-  SET_SPECIALIST_TITLE_LIST: "setSpecialistTitleList",
-  SET_SELECT_SPECALIST_TITLE: "setSelectSpecialistTitle",
 
   SET_ADMIN: {
     LIST: "setAdminList",
     SELECT: "setSelectAdmin",
   },
 
-  SET_ORG_LIST: "setOrgList",
-  SET_SELECT_ORG: "setSelectOrg",
+  SET_ORG: {
+    LIST: "setOrgList",
+    SELECT: "setSelectOrg",
+  },
 
-  SET_ORG_MANAGER_LIST: "setOrgManagerList",
-  SET_SELECT_ORG_MANAGER: "setSelectOrgManager",
+  SET_ORG_MANAGER: {
+    LIST: "setOrgManagerList",
+    SELECT: "setSelectOrgManager",
+  },
 
-  SET_ORG_ADMIN_LIST: "setOrgAdminList",
-  SET_SELECT_ORG_ADMIN: "setSelectOrgAdmin",
+  SET_ORG_ADMIN: {
+    LIST: "setOrgAdminList",
+    SELECT: "setSelectOrgAdmin",
+  },
 
   SET_CLINICS: {
     LIST: "setClinicsList",
     SELECT: "setSelectClinics",
   },
 
-  SET_BIRTH_CODE_LIST: "setClinicsList",
-  SET_SELECT_BIRTH_CODE: "setSelectClinics",
+  SET_BIRTH_CODE: {
+    LIST: "setClinicsList",
+    SELECT: "setSelectClinics",
+  },
 
   SET_HEALTH_FUND: {
     LIST: "setHealthFundsList",

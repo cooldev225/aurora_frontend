@@ -48,12 +48,12 @@ export default class OrganizationModule extends VuexModule implements OrgInfo {
   }
 
   @Mutation
-  [Mutations.SET_ORG_LIST](orgData) {
+  [Mutations.SET_ORG.LIST](orgData) {
     this.orgData = orgData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_ORG](data) {
+  [Mutations.SET_ORG.SELECT](data) {
     this.orgSelectData = data;
   }
 
@@ -63,7 +63,7 @@ export default class OrganizationModule extends VuexModule implements OrgInfo {
       ApiService.setHeader();
       ApiService.get("organizations")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_ORG_LIST, data.data);
+          this.context.commit(Mutations.SET_ORG.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {

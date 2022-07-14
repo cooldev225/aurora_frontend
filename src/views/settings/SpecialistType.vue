@@ -140,7 +140,7 @@ export default defineComponent({
     const specTypeList = computed(() => store.getters.specTypeList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_SPECALIST_TYPE, item);
+      store.commit(Mutations.SET_SPECIALIST.TYPE.SELECT, item);
       const modal = new Modal(document.getElementById("modal-edit-spectype"));
       modal.show();
     };

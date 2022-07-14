@@ -155,7 +155,7 @@ export default defineComponent({
     const orgAdminList = computed(() => store.getters.orgAdminList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_ORG_ADMIN, item);
+      store.commit(Mutations.SET_ORG_ADMIN.SELECT, item);
       const modal = new Modal(document.getElementById("modal_edit_org_admin"));
       modal.show();
     };

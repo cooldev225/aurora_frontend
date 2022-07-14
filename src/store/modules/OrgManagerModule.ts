@@ -37,12 +37,12 @@ export default class OrgManagerModule
   }
 
   @Mutation
-  [Mutations.SET_ORG_MANAGER_LIST](orgManagerData) {
+  [Mutations.SET_ORG_MANAGER.LIST](orgManagerData) {
     this.orgManagerData = orgManagerData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_ORG_MANAGER](data) {
+  [Mutations.SET_ORG_MANAGER.SELECT](data) {
     this.orgManagerSelectData = data;
   }
 
@@ -52,7 +52,7 @@ export default class OrgManagerModule
       ApiService.setHeader();
       ApiService.get("organization-managers")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_ORG_MANAGER_LIST, data.data);
+          this.context.commit(Mutations.SET_ORG_MANAGER.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
