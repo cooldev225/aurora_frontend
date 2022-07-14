@@ -17,10 +17,10 @@
         </div>
       </div>
       <!--begin::Add button-->
-      <div class="col-2 text-end m-auto">
+      <div class="card-toolbar col-12 col-sm-2">
         <button
           type="button"
-          class="btn btn-light-primary"
+          class="btn btn-light-primary ms-auto"
           data-bs-toggle="modal"
           data-bs-target="#modal_add_anesthetic_question"
         >
@@ -51,7 +51,7 @@
 
           <button
             @click="handleDelete(item.id)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/general/gen027.svg" />
@@ -96,7 +96,7 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "Action",
+        name: "",
         key: "action",
       },
     ]);

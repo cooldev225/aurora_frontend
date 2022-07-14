@@ -2058,7 +2058,7 @@ export default defineComponent({
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(Actions.PROCEDURE_QUES.ACTIVE_LIST);
-      store.dispatch(Actions.APT.TYPE_LIST);
+      store.dispatch(Actions.APT.TYPES.LIST);
     });
 
     const handleStep_1 = () => {

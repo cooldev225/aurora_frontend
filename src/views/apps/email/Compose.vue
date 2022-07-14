@@ -491,7 +491,7 @@ import {
   reactive,
 } from "vue";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import DummyData from "@/store/email/DummyData";
+import EmailList from "@/store/dummy/Email";
 import moment from "moment";
 
 export default defineComponent({
@@ -525,7 +525,7 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const emailData = ref(DummyData);
+    const emailData = ref(EmailList);
     const emailType = reactive({
       data: "inbox",
     });
@@ -546,9 +546,9 @@ export default defineComponent({
       emailType.data = type;
 
       if (emailType.data === "marked") {
-        emailData.value = DummyData.filter((data) => data.marked);
+        emailData.value = EmailList.filter((data) => data.marked);
       } else {
-        emailData.value = DummyData.filter(
+        emailData.value = EmailList.filter(
           (data) => data.type === emailType.data
         );
       }

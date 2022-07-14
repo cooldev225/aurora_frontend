@@ -97,6 +97,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/settings/SpecialistTitle.vue"),
       },
       {
+        path: "/settings/apt-types",
+        name: "aptTypes",
+        component: () => import("@/views/settings/AptTypes.vue"),
+      },
+      {
         path: "/settings/time-requirements",
         name: "timeRequirements",
         component: () => import("@/views/settings/AptTimeRequirement.vue"),

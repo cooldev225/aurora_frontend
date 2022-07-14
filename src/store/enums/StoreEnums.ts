@@ -147,7 +147,12 @@ const Actions = {
     CREATE: "createApt",
     DELETE: "deleteApt",
     UPDATE: "updateApt",
-    TYPE_LIST: "listTypeApt",
+    TYPES: {
+      LIST: "listAptTypes",
+      CREATE: "createAptTypes",
+      UPDATE: "updateAptTypes",
+      DELETE: "deleteAptTypes",
+    },
     UNCONFIRMED: {
       LIST: "listUnconfirmedApt",
       DELETE: "deleteUnconfirmedApt",
@@ -277,7 +282,10 @@ const Mutations = {
   SET_APT: {
     LIST: "setApt",
     SELECT: "setSelectApt",
-    TYPE_LIST: "setAnesQpt",
+    TYPES: {
+      LIST: "setAptType",
+      SELECT: "setSelectAptType",
+    },
     UNCONFIRMED: {
       LIST: "setUnConfirmedApt",
       SELECT: "setSelectUnconfirmedApt",

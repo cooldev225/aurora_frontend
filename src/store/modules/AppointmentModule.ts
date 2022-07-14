@@ -107,7 +107,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Mutation
-  [Mutations.SET_APT.TYPE_LIST](aptTypeData) {
+  [Mutations.SET_APT.TYPES.LIST](aptTypeData) {
     this.aptTypeData = aptTypeData;
   }
 
@@ -206,12 +206,12 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Action
-  [Actions.APT.TYPE_LIST]() {
+  [Actions.APT.TYPES.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("appointment-types")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_APT.TYPE_LIST, data.data);
+          this.context.commit(Mutations.SET_APT.TYPES.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
