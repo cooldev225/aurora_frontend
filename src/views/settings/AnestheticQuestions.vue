@@ -9,7 +9,7 @@
           <div class="d-flex flex-column">
             <span
               >These settings will appear when an appointment that requires an
-              anesthetists is booked. Should a patient answer yest to any of the
+              anesthetists is booked. Should a patient answer yes to any of the
               question - the employee creating the booking will be alearted to
               book a consult</span
             >
