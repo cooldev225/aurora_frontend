@@ -634,6 +634,11 @@
                               ref="addressRef"
                               placeholder="Enter the Address"
                               @place_changed="handleAddressChange"
+                              :options="{
+                                componentRestrictions: {
+                                  country: 'au',
+                                },
+                              }"
                             >
                             </GMapAutocomplete>
                           </el-form-item>
@@ -2025,25 +2030,3 @@ export default defineComponent({
   },
 });
 </script>
-<style>
-.pac-container {
-  z-index: 10000 !important;
-}
-.pac-target-input {
-  -webkit-appearance: none;
-  background-color: var(--el-input-bg-color, var(--el-color-white));
-  background-image: none;
-  border-radius: var(--el-input-border-radius, var(--el-border-radius-base));
-  border: var(--el-input-border, var(--el-border-base));
-  box-sizing: border-box;
-  color: var(--el-input-text-color, var(--el-text-color-regular));
-  display: inline-block;
-  font-size: inherit;
-  height: 40px;
-  line-height: 40px;
-  outline: 0;
-  padding: 0 15px;
-  transition: var(--el-transition-border);
-  width: 100%;
-}
-</style>
