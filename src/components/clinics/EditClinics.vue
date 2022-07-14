@@ -516,15 +516,12 @@
                       v-model="formData.timezone"
                       filterable
                     >
-                      <template
-                        v-for="(timezone, index) in timeZoneList"
-                        :key="index"
-                      >
-                        <el-option
-                          :value="timezone.value"
-                          :label="timezone.label"
-                        />
-                      </template>
+                      <el-option
+                        v-for="item in timeZoneList"
+                        :value="item.value"
+                        :label="item.label"
+                        :key="item.value"
+                      />
                     </el-select>
                   </el-form-item>
                   <!--end::Input-->
@@ -587,19 +584,12 @@
                       v-model="formData.default_meal_time"
                       filterable
                     >
-                      <el-option value="0" label="0 Minutes" />
-                      <el-option value="5" label="5 Minutes" />
-                      <el-option value="10" label="10 Minutes" />
-                      <el-option value="15" label="15 Minutes" />
-                      <el-option value="20" label="20 Minutes" />
-                      <el-option value="25" label="25 Minutes" />
-                      <el-option value="30" label="30 Minutes" />
-                      <el-option value="35" label="35 Minutes" />
-                      <el-option value="40" label="40 Minutes" />
-                      <el-option value="45" label="45 Minutes" />
-                      <el-option value="50" label="50 Minutes" />
-                      <el-option value="55" label="55 Minutes" />
-                      <el-option value="60" label="60 Minutes" />
+                      <el-option
+                        v-for="i in 12"
+                        :value="i * 5"
+                        :label="i * 5 + ' Minutes'"
+                        :key="i"
+                      />
                     </el-select>
                   </el-form-item>
                   <!--end::Input-->

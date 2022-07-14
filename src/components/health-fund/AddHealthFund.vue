@@ -98,79 +98,10 @@
                 placeholder=""
               >
                 <el-option
-                  value="0"
-                  key="hospitalclaim"
-                  label="In Hospital Claim"
-                />
-                <el-option
-                  value="1"
-                  key="patientagreements"
-                  label="In Patient Medical Claim - Agreements"
-                />
-                <el-option
-                  value="2"
-                  key="patientbilling"
-                  label="In Patient Medical Claim - Billing Agents"
-                />
-                <el-option
-                  value="3"
-                  key="patientpatient"
-                  label="In Patient Medical Claim - Patient Claims"
-                />
-                <el-option
-                  value="4"
-                  key="patientschemes"
-                  label="In Patient Medical Claim - Schemes"
-                />
-                <el-option
-                  value="5"
-                  key="onlinecheck"
-                  label="Online Eligibility Check"
-                />
-                <el-option
-                  value="6"
-                  key="onlinefund"
-                  label="Online Eligibility Check - Fund"
-                />
-                <el-option
-                  value="7"
-                  key="onlineoverseas"
-                  label="Online Eligibility Check - Overseas"
-                />
-                <el-option
-                  value="8"
-                  key="onlineagrrements"
-                  label="Overseas Claim - Agreements"
-                />
-                <el-option
-                  value="9"
-                  key="onlinebilling"
-                  label="Overseas Claim - Billing Agents"
-                />
-                <el-option
-                  value="10"
-                  key="onlinepatient"
-                  label="Overseas Claim - Patient Claims"
-                />
-                <el-option
-                  value="11"
-                  key="onlineschemes"
-                  label="Overseas Claim - Schemes"
-                />
-                <el-option
-                  value="12"
-                  key="medicardbenefits"
-                  label="Medicare Benefits"
-                />
-                <el-option
-                  value="13"
-                  key="patientverification"
-                  label="Online Patient Verification"
-                />
-                <el-option
-                  value="14"
-                  key="eclipseremittance"
-                  label="ECLIPSE Remittance Advice"
+                  v-for="item in eclipseCapabilities"
+                  :value="item.value"
+                  :key="item.key"
+                  :label="item.label"
                 />
               </el-select>
             </el-form-item>
@@ -235,6 +166,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import eclipseCapabilities from "@/core/data/eclipse-capabilities";
 
 export default defineComponent({
   name: "add-health-fund",
@@ -316,6 +248,7 @@ export default defineComponent({
       formData,
       rules,
       submit,
+      eclipseCapabilities,
     };
   },
 });
