@@ -235,7 +235,7 @@ export default defineComponent({
         ..._specialists_search,
       });
       setCurrentPageBreadcrumbs("Dashboard", ["Bookings"]);
-      store.dispatch(Actions.APT.TYPE_LIST);
+      store.dispatch(Actions.APT.TYPES.LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
