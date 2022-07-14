@@ -1,56 +1,8 @@
 <template>
-  <div class="row g-5 g-xl-8">
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm008.svg"
-        color="primary"
-        icon-color="white"
-        :title="'Total : ' + tableData.value.length + ' Members'"
-        description="Total Administrator"
-      />
-    </div>
-
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-5 mb-xl-8"
-        svg-icon="media/icons/duotune/graphs/gra005.svg"
-        color="success"
-        icon-color="white"
-        title="Sales Stats"
-        description="50% Increased for FY20"
-      />
-    </div>
-
-    <div class="col-xl-4">
-      <StatsisticsWidget5
-        widget-classes="card-xl-stretch mb-xl-8"
-        svg-icon="media/icons/duotune/ecommerce/ecm002.svg"
-        color="danger"
-        icon-color="white"
-        title="Shopping Cart"
-        description="Lands, Houses, Ranchos, Farms"
-      />
-    </div>
-  </div>
-  <div class="card">
+  <div class="card w-75 mx-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
-      <div class="card-title">
-        <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
-          <span class="svg-icon svg-icon-1 position-absolute ms-6">
-            <inline-svg src="media/icons/duotune/general/gen021.svg" />
-          </span>
-          <input
-            type="text"
-            data-kt-subscription-table-filter="search"
-            class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Organisation Manager"
-          />
-        </div>
-        <!--end::Search-->
-      </div>
+      <div class="card-title"></div>
       <!--begin::Card title-->
 
       <!--begin::Card toolbar-->
@@ -60,20 +12,6 @@
           class="d-flex justify-content-end"
           data-kt-subscription-table-toolbar="base"
         >
-          <!--begin::Export-->
-          <button
-            type="button"
-            class="btn btn-light-primary me-3"
-            data-bs-toggle="modal"
-            data-bs-target="#kt_subscriptions_export_modal"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr078.svg" />
-            </span>
-            Export
-          </button>
-          <!--end::Export-->
-
           <!--begin::Add subscription-->
           <button
             type="button"
@@ -118,10 +56,9 @@
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen019.svg" />
+              <inline-svg src="media/icons/duotune/coding/cod008.svg" />
             </span>
           </a>
-
           <button
             @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
@@ -154,7 +91,6 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import CreateModal from "@/components/organization-managers/AddOrganizationManager.vue";
 import EditModal from "@/components/organization-managers/EditOrganizationManager.vue";
-import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
@@ -166,7 +102,6 @@ export default defineComponent({
     Datatable,
     CreateModal,
     EditModal,
-    StatsisticsWidget5,
   },
 
   setup() {
