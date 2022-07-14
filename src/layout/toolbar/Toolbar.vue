@@ -58,7 +58,9 @@
       <!--end::Page title-->
 
       <!--begin::Actions-->
-      <div class="d-flex align-items-center flex-wrap"></div>
+      <div class="d-flex align-items-center flex-wrap">
+        <KTTopbar></KTTopbar>
+      </div>
       <!--end::Actions-->
     </div>
     <!--end::Container-->
@@ -69,6 +71,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { toolbarWidthFluid } from "@/core/helpers/config";
+import KTTopbar from "@/layout/header/Topbar.vue";
 
 export default defineComponent({
   name: "KToolbar",
@@ -76,7 +79,9 @@ export default defineComponent({
     breadcrumbs: Array,
     title: String,
   },
-  components: {},
+  components: {
+    KTTopbar,
+  },
   setup() {
     return {
       toolbarWidthFluid,
