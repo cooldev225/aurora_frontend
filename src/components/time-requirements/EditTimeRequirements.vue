@@ -146,7 +146,6 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
-import moment from "moment";
 
 export default defineComponent({
   name: "edit-time-requirement",

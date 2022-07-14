@@ -26,26 +26,45 @@
         :enable-items-per-page-dropdown="false"
       >
         <template v-slot:cell-name="{ row: item }">
-          <button
-            @click="handleEdit(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/art/art005.svg" />
-            </span>
-          </button>
+          <div class="d-flex align-items-center">
+            <button
+              @click="handleEdit(item)"
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            >
+              <span class="svg-icon svg-icon-3">
+                <inline-svg src="media/icons/duotune/art/art005.svg" />
+              </span>
+            </button>
 
-          <button
-            @click="handleDelete(item.id)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen027.svg" />
-            </span>
-          </button>
-          {{ item.name }}
+            <button
+              @click="handleDelete(item.id)"
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
+            >
+              <span class="svg-icon svg-icon-3">
+                <inline-svg src="media/icons/duotune/general/gen027.svg" />
+              </span>
+            </button>
+            {{ item.name }}
+          </div>
         </template>
-        <template v-slot:cell-action></template>
+        <template v-slot:cell-type="{ row: item }">
+          {{ item.type }}
+        </template>
+        <template v-slot:cell-mbs_code="{ row: item }">
+          {{ item.mbs_code }}
+        </template>
+        <template v-slot:cell-clinical_code="{ row: item }">
+          {{ item.clinical_code }}
+        </template>
+        <template v-slot:cell-invoice_by="{ row: item }">
+          {{ item.invoice_by }}
+        </template>
+        <template v-slot:cell-arrival_time="{ row: item }">
+          {{ item.arrival_time }}
+        </template>
+        <template v-slot:cell-appointment_time="{ row: item }">
+          {{ item.appointment_time }}
+        </template>
       </Datatable>
     </div>
   </div>
@@ -59,7 +78,7 @@ import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import CreateModal from "@/components/anesthetic-questions/CreateAnestheticQuestion.vue";
-import EditModal from "@/components/anesthetic-questions/EditAnestheticQuestion.vue";
+import EditModal from "@/components/apt-types/EditAptType.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -82,8 +101,34 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "",
-        key: "action",
+        name: "Type",
+        key: "type",
+        sortable: true,
+      },
+      {
+        name: "MBS Code",
+        key: "mbs_code",
+        sortable: true,
+      },
+      {
+        name: "Clinical Code",
+        key: "clinical_code",
+        sortable: true,
+      },
+      {
+        name: "Invoice By",
+        key: "invoice_by",
+        sortable: true,
+      },
+      {
+        name: "Arrival Time",
+        key: "arrival_time",
+        sortable: true,
+      },
+      {
+        name: "Appointment Time",
+        key: "appointment_time",
+        sortable: true,
       },
     ]);
     const tableData = ref([]);
@@ -91,9 +136,7 @@ export default defineComponent({
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_APT.TYPES.SELECT, item);
-      const modal = new Modal(
-        document.getElementById("modal_edit_anesthetic_question")
-      );
+      const modal = new Modal(document.getElementById("modal_edit_apt_type"));
       modal.show();
     };
 

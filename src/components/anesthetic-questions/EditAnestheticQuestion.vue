@@ -134,7 +134,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "edit-time-requirement",
+  name: "edit-anesthetic-question-modal",
   components: {},
   setup() {
     const store = useStore();

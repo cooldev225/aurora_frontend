@@ -138,7 +138,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "add-admin-modal",
+  name: "add-anesthetic-question-modal",
   components: {},
   setup() {
     const store = useStore();
@@ -168,7 +168,6 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
-          console.log("valid");
           loading.value = true;
           store
             .dispatch(Actions.ANESTHETIST_QUES.CREATE, formData.value)
