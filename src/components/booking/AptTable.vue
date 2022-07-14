@@ -1,121 +1,119 @@
 <template>
-  <div>
-    <table
-      class="table align-middle gs-0 gy-4 my-0 booking-table-header position-sticky top-0 left-0"
-      style="z-index: 2"
-    >
-      <thead>
-        <tr class="fw-bolder center-row text-white bg-primary">
+  <table
+    class="table align-middle gs-0 gy-4 my-0 booking-table-header position-sticky top-0 left-0"
+    style="z-index: 2"
+  >
+    <thead>
+      <tr class="fw-bolder center-row text-white bg-primary">
+        <th
+          class="cell-120px border-0"
+          style="position: relative; left: 0px"
+        ></th>
+        <th class="cell-35px border-0"></th>
+        <template v-if="_tableData">
           <th
-            class="cell-120px border-0"
-            style="position: relative; left: 0px"
-          ></th>
-          <th class="cell-35px border-0"></th>
-          <template v-if="_tableData">
+            :colspan="_tableData.length * 2 - 1"
+            class="text-xl-left border-0 fw-bold fs-4"
+          >
+            {{ tableTitle }}
+          </th>
+        </template>
+      </tr>
+      <template v-if="_tableData">
+        <tr class="bg-light-warning doctor-row text-center text-primary">
+          <th class="cell-120px" style="position: relative; left: 0px"></th>
+          <th class="cell-35px"></th>
+          <template v-for="(item, index) in _tableData" :key="index">
             <th
-              :colspan="_tableData.length * 2 - 1"
-              class="text-xl-left border-0 fw-bold fs-4"
+              :colspan="index === 0 ? 1 : 2"
+              class="fw-bolder"
+              :style="index === 0 ? 'min-width: 441px' : 'min-width: 476px'"
             >
-              {{ tableTitle }}
+              <span class="fs-5 d-block">{{ item.name }}</span>
+              <span class="fs-8">{{ item.work_hours.locations.name }}</span>
             </th>
           </template>
         </tr>
-        <template v-if="_tableData">
-          <tr class="bg-light-warning doctor-row text-center text-primary">
-            <th class="cell-120px" style="position: relative; left: 0px"></th>
-            <th class="cell-35px"></th>
-            <template v-for="(item, index) in _tableData" :key="index">
-              <th
-                :colspan="index === 0 ? 1 : 2"
-                class="fw-bolder"
-                :style="index === 0 ? 'min-width: 441px' : 'min-width: 476px'"
-              >
-                <span class="fs-5 d-block">{{ item.name }}</span>
-                <span class="fs-8">{{ item.work_hours.locations.name }}</span>
-              </th>
-            </template>
-          </tr>
-        </template>
-      </thead>
-    </table>
-    <template v-if="_tableData">
-      <div
-        style="
-          /* max-height: 400px; */
-          /* overflow: scroll visible; */
-          width: max-content;
-          min-width: 100%;
-        "
+      </template>
+    </thead>
+  </table>
+  <template v-if="_tableData">
+    <div
+      style="
+        /* max-height: 400px; */
+        /* overflow: scroll visible; */
+        width: max-content;
+        min-width: 100%;
+      "
+    >
+      <table
+        class="booking-table-body table align-middle gs-0 gy-4 my-0 bg-light"
       >
-        <table
-          class="booking-table-body table align-middle gs-0 gy-4 my-0 bg-light"
-        >
-          <tbody>
-            <template v-for="(item, index) in aptTimeList" :key="index">
-              <tr class="text-center">
-                <td
-                  class="cell-120px bg-white"
-                  style="position: relative; left: 0px"
-                >
-                  {{ item }}
+        <tbody>
+          <template v-for="(item, index) in aptTimeList" :key="index">
+            <tr class="text-center">
+              <td
+                class="cell-120px bg-white"
+                style="position: relative; left: 0px"
+              >
+                {{ item }}
+              </td>
+              <template
+                v-for="(item_1, index_1) in appointment[item]"
+                :key="index_1"
+              >
+                <td class="cell-35px bg-white">
+                  <a
+                    class="cursor-pointer"
+                    v-if="
+                      timeStr2Number(
+                        item_1.specialist.work_hours.time_slot[0]
+                      ) <= timeStr2Number(item) &&
+                      timeStr2Number(
+                        item_1.specialist.work_hours.time_slot[1]
+                      ) > timeStr2Number(item)
+                    "
+                    @click="
+                      handleAddApt(
+                        item_1.specialist,
+                        item,
+                        aptTimeList[index + 1]
+                      )
+                    "
+                  >
+                    <i class="fa fa-plus text-primary"></i>
+                  </a>
                 </td>
-                <template
-                  v-for="(item_1, index_1) in appointment[item]"
-                  :key="index_1"
-                >
-                  <td class="cell-35px bg-white">
-                    <a
-                      class="cursor-pointer"
-                      v-if="
-                        timeStr2Number(
-                          item_1.specialist.work_hours.time_slot[0]
-                        ) <= timeStr2Number(item) &&
-                        timeStr2Number(
-                          item_1.specialist.work_hours.time_slot[1]
-                        ) > timeStr2Number(item)
-                      "
-                      @click="
-                        handleAddApt(
-                          item_1.specialist,
-                          item,
-                          aptTimeList[index + 1]
-                        )
-                      "
-                    >
-                      <i class="fa fa-plus text-primary"></i>
-                    </a>
-                  </td>
-                  <template v-if="item_1.time_length === 4">
-                    <td style="min-width: 441px"></td>
-                  </template>
-                  <template v-else-if="item_1.time_length === 0"></template>
-                  <template v-else>
-                    <td :rowspan="item_1.time_length" style="min-width: 441px">
-                      <div
-                        class="d-flex justify-content-center align-items-center"
-                      >
-                        <span
-                          class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-5"
-                          data-kt-drawer-toggle="true"
-                          data-kt-drawer-target="#kt_drawer_chat"
-                          @click="handleEdit(item_1.appointment)"
-                        >
-                          {{ item_1.appointment.first_name }}
-                          {{ item_1.appointment.last_name }} ({{
-                            item_1.appointment.contact_number
-                          }})
-                        </span>
-                      </div>
-                    </td>
-                  </template>
+                <template v-if="item_1.time_length === 4">
+                  <td style="min-width: 441px"></td>
                 </template>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </div>
-    </template>
-  </div>
+                <template v-else-if="item_1.time_length === 0"></template>
+                <template v-else>
+                  <td :rowspan="item_1.time_length" style="min-width: 441px">
+                    <div
+                      class="d-flex justify-content-center align-items-center"
+                    >
+                      <span
+                        class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-5"
+                        data-kt-drawer-toggle="true"
+                        data-kt-drawer-target="#kt_drawer_chat"
+                        @click="handleEdit(item_1.appointment)"
+                      >
+                        {{ item_1.appointment.first_name }}
+                        {{ item_1.appointment.last_name }} ({{
+                          item_1.appointment.contact_number
+                        }})
+                      </span>
+                    </div>
+                  </td>
+                </template>
+              </template>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </template>
 </template>
 
 <script>

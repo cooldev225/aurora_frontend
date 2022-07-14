@@ -1,77 +1,45 @@
 <template>
   <div class="card w-75 mx-auto">
-    <div class="card-header border-0 pt-6">
-      <!--begin::Card title-->
-      <div class="card-title">
-        <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
-          <span class="svg-icon svg-icon-1 position-absolute ms-6">
-            <inline-svg src="media/icons/duotune/general/gen021.svg" />
+    <div class="card-header row border-0 p-6">
+      <div class="card-title col">
+        <div class="alert alert-primary d-flex m-auto align-items-center p-2">
+          <span class="svg-icon svg-icon-2hx svg-icon-primary me-2">
+            <inline-svg src="media/icons/duotune/general/gen007.svg" />
           </span>
-          <input
-            type="text"
-            data-kt-subscription-table-filter="search"
-            class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Questions"
-          />
+          <div class="d-flex flex-column">
+            <span
+              >These settings will appear when an appointment that requires an
+              anesthetists is booked. Should a patient answer yes to any of the
+              question - the employee creating the booking will be alearted to
+              book a consult</span
+            >
+          </div>
         </div>
-        <!--end::Search-->
       </div>
-      <!--begin::Card title-->
-
-      <!--begin::Card toolbar-->
-      <div class="card-toolbar">
-        <!--begin::Toolbar-->
-        <div
-          class="d-flex justify-content-end"
-          data-kt-subscription-table-toolbar="base"
+      <!--begin::Add button-->
+      <div class="col-2 text-end m-auto">
+        <button
+          type="button"
+          class="btn btn-light-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#modal_add_anesthetic_question"
         >
-          <!--begin::Export-->
-          <button
-            type="button"
-            class="btn btn-light-primary me-3"
-            data-bs-toggle="modal"
-            data-bs-target="#kt_subscriptions_export_modal"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr078.svg" />
-            </span>
-            Export
-          </button>
-          <!--end::Export-->
-
-          <!--begin::Add subscription-->
-          <button
-            type="button"
-            class="btn btn-light-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modal_add_anesthetic_question"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
-            </span>
-            Add
-          </button>
-          <!--end::Add subscription-->
-        </div>
-        <!--end::Toolbar-->
+          <span class="svg-icon svg-icon-2">
+            <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
+          </span>
+          Add
+        </button>
       </div>
-      <!--end::Card toolbar-->
+      <!--end::Add button-->
     </div>
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :rows-per-page="5"
-        :enable-items-per-page-dropdown="true"
+        :rows-per-page="20"
+        :enable-items-per-page-dropdown="false"
       >
         <template v-slot:cell-question="{ row: item }">
-          {{ item.question }}
-        </template>
-        <template v-slot:cell-status="{ row: item }">
-          {{ item.status }}
-        </template>
-        <template v-slot:cell-action="{ row: item }">
           <button
             @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
@@ -89,7 +57,9 @@
               <inline-svg src="media/icons/duotune/general/gen027.svg" />
             </span>
           </button>
+          {{ item.question }}
         </template>
+        <template v-slot:cell-action=""> </template>
       </Datatable>
     </div>
   </div>
@@ -123,11 +93,6 @@ export default defineComponent({
       {
         name: "Question",
         key: "question",
-        sortable: true,
-      },
-      {
-        name: "Status",
-        key: "status",
         sortable: true,
       },
       {

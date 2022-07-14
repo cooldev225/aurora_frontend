@@ -109,7 +109,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { ErrorMessage, Field, Form } from "vee-validate";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
@@ -127,6 +127,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+    const userRole = computed(() => store.getters.userRole);
 
     const submitButton = ref<HTMLButtonElement | null>(null);
 
@@ -155,7 +156,12 @@ export default defineComponent({
 
       if (!error) {
         // Go to page after successfully login
-        router.push({ name: "dashboard" });
+        if (
+          userRole.value === "organizationManager" ||
+          userRole.value === "receptionist"
+        )
+          router.push({ name: "booking-dashboard" });
+        else router.push({ name: "dashboard" });
       } else {
         Swal.fire({
           text: error[0],

@@ -606,33 +606,6 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Title
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="title">
-                            <el-select
-                              class="w-100"
-                              v-model="formData.title"
-                              placeholder="Select Title"
-                            >
-                              <el-option value="mr" label="Mr" />
-                              <el-option value="mrs" label="Mrs" />
-                              <el-option value="ms" label="Ms" />
-                              <el-option value="master" label="Master" />
-                              <el-option value="miss" label="Miss" />
-                            </el-select>
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
                           <label class="fs-6 fw-bold mb-2"> Email </label>
                           <!--end::Label-->
 
@@ -1610,13 +1583,6 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      room_id: [
-        {
-          required: true,
-          message: "Room cannot be blank.",
-          trigger: "change",
-        },
-      ],
       arrival_time: [
         {
           required: true,
@@ -1656,13 +1622,6 @@ export default defineComponent({
         {
           required: true,
           message: "Date of birth cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      title: [
-        {
-          required: true,
-          message: "Title cannot be blank.",
           trigger: "change",
         },
       ],

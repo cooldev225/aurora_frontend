@@ -1,11 +1,5 @@
 const AdminMenu = [
   {
-    heading: "Dashboard",
-    route: "/dashboard",
-    svgIcon: "media/icons/duotune/art/art002.svg",
-    fontIcon: "bi-house fs-2",
-  },
-  {
     heading: "Organisations",
     route: "/organizations",
     svgIcon: "media/icons/duotune/general/gen019.svg",
@@ -14,13 +8,13 @@ const AdminMenu = [
   {
     heading: "Administrators",
     route: "/admins",
-    svgIcon: "media/icons/duotune/communication/com014.svg",
+    svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-person",
   },
   {
     heading: "Settings",
     route: "/settings",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/coding/cod001.svg",
     fontIcon: "bi-gear",
     pages: [
       {
@@ -53,21 +47,15 @@ const AdminMenu = [
 
 const OrgAdminMenu = [
   {
-    heading: "Dashboard",
-    route: "/dashboard",
-    svgIcon: "media/icons/duotune/art/art002.svg",
-    fontIcon: "bi-house fs-2",
-  },
-  {
     heading: "Clinics",
     route: "/clinics",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/maps/map008.svg",
     fontIcon: "bi-hospital",
   },
   {
     heading: "Employees",
     route: "/employees",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-people",
     pages: [
       {
@@ -87,7 +75,7 @@ const OrgAdminMenu = [
   {
     heading: "Settings",
     route: "/settings",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/coding/cod001.svg",
     fontIcon: "bi-gear",
     pages: [
       {

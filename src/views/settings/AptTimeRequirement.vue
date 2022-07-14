@@ -2,20 +2,16 @@
   <div class="card w-75 mx-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
-      <div class="card-title">
-        <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
-          <span class="svg-icon svg-icon-1 position-absolute ms-6">
-            <inline-svg src="media/icons/duotune/general/gen021.svg" />
-          </span>
-          <input
-            type="text"
-            data-kt-subscription-table-filter="search"
-            class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Health Funds"
-          />
+      <div class="alert alert-primary d-flex align-items-center p-2">
+        <span class="svg-icon svg-icon-2hx svg-icon-primary me-2">
+          <inline-svg src="media/icons/duotune/general/gen007.svg" />
+        </span>
+        <div class="d-flex flex-column">
+          <span
+            >These settings are used by the next available search form on the
+            booking dashboard.</span
+          >
         </div>
-        <!--end::Search-->
       </div>
       <!--begin::Card title-->
 
@@ -26,20 +22,6 @@
           class="d-flex justify-content-end"
           data-kt-subscription-table-toolbar="base"
         >
-          <!--begin::Export-->
-          <button
-            type="button"
-            class="btn btn-light-primary me-3"
-            data-bs-toggle="modal"
-            data-bs-target="#kt_subscriptions_export_modal"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr078.svg" />
-            </span>
-            Export
-          </button>
-          <!--end::Export-->
-
           <!--begin::Add subscription-->
           <button
             type="button"
@@ -75,14 +57,6 @@
           {{ item.base_time }}
         </template>
         <template v-slot:cell-action="{ row: item }">
-          <button
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen019.svg" />
-            </span>
-          </button>
-
           <button
             @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
