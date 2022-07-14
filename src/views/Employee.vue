@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card w-75 mx-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
@@ -12,7 +12,7 @@
             type="text"
             data-kt-subscription-table-filter="search"
             class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Administrators"
+            placeholder="Search Employees"
           />
         </div>
         <!--end::Search-->
@@ -26,20 +26,6 @@
           class="d-flex justify-content-end"
           data-kt-subscription-table-toolbar="base"
         >
-          <!--begin::Export-->
-          <button
-            type="button"
-            class="btn btn-light-primary me-3"
-            data-bs-toggle="modal"
-            data-bs-target="#kt_subscriptions_export_modal"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr078.svg" />
-            </span>
-            Export
-          </button>
-          <!--end::Export-->
-
           <!--begin::Add subscription-->
           <router-link to="/employees/create" class="btn btn-primary">
             <span class="svg-icon svg-icon-2">
@@ -79,7 +65,7 @@
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen019.svg" />
+              <inline-svg src="media/icons/duotune/coding/cod008.svg" />
             </span>
           </a>
 
@@ -188,7 +174,7 @@ export default defineComponent({
 
     onMounted(() => {
       loading.value = true;
-      setCurrentPageBreadcrumbs("Administrators", []);
+      setCurrentPageBreadcrumbs("Employees", []);
       store.dispatch(Actions.EMPLOYEE.LIST).then(() => {
         tableData.value = list;
         loading.value = false;
