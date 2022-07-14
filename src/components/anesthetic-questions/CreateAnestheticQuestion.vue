@@ -5,6 +5,7 @@
     tabindex="-1"
     aria-hidden="true"
     ref="addAnestheticQuestionModalRef"
+    data-bs-backdrop="static"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">

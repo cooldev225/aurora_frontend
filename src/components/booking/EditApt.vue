@@ -1955,7 +1955,7 @@ export default defineComponent({
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
-    const aptTypeList = computed(() => store.getters.getAptTypeList);
+    const aptTypeList = computed(() => store.getters.getAptTypesList);
     const searchVal = computed(() => store.getters.getSearchVariable);
     const aptData = computed(() => store.getters.getAptSelected);
 

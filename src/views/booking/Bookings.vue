@@ -217,7 +217,7 @@ export default defineComponent({
     const _available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
     );
-    const _aptTypelist = computed(() => store.getters.getAptTypeList);
+    const _aptTypelist = computed(() => store.getters.getAptTypesList);
     const _allSpecialists = computed(() => store.getters.getSpecialistList);
     const _aptTimeRequireList = computed(
       () => store.getters.getAptTimeRequireList
