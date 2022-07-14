@@ -2,24 +2,26 @@
   <div class="card w-75 mx-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
-      <div class="alert alert-primary d-flex align-items-center p-2">
-        <span class="svg-icon svg-icon-2hx svg-icon-primary me-2">
-          <inline-svg src="media/icons/duotune/general/gen007.svg" />
-        </span>
-        <div class="d-flex flex-column">
-          <span
-            >These settings are used by the next available search form on the
-            booking dashboard.</span
-          >
+      <div class="card-title col">
+        <div class="alert alert-primary d-flex align-items-center p-2">
+          <span class="svg-icon svg-icon-2hx svg-icon-primary me-2">
+            <inline-svg src="media/icons/duotune/general/gen007.svg" />
+          </span>
+          <div class="d-flex flex-column">
+            <span
+              >These settings are used by the next available search form on the
+              booking dashboard.</span
+            >
+          </div>
         </div>
       </div>
-      <!--begin::Card title-->
+      <!--end::Card title-->
 
       <!--begin::Card toolbar-->
-      <div class="card-toolbar">
+      <div class="card-toolbar col-12 col-sm-2">
         <!--begin::Toolbar-->
         <div
-          class="d-flex justify-content-end"
+          class="d-flex justify-content-end ms-auto"
           data-kt-subscription-table-toolbar="base"
         >
           <!--begin::Add subscription-->

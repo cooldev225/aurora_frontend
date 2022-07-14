@@ -17,10 +17,10 @@
         </div>
       </div>
       <!--begin::Add button-->
-      <div class="col-2 text-end m-auto">
+      <div class="card-toolbar col-12 col-sm-2">
         <button
           type="button"
-          class="btn btn-light-primary"
+          class="btn btn-light-primary ms-auto"
           data-bs-toggle="modal"
           data-bs-target="#modal_add_anesthetic_question"
         >
