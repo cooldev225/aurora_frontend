@@ -47,7 +47,7 @@ export default class BirthCodeModule
   }
 
   @Action
-  [Actions.LIST_BIRTH_CODE]() {
+  [Actions.BIRTH_CODE.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("birth-codes")
@@ -65,7 +65,7 @@ export default class BirthCodeModule
   }
 
   @Action
-  [Actions.CREATE_BIRTH_CODE](payload) {
+  [Actions.BIRTH_CODE.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("birth-codes", payload)
@@ -81,7 +81,7 @@ export default class BirthCodeModule
   }
 
   @Action
-  [Actions.UPDATE_BIRTH_CODE](item) {
+  [Actions.BIRTH_CODE.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("birth-codes", item.id, item)
@@ -98,7 +98,7 @@ export default class BirthCodeModule
   }
 
   @Action
-  [Actions.DELETE_BIRTH_CODE](id) {
+  [Actions.BIRTH_CODE.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("birth-codes/" + id)

@@ -147,9 +147,9 @@ export default defineComponent({
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_ORG_MANAGER, id)
+        .dispatch(Actions.ORG_MANAGER.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LIST_ORG_MANAGER);
+          store.dispatch(Actions.ORG_MANAGER.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -167,7 +167,7 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Organisation Managers", []);
-      store.dispatch(Actions.LIST_ORG_MANAGER);
+      store.dispatch(Actions.ORG_MANAGER.LIST);
       tableData.value = orgManagerList;
     });
 

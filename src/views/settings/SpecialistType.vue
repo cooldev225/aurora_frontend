@@ -147,9 +147,9 @@ export default defineComponent({
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_SPECIALIST_TYPE, id)
+        .dispatch(Actions.SPECIALIST.TYPE.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LIST_SPECIALIST_TYPE);
+          store.dispatch(Actions.SPECIALIST.TYPE.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -171,7 +171,7 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Specialist Type", []);
-      store.dispatch(Actions.LIST_SPECIALIST_TYPE);
+      store.dispatch(Actions.SPECIALIST.TYPE.LIST);
       tableData.value = specTypeList;
     });
 

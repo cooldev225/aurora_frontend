@@ -164,7 +164,7 @@ export default defineComponent({
     const appointment = ref();
 
     onMounted(() => {
-      store.dispatch(Actions.LIST_ORG);
+      store.dispatch(Actions.ORG.LIST);
     });
 
     watch(_tableData, () => {

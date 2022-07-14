@@ -50,7 +50,7 @@ export default class SpecialistTypeModule
   }
 
   @Action
-  [Actions.LIST_SPECIALIST_TYPE]() {
+  [Actions.SPECIALIST.TYPE.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("specialist-types")
@@ -68,7 +68,7 @@ export default class SpecialistTypeModule
   }
 
   @Action
-  [Actions.CREATE_SPECIALIST_TYPE](payload) {
+  [Actions.SPECIALIST.TYPE.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("specialist-types", payload)
@@ -84,7 +84,7 @@ export default class SpecialistTypeModule
   }
 
   @Action
-  [Actions.UPDATE_SPECIALIST_TYPE](item) {
+  [Actions.SPECIALIST.TYPE.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("specialist-types", item.id, item)
@@ -101,7 +101,7 @@ export default class SpecialistTypeModule
   }
 
   @Action
-  [Actions.DELETE_SPECIALIST_TYPE](id) {
+  [Actions.SPECIALIST.TYPE.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("specialist-types/" + id)

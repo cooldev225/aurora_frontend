@@ -177,10 +177,10 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.UPDATE_BIRTH_CODE, formData.value)
+            .dispatch(Actions.BIRTH_CODE.UPDATE, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.LIST_BIRTH_CODE);
+              store.dispatch(Actions.BIRTH_CODE.LIST);
               Swal.fire({
                 text: "Successfully Updated!",
                 icon: "success",

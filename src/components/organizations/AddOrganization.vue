@@ -445,10 +445,10 @@ export default defineComponent({
           });
           loading.value = true;
           store
-            .dispatch(Actions.CREATE_ORG, Data)
+            .dispatch(Actions.ORG.CREATE, Data)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.LIST_ORG);
+              store.dispatch(Actions.ORG.LIST);
               Swal.fire({
                 text: "Successfully Updated!",
                 icon: "success",

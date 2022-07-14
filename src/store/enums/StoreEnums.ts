@@ -20,20 +20,26 @@ const Actions = {
     UPDATE: "updateAdmin",
   },
 
-  LIST_ORG: "listOrg",
-  CREATE_ORG: "createOrg",
-  DELETE_ORG: "deleteOrg",
-  UPDATE_ORG: "updateOrg",
+  ORG: {
+    LIST: "listOrg",
+    CREATE: "createOrg",
+    DELETE: "deleteOrg",
+    UPDATE: "updateOrg",
+  },
 
-  LIST_ORG_MANAGER: "listOrgManager",
-  CREATE_ORG_MANAGER: "createOrgManager",
-  DELETE_ORG_MANAGER: "deleteOrgManager",
-  UPDATE_ORG_MANAGER: "updateOrgManager",
+  ORG_MANAGER: {
+    LIST: "listOrgManager",
+    CREATE: "createOrgManager",
+    DELETE: "deleteOrgManager",
+    UPDATE: "updateOrgManager",
+  },
 
-  LIST_ORG_ADMIN: "listOrgAdmin",
-  CREATE_ORG_ADMIN: "createOrgAdmin",
-  DELETE_ORG_ADMIN: "deleteOrgAdmin",
-  UPDATE_ORG_ADMIN: "updateOrgAdmin",
+  ORG_ADMIN: {
+    LIST: "listOrgAdmin",
+    CREATE: "createOrgAdmin",
+    DELETE: "deleteOrgAdmin",
+    UPDATE: "updateOrgAdmin",
+  },
 
   CLINICS: {
     LIST: "listClinics",
@@ -54,10 +60,12 @@ const Actions = {
     },
   },
 
-  LIST_BIRTH_CODE: "listBirthCode",
-  CREATE_BIRTH_CODE: "createBirthCode",
-  DELETE_BIRTH_CODE: "deleteBirthCode",
-  UPDATE_BIRTH_CODE: "updateBirthCode",
+  BIRTH_CODE: {
+    LIST: "listBirthCode",
+    CREATE: "createBirthCode",
+    DELETE: "deleteBirthCode",
+    UPDATE: "updateBirthCode",
+  },
 
   HEALTH_FUND: {
     LIST: "listHealthFunds",
@@ -68,17 +76,21 @@ const Actions = {
     CREATE: "createSpecialists",
     DELETE: "deleteSpecialists",
     UPDATE: "updateSpecialists",
+
+    TYPE: {
+      LIST: "listSpecialistType",
+      CREATE: "createSpecialistType",
+      DELETE: "deleteSpecialistType",
+      UPDATE: "updateSpecialistType",
+    },
+
+    TITLE: {
+      LIST: "listSpecialistTitle",
+      CREATE: "createSpecialistTitle",
+      DELETE: "deleteSpecialistTitle",
+      UPDATE: "updateSpecialistTitle",
+    },
   },
-
-  LIST_SPECIALIST_TYPE: "listSpecialistType",
-  CREATE_SPECIALIST_TYPE: "createSpecialistType",
-  DELETE_SPECIALIST_TYPE: "deleteSpecialistType",
-  UPDATE_SPECIALIST_TYPE: "updateSpecialistType",
-
-  LIST_SPECIALIST_TITLE: "listSpecialistTitle",
-  CREATE_SPECIALIST_TITLE: "createSpecialistTitle",
-  DELETE_SPECIALIST_TITLE: "deleteSpecialistTitle",
-  UPDATE_SPECIALIST_TITLE: "updateSpecialistTitle",
 
   PATIENTS: {
     LIST: "listPatients",

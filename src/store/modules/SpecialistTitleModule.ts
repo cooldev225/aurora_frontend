@@ -50,7 +50,7 @@ export default class SpecialistTitleModule
   }
 
   @Action
-  [Actions.LIST_SPECIALIST_TITLE]() {
+  [Actions.SPECIALIST.TITLE.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("specialist-titles")
@@ -68,7 +68,7 @@ export default class SpecialistTitleModule
   }
 
   @Action
-  [Actions.CREATE_SPECIALIST_TITLE](payload) {
+  [Actions.SPECIALIST.TITLE.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("specialist-titles", payload)
@@ -84,7 +84,7 @@ export default class SpecialistTitleModule
   }
 
   @Action
-  [Actions.UPDATE_SPECIALIST_TITLE](item) {
+  [Actions.SPECIALIST.TITLE.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("specialist-titles", item.id, item)
@@ -101,7 +101,7 @@ export default class SpecialistTitleModule
   }
 
   @Action
-  [Actions.DELETE_SPECIALIST_TITLE](id) {
+  [Actions.SPECIALIST.TITLE.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("specialist-titles/" + id)

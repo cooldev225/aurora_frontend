@@ -282,10 +282,10 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.CREATE_ORG_MANAGER, formData.value)
+            .dispatch(Actions.ORG_MANAGER.CREATE, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.LIST_ORG_MANAGER);
+              store.dispatch(Actions.ORG_MANAGER.LIST);
               Swal.fire({
                 text: "Successfully Created!",
                 icon: "success",
