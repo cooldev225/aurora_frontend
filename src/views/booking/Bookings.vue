@@ -128,7 +128,7 @@
   <div class="card mt-5">
     <div class="card-body">
       <div class="scroll h-500px">
-        <div class="d-flex flex-row" style="width: min-content">
+        <div class="d-flex flex-column">
           <template v-for="(item, key) in _specialists" :key="key">
             <AptTable
               :ava_SPTData="item"
