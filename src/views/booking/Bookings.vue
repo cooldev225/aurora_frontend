@@ -62,7 +62,7 @@
                     <el-select
                       class="w-50 p-2"
                       placeholder="Select Clinic"
-                      v-model="_available_slots_search.clinic_id"
+                      v-model="_search_next_apts.clinic_id"
                     >
                       <el-option value="" label="Any Clinic" />
                       <template v-for="(item, idx) in _clinic_list" :key="idx">
@@ -73,7 +73,7 @@
                     <el-select
                       class="w-50 p-2"
                       placeholder="Select Specialist"
-                      v-model="_available_slots_search.specialist_id"
+                      v-model="_search_next_apts.specialist_id"
                       filterable
                     >
                       <el-option value="" label="Any Specialist" />
@@ -102,7 +102,7 @@
                     <el-select
                       class="w-50 p-2"
                       placeholder="Select Time frame"
-                      v-model="_available_slots_search.x_weeks"
+                      v-model="_search_next_apts.x_weeks"
                     >
                       <template v-for="(item, index) in _x_weeks" :key="index">
                         <el-option :value="index" :label="item" />
@@ -192,15 +192,12 @@ export default defineComponent({
     const _specialists_search = reactive({
       specialist_ids: [],
     });
-    const _available_slots_search = reactive({
-      x_weeks: "",
-      clinic_id: "",
-      specialist_id: "",
-    });
     const _search_next_apts = reactive({
       appointment_type_id: "",
-      specialist_ids: "",
+      specialist_id: "",
       time_requirement: "",
+      x_weeks: "",
+      clinic_id: "",
     });
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
@@ -275,7 +272,6 @@ export default defineComponent({
     const handleSearch = async () => {
       await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
         ..._search_next_apts,
-        ..._available_slots_search,
       });
 
       const modal = new Modal(
@@ -290,7 +286,9 @@ export default defineComponent({
       _date_search.date = new Date();
 
       _search_next_apts.appointment_type_id = "";
-      _search_next_apts.specialist_ids = "";
+      _search_next_apts.x_weeks = "";
+      _search_next_apts.clinic_id = "";
+      _search_next_apts.specialist_id = "";
       _search_next_apts.time_requirement = "";
     };
 
@@ -349,7 +347,6 @@ export default defineComponent({
       _ava_specialists,
       _specialists,
       _available_slots_by_date,
-      _available_slots_search,
       _aptTypelist,
       _allSpecialists,
       _aptTimeRequireList,
