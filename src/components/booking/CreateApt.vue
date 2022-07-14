@@ -1583,13 +1583,6 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      room_id: [
-        {
-          required: true,
-          message: "Room cannot be blank.",
-          trigger: "change",
-        },
-      ],
       arrival_time: [
         {
           required: true,
