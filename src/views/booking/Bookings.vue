@@ -50,16 +50,6 @@
                 <div class="card-info">
                   <el-select
                     class="w-100"
-                    placeholder="Select Clinic"
-                    v-model="_available_slots_search.clinic_id"
-                  >
-                    <template v-for="(item, idx) in _clinic_list" :key="idx">
-                      <el-option :value="item.id" :label="item.name" />
-                    </template>
-                  </el-select>
-                  <el-divider />
-                  <el-select
-                    class="w-100"
                     placeholder="Select Appointment Type"
                     v-model="_search_next_apts.appointment_type_id"
                   >
@@ -68,44 +58,56 @@
                     </template>
                   </el-select>
                   <el-divider />
-                  <el-select
-                    class="w-100"
-                    placeholder="Select Specialist"
-                    v-model="_search_next_apts.specialist_ids"
-                    multiple
-                    filterable
-                  >
-                    <template
-                      v-for="(item, index) in _allSpecialists"
-                      :key="index"
+                  <div>
+                    <el-select
+                      class="w-50 p-2"
+                      placeholder="Select Clinic"
+                      v-model="_available_slots_search.clinic_id"
                     >
-                      <el-option :value="item.id" :label="item.name" />
-                    </template>
-                  </el-select>
-                  <el-divider />
-                  <el-select
-                    class="w-100"
-                    placeholder="Select Appointment Time Requirement"
-                    v-model="_search_next_apts.time_requirement"
-                  >
-                    <template
-                      v-for="(item, idx) in _aptTimeRequireList"
-                      :key="idx"
-                    >
-                      <el-option :value="item.id" :label="item.title" />
-                    </template>
-                  </el-select>
-                  <el-divider />
+                      <template v-for="(item, idx) in _clinic_list" :key="idx">
+                        <el-option :value="item.id" :label="item.name" />
+                      </template>
+                    </el-select>
 
-                  <el-select
-                    class="w-100"
-                    placeholder="Select Time frame"
-                    v-model="_available_slots_search.x_weeks"
-                  >
-                    <template v-for="(item, index) in _x_weeks" :key="index">
-                      <el-option :value="index" :label="item" />
-                    </template>
-                  </el-select>
+                    <el-select
+                      class="w-50 p-2"
+                      placeholder="Select Specialist"
+                      v-model="_search_next_apts.specialist_ids"
+                      multiple
+                      filterable
+                    >
+                      <template
+                        v-for="(item, index) in _allSpecialists"
+                        :key="index"
+                      >
+                        <el-option :value="item.id" :label="item.name" />
+                      </template>
+                    </el-select>
+                  </div>
+                  <el-divider />
+                  <div>
+                    <el-select
+                      class="w-50 p-2"
+                      placeholder="Select Appointment Time Requirement"
+                      v-model="_search_next_apts.time_requirement"
+                    >
+                      <template
+                        v-for="(item, idx) in _aptTimeRequireList"
+                        :key="idx"
+                      >
+                        <el-option :value="item.id" :label="item.title" />
+                      </template>
+                    </el-select>
+                    <el-select
+                      class="w-50 p-2"
+                      placeholder="Select Time frame"
+                      v-model="_available_slots_search.x_weeks"
+                    >
+                      <template v-for="(item, index) in _x_weeks" :key="index">
+                        <el-option :value="index" :label="item" />
+                      </template>
+                    </el-select>
+                  </div>
                 </div>
               </div>
             </div>

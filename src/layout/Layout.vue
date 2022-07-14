@@ -12,7 +12,7 @@
     <!-- end:: Aside Left -->
 
     <div id="kt_wrapper" class="d-flex flex-column flex-row-fluid wrapper">
-      <KTHeader :breadcrumbs="breadcrumbs" :title="pageTitle" />
+      <!-- <KTHeader :breadcrumbs="breadcrumbs" :title="pageTitle" /> -->
 
       <KTToolbar
         v-if="subheaderDisplay"
@@ -50,7 +50,7 @@ import { defineComponent, computed, onMounted, watch, nextTick } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import KTAside from "@/layout/aside/Aside.vue";
-import KTHeader from "@/layout/header/Header.vue";
+// import KTHeader from "@/layout/header/Header.vue";
 import KTFooter from "@/layout/footer/Footer.vue";
 import HtmlClass from "@/core/services/LayoutService";
 import KTToolbar from "@/layout/toolbar/Toolbar.vue";
@@ -82,7 +82,7 @@ export default defineComponent({
   name: "master-layout",
   components: {
     KTAside,
-    KTHeader,
+    // KTHeader,
     KTFooter,
     KTToolbar,
     KTScrollTop,

@@ -147,7 +147,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -164,8 +164,15 @@ export default defineComponent({
     const loading = ref(false);
 
     const formData = ref({
-      time_frame: "",
-      reason: "",
+      patient_id: 0,
+      organization_id: 0,
+      time_frame: 1,
+      reason: " ",
+    });
+    const patientData = ref([]);
+
+    watchEffect(() => {
+      patientData.value = store.getters.selectedPatient;
     });
 
     const submit = () => {
@@ -173,11 +180,14 @@ export default defineComponent({
         return;
       }
       loading.value = true;
+      formData.value.patient_id = patientData.value.id;
+      formData.value.organization_id = patientData.value.organization_id;
+      console.log(formData.value);
       store
-        .dispatch(Actions.ADMIN.CREATE, formData.value)
+        .dispatch(Actions.PATIENTS_RECALL.CREATE, formData.value)
         .then(() => {
           loading.value = false;
-          store.dispatch(Actions.ADMIN.LIST);
+          store.dispatch(Actions.PATIENTS_RECALL.LIST);
           Swal.fire({
             text: "Successfully Created!",
             icon: "success",
