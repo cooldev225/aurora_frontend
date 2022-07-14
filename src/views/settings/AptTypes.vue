@@ -1,21 +1,7 @@
 <template>
   <div class="card w-75 mx-auto">
     <div class="card-header row border-0 p-6">
-      <div class="card-title col">
-        <div class="alert alert-primary d-flex m-auto align-items-center p-2">
-          <span class="svg-icon svg-icon-2hx svg-icon-primary me-2">
-            <inline-svg src="media/icons/duotune/general/gen007.svg" />
-          </span>
-          <div class="d-flex flex-column">
-            <span
-              >These settings will appear when an appointment that requires an
-              anesthetists is booked. Should a patient answer yes to any of the
-              question - the employee creating the booking will be alearted to
-              book a consult</span
-            >
-          </div>
-        </div>
-      </div>
+      <div class="card-title col"></div>
       <!--begin::Add button-->
       <div class="card-toolbar col-12 col-sm-2">
         <button
@@ -39,7 +25,7 @@
         :rows-per-page="20"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-question="{ row: item }">
+        <template v-slot:cell-name="{ row: item }">
           <button
             @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
@@ -57,9 +43,9 @@
               <inline-svg src="media/icons/duotune/general/gen027.svg" />
             </span>
           </button>
-          {{ item.question }}
+          {{ item.name }}
         </template>
-        <template v-slot:cell-action=""> </template>
+        <template v-slot:cell-action></template>
       </Datatable>
     </div>
   </div>
@@ -91,8 +77,8 @@ export default defineComponent({
     const store = useStore();
     const tableHeader = ref([
       {
-        name: "Question",
-        key: "question",
+        name: "Name",
+        key: "name",
         sortable: true,
       },
       {
@@ -101,12 +87,10 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const anestheticQuestions = computed(
-      () => store.getters.getAneQuestionList
-    );
+    const aptTypes = computed(() => store.getters.getAptTypesList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_ANESTHETIST_QUES.SELECT, item);
+      store.commit(Mutations.SET_APT.TYPES.SELECT, item);
       const modal = new Modal(
         document.getElementById("modal_edit_anesthetic_question")
       );
@@ -115,9 +99,9 @@ export default defineComponent({
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.ANESTHETIST_QUES.DELETE, id)
+        .dispatch(Actions.APT.TYPES.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.ANESTHETIST_QUES.LIST);
+          store.dispatch(Actions.APT.TYPES.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -135,12 +119,11 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Appointment Types", ["Settings"]);
-      store.dispatch(Actions.ANESTHETIST_QUES.LIST);
-      tableData.value = anestheticQuestions;
+      store.dispatch(Actions.APT.TYPES.LIST);
     });
 
     watchEffect(() => {
-      tableData.value = anestheticQuestions;
+      tableData.value = aptTypes;
     });
 
     return { tableHeader, tableData, handleEdit, handleDelete };

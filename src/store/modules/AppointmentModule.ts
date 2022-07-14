@@ -13,7 +13,6 @@ export interface AptInfo {
   waitlistedAptData: Array<IApt>;
   unapprovedAptData: Array<IApt>;
   cancellationAptData: Array<IApt>;
-  aptTypeData: Array<IApt>;
   aptSelectData: IApt;
 }
 
@@ -24,7 +23,6 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   waitlistedAptData = [] as Array<IApt>;
   unapprovedAptData = [] as Array<IApt>;
   cancellationAptData = [] as Array<IApt>;
-  aptTypeData = [] as Array<IApt>;
   aptSelectData = {} as IApt;
 
   /**
@@ -67,14 +65,6 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   /**
    * Get current user object
-   * @returns AdminList
-   */
-  get getAptTypeList(): Array<IApt> {
-    return this.aptTypeData;
-  }
-
-  /**
-   * Get current user object
    * @returns SelectedaptData
    */
   get getAptSelected(): IApt {
@@ -104,11 +94,6 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   @Mutation
   [Mutations.SET_APT.CANCELLATION.LIST](aptData) {
     this.cancellationAptData = aptData;
-  }
-
-  @Mutation
-  [Mutations.SET_APT.TYPES.LIST](aptTypeData) {
-    this.aptTypeData = aptTypeData;
   }
 
   @Mutation
@@ -151,6 +136,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
   @Action
   [Actions.APT.CANCELLATION.LIST]() {
     if (JwtService.getToken()) {
@@ -194,24 +180,6 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
       ApiService.query("appointments", { params: { status: "unapproved" } })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_APT.UNAPPROVED.LIST, data.data);
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
-  [Actions.APT.TYPES.LIST]() {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.get("appointment-types")
-        .then(({ data }) => {
-          this.context.commit(Mutations.SET_APT.TYPES.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
