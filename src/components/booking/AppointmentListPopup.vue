@@ -88,34 +88,39 @@ import { Modal } from "bootstrap";
 export default defineComponent({
   name: "appointment-list-popup",
   props: {
-    appointments_by_date: { type: Array, required: true },
+    available_slots_by_date: { type: Array, required: true },
+    allSpecialists: { type: Array, required: true },
   },
   setup(props) {
-    const _available_slots_by_date = computed(() => props.appointments_by_date);
-    const _allSpecialists = computed(() => store.getters.getSpecialistList);
+    const _available_slots_by_date = computed(
+      () => props.available_slots_by_date
+    );
+    const _allSpecialists = computed(() => props.allSpecialists);
     const store = useStore();
 
     const handleAddApt = (specialist_ids, date, startTime, endTime) => {
       const _date = moment(date).format("YYYY-MM-DD").toString();
 
       let selected_specialist = null;
-      let selected_specialist_id = 0;
+      let available_specialists = [];
 
-      for (let specialist_id in specialist_ids) {
-        selected_specialist_id = specialist_id;
-        break;
-      }
-
-      for (let specialist in _allSpecialists) {
-        if (specialist.id == selected_specialist_id) {
+      for (let specialist of _allSpecialists.value) {
+        if (specialist_ids.includes(specialist.id)) {
           selected_specialist = specialist;
+
+          selected_specialist.anesthetist = {
+            id: selected_specialist.anesthetist_id,
+            name: selected_specialist.anesthetist_name,
+          };
+
+          available_specialists.push(selected_specialist);
         }
       }
 
       const item = {
         time_slots: [_date + "T" + startTime, _date + "T" + endTime],
         date: _date,
-        ava_specialist: selected_specialist,
+        ava_specialist: available_specialists,
         selected_specialist: selected_specialist,
       };
 
@@ -136,6 +141,7 @@ export default defineComponent({
 
     return {
       _available_slots_by_date,
+      _allSpecialists,
       handleAddApt,
       timeStr2Number,
     };

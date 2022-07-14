@@ -145,7 +145,10 @@
     </div>
   </div>
   <CreateModal></CreateModal>
-  <AppointmentListPopup :appointments_by_date="_available_slots_by_date" />
+  <AppointmentListPopup
+    :available_slots_by_date="_available_slots_by_date"
+    :allSpecialists="_allSpecialists"
+  />
   <!-- <EditModal></EditModal> -->
 </template>
 <script>

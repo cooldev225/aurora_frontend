@@ -165,7 +165,7 @@
                 </div>
                 <!--end::Input group-->
               </div>
-              <div class="col-md-6">
+              <div class="fv-row">
                 <!--begin::Input group-->
                 <div class="fv-row mb-7">
                   <!--begin::Label-->
@@ -174,11 +174,17 @@
 
                   <!--begin::Input-->
                   <el-form-item prop="address">
-                    <el-input
-                      v-model="formData.address"
-                      type="text"
-                      placeholder="Address"
-                    />
+                    <GMapAutocomplete
+                      ref="addressRef"
+                      placeholder="Enter the Address"
+                      @place_changed="handleAddressChange"
+                      :options="{
+                        componentRestrictions: {
+                          country: 'au',
+                        },
+                      }"
+                    >
+                    </GMapAutocomplete>
                   </el-form-item>
                   <!--end::Input-->
                 </div>
@@ -837,6 +843,10 @@ export default defineComponent({
       dialogVisible.value = true;
     };
 
+    const handleAddressChange = (e) => {
+      formData.value.address = e.formatted_address;
+    };
+
     const handleStep_1 = () => {
       if (!formRef_1.value) {
         return;
@@ -971,6 +981,7 @@ export default defineComponent({
       handlePreview,
       dialogVisible,
       dialogImageUrl,
+      handleAddressChange,
     };
   },
 });
