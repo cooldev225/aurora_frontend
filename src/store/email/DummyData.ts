@@ -1,4 +1,4 @@
-export interface EmailInfo {
+export interface IEmail {
   id: number;
   name: string;
   avatar: string;
@@ -10,7 +10,7 @@ export interface EmailInfo {
   unread: number;
 }
 
-const DummyData: Array<EmailInfo> = [
+const DummyData: Array<IEmail> = [
   {
     id: 0,
     name: "Melody Macy",

@@ -196,7 +196,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/booking/CancellationList.vue"),
       },
       {
-        path: "/make-payment",
+        path: "/billing/make-payment",
         name: "make-payment",
         component: () => import("@/views/MakePayment.vue"),
       },
