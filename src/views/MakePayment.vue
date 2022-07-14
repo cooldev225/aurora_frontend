@@ -3,19 +3,25 @@
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
-        <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
-          <span class="svg-icon svg-icon-1 position-absolute ms-6">
-            <inline-svg src="media/icons/duotune/general/gen021.svg" />
-          </span>
-          <input
-            type="text"
-            data-kt-subscription-table-filter="search"
-            class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Organisations"
-          />
+        <!--begin::Input-->
+        <div>
+          <select
+            class="form-select form-select-solid select2-hidden-accessible"
+            v-model="currentClinic"
+            @change="handleClinic"
+          >
+            <option label="All" :value="0">All</option>
+            <option
+              v-for="clinic in clinicsList"
+              :key="clinic.id"
+              :label="clinic.name"
+              :value="clinic.id"
+            >
+              {{ clinic.name }}
+            </option>
+          </select>
         </div>
-        <!--end::Search-->
+        <!--end::Input-->
       </div>
       <!--begin::Card title-->
 
@@ -26,28 +32,42 @@
           class="d-flex justify-content-end"
           data-kt-subscription-table-toolbar="base"
         >
-          <!--begin::Export-->
-          <button
-            type="button"
-            class="btn btn-light-primary me-3"
-            data-bs-toggle="modal"
-            data-bs-target="#kt_subscriptions_export_modal"
+          <!--begin::Switch-->
+          <label
+            class="form-check form-switch form-check-custom form-check-solid"
           >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr078.svg" />
+            <!--begin::Label-->
+            <span
+              class="form-check-label fw-bold text-muted"
+              for="kt_modal_add_customer_billing"
+            >
+              Show Unpaid Only
             </span>
-            Export
-          </button>
-          <!--end::Export-->
+            <!--end::Label-->
 
-          <!--begin::Add subscription-->
-          <router-link to="/organizations/create" class="btn btn-primary">
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
+            <!--begin::Input-->
+            <input
+              class="form-check-input ms-3"
+              name="billing"
+              type="checkbox"
+              value="1"
+              id="kt_modal_add_customer_billing"
+              checked="checked"
+              v-model="showAll"
+              @change="handleSwitch"
+            />
+            <!--end::Input-->
+
+            <!--begin::Label-->
+            <span
+              class="form-check-label fw-bold text-muted"
+              for="kt_modal_add_customer_billing"
+            >
+              Show All
             </span>
-            Add
-          </router-link>
-          <!--end::Add subscription-->
+            <!--end::Label-->
+          </label>
+          <!--end::Switch-->
         </div>
         <!--end::Toolbar-->
       </div>
@@ -58,66 +78,53 @@
         :table-header="tableHeader"
         :table-data="tableData"
         :rows-per-page="5"
-        :loading="loading"
-        :enable-items-per-page-dropdown="false"
+        :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-logo="{ row: item }">
-          <div class="symbol symbol-45px me-2">
-            <span class="symbol-label">
-              <img :src="item.logo" class="h-50 align-self-center" />
-            </span>
-          </div>
+        <template v-slot:cell-time="{ row: item }">
+          {{ item.time }}
         </template>
-        <template v-slot:cell-name="{ row: item }">
-          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">{{
-            item.username
-          }}</span>
-          <span class="text-muted fw-bold d-block">{{
-            item.mobile_number
-          }}</span>
+        <template v-slot:cell-patient_name="{ row: item }">
+          {{ item.patient_name }}
         </template>
-        <template v-slot:cell-email="{ row: item }">
-          {{ item.email }}
-        </template>
-        <template v-slot:cell-clinics="{ row: item }">
-          <span class="badge badge-light-success">{{ item.max_clinics }}</span>
-        </template>
-        <template v-slot:cell-users="{ row: item }">
-          <span class="badge badge-light-danger">{{ item.max_employees }}</span>
-        </template>
-        <template v-slot:cell-action="{ row: item }">
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+        <template v-slot:cell-attendance_status="{ row: item }">
+          <span
+            :class="`text-uppercase badge badge-light-${
+              item.attendance_status === 'not_present'
+                ? 'dark'
+                : item.attendance_status === 'waiting'
+                ? 'warning'
+                : item.attendance_status === 'checked_in'
+                ? 'success'
+                : 'primary'
+            }`"
           >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen019.svg" />
-            </span>
-          </a>
-
+            {{ item.attendance_status.replace("_", " ") }}
+          </span>
+        </template>
+        <template v-slot:cell-apt_date="{ row: item }">
+          {{ item.apt_date }}
+        </template>
+        <template v-slot:cell-actions="{ row: item }">
           <button
-            @click="handleEdit(item)"
+            v-if="item.outstanding_balance > 0"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/art/art005.svg" />
+              <inline-svg src="media/icons/duotune/finance/fin002.svg" />
             </span>
           </button>
 
           <button
-            @click="handleDelete(item.id)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
           >
             <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen027.svg" />
+              <i class="fas fa-eye"></i>
             </span>
           </button>
         </template>
       </Datatable>
     </div>
   </div>
-  <CreateModal></CreateModal>
-  <EditModal></EditModal>
 </template>
 
 <script>
@@ -128,6 +135,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import PaymentList from "@/store/dummy/Payments";
 
 export default defineComponent({
   name: "org-main",
@@ -154,11 +162,10 @@ export default defineComponent({
         name: "Attendance Status",
         key: "attendance_status",
         sortable: true,
-        sortingField: "status.label",
       },
       {
         name: "Appointment Date",
-        key: "apt-date",
+        key: "apt_date",
         sortable: true,
       },
       {
@@ -167,50 +174,77 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const orgList = computed(() => store.getters.orgList);
-    const loading = ref(true);
+    const paymentData = ref(PaymentList);
+    const clinicsList = computed(() => store.getters.clinicsList);
+    const currentClinic = ref(0);
+    const showAll = ref(true);
+
+    const handleSwitch = () => {
+      if (!showAll.value) {
+        paymentData.value = paymentData.value.filter(
+          (data) => data.outstanding_balance > 0
+        );
+      } else {
+        paymentData.value = PaymentList;
+      }
+    };
+
+    const handleClinic = () => {
+      if (currentClinic.value === 0) {
+        paymentData.value = PaymentList;
+      } else {
+        paymentData.value = paymentData.value.filter(
+          (data) => data.clinic_id === currentClinic.value
+        );
+      }
+    };
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_MAKE_PAYMENT.SELECT, item);
-      router.push({ name: "editOrganization" });
+      // store.commit(Mutations.SET_MAKE_PAYMENT.SELECT, item);
+      // router.push({ name: "editOrganization" });
     };
 
     const handleDelete = (id) => {
-      loading.value = true;
-      store
-        .dispatch(Actions.MAKE_PAYMENT.DELETE, id)
-        .then(() => {
-          store.dispatch(Actions.MAKE_PAYMENT.LIST);
-          loading.value = false;
-          Swal.fire({
-            text: "Successfully Deleted!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          });
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
+      // store
+      //   .dispatch(Actions.MAKE_PAYMENT.DELETE, id)
+      //   .then(() => {
+      //     store.dispatch(Actions.MAKE_PAYMENT.LIST);
+      //     loading.value = false;
+      //     Swal.fire({
+      //       text: "Successfully Deleted!",
+      //       icon: "success",
+      //       buttonsStyling: false,
+      //       confirmButtonText: "Ok, got it!",
+      //       customClass: {
+      //         confirmButton: "btn btn-primary",
+      //       },
+      //     });
+      //   })
+      //   .catch(({ response }) => {
+      //     console.log(response.data.error);
+      //   });
     };
 
     watchEffect(() => {
-      tableData.value = orgList;
+      tableData.value = paymentData;
     });
 
     onMounted(() => {
-      loading.value = true;
-      setCurrentPageBreadcrumbs("Make Paymenet", ["Billing"]);
-      store.dispatch(Actions.MAKE_PAYMENT.LIST).then(() => {
-        tableData.value = orgList;
-        loading.value = false;
-      });
+      setCurrentPageBreadcrumbs("Out of Pocket Payment", ["Billing"]);
+      store.dispatch(Actions.CLINICS.LIST);
     });
 
-    return { tableHeader, tableData, handleEdit, handleDelete };
+    return {
+      tableHeader,
+      tableData,
+      clinicsList,
+      currentClinic,
+      showAll,
+      handleEdit,
+      handleDelete,
+      handleSwitch,
+      handleClinic,
+    };
   },
 });
 </script>

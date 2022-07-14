@@ -157,13 +157,13 @@ const OrgManagerMenu = [
   },
   {
     heading: "Billing",
-    route: "#/billing",
+    route: "/billing",
     svgIcon: "media/icons/duotune/finance/fin002.svg",
     fontIcon: "bi-receipt",
     pages: [
       {
-        heading: "Make Payment",
-        route: "/make-payment",
+        heading: "Out of pocket payment",
+        route: "/billing/make-payment",
       },
       {
         heading: "3rd Party Billing",
