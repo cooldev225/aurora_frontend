@@ -108,6 +108,7 @@
           <button
             v-if="item.outstanding_balance > 0"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            @click="handlePay"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/finance/fin002.svg" />
@@ -116,6 +117,7 @@
 
           <button
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+            @click="handleView"
           >
             <span class="svg-icon svg-icon-3">
               <i class="fas fa-eye"></i>
@@ -199,30 +201,12 @@ export default defineComponent({
       }
     };
 
-    const handleEdit = (item) => {
-      // store.commit(Mutations.SET_MAKE_PAYMENT.SELECT, item);
-      // router.push({ name: "editOrganization" });
+    const handlePay = (item) => {
+      router.push({ name: "make-payment-pay" });
     };
 
-    const handleDelete = (id) => {
-      // store
-      //   .dispatch(Actions.MAKE_PAYMENT.DELETE, id)
-      //   .then(() => {
-      //     store.dispatch(Actions.MAKE_PAYMENT.LIST);
-      //     loading.value = false;
-      //     Swal.fire({
-      //       text: "Successfully Deleted!",
-      //       icon: "success",
-      //       buttonsStyling: false,
-      //       confirmButtonText: "Ok, got it!",
-      //       customClass: {
-      //         confirmButton: "btn btn-primary",
-      //       },
-      //     });
-      //   })
-      //   .catch(({ response }) => {
-      //     console.log(response.data.error);
-      //   });
+    const handleView = (id) => {
+      router.push({ name: "make-payment-view" });
     };
 
     watchEffect(() => {
@@ -240,8 +224,8 @@ export default defineComponent({
       clinicsList,
       currentClinic,
       showAll,
-      handleEdit,
-      handleDelete,
+      handlePay,
+      handleView,
       handleSwitch,
       handleClinic,
     };

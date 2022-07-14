@@ -39,12 +39,12 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/organizationManagers",
         name: "organizationMangers",
-        component: () => import("@/views/organizationAdmin/Managers.vue"),
+        component: () => import("@/views/organization-admin/Managers.vue"),
       },
       {
         path: "/organizationAdmins",
         name: "organizationAdmins",
-        component: () => import("@/views/organizationAdmin/Admins.vue"),
+        component: () => import("@/views/organization-admin/Admins.vue"),
       },
       {
         path: "/employees",
@@ -64,7 +64,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/clinics",
         name: "clinics",
-        component: () => import("@/views/organizationAdmin/Clinics.vue"),
+        component: () => import("@/views/organization-admin/Clinics.vue"),
       },
       {
         path: "/clinics/create",
@@ -199,6 +199,16 @@ const routes: Array<RouteRecordRaw> = [
         path: "/billing/make-payment",
         name: "make-payment",
         component: () => import("@/views/MakePayment.vue"),
+      },
+      {
+        path: "/billing/make-payment/pay",
+        name: "make-payment-pay",
+        component: () => import("@/components/make-payment/Pay.vue"),
+      },
+      {
+        path: "/billing/make-payment/view",
+        name: "make-payment-view",
+        component: () => import("@/components/make-payment/View.vue"),
       },
     ],
   },
