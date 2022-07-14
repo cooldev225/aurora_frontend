@@ -64,6 +64,7 @@
                       placeholder="Select Clinic"
                       v-model="_available_slots_search.clinic_id"
                     >
+                      <el-option value="" label="Any Clinic" />
                       <template v-for="(item, idx) in _clinic_list" :key="idx">
                         <el-option :value="item.id" :label="item.name" />
                       </template>
@@ -72,10 +73,10 @@
                     <el-select
                       class="w-50 p-2"
                       placeholder="Select Specialist"
-                      v-model="_search_next_apts.specialist_ids"
-                      multiple
+                      v-model="_available_slots_search.specialist_id"
                       filterable
                     >
+                      <el-option value="" label="Any Specialist" />
                       <template
                         v-for="(item, index) in _allSpecialists"
                         :key="index"
@@ -194,6 +195,7 @@ export default defineComponent({
     const _available_slots_search = reactive({
       x_weeks: "",
       clinic_id: "",
+      specialist_id: "",
     });
     const _search_next_apts = reactive({
       appointment_type_id: "",
