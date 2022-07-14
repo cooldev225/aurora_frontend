@@ -151,10 +151,10 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.CREATE_SPECIALIST_TYPE, formData.value)
+            .dispatch(Actions.SPECIALIST.TYPE.CREATE, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.LIST_SPECIALIST_TYPE);
+              store.dispatch(Actions.SPECIALIST.TYPE.LIST);
               Swal.fire({
                 text: "Successfully Created!",
                 icon: "success",

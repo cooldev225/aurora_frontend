@@ -37,22 +37,22 @@ export default class OrgManagerModule
   }
 
   @Mutation
-  [Mutations.SET_ORG_MANAGER_LIST](orgManagerData) {
+  [Mutations.SET_ORG_MANAGER.LIST](orgManagerData) {
     this.orgManagerData = orgManagerData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_ORG_MANAGER](data) {
+  [Mutations.SET_ORG_MANAGER.SELECT](data) {
     this.orgManagerSelectData = data;
   }
 
   @Action
-  [Actions.LIST_ORG_MANAGER]() {
+  [Actions.ORG_MANAGER.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("organization-managers")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_ORG_MANAGER_LIST, data.data);
+          this.context.commit(Mutations.SET_ORG_MANAGER.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -65,7 +65,7 @@ export default class OrgManagerModule
   }
 
   @Action
-  [Actions.CREATE_ORG_MANAGER](payload) {
+  [Actions.ORG_MANAGER.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("organization-managers", payload)
@@ -81,7 +81,7 @@ export default class OrgManagerModule
   }
 
   @Action
-  [Actions.UPDATE_ORG_MANAGER](item) {
+  [Actions.ORG_MANAGER.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("organization-managers", item.id, item)
@@ -98,7 +98,7 @@ export default class OrgManagerModule
   }
 
   @Action
-  [Actions.DELETE_ORG_MANAGER](id) {
+  [Actions.ORG_MANAGER.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("organization-managers/" + id)

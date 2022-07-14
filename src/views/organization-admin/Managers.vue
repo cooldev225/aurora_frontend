@@ -140,16 +140,16 @@ export default defineComponent({
     const orgManagerList = computed(() => store.getters.orgManagerList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_ORG_MANAGER, item);
+      store.commit(Mutations.SET_ORG_MANAGER.SELECT, item);
       const modal = new Modal(document.getElementById("modal_edit_admin"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_ORG_MANAGER, id)
+        .dispatch(Actions.ORG_MANAGER.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LIST_ORG_MANAGER);
+          store.dispatch(Actions.ORG_MANAGER.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -167,7 +167,7 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Organisation Managers", []);
-      store.dispatch(Actions.LIST_ORG_MANAGER);
+      store.dispatch(Actions.ORG_MANAGER.LIST);
       tableData.value = orgManagerList;
     });
 

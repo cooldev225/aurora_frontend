@@ -150,16 +150,16 @@ export default defineComponent({
     const birthCodeList = computed(() => store.getters.birthCodeList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_BIRTH_CODE, item);
+      store.commit(Mutations.SET_BIRTH_CODE.SELECT, item);
       const modal = new Modal(document.getElementById("modal-edit-birth-code"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_BIRTH_CODE, id)
+        .dispatch(Actions.BIRTH_CODE.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LIST_BIRTH_CODE);
+          store.dispatch(Actions.BIRTH_CODE.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -181,7 +181,7 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Birth Codes", []);
-      store.dispatch(Actions.LIST_BIRTH_CODE);
+      store.dispatch(Actions.BIRTH_CODE.LIST);
       tableData.value = birthCodeList;
     });
 

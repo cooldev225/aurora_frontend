@@ -152,10 +152,10 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.UPDATE_SPECIALIST_TITLE, formData.value)
+            .dispatch(Actions.SPECIALIST.TITLE.UPDATE, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.LIST_SPECIALIST_TITLE);
+              store.dispatch(Actions.SPECIALIST.TITLE.LIST);
               Swal.fire({
                 text: "Successfully Updated!",
                 icon: "success",

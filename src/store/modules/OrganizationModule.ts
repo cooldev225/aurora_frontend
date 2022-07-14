@@ -48,22 +48,22 @@ export default class OrganizationModule extends VuexModule implements OrgInfo {
   }
 
   @Mutation
-  [Mutations.SET_ORG_LIST](orgData) {
+  [Mutations.SET_ORG.LIST](orgData) {
     this.orgData = orgData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_ORG](data) {
+  [Mutations.SET_ORG.SELECT](data) {
     this.orgSelectData = data;
   }
 
   @Action
-  [Actions.LIST_ORG]() {
+  [Actions.ORG.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("organizations")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_ORG_LIST, data.data);
+          this.context.commit(Mutations.SET_ORG.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -76,7 +76,7 @@ export default class OrganizationModule extends VuexModule implements OrgInfo {
   }
 
   @Action
-  [Actions.CREATE_ORG](payload) {
+  [Actions.ORG.CREATE](payload) {
     const config = {
       headers: { "Content-Type": "multipart/form-data" },
     };
@@ -95,7 +95,7 @@ export default class OrganizationModule extends VuexModule implements OrgInfo {
   }
 
   @Action
-  [Actions.UPDATE_ORG](item) {
+  [Actions.ORG.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("organizations", item.id, item)
@@ -112,7 +112,7 @@ export default class OrganizationModule extends VuexModule implements OrgInfo {
   }
 
   @Action
-  [Actions.DELETE_ORG](id) {
+  [Actions.ORG.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("organizations/" + id)

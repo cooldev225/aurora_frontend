@@ -160,16 +160,16 @@ export default defineComponent({
     const loading = ref(true);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_ORG, item);
+      store.commit(Mutations.SET_ORG.SELECT, item);
       router.push({ name: "editOrganization" });
     };
 
     const handleDelete = (id) => {
       loading.value = true;
       store
-        .dispatch(Actions.DELETE_ORG, id)
+        .dispatch(Actions.ORG.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LIST_ORG);
+          store.dispatch(Actions.ORG.LIST);
           loading.value = false;
           Swal.fire({
             text: "Successfully Deleted!",
@@ -193,7 +193,7 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Organisations", []);
-      store.dispatch(Actions.LIST_ORG).then(() => {
+      store.dispatch(Actions.ORG.LIST).then(() => {
         tableData.value = orgList;
         loading.value = false;
       });

@@ -34,22 +34,22 @@ export default class OrgAdminModule extends VuexModule implements OrgAdminInfo {
   }
 
   @Mutation
-  [Mutations.SET_ORG_ADMIN_LIST](orgAdminData) {
+  [Mutations.SET_ORG_ADMIN.LIST](orgAdminData) {
     this.orgAdminData = orgAdminData;
   }
 
   @Mutation
-  [Mutations.SET_SELECT_ORG_ADMIN](data) {
+  [Mutations.SET_ORG_ADMIN.SELECT](data) {
     this.orgAdminSelectData = data;
   }
 
   @Action
-  [Actions.LIST_ORG_ADMIN]() {
+  [Actions.ORG_ADMIN.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("organization-admins")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_ORG_ADMIN_LIST, data.data);
+          this.context.commit(Mutations.SET_ORG_ADMIN.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -62,7 +62,7 @@ export default class OrgAdminModule extends VuexModule implements OrgAdminInfo {
   }
 
   @Action
-  [Actions.CREATE_ORG_ADMIN](payload) {
+  [Actions.ORG_ADMIN.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("organization-admins", payload)
@@ -78,7 +78,7 @@ export default class OrgAdminModule extends VuexModule implements OrgAdminInfo {
   }
 
   @Action
-  [Actions.UPDATE_ORG_ADMIN](item) {
+  [Actions.ORG_ADMIN.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("organization-admins", item.id, item)
@@ -95,7 +95,7 @@ export default class OrgAdminModule extends VuexModule implements OrgAdminInfo {
   }
 
   @Action
-  [Actions.DELETE_ORG_ADMIN](id) {
+  [Actions.ORG_ADMIN.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("organization-admins/" + id)

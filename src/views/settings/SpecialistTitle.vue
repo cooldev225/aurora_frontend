@@ -141,16 +141,16 @@ export default defineComponent({
     const specTitleList = computed(() => store.getters.specTitleList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_SPECALIST_TITLE, item);
+      store.commit(Mutations.SET_SPECIALIST.TITLE.SELECT, item);
       const modal = new Modal(document.getElementById("modal-edit-spectitle"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_SPECIALIST_TITLE, id)
+        .dispatch(Actions.SPECIALIST.TITLE.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LIST_SPECIALIST_TITLE);
+          store.dispatch(Actions.SPECIALIST.TITLE.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -172,7 +172,7 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Specialist Title", []);
-      store.dispatch(Actions.LIST_SPECIALIST_TITLE);
+      store.dispatch(Actions.SPECIALIST.TITLE.LIST);
       tableData.value = specTitleList;
     });
 

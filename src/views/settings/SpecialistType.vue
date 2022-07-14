@@ -140,16 +140,16 @@ export default defineComponent({
     const specTypeList = computed(() => store.getters.specTypeList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_SELECT_SPECALIST_TYPE, item);
+      store.commit(Mutations.SET_SPECIALIST.TYPE.SELECT, item);
       const modal = new Modal(document.getElementById("modal-edit-spectype"));
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.DELETE_SPECIALIST_TYPE, id)
+        .dispatch(Actions.SPECIALIST.TYPE.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LIST_SPECIALIST_TYPE);
+          store.dispatch(Actions.SPECIALIST.TYPE.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -171,7 +171,7 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Specialist Type", []);
-      store.dispatch(Actions.LIST_SPECIALIST_TYPE);
+      store.dispatch(Actions.SPECIALIST.TYPE.LIST);
       tableData.value = specTypeList;
     });
 
