@@ -8,7 +8,7 @@
           type="button"
           class="btn btn-light-primary ms-auto"
           data-bs-toggle="modal"
-          data-bs-target="#modal_add_anesthetic_question"
+          data-bs-target="#modal_add_apt_type"
         >
           <span class="svg-icon svg-icon-2">
             <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
@@ -50,20 +50,8 @@
         <template v-slot:cell-type="{ row: item }">
           {{ item.type }}
         </template>
-        <template v-slot:cell-mbs_code="{ row: item }">
-          {{ item.mbs_code }}
-        </template>
-        <template v-slot:cell-clinical_code="{ row: item }">
-          {{ item.clinical_code }}
-        </template>
-        <template v-slot:cell-invoice_by="{ row: item }">
-          {{ item.invoice_by }}
-        </template>
-        <template v-slot:cell-arrival_time="{ row: item }">
-          {{ item.arrival_time }}
-        </template>
         <template v-slot:cell-appointment_time="{ row: item }">
-          {{ item.appointment_time }}
+          <span class="text-capitalize">{{ item.appointment_time }}</span>
         </template>
       </Datatable>
     </div>
@@ -77,7 +65,7 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateModal from "@/components/anesthetic-questions/CreateAnestheticQuestion.vue";
+import CreateModal from "@/components/apt-types/CreateAptType.vue";
 import EditModal from "@/components/apt-types/EditAptType.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
@@ -103,26 +91,6 @@ export default defineComponent({
       {
         name: "Type",
         key: "type",
-        sortable: true,
-      },
-      {
-        name: "MBS Code",
-        key: "mbs_code",
-        sortable: true,
-      },
-      {
-        name: "Clinical Code",
-        key: "clinical_code",
-        sortable: true,
-      },
-      {
-        name: "Invoice By",
-        key: "invoice_by",
-        sortable: true,
-      },
-      {
-        name: "Arrival Time",
-        key: "arrival_time",
         sortable: true,
       },
       {

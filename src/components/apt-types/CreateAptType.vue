@@ -1,10 +1,10 @@
 <template>
   <div
     class="modal fade"
-    id="modal_edit_apt_type"
+    id="modal_add_apt_type"
     tabindex="-1"
     aria-hidden="true"
-    ref="editAptTypeModalRef"
+    ref="createAptTypeModalRef"
     data-bs-backdrop="static"
   >
     <!--begin::Modal dialog-->
@@ -14,7 +14,7 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_add_customer_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Edit Appointment Type</h2>
+          <h2 class="fw-bolder">Create Appointment Type</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -437,7 +437,7 @@
               class="btn btn-lg btn-primary"
               type="submit"
             >
-              <span v-if="!loading" class="indicator-label"> Update </span>
+              <span v-if="!loading" class="indicator-label"> Create </span>
               <span v-if="loading" class="indicator-progress">
                 Please wait...
                 <span
@@ -456,19 +456,19 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "edit-apt-type-modal",
+  name: "create-apt-type-modal",
   components: {},
   setup() {
     const store = useStore();
     const formRef = ref(null);
-    const editAptTypeModalRef = ref(null);
+    const createAptTypeModalRef = ref(null);
     const loading = ref(false);
 
     const formData = ref({
@@ -511,7 +511,7 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.APT.TYPES.UPDATE, formData.value)
+            .dispatch(Actions.APT.TYPES.CREATE, formData.value)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.APT.TYPES.LIST);
@@ -524,7 +524,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(editAptTypeModalRef.value);
+                hideModal(createAptTypeModalRef.value);
               });
             })
             .catch(({ response }) => {
@@ -538,16 +538,12 @@ export default defineComponent({
       });
     };
 
-    watchEffect(() => {
-      formData.value = store.getters.getAptTypesSelected;
-    });
-
     return {
       formData,
       rules,
       formRef,
       loading,
-      editAptTypeModalRef,
+      createAptTypeModalRef,
       submit,
     };
   },
