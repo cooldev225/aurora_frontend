@@ -183,11 +183,11 @@ export default defineComponent({
                   specialist: specialist,
                   appointment: _apt,
                   time_length:
-                    _apt.appointment_time === "SINGLE"
-                      ? 1
-                      : _apt.appointment_time === "DOUBLE"
+                    _apt.appointment_time === "triple"
+                      ? 3
+                      : _apt.appointment_time === "double"
                       ? 2
-                      : 3,
+                      : 1,
                 };
               } else if (
                 timeStr2Number(_apt.start_time) < timeStr2Number(_val) &&
