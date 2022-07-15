@@ -338,6 +338,12 @@ const SpecialistMenu = [
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-layers",
   },
+  {
+    heading: "Patients",
+    route: "/patients",
+    svgIcon: "media/icons/duotune/medicine/med001.svg",
+    fontIcon: "bi-clipboard2-pulse",
+  },
 ];
 
 const PathologistMenu = [
