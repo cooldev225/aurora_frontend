@@ -169,6 +169,7 @@ const Actions = {
       UPDATE: "updateUnapprovedApt",
     },
     CANCELLATION: {
+      CREATE: "createCancellationApt",
       LIST: "listCancellationApt",
       DELETE: "deleteCancellationApt",
       UPDATE: "updateCancellationApt",

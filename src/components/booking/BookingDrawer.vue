@@ -139,7 +139,7 @@
               <!--end::Info-->
             </label>
           </a>
-          <a>
+          <a @click="handleView">
             <label
               class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
               for="kt_create_account_form_account_type_personal"
@@ -196,7 +196,7 @@
               <!--end::Info-->
             </label>
           </a>
-          <a>
+          <a @click="handleCancel">
             <label
               class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
               for="kt_create_account_form_account_type_personal"
@@ -223,21 +223,19 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  computed,
-  watchEffect,
-  watch,
-  onMounted,
-} from "vue";
+import { defineComponent, reactive, computed, watchEffect } from "vue";
+import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
+import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
   name: "booing-drawer",
   components: {},
   setup() {
     const store = useStore();
+    const router = useRouter();
     const aptData = computed(() => store.getters.getAptSelected);
     const displayData = reactive({
       reference_number: "",
@@ -250,8 +248,44 @@ export default defineComponent({
       procedure_approval_status: "",
     });
 
+    const handleView = () => {
+      store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
+      DrawerComponent?.getInstance("booking-drawer")?.hide();
+      router.push({ name: "patients-view-administration" });
+    };
+
+    const handleCancel = () => {
+      Swal.fire({
+        text: "Are you should you want to cancel?",
+        input: "text",
+        inputAttributes: {
+          autocapitalize: "off",
+          placeholder: "Enter the Reason",
+        },
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: (data) => {
+          debugger;
+          store.dispatch(Actions.APT.CANCELLATION.CREATE, {
+            id: aptData.value.appointment_id,
+            reason: data,
+          });
+        },
+      }).then((result) => {
+        console.log(result);
+        if (result.value) {
+          console.log("");
+        }
+      });
+    };
+
     watchEffect(() => {
-      console.log(aptData.value.procedure_approval_status);
       displayData.reference_number = aptData.value.reference_number;
       displayData.clinic_name = aptData.value.clinic_name;
       displayData.start_time = aptData.value.start_time;
@@ -266,6 +300,8 @@ export default defineComponent({
 
     return {
       displayData,
+      handleView,
+      handleCancel,
     };
   },
 });
