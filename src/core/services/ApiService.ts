@@ -83,7 +83,7 @@ class ApiService {
   public static update(
     resource: string,
     slug: string,
-    params: AxiosRequestConfig
+    params: any
   ): Promise<AxiosResponse> {
     return ApiService.vueInstance.axios.put(`${resource}/${slug}`, params);
   }
