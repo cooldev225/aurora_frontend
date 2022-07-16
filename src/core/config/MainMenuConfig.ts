@@ -1,7 +1,7 @@
 const AdminMenu = [
   {
     heading: "Organisations",
-    route: "/organizations",
+    route: "/organisations",
     svgIcon: "media/icons/duotune/general/gen019.svg",
     fontIcon: "bi-hospital",
   },
@@ -64,11 +64,11 @@ const OrgAdminMenu = [
       },
       {
         heading: "Administrators",
-        route: "/organizationAdmins",
+        route: "/organisationAdmins",
       },
       {
         heading: "Managers",
-        route: "/organizationManagers",
+        route: "/organisationManagers",
       },
     ],
   },

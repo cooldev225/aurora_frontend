@@ -27,7 +27,7 @@
           data-kt-subscription-table-toolbar="base"
         >
           <!--begin::Add subscription-->
-          <router-link to="/organizations/create" class="btn btn-primary">
+          <router-link to="/organisations/create" class="btn btn-primary">
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>

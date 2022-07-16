@@ -10,7 +10,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 
 export default defineComponent({
-  name: "patient-documents",
+  name: "patient-clinical",
   components: {},
   setup() {
     const store = useStore();

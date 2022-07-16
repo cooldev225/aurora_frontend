@@ -150,7 +150,7 @@ export default defineComponent({
     const tableTitle = computed(() => props.Title);
     const _ava_specialists = computed(() => props.ava_SPTData);
     const _apt_date = computed(() => props.date);
-    const organization = computed(() => store.getters.orgList);
+    const organisation = computed(() => store.getters.orgList);
 
     const format = ref("YYYY-MM-DD");
     const aptTimeList = ref([]);
@@ -214,8 +214,8 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      if (organization.value.appointment_length)
-        appointment_length.value = organization.value.appointment_length;
+      if (organisation.value.appointment_length)
+        appointment_length.value = organisation.value.appointment_length;
       if (_temp_specialists.value) {
         _tableData.value =
           _temp_specialists.value[Object.keys(_temp_specialists.value)[0]];

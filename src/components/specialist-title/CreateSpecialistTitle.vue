@@ -120,7 +120,7 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
-  name: "create-specialistTitle",
+  name: "create-specialist-title",
   components: {},
   setup() {
     const formRef = ref(null);

@@ -264,7 +264,7 @@
           <!--begin::Button-->
           <router-link
             type="reset"
-            to="/organizations"
+            to="/organisations"
             id="kt_modal_add_customer_cancel"
             class="btn btn-light me-3"
           >
@@ -309,7 +309,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
-  name: "organizations-create",
+  name: "add-org",
   components: {},
   setup() {
     const store = useStore();
@@ -458,7 +458,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                router.push({ name: "organizations" });
+                router.push({ name: "organisations" });
               });
             })
             .catch(({ response }) => {

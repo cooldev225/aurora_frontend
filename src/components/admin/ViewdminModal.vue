@@ -208,7 +208,7 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
-  name: "add-admin-modal",
+  name: "view-admin-modal",
   components: {},
   setup() {
     const formRef = ref<null | HTMLFormElement>(null);

@@ -20,31 +20,31 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/Admins.vue"),
       },
       {
-        path: "/organizations",
-        name: "organizations",
-        component: () => import("@/views/Organizations.vue"),
+        path: "/organisations",
+        name: "organisations",
+        component: () => import("@/views/Organisations.vue"),
       },
       {
-        path: "/organizations/create",
-        name: "createOrganization",
+        path: "/organisations/create",
+        name: "createOrganisation",
         component: () =>
-          import("@/components/organizations/AddOrganization.vue"),
+          import("@/components/organisations/AddOrganization.vue"),
       },
       {
-        path: "/organizations/edit",
-        name: "editOrganization",
+        path: "/organisations/edit",
+        name: "editOrganisation",
         component: () =>
-          import("@/components/organizations/EditOrganization.vue"),
+          import("@/components/organisations/EditOrganization.vue"),
       },
       {
-        path: "/organizationManagers",
-        name: "organizationMangers",
-        component: () => import("@/views/organization-admin/Managers.vue"),
+        path: "/organisationManagers",
+        name: "organisationMangers",
+        component: () => import("@/views/organisation-admin/Managers.vue"),
       },
       {
-        path: "/organizationAdmins",
-        name: "organizationAdmins",
-        component: () => import("@/views/organization-admin/Admins.vue"),
+        path: "/organisationAdmins",
+        name: "organisationAdmins",
+        component: () => import("@/views/organisation-admin/Admins.vue"),
       },
       {
         path: "/employees",
@@ -64,7 +64,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/clinics",
         name: "clinics",
-        component: () => import("@/views/organization-admin/Clinics.vue"),
+        component: () => import("@/views/organisation-admin/Clinics.vue"),
       },
       {
         path: "/clinics/create",

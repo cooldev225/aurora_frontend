@@ -671,7 +671,7 @@ import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
 
 export default defineComponent({
-  name: "kt-vertical-wizard",
+  name: "create-clinic",
   components: {},
   setup() {
     const store = useStore();

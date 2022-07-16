@@ -322,7 +322,7 @@
           <!--begin::Button-->
           <router-link
             type="reset"
-            to="/organizations"
+            to="/organisations"
             id="kt_modal_add_customer_cancel"
             class="btn btn-light me-3"
           >
@@ -367,7 +367,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "kt-vertical-wizard",
+  name: "edit-org",
   components: {},
   setup() {
     const store = useStore();
@@ -481,7 +481,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                router.push({ name: "organizations" });
+                router.push({ name: "organisations" });
               });
             })
             .catch(({ response }) => {
