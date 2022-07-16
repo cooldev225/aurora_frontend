@@ -211,7 +211,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "add-admin-modal",
+  name: "add-org-admin-modal",
   components: {},
   setup() {
     const store = useStore();

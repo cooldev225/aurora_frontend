@@ -367,7 +367,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "kt-vertical-wizard",
+  name: "edit-org",
   components: {},
   setup() {
     const store = useStore();

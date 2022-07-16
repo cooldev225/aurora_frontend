@@ -1507,7 +1507,7 @@ import moment from "moment";
 import chargeTypes from "@/core/data/charge-types";
 
 export default defineComponent({
-  name: "create-app-modal",
+  name: "create-apt-modal",
   components: {},
   setup() {
     const store = useStore();

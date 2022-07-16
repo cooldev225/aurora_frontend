@@ -140,7 +140,7 @@ import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import PaymentList from "@/store/dummy/Payments";
 
 export default defineComponent({
-  name: "org-main",
+  name: "make-payment-main",
 
   components: {
     Datatable,

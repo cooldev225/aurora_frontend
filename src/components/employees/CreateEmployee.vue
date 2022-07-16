@@ -794,7 +794,7 @@ import employeeTypes from "@/core/data/employee-types";
 import employeeRoles from "@/core/data/employee-roles";
 
 export default defineComponent({
-  name: "kt-vertical-wizard",
+  name: "create-employee",
   components: {},
   setup() {
     const store = useStore();

@@ -732,7 +732,7 @@ import { StepperComponent } from "@/assets/ts/components";
 import employeeTypes from "@/core/data/employee-types";
 
 export default defineComponent({
-  name: "edit-employees",
+  name: "edit-employee",
   components: {},
   setup() {
     const store = useStore();

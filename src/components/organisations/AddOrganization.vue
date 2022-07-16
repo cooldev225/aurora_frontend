@@ -309,7 +309,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
-  name: "organisations-create",
+  name: "add-org",
   components: {},
   setup() {
     const store = useStore();
