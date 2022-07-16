@@ -1682,9 +1682,9 @@ export default defineComponent({
       ],
     });
     const appointment_length = reactive({
-      SINGLE: 1,
-      DOUBLE: 2,
-      TRIPLE: 3,
+      single: 1,
+      double: 2,
+      triple: 3,
     });
     const appointment_time = ref(30);
 
