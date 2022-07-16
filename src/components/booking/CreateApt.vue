@@ -1717,7 +1717,7 @@ export default defineComponent({
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
     const aptTypeList = computed(() => store.getters.getAptTypesList);
     const searchVal = computed(() => store.getters.getSearchVariable);
-    const organization = computed(() => store.getters.orgList);
+    const organisation = computed(() => store.getters.orgList);
 
     watch(_appointment, () => {
       formData.value.appointment_type_id = _appointment.value;
@@ -1792,8 +1792,8 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      if (organization.value.appointment_length)
-        appointment_time.value = organization.value.appointment_length;
+      if (organisation.value.appointment_length)
+        appointment_time.value = organisation.value.appointment_length;
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
       if (bookingData.time_slots) {

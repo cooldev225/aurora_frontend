@@ -106,7 +106,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import moment from "moment";
 
 export default defineComponent({
-  name: "organization-main",
+  name: "health-fund",
 
   components: {
     Datatable,

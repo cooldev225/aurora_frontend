@@ -759,7 +759,6 @@ export default defineComponent({
             },
           }).then(() => {
             console.log("Updated");
-            // router.push({ name: "organizations" });
           });
         })
         .catch(({ response }) => {
