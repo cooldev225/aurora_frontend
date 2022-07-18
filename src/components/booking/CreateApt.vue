@@ -84,9 +84,9 @@
 
                   <!--begin::Label-->
                   <div class="stepper-label">
-                    <h3 class="stepper-title">Personal Info</h3>
+                    <h3 class="stepper-title">Select Patient</h3>
 
-                    <div class="stepper-desc">Setup Personal Details</div>
+                    <div class="stepper-desc">Setup Patient</div>
                   </div>
                   <!--begin::Label-->
                 </div>
@@ -103,6 +103,29 @@
                     <i class="stepper-check fas fa-check"></i>
                     <span class="stepper-number">3</span>
                   </div>
+                  <!--begin::Icon-->
+
+                  <!--begin::Label-->
+                  <div class="stepper-label">
+                    <h3 class="stepper-title">Personal Info</h3>
+
+                    <div class="stepper-desc">Setup Personal Details</div>
+                  </div>
+                  <!--begin::Label-->
+                </div>
+                <!--end::Step 3-->
+
+                <!--begin::Step 4-->
+                <div class="stepper-item" data-kt-stepper-element="nav">
+                  <!--begin::Line-->
+                  <div class="stepper-line w-40px"></div>
+                  <!--end::Line-->
+
+                  <!--begin::Icon-->
+                  <div class="stepper-icon w-40px h-40px">
+                    <i class="stepper-check fas fa-check"></i>
+                    <span class="stepper-number">4</span>
+                  </div>
                   <!--end::Icon-->
 
                   <!--begin::Label-->
@@ -113,14 +136,14 @@
                   </div>
                   <!--end::Label-->
                 </div>
-                <!--end::Step 3-->
+                <!--end::Step 4 -->
 
-                <!--begin::Step 4-->
+                <!--begin::Step 5 -->
                 <div class="stepper-item" data-kt-stepper-element="nav">
                   <!--begin::Icon-->
                   <div class="stepper-icon w-40px h-40px">
                     <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">4</span>
+                    <span class="stepper-number">5</span>
                   </div>
                   <!--end::Icon-->
 
@@ -132,7 +155,7 @@
                   </div>
                   <!--end::Label-->
                 </div>
-                <!--end::Step 4-->
+                <!--end::Step 5-->
                 <div class="d-flex flex-column gap-2">
                   <h3>Appointment Information</h3>
                   <label class="fs-5 text-primary"
@@ -186,7 +209,7 @@
                     ref="formRef_1"
                     @submit.prevent="handleStep_1"
                   >
-                    <div class="row scroll h-450px">
+                    <div class="row scroll h-500px">
                       <div class="card-info">
                         <div class="fs-3 fw-bold text-muted mb-6">
                           Appointment Type
@@ -529,7 +552,137 @@
                     ref="formRef_2"
                     @submit.prevent="handleStep_2"
                   >
-                    <div class="row scroll h-450px">
+                    <div class="d-flex flex-column py-20 gap-10">
+                      <!--begin::Col-->
+                      <div class="fv-row">
+                        <!--begin::Option-->
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="accountType"
+                          value="personal"
+                          checked="checked"
+                          id="kt_create_account_form_account_type_personal"
+                          v-model="formData.accountType"
+                        />
+                        <label
+                          class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-10"
+                          for="kt_create_account_form_account_type_personal"
+                        >
+                          <span class="svg-icon svg-icon-3x me-5">
+                            <inline-svg
+                              src="media/icons/duotune/communication/com005.svg"
+                            />
+                          </span>
+
+                          <!--begin::Info-->
+                          <span class="d-block fw-bold text-start">
+                            <span class="text-dark fw-bolder d-block fs-4 mb-2">
+                              New Patient
+                            </span>
+                            <span class="text-gray-400 fw-bold fs-6"
+                              >Create New Patient</span
+                            >
+                          </span>
+                          <!--end::Info-->
+                        </label>
+                        <!--end::Option-->
+                      </div>
+                      <!--end::Col-->
+
+                      <!--begin::Col-->
+                      <div class="fv-row">
+                        <!--begin::Option-->
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="accountType"
+                          value="corporate"
+                          id="kt_create_account_form_account_type_corporate"
+                          v-model="formData.accountType"
+                        />
+                        <label
+                          class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center"
+                          for="kt_create_account_form_account_type_corporate"
+                        >
+                          <span class="svg-icon svg-icon-3x me-5">
+                            <inline-svg
+                              src="media/icons/duotune/finance/fin006.svg"
+                            />
+                          </span>
+
+                          <!--begin::Info-->
+                          <span class="d-block fw-bold text-start">
+                            <span class="text-dark fw-bolder d-block fs-4 mb-2"
+                              >Existing Patient</span
+                            >
+                            <span class="text-gray-400 fw-bold fs-6"
+                              >Import Existing Patient</span
+                            >
+                          </span>
+                          <!--end::Info-->
+                        </label>
+                        <!--end::Option-->
+                      </div>
+                      <!--end::Col-->
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-light-primary me-3"
+                        @click="handleCancel"
+                        data-bs-dismiss="modal"
+                      >
+                        <span class="svg-icon svg-icon-4 me-1">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr063.svg"
+                          />
+                        </span>
+                        Cancel
+                      </button>
+                      <div class="d-flex flex-row gap-3">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          data-kt-stepper-action="previous"
+                          @click="previousStep"
+                        >
+                          <span class="svg-icon svg-icon-4 me-1">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr063.svg"
+                            />
+                          </span>
+                          Back
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-lg btn-primary align-self-end"
+                        >
+                          Continue
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </el-form>
+                </div>
+              </div>
+              <!--end::Step 2-->
+
+              <!--begin::Step 2-->
+              <div data-kt-stepper-element="content">
+                <div class="w-100">
+                  <el-form
+                    class="w-100"
+                    :model="formData"
+                    :rules="rules"
+                    ref="formRef_3"
+                    @submit.prevent="handleStep_3"
+                  >
+                    <div class="row scroll h-500px">
                       <div class="col-sm-6">
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
@@ -712,8 +865,8 @@
                     class="w-100"
                     :model="formData"
                     :rules="rules"
-                    ref="formRef_3"
-                    @submit.prevent="handleStep_3"
+                    ref="formRef_4"
+                    @submit.prevent="handleStep_4"
                   >
                     <div class="row">
                       <div class="card-info">
@@ -1214,10 +1367,10 @@
                     class="w-100"
                     :model="formData"
                     :rules="rules"
-                    ref="formRef_4"
+                    ref="formRef_5"
                     @submit.prevent="submit"
                   >
-                    <div class="row scroll h-450px">
+                    <div class="row scroll h-500px">
                       <div class="card-info">
                         <div class="fs-3 fw-bold text-muted mb-6">
                           Other Information
@@ -1515,6 +1668,7 @@ export default defineComponent({
     const formRef_2 = ref(null);
     const formRef_3 = ref(null);
     const formRef_4 = ref(null);
+    const formRef_5 = ref(null);
     const loading = ref(false);
     const formData = ref({
       reference_number: 22100349,
@@ -1574,70 +1728,70 @@ export default defineComponent({
         {
           required: true,
           message: "Clinic Name cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       arrival_time: [
         {
           required: true,
           message: "Arrival time cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       appointment_type_id: [
         {
           required: true,
           message: "Appointment Type cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       specialist_id: [
         {
           required: true,
           message: "Specialist cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       first_name: [
         {
           required: true,
           message: "First name cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       last_name: [
         {
           required: true,
           message: "Last name cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       date_of_birth: [
         {
           required: true,
           message: "Date of birth cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       email: [
         {
           type: "email",
           message: "Please input correct email address",
-          trigger: ["blur", "change"],
+          trigger: ["blur"],
         },
       ],
       contact_number: [
         {
           required: true,
           message: "Mobile Number cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       charge_type: [
         {
           required: true,
           message: "Charge Type cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       procedure_price: [
@@ -1656,35 +1810,35 @@ export default defineComponent({
         {
           required: true,
           message: "Medicare number cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       medicare_reference_number: [
         {
           required: true,
           message: "Medicare Reference Number cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       medicare_expiry_date: [
         {
           required: true,
           message: "Medicare expiry date cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
       appointment_confirm: [
         {
           required: true,
           message: "Appointmentconfirm cannot be blank.",
-          trigger: "change",
+          trigger: "blur",
         },
       ],
     });
     const appointment_length = reactive({
-      SINGLE: 1,
-      DOUBLE: 2,
-      TRIPLE: 3,
+      single: 1,
+      double: 2,
+      triple: 3,
     });
     const appointment_time = ref(30);
 
@@ -1877,16 +2031,15 @@ export default defineComponent({
       if (!formRef_2.value) {
         return;
       }
-
-      formRef_2.value.validate((valid) => {
-        if (valid) {
-          currentStepIndex.value++;
-          if (!_stepperObj.value) {
-            return;
-          }
-          _stepperObj.value.goNext();
-        }
-      });
+      currentStepIndex.value++;
+      if (!_stepperObj.value) {
+        return;
+      }
+      _stepperObj.value.goNext();
+      // if (!_stepperObj.value) {
+      //   return;
+      // }
+      // _stepperObj.value.goNext();
     };
 
     const handleStep_3 = () => {
@@ -1905,6 +2058,22 @@ export default defineComponent({
       });
     };
 
+    const handleStep_4 = () => {
+      if (!formRef_4.value) {
+        return;
+      }
+
+      formRef_4.value.validate((valid) => {
+        if (valid) {
+          currentStepIndex.value++;
+          if (!_stepperObj.value) {
+            return;
+          }
+          _stepperObj.value.goNext();
+        }
+      });
+    };
+
     const handleCancel = () => {
       currentStepIndex.value = 0;
       _stepperObj.value.goFirst();
@@ -1912,6 +2081,7 @@ export default defineComponent({
       formRef_2.value.resetFields();
       formRef_3.value.resetFields();
       formRef_4.value.resetFields();
+      formRef_5.value.resetFields();
     };
 
     const handleAddressChange = (e) => {
@@ -1928,10 +2098,10 @@ export default defineComponent({
     };
 
     const submit = () => {
-      if (!formRef_4.value) {
+      if (!formRef_5.value) {
         return;
       }
-      formRef_4.value.validate((valid) => {
+      formRef_5.value.validate((valid) => {
         if (valid) {
           loading.value = true;
           store
@@ -1999,11 +2169,13 @@ export default defineComponent({
       formRef_2,
       formRef_3,
       formRef_4,
+      formRef_5,
       loading,
       previousStep,
       handleStep_1,
       handleStep_2,
       handleStep_3,
+      handleStep_4,
       handleCancel,
       currentStepIndex,
       createAptRef,
