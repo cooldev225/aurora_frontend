@@ -305,6 +305,7 @@ export default defineComponent({
       // const modal = new Modal(document.getElementById("modal_edit_apt"));
       // modal.show();
       store.commit(Mutations.SET_APT.SELECT, item);
+      console.log(item);
       DrawerComponent?.getInstance("booking-drawer")?.toggle();
     };
 

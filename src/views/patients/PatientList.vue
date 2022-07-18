@@ -146,7 +146,10 @@
               item.upcoming_appointment.id
                 ? item.upcoming_appointment.color
                 : ''
+            }; cursor: ${
+              item.upcoming_appointment.id ? 'pointer' : 'not-allowed'
             }`"
+            @click="item.upcoming_appointment.id ? handleBadge(item) : ''"
             >{{
               item.upcoming_appointment.id
                 ? item.upcoming_appointment.date +
@@ -180,8 +183,9 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Actions } from "@/store/enums/StoreEnums";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import moment from "moment";
+import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
   name: "patients-list",
@@ -237,11 +241,6 @@ export default defineComponent({
     const filterUR = ref("");
     const tableKey = ref(0);
 
-    const handleView = (item) => {
-      store.dispatch(Actions.PATIENTS.VIEW, item.id);
-      router.push({ name: "patients-view-appointments" });
-    };
-
     const renderTable = () => tableKey.value++;
 
     const searchPatient = () => {
@@ -283,6 +282,17 @@ export default defineComponent({
       renderTable();
     };
 
+    const handleView = (item) => {
+      store.dispatch(Actions.PATIENTS.VIEW, item.id);
+      router.push({ name: "patients-view-appointments" });
+    };
+
+    const handleBadge = (item) => {
+      store.commit(Mutations.SET_APT.SELECT, item.upcoming_appointment);
+      router.push({ name: "booking-dashboard" });
+      // DrawerComponent?.getInstance("booking-drawer")?.show();
+    };
+
     watch(list, () => {
       patientData.value = list.value;
       tableData.value = patientData.value;
@@ -304,6 +314,7 @@ export default defineComponent({
       filterUR,
       tableKey,
       handleView,
+      handleBadge,
       searchPatient,
       clearFilters,
     };

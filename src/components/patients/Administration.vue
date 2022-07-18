@@ -72,11 +72,12 @@
                             v-model="formData.title"
                             placeholder="Select Title"
                           >
-                            <el-option value="mr" label="Mr" />
-                            <el-option value="mrs" label="Mrs" />
-                            <el-option value="ms" label="Ms" />
-                            <el-option value="master" label="Master" />
-                            <el-option value="miss" label="Miss" />
+                            <el-option
+                              v-for="item in titles"
+                              :key="item.value"
+                              :value="item.value"
+                              :label="item.label"
+                            />
                           </el-select>
                         </el-form-item>
                       </td>
@@ -450,9 +451,10 @@
 import { defineComponent, ref, watchEffect, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
-import maritalStatus from "@/core/data/marital-status";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import maritalStatus from "@/core/data/marital-status";
+import titles from "@/core/data/titles";
 
 export default defineComponent({
   name: "patient-administration",
@@ -589,8 +591,9 @@ export default defineComponent({
       formData,
       formRef,
       rules,
-      submit,
+      titles,
       maritalStatus,
+      submit,
     };
   },
 });

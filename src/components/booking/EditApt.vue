@@ -597,11 +597,12 @@
                               v-model="_formData.title"
                               placeholder="Select Title"
                             >
-                              <el-option value="mr" label="Mr" />
-                              <el-option value="mrs" label="Mrs" />
-                              <el-option value="ms" label="Ms" />
-                              <el-option value="master" label="Master" />
-                              <el-option value="miss" label="Miss" />
+                              <el-option
+                                v-for="item in titles"
+                                :key="item.value"
+                                :value="item.value"
+                                :label="item.label"
+                              />
                             </el-select>
                           </el-form-item>
                           <!--end::Input-->
@@ -1729,8 +1730,8 @@ import { countryList, timeZoneList } from "@/core/data/country";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { hideModal } from "@/core/helpers/dom";
-import moment from "moment";
 import chargeTypes from "@/core/data/charge-types";
+import titles from "@/core/data/titles";
 
 export default defineComponent({
   name: "edit-apt-modal",
@@ -2167,6 +2168,7 @@ export default defineComponent({
     return {
       _formData,
       chargeTypes,
+      titles,
       rules,
       clinic,
       rooms,
