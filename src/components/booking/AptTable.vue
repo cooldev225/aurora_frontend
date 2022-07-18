@@ -303,13 +303,6 @@ export default defineComponent({
     };
 
     const handleEdit = (item, specialist) => {
-      // const data = {
-      //   ava_specialist: _ava_specialists,
-      //   selected_specialist: specialist,
-      // };
-      // store.commit(Mutations.SET_BOOKING.SELECT, specialist);
-      // const modal = new Modal(document.getElementById("modal_edit_apt"));
-      // modal.show();
       store.commit(Mutations.SET_APT.SELECT, item);
       console.log(item);
       DrawerComponent?.getInstance("booking-drawer")?.toggle();
