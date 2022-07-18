@@ -90,7 +90,11 @@
                 >
                   <template v-if="item_2.time_length === 4">
                     <td
-                      style="min-width: 441px"
+                      :style="
+                        item_1.appointment.length === 2
+                          ? 'min-width: 220px'
+                          : 'min-width: 441px'
+                      "
                       :colspan="item_1.appointment.length === 2 ? 1 : 2"
                     ></td>
                   </template>
@@ -200,62 +204,70 @@ export default defineComponent({
                       : 1,
                 };
                 _temp.push(temp);
-                for (let k in specialist.appointments) {
-                  let _apt_temp = specialist.appointments[k];
-                  if (
-                    (timeStr2Number(_apt_temp.start_time) <
-                      timeStr2Number(_apt.start_time) &&
-                      timeStr2Number(_apt_temp.end_time) >
-                        timeStr2Number(_apt.start_time)) ||
-                    (timeStr2Number(_apt_temp.start_time) <
-                      timeStr2Number(_apt.end_time) &&
-                      timeStr2Number(_apt_temp.end_time) >
-                        timeStr2Number(_apt.end_time))
-                  ) {
+                if (_temp.length < 2) {
+                  for (let k in specialist.appointments) {
+                    let _apt_temp = specialist.appointments[k];
                     if (
-                      timeStr2Number(_apt_temp.start_time) >
-                      timeStr2Number(_val)
+                      (timeStr2Number(_apt_temp.start_time) <
+                        timeStr2Number(_apt.start_time) &&
+                        timeStr2Number(_apt_temp.end_time) >
+                          timeStr2Number(_apt.start_time)) ||
+                      (timeStr2Number(_apt_temp.start_time) <
+                        timeStr2Number(_apt.end_time) &&
+                        timeStr2Number(_apt_temp.end_time) >
+                          timeStr2Number(_apt.end_time))
                     ) {
-                      let _temp_1 = {
-                        time_length: 4,
-                      };
-                      _temp.push(_temp_1);
+                      if (
+                        timeStr2Number(_apt_temp.start_time) >
+                        timeStr2Number(_val)
+                      ) {
+                        let _temp_1 = {
+                          time_length: 4,
+                        };
+                        _temp.push(_temp_1);
+                      }
                     }
                   }
                 }
+              } else if (
+                timeStr2Number(_apt.start_time) < timeStr2Number(_val) &&
+                timeStr2Number(_apt.end_time) > timeStr2Number(_val)
+              ) {
+                let temp = {
+                  time_length: 0,
+                };
+                _temp.push(temp);
+                if (_temp.length < 2) {
+                  for (let k in specialist.appointments) {
+                    let _apt_temp = specialist.appointments[k];
+                    if (
+                      (timeStr2Number(_apt_temp.start_time) <
+                        timeStr2Number(_apt.start_time) &&
+                        timeStr2Number(_apt_temp.end_time) >
+                          timeStr2Number(_apt.start_time)) ||
+                      (timeStr2Number(_apt_temp.start_time) <
+                        timeStr2Number(_apt.end_time) &&
+                        timeStr2Number(_apt_temp.end_time) >
+                          timeStr2Number(_apt.end_time))
+                    ) {
+                      if (
+                        timeStr2Number(_apt_temp.start_time) >
+                        timeStr2Number(_val)
+                      ) {
+                        let _temp_1 = {
+                          time_length: 4,
+                        };
+                        _temp.push(_temp_1);
+                      }
+                    }
+                  }
+                }
+              } else {
+                if (_temp.length < 2) {
+                  let temp = { specialist: specialist, time_length: 4 };
+                  _temp.push(temp);
+                }
               }
-              //   else if (
-              //     timeStr2Number(_apt.start_time) < timeStr2Number(_val) &&
-              //     timeStr2Number(_apt.end_time) > timeStr2Number(_val)
-              //   ) {
-              //     let temp = {
-              //       time_length: 0,
-              //     };
-              //     _temp.push(temp);
-              //     for (let k in specialist.appointments) {
-              //       let _apt_temp = specialist.appointments[k];
-              //       if (
-              //         (timeStr2Number(_apt_temp.start_time) <
-              //           timeStr2Number(_apt.start_time) &&
-              //           timeStr2Number(_apt_temp.end_time) >
-              //             timeStr2Number(_apt.start_time)) ||
-              //         (timeStr2Number(_apt_temp.start_time) <
-              //           timeStr2Number(_apt.end_time) &&
-              //           timeStr2Number(_apt_temp.end_time) >
-              //             timeStr2Number(_apt.end_time))
-              //       ) {
-              //         if (
-              //           timeStr2Number(_apt_temp.start_time) >
-              //           timeStr2Number(_val)
-              //         ) {
-              //           let _temp_1 = {
-              //             time_length: 4,
-              //           };
-              //           _temp.push(_temp_1);
-              //         }
-              //       }
-              //     }
-              //   }
             }
             if (Object.keys(_temp).length === 0) {
               let temp = { specialist: specialist, time_length: 4 };
