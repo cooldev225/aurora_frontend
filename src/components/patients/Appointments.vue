@@ -1,777 +1,181 @@
 <template>
-  <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
-    <!--begin::details View-->
-    <div class="card mb-5 mb-xl-10" id="patient_view_appointments_current">
-      <!--begin::Card header-->
-      <div class="card-header cursor-pointer">
-        <!--begin::Card title-->
-        <div class="card-title m-0">
-          <h3 class="fw-bolder m-0">Current Appointment</h3>
-        </div>
-        <!--end::Card title-->
+  <!--begin::details View-->
+  <div class="card mb-5 mb-xl-10" id="patient_view_appointments_current">
+    <!--begin::Card header-->
+    <div class="card-header cursor-pointer">
+      <!--begin::Card title-->
+      <div class="card-title m-0">
+        <h3 class="fw-bolder m-0">Appointment List</h3>
       </div>
-      <!--begin::Card header-->
-      <!--begin::Card body-->
-      <div id="patient_view_appointments" class="card-body pt-0">
-        <!--begin::Option-->
-        <div class="py-0" data-kt-customer-payment-method="row">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
-              data-bs-toggle="collapse"
-              href="#patient_view_appointments_details"
-              role="button"
-              aria-expanded="true"
-              aria-controls="patient_view_appointments_details"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">Appointment Details</div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
-            </div>
-            <!--end::Toggle-->
-          </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div
-            id="patient_view_appointments_details"
-            class="fs-6 ps-10 collapse show"
-            data-bs-parent="#patient_view_appointments"
-          >
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Service Reference Number
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.reference_number
-                            ? formData.current_appointment.reference_number
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Date
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.date
-                            ? formData.current_appointment.date
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Arrival Time
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.arrival_time
-                            ? formData.current_appointment.arrival_time
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Start Time
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.start_time
-                            ? formData.current_appointment.start_time
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        End Time
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.end_time
-                            ? formData.current_appointment.end_time
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Procedure Name
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.procedure_name
-                            ? formData.current_appointment.procedure_name
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Clinical Code
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.clinical_code
-                            ? formData.current_appointment.clinical_code
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        MBS Code
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.mbs_code
-                            ? formData.current_appointment.mbs_code
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Clinic
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.clinic_name
-                            ? formData.current_appointment.clinic_name
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Details-->
-          </div>
-          <!--end::Body-->
-        </div>
-        <!--end::Option-->
-        <div class="separator separator-dashed"></div>
-        <!--begin::Option-->
-        <div class="py-0" data-kt-customer-payment-method="row">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
-              data-bs-toggle="collapse"
-              href="#patient_view_appointments_specialist_details"
-              role="button"
-              aria-expanded="true"
-              aria-controls="patient_view_appointments_specialist_details"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">Specialist Details</div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
-            </div>
-            <!--end::Toggle-->
-          </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div
-            id="patient_view_appointments_specialist_details"
-            class="fs-6 ps-10 collapse show"
-            data-bs-parent="#patient_view_appointments_2"
-          >
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Specialist Name
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.specialist_name
-                            ? formData.current_appointment.specialist_name
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Specialist Provider Number
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment
-                            .specialist_provider_number
-                            ? formData.current_appointment
-                                .specialist_provider_number
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Details-->
-          </div>
-          <!--end::Body-->
-        </div>
-        <!--end::Option-->
-        <div class="separator separator-dashed"></div>
-        <!--begin::Option-->
-        <div class="py-0" data-kt-customer-payment-method="row">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
-              data-bs-toggle="collapse"
-              href="#patient_view_appointments_referral_details"
-              role="button"
-              aria-expanded="true"
-              aria-controls="patient_view_appointments_referral_details"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">Referral Details</div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
-            </div>
-            <!--end::Toggle-->
-          </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div
-            id="patient_view_appointments_referral_details"
-            class="fs-6 ps-10 collapse show"
-            data-bs-parent="#patient_view_appointments_3"
-          >
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Referral Date
-                      </td>
-                      <!-- <td class="text-gray-800">
-                        <el-form-item prop="referral_date">
-                          <el-date-picker
-                            class="w-50"
-                            v-model="formData.current_appointment.referral_date"
-                            placeholder="Referral Date"
-                          />
-                        </el-form-item>
-                      </td> -->
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Referral Duration
-                      </td>
-                      <!-- <td class="text-gray-800">
-                        <el-form-item prop="referral_date">
-                          <el-select
-                            class="w-50"
-                            v-model="
-                              formData.current_appointment.referral_duration
-                            "
-                            placeholder="Referral Duration"
-                          >
-                            <el-option :value="0" label="Indefinite" />
-                            <el-option :value="1" label="1 Month" />
-                            <el-option :value="3" label="3 Months" />
-                            <el-option :value="12" label="12 Months" />
-                          </el-select>
-                        </el-form-item>
-                      </td> -->
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Referral Expiry Date
-                      </td>
-                      <!-- <td class="text-gray-800">
-                        <el-date-picker
-                          class="w-50"
-                          v-model="
-                            formData.current_appointment.referral_expiry_date
-                          "
-                          placeholder="Referral Expiry Date"
-                        />
-                      </td> -->
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Referral Details
-                      </td>
-                      <!-- <td class="text-gray-800">
-                        <el-form-item prop="referral_details">
-                          <el-input
-                            v-model="
-                              formData.current_appointment.referral_details
-                            "
-                            class="w-50"
-                            type="textarea"
-                            rows="3"
-                            placeholder="Referral Details"
-                          />
-                        </el-form-item>
-                      </td> -->
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Details-->
-          </div>
-          <!--end::Body-->
-        </div>
-        <!--end::Option-->
-        <div class="separator separator-dashed"></div>
-        <!--begin::Option-->
-        <div class="py-0" data-kt-customer-payment-method="row">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
-              data-bs-toggle="collapse"
-              href="#patient_view_appointments_appointment_billing"
-              role="button"
-              aria-expanded="true"
-              aria-controls="patient_view_appointments_appointment_billing"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">Appointment Billing</div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
-            </div>
-            <!--end::Toggle-->
-          </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div
-            id="patient_view_appointments_appointment_billing"
-            class="fs-6 ps-10 collapse show"
-            data-bs-parent="#patient_view_appointments_4"
-          >
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Charge Type
-                      </td>
-                      <td class="text-gray-800">
-                        <!-- {{
-                          formData.current_appointment &&
-                          formData.current_appointment.charge_type
-                            ? formData.current_appointment.charge_type
-                            : ""
-                        }} -->
-                        <el-form-item
-                          prop="charge_type"
-                          v-if="
-                            formData.current_appointment &&
-                            formData.current_appointment.charge_type &&
-                            formData.current_appointment.payment_status
-                          "
-                        >
-                          <el-select
-                            class="w-75"
-                            v-model="formData.current_appointment.charge_type"
-                            placeholder="Select Charge Type"
-                            :disabled="
-                              formData.current_appointment.payment_status !=
-                              'pending'
-                            "
-                          >
-                            <el-option
-                              v-for="type in chargeTypes"
-                              :key="type.value"
-                              :value="type.value"
-                              :label="type.label"
-                            />
-                          </el-select>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Concession Number
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.concession_number
-                            ? formData.current_appointment.concession_number
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Concession Expiry Date
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.concession_expiry_date
-                            ? formData.current_appointment
-                                .concession_expiry_date
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Has co-payment
-                      </td>
-                      <td class="text-gray-800">(not applicable)</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Patient Pay
-                      </td>
-                      <td class="text-gray-800">(not applicable)</td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Payment Status
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.payment_status
-                            ? formData.current_appointment.payment_status
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Payment Source
-                      </td>
-                      <td class="text-gray-800">(not applicable)</td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Note
-                      </td>
-                      <td class="text-gray-800">
-                        {{
-                          formData.current_appointment &&
-                          formData.current_appointment.note
-                            ? formData.current_appointment.note
-                            : "(not applicable)"
-                        }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Details-->
-          </div>
-          <!--end::Body-->
-        </div>
-        <!--end::Option-->
-      </div>
-      <!--end::Card body-->
+      <!--end::Card title-->
     </div>
-    <!--end::details View-->
-    <!--begin::details View-->
-    <div class="card mb-5 mb-xl-10" id="patient_view_appointments_past">
-      <!--begin::Card header-->
-      <div class="card-header cursor-pointer">
-        <!--begin::Card title-->
-        <div class="card-title m-0">
-          <h3 class="fw-bolder m-0">Past Appointments</h3>
-        </div>
-        <!--end::Card title-->
-      </div>
-      <!--begin::Card header-->
+    <!--begin::Card header-->
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+      <Datatable
+        v-if="tableData"
+        :table-header="tableHeader"
+        :table-data="tableData"
+        :rows-per-page="5"
+        :enable-items-per-page-dropdown="true"
+      >
+        <template v-slot:cell-reference_number="{ row: item }">
+          {{ item.reference_number }}
+        </template>
+        <template v-slot:cell-date="{ row: item }">
+          {{ item.date }} {{ item.start_time }}
+        </template>
+        <template v-slot:cell-specialist="{ row: item }">
+          {{ item.specialist_name }}
+        </template>
+        <template v-slot:cell-clinic="{ row: item }">
+          {{ item.clinic_name }}
+        </template>
+        <template v-slot:cell-appointment_type="{ row: item }">
+          {{ item.appointment_type_name }}
+        </template>
+        <template v-slot:cell-attendance_status="{ row: item }">
+          <span
+            :class="`text-uppercase badge badge-light-${
+              item.attendance_status === 'not_present'
+                ? 'dark'
+                : item.attendance_status === 'waiting'
+                ? 'warning'
+                : item.attendance_status === 'checked_in'
+                ? 'success'
+                : 'primary'
+            }`"
+          >
+            {{ item.attendance_status.replace("_", " ") }}
+          </span>
+        </template>
+        <template v-slot:cell-payment>
+          <button
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            @click="handlePay"
+          >
+            <span class="svg-icon svg-icon-3">
+              <inline-svg src="media/icons/duotune/finance/fin002.svg" />
+            </span>
+          </button>
 
-      <!--begin::Card body-->
-      <div id="patient_view_appointments" class="card-body pt-0">
-        <!--begin::Option-->
-        <div class="py-0" data-kt-customer-payment-method="row">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
-              data-bs-toggle="collapse"
-              href="#patient_view_appointments_history"
-              role="button"
-              aria-expanded="true"
-              aria-controls="patient_view_appointments_history"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">Appointment History</div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
-            </div>
-            <!--end::Toggle-->
-          </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div
-            id="patient_view_appointments_history"
-            class="fs-6 ps-10 collapse show"
-            data-bs-parent="#patient_view_appointments_5"
+          <button
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+            @click="handleView"
           >
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Cancelled Appointments
-                      </td>
-                      <td class="text-gray-800">
-                        {{ formData.canceled_appointments }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Missed Appointments
-                      </td>
-                      <td class="text-gray-800">
-                        {{ formData.missed_appointments }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Future Appointments
-                      </td>
-                      <td class="text-gray-800">
-                        {{ formData.future_appointments }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-200px">
-                        Past Appointments
-                      </td>
-                      <td class="text-gray-800">
-                        <span
-                          v-for="apt in formData.past_appointments"
-                          :key="apt.id"
-                          class="badge d-block mb-3"
-                          :style="`width: fit-content; background-color: ${apt.color}`"
-                          >{{ apt.date + "(" + apt.procedure_name + ")" }}</span
-                        >
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Details-->
-          </div>
-          <!--end::Body-->
-        </div>
-        <!--end::Option-->
-      </div>
-      <!--end::Card body-->
+            <span class="svg-icon svg-icon-3">
+              <i class="fas fa-eye"></i>
+            </span>
+          </button>
+        </template>
+        <template v-slot:cell-report>
+          <button
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+          >
+            <span class="svg-icon svg-icon-3">
+              <inline-svg src="media/icons/duotune/finance/fin002.svg" />
+            </span>
+          </button>
+
+          <button
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+          >
+            <span class="svg-icon svg-icon-3">
+              <i class="fas fa-plus"></i>
+            </span>
+          </button>
+        </template>
+      </Datatable>
     </div>
-    <!--end::details View-->
-    <div class="d-flex ms-auto justify-content-end w-25">
-      <button type="submit" class="btn btn-primary w-25">Save</button>
-      <button type="reset" class="btn btn-light-primary w-25 ms-2">
-        Cancel
-      </button>
-    </div>
-  </el-form>
+    <!--end::Card body-->
+  </div>
+  <!--end::details View-->
 </template>
 
 <script lang="ts">
 import { defineComponent, watchEffect, ref, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
-import chargeTypes from "@/core/data/charge-types";
-import { Actions } from "@/store/enums/StoreEnums";
-import Swal from "sweetalert2/dist/sweetalert2.js";
+import { useRouter } from "vue-router";
+import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 
 export default defineComponent({
   name: "patient-appointments",
-  components: {},
+  components: {
+    Datatable,
+  },
   setup() {
     const store = useStore();
-    const formRef = ref(null);
-    const formData = ref({
-      current_appointment: {
-        charge_type: "",
+    const router = useRouter();
+    const formData = ref();
+    const tableHeader = ref([
+      {
+        name: "Service Ref Number",
+        key: "reference_number",
+        sortable: true,
       },
-    });
-    const loading = ref(false);
+      {
+        name: "Date / Time",
+        key: "date",
+        sortable: true,
+      },
+      {
+        name: "Specialist",
+        key: "specialist",
+        sortable: false,
+      },
+      {
+        name: "Clinic",
+        key: "clinic",
+        sortable: false,
+      },
+      {
+        name: "Appointment Type",
+        key: "appointment_type",
+        sortable: false,
+      },
+      {
+        name: "Attendance Status",
+        key: "attendance_status",
+        sortable: false,
+      },
+      {
+        name: "Payment",
+        key: "payment",
+        sortable: false,
+      },
+      {
+        name: "Report",
+        key: "report",
+        sortable: false,
+      },
+    ]);
+    const tableData = ref([]);
+
+    const handlePay = () => {
+      router.push({ name: "make-payment-pay" });
+    };
+
+    const handleView = () => {
+      router.push({ name: "make-payment-view" });
+    };
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
+      tableData.value = formData.value.appointments;
+      console.log(tableData.value);
     });
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Appointments", ["Patients"]);
     });
 
-    const submit = () => {
-      if (!formRef.value) {
-        return;
-      }
-      store
-        .dispatch(Actions.PATIENTS.UPDATE, formData.value)
-        .then(() => {
-          loading.value = false;
-          store.dispatch(Actions.PATIENTS.LIST);
-          Swal.fire({
-            text: "Successfully Updated!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          }).then(() => {
-            console.log("Updated");
-          });
-        })
-        .catch(({ response }) => {
-          loading.value = false;
-          console.log(response.data.error);
-        });
-    };
-
     return {
-      formRef,
+      tableHeader,
+      tableData,
       formData,
-      chargeTypes,
-      submit,
+      handlePay,
+      handleView,
     };
   },
 });
