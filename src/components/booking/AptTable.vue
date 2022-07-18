@@ -155,8 +155,6 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    // const _specialists = computed(() => props.SPTData);
-    // const _specialists = computed(() => store.getters.getAptTableData);
     const _temp_specialists = computed(() => store.getters.getFilteredData);
     const _tableData = ref({});
     const tableTitle = computed(() => props.Title);
