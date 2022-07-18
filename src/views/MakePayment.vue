@@ -183,7 +183,7 @@ export default defineComponent({
 
     const handleSwitch = () => {
       if (!showAll.value) {
-        paymentData.value = paymentData.value.filter(
+        paymentData.value = PaymentList.filter(
           (data) => data.outstanding_balance > 0
         );
       } else {
@@ -195,7 +195,7 @@ export default defineComponent({
       if (currentClinic.value === 0) {
         paymentData.value = PaymentList;
       } else {
-        paymentData.value = paymentData.value.filter(
+        paymentData.value = PaymentList.filter(
           (data) => data.clinic_id === currentClinic.value
         );
       }
