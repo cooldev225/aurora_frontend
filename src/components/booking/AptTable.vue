@@ -155,8 +155,6 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    // const _specialists = computed(() => props.SPTData);
-    // const _specialists = computed(() => store.getters.getAptTableData);
     const _temp_specialists = computed(() => store.getters.getFilteredData);
     const _tableData = ref({});
     const tableTitle = computed(() => props.Title);
@@ -303,13 +301,6 @@ export default defineComponent({
     };
 
     const handleEdit = (item, specialist) => {
-      // const data = {
-      //   ava_specialist: _ava_specialists,
-      //   selected_specialist: specialist,
-      // };
-      // store.commit(Mutations.SET_BOOKING.SELECT, specialist);
-      // const modal = new Modal(document.getElementById("modal_edit_apt"));
-      // modal.show();
       store.commit(Mutations.SET_APT.SELECT, item);
       console.log(item);
       DrawerComponent?.getInstance("booking-drawer")?.toggle();
