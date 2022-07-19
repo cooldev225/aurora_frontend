@@ -290,7 +290,7 @@ export default defineComponent({
     const handleBadge = (item) => {
       store.commit(Mutations.SET_APT.SELECT, item.upcoming_appointment);
       router.push({ name: "booking-dashboard" });
-      // DrawerComponent?.getInstance("booking-drawer")?.show();
+      DrawerComponent?.getInstance("booking-drawer")?.show();
     };
 
     watch(list, () => {
