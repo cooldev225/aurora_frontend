@@ -290,7 +290,6 @@ export default defineComponent({
           }
         }
       }
-
       for (let key in _appointment) {
         for (let i in _tableData.value) {
           if (
