@@ -288,8 +288,8 @@ export default defineComponent({
 
     const handleBadge = (item) => {
       store.commit(Mutations.SET_APT.SELECT, item.upcoming_appointment);
+      localStorage.setItem("booking-appointment-toggle", true);
       router.push({ name: "booking-dashboard" });
-      localStorage.setItem("booking-drawer", true);
     };
 
     watch(list, () => {

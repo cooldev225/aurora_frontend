@@ -110,8 +110,6 @@
                       >
                         <span
                           class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-5"
-                          data-kt-drawer-toggle="true"
-                          data-kt-drawer-target="#kt_drawer_chat"
                           @click="handleEdit(item_2.appointment)"
                         >
                           {{ item_2.appointment.first_name }}
@@ -141,6 +139,7 @@ import {
   reactive,
   watchEffect,
   watch,
+  onUnmounted,
 } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
@@ -176,6 +175,9 @@ export default defineComponent({
     };
 
     const appointment = ref();
+    const showToggle = computed(() =>
+      localStorage.getItem("booking-appointment-toggle")
+    );
 
     onMounted(() => {
       store.dispatch(Actions.ORG.LIST);
@@ -307,7 +309,11 @@ export default defineComponent({
         _tableData.value =
           _temp_specialists.value[Object.keys(_temp_specialists.value)[0]];
       }
-      console.log(_tableData.value);
+
+      if (showToggle.value) {
+        DrawerComponent?.getInstance("booking-drawer")?.toggle();
+        localStorage.setItem("booking-appointment-toggle", false);
+      }
     });
 
     const handleAddApt = (specialist, startTime, endTime) => {
@@ -355,11 +361,6 @@ export default defineComponent({
       console.log(item);
       DrawerComponent?.getInstance("booking-drawer")?.toggle();
     };
-
-    onMounted(() => {
-      if (localStorage.getItem("booking-drawer"))
-        DrawerComponent?.getInstance("booking-drawer")?.show();
-    });
 
     return {
       format,

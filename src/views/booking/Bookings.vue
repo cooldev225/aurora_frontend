@@ -167,6 +167,7 @@ import {
   reactive,
   onMounted,
   computed,
+  watchEffect,
 } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -184,6 +185,7 @@ import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
 import { MenuComponent } from "@/assets/ts/components";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
   name: "bookings-dashboard",
