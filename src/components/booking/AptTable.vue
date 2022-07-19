@@ -332,6 +332,11 @@ export default defineComponent({
       DrawerComponent?.getInstance("booking-drawer")?.toggle();
     };
 
+    onMounted(() => {
+      if (localStorage.getItem("booking-drawer"))
+        DrawerComponent?.getInstance("booking-drawer")?.show();
+    });
+
     return {
       format,
       _tableData,

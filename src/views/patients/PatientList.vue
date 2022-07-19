@@ -185,7 +185,6 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import moment from "moment";
-import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
   name: "patients-list",
@@ -290,7 +289,7 @@ export default defineComponent({
     const handleBadge = (item) => {
       store.commit(Mutations.SET_APT.SELECT, item.upcoming_appointment);
       router.push({ name: "booking-dashboard" });
-      DrawerComponent?.getInstance("booking-drawer")?.show();
+      localStorage.setItem("booking-drawer", true);
     };
 
     watch(list, () => {
