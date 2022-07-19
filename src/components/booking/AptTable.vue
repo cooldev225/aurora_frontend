@@ -184,92 +184,14 @@ export default defineComponent({
     watch(_tableData, () => {
       let _val = "07:00";
       let _appointment = {};
-      debugger;
+      // debugger;
       while (timeStr2Number(_val) < timeStr2Number("18:00")) {
         _appointment[_val.toString()] = [];
         if (_tableData.value) {
           for (let i in _tableData.value) {
             let specialist = _tableData.value[i];
             let _temp = [];
-            for (let j in specialist.appointments) {
-              let _apt = specialist.appointments[j];
-              if (timeStr2Number(_apt.start_time) === timeStr2Number(_val)) {
-                let temp = {
-                  appointment: _apt,
-                  time_length:
-                    _apt.appointment_time === "triple"
-                      ? 3
-                      : _apt.appointment_time === "double"
-                      ? 2
-                      : 1,
-                };
-                _temp.push(temp);
-                if (_temp.length < 2) {
-                  for (let k in specialist.appointments) {
-                    let _apt_temp = specialist.appointments[k];
-                    if (
-                      (timeStr2Number(_apt_temp.start_time) <
-                        timeStr2Number(_apt.start_time) &&
-                        timeStr2Number(_apt_temp.end_time) >
-                          timeStr2Number(_apt.start_time)) ||
-                      (timeStr2Number(_apt_temp.start_time) <
-                        timeStr2Number(_apt.end_time) &&
-                        timeStr2Number(_apt_temp.end_time) >
-                          timeStr2Number(_apt.end_time))
-                    ) {
-                      if (
-                        timeStr2Number(_apt_temp.start_time) >
-                        timeStr2Number(_val)
-                      ) {
-                        let _temp_1 = {
-                          time_length: 4,
-                        };
-                        _temp.push(_temp_1);
-                      }
-                    }
-                  }
-                }
-              } else if (
-                timeStr2Number(_apt.start_time) < timeStr2Number(_val) &&
-                timeStr2Number(_apt.end_time) > timeStr2Number(_val)
-              ) {
-                let temp = {
-                  time_length: 0,
-                };
-                _temp.push(temp);
-                if (_temp.length < 2) {
-                  for (let k in specialist.appointments) {
-                    let _apt_temp = specialist.appointments[k];
-                    if (
-                      (timeStr2Number(_apt_temp.start_time) <
-                        timeStr2Number(_apt.start_time) &&
-                        timeStr2Number(_apt_temp.end_time) >
-                          timeStr2Number(_apt.start_time)) ||
-                      (timeStr2Number(_apt_temp.start_time) <
-                        timeStr2Number(_apt.end_time) &&
-                        timeStr2Number(_apt_temp.end_time) >
-                          timeStr2Number(_apt.end_time))
-                    ) {
-                      if (
-                        timeStr2Number(_apt_temp.start_time) >
-                        timeStr2Number(_val)
-                      ) {
-                        let _temp_1 = {
-                          time_length: 4,
-                        };
-                        _temp.push(_temp_1);
-                      }
-                    }
-                  }
-                }
-              } else {
-                if (_temp.length < 2) {
-                  let temp = { specialist: specialist, time_length: 4 };
-                  _temp.push(temp);
-                }
-              }
-            }
-            if (Object.keys(_temp).length === 0) {
+            while (_temp.length < 2) {
               let temp = { specialist: specialist, time_length: 4 };
               _temp.push(temp);
             }
@@ -285,6 +207,53 @@ export default defineComponent({
           .add(appointment_length.value, "minutes")
           .format("HH:mm")
           .toString();
+      }
+
+      for (let key in _appointment) {
+        debugger;
+        // _appointment[_val.toString()] = [];
+        // let flag = true;
+        if (_tableData.value) {
+          for (let i in _tableData.value) {
+            let specialist = _tableData.value[i];
+            for (let j in specialist.appointments) {
+              let _apt = specialist.appointments[j];
+              if (timeStr2Number(_apt.start_time) === timeStr2Number(key)) {
+                let temp = {
+                  appointment: _apt,
+                  time_length:
+                    _apt.appointment_time === "triple"
+                      ? 3
+                      : _apt.appointment_time === "double"
+                      ? 2
+                      : 1,
+                };
+                if (_appointment[key][i].appointment[0].time_length === 4) {
+                  _appointment[key][i].appointment[0] = temp;
+                } else {
+                  _appointment[key][i].appointment[1] = temp;
+                }
+              } else if (
+                timeStr2Number(_apt.start_time) < timeStr2Number(key) &&
+                timeStr2Number(_apt.end_time) > timeStr2Number(key)
+              ) {
+                let temp = {
+                  time_length: 0,
+                };
+                if (_appointment[key][i].appointment[0].time_length === 4) {
+                  _appointment[key][i].appointment[0] = temp;
+                } else {
+                  _appointment[key][i].appointment[1] = temp;
+                }
+              }
+            }
+            // let _data = {
+            //   specialist: specialist,
+            //   appointment: _temp,
+            // };
+            // _appointment[_val.toString()].push(_data);
+          }
+        }
       }
       appointment.value = _appointment;
     });
