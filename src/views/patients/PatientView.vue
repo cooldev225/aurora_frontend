@@ -33,6 +33,7 @@
                   {{ formData.first_name }} {{ formData.last_name }}
                 </span>
                 <span
+                  v-if="formData.UR_number"
                   class="btn btn-sm btn-light-success fw-bolder ms-2 fs-8 py-1 px-3"
                   >{{ formData.UR_number }}</span
                 >
@@ -43,6 +44,7 @@
               <div class="d-flex flex-wrap fw-bold fs-6 mb-4 pe-2">
                 <a
                   href="#"
+                  v-if="formData.email"
                   class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2"
                 >
                   <span class="svg-icon svg-icon-4 me-1">
@@ -54,6 +56,7 @@
                 </a>
                 <span
                   href="#"
+                  v-if="formData.address"
                   class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2"
                 >
                   <span class="svg-icon svg-icon-4 me-1">
@@ -62,6 +65,7 @@
                   {{ formData.address }}
                 </span>
                 <span
+                  v-if="formData.date_of_birth"
                   class="d-flex align-items-center text-gray-400 text-hover-primary mb-2"
                 >
                   <span class="svg-icon svg-icon-4 me-1">

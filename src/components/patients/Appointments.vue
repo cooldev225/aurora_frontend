@@ -151,7 +151,6 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const activeData = ref([]);
 
     const handlePay = () => {
       router.push({ name: "make-payment-pay" });
