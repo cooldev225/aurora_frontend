@@ -287,11 +287,6 @@ export default defineComponent({
                 }
               }
             }
-            // let _data = {
-            //   specialist: specialist,
-            //   appointment: _temp,
-            // };
-            // _appointment[_val.toString()].push(_data);
           }
         }
       }
