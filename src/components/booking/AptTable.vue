@@ -144,10 +144,10 @@ import {
 } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
-// import { aptTimeList } from "@/core/data/apt-time";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -210,9 +210,6 @@ export default defineComponent({
       }
 
       for (let key in _appointment) {
-        debugger;
-        // _appointment[_val.toString()] = [];
-        // let flag = true;
         if (_tableData.value) {
           for (let i in _tableData.value) {
             let specialist = _tableData.value[i];
@@ -322,8 +319,35 @@ export default defineComponent({
         selected_specialist: specialist,
       };
       store.commit(Mutations.SET_BOOKING.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_create_apt"));
-      modal.show();
+      debugger;
+      let cnt = 0;
+      for (let i in specialist.appointments) {
+        let _apt_temp = specialist.appointments[i];
+        if (
+          timeStr2Number(_apt_temp.start_time) <= timeStr2Number(startTime) &&
+          timeStr2Number(_apt_temp.end_time) > timeStr2Number(startTime)
+        )
+          cnt++;
+      }
+      if (cnt >= 1) {
+        Swal.fire({
+          text: "Are you sure you want to double book this time slot?",
+          icon: "info",
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+          confirmButtonText: "Confirm",
+        }).then((result) => {
+          if (result.value) {
+            const modal = new Modal(
+              document.getElementById("modal_create_apt")
+            );
+            modal.show();
+          }
+        });
+      } else {
+        const modal = new Modal(document.getElementById("modal_create_apt"));
+        modal.show();
+      }
     };
 
     const handleEdit = (item, specialist) => {
