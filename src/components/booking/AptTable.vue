@@ -90,7 +90,11 @@
                 >
                   <template v-if="item_2.time_length === 4">
                     <td
-                      style="min-width: 441px"
+                      :style="
+                        item_1.appointment.length === 2
+                          ? 'min-width: 220px'
+                          : 'min-width: 441px'
+                      "
                       :colspan="item_1.appointment.length === 2 ? 1 : 2"
                     ></td>
                   </template>
@@ -180,84 +184,14 @@ export default defineComponent({
     watch(_tableData, () => {
       let _val = "07:00";
       let _appointment = {};
-      debugger;
+      // debugger;
       while (timeStr2Number(_val) < timeStr2Number("18:00")) {
         _appointment[_val.toString()] = [];
         if (_tableData.value) {
           for (let i in _tableData.value) {
             let specialist = _tableData.value[i];
             let _temp = [];
-            for (let j in specialist.appointments) {
-              let _apt = specialist.appointments[j];
-              if (timeStr2Number(_apt.start_time) === timeStr2Number(_val)) {
-                let temp = {
-                  appointment: _apt,
-                  time_length:
-                    _apt.appointment_time === "triple"
-                      ? 3
-                      : _apt.appointment_time === "double"
-                      ? 2
-                      : 1,
-                };
-                _temp.push(temp);
-                for (let k in specialist.appointments) {
-                  let _apt_temp = specialist.appointments[k];
-                  if (
-                    (timeStr2Number(_apt_temp.start_time) <
-                      timeStr2Number(_apt.start_time) &&
-                      timeStr2Number(_apt_temp.end_time) >
-                        timeStr2Number(_apt.start_time)) ||
-                    (timeStr2Number(_apt_temp.start_time) <
-                      timeStr2Number(_apt.end_time) &&
-                      timeStr2Number(_apt_temp.end_time) >
-                        timeStr2Number(_apt.end_time))
-                  ) {
-                    if (
-                      timeStr2Number(_apt_temp.start_time) >
-                      timeStr2Number(_val)
-                    ) {
-                      let _temp_1 = {
-                        time_length: 4,
-                      };
-                      _temp.push(_temp_1);
-                    }
-                  }
-                }
-              }
-              //   else if (
-              //     timeStr2Number(_apt.start_time) < timeStr2Number(_val) &&
-              //     timeStr2Number(_apt.end_time) > timeStr2Number(_val)
-              //   ) {
-              //     let temp = {
-              //       time_length: 0,
-              //     };
-              //     _temp.push(temp);
-              //     for (let k in specialist.appointments) {
-              //       let _apt_temp = specialist.appointments[k];
-              //       if (
-              //         (timeStr2Number(_apt_temp.start_time) <
-              //           timeStr2Number(_apt.start_time) &&
-              //           timeStr2Number(_apt_temp.end_time) >
-              //             timeStr2Number(_apt.start_time)) ||
-              //         (timeStr2Number(_apt_temp.start_time) <
-              //           timeStr2Number(_apt.end_time) &&
-              //           timeStr2Number(_apt_temp.end_time) >
-              //             timeStr2Number(_apt.end_time))
-              //       ) {
-              //         if (
-              //           timeStr2Number(_apt_temp.start_time) >
-              //           timeStr2Number(_val)
-              //         ) {
-              //           let _temp_1 = {
-              //             time_length: 4,
-              //           };
-              //           _temp.push(_temp_1);
-              //         }
-              //       }
-              //     }
-              //   }
-            }
-            if (Object.keys(_temp).length === 0) {
+            while (_temp.length < 2) {
               let temp = { specialist: specialist, time_length: 4 };
               _temp.push(temp);
             }
@@ -273,6 +207,99 @@ export default defineComponent({
           .add(appointment_length.value, "minutes")
           .format("HH:mm")
           .toString();
+      }
+
+      for (let key in _appointment) {
+        debugger;
+        // _appointment[_val.toString()] = [];
+        // let flag = true;
+        if (_tableData.value) {
+          for (let i in _tableData.value) {
+            let specialist = _tableData.value[i];
+            for (let j in specialist.appointments) {
+              let _apt = specialist.appointments[j];
+              if (timeStr2Number(_apt.start_time) === timeStr2Number(key)) {
+                let temp = {
+                  appointment: _apt,
+                  time_length:
+                    _apt.appointment_time === "triple"
+                      ? 3
+                      : _apt.appointment_time === "double"
+                      ? 2
+                      : 1,
+                };
+                let flag = true;
+                for (let k in specialist.appointments) {
+                  let _apt_temp = specialist.appointments[k];
+                  if (
+                    (timeStr2Number(_apt_temp.start_time) <
+                      timeStr2Number(_apt.start_time) &&
+                      timeStr2Number(_apt_temp.end_time) >
+                        timeStr2Number(_apt.start_time)) ||
+                    (timeStr2Number(_apt_temp.start_time) <
+                      timeStr2Number(_apt.end_time) &&
+                      timeStr2Number(_apt_temp.end_time) >
+                        timeStr2Number(_apt.end_time))
+                  ) {
+                    flag = false;
+                  }
+                }
+                if (flag == true) {
+                  _appointment[key][i].appointment = [temp];
+                } else {
+                  if (_appointment[key][i].appointment[0].time_length === 4) {
+                    _appointment[key][i].appointment[0] = temp;
+                  } else {
+                    _appointment[key][i].appointment[1] = temp;
+                  }
+                }
+              } else if (
+                timeStr2Number(_apt.start_time) < timeStr2Number(key) &&
+                timeStr2Number(_apt.end_time) > timeStr2Number(key)
+              ) {
+                let temp = {
+                  time_length: 0,
+                };
+                let flag = true;
+                for (let k in specialist.appointments) {
+                  let _apt_temp = specialist.appointments[k];
+                  if (
+                    (timeStr2Number(_apt_temp.start_time) <
+                      timeStr2Number(_apt.start_time) &&
+                      timeStr2Number(_apt_temp.end_time) >
+                        timeStr2Number(_apt.start_time)) ||
+                    (timeStr2Number(_apt_temp.start_time) <
+                      timeStr2Number(_apt.end_time) &&
+                      timeStr2Number(_apt_temp.end_time) >
+                        timeStr2Number(_apt.end_time))
+                  ) {
+                    flag = false;
+                  }
+                }
+                if (flag == true) {
+                  _appointment[key][i].appointment = [temp];
+                } else {
+                  if (_appointment[key][i].appointment[0].time_length === 4) {
+                    _appointment[key][i].appointment[0] = temp;
+                  } else {
+                    _appointment[key][i].appointment[1] = temp;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      for (let key in _appointment) {
+        for (let i in _tableData.value) {
+          if (
+            _appointment[key][i].appointment[0].time_length === 4 &&
+            _appointment[key][i].appointment[1].time_length === 4
+          ) {
+            _appointment[key][i].appointment.splice(1, 2);
+          }
+        }
       }
       appointment.value = _appointment;
     });
