@@ -151,6 +151,7 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
+    const activeData = ref([]);
 
     const handlePay = () => {
       router.push({ name: "make-payment-pay" });
@@ -163,7 +164,6 @@ export default defineComponent({
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
       tableData.value = formData.value.appointments;
-      console.log(tableData.value);
     });
 
     onMounted(() => {

@@ -58,7 +58,13 @@
         <tbody class="fw-bold text-gray-600">
           <template v-if="getItems.length">
             <template v-for="(item, i) in getItems" :key="i">
-              <tr class="odd">
+              <tr
+                :class="`odd ${
+                  item.date === moment().format('YYYY-MM-DD')
+                    ? 'bg-light-primary'
+                    : ''
+                }`"
+              >
                 <template v-for="(cell, i) in tableHeader" :key="i">
                   <td :class="{ 'text-end': tableHeader.length - 1 === i }">
                     <slot :name="`cell-${cell.key}`" :row="item">
@@ -142,6 +148,7 @@ import {
   getCurrentInstance,
 } from "vue";
 import arraySort from "array-sort";
+import moment from "moment";
 
 interface IPagination {
   page: number;
@@ -265,6 +272,7 @@ export default defineComponent({
       sort,
       currentSort,
       setItemsPerPage,
+      moment,
     };
   },
 });
