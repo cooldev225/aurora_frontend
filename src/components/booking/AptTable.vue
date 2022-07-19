@@ -228,10 +228,30 @@ export default defineComponent({
                       ? 2
                       : 1,
                 };
-                if (_appointment[key][i].appointment[0].time_length === 4) {
-                  _appointment[key][i].appointment[0] = temp;
+                let flag = true;
+                for (let k in specialist.appointments) {
+                  let _apt_temp = specialist.appointments[k];
+                  if (
+                    (timeStr2Number(_apt_temp.start_time) <
+                      timeStr2Number(_apt.start_time) &&
+                      timeStr2Number(_apt_temp.end_time) >
+                        timeStr2Number(_apt.start_time)) ||
+                    (timeStr2Number(_apt_temp.start_time) <
+                      timeStr2Number(_apt.end_time) &&
+                      timeStr2Number(_apt_temp.end_time) >
+                        timeStr2Number(_apt.end_time))
+                  ) {
+                    flag = false;
+                  }
+                }
+                if (flag == true) {
+                  _appointment[key][i].appointment = [temp];
                 } else {
-                  _appointment[key][i].appointment[1] = temp;
+                  if (_appointment[key][i].appointment[0].time_length === 4) {
+                    _appointment[key][i].appointment[0] = temp;
+                  } else {
+                    _appointment[key][i].appointment[1] = temp;
+                  }
                 }
               } else if (
                 timeStr2Number(_apt.start_time) < timeStr2Number(key) &&
@@ -240,10 +260,30 @@ export default defineComponent({
                 let temp = {
                   time_length: 0,
                 };
-                if (_appointment[key][i].appointment[0].time_length === 4) {
-                  _appointment[key][i].appointment[0] = temp;
+                let flag = true;
+                for (let k in specialist.appointments) {
+                  let _apt_temp = specialist.appointments[k];
+                  if (
+                    (timeStr2Number(_apt_temp.start_time) <
+                      timeStr2Number(_apt.start_time) &&
+                      timeStr2Number(_apt_temp.end_time) >
+                        timeStr2Number(_apt.start_time)) ||
+                    (timeStr2Number(_apt_temp.start_time) <
+                      timeStr2Number(_apt.end_time) &&
+                      timeStr2Number(_apt_temp.end_time) >
+                        timeStr2Number(_apt.end_time))
+                  ) {
+                    flag = false;
+                  }
+                }
+                if (flag == true) {
+                  _appointment[key][i].appointment = [temp];
                 } else {
-                  _appointment[key][i].appointment[1] = temp;
+                  if (_appointment[key][i].appointment[0].time_length === 4) {
+                    _appointment[key][i].appointment[0] = temp;
+                  } else {
+                    _appointment[key][i].appointment[1] = temp;
+                  }
                 }
               }
             }
@@ -252,6 +292,17 @@ export default defineComponent({
             //   appointment: _temp,
             // };
             // _appointment[_val.toString()].push(_data);
+          }
+        }
+      }
+
+      for (let key in _appointment) {
+        for (let i in _tableData.value) {
+          if (
+            _appointment[key][i].appointment[0].time_length === 4 &&
+            _appointment[key][i].appointment[1].time_length === 4
+          ) {
+            _appointment[key][i].appointment.splice(1, 2);
           }
         }
       }
