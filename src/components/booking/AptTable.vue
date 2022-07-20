@@ -90,11 +90,10 @@
                 >
                   <template v-if="item_2.time_length === 4">
                     <td
-                      :style="
-                        item_1.appointment.length === 2
-                          ? 'min-width: 220px'
-                          : 'min-width: 441px'
-                      "
+                      :style="{
+                        'min-width':
+                          item_1.appointment.length === 2 ? '220px' : '441px',
+                      }"
                       :colspan="item_1.appointment.length === 2 ? 1 : 2"
                     ></td>
                   </template>
@@ -102,7 +101,10 @@
                   <template v-else>
                     <td
                       :rowspan="item_2.time_length"
-                      style="min-width: 220px"
+                      :style="{
+                        'min-width': '220px',
+                        'background-color': item_2.appointment.color,
+                      }"
                       :colspan="item_1.appointment.length === 2 ? 1 : 2"
                     >
                       <div
