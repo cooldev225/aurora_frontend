@@ -332,7 +332,6 @@ export default defineComponent({
 
     watch(_specialists_search, () => {
       let temp = [];
-      console.log(_ava_specialists.value);
       _ava_specialists.value.forEach((item) => {
         _specialists_search.specialist_ids.forEach((selected) => {
           if (item.id === selected) temp.push(item);
