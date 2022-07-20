@@ -78,10 +78,11 @@
         :table-header="tableHeader"
         :table-data="tableData"
         :rows-per-page="5"
+        :key="tableKey"
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-time="{ row: item }">
-          {{ item.time }}
+          {{ item.start_time }}
         </template>
         <template v-slot:cell-patient_name="{ row: item }">
           {{ item.patient_name }}
@@ -101,8 +102,8 @@
             {{ item.attendance_status.replace("_", " ") }}
           </span>
         </template>
-        <template v-slot:cell-apt_date="{ row: item }">
-          {{ item.apt_date }}
+        <template v-slot:cell-date="{ row: item }">
+          {{ item.date }}
         </template>
         <template v-slot:cell-actions="{ row: item }">
           <button
@@ -130,7 +131,14 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  watchEffect,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -167,7 +175,7 @@ export default defineComponent({
       },
       {
         name: "Appointment Date",
-        key: "apt_date",
+        key: "date",
         sortable: true,
       },
       {
@@ -176,10 +184,14 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const paymentData = ref(PaymentList);
+    const paymentData = ref([]);
+    const list = computed(() => store.getters.paymentList);
     const clinicsList = computed(() => store.getters.clinicsList);
     const currentClinic = ref(0);
     const showAll = ref(true);
+    const tableKey = ref(0);
+
+    const renderTable = () => tableKey.value++;
 
     const handleSwitch = () => {
       if (!showAll.value) {
@@ -209,18 +221,23 @@ export default defineComponent({
       router.push({ name: "make-payment-view" });
     };
 
-    watchEffect(() => {
-      tableData.value = paymentData;
+    watch(list, () => {
+      paymentData.value = list.value;
+      tableData.value = paymentData.value;
+      renderTable();
+      console.log(paymentData.value);
     });
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Out of Pocket Payment", ["Billing"]);
+      store.dispatch(Actions.MAKE_PAYMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
     });
 
     return {
       tableHeader,
       tableData,
+      tableKey,
       clinicsList,
       currentClinic,
       showAll,
