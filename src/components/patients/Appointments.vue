@@ -7,6 +7,19 @@
       <div class="card-title m-0">
         <h3 class="fw-bolder m-0">Appointment List</h3>
       </div>
+      <span class="my-auto">
+        <div class="form-check my-auto form-check-custom form-check-solid">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="flexCheckDefault"
+          />
+          <label class="form-check-label" for="flexCheckDefault"
+            >Show Future Appointments</label
+          >
+        </div></span
+      >
       <!--end::Card title-->
     </div>
     <!--begin::Card header-->
