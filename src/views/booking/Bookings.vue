@@ -368,19 +368,19 @@ export default defineComponent({
           );
           break;
         case 2:
-           _date_search.date = moment((_date_search.date = new Date())).add(
+          _date_search.date = moment((_date_search.date = new Date())).add(
             2,
             "weeks"
           );
           break;
         case 3:
-           _date_search.date = moment((_date_search.date = new Date())).add(
+          _date_search.date = moment((_date_search.date = new Date())).add(
             1,
             "months"
           );
           break;
         case 4:
-           _date_search.date = moment((_date_search.date = new Date())).add(
+          _date_search.date = moment((_date_search.date = new Date())).add(
             3,
             "months"
           );
