@@ -31,7 +31,7 @@
 
     <!--begin::Menu item-->
     <div class="menu-item px-5">
-      <a href="#" class="menu-link px-5"> Profile </a>
+      <a @click="handleProfile" class="menu-link px-5"> Profile </a>
     </div>
     <!--end::Menu item-->
 
@@ -86,6 +86,10 @@ export default defineComponent({
       },
     };
 
+    const handleProfile = () => {
+      router.push({ name: "profile" });
+    };
+
     const signOut = () => {
       store
         .dispatch(Actions.LOGOUT)
@@ -106,6 +110,7 @@ export default defineComponent({
     });
 
     return {
+      handleProfile,
       signOut,
       setLang,
       currentLanguage,

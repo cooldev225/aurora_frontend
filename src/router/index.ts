@@ -215,11 +215,16 @@ const routes: Array<RouteRecordRaw> = [
         name: "make-payment-view",
         component: () => import("@/components/make-payment/View.vue"),
       },
+      {
+        path: "/profile",
+        name: "profile",
+        component: () => import("@/components/auth/Profile.vue"),
+      },
     ],
   },
   {
     path: "/",
-    component: () => import("@/components/page-layouts/Auth.vue"),
+    component: () => import("@/components/auth/Auth.vue"),
     children: [
       {
         path: "/sign-in",
