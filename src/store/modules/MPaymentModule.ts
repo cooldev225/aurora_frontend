@@ -21,7 +21,7 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
    * Get current user object
    * @returns AdminList
    */
-  get getPaymentList(): Array<IMPayment> {
+  get paymentList(): Array<IMPayment> {
     return this.paymentData;
   }
 
@@ -29,7 +29,7 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
    * Get current user object
    * @returns SelectedpaymentData
    */
-  get getPaymentSelected(): IMPayment {
+  get paymentSelected(): IMPayment {
     return this.paymentSelectData;
   }
 
@@ -47,9 +47,27 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
   [Actions.MAKE_PAYMENT.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("make-payment")
+      ApiService.get("payments")
         .then(({ data }) => {
           this.context.commit(Mutations.SET_MAKE_PAYMENT.LIST, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAKE_PAYMENT.VIEW](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.get("payments/" + id)
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_MAKE_PAYMENT.SELECT, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -65,7 +83,7 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
   [Actions.MAKE_PAYMENT.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("make-payment", payload)
+      ApiService.post("payments", payload)
         .then(({ data }) => {
           return data.data;
         })
@@ -81,7 +99,7 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
   [Actions.MAKE_PAYMENT.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("make-payment", item.id, item)
+      ApiService.update("payments", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
@@ -98,7 +116,7 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
   [Actions.MAKE_PAYMENT.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.delete("make-payment/" + id)
+      ApiService.delete("payments/" + id)
         .then(({ data }) => {
           return data.data;
         })

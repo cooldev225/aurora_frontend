@@ -185,6 +185,7 @@ const Actions = {
 
   MAKE_PAYMENT: {
     LIST: "listMakePayment",
+    VIEW: "viewMakePayment",
     CREATE: "createMakePayment",
     DELETE: "deleteMakePayment",
     UPDATE: "updateMakePayment",
