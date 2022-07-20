@@ -11,15 +11,17 @@
         <div class="col-sm-3">
           <div class="fv-row mb-7">
             <label class="text-muted fs-6 fw-bold mb-2 d-block">Name</label>
-            <label class="fs-6 text-gray-800">JOE SMITH</label>
+            <label class="fs-6 text-gray-800">{{
+              formData.patient.first_name + formData.patient.last_name
+            }}</label>
           </div>
         </div>
         <div class="col-sm-3">
           <div class="fv-row mb-7">
             <label class="text-muted fs-6 fw-bold mb-2 d-block">Address</label>
-            <label class="fs-6 text-gray-800"
-              >200 Kooyong Road, Caulfield North VIC, Australia</label
-            >
+            <label class="fs-6 text-gray-800">{{
+              formData.patient.address
+            }}</label>
           </div>
         </div>
         <div class="col-sm-3">
@@ -27,7 +29,9 @@
             <label class="text-muted fs-6 fw-bold mb-2 d-block"
               >Contact Number</label
             >
-            <label class="fs-6 text-gray-800">+61 404 017 775</label>
+            <label class="fs-6 text-gray-800">{{
+              formData.patient.contact_number
+            }}</label>
           </div>
         </div>
         <div class="col-sm-3">
@@ -35,7 +39,9 @@
             <label class="text-muted fs-6 fw-bold mb-2 d-block"
               >Date of Birth</label
             >
-            <label class="fs-6 text-gray-800">1990/01/01</label>
+            <label class="fs-6 text-gray-800"
+              >{{ formData.patient.date_of_birth }}
+            </label>
           </div>
         </div>
       </div>
@@ -56,7 +62,9 @@
             <label class="text-muted fs-6 fw-bold mb-2 d-block"
               >Service Reference Number</label
             >
-            <label class="fs-6 text-gray-800">22100341</label>
+            <label class="fs-6 text-gray-800">{{
+              formData.appointment.reference_number
+            }}</label>
           </div>
         </div>
         <div class="col-sm-3">
@@ -64,7 +72,9 @@
             <label class="text-muted fs-6 fw-bold mb-2 d-block"
               >Appointment Date and Time</label
             >
-            <label class="fs-6 text-gray-800">27/06/2022</label>
+            <label class="fs-6 text-gray-800">{{
+              formData.appointment.date + formData.appointment.start_time
+            }}</label>
           </div>
         </div>
         <div class="col-sm-4">
@@ -72,7 +82,9 @@
             <label class="text-muted fs-6 fw-bold mb-2 d-block"
               >Specialist</label
             >
-            <label class="fs-6 text-gray-800">DR AARON THORNTON</label>
+            <label class="fs-6 text-gray-800">{{
+              formData.specialist.first_name + formData.specialist.last_name
+            }}</label>
           </div>
         </div>
       </div>
@@ -95,7 +107,8 @@ export default defineComponent({
     const formData = ref({});
 
     watchEffect(() => {
-      // formData.value = store.getters.selectedPatient;
+      formData.value = store.getters.paymentSelected;
+      console.log(formData.value);
     });
 
     onMounted(() => {

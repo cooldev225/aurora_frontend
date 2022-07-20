@@ -106,10 +106,10 @@
           {{ item.date }}
         </template>
         <template v-slot:cell-actions="{ row: item }">
+          <!-- v-if="item.outstanding_balance > 0" -->
           <button
-            v-if="item.outstanding_balance > 0"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            @click="handlePay"
+            @click="handlePay(item)"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/finance/fin002.svg" />
@@ -118,7 +118,7 @@
 
           <button
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-            @click="handleView"
+            @click="handleView(item)"
           >
             <span class="svg-icon svg-icon-3">
               <i class="fas fa-eye"></i>
@@ -215,10 +215,12 @@ export default defineComponent({
 
     const handlePay = (item) => {
       router.push({ name: "make-payment-pay" });
+      store.dispatch(Actions.MAKE_PAYMENT.VIEW, item.id);
     };
 
-    const handleView = (id) => {
+    const handleView = (item) => {
       router.push({ name: "make-payment-view" });
+      store.dispatch(Actions.MAKE_PAYMENT.VIEW, item.id);
     };
 
     watch(list, () => {
