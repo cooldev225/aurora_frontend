@@ -16,9 +16,16 @@
             <div class="d-flex flex-row justify-content-around">
               <button
                 class="btn btn-light-primary btn-sm"
-                @click="changeDate(1)"
+                @click="changeDate(4)"
               >
-                +1 Week
+                +3 months
+              </button>
+
+              <button
+                class="btn btn-light-primary btn-sm"
+                @click="changeDate(3)"
+              >
+                +1 month
               </button>
               <button
                 class="btn btn-light-primary btn-sm"
@@ -28,15 +35,9 @@
               </button>
               <button
                 class="btn btn-light-primary btn-sm"
-                @click="changeDate(3)"
+                @click="changeDate(1)"
               >
-                +1 month
-              </button>
-              <button
-                class="btn btn-light-primary btn-sm"
-                @click="changeDate(4)"
-              >
-                +3 months
+                +1 Week
               </button>
               <button class="btn btn-primary btn-sm" @click="changeDate(0)">
                 Now
