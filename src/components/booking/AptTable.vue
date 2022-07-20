@@ -210,7 +210,7 @@ export default defineComponent({
           .format("HH:mm")
           .toString();
       }
-
+      debugger;
       for (let key in _appointment) {
         if (_tableData.value) {
           for (let i in _tableData.value) {
@@ -231,7 +231,7 @@ export default defineComponent({
                 for (let k in specialist.appointments) {
                   let _apt_temp = specialist.appointments[k];
                   if (
-                    (timeStr2Number(_apt_temp.start_time) <
+                    (timeStr2Number(_apt_temp.start_time) <=
                       timeStr2Number(_apt.start_time) &&
                       timeStr2Number(_apt_temp.end_time) >
                         timeStr2Number(_apt.start_time)) ||
@@ -240,7 +240,7 @@ export default defineComponent({
                       timeStr2Number(_apt_temp.end_time) >
                         timeStr2Number(_apt.end_time))
                   ) {
-                    flag = false;
+                    if (_apt_temp.id !== _apt.id) flag = false;
                   }
                 }
                 if (flag == true) {
@@ -263,7 +263,7 @@ export default defineComponent({
                 for (let k in specialist.appointments) {
                   let _apt_temp = specialist.appointments[k];
                   if (
-                    (timeStr2Number(_apt_temp.start_time) <
+                    (timeStr2Number(_apt_temp.start_time) <=
                       timeStr2Number(_apt.start_time) &&
                       timeStr2Number(_apt_temp.end_time) >
                         timeStr2Number(_apt.start_time)) ||
@@ -272,7 +272,7 @@ export default defineComponent({
                       timeStr2Number(_apt_temp.end_time) >
                         timeStr2Number(_apt.end_time))
                   ) {
-                    flag = false;
+                    if (_apt_temp.id !== _apt.id) flag = false;
                   }
                 }
                 if (flag == true) {
@@ -289,6 +289,7 @@ export default defineComponent({
           }
         }
       }
+      // debugger;
       for (let key in _appointment) {
         for (let i in _tableData.value) {
           if (
