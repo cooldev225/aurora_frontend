@@ -11,7 +11,37 @@
               color="#3E7BA0"
               noKeyboard
               onlyDate
+              noButton
             />
+            <div class="d-flex flex-row justify-content-around">
+              <button
+                class="btn btn-light-primary btn-sm"
+                @click="changeDate(1)"
+              >
+                +1 Week
+              </button>
+              <button
+                class="btn btn-light-primary btn-sm"
+                @click="changeDate(2)"
+              >
+                +2 weeks
+              </button>
+              <button
+                class="btn btn-light-primary btn-sm"
+                @click="changeDate(3)"
+              >
+                +1 month
+              </button>
+              <button
+                class="btn btn-light-primary btn-sm"
+                @click="changeDate(4)"
+              >
+                +3 months
+              </button>
+              <button class="btn btn-primary btn-sm" @click="changeDate(0)">
+                Now
+              </button>
+            </div>
           </div>
           <div class="col-md-4">
             <div class="card border border-dashed border-primary">
@@ -252,32 +282,6 @@ export default defineComponent({
       tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
     });
 
-    // const handleAddApt = (specialist, startTime, endTime) => {
-    //   const item = {
-    //     time_slots: [
-    //       moment(_date_search.date).format("YYYY-MM-DD") + "T" + startTime,
-    //       moment(_date_search.date).format("YYYY-MM-DD") + "T" + endTime,
-    //     ],
-    //     date: moment(_date_search.date).format("YYYY-MM-DD"),
-    //     ava_specialist: _ava_specialists,
-    //     selected_specialist: specialist,
-    //   };
-    //   store.commit(Mutations.SET_BOOKING.SELECT, item);
-    //   const modal = new Modal(document.getElementById("modal_create_apt"));
-    //   modal.show();
-    // };
-
-    // const handleEdit = (item, specialist) => {
-    //   const data = {
-    //     ava_specialist: _ava_specialists,
-    //     selected_specialist: specialist,
-    //   };
-    //   store.commit(Mutations.SET_BOOKING.SELECT, data);
-    //   store.commit(Mutations.SET_APT.SELECT, item);
-    //   const modal = new Modal(document.getElementById("modal_edit_apt"));
-    //   modal.show();
-    // };
-
     const timeStr2Number = (time) => {
       return Number(time.split(":")[0] + time.split(":")[1]);
     };
@@ -352,6 +356,38 @@ export default defineComponent({
       // });
     });
 
+    const changeDate = (mode) => {
+      switch (mode) {
+        case 0:
+          _date_search.date = new Date();
+          break;
+        case 1:
+          _date_search.date = moment((_date_search.date = new Date())).add(
+            1,
+            "weeks"
+          );
+          break;
+        case 2:
+           _date_search.date = moment((_date_search.date = new Date())).add(
+            2,
+            "weeks"
+          );
+          break;
+        case 3:
+           _date_search.date = moment((_date_search.date = new Date())).add(
+            1,
+            "months"
+          );
+          break;
+        case 4:
+           _date_search.date = moment((_date_search.date = new Date())).add(
+            3,
+            "months"
+          );
+          break;
+      }
+    };
+
     return {
       format,
       _date_search,
@@ -366,11 +402,12 @@ export default defineComponent({
       _x_weeks,
       _clinic_list,
       tableTitle,
+      aptTimeList,
+      moment,
       handleSearch,
       handleReset,
-      moment,
       timeStr2Number,
-      aptTimeList,
+      changeDate,
     };
   },
 });
