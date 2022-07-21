@@ -11,15 +11,17 @@
         <div class="col-sm-3">
           <div class="fv-row mb-7">
             <label class="text-muted fs-6 fw-bold mb-2 d-block">Name</label>
-            <label class="fs-6 text-gray-800">JOE SMITH</label>
+            <label class="fs-6 text-gray-800">{{
+              formData.patient.first_name + formData.patient.last_name
+            }}</label>
           </div>
         </div>
         <div class="col-sm-3">
           <div class="fv-row mb-7">
             <label class="text-muted fs-6 fw-bold mb-2 d-block">Address</label>
-            <label class="fs-6 text-gray-800"
-              >200 Kooyong Road, Caulfield North VIC, Australia</label
-            >
+            <label class="fs-6 text-gray-800">{{
+              formData.patient.address
+            }}</label>
           </div>
         </div>
         <div class="col-sm-3">
@@ -27,7 +29,9 @@
             <label class="text-muted fs-6 fw-bold mb-2 d-block"
               >Contact Number</label
             >
-            <label class="fs-6 text-gray-800">+61 404 017 775</label>
+            <label class="fs-6 text-gray-800">{{
+              formData.patient.contact_number
+            }}</label>
           </div>
         </div>
         <div class="col-sm-3">
@@ -35,7 +39,9 @@
             <label class="text-muted fs-6 fw-bold mb-2 d-block"
               >Date of Birth</label
             >
-            <label class="fs-6 text-gray-800">1990/01/01</label>
+            <label class="fs-6 text-gray-800"
+              >{{ formData.patient.date_of_birth }}
+            </label>
           </div>
         </div>
       </div>
@@ -56,7 +62,9 @@
             <label class="text-muted fs-6 fw-bold mb-2 d-block"
               >Service Reference Number</label
             >
-            <label class="fs-6 text-gray-800">22100341</label>
+            <label class="fs-6 text-gray-800">{{
+              formData.appointment.reference_number
+            }}</label>
           </div>
         </div>
         <div class="col-sm-3">
@@ -64,7 +72,9 @@
             <label class="text-muted fs-6 fw-bold mb-2 d-block"
               >Appointment Date and Time</label
             >
-            <label class="fs-6 text-gray-800">27/06/2022</label>
+            <label class="fs-6 text-gray-800">{{
+              formData.appointment.date + formData.appointment.start_time
+            }}</label>
           </div>
         </div>
         <div class="col-sm-4">
@@ -72,7 +82,9 @@
             <label class="text-muted fs-6 fw-bold mb-2 d-block"
               >Specialist</label
             >
-            <label class="fs-6 text-gray-800">DR AARON THORNTON</label>
+            <label class="fs-6 text-gray-800">{{
+              formData.specialist.first_name + formData.specialist.last_name
+            }}</label>
           </div>
         </div>
       </div>
@@ -113,15 +125,16 @@
     <div class="card-body pt-0">
       <div class="row">
         <label class="text-muted fs-6 fw-bold mb-2 d-block"
-          >Procedure: Colonoscopy and Gastroscopy</label
+          >Procedure: {{ formData.payment.name }}</label
         >
         <!--begin::Input-->
         <el-form class="d-flex align-items-center">
-          <el-form-item prop="procedure_name" class="mb-0">
+          <el-form-item prop="procedure_price" class="mb-0">
             <el-input
               type="number"
               class="w-100"
-              placeholder="$250.00"
+              placeholder="Procedure Price"
+              v-model="formData.payment.procedure_price"
               disabled
             />
           </el-form-item>
@@ -136,7 +149,7 @@
         </el-form>
         <!--end::Input-->
         <label class="text-muted fs-6 fw-bold mt-2 d-block"
-          >Total Payable Amount: $250.00</label
+          >Total Payable Amount: ${{ formData.payment.procedure_price }}</label
         >
       </div>
     </div>
@@ -156,11 +169,12 @@
         <label class="text-muted fs-6 fw-bold mb-2 d-block">Amount($)</label>
         <!--begin::Input-->
         <el-form class="d-flex align-items-center">
-          <el-form-item prop="procedure_name">
+          <el-form-item prop="procedure_price">
             <el-input
               type="number"
               class="w-100"
-              placeholder="$250.00"
+              placeholder="Procedure Price"
+              v-model="formData.payment.procedure_price"
               disabled
             />
             <button type="submit" class="btn btn-primary mt-5 w-50">
@@ -190,7 +204,7 @@ export default defineComponent({
     const payment_option = ref("");
 
     watchEffect(() => {
-      // formData.value = store.getters.selectedPatient;
+      formData.value = store.getters.paymentSelected;
     });
 
     onMounted(() => {

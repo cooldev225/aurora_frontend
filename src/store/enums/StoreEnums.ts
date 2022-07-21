@@ -10,6 +10,8 @@ const Actions = {
   LOGOUT: "logout",
   REGISTER: "register",
   UPDATE_USER: "updateUser",
+  PROFILE: "profile",
+  UPDATE_PROFILE: "updateProfile",
   FORGOT_PASSWORD: "forgotPassword",
   SET_BREADCRUMB_ACTION: "setBreadcrumbAction",
 
@@ -185,6 +187,7 @@ const Actions = {
 
   MAKE_PAYMENT: {
     LIST: "listMakePayment",
+    VIEW: "viewMakePayment",
     CREATE: "createMakePayment",
     DELETE: "deleteMakePayment",
     UPDATE: "updateMakePayment",
@@ -198,6 +201,7 @@ const Mutations = {
   SET_AUTH: "setAuth",
   SET_USER: "setUser",
   SET_PASSWORD: "setPassword",
+  SET_PROFILE: "setProfile",
   SET_ERROR: "setError",
   SET_BREADCRUMB_MUTATION: "setBreadcrumbMutation",
   SET_LAYOUT_CONFIG: "setLayoutConfig",

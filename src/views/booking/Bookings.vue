@@ -1,187 +1,252 @@
 <template>
-  <div class="row">
-    <div class="card card-flush">
+  <div
+    v-if="toggleKey"
+    style="background-color: #ffffff"
+    class="position-absolute zindex-sticky mt-10 d-flex flex-column m-2"
+  >
+    <span
+      v-for="item in _aptTypelist"
+      :value="item.id"
+      :label="item.name"
+      :key="item.id"
+      style="z-index: 100"
+      class="badge mt-1"
+      :style="{ 'background-color': item.color }"
+      >{{ item.name }}</span
+    >
+  </div>
+  <!--begin::Booking Toolbar-->
+  <div class="d-flex flex-row">
+    <div class="d-inline-block mb-2 p-2 rounded" style="background: white">
+      <div class="d-flex">
+        <span
+          @mouseover="toggleKey = true"
+          @mouseout="toggleKey = false"
+          :class="{ 'svg-icon-primary': toggleLayout }"
+          class="svg-icon svg-icon-2x btn m-0 p-0"
+        >
+          <inline-svg src="media/icons/duotune/art/art005.svg" />
+        </span>
+      </div>
+    </div>
+    <!--begin::Appointment Type Key-->
+
+    <!--end::Appointment Type Key-->
+    <!--begin::Layout Toggle-->
+    <div class="d-inline-block mb-2 p-2 rounded" style="background: white">
+      <div class="d-flex">
+        <span
+          @click="toggleLayout = true"
+          :class="{ 'svg-icon-primary': toggleLayout }"
+          class="svg-icon svg-icon-2x btn m-0 p-0"
+        >
+          <inline-svg src="media/icons/duotune/layouts/lay004.svg" />
+        </span>
+        <span
+          @click="toggleLayout = false"
+          :class="{ 'svg-icon-primary': !toggleLayout }"
+          class="svg-icon svg-icon-2x btn m-0 p-0"
+        >
+          <inline-svg
+            style="transform: rotate(-270deg)"
+            src="media/icons/duotune/layouts/lay004.svg"
+          />
+        </span>
+      </div>
+    </div>
+    <!--end::Layout Toggle-->
+  </div>
+  <!--end::Booking Toolbar-->
+  <div :class="{ row: toggleLayout }">
+    <div :class="{ 'col-2': toggleLayout }">
+      <div class="card card-flush">
+        <div class="card-body">
+          <div :class="{ row: !toggleLayout }">
+            <div class="col mb-2">
+              <VueCtkDateTimePicker
+                :format="format"
+                v-model="_date_search.date"
+                inline="false"
+                color="#3E7BA0"
+                noKeyboard
+                onlyDate
+                noButton
+              />
+              <div class="d-flex flex-row justify-content-around">
+                <button
+                  class="btn btn-light-primary btn-sm"
+                  @click="changeDate(4)"
+                >
+                  +3 months
+                </button>
+
+                <button
+                  class="btn btn-light-primary btn-sm"
+                  @click="changeDate(3)"
+                >
+                  +1 month
+                </button>
+                <button
+                  class="btn btn-light-primary btn-sm"
+                  @click="changeDate(2)"
+                >
+                  +2 weeks
+                </button>
+                <button
+                  class="btn btn-light-primary btn-sm"
+                  @click="changeDate(1)"
+                >
+                  +1 Week
+                </button>
+                <button class="btn btn-primary btn-sm" @click="changeDate(0)">
+                  Now
+                </button>
+              </div>
+            </div>
+            <div class="col mb-2">
+              <div class="card border border-dashed border-primary">
+                <div class="card-header">
+                  <div class="card-title">
+                    <span>SPECIALISTS</span>
+                  </div>
+                </div>
+                <div class="card-body card-scroll h-350px">
+                  <div class="d-flex flex-column">
+                    <el-checkbox-group
+                      v-model="_specialists_search.specialist_ids"
+                      class="d-flex flex-column"
+                    >
+                      <template
+                        v-for="(item, index) in _ava_specialists"
+                        :key="index"
+                      >
+                        <el-checkbox size="large" :label="item.id">{{
+                          item.name
+                        }}</el-checkbox>
+                      </template>
+                    </el-checkbox-group>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col mb-2">
+              <div class="card border border-dashed border-primary">
+                <div class="card-header">
+                  <div class="card-title">
+                    <span>SEARCH NEXT AVAILABLE APPOINTMENT</span>
+                  </div>
+                </div>
+                <div class="card-body card-scroll h-300px">
+                  <div class="card-info">
+                    <el-select
+                      class="w-100"
+                      placeholder="Select Appointment Type"
+                      v-model="_search_next_apts.appointment_type_id"
+                    >
+                      <el-option
+                        v-for="item in _aptTypelist"
+                        :value="item.id"
+                        :label="item.name"
+                        :key="item.id"
+                      />
+                    </el-select>
+                    <el-divider />
+                    <div>
+                      <el-select
+                        class="w-50 p-2"
+                        placeholder="Select Clinic"
+                        v-model="_search_next_apts.clinic_id"
+                      >
+                        <el-option value="" label="Any Clinic" />
+                        <el-option
+                          v-for="item in _clinic_list"
+                          :value="item.id"
+                          :label="item.name"
+                          :key="item.id"
+                        />
+                      </el-select>
+                      <el-select
+                        class="w-50 p-2"
+                        placeholder="Select Specialist"
+                        v-model="_search_next_apts.specialist_id"
+                        filterable
+                      >
+                        <el-option value="" label="Any Specialist" />
+                        <el-option
+                          v-for="item in _allSpecialists"
+                          :value="item.id"
+                          :label="item.name"
+                          :key="item.id"
+                        />
+                      </el-select>
+                    </div>
+                    <el-divider />
+                    <div>
+                      <el-select
+                        class="w-50 p-2"
+                        placeholder="Select Appointment Time Requirement"
+                        v-model="_search_next_apts.time_requirement"
+                      >
+                        <el-option
+                          v-for="item in _aptTimeRequireList"
+                          :value="item.id"
+                          :label="item.title"
+                          :key="item.id"
+                        />
+                      </el-select>
+                      <el-select
+                        class="w-50 p-2"
+                        placeholder="Select Time frame"
+                        v-model="_search_next_apts.x_weeks"
+                      >
+                        <el-option
+                          v-for="item in _x_weeks"
+                          :value="index"
+                          :label="item"
+                          :key="item.id"
+                        />
+                      </el-select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-md-between gap-2">
+                <button
+                  class="btn btn-primary mt-2 w-100"
+                  @click="handleSearch"
+                >
+                  SEARCH
+                </button>
+                <button
+                  class="btn btn-light-primary w-100 mt-2"
+                  @click="handleReset"
+                >
+                  CLEAR FILTERS
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div :class="{ 'col-10': toggleLayout }">
       <div class="card-body">
-        <div class="row">
-          <div class="col-md-4">
-            <VueCtkDateTimePicker
-              :format="format"
-              v-model="_date_search.date"
-              inline="false"
-              color="#3E7BA0"
-              noKeyboard
-              onlyDate
-              noButton
-            />
-            <div class="d-flex flex-row justify-content-around">
-              <button
-                class="btn btn-light-primary btn-sm"
-                @click="changeDate(1)"
-              >
-                +1 Week
-              </button>
-              <button
-                class="btn btn-light-primary btn-sm"
-                @click="changeDate(2)"
-              >
-                +2 weeks
-              </button>
-              <button
-                class="btn btn-light-primary btn-sm"
-                @click="changeDate(3)"
-              >
-                +1 month
-              </button>
-              <button
-                class="btn btn-light-primary btn-sm"
-                @click="changeDate(4)"
-              >
-                +3 months
-              </button>
-              <button class="btn btn-primary btn-sm" @click="changeDate(0)">
-                Now
-              </button>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card border border-dashed border-primary">
-              <div class="card-header">
-                <div class="card-title">
-                  <span>SPECIALISTS</span>
-                </div>
-              </div>
-              <div class="card-body card-scroll h-350px">
-                <div class="d-flex flex-column">
-                  <el-checkbox-group
-                    v-model="_specialists_search.specialist_ids"
-                    class="d-flex flex-column"
-                  >
-                    <template
-                      v-for="(item, index) in _ava_specialists"
-                      :key="index"
-                    >
-                      <el-checkbox size="large" :label="item.id">{{
-                        item.name
-                      }}</el-checkbox>
-                    </template>
-                  </el-checkbox-group>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card border border-dashed border-primary">
-              <div class="card-header">
-                <div class="card-title">
-                  <span>SEARCH NEXT AVAILABLE APPOINTMENT</span>
-                </div>
-              </div>
-              <div class="card-body card-scroll h-300px">
-                <div class="card-info">
-                  <el-select
-                    class="w-100"
-                    placeholder="Select Appointment Type"
-                    v-model="_search_next_apts.appointment_type_id"
-                  >
-                    <el-option
-                      v-for="item in _aptTypelist"
-                      :value="item.id"
-                      :label="item.name"
-                      :key="item.id"
-                    />
-                  </el-select>
-                  <el-divider />
-                  <div>
-                    <el-select
-                      class="w-50 p-2"
-                      placeholder="Select Clinic"
-                      v-model="_search_next_apts.clinic_id"
-                    >
-                      <el-option value="" label="Any Clinic" />
-                      <el-option
-                        v-for="item in _clinic_list"
-                        :value="item.id"
-                        :label="item.name"
-                        :key="item.id"
-                      />
-                    </el-select>
-                    <el-select
-                      class="w-50 p-2"
-                      placeholder="Select Specialist"
-                      v-model="_search_next_apts.specialist_id"
-                      filterable
-                    >
-                      <el-option value="" label="Any Specialist" />
-                      <el-option
-                        v-for="item in _allSpecialists"
-                        :value="item.id"
-                        :label="item.name"
-                        :key="item.id"
-                      />
-                    </el-select>
-                  </div>
-                  <el-divider />
-                  <div>
-                    <el-select
-                      class="w-50 p-2"
-                      placeholder="Select Appointment Time Requirement"
-                      v-model="_search_next_apts.time_requirement"
-                    >
-                      <el-option
-                        v-for="item in _aptTimeRequireList"
-                        :value="item.id"
-                        :label="item.title"
-                        :key="item.id"
-                      />
-                    </el-select>
-                    <el-select
-                      class="w-50 p-2"
-                      placeholder="Select Time frame"
-                      v-model="_search_next_apts.x_weeks"
-                    >
-                      <el-option
-                        v-for="item in _x_weeks"
-                        :value="index"
-                        :label="item"
-                        :key="item.id"
-                      />
-                    </el-select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="d-flex justify-content-md-between gap-2">
-              <button class="btn btn-primary mt-2 w-100" @click="handleSearch">
-                SEARCH
-              </button>
-              <button
-                class="btn btn-light-primary w-100 mt-2"
-                @click="handleReset"
-              >
-                CLEAR FILTERS
-              </button>
-            </div>
+        <div class="scroll" :class="{ 'h-500px': !toggleLayout }">
+          <div class="d-flex flex-column">
+            <template v-for="(item, key) in _specialists" :key="key">
+              <AptTable
+                :ava_SPTData="item"
+                :date="moment(key.toString()).format('YYYY-MM-DD')"
+                :SPTData="item"
+                :Title="moment(key.toString()).format('dddd, MMMM Do YYYY')"
+              />
+            </template>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="card mt-5">
-    <div class="card-body">
-      <div class="scroll h-500px">
-        <div class="d-flex flex-column">
-          <template v-for="(item, key) in _specialists" :key="key">
-            <AptTable
-              :ava_SPTData="item"
-              :date="moment(key.toString()).format('YYYY-MM-DD')"
-              :SPTData="item"
-              :Title="moment(key.toString()).format('dddd, MMMM Do YYYY')"
-            />
-          </template>
-        </div>
-      </div>
-    </div>
-  </div>
+
   <CreateModal></CreateModal>
   <AppointmentListPopup
     :available_slots_by_date="_available_slots_by_date"
@@ -218,6 +283,12 @@ export default defineComponent({
     // EditModal,
     AptTable,
     AppointmentListPopup,
+  },
+  data: function () {
+    return {
+      toggleLayout: false,
+      toggleKey: false,
+    };
   },
   setup() {
     const store = useStore();
