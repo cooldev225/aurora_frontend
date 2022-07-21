@@ -161,13 +161,13 @@
                   <label class="fs-5 text-primary"
                     >Service Reference Number:
                     <span class="text-black fs-5">{{
-                      formData.reference_number
+                      aptInfoData.reference_number
                     }}</span></label
                   >
                   <label class="fs-5 text-primary"
                     >Clinic Name:
                     <span class="text-black fs-5">{{
-                      formData.clinic_name
+                      aptInfoData.clinic_name
                     }}</span></label
                   >
                   <label class="fs-5 text-primary"
@@ -175,8 +175,10 @@
                     <span class="text-black fs-5"
                       >{{ _start_time }} - {{ _end_time }}</span
                     >
-                    <span v-if="formData.arrival_time" class="text-black fs-5"
-                      >(Arrival: {{ formData.arrival_time }})</span
+                    <span
+                      v-if="aptInfoData.arrival_time"
+                      class="text-black fs-5"
+                      >(Arrival: {{ aptInfoData.arrival_time }})</span
                     ></label
                   >
                   <label class="fs-5 text-primary"
@@ -205,7 +207,7 @@
                   <el-form
                     class="w-100"
                     :rules="rules"
-                    :model="formData"
+                    :model="aptInfoData"
                     ref="formRef_1"
                     @submit.prevent="handleStep_1"
                   >
@@ -323,7 +325,7 @@
                               <!--begin::Input-->
                               <el-form-item prop="clinical_code">
                                 <el-input
-                                  v-model="formData.clinical_code"
+                                  v-model="aptInfoData.clinical_code"
                                   disabled
                                 />
                               </el-form-item>
@@ -343,7 +345,7 @@
                               <!--begin::Input-->
                               <el-form-item prop="mbs_code">
                                 <el-input
-                                  v-model="formData.mbs_code"
+                                  v-model="aptInfoData.mbs_code"
                                   disabled
                                 />
                               </el-form-item>
@@ -362,7 +364,7 @@
                               <el-form-item prop="room_id">
                                 <el-select
                                   class="w-100"
-                                  v-model.number="formData.room_id"
+                                  v-model.number="aptInfoData.room_id"
                                 >
                                   <el-option
                                     v-for="item in rooms"
@@ -389,7 +391,7 @@
                               <el-form-item prop="anesthetist_id">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.anesthetist_id"
+                                  v-model="aptInfoData.anesthetist_id"
                                   disabled
                                 >
                                   <el-option
@@ -412,12 +414,12 @@
                           >
                           <el-checkbox
                             type="checkbox"
-                            v-model="formData.no_referral"
+                            v-model="aptInfoData.no_referral"
                             label="No Referral"
                           />
                         </div>
                         <div class="row">
-                          <template v-if="formData.no_referral">
+                          <template v-if="aptInfoData.no_referral">
                             <div class="col-sm-6">
                               <!--begin::Input group-->
                               <div class="fv-row mb-7">
@@ -431,7 +433,7 @@
                                 <el-form-item prop="no_referral_reason">
                                   <el-input
                                     type="text"
-                                    v-model="formData.no_referral_reason"
+                                    v-model="aptInfoData.no_referral_reason"
                                     placeholder="Please Enter Reason"
                                   />
                                 </el-form-item>
@@ -451,10 +453,10 @@
                                 <!--end::Label-->
 
                                 <!--begin::Input-->
-                                <el-form-item prop="reffering_doctor">
+                                <el-form-item prop="referring_doctor">
                                   <el-select
                                     class="w-100"
-                                    v-model="formData.reffering_doctor"
+                                    v-model="aptInfoData.referring_doctor"
                                     placeholder="Select Reffering Doctor"
                                   />
                                 </el-form-item>
@@ -475,7 +477,7 @@
                                 <el-form-item prop="referral_duration">
                                   <el-select
                                     class="w-100"
-                                    v-model="formData.referral_duration"
+                                    v-model="aptInfoData.referral_duration"
                                     placeholder="Enter Referral Duration"
                                   >
                                     <el-option value="0" label="Indefinite" />
@@ -500,7 +502,7 @@
                                 <el-form-item prop="referral_date">
                                   <el-date-picker
                                     class="w-100"
-                                    v-model="formData.referral_date"
+                                    v-model="aptInfoData.referral_date"
                                   />
                                 </el-form-item>
                                 <!--end::Input-->
@@ -547,8 +549,6 @@
                 <div class="w-100">
                   <el-form
                     class="w-100"
-                    :model="formData"
-                    :rules="rules"
                     ref="formRef_2"
                     @submit.prevent="handleStep_2"
                   >
@@ -681,7 +681,6 @@
                     :model="filterPatient"
                     @submit.prevent="patientStep_1"
                   >
-                    <!--begin::Row-->
                     <div class="row g-8">
                       <div class="col-lg-6">
                         <label class="fs-6 form-label fw-bolder text-dark"
@@ -695,8 +694,6 @@
                           />
                         </el-form-item>
                       </div>
-                      <!--end::Col-->
-                      <!--begin::Col-->
                       <div class="col-lg-6">
                         <label class="fs-6 form-label fw-bolder text-dark"
                           >Last Name</label
@@ -709,7 +706,6 @@
                           />
                         </el-form-item>
                       </div>
-                      <!--end::Col-->
                       <div class="col-lg-6">
                         <label class="fs-6 form-label fw-bolder text-dark"
                           >Date of Birth</label
@@ -723,8 +719,6 @@
                           />
                         </el-form-item>
                       </div>
-                      <!--end::Col-->
-                      <!--begin::Col-->
                       <div class="col-lg-6">
                         <label class="fs-6 form-label fw-bolder text-dark"
                           >UR Number</label
@@ -737,7 +731,6 @@
                           />
                         </el-form-item>
                       </div>
-                      <!--end::Col-->
                     </div>
                     <div class="d-flex justify-content-between">
                       <button
@@ -843,7 +836,7 @@
                           type="button"
                           class="btn btn-lg btn-light-primary me-3"
                           data-kt-stepper-action="previous"
-                          @click="previousStep"
+                          @click="patientPrevStep"
                         >
                           <span class="svg-icon svg-icon-4 me-1">
                             <inline-svg
@@ -858,7 +851,7 @@
                   <el-form
                     v-if="patientStep === 3"
                     class="w-100"
-                    :model="formData"
+                    :model="patientInfoData"
                     :rules="rules"
                     ref="formRef_3"
                     @submit.prevent="handleStep_3"
@@ -877,7 +870,7 @@
                           <el-form-item prop="first_name">
                             <el-input
                               type="text"
-                              v-model="formData.first_name"
+                              v-model="patientInfoData.first_name"
                               placeholder="Enter First Name"
                             />
                           </el-form-item>
@@ -898,7 +891,7 @@
                           <el-form-item prop="last_name">
                             <el-input
                               type="text"
-                              v-model="formData.last_name"
+                              v-model="patientInfoData.last_name"
                               placeholder="Enter Last Name"
                             />
                           </el-form-item>
@@ -919,7 +912,7 @@
                           <el-form-item prop="date_of_birth">
                             <el-date-picker
                               class="w-100"
-                              v-model="formData.date_of_birth"
+                              v-model="patientInfoData.date_of_birth"
                               placeholder=""
                             />
                           </el-form-item>
@@ -938,7 +931,7 @@
                           <el-form-item prop="email">
                             <el-input
                               type="text"
-                              v-model="formData.email"
+                              v-model="patientInfoData.email"
                               placeholder="Enter Email"
                             />
                           </el-form-item>
@@ -984,7 +977,7 @@
                           <el-form-item prop="contact_number">
                             <el-input
                               type="text"
-                              v-model="formData.contact_number"
+                              v-model="patientInfoData.contact_number"
                               placeholder="Enter Contact Number"
                             />
                           </el-form-item>
@@ -1012,7 +1005,7 @@
                           type="button"
                           class="btn btn-lg btn-light-primary me-3"
                           data-kt-stepper-action="previous"
-                          @click="previousStep"
+                          @click="patientPrevStep"
                         >
                           <span class="svg-icon svg-icon-4 me-1">
                             <inline-svg
@@ -1044,7 +1037,7 @@
                 <div class="w-100">
                   <el-form
                     class="w-100"
-                    :model="formData"
+                    :model="billingInfoData"
                     :rules="rules"
                     ref="formRef_4"
                     @submit.prevent="handleStep_4"
@@ -1068,7 +1061,9 @@
                               <el-form-item prop="procedure_price">
                                 <el-input
                                   type="text"
-                                  v-model.number="formData.procedure_price"
+                                  v-model.number="
+                                    billingInfoData.procedure_price
+                                  "
                                   disabled
                                 />
                               </el-form-item>
@@ -1089,7 +1084,7 @@
                               <el-form-item prop="charge_type">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.charge_type"
+                                  v-model="billingInfoData.charge_type"
                                   placeholder="Select Charge Type"
                                 >
                                   <el-option
@@ -1117,7 +1112,7 @@
                               <el-form-item prop="medicare_number">
                                 <el-input
                                   type="text"
-                                  v-model="formData.medicare_number"
+                                  v-model="billingInfoData.medicare_number"
                                   placeholder="Enter Medicare Number"
                                 />
                               </el-form-item>
@@ -1138,7 +1133,9 @@
                               <el-form-item prop="medicare_reference_number">
                                 <el-input
                                   type="text"
-                                  v-model="formData.medicare_reference_number"
+                                  v-model="
+                                    billingInfoData.medicare_reference_number
+                                  "
                                   placeholder=""
                                 />
                               </el-form-item>
@@ -1159,7 +1156,7 @@
                               <el-form-item prop="medicare_expiry_date">
                                 <el-date-picker
                                   class="w-100"
-                                  v-model="formData.medicare_expiry_date"
+                                  v-model="billingInfoData.medicare_expiry_date"
                                   format="YYYY-MM"
                                   placeholder="Enter Expiry Date"
                                 />
@@ -1171,11 +1168,12 @@
                           <div
                             class="col-sm-6"
                             v-if="
-                              formData.charge_type ===
+                              billingInfoData.charge_type ===
                                 'private-health-excess' ||
-                              formData.charge_type ===
+                              billingInfoData.charge_type ===
                                 'private-health-excess-0' ||
-                              formData.charge_type === 'private-health-pension'
+                              billingInfoData.charge_type ===
+                                'private-health-pension'
                             "
                           >
                             <!--begin::Input group-->
@@ -1190,7 +1188,7 @@
                               <el-form-item prop="health_fund_id">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.health_fund_id"
+                                  v-model="billingInfoData.health_fund_id"
                                 >
                                   <el-option
                                     v-for="item in healthFundsList"
@@ -1207,11 +1205,12 @@
                           <div
                             class="col-sm-6"
                             v-if="
-                              formData.charge_type ===
+                              billingInfoData.charge_type ===
                                 'private-health-excess' ||
-                              formData.charge_type ===
+                              billingInfoData.charge_type ===
                                 'private-health-excess-0' ||
-                              formData.charge_type === 'private-health-pension'
+                              billingInfoData.charge_type ===
+                                'private-health-pension'
                             "
                           >
                             <!--begin::Input group-->
@@ -1229,7 +1228,7 @@
                                 <el-input
                                   type="text"
                                   v-model="
-                                    formData.health_fund_membership_number
+                                    billingInfoData.health_fund_membership_number
                                   "
                                   placeholder="12345678"
                                 />
@@ -1241,11 +1240,12 @@
                           <div
                             class="col-sm-6"
                             v-if="
-                              formData.charge_type ===
+                              billingInfoData.charge_type ===
                                 'private-health-excess' ||
-                              formData.charge_type ===
+                              billingInfoData.charge_type ===
                                 'private-health-excess-0' ||
-                              formData.charge_type === 'private-health-pension'
+                              billingInfoData.charge_type ===
+                                'private-health-pension'
                             "
                           >
                             <!--begin::Input group-->
@@ -1261,7 +1261,7 @@
                                 <el-input
                                   type="text"
                                   v-model="
-                                    formData.health_fund_reference_number
+                                    billingInfoData.health_fund_reference_number
                                   "
                                   placeholder="00"
                                 />
@@ -1273,11 +1273,12 @@
                           <div
                             class="col-sm-6"
                             v-if="
-                              formData.charge_type ===
+                              billingInfoData.charge_type ===
                                 'private-health-excess' ||
-                              formData.charge_type ===
+                              billingInfoData.charge_type ===
                                 'private-health-excess-0' ||
-                              formData.charge_type === 'private-health-pension'
+                              billingInfoData.charge_type ===
+                                'private-health-pension'
                             "
                           >
                             <!--begin::Input group-->
@@ -1292,7 +1293,9 @@
                               <el-form-item prop="health_fund_expiry_date">
                                 <el-date-picker
                                   class="w-100"
-                                  v-model="formData.health_fund_expiry_date"
+                                  v-model="
+                                    billingInfoData.health_fund_expiry_date
+                                  "
                                   format="YYYY-MM"
                                 />
                               </el-form-item>
@@ -1303,7 +1306,8 @@
                           <div
                             class="col-sm-6"
                             v-if="
-                              formData.charge_type === 'private-health-excess'
+                              billingInfoData.charge_type ===
+                              'private-health-excess'
                             "
                           >
                             <!--begin::Input group-->
@@ -1318,7 +1322,7 @@
                               <el-form-item prop="fund_excess">
                                 <el-input
                                   type="text"
-                                  v-model.number="formData.fund_excess"
+                                  v-model.number="billingInfoData.fund_excess"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1327,7 +1331,9 @@
                           </div>
                           <div
                             class="col-sm-6"
-                            v-if="formData.charge_type === 'pension-card'"
+                            v-if="
+                              billingInfoData.charge_type === 'pension-card'
+                            "
                           >
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
@@ -1341,7 +1347,7 @@
                               <el-form-item prop="pension_card_number">
                                 <el-input
                                   class="w-100"
-                                  v-model="formData.pension_card_number"
+                                  v-model="billingInfoData.pension_card_number"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1350,7 +1356,9 @@
                           </div>
                           <div
                             class="col-sm-6"
-                            v-if="formData.charge_type === 'healthcare-card'"
+                            v-if="
+                              billingInfoData.charge_type === 'healthcare-card'
+                            "
                           >
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
@@ -1364,7 +1372,9 @@
                               <el-form-item prop="healthcare_card_number">
                                 <el-input
                                   class="w-100"
-                                  v-model="formData.healthcare_card_number"
+                                  v-model="
+                                    billingInfoData.healthcare_card_number
+                                  "
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1374,8 +1384,9 @@
                           <div
                             class="col-sm-6"
                             v-if="
-                              formData.charge_type === 'healthcare-card' ||
-                              formData.charge_type === 'pension-card'
+                              billingInfoData.charge_type ===
+                                'healthcare-card' ||
+                              billingInfoData.charge_type === 'pension-card'
                             "
                           >
                             <!--begin::Input group-->
@@ -1391,7 +1402,7 @@
                                 <el-date-picker
                                   class="w-100"
                                   format="YYYY-MM"
-                                  v-model="formData.expiry_date"
+                                  v-model="billingInfoData.expiry_date"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1400,7 +1411,10 @@
                           </div>
                           <div
                             class="col-sm-6"
-                            v-if="formData.charge_type === 'department-veteran'"
+                            v-if="
+                              billingInfoData.charge_type ===
+                              'department-veteran'
+                            "
                           >
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
@@ -1414,7 +1428,7 @@
                               <el-form-item prop="dva_number">
                                 <el-input
                                   class="w-100"
-                                  v-model="formData.dva_number"
+                                  v-model="billingInfoData.dva_number"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1423,7 +1437,10 @@
                           </div>
                           <div
                             class="col-sm-6"
-                            v-if="formData.charge_type === 'department-veteran'"
+                            v-if="
+                              billingInfoData.charge_type ===
+                              'department-veteran'
+                            "
                           >
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
@@ -1438,7 +1455,7 @@
                                 <el-date-picker
                                   class="w-100"
                                   format="YYYY-MM"
-                                  v-model="formData.dva_expiry_date"
+                                  v-model="billingInfoData.dva_expiry_date"
                                 />
                               </el-form-item>
                               <!--end::Input-->
@@ -1447,7 +1464,10 @@
                           </div>
                           <div
                             class="col-sm-6"
-                            v-if="formData.charge_type === 'department-veteran'"
+                            v-if="
+                              billingInfoData.charge_type ===
+                              'department-veteran'
+                            "
                           >
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
@@ -1461,7 +1481,7 @@
                               <el-form-item prop="dva_type">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.dva_type"
+                                  v-model="billingInfoData.dva_type"
                                 >
                                   <el-option value="white" label="White" />
                                   <el-option value="gold" label="Gold" />
@@ -1484,7 +1504,9 @@
                               >
                                 <el-checkbox
                                   type="checkbox"
-                                  v-model="formData.add_other_account_holder"
+                                  v-model="
+                                    billingInfoData.add_other_account_holder
+                                  "
                                   label="Add other account holder"
                                 />
                               </el-form-item>
@@ -1546,7 +1568,7 @@
                 <div class="w-100">
                   <el-form
                     class="w-100"
-                    :model="formData"
+                    :model="otherInfoData"
                     :rules="rules"
                     ref="formRef_5"
                     @submit.prevent="submit"
@@ -1564,7 +1586,7 @@
                               <el-form-item prop="anesthetic_questions">
                                 <el-checkbox
                                   class="w-100"
-                                  v-model="formData.anesthetic_questions"
+                                  v-model="otherInfoData.anesthetic_questions"
                                   label="Anesthetic Questions"
                                   data-bs-toggle="collapse"
                                   href="#toogle_ane_ques"
@@ -1609,7 +1631,7 @@
                               <el-form-item prop="procedure_questions">
                                 <el-checkbox
                                   class="w-100"
-                                  v-model="formData.procedure_questions"
+                                  v-model="otherInfoData.procedure_questions"
                                   label="Procedure Questions"
                                   data-bs-toggle="collapse"
                                   href="#toogle_pro_ques"
@@ -1660,7 +1682,7 @@
                               <el-form-item prop="appointment_confirm">
                                 <el-select
                                   class="w-100"
-                                  v-model="formData.appointment_confirm"
+                                  v-model="otherInfoData.appointment_confirm"
                                   placeholder="Select Appointment Confirm"
                                 >
                                   <el-option value="email" label="Email" />
@@ -1686,7 +1708,7 @@
                               <el-form-item prop="note">
                                 <el-input
                                   type="textarea"
-                                  v-model="formData.note"
+                                  v-model="otherInfoData.note"
                                   placeholder="Enter Note"
                                 />
                               </el-form-item>
@@ -1707,7 +1729,7 @@
                               <el-form-item prop="important_details">
                                 <el-input
                                   type="textarea"
-                                  v-model="formData.important_details"
+                                  v-model="otherInfoData.important_details"
                                   placeholder=""
                                 />
                               </el-form-item>
@@ -1728,7 +1750,7 @@
                               <el-form-item prop="allergies">
                                 <el-input
                                   type="textarea"
-                                  v-model="formData.allergies"
+                                  v-model="otherInfoData.allergies"
                                   placeholder="Enter Allergies"
                                 />
                               </el-form-item>
@@ -1749,7 +1771,7 @@
                               <el-form-item prop="clinical_alerts">
                                 <el-input
                                   type="textarea"
-                                  v-model="formData.clinical_alerts"
+                                  v-model="otherInfoData.clinical_alerts"
                                   placeholder="Enter Clinical Alerts"
                                 />
                               </el-form-item>
@@ -1854,7 +1876,8 @@ export default defineComponent({
     const formRef_4 = ref(null);
     const formRef_5 = ref(null);
     const loading = ref(false);
-    const formData = ref({
+
+    const aptInfoData = ref({
       reference_number: 22100349,
       clinic_name: "",
       clinic_id: "",
@@ -1867,12 +1890,23 @@ export default defineComponent({
       specialist_id: "",
       room_id: "",
       anesthetist_id: "",
+      referring_doctor: "",
+      referral_duration: "",
+      referral_date: "",
+      no_referral: false,
+      no_referral_reason: "",
+    });
+
+    const patientInfoData = ref({
       first_name: "",
       last_name: "",
       date_of_birth: "",
       email: "",
       address: "",
       contact_number: "",
+    });
+
+    const billingInfoData = ref({
       charge_type: "",
       medicare_number: "",
       medicare_reference_number: "",
@@ -1888,11 +1922,11 @@ export default defineComponent({
       dva_number: "",
       dva_expiry: "",
       dva_type: "",
-      add_other_account_holder: false,
       procedure_price: "",
-      referring_doctor: "",
-      referral_duration: "",
-      referral_date: "",
+      add_other_account_holder: false,
+    });
+
+    const otherInfoData = ref({
       appointment_confirm: "",
       note: "",
       important_details: "",
@@ -1902,8 +1936,6 @@ export default defineComponent({
       anesthetic_answers: [],
       procedure_questions: false,
       procedure_answers: [],
-      no_referral: false,
-      no_referral_reason: "",
     });
 
     const rules = ref({
@@ -1925,13 +1957,6 @@ export default defineComponent({
         {
           required: true,
           message: "Appointment Type cannot be blank.",
-          trigger: "blur",
-        },
-      ],
-      specialist_id: [
-        {
-          required: true,
-          message: "Specialist cannot be blank.",
           trigger: "blur",
         },
       ],
@@ -2092,7 +2117,7 @@ export default defineComponent({
     const patientList = computed(() => store.getters.patientsList);
 
     watch(_appointment, () => {
-      formData.value.appointment_type_id = _appointment.value;
+      aptInfoData.value.appointment_type_id = _appointment.value;
       const _selected = aptTypeList.value.filter(
         (aptType) => aptType.id === _appointment.value
       )[0];
@@ -2104,35 +2129,35 @@ export default defineComponent({
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      formData.value.time_slot[1] = _end_time.value;
+      aptInfoData.value.time_slot[1] = _end_time.value;
       _arrival_time.value = Number(_selected.arrival_time);
-      formData.value.arrival_time = moment(_start_time.value, "HH:mm")
+      aptInfoData.value.arrival_time = moment(_start_time.value, "HH:mm")
         .subtract(_arrival_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      formData.value.procedure_price = _selected.procedure_price;
-      formData.value.clinical_code = _selected.clinical_code;
-      formData.value.mbs_code = _selected.mbs_code;
+      billingInfoData.value.procedure_price = _selected.procedure_price;
+      aptInfoData.value.clinical_code = _selected.clinical_code;
+      aptInfoData.value.mbs_code = _selected.mbs_code;
       apt_type.value = _selected.type;
       if (apt_type.value === "Consultation") {
-        formData.value.anesthetic_questions = false;
-        formData.value.procedure_questions = false;
+        otherInfoData.value.anesthetic_questions = false;
+        otherInfoData.value.procedure_questions = false;
       }
     });
 
     watch(_specialist, () => {
-      formData.value.specialist_id = _specialist.value;
+      aptInfoData.value.specialist_id = _specialist.value;
       const _selected = ava_specialist.value.filter(
         (item) => item.id === _specialist.value
       )[0];
       _specialist_name.value = _selected.name;
       anesthetist.value = _selected.anesthetist;
-      formData.value.anesthetist_id = _selected.anesthetist.id;
+      aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
     });
 
     watch(_start_time, () => {
-      formData.value.time_slot[0] = _start_time.value;
-      formData.value.arrival_time = moment(_start_time.value, "HH:mm")
+      aptInfoData.value.time_slot[0] = _start_time.value;
+      aptInfoData.value.arrival_time = moment(_start_time.value, "HH:mm")
         .subtract(_arrival_time.value, "minutes")
         .format("HH:mm")
         .toString();
@@ -2140,7 +2165,7 @@ export default defineComponent({
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      formData.value.time_slot[1] = _end_time.value;
+      aptInfoData.value.time_slot[1] = _end_time.value;
     });
 
     watch(patientStatus, () => {
@@ -2155,7 +2180,7 @@ export default defineComponent({
           temp.push(aneQuestions.value[i].id);
         }
       }
-      formData.value.anesthetic_answers = temp;
+      otherInfoData.value.anesthetic_answers = temp;
     };
 
     const handleProQuestions = () => {
@@ -2165,7 +2190,7 @@ export default defineComponent({
           temp.push(proQuestions.value[i].id);
         }
       }
-      formData.value.procedure_answers = temp;
+      otherInfoData.value.procedure_answers = temp;
     };
 
     watch(patientList, () => {
@@ -2181,7 +2206,7 @@ export default defineComponent({
         _start_time.value = moment(bookingData.time_slots[0]).format("HH:mm");
         _end_time.value = moment(bookingData.time_slots[1]).format("HH:mm");
       }
-      formData.value.date = bookingData.date;
+      aptInfoData.value.date = bookingData.date;
       if (bookingData.selected_specialist) {
         _specialist.value = bookingData.selected_specialist.id;
         if (bookingData.selected_specialist.anesthetist) {
@@ -2189,9 +2214,9 @@ export default defineComponent({
         }
         if (bookingData.selected_specialist.work_hours.locations) {
           clinic.value = bookingData.selected_specialist.work_hours.locations;
-          formData.value.clinic_name =
+          aptInfoData.value.clinic_name =
             bookingData.selected_specialist.work_hours.locations.name;
-          formData.value.clinic_id =
+          aptInfoData.value.clinic_id =
             bookingData.selected_specialist.work_hours.locations.id;
           if (JwtService.getToken()) {
             ApiService.setHeader();
@@ -2246,6 +2271,7 @@ export default defineComponent({
         return;
       }
       _stepperObj.value.goNext();
+      if (formRef_3.value) formRef_3.value.resetFields();
     };
 
     const handleStep_3 = () => {
@@ -2291,7 +2317,7 @@ export default defineComponent({
     };
 
     const handleAddressChange = (e) => {
-      formData.value.address = e.formatted_address;
+      patientInfoData.value.address = e.formatted_address;
     };
 
     const previousStep = () => {
@@ -2310,7 +2336,12 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.APT.CREATE, formData.value)
+            .dispatch(Actions.APT.CREATE, {
+              ...aptInfoData.value,
+              ...patientInfoData.value,
+              ...billingInfoData.value,
+              ...otherInfoData.value,
+            })
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.APT.LIST);
@@ -2383,17 +2414,16 @@ export default defineComponent({
     const selectPatient = (item) => {
       console.log(item);
       store.dispatch(Actions.PATIENTS.VIEW, item.id);
-      formData.value.first_name = item.first_name;
-      formData.value.last_name = item.last_name;
-      formData.value.date_of_birth = item.date_of_birth;
-      formData.value.email = item.email;
-      formData.value.address = item.email;
-      formData.value.contact_number = item.contact_number;
+      patientInfoData.value = item;
       patientStep.value++;
     };
 
+    const patientPrevStep = () => {
+      if (patientStatus.value === "new") previousStep();
+      else patientStep.value--;
+    };
+
     return {
-      formData,
       chargeTypes,
       rules,
       clinic,
@@ -2442,6 +2472,11 @@ export default defineComponent({
       patientTableHeader,
       patientTableData,
       selectPatient,
+      patientPrevStep,
+      aptInfoData,
+      patientInfoData,
+      billingInfoData,
+      otherInfoData,
     };
   },
 });
