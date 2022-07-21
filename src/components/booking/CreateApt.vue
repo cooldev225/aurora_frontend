@@ -559,15 +559,15 @@
                         <input
                           type="radio"
                           class="btn-check"
-                          name="accountType"
-                          value="personal"
+                          name="patientType"
+                          value="new"
                           checked="checked"
-                          id="kt_create_account_form_account_type_personal"
-                          v-model="formData.accountType"
+                          id="create-new-patient"
+                          v-model="patientStatus"
                         />
                         <label
                           class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-10"
-                          for="kt_create_account_form_account_type_personal"
+                          for="create-new-patient"
                         >
                           <span class="svg-icon svg-icon-3x me-5">
                             <inline-svg
@@ -596,14 +596,14 @@
                         <input
                           type="radio"
                           class="btn-check"
-                          name="accountType"
-                          value="corporate"
-                          id="kt_create_account_form_account_type_corporate"
-                          v-model="formData.accountType"
+                          name="patientType"
+                          value="exist"
+                          id="select-existing-patient"
+                          v-model="patientStatus"
                         />
                         <label
                           class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center"
-                          for="kt_create_account_form_account_type_corporate"
+                          for="select-existing-patient"
                         >
                           <span class="svg-icon svg-icon-3x me-5">
                             <inline-svg
@@ -672,10 +672,191 @@
               </div>
               <!--end::Step 2-->
 
-              <!--begin::Step 2-->
+              <!--begin::Step 3-->
               <div data-kt-stepper-element="content">
                 <div class="w-100">
                   <el-form
+                    v-if="patientStep === 1"
+                    class="w-100"
+                    :model="filterPatient"
+                    @submit.prevent="patientStep_1"
+                  >
+                    <!--begin::Row-->
+                    <div class="row g-8">
+                      <div class="col-lg-6">
+                        <label class="fs-6 form-label fw-bolder text-dark"
+                          >First Name</label
+                        >
+                        <el-form-item prop="filter_first_name">
+                          <el-input
+                            type="text"
+                            v-model="filterPatient.first_name"
+                            placeholder="First Name"
+                          />
+                        </el-form-item>
+                      </div>
+                      <!--end::Col-->
+                      <!--begin::Col-->
+                      <div class="col-lg-6">
+                        <label class="fs-6 form-label fw-bolder text-dark"
+                          >Last Name</label
+                        >
+                        <el-form-item prop="filter_last_name">
+                          <el-input
+                            type="text"
+                            v-model="filterPatient.last_name"
+                            placeholder="Last Name"
+                          />
+                        </el-form-item>
+                      </div>
+                      <!--end::Col-->
+                      <div class="col-lg-6">
+                        <label class="fs-6 form-label fw-bolder text-dark"
+                          >Date of Birth</label
+                        >
+                        <el-form-item prop="filter_date">
+                          <el-date-picker
+                            class="w-100"
+                            v-model="filterPatient.date_of_birth"
+                            format="YYYY-MM-DD"
+                            placeholder="1990-01-01"
+                          />
+                        </el-form-item>
+                      </div>
+                      <!--end::Col-->
+                      <!--begin::Col-->
+                      <div class="col-lg-6">
+                        <label class="fs-6 form-label fw-bolder text-dark"
+                          >UR Number</label
+                        >
+                        <el-form-item prop="filter_ur_number">
+                          <el-input
+                            type="text"
+                            v-model="filterPatient.ur_number"
+                            placeholder="UR Number"
+                          />
+                        </el-form-item>
+                      </div>
+                      <!--end::Col-->
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-light-primary me-3"
+                        @click="handleCancel"
+                        data-bs-dismiss="modal"
+                      >
+                        <span class="svg-icon svg-icon-4 me-1">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr063.svg"
+                          />
+                        </span>
+                        Cancel
+                      </button>
+                      <div class="d-flex flex-row gap-3">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          data-kt-stepper-action="previous"
+                          @click="previousStep"
+                        >
+                          <span class="svg-icon svg-icon-4 me-1">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr063.svg"
+                            />
+                          </span>
+                          Back
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-lg btn-primary align-self-end"
+                        >
+                          Continue
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <!--end::Row-->
+                    <!--begin::Separator-->
+                  </el-form>
+                  <el-form
+                    v-if="patientStep === 2"
+                    class="w-100"
+                    @submit.prevent="patientStep_2"
+                  >
+                    <div class="row scroll h-500px">
+                      <Datatable
+                        :table-header="patientTableHeader"
+                        :table-data="patientTableData"
+                        :rows-per-page="5"
+                        :enable-items-per-page-dropdown="true"
+                      >
+                        <template v-slot:cell-UR_number="{ row: item }">
+                          {{ item.UR_number }}
+                        </template>
+                        <template v-slot:cell-full_name="{ row: item }">
+                          <span
+                            class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                          >
+                            {{ item.first_name }} {{ item.last_name }}
+                          </span>
+                        </template>
+                        <template v-slot:cell-dob="{ row: item }">
+                          <span
+                            class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                          >
+                            {{ item.date_of_birth }}
+                          </span>
+                        </template>
+                        <template v-slot:cell-action="{ row: item }">
+                          <button
+                            @click="selectPatient(item)"
+                            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                          >
+                            <span class="svg-icon svg-icon-3">
+                              <i class="fas fa-check"></i>
+                            </span>
+                          </button>
+                        </template>
+                      </Datatable>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-light-primary me-3"
+                        @click="handleCancel"
+                        data-bs-dismiss="modal"
+                      >
+                        <span class="svg-icon svg-icon-4 me-1">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr063.svg"
+                          />
+                        </span>
+                        Cancel
+                      </button>
+                      <div class="d-flex flex-row gap-3">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          data-kt-stepper-action="previous"
+                          @click="previousStep"
+                        >
+                          <span class="svg-icon svg-icon-4 me-1">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr063.svg"
+                            />
+                          </span>
+                          Back
+                        </button>
+                      </div>
+                    </div>
+                  </el-form>
+                  <el-form
+                    v-if="patientStep === 3"
                     class="w-100"
                     :model="formData"
                     :rules="rules"
@@ -1658,10 +1839,13 @@ import JwtService from "@/core/services/JwtService";
 import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
 import chargeTypes from "@/core/data/charge-types";
+import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 
 export default defineComponent({
   name: "create-apt-modal",
-  components: {},
+  components: {
+    Datatable,
+  },
   setup() {
     const store = useStore();
     const formRef_1 = ref(null);
@@ -1686,7 +1870,6 @@ export default defineComponent({
       first_name: "",
       last_name: "",
       date_of_birth: "",
-      title: "",
       email: "",
       address: "",
       contact_number: "",
@@ -1866,12 +2049,47 @@ export default defineComponent({
 
     const addressRef = ref(null);
 
+    const patientTableData = ref([]);
+    const patientTableHeader = ref([
+      {
+        name: "UR Number",
+        key: "UR_number",
+        sortable: true,
+        searchable: true,
+      },
+      {
+        name: "Full Name",
+        key: "full_name",
+        sortable: true,
+        searchable: true,
+      },
+      {
+        name: "Date of Birth",
+        key: "dob",
+        sortable: true,
+        searchable: true,
+      },
+      {
+        name: "",
+        key: "action",
+      },
+    ]);
+    const filterPatient = reactive({
+      first_name: "",
+      last_name: "",
+      date_of_birth: "",
+      ur_number: "",
+    });
+    const patientStatus = ref("new");
+    const patientStep = ref(3);
+
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
     const aptTypeList = computed(() => store.getters.getAptTypesList);
     const searchVal = computed(() => store.getters.getSearchVariable);
     const organisation = computed(() => store.getters.orgList);
+    const patientList = computed(() => store.getters.patientsList);
 
     watch(_appointment, () => {
       formData.value.appointment_type_id = _appointment.value;
@@ -1925,6 +2143,11 @@ export default defineComponent({
       formData.value.time_slot[1] = _end_time.value;
     });
 
+    watch(patientStatus, () => {
+      if (patientStatus.value === "new") patientStep.value = 3;
+      else patientStep.value = 1;
+    });
+
     const handleAneQuestions = () => {
       let temp = [];
       for (let i in aneAnswers.value) {
@@ -1944,6 +2167,10 @@ export default defineComponent({
       }
       formData.value.procedure_answers = temp;
     };
+
+    watch(patientList, () => {
+      patientTableData.value = patientList;
+    });
 
     watchEffect(() => {
       if (organisation.value.appointment_length)
@@ -1991,6 +2218,7 @@ export default defineComponent({
       store.dispatch(Actions.PROCEDURE_QUES.ACTIVE_LIST);
       store.dispatch(Actions.APT.TYPES.LIST);
       store.dispatch(Actions.ORG.LIST);
+      store.dispatch(Actions.PATIENTS.LIST);
     });
 
     const handleStep_1 = () => {
@@ -2000,29 +2228,11 @@ export default defineComponent({
 
       formRef_1.value.validate((valid) => {
         if (valid) {
-          // if (_appointment_time.value > 15) {
-          // Swal.fire({
-          //   text: "Are you sure you want to double book this time slot?",
-          //   icon: "info",
-          //   showCancelButton: true,
-          //   cancelButtonText: "Cancel",
-          //   confirmButtonText: "Confirm",
-          // }).then((result) => {
-          //   if (result.value) {
-          //     currentStepIndex.value++;
-          //     if (!_stepperObj.value) {
-          //       return;
-          //     }
-          //     _stepperObj.value.goNext();
-          //   }
-          // });
-          // } else {
           currentStepIndex.value++;
           if (!_stepperObj.value) {
             return;
           }
           _stepperObj.value.goNext();
-          // }
         }
       });
     };
@@ -2036,10 +2246,6 @@ export default defineComponent({
         return;
       }
       _stepperObj.value.goNext();
-      // if (!_stepperObj.value) {
-      //   return;
-      // }
-      // _stepperObj.value.goNext();
     };
 
     const handleStep_3 = () => {
@@ -2079,14 +2285,13 @@ export default defineComponent({
       _stepperObj.value.goFirst();
       formRef_1.value.resetFields();
       formRef_2.value.resetFields();
-      formRef_3.value.resetFields();
+      if (formRef_3.value) formRef_3.value.resetFields();
       formRef_4.value.resetFields();
       formRef_5.value.resetFields();
     };
 
     const handleAddressChange = (e) => {
       formData.value.address = e.formatted_address;
-      console.log(formData.value);
     };
 
     const previousStep = () => {
@@ -2143,6 +2348,50 @@ export default defineComponent({
       });
     };
 
+    const patientStep_1 = () => {
+      patientTableData.value = patientList.value.filter((data) => {
+        let result = true;
+        if (filterPatient.first_name) {
+          result =
+            result &&
+            data.first_name.toLowerCase() ===
+              filterPatient.first_name.toLowerCase();
+        }
+        if (filterPatient.last_name) {
+          result =
+            result &&
+            data.last_name.toLowerCase() ===
+              filterPatient.last_name.toLowerCase();
+        }
+        if (filterPatient.date_of_birth) {
+          let searchDate = moment(filterPatient.date_of_birth)
+            .format("YYYY-MM-DD")
+            .toString();
+          result = result && data.date_of_birth === searchDate;
+        }
+        if (filterPatient.ur_number) {
+          result =
+            result &&
+            data.ur_number.toLowerCase() ===
+              filterPatient.ur_number.toLowerCase();
+        }
+        return result;
+      });
+      patientStep.value++;
+    };
+
+    const selectPatient = (item) => {
+      console.log(item);
+      store.dispatch(Actions.PATIENTS.VIEW, item.id);
+      formData.value.first_name = item.first_name;
+      formData.value.last_name = item.last_name;
+      formData.value.date_of_birth = item.date_of_birth;
+      formData.value.email = item.email;
+      formData.value.address = item.email;
+      formData.value.contact_number = item.contact_number;
+      patientStep.value++;
+    };
+
     return {
       formData,
       chargeTypes,
@@ -2186,6 +2435,13 @@ export default defineComponent({
       handleProQuestions,
       handleAddressChange,
       addressRef,
+      patientStatus,
+      patientStep,
+      patientStep_1,
+      filterPatient,
+      patientTableHeader,
+      patientTableData,
+      selectPatient,
     };
   },
 });

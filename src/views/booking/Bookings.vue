@@ -262,25 +262,18 @@ import {
   reactive,
   onMounted,
   computed,
-  watchEffect,
 } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import AppointmentListPopup from "@/components/booking/AppointmentListPopup.vue";
 import CreateModal from "@/components/booking/CreateApt.vue";
-// import EditModal from "@/components/booking/EditApt.vue";
 import AptTable from "@/components/booking/AptTable.vue";
 import VueCtkDateTimePicker from "vue-ctk-date-time-picker";
 import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
 import moment from "moment";
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
 import { aptTimeList } from "@/core/data/apt-time";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
-import { MenuComponent } from "@/assets/ts/components";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -313,8 +306,7 @@ export default defineComponent({
       x_weeks: "",
       clinic_id: "",
     });
-    const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
-    const _specialists = computed(() => store.getters.getFilteredData);
+    const tableTitle = ref("");
     const _x_weeks = ref({
       0: "this week",
       1: "After a week",
@@ -325,6 +317,9 @@ export default defineComponent({
       6: "After 6 weeks",
       7: "After 7 weeks",
     });
+
+    const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
+    const _specialists = computed(() => store.getters.getFilteredData);
     const _available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
     );
@@ -334,7 +329,6 @@ export default defineComponent({
       () => store.getters.getAptTimeRequireList
     );
     const _clinic_list = computed(() => store.getters.clinicsList);
-    const tableTitle = ref("");
 
     onMounted(() => {
       store.dispatch(Actions.BOOKING.SEARCH.DATE, {
@@ -433,28 +427,16 @@ export default defineComponent({
           _date_search.date = new Date();
           break;
         case 1:
-          _date_search.date = moment((_date_search.date = new Date())).add(
-            1,
-            "weeks"
-          );
+          _date_search.date = moment(_date_search.date).add(1, "weeks");
           break;
         case 2:
-          _date_search.date = moment((_date_search.date = new Date())).add(
-            2,
-            "weeks"
-          );
+          _date_search.date = moment(_date_search.date).add(2, "weeks");
           break;
         case 3:
-          _date_search.date = moment((_date_search.date = new Date())).add(
-            1,
-            "months"
-          );
+          _date_search.date = moment(_date_search.date).add(1, "months");
           break;
         case 4:
-          _date_search.date = moment((_date_search.date = new Date())).add(
-            3,
-            "months"
-          );
+          _date_search.date = moment(_date_search.date).add(3, "months");
           break;
       }
     };
