@@ -1,6 +1,38 @@
 <template>
-  <!--begin::Layout Toggle-->
-  <div class="d-flex flex-row-reverse">
+  <div
+    v-if="toggleKey"
+    style="background-color: #ffffff"
+    class="position-absolute zindex-sticky mt-10 d-flex flex-column m-2"
+  >
+    <span
+      v-for="item in _aptTypelist"
+      :value="item.id"
+      :label="item.name"
+      :key="item.id"
+      style="z-index: 100"
+      class="badge mt-1"
+      :style="{ 'background-color': item.color }"
+      >{{ item.name }}</span
+    >
+  </div>
+  <!--begin::Booking Toolbar-->
+  <div class="d-flex flex-row">
+    <div class="d-inline-block mb-2 p-2 rounded" style="background: white">
+      <div class="d-flex">
+        <span
+          @mouseover="toggleKey = true"
+          @mouseout="toggleKey = false"
+          :class="{ 'svg-icon-primary': toggleLayout }"
+          class="svg-icon svg-icon-2x btn m-0 p-0"
+        >
+          <inline-svg src="media/icons/duotune/art/art005.svg" />
+        </span>
+      </div>
+    </div>
+    <!--begin::Appointment Type Key-->
+
+    <!--end::Appointment Type Key-->
+    <!--begin::Layout Toggle-->
     <div class="d-inline-block mb-2 p-2 rounded" style="background: white">
       <div class="d-flex">
         <span
@@ -22,8 +54,9 @@
         </span>
       </div>
     </div>
+    <!--end::Layout Toggle-->
   </div>
-  <!--end::Layout Toggle-->
+  <!--end::Booking Toolbar-->
   <div :class="{ row: toggleLayout }">
     <div :class="{ 'col-2': toggleLayout }">
       <div class="card card-flush">
@@ -261,6 +294,7 @@ export default defineComponent({
   data: function () {
     return {
       toggleLayout: false,
+      toggleKey: false,
     };
   },
   setup() {
