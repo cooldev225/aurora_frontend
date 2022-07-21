@@ -72,31 +72,44 @@
                 onlyDate
                 noButton
               />
+
               <div class="d-flex flex-row justify-content-around">
+                <button
+                  class="btn btn-light-primary btn-sm"
+                  @click="changeDate(6)"
+                >
+                  1Y>
+                </button>
+                <button
+                  class="btn btn-light-primary btn-sm"
+                  @click="changeDate(5)"
+                >
+                  6M>
+                </button>
                 <button
                   class="btn btn-light-primary btn-sm"
                   @click="changeDate(4)"
                 >
-                  +3 months
+                  3M>
                 </button>
 
                 <button
                   class="btn btn-light-primary btn-sm"
                   @click="changeDate(3)"
                 >
-                  +1 month
+                  1M>
                 </button>
                 <button
                   class="btn btn-light-primary btn-sm"
                   @click="changeDate(2)"
                 >
-                  +2 weeks
+                  2W>
                 </button>
                 <button
                   class="btn btn-light-primary btn-sm"
                   @click="changeDate(1)"
                 >
-                  +1 Week
+                  1W>
                 </button>
                 <button class="btn btn-primary btn-sm" @click="changeDate(0)">
                   Now
@@ -316,14 +329,14 @@ export default defineComponent({
     const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const _specialists = computed(() => store.getters.getFilteredData);
     const _x_weeks = ref({
-      0: "this week",
-      1: "After a week",
-      2: "After 2 weeks",
-      3: "After 3 weeks",
-      4: "After 4 weeks",
-      5: "After 5 weeks",
-      6: "After 6 weeks",
-      7: "After 7 weeks",
+      0: "This week",
+      1: "Next Week",
+      2: "In 2 weeks",
+      4: "In 4 weeks",
+      6: "In 6 weeks",
+      8: "In 2 months",
+      12: "In 3 months",
+      24: "In 6 months",
     });
     const _available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
@@ -433,28 +446,22 @@ export default defineComponent({
           _date_search.date = new Date();
           break;
         case 1:
-          _date_search.date = moment((_date_search.date = new Date())).add(
-            1,
-            "weeks"
-          );
+          _date_search.date = moment(_date_search.date).add(1, "weeks");
           break;
         case 2:
-          _date_search.date = moment((_date_search.date = new Date())).add(
-            2,
-            "weeks"
-          );
+          _date_search.date = moment(_date_search.date).add(2, "weeks");
           break;
         case 3:
-          _date_search.date = moment((_date_search.date = new Date())).add(
-            1,
-            "months"
-          );
+          _date_search.date = moment(_date_search.date).add(1, "months");
           break;
         case 4:
-          _date_search.date = moment((_date_search.date = new Date())).add(
-            3,
-            "months"
-          );
+          _date_search.date = moment(_date_search.date).add(3, "months");
+          break;
+        case 5:
+          _date_search.date = moment(_date_search.date).add(6, "months");
+          break;
+        case 6:
+          _date_search.date = moment(_date_search.date).add(1, "years");
           break;
       }
     };
