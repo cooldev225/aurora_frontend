@@ -95,6 +95,42 @@
   <div class="card mb-5 mb-xxl-8">
     <div class="card-header border-0 pt-5">
       <h3 class="card-title align-items-start flex-column">
+        <span class="card-label fw-bold fs-3 mb-1">Charge Type</span>
+      </h3>
+    </div>
+    <div class="card-body pt-3 pb-0">
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="fv-row mb-7">
+            <label class="text-muted fs-6 fw-bold mb-2 d-block"
+              >Charge Type</label
+            >
+            <el-form>
+              <el-form-item prop="charge_type">
+                <el-select
+                  class="w-100"
+                  v-model="formData.patient.charge_type"
+                  placeholder="Select Charge Type"
+                >
+                  <el-option
+                    v-for="type in chargeTypes"
+                    :key="type.value"
+                    :value="type.value"
+                    :label="type.label"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--end::Card-->
+  <!--begin::Card-->
+  <div class="card mb-5 mb-xxl-8">
+    <div class="card-header border-0 pt-5">
+      <h3 class="card-title align-items-start flex-column">
         <span class="card-label fw-bold fs-3 mb-1">Your Payment Option</span>
       </h3>
     </div>
@@ -193,6 +229,7 @@
 import { defineComponent, onMounted, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import chargeTypes from "@/core/data/charge-types";
 
 export default defineComponent({
   name: "make-payment-pay",
@@ -214,6 +251,7 @@ export default defineComponent({
     return {
       formData,
       payment_option,
+      chargeTypes,
     };
   },
 });
