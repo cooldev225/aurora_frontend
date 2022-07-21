@@ -116,6 +116,15 @@
           <!--end::Appointment Info-->
 
           <el-divider />
+          <div v-if="displayData.notes">
+            <label class="fs-3 text-primary"
+              >Notes:
+              <span class="text-black fs-5">{{
+                displayData.notes
+              }}</span></label
+            >
+            <el-divider />
+          </div>
         </div>
         <!--end::Appointment Info-->
         <!--begin::Appointment Actions-->
@@ -245,6 +254,7 @@ export default defineComponent({
       arrival_time: "",
       appointment_type_name: "",
       specialist_name: "",
+      notes: "",
       procedure_approval_status: "",
     });
 
@@ -286,6 +296,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
+      console.log(aptData.value);
       displayData.reference_number = aptData.value.reference_number;
       displayData.clinic_name = aptData.value.clinic_name;
       displayData.start_time = aptData.value.start_time;
@@ -294,6 +305,7 @@ export default defineComponent({
       displayData.arrival_time = aptData.value.arrival_time;
       displayData.appointment_type_name = aptData.value.appointment_type_name;
       displayData.specialist_name = aptData.value.specialist_name;
+      displayData.notes = aptData.value.note;
       displayData.procedure_approval_status =
         aptData.value.procedure_approval_status;
     });
