@@ -100,12 +100,20 @@
           </button>
         </template>
         <template v-slot:cell-report="{ row: item }">
-          <button
-            v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
-            class="btn btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            Upload Pre-Admission Form / View Pre-Admission Form
-          </button>
+          <div class="d-flex flex-column">
+            <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+              <i class="bi bi-printer fs-3"></i>
+              Hospital Certificate
+            </a>
+            <a
+              v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
+              class="btn btn-sm btn-light me-2"
+              id="kt_user_follow_button"
+            >
+              <i class="bi bi-printer fs-3"></i>
+              Upload Pre-Admission Form / View Pre-Admission Form
+            </a>
+          </div>
         </template>
       </Datatable>
     </div>

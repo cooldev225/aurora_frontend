@@ -110,11 +110,6 @@
                   <i class="bi bi-printer fs-3"></i>
                   Details
                 </a>
-
-                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
-                  <i class="bi bi-printer fs-3"></i>
-                  Hospital Certificate
-                </a>
               </div>
               <div class="d-flex">
                 <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
