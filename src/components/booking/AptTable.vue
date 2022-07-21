@@ -212,7 +212,6 @@ export default defineComponent({
           .format("HH:mm")
           .toString();
       }
-      debugger;
       for (let key in _appointment) {
         if (_tableData.value) {
           for (let i in _tableData.value) {
@@ -291,7 +290,6 @@ export default defineComponent({
           }
         }
       }
-      // debugger;
       for (let key in _appointment) {
         for (let i in _tableData.value) {
           if (
@@ -303,7 +301,6 @@ export default defineComponent({
         }
       }
       appointment.value = _appointment;
-      console.log(appointment.value);
     });
 
     watchEffect(() => {

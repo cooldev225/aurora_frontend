@@ -275,25 +275,18 @@ import {
   reactive,
   onMounted,
   computed,
-  watchEffect,
 } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import AppointmentListPopup from "@/components/booking/AppointmentListPopup.vue";
 import CreateModal from "@/components/booking/CreateApt.vue";
-// import EditModal from "@/components/booking/EditApt.vue";
 import AptTable from "@/components/booking/AptTable.vue";
 import VueCtkDateTimePicker from "vue-ctk-date-time-picker";
 import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
 import moment from "moment";
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
 import { aptTimeList } from "@/core/data/apt-time";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
-import { MenuComponent } from "@/assets/ts/components";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -326,8 +319,7 @@ export default defineComponent({
       x_weeks: "",
       clinic_id: "",
     });
-    const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
-    const _specialists = computed(() => store.getters.getFilteredData);
+    const tableTitle = ref("");
     const _x_weeks = ref({
       0: "This week",
       1: "Next Week",
@@ -338,6 +330,9 @@ export default defineComponent({
       12: "In 3 months",
       24: "In 6 months",
     });
+
+    const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
+    const _specialists = computed(() => store.getters.getFilteredData);
     const _available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
     );
@@ -347,7 +342,6 @@ export default defineComponent({
       () => store.getters.getAptTimeRequireList
     );
     const _clinic_list = computed(() => store.getters.clinicsList);
-    const tableTitle = ref("");
 
     onMounted(() => {
       store.dispatch(Actions.BOOKING.SEARCH.DATE, {
