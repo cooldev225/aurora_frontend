@@ -132,13 +132,20 @@
                 </a>
 
                 <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
-                  <i class="bi bi-send fs-3"></i>
-                  Fax
+                  <i class="bi bi-plus fs-3"></i>
+                  Report
                 </a>
-
+                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+                  <i class="bi bi-plus fs-3"></i>
+                  Clinical Note
+                </a>
+                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+                  <i class="bi bi-plus fs-3"></i>
+                  Audio
+                </a>
                 <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
                   <i class="bi bi-send fs-3"></i>
-                  Referral
+                  Letter
                 </a>
               </div>
             </div>
