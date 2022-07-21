@@ -26,6 +26,7 @@ import AptTimeRequireModule from "@/store/modules/AptTimeRequireModule";
 import SpecialistsModule from "@/store/modules/SpecialistsModule";
 import NtfTemplatesModule from "@/store/modules/NtfTemplatesModule";
 import MPaymentModule from "@/store/modules/MPaymentModule";
+import ProfileModule from "@/store/modules/ProfileModule";
 
 config.rawError = true;
 
@@ -56,6 +57,7 @@ const store = createStore({
     AptTimeRequireModule,
     SpecialistsModule,
     MPaymentModule,
+    ProfileModule,
   },
 });
 
