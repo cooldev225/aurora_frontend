@@ -57,12 +57,6 @@
             >Password</label
           >
           <!--end::Label-->
-
-          <!--begin::Link-->
-          <router-link to="/password-reset" class="link-primary fs-6 fw-bolder">
-            Forgot Password ?
-          </router-link>
-          <!--end::Link-->
         </div>
         <!--end::Wrapper-->
 

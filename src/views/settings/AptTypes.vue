@@ -23,7 +23,7 @@
         :table-header="tableHeader"
         :table-data="tableData"
         :rows-per-page="20"
-        :enable-items-per-page-dropdown="false"
+        :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-name="{ row: item }">
           <div class="d-flex align-items-center">
