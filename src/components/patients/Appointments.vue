@@ -39,13 +39,21 @@
           {{ item.date }} {{ item.start_time }}
         </template>
         <template v-slot:cell-specialist="{ row: item }">
-          {{ item.specialist_name }}
+          <div class="d-flex flex-column">
+            <span>{{ item.appointment_type_name }}</span>
+            <span> {{ item.specialist_name }}</span>
+            <span>@ {{ item.clinic_name }}</span>
+          </div>
         </template>
-        <template v-slot:cell-clinic="{ row: item }">
-          {{ item.clinic_name }}
-        </template>
-        <template v-slot:cell-appointment_type="{ row: item }">
-          {{ item.appointment_type_name }}
+        <template v-slot:cell-referral="">
+          <div class="d-flex flex-column">
+            <span>referral_date</span>
+            <span>referral_duration</span>
+            <span>referral_expiry date</span>
+          </div>
+          <button class="btn btn-bg-light btn-active-color-primary btn-sm me-1">
+            Update Referral
+          </button>
         </template>
         <template v-slot:cell-attendance_status="{ row: item }">
           <span
@@ -60,6 +68,16 @@
             }`"
           >
             {{ item.attendance_status.replace("_", " ") }}
+            <div v-if="item.attendance_status === 'checked_in'">
+              <span>collecting_person_name</span>
+              <span>collecting_person_phone</span>
+              <span>collecting_person_alternate_contact</span>
+              <button
+                class="btn btn-bg-light btn-active-color-primary btn-sm me-1"
+              >
+                Update Collecting Person
+              </button>
+            </div>
           </span>
         </template>
         <template v-slot:cell-payment>
@@ -81,22 +99,21 @@
             </span>
           </button>
         </template>
-        <template v-slot:cell-report>
-          <button
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/finance/fin002.svg" />
-            </span>
-          </button>
-
-          <button
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-          >
-            <span class="svg-icon svg-icon-3">
-              <i class="fas fa-plus"></i>
-            </span>
-          </button>
+        <template v-slot:cell-report="{ row: item }">
+          <div class="d-flex flex-column">
+            <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+              <i class="bi bi-printer fs-3"></i>
+              Hospital Certificate
+            </a>
+            <a
+              v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
+              class="btn btn-sm btn-light me-2"
+              id="kt_user_follow_button"
+            >
+              <i class="bi bi-printer fs-3"></i>
+              Upload Pre-Admission Form / View Pre-Admission Form
+            </a>
+          </div>
         </template>
       </Datatable>
     </div>
@@ -133,18 +150,13 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "Specialist",
+        name: "Overview",
         key: "specialist",
         sortable: false,
       },
       {
-        name: "Clinic",
-        key: "clinic",
-        sortable: false,
-      },
-      {
-        name: "Appointment Type",
-        key: "appointment_type",
+        name: "Referral",
+        key: "referral",
         sortable: false,
       },
       {
@@ -158,7 +170,7 @@ export default defineComponent({
         sortable: false,
       },
       {
-        name: "Report",
+        name: "Actions",
         key: "report",
         sortable: false,
       },
