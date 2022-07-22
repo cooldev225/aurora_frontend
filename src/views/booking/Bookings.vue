@@ -1,60 +1,62 @@
 <template>
-  <div
-    v-if="toggleKey"
-    style="background-color: #ffffff"
-    class="position-absolute zindex-sticky mt-10 d-flex flex-column m-2"
-  >
-    <span
-      v-for="item in _aptTypelist"
-      :value="item.id"
-      :label="item.name"
-      :key="item.id"
-      style="z-index: 100"
-      class="badge mt-1"
-      :style="{ 'background-color': item.color }"
-      >{{ item.name }}</span
+  <div class="card w-100 d-flex align-items-end mb-2 px-5"></div>
+    <div
+      v-if="toggleKey"
+      style="background-color: #ffffff"
+      class="position-absolute zindex-sticky mt-10 d-flex flex-column m-2"
     >
-  </div>
-  <!--begin::Booking Toolbar-->
-  <div class="d-flex flex-row">
-    <div class="d-inline-block mb-2 p-2 rounded" style="background: white">
-      <div class="d-flex">
-        <span
-          @mouseover="toggleKey = true"
-          @mouseout="toggleKey = false"
-          :class="{ 'svg-icon-primary': toggleLayout }"
-          class="svg-icon svg-icon-2x btn m-0 p-0"
-        >
-          <inline-svg src="media/icons/duotune/art/art005.svg" />
-        </span>
-      </div>
+      <span
+        v-for="item in _aptTypelist"
+        :value="item.id"
+        :label="item.name"
+        :key="item.id"
+        style="z-index: 100"
+        class="badge mt-1"
+        :style="{ 'background-color': item.color }"
+        >{{ item.name }}</span
+      >
     </div>
-    <!--begin::Appointment Type Key-->
-
-    <!--end::Appointment Type Key-->
-    <!--begin::Layout Toggle-->
-    <div class="d-inline-block mb-2 p-2 rounded" style="background: white">
-      <div class="d-flex">
-        <span
-          @click="toggleLayout = true"
-          :class="{ 'svg-icon-primary': toggleLayout }"
-          class="svg-icon svg-icon-2x btn m-0 p-0"
-        >
-          <inline-svg src="media/icons/duotune/layouts/lay004.svg" />
-        </span>
-        <span
-          @click="toggleLayout = false"
-          :class="{ 'svg-icon-primary': !toggleLayout }"
-          class="svg-icon svg-icon-2x btn m-0 p-0"
-        >
-          <inline-svg
-            style="transform: rotate(-270deg)"
-            src="media/icons/duotune/layouts/lay004.svg"
-          />
-        </span>
+    <!--begin::Booking Toolbar-->
+    <div class="d-flex flex-row align-items-center gap-2">
+      <div class="d-inline-block mb-2 p-2">
+        <div class="d-flex">
+          <span
+            @mouseover="toggleKey = true"
+            @mouseout="toggleKey = false"
+            :class="{ 'svg-icon-primary': toggleLayout }"
+            class="svg-icon svg-icon-2x btn m-0 p-0"
+          >
+            <inline-svg src="media/icons/duotune/art/art005.svg" />
+          </span>
+        </div>
       </div>
+      <!--begin::Appointment Type Key-->
+      <span class="h-30px border-gray-200 border-start mx-4"></span>
+      <!--end::Appointment Type Key-->
+      <!--begin::Layout Toggle-->
+      <div class="d-inline-block mb-2 p-2">
+        <div class="d-flex flex-row">
+          <span
+            @click="toggleLayout = true"
+            :class="{ 'svg-icon-primary': toggleLayout }"
+            class="svg-icon svg-icon-2x btn m-0 p-0"
+          >
+            <inline-svg src="media/icons/duotune/layouts/lay004.svg" />
+          </span>
+          <span
+            @click="toggleLayout = false"
+            :class="{ 'svg-icon-primary': !toggleLayout }"
+            class="svg-icon svg-icon-2x btn m-0 p-0"
+          >
+            <inline-svg
+              style="transform: rotate(-270deg)"
+              src="media/icons/duotune/layouts/lay004.svg"
+            />
+          </span>
+        </div>
+      </div>
+      <!--end::Layout Toggle-->
     </div>
-    <!--end::Layout Toggle-->
   </div>
   <!--end::Booking Toolbar-->
   <div :class="{ row: toggleLayout }">
