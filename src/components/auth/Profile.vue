@@ -1,6 +1,38 @@
 <template>
   <!--begin::Navbar-->
   <div class="card pb-9">
+    <div class="card-header">
+      <!--begin::Navs-->
+      <div class="d-flex overflow-auto">
+        <ul
+          class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap"
+        >
+          <!--begin::Nav item-->
+          <li class="nav-item">
+            <router-link
+              to="/profile"
+              class="nav-link text-active-primary me-6"
+              active-class="active"
+            >
+              Profile
+            </router-link>
+          </li>
+          <!--end::Nav item-->
+          <!--begin::Nav item-->
+          <li class="nav-item">
+            <router-link
+              class="nav-link text-active-primary me-6"
+              to="/profile/password-change"
+              active-class="active"
+            >
+              Password
+            </router-link>
+          </li>
+          <!--end::Nav item-->
+        </ul>
+      </div>
+      <!--begin::Navs-->
+    </div>
     <div class="card-body pt-9 pb-0">
       <!--begin::Details-->
       <el-form
@@ -13,24 +45,39 @@
           <div class="col-sm-12">
             <div class="fv-row mb-7">
               <el-form-item label="Photo">
-                <el-upload
-                  action="#"
-                  ref="upload"
-                  list-type="picture-card"
-                  :class="{ disabled: uploadDisabled }"
-                  :limit="1"
-                  :on-change="handleChange"
-                  :on-remove="handleRemove"
-                  :on-preview="handlePreview"
-                  :auto-upload="false"
-                  accept="image/*"
-                >
-                  <i class="fa fa-plus"></i>
-                </el-upload>
+                <div class="d-flex">
+                  <img
+                    v-if="showOldPhoto"
+                    :src="'http://52.64.63.21/' + formData.photo"
+                    className="rounded me-2"
+                    width="146"
+                    height="146"
+                    alt="profile photo"
+                  />
 
-                <el-dialog v-model="dialogVisible">
-                  <img w-full :src="dialogImageUrl" alt="Preview Image" />
-                </el-dialog>
+                  <el-upload
+                    action="#"
+                    ref="upload"
+                    list-type="picture-card"
+                    :class="{ disabled: uploadDisabled }"
+                    :limit="1"
+                    :on-change="handleChange"
+                    :on-remove="handleRemove"
+                    :on-preview="handlePreview"
+                    :auto-upload="false"
+                    accept="image/*"
+                  >
+                    <i class="fa fa-plus"></i>
+                  </el-upload>
+
+                  <el-dialog v-model="dialogVisible">
+                    <img
+                      class="w-100 h-100"
+                      :src="dialogImageUrl"
+                      alt="Preview Image"
+                    />
+                  </el-dialog>
+                </div>
               </el-form-item>
             </div>
           </div>
@@ -98,7 +145,7 @@
               <el-form-item prop="address">
                 <GMapAutocomplete
                   ref="addressRef"
-                  placeholder="Enter the Address"
+                  :placeholder="formData.address"
                   @place_changed="handleAddressChange"
                   :options="{
                     componentRestrictions: {
@@ -112,10 +159,18 @@
           </div>
         </div>
         <div class="d-flex ms-auto justify-content-end w-25">
-          <button type="submit" class="btn btn-primary w-25">Save</button>
-          <button type="reset" class="btn btn-light-primary w-25 ms-2">
-            Cancel
+          <button type="submit" class="btn btn-primary w-100 w-sm-25">
+            Save
           </button>
+          <!--begin::Button-->
+          <router-link
+            type="reset"
+            to="/booking/dashboard"
+            class="btn btn-light-primary w-100 w-sm-25 ms-2"
+          >
+            Cancel
+          </router-link>
+          <!--end::Button-->
         </div>
       </el-form>
       <!--end::Details-->
@@ -137,12 +192,14 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "profile-page-layout",
   components: {},
   setup() {
     const store = useStore();
+    const router = useRouter();
     const formRef = ref(null);
     const formData = ref({
       first_name: "",
@@ -150,6 +207,7 @@ export default defineComponent({
       email: "",
       mobile_number: "",
       address: "",
+      photo: "",
     });
     const rules = ref({
       first_name: [
@@ -200,12 +258,14 @@ export default defineComponent({
     const Data = new FormData();
     const dialogImageUrl = ref("");
     const dialogVisible = ref(false);
+    const showOldPhoto = ref(true);
 
     const handleAddressChange = (e) => {
       formData.value.address = e.formatted_address;
     };
 
     const handleChange = (file, fileList) => {
+      showOldPhoto.value = false;
       upload.value.clearFiles();
       uploadDisabled.value = false;
       Data.append("photo", file.raw);
@@ -218,7 +278,6 @@ export default defineComponent({
 
     const handlePreview = (uploadFile) => {
       dialogImageUrl.value = uploadFile.url;
-      console.log(dialogImageUrl.value);
       dialogVisible.value = true;
     };
 
@@ -232,10 +291,9 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
-          console.log(formData.value);
           loading.value = true;
           store
-            .dispatch(Actions.PROFILE.UPDATE, formData.value)
+            .dispatch(Actions.PROFILE.UPDATE, Data)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.PROFILE.VIEW);
@@ -248,7 +306,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                console.log("Updated");
+                // router.go();
               });
             })
             .catch(({ response }) => {
@@ -276,10 +334,11 @@ export default defineComponent({
       formData,
       formRef,
       rules,
-      submit,
       upload,
       dialogVisible,
       dialogImageUrl,
+      showOldPhoto,
+      submit,
       handleAddressChange,
       handleChange,
       handlePreview,

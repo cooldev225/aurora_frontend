@@ -16,6 +16,7 @@ const Actions = {
   PROFILE: {
     VIEW: "viewProfile",
     UPDATE: "updateProfile",
+    UPDATE_PASSWORD: "updatePassword",
   },
 
   ADMIN: {

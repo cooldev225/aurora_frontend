@@ -64,4 +64,21 @@ export default class AptTypesModule extends VuexModule implements ProfileInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.PROFILE.UPDATE_PASSWORD](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("change-password", item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }

@@ -271,7 +271,6 @@ export default defineComponent({
           cancelButton: "btn btn-light-primary",
         },
         preConfirm: (data) => {
-          debugger;
           store.dispatch(Actions.APT.CANCELLATION.CREATE, {
             id: aptData.value.appointment_id,
             reason: data,

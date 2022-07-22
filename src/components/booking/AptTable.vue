@@ -186,7 +186,6 @@ export default defineComponent({
     watch(_tableData, () => {
       let _val = "07:00";
       let _appointment = {};
-      // debugger;
       while (timeStr2Number(_val) < timeStr2Number("18:00")) {
         _appointment[_val.toString()] = [];
         if (_tableData.value) {
@@ -325,7 +324,6 @@ export default defineComponent({
         selected_specialist: specialist,
       };
       store.commit(Mutations.SET_BOOKING.SELECT, item);
-      debugger;
       let cnt = 0;
       for (let i in specialist.appointments) {
         let _apt_temp = specialist.appointments[i];
