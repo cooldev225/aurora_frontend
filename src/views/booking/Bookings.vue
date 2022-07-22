@@ -215,7 +215,7 @@
                         v-model="_search_next_apts.x_weeks"
                       >
                         <el-option
-                          v-for="item in _x_weeks"
+                          v-for="(item, index) in _x_weeks"
                           :value="index"
                           :label="item"
                           :key="item.id"
