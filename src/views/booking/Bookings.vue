@@ -1,5 +1,5 @@
 <template>
-  <div class="card w-100 d-flex align-items-end mb-2 px-5"></div>
+  <div class="card w-100 d-flex align-items-end mb-2 px-5">
     <div
       v-if="toggleKey"
       style="background-color: #ffffff"
