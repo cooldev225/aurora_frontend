@@ -1860,9 +1860,8 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
-import chargeTypes from "@/core/data/charge-types";
+import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-
 export default defineComponent({
   name: "create-apt-modal",
   components: {
@@ -2135,7 +2134,6 @@ export default defineComponent({
         .subtract(_arrival_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      billingInfoData.value.procedure_price = _selected.procedure_price;
       aptInfoData.value.clinical_code = _selected.clinical_code;
       aptInfoData.value.mbs_code = _selected.mbs_code;
       apt_type.value = _selected.type;
@@ -2232,6 +2230,17 @@ export default defineComponent({
             // this.context.commit(Mutations.PURGE_AUTH);
           }
         }
+      }
+
+      if (_appointment.value && billingInfoData.value.charge_type) {
+        debugger;
+        const filteredApt = aptTypeList.value.filter(
+          (item) => item.id === _appointment.value
+        )[0];
+        billingInfoData.value.procedure_price = getProcedurePrice(
+          filteredApt,
+          billingInfoData.value.charge_type
+        );
       }
     });
 
