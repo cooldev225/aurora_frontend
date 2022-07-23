@@ -180,26 +180,17 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  ref,
-  watch,
-  watchEffect,
-  onMounted,
-  computed,
-} from "vue";
+import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "profile-page-layout",
   components: {},
   setup() {
     const store = useStore();
-    const router = useRouter();
     const formRef = ref(null);
     const formData = ref({
       first_name: "",

@@ -161,7 +161,7 @@
     <div class="card-body pt-0">
       <div class="row">
         <label class="text-muted fs-6 fw-bold mb-2 d-block"
-          >Procedure: {{ formData.payment.name }}</label
+          >Procedure: {{ formData.appointment.name }}</label
         >
         <!--begin::Input-->
         <el-form class="d-flex align-items-center">
@@ -170,7 +170,9 @@
               type="number"
               class="w-100"
               placeholder="Procedure Price"
-              v-model="formData.payment.procedure_price"
+              v-model="
+                formData.payment[getPaymentTier(formData.patient.charge_type)]
+              "
               disabled
             />
           </el-form-item>
@@ -185,7 +187,9 @@
         </el-form>
         <!--end::Input-->
         <label class="text-muted fs-6 fw-bold mt-2 d-block"
-          >Total Payable Amount: ${{ formData.payment.procedure_price }}</label
+          >Total Payable Amount: ${{
+            formData.payment[getPaymentTier(formData.patient.charge_type)]
+          }}</label
         >
       </div>
     </div>
@@ -210,7 +214,7 @@
               type="number"
               class="w-100"
               placeholder="Procedure Price"
-              v-model="formData.payment.procedure_price"
+              v-model="payment_amount"
             />
             <button type="submit" class="btn btn-primary mt-5 w-50">
               Confirm
@@ -238,6 +242,12 @@ export default defineComponent({
     const store = useStore();
     const formData = ref({});
     const payment_option = ref("");
+    const payment_amount = ref(0);
+
+    const getPaymentTier = (charge_type) => {
+      return chargeTypes.find((item) => item.value === charge_type)
+        ?.payment_tier;
+    };
 
     watchEffect(() => {
       formData.value = store.getters.paymentSelected;
@@ -250,8 +260,10 @@ export default defineComponent({
 
     return {
       formData,
-      payment_option,
       chargeTypes,
+      payment_option,
+      payment_amount,
+      getPaymentTier,
     };
   },
 });
