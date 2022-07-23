@@ -73,7 +73,7 @@
               >Appointment Date and Time</label
             >
             <label class="fs-6 text-gray-800">{{
-              formData.appointment.date + formData.appointment.start_time
+              formData.appointment.date + " " + formData.appointment.start_time
             }}</label>
           </div>
         </div>
@@ -160,9 +160,9 @@
     </div>
     <div class="card-body pt-0">
       <div class="row">
-        <label class="text-muted fs-6 fw-bold mb-2 d-block"
-          >Procedure: {{ formData.appointment.name }}</label
-        >
+        <label class="text-muted fs-6 fw-bold mb-2 d-block">{{
+          formData.appointment.type + ": " + formData.appointment.name
+        }}</label>
         <!--begin::Input-->
         <el-form class="d-flex align-items-center">
           <el-form-item prop="procedure_price" class="mb-0">
@@ -170,8 +170,11 @@
               type="number"
               class="w-100"
               placeholder="Procedure Price"
-              v-model="
-                formData.payment[getPaymentTier(formData.patient.charge_type)]
+              :value="
+                getProcedurePrice(
+                  formData.payment,
+                  formData.patient.charge_type
+                )
               "
               disabled
             />
@@ -188,7 +191,7 @@
         <!--end::Input-->
         <label class="text-muted fs-6 fw-bold mt-2 d-block"
           >Total Payable Amount: ${{
-            formData.payment[getPaymentTier(formData.patient.charge_type)]
+            getProcedurePrice(formData.payment, formData.patient.charge_type)
           }}</label
         >
       </div>
@@ -232,7 +235,7 @@
 import { defineComponent, onMounted, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import chargeTypes from "@/core/data/charge-types";
+import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 
 export default defineComponent({
   name: "make-payment-pay",
@@ -243,11 +246,6 @@ export default defineComponent({
     const formData = ref({});
     const payment_option = ref("");
     const payment_amount = ref(0);
-
-    const getPaymentTier = (charge_type) => {
-      return chargeTypes.find((item) => item.value === charge_type)
-        ?.payment_tier;
-    };
 
     watchEffect(() => {
       formData.value = store.getters.paymentSelected;
@@ -263,7 +261,7 @@ export default defineComponent({
       chargeTypes,
       payment_option,
       payment_amount,
-      getPaymentTier,
+      getProcedurePrice,
     };
   },
 });
