@@ -90,11 +90,10 @@
                 >
                   <template v-if="item_2.time_length === 4">
                     <td
-                      :style="
-                        item_1.appointment.length === 2
-                          ? 'min-width: 220px'
-                          : 'min-width: 441px'
-                      "
+                      :style="{
+                        'min-width':
+                          item_1.appointment.length === 2 ? '220px' : '441px',
+                      }"
                       :colspan="item_1.appointment.length === 2 ? 1 : 2"
                     ></td>
                   </template>
@@ -102,7 +101,10 @@
                   <template v-else>
                     <td
                       :rowspan="item_2.time_length"
-                      style="min-width: 220px"
+                      :style="{
+                        'min-width': '220px',
+                        'background-color': item_2.appointment.color,
+                      }"
                       :colspan="item_1.appointment.length === 2 ? 1 : 2"
                     >
                       <div
@@ -186,6 +188,7 @@ export default defineComponent({
     watch(_tableData, () => {
       let _val = "07:00";
       let _appointment = {};
+      aptTimeList.value = [];
       while (timeStr2Number(_val) < timeStr2Number("18:00")) {
         _appointment[_val.toString()] = [];
         if (_tableData.value) {
@@ -209,7 +212,6 @@ export default defineComponent({
           .format("HH:mm")
           .toString();
       }
-
       for (let key in _appointment) {
         if (_tableData.value) {
           for (let i in _tableData.value) {
@@ -230,7 +232,7 @@ export default defineComponent({
                 for (let k in specialist.appointments) {
                   let _apt_temp = specialist.appointments[k];
                   if (
-                    (timeStr2Number(_apt_temp.start_time) <
+                    (timeStr2Number(_apt_temp.start_time) <=
                       timeStr2Number(_apt.start_time) &&
                       timeStr2Number(_apt_temp.end_time) >
                         timeStr2Number(_apt.start_time)) ||
@@ -239,7 +241,7 @@ export default defineComponent({
                       timeStr2Number(_apt_temp.end_time) >
                         timeStr2Number(_apt.end_time))
                   ) {
-                    flag = false;
+                    if (_apt_temp.id !== _apt.id) flag = false;
                   }
                 }
                 if (flag == true) {
@@ -262,7 +264,7 @@ export default defineComponent({
                 for (let k in specialist.appointments) {
                   let _apt_temp = specialist.appointments[k];
                   if (
-                    (timeStr2Number(_apt_temp.start_time) <
+                    (timeStr2Number(_apt_temp.start_time) <=
                       timeStr2Number(_apt.start_time) &&
                       timeStr2Number(_apt_temp.end_time) >
                         timeStr2Number(_apt.start_time)) ||
@@ -271,7 +273,7 @@ export default defineComponent({
                       timeStr2Number(_apt_temp.end_time) >
                         timeStr2Number(_apt.end_time))
                   ) {
-                    flag = false;
+                    if (_apt_temp.id !== _apt.id) flag = false;
                   }
                 }
                 if (flag == true) {
@@ -356,7 +358,6 @@ export default defineComponent({
 
     const handleEdit = (item, specialist) => {
       store.commit(Mutations.SET_APT.SELECT, item);
-      console.log(item);
       DrawerComponent?.getInstance("booking-drawer")?.toggle();
     };
 
