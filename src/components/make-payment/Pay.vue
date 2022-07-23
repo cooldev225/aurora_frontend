@@ -211,7 +211,6 @@
               class="w-100"
               placeholder="Procedure Price"
               v-model="formData.payment.procedure_price"
-              disabled
             />
             <button type="submit" class="btn btn-primary mt-5 w-50">
               Confirm
@@ -242,6 +241,7 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.paymentSelected;
+      console.log(formData.value);
     });
 
     onMounted(() => {
