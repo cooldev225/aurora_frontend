@@ -1,6 +1,38 @@
 <template>
   <!--begin::Navbar-->
-  <div class="card">
+  <div class="card pb-9">
+    <div class="card-header">
+      <!--begin::Navs-->
+      <div class="d-flex overflow-auto">
+        <ul
+          class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap"
+        >
+          <!--begin::Nav item-->
+          <li class="nav-item">
+            <router-link
+              to="/profile"
+              class="nav-link text-active-primary me-6"
+              active-class="active"
+            >
+              Profile
+            </router-link>
+          </li>
+          <!--end::Nav item-->
+          <!--begin::Nav item-->
+          <li class="nav-item">
+            <router-link
+              class="nav-link text-active-primary me-6"
+              to="/profile/password-change"
+              active-class="active"
+            >
+              Password
+            </router-link>
+          </li>
+          <!--end::Nav item-->
+        </ul>
+      </div>
+      <!--begin::Navs-->
+    </div>
     <div class="card-body pt-9 pb-0">
       <!--begin::Details-->
       <el-form
@@ -10,6 +42,45 @@
         ref="formRef"
       >
         <div class="row">
+          <div class="col-sm-12">
+            <div class="fv-row mb-7">
+              <el-form-item label="Photo">
+                <div class="d-flex">
+                  <img
+                    v-if="showOldPhoto"
+                    :src="'http://52.64.63.21/' + formData.photo"
+                    className="rounded me-2"
+                    width="146"
+                    height="146"
+                    alt="profile photo"
+                  />
+
+                  <el-upload
+                    action="#"
+                    ref="upload"
+                    list-type="picture-card"
+                    :class="{ disabled: uploadDisabled }"
+                    :limit="1"
+                    :on-change="handleChange"
+                    :on-remove="handleRemove"
+                    :on-preview="handlePreview"
+                    :auto-upload="false"
+                    accept="image/*"
+                  >
+                    <i class="fa fa-plus"></i>
+                  </el-upload>
+
+                  <el-dialog v-model="dialogVisible">
+                    <img
+                      class="w-100 h-100"
+                      :src="dialogImageUrl"
+                      alt="Preview Image"
+                    />
+                  </el-dialog>
+                </div>
+              </el-form-item>
+            </div>
+          </div>
           <div class="col-sm-6">
             <div class="fv-row mb-7">
               <label class="text-muted fs-6 fw-bold mb-2 d-block"
@@ -42,21 +113,6 @@
           </div>
           <div class="col-sm-6">
             <div class="fv-row mb-7">
-              <label class="text-muted fs-6 fw-bold mb-2 d-block"
-                >Username</label
-              >
-              <el-form-item prop="username">
-                <el-input
-                  type="text"
-                  class="w-100"
-                  v-model="formData.username"
-                  placeholder="Username"
-                />
-              </el-form-item>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="fv-row mb-7">
               <label class="text-muted fs-6 fw-bold mb-2 d-block">Email</label>
               <el-form-item prop="email">
                 <el-input
@@ -64,21 +120,6 @@
                   class="w-100"
                   v-model="formData.email"
                   placeholder="Email"
-                />
-              </el-form-item>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="fv-row mb-7">
-              <label class="text-muted fs-6 fw-bold mb-2 d-block"
-                >Date of Birth</label
-              >
-              <el-form-item prop="date_of_birth">
-                <el-input
-                  type="text"
-                  class="w-100"
-                  v-model="formData.date_of_birth"
-                  placeholder="Date of Birth"
                 />
               </el-form-item>
             </div>
@@ -98,33 +139,13 @@
           </div>
           <div class="col-sm-6">
             <div class="fv-row mb-7">
-              <label class="text-muted fs-6 fw-bold mb-2 d-block">Gender</label>
-              <el-form-item prop="gender">
-                <el-select
-                  class="w-100"
-                  v-model="formData.gender"
-                  placeholder="Select Gender"
-                >
-                  <el-option value="male" label="Male" />
-                  <el-option value="female" label="Female" />
-                  <el-option value="other" label="Other" />
-                  <el-option
-                    value="undisclosed"
-                    label="Not Stated / Inadequately Desribed"
-                  />
-                </el-select>
-              </el-form-item>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="fv-row mb-7">
               <label class="text-muted fs-6 fw-bold mb-2 d-block"
                 >Address</label
               >
               <el-form-item prop="address">
                 <GMapAutocomplete
                   ref="addressRef"
-                  placeholder="Enter the Address"
+                  :placeholder="formData.address"
                   @place_changed="handleAddressChange"
                   :options="{
                     componentRestrictions: {
@@ -137,6 +158,20 @@
             </div>
           </div>
         </div>
+        <div class="d-flex ms-auto justify-content-end w-25">
+          <button type="submit" class="btn btn-primary w-100 w-sm-25">
+            Save
+          </button>
+          <!--begin::Button-->
+          <router-link
+            type="reset"
+            to="/booking/dashboard"
+            class="btn btn-light-primary w-100 w-sm-25 ms-2"
+          >
+            Cancel
+          </router-link>
+          <!--end::Button-->
+        </div>
       </el-form>
       <!--end::Details-->
     </div>
@@ -144,8 +179,8 @@
   <!--end::Navbar-->
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, watch, watchEffect, onMounted } from "vue";
+<script>
+import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -156,15 +191,14 @@ export default defineComponent({
   components: {},
   setup() {
     const store = useStore();
-    const formRef = ref<null | HTMLFormElement>(null);
+    const formRef = ref(null);
     const formData = ref({
       first_name: "",
       last_name: "",
       email: "",
-      date_of_birth: "",
-      contact_number: "",
-      gender: "",
+      mobile_number: "",
       address: "",
+      photo: "",
     });
     const rules = ref({
       first_name: [
@@ -181,7 +215,7 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      contact_number: [
+      mobile_number: [
         {
           required: true,
           message: "Contact Number cannot be blank",
@@ -208,10 +242,34 @@ export default defineComponent({
         },
       ],
     });
+    const profileData = computed(() => store.getters.getProfileSelected);
     const loading = ref(false);
+    const uploadDisabled = ref(false);
+    const upload = ref(null);
+    const Data = new FormData();
+    const dialogImageUrl = ref("");
+    const dialogVisible = ref(false);
+    const showOldPhoto = ref(true);
 
     const handleAddressChange = (e) => {
       formData.value.address = e.formatted_address;
+    };
+
+    const handleChange = (file, fileList) => {
+      showOldPhoto.value = false;
+      upload.value.clearFiles();
+      uploadDisabled.value = false;
+      Data.append("photo", file.raw);
+      uploadDisabled.value = fileList.length >= 1;
+    };
+
+    const handleRemove = (file, fileList) => {
+      uploadDisabled.value = fileList.length - 1;
+    };
+
+    const handlePreview = (uploadFile) => {
+      dialogImageUrl.value = uploadFile.url;
+      dialogVisible.value = true;
     };
 
     const submit = () => {
@@ -221,12 +279,15 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
+          Object.keys(formData.value).forEach((key) => {
+            Data.append(key, formData.value[key]);
+          });
           loading.value = true;
           store
-            .dispatch(Actions.PATIENTS.UPDATE, formData.value)
+            .dispatch(Actions.PROFILE.UPDATE, Data)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.PATIENTS.LIST);
+              store.dispatch(Actions.PROFILE.VIEW);
               Swal.fire({
                 text: "Successfully Updated!",
                 icon: "success",
@@ -236,7 +297,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                console.log("Updated");
+                // router.go();
               });
             })
             .catch(({ response }) => {
@@ -250,27 +311,29 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      formData.value = store.getters.currentUser.profile;
+      formData.value = profileData.value;
       console.log(formData.value);
     });
-
-    // watch(list, () => {
-    //   patientData.value = list.value;
-    //   tableData.value = patientData.value;
-    //   renderTable();
-    // });
 
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Profile", []);
+      store.dispatch(Actions.PROFILE.VIEW);
     });
 
     return {
       formData,
       formRef,
       rules,
+      upload,
+      dialogVisible,
+      dialogImageUrl,
+      showOldPhoto,
       submit,
       handleAddressChange,
+      handleChange,
+      handlePreview,
+      handleRemove,
     };
   },
 });

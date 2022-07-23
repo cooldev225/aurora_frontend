@@ -220,6 +220,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "profile",
         component: () => import("@/components/auth/Profile.vue"),
       },
+      {
+        path: "/profile/password-change",
+        name: "password-change",
+        component: () => import("@/components/auth/Password.vue"),
+      },
     ],
   },
   {

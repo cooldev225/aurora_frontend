@@ -10,10 +10,14 @@ const Actions = {
   LOGOUT: "logout",
   REGISTER: "register",
   UPDATE_USER: "updateUser",
-  PROFILE: "profile",
-  UPDATE_PROFILE: "updateProfile",
   FORGOT_PASSWORD: "forgotPassword",
   SET_BREADCRUMB_ACTION: "setBreadcrumbAction",
+
+  PROFILE: {
+    VIEW: "viewProfile",
+    UPDATE: "updateProfile",
+    UPDATE_PASSWORD: "updatePassword",
+  },
 
   ADMIN: {
     LIST: "listAdmin",
