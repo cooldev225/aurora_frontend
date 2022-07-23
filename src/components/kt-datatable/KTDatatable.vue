@@ -61,7 +61,7 @@
               <tr
                 :class="`odd ${
                   item.date === moment().format('YYYY-MM-DD')
-                    ? 'bg-light-primary'
+                    ? 'bg-success'
                     : ''
                 }`"
               >

@@ -101,7 +101,10 @@
         </template>
         <template v-slot:cell-report="{ row: item }">
           <div class="d-flex flex-column">
-            <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+            <a
+              class="btn btn-sm btn-light mb-2 me-2"
+              id="kt_user_follow_button"
+            >
               <i class="bi bi-printer fs-3"></i>
               Hospital Certificate
             </a>
