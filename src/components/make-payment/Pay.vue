@@ -12,7 +12,9 @@
           <div class="fv-row mb-7">
             <label class="text-muted fs-6 fw-bold mb-2 d-block">Name</label>
             <label class="fs-6 text-gray-800">{{
-              formData.patient.first_name + formData.patient.last_name
+              billingData.patient.first_name +
+              " " +
+              billingData.patient.last_name
             }}</label>
           </div>
         </div>
@@ -20,7 +22,7 @@
           <div class="fv-row mb-7">
             <label class="text-muted fs-6 fw-bold mb-2 d-block">Address</label>
             <label class="fs-6 text-gray-800">{{
-              formData.patient.address
+              billingData.patient.address
             }}</label>
           </div>
         </div>
@@ -30,7 +32,7 @@
               >Contact Number</label
             >
             <label class="fs-6 text-gray-800">{{
-              formData.patient.contact_number
+              billingData.patient.contact_number
             }}</label>
           </div>
         </div>
@@ -40,7 +42,7 @@
               >Date of Birth</label
             >
             <label class="fs-6 text-gray-800"
-              >{{ formData.patient.date_of_birth }}
+              >{{ billingData.patient.date_of_birth }}
             </label>
           </div>
         </div>
@@ -63,7 +65,7 @@
               >Service Reference Number</label
             >
             <label class="fs-6 text-gray-800">{{
-              formData.appointment.reference_number
+              billingData.appointment.reference_number
             }}</label>
           </div>
         </div>
@@ -73,7 +75,9 @@
               >Appointment Date and Time</label
             >
             <label class="fs-6 text-gray-800">{{
-              formData.appointment.date + " " + formData.appointment.start_time
+              billingData.appointment.date +
+              " " +
+              billingData.appointment.start_time
             }}</label>
           </div>
         </div>
@@ -83,7 +87,8 @@
               >Specialist</label
             >
             <label class="fs-6 text-gray-800">{{
-              formData.specialist.first_name + formData.specialist.last_name
+              billingData.specialist.first_name +
+              billingData.specialist.last_name
             }}</label>
           </div>
         </div>
@@ -109,7 +114,7 @@
               <el-form-item prop="charge_type">
                 <el-select
                   class="w-100"
-                  v-model="formData.patient.charge_type"
+                  v-model="billingData.patient.charge_type"
                   placeholder="Select Charge Type"
                 >
                   <el-option
@@ -141,10 +146,10 @@
         >
         <!--begin::Input-->
         <el-form>
-          <el-form-item prop="payment_option mb-0" class="mb-0">
-            <el-radio-group v-model="payment_option" class="ml-4">
-              <el-radio label="cash" size="large">Pay with Cash</el-radio>
-              <el-radio label="terminal" size="large"
+          <el-form-item prop="payment_type mb-0" class="mb-0">
+            <el-radio-group v-model="formData.payment_type" class="ml-4">
+              <el-radio label="CASH" size="large">Pay with Cash</el-radio>
+              <el-radio label="EFTPOS" size="large"
                 >Pay by Terminal(etfpos)</el-radio
               >
             </el-radio-group>
@@ -161,7 +166,7 @@
     <div class="card-body pt-0">
       <div class="row">
         <label class="text-muted fs-6 fw-bold mb-2 d-block">{{
-          formData.appointment.type + ": " + formData.appointment.name
+          billingData.appointment.type + ": " + billingData.appointment.name
         }}</label>
         <!--begin::Input-->
         <el-form class="d-flex align-items-center">
@@ -170,12 +175,7 @@
               type="number"
               class="w-100"
               placeholder="Procedure Price"
-              :value="
-                getProcedurePrice(
-                  formData.payment,
-                  formData.patient.charge_type
-                )
-              "
+              v-model="total_amount"
               disabled
             />
           </el-form-item>
@@ -191,15 +191,19 @@
         <!--end::Input-->
         <label class="text-muted fs-6 fw-bold mt-2 d-block"
           >Total Payable Amount: ${{
-            getProcedurePrice(formData.payment, formData.patient.charge_type)
+            getProcedurePrice(
+              billingData.payment,
+              billingData.patient.charge_type
+            )
           }}
           <br />
-          Amount Paid: ${{
-            getProcedurePrice(formData.payment, formData.patient.charge_type)
-          }}
+          Amount Paid: ${{ billingData.payment.paid_amount }}
           <br />
           Amount Outstanding: ${{
-            getProcedurePrice(formData.payment, formData.patient.charge_type)
+            getProcedurePrice(
+              billingData.payment,
+              billingData.patient.charge_type
+            ) - billingData.payment.paid_amount
           }}
         </label>
       </div>
@@ -207,11 +211,12 @@
   </div>
   <!--end::Card-->
   <!--begin::Card-->
-  <div v-if="payment_option" class="card mb-5 mb-xxl-8">
+  <div v-if="formData.payment_type" class="card mb-5 mb-xxl-8">
     <div class="card-header border-0 pt-0">
       <h3 class="card-title align-items-start flex-column">
         <span class="card-label fw-bold fs-3 mb-1"
-          >PAY with {{ payment_option === "cash" ? "Cash" : "Terminal" }}</span
+          >PAY with
+          {{ formData.payment_type === "CASH" ? "Cash" : "Terminal" }}</span
         >
       </h3>
     </div>
@@ -219,13 +224,18 @@
       <div class="row">
         <label class="text-muted fs-6 fw-bold mb-2 d-block">Amount($)</label>
         <!--begin::Input-->
-        <el-form class="d-flex align-items-center">
+        <el-form
+          class="d-flex align-items-center"
+          @submit.prevent="submit()"
+          :model="formData"
+          ref="formRef"
+        >
           <el-form-item prop="procedure_price">
             <el-input
               type="number"
               class="w-100"
               placeholder="Procedure Price"
-              v-model="payment_amount"
+              v-model="formData.amount"
             />
             <button type="submit" class="btn btn-primary mt-5 w-50">
               Confirm
@@ -240,10 +250,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
+import { defineComponent, onMounted, ref, watchEffect, computed } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
+import { Actions } from "@/store/enums/StoreEnums";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
   name: "make-payment-pay",
@@ -251,13 +263,62 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    const formData = ref({});
-    const payment_option = ref("");
-    const payment_amount = ref(0);
+    const billingData = ref({
+      appointment: {
+        id: 0,
+      },
+      payment: {},
+      patient: {
+        charge_type: "",
+      },
+    });
+    const list = computed(() => store.getters.paymentSelected);
+    const total_amount = ref(0);
+    const formRef = ref<null | HTMLFormElement>(null);
+    const formData = ref({
+      appointment_id: 0,
+      payment_type: "",
+      amount: 0,
+    });
+
+    const submit = () => {
+      if (!formRef.value) {
+        return;
+      }
+      formData.value.appointment_id = billingData.value.appointment.id;
+      store
+        .dispatch(Actions.MAKE_PAYMENT.CREATE, formData.value)
+        .then(() => {
+          store.dispatch(
+            Actions.MAKE_PAYMENT.VIEW,
+            formData.value.appointment_id
+          );
+          Swal.fire({
+            text: "Successfully Confirmedd!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          }).then(() => {
+            console.log("confirmed");
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    };
 
     watchEffect(() => {
-      formData.value = store.getters.paymentSelected;
-      console.log(formData.value);
+      billingData.value = list.value;
+      if (billingData.value.payment) {
+        total_amount.value = getProcedurePrice(
+          billingData.value.payment,
+          billingData.value.patient.charge_type
+        );
+      }
+      console.log(billingData.value);
     });
 
     onMounted(() => {
@@ -265,10 +326,12 @@ export default defineComponent({
     });
 
     return {
-      formData,
+      billingData,
       chargeTypes,
-      payment_option,
-      payment_amount,
+      formData,
+      formRef,
+      total_amount,
+      submit,
       getProcedurePrice,
     };
   },

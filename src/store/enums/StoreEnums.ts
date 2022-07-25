@@ -193,8 +193,6 @@ const Actions = {
     LIST: "listMakePayment",
     VIEW: "viewMakePayment",
     CREATE: "createMakePayment",
-    DELETE: "deleteMakePayment",
-    UPDATE: "updateMakePayment",
   },
 };
 
