@@ -192,8 +192,16 @@
         <label class="text-muted fs-6 fw-bold mt-2 d-block"
           >Total Payable Amount: ${{
             getProcedurePrice(formData.payment, formData.patient.charge_type)
-          }}</label
-        >
+          }}
+          <br />
+          Amount Paid: ${{
+            getProcedurePrice(formData.payment, formData.patient.charge_type)
+          }}
+          <br />
+          Amount Outstanding: ${{
+            getProcedurePrice(formData.payment, formData.patient.charge_type)
+          }}
+        </label>
       </div>
     </div>
   </div>

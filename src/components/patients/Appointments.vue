@@ -8,17 +8,16 @@
         <h3 class="fw-bolder m-0">Appointment List</h3>
       </div>
       <span class="my-auto">
-        <div class="form-check my-auto form-check-custom form-check-solid">
+        <label class="form-check my-auto form-check-custom form-check-solid">
           <input
             class="form-check-input"
             type="checkbox"
-            value=""
-            id="flexCheckDefault"
+            v-model="showFutureApt"
           />
-          <label class="form-check-label" for="flexCheckDefault"
-            >Show Future Appointments</label
-          >
-        </div></span
+          <span class="form-check-label user-select-none">
+            Show Future Appointments
+          </span>
+        </label></span
       >
       <!--end::Card title-->
     </div>
@@ -29,6 +28,7 @@
         v-if="tableData"
         :table-header="tableHeader"
         :table-data="tableData"
+        :key="tableKey"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
       >
@@ -126,11 +126,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watchEffect, ref, onMounted } from "vue";
+import {
+  defineComponent,
+  watchEffect,
+  watch,
+  ref,
+  onMounted,
+  computed,
+} from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import moment from "moment";
 
 export default defineComponent({
   name: "patient-appointments",
@@ -140,6 +148,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+    const list = computed(() => store.getters.selectedPatient);
     const formData = ref();
     const tableHeader = ref([
       {
@@ -179,6 +188,10 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
+    const tableKey = ref(0);
+    const showFutureApt = ref(false);
+
+    const renderTable = () => tableKey.value++;
 
     const handlePay = () => {
       router.push({ name: "make-payment-pay" });
@@ -188,9 +201,25 @@ export default defineComponent({
       router.push({ name: "make-payment-view" });
     };
 
+    watch(showFutureApt, () => {
+      console.log(showFutureApt.value);
+      const today = moment(new Date());
+      if (showFutureApt.value) {
+        tableData.value = formData.value;
+      } else {
+        tableData.value = formData.value.filter((data) => {
+          return moment(data.date).isSameOrBefore(today.startOf("day"), "day");
+        });
+      }
+      renderTable();
+    });
+
     watchEffect(() => {
-      formData.value = store.getters.selectedPatient;
-      tableData.value = formData.value.appointments;
+      formData.value = list.value.appointments;
+      const today = moment(new Date());
+      tableData.value = formData.value.filter((data) => {
+        return moment(data.date).isSameOrBefore(today.startOf("day"), "day");
+      });
     });
 
     onMounted(() => {
@@ -200,7 +229,9 @@ export default defineComponent({
     return {
       tableHeader,
       tableData,
+      tableKey,
       formData,
+      showFutureApt,
       handlePay,
       handleView,
     };
