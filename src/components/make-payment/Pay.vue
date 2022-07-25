@@ -294,7 +294,7 @@ export default defineComponent({
             formData.value.appointment_id
           );
           Swal.fire({
-            text: "Successfully Confirmedd!",
+            text: "Payment Received.",
             icon: "success",
             buttonsStyling: false,
             confirmButtonText: "Ok, got it!",
