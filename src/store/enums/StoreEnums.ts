@@ -141,6 +141,13 @@ const Actions = {
     ACTIVE_LIST: "listActiveProcedureQues",
   },
 
+  REPORT_TEMPLATES: {
+    LIST: "listReportTemplates",
+    CREATE: "createReportTemplates",
+    UPDATE: "updateReportTemplates",
+    DELETE: "deleteReportTemplates",
+  },
+
   APT_TIME_REQUIREMENT: {
     LIST: "listAptTimeRequirement",
     CREATE: "createAptTimeRequirement",
@@ -328,6 +335,11 @@ const Mutations = {
   SET_MAKE_PAYMENT: {
     LIST: "setMakePayment",
     SELECT: "setSelectMakePayment",
+  },
+
+  SET_REPORT_TEMPLATES: {
+    LIST: "setReportTemplate",
+    SELECT: "setSelectReportTemplate",
   },
 
   SET_APT_TIME_REQUIREMENT: {
