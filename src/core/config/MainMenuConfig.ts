@@ -131,14 +131,6 @@ const OrgManagerMenu = [
         heading: "Cancellation List",
         route: "/booking/cancellation-list",
       },
-      {
-        heading: "Draft Appointments",
-        route: "/booking/draft-apts",
-      },
-      {
-        heading: "Patient Recall",
-        route: "/bookings/patient-recall",
-      },
     ],
   },
   {
@@ -172,14 +164,14 @@ const OrgManagerMenu = [
       {
         heading: "Document Outbox",
         route: "/thid-party-comms/sending-report",
-        svgIcon: "media/icons/duotune/general/gen022.svg",
-        fontIcon: "bi-archive",
       },
       {
         heading: "Document Inbox",
         route: "/third-party-comms/patient-result-inbox",
-        svgIcon: "media/icons/duotune/communication/com006.svg",
-        fontIcon: "bi-person",
+      },
+      {
+        heading: "Patient Recall",
+        route: "/bookings/patient-recall",
       },
     ],
   },
@@ -225,18 +217,6 @@ const ReceptionistMenu = [
       },
       {
         heading: "Cancellation List",
-        route: "/crafted/pages/profile/overview",
-        svgIcon: "media/icons/duotune/art/art009.svg",
-        fontIcon: "bi-shield-check",
-      },
-      {
-        heading: "Draft Appointments",
-        route: "/crafted/pages/profile/overview",
-        svgIcon: "media/icons/duotune/art/art009.svg",
-        fontIcon: "bi-shield-check",
-      },
-      {
-        heading: "Patient Recall",
         route: "/crafted/pages/profile/overview",
         svgIcon: "media/icons/duotune/art/art009.svg",
         fontIcon: "bi-shield-check",
