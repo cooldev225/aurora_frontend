@@ -80,43 +80,10 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
   }
 
   @Action
-  [Actions.MAKE_PAYMENT.CREATE](payload) {
+  [Actions.MAKE_PAYMENT.CREATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("payments", payload)
-        .then(({ data }) => {
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
-  [Actions.MAKE_PAYMENT.UPDATE](item) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.update("payments", item.id, item)
-        .then(({ data }) => {
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
-  [Actions.MAKE_PAYMENT.DELETE](id) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.delete("payments/" + id)
+      ApiService.post("payments", data)
         .then(({ data }) => {
           return data.data;
         })

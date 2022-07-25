@@ -131,20 +131,12 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  onMounted,
-  ref,
-  computed,
-  watchEffect,
-  watch,
-} from "vue";
+import { defineComponent, onMounted, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { Actions } from "@/store/enums/StoreEnums";
 import PaymentList from "@/store/dummy/Payments";
 
 export default defineComponent({
