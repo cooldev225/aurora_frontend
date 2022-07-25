@@ -183,7 +183,7 @@
                   <label class="fs-5 text-primary"
                     >Time:
                     <span class="text-black fs-5"
-                      >{{ _start_time }} - {{ _end_time }}</span
+                      >{{ _start_time }} - {{ aptInfoData.time_slot[1] }}</span
                     >
                     <span
                       v-if="aptInfoData.arrival_time"
@@ -193,8 +193,9 @@
                     ></label
                   >
                   <label class="fs-5 text-primary"
-                    >Date: <span class="text-black fs-5"></span
-                  ></label>
+                    >Date:
+                    <span class="text-black fs-5">{{ aptInfoData.date }}</span>
+                  </label>
                   <label class="fs-5 text-primary"
                     >Patient:
                     <span class="text-black fs-5"
@@ -1930,6 +1931,7 @@ export default defineComponent({
     const patientList = computed(() => store.getters.patientsList);
 
     watch(_appointment, () => {
+      debugger;
       aptInfoData.value.appointment_type_id = _appointment.value;
       const _selected = aptTypeList.value.filter(
         (aptType) => aptType.id === _appointment.value
