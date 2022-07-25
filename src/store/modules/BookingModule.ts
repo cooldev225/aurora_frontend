@@ -133,7 +133,6 @@ export default class BooingModule extends VuexModule implements BookingInfo {
 
   @Action
   [Actions.BOOKING.SEARCH.NEXT_APT](payload) {
-    this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.query("available-slots", { params: payload })

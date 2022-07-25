@@ -246,6 +246,8 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const aptData = computed(() => store.getters.getAptSelected);
+    const searchVal = computed(() => store.getters.getSearchVariable);
+
     const displayData = reactive({
       reference_number: "",
       clinic_name: "",
@@ -280,11 +282,15 @@ export default defineComponent({
           confirmButton: "btn btn-primary",
           cancelButton: "btn btn-light-primary",
         },
-        preConfirm: (data) => {
-          store.dispatch(Actions.APT.CANCELLATION.CREATE, {
-            id: aptData.value.appointment_id,
-            reason: data,
-          });
+        preConfirm: async (data) => {
+          await store
+            .dispatch(Actions.APT.CANCELLATION.CREATE, {
+              id: aptData.value.appointment_id,
+              reason: data,
+            })
+            .then((res) => {
+              store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
+            });
         },
       }).then((result) => {
         console.log(result);
