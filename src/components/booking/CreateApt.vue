@@ -19,15 +19,17 @@
           <!--end::Modal title-->
 
           <!--begin::Close-->
-          <div
-            class="btn btn-sm btn-icon btn-active-color-primary"
+          <button
+            type="button"
+            class="btn btn-lg btn-light-danger me-3 mb-1"
             @click="handleCancel"
             data-bs-dismiss="modal"
           >
-            <span class="svg-icon svg-icon-1">
+            <span class="svg-icon svg-icon-3 my-auto">
               <inline-svg src="media/icons/duotune/arrows/arr061.svg" />
             </span>
-          </div>
+            Cancel
+          </button>
           <!--end::Close-->
         </div>
         <!--end::Modal header-->
@@ -107,7 +109,7 @@
 
                   <!--begin::Label-->
                   <div class="stepper-label">
-                    <h3 class="stepper-title">Personal Info</h3>
+                    <h3 class="stepper-title">Patient Info</h3>
 
                     <div class="stepper-desc">Setup Personal Details</div>
                   </div>
@@ -130,7 +132,7 @@
 
                   <!--begin::Label-->
                   <div class="stepper-label">
-                    <h3 class="stepper-title">Billing Info</h3>
+                    <h3 class="stepper-title">Patient Billing</h3>
 
                     <div class="stepper-desc">Select Billing Details</div>
                   </div>
@@ -156,12 +158,20 @@
                   <!--end::Label-->
                 </div>
                 <!--end::Step 5-->
-                <div class="d-flex flex-column gap-2">
-                  <h3>Appointment Information</h3>
+                <!--begin::Appointment Overview-->
+                <div
+                  class="p-4 mb-4 card border border-dashed border-primary d-flex flex-column gap-2"
+                >
                   <label class="fs-5 text-primary"
-                    >Service Reference Number:
+                    >Appointment Type:
                     <span class="text-black fs-5">{{
-                      aptInfoData.reference_number
+                      _appointment_name
+                    }}</span></label
+                  >
+                  <label class="fs-5 text-primary"
+                    >Specialist:
+                    <span class="text-black fs-5">{{
+                      _specialist_name
                     }}</span></label
                   >
                   <label class="fs-5 text-primary"
@@ -178,23 +188,24 @@
                     <span
                       v-if="aptInfoData.arrival_time"
                       class="text-black fs-5"
-                      >(Arrival: {{ aptInfoData.arrival_time }})</span
+                    >
+                      (Arrive: {{ aptInfoData.arrival_time }})</span
                     ></label
                   >
                   <label class="fs-5 text-primary"
-                    >Appointment Type:
-                    <span class="text-black fs-5">{{
-                      _appointment_name
-                    }}</span></label
-                  >
+                    >Date: <span class="text-black fs-5"></span
+                  ></label>
                   <label class="fs-5 text-primary"
-                    >Specialist:
-                    <span class="text-black fs-5">{{
-                      _specialist_name
-                    }}</span></label
+                    >Patient:
+                    <span class="text-black fs-5"
+                      >{{ patientInfoData.first_name }}
+                      {{ patientInfoData.last_name }}</span
+                    ></label
                   >
                 </div>
+                <!--end::Appointment Overview-->
               </div>
+
               <!--end::Nav-->
             </div>
             <!--begin::Aside-->
@@ -213,10 +224,29 @@
                   >
                     <div class="row scroll h-500px">
                       <div class="card-info">
-                        <div class="fs-3 fw-bold text-muted mb-6">
-                          Appointment Type
-                        </div>
                         <div class="row">
+                          <!--begin::Input group-->
+                          <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">
+                              Appointment Type
+                            </label>
+                            <!--end::Label-->
+
+                            <!--begin::Input-->
+                            <el-form-item prop="appointment_type_id">
+                              <el-select class="w-100" v-model="_appointment">
+                                <el-option
+                                  v-for="item in aptTypeList"
+                                  :value="item.id"
+                                  :label="item.name"
+                                  :key="item.id"
+                                />
+                              </el-select>
+                            </el-form-item>
+                            <!--end::Input-->
+                          </div>
+                          <!--end::Input group-->
                           <div class="col-sm-6">
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
@@ -238,47 +268,18 @@
                                 />
                               </el-form-item>
                               <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                End time
-                              </label>
-                              <!--end::Label-->
 
-                              <!--begin::Input-->
-                              <el-form-item prop="end_time">
-                                <el-time-select
-                                  v-model="_end_time"
-                                  start="00:00"
-                                  step="00:15"
-                                  end="23:59"
-                                  disabled
-                                  placeholder="Select time"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Appointment Type
-                              </label>
+                              <label class="fs-6 fw-bold mb-2"> Room </label>
                               <!--end::Label-->
-
                               <!--begin::Input-->
-                              <el-form-item prop="appointment_type_id">
-                                <el-select class="w-100" v-model="_appointment">
+                              <el-form-item prop="room_id">
+                                <el-select
+                                  class="w-100"
+                                  v-model.number="aptInfoData.room_id"
+                                >
                                   <el-option
-                                    v-for="item in aptTypeList"
+                                    v-for="item in rooms"
                                     :value="item.id"
                                     :label="item.name"
                                     :key="item.id"
@@ -289,6 +290,7 @@
                             </div>
                             <!--end::Input group-->
                           </div>
+
                           <div class="col-sm-6">
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
@@ -310,77 +312,7 @@
                                 </el-select>
                               </el-form-item>
                               <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Clinical Code
-                              </label>
-                              <!--end::Label-->
 
-                              <!--begin::Input-->
-                              <el-form-item prop="clinical_code">
-                                <el-input
-                                  v-model="aptInfoData.clinical_code"
-                                  disabled
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                MBS Code
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="mbs_code">
-                                <el-input
-                                  v-model="aptInfoData.mbs_code"
-                                  disabled
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2"> Room </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="room_id">
-                                <el-select
-                                  class="w-100"
-                                  v-model.number="aptInfoData.room_id"
-                                >
-                                  <el-option
-                                    v-for="item in rooms"
-                                    :value="item.id"
-                                    :label="item.name"
-                                    :key="item.id"
-                                  />
-                                </el-select>
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
                               <!--begin::Label-->
                               <label class="fs-6 fw-bold mb-2">
                                 Anesthetist
@@ -404,129 +336,29 @@
                             </div>
                             <!--end::Input group-->
                           </div>
-                        </div>
-                      </div>
-                      <el-divider />
-                      <div class="card-info">
-                        <div class="mb-6 d-flex justify-content-between">
-                          <span class="fs-3 fw-bold text-muted"
-                            >Referral Information</span
-                          >
-                          <el-checkbox
-                            type="checkbox"
-                            v-model="aptInfoData.no_referral"
-                            label="No Referral"
-                          />
-                        </div>
-                        <div class="row">
-                          <template v-if="aptInfoData.no_referral">
-                            <div class="col-sm-6">
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="required fs-6 fw-bold mb-2">
-                                  No Referral Reason
-                                </label>
-                                <!--end::Label-->
+                          <!--begin::Input group-->
+                          <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="fs-6 fw-bold mb-2"> Note </label>
+                            <!--end::Label-->
 
-                                <!--begin::Input-->
-                                <el-form-item prop="no_referral_reason">
-                                  <el-input
-                                    type="text"
-                                    v-model="aptInfoData.no_referral_reason"
-                                    placeholder="Please Enter Reason"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                          </template>
-                          <template v-else>
-                            <div class="col-sm-6">
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="required fs-6 fw-bold mb-2">
-                                  Referring Doctor
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="referring_doctor">
-                                  <el-select
-                                    class="w-100"
-                                    v-model="aptInfoData.referring_doctor"
-                                    placeholder="Select Reffering Doctor"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div class="col-sm-6">
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="required fs-6 fw-bold mb-2">
-                                  Referral Duration
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="referral_duration">
-                                  <el-select
-                                    class="w-100"
-                                    v-model="aptInfoData.referral_duration"
-                                    placeholder="Enter Referral Duration"
-                                  >
-                                    <el-option value="0" label="Indefinite" />
-                                    <el-option value="3" label="3 Months" />
-                                    <el-option value="12" label="12 Months" />
-                                  </el-select>
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div class="col-sm-6">
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="required fs-6 fw-bold mb-2">
-                                  Referral Date
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="referral_date">
-                                  <el-date-picker
-                                    class="w-100"
-                                    v-model="aptInfoData.referral_date"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                          </template>
+                            <!--begin::Input-->
+                            <el-form-item prop="note">
+                              <el-input
+                                type="textarea"
+                                v-model="otherInfoData.note"
+                                placeholder="Enter appointment notes"
+                              />
+                            </el-form-item>
+                            <!--end::Input-->
+                          </div>
+                          <!--end::Input group-->
                         </div>
                       </div>
                     </div>
-                    <div class="d-flex justify-content-between">
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-light-primary me-3"
-                        @click="handleCancel"
-                        data-bs-dismiss="modal"
-                      >
-                        <span class="svg-icon svg-icon-4 me-1">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr063.svg"
-                          />
-                        </span>
-                        Cancel
-                      </button>
+                    <div
+                      class="d-flex justify-content-between flex-row-reverse"
+                    >
                       <button
                         type="submit"
                         class="btn btn-lg btn-primary align-self-end"
@@ -630,42 +462,27 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
-                        @click="handleCancel"
-                        data-bs-dismiss="modal"
+                        data-kt-stepper-action="previous"
+                        @click="previousStep"
                       >
                         <span class="svg-icon svg-icon-4 me-1">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr063.svg"
                           />
                         </span>
-                        Cancel
+                        Back
                       </button>
-                      <div class="d-flex flex-row gap-3">
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-light-primary me-3"
-                          data-kt-stepper-action="previous"
-                          @click="previousStep"
-                        >
-                          <span class="svg-icon svg-icon-4 me-1">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr063.svg"
-                            />
-                          </span>
-                          Back
-                        </button>
-                        <button
-                          type="submit"
-                          class="btn btn-lg btn-primary align-self-end"
-                        >
-                          Continue
-                          <span class="svg-icon svg-icon-4 ms-1 me-0">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr064.svg"
-                            />
-                          </span>
-                        </button>
-                      </div>
+                      <button
+                        type="submit"
+                        class="btn btn-lg btn-primary align-self-end"
+                      >
+                        Continue
+                        <span class="svg-icon svg-icon-4 ms-1 me-0">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr064.svg"
+                          />
+                        </span>
+                      </button>
                     </div>
                   </el-form>
                 </div>
@@ -681,72 +498,60 @@
                     :model="filterPatient"
                     @submit.prevent="patientStep_1"
                   >
-                    <div class="row g-8">
-                      <div class="col-lg-6">
-                        <label class="fs-6 form-label fw-bolder text-dark"
-                          >First Name</label
-                        >
-                        <el-form-item prop="filter_first_name">
-                          <el-input
-                            type="text"
-                            v-model="filterPatient.first_name"
-                            placeholder="First Name"
-                          />
-                        </el-form-item>
+                    <div class="d-flex flex-column">
+                      <div class="row g-8">
+                        <div class="col-lg-6">
+                          <label class="fs-6 form-label fw-bolder text-dark"
+                            >First Name</label
+                          >
+                          <el-form-item prop="filter_first_name">
+                            <el-input
+                              type="text"
+                              v-model="filterPatient.first_name"
+                              placeholder="First Name"
+                            />
+                          </el-form-item>
+                        </div>
+                        <div class="col-lg-6">
+                          <label class="fs-6 form-label fw-bolder text-dark"
+                            >Last Name</label
+                          >
+                          <el-form-item prop="filter_last_name">
+                            <el-input
+                              type="text"
+                              v-model="filterPatient.last_name"
+                              placeholder="Last Name"
+                            />
+                          </el-form-item>
+                        </div>
+                        <div class="col-lg-6">
+                          <label class="fs-6 form-label fw-bolder text-dark"
+                            >Date of Birth</label
+                          >
+                          <el-form-item prop="filter_date">
+                            <el-date-picker
+                              class="w-100"
+                              v-model="filterPatient.date_of_birth"
+                              format="YYYY-MM-DD"
+                              placeholder="1990-01-01"
+                            />
+                          </el-form-item>
+                        </div>
+                        <div class="col-lg-6">
+                          <label class="fs-6 form-label fw-bolder text-dark"
+                            >UR Number</label
+                          >
+                          <el-form-item prop="filter_ur_number">
+                            <el-input
+                              type="text"
+                              v-model="filterPatient.ur_number"
+                              placeholder="UR Number"
+                            />
+                          </el-form-item>
+                        </div>
                       </div>
-                      <div class="col-lg-6">
-                        <label class="fs-6 form-label fw-bolder text-dark"
-                          >Last Name</label
-                        >
-                        <el-form-item prop="filter_last_name">
-                          <el-input
-                            type="text"
-                            v-model="filterPatient.last_name"
-                            placeholder="Last Name"
-                          />
-                        </el-form-item>
-                      </div>
-                      <div class="col-lg-6">
-                        <label class="fs-6 form-label fw-bolder text-dark"
-                          >Date of Birth</label
-                        >
-                        <el-form-item prop="filter_date">
-                          <el-date-picker
-                            class="w-100"
-                            v-model="filterPatient.date_of_birth"
-                            format="YYYY-MM-DD"
-                            placeholder="1990-01-01"
-                          />
-                        </el-form-item>
-                      </div>
-                      <div class="col-lg-6">
-                        <label class="fs-6 form-label fw-bolder text-dark"
-                          >UR Number</label
-                        >
-                        <el-form-item prop="filter_ur_number">
-                          <el-input
-                            type="text"
-                            v-model="filterPatient.ur_number"
-                            placeholder="UR Number"
-                          />
-                        </el-form-item>
-                      </div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-light-primary me-3"
-                        @click="handleCancel"
-                        data-bs-dismiss="modal"
-                      >
-                        <span class="svg-icon svg-icon-4 me-1">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr063.svg"
-                          />
-                        </span>
-                        Cancel
-                      </button>
-                      <div class="d-flex flex-row gap-3">
+
+                      <div class="d-flex justify-content-between my-auto">
                         <button
                           type="button"
                           class="btn btn-lg btn-light-primary me-3"
@@ -764,7 +569,7 @@
                           type="submit"
                           class="btn btn-lg btn-primary align-self-end"
                         >
-                          Continue
+                          Search
                           <span class="svg-icon svg-icon-4 ms-1 me-0">
                             <inline-svg
                               src="media/icons/duotune/arrows/arr064.svg"
@@ -821,31 +626,16 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
-                        @click="handleCancel"
-                        data-bs-dismiss="modal"
+                        data-kt-stepper-action="previous"
+                        @click="patientPrevStep"
                       >
                         <span class="svg-icon svg-icon-4 me-1">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr063.svg"
                           />
                         </span>
-                        Cancel
+                        Back
                       </button>
-                      <div class="d-flex flex-row gap-3">
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-light-primary me-3"
-                          data-kt-stepper-action="previous"
-                          @click="patientPrevStep"
-                        >
-                          <span class="svg-icon svg-icon-4 me-1">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr063.svg"
-                            />
-                          </span>
-                          Back
-                        </button>
-                      </div>
                     </div>
                   </el-form>
                   <el-form
@@ -923,19 +713,25 @@
                       <div class="col-sm-6">
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2"> Email </label>
-                          <!--end::Label-->
+                          <!--begin::Input group-->
+                          <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">
+                              Contact Number
+                            </label>
+                            <!--end::Label-->
 
-                          <!--begin::Input-->
-                          <el-form-item prop="email">
-                            <el-input
-                              type="text"
-                              v-model="patientInfoData.email"
-                              placeholder="Enter Email"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
+                            <!--begin::Input-->
+                            <el-form-item prop="contact_number">
+                              <el-input
+                                type="text"
+                                v-model="patientInfoData.contact_number"
+                                placeholder="Enter Contact Number"
+                              />
+                            </el-form-item>
+                            <!--end::Input-->
+                          </div>
+                          <!--end::Input group-->
                         </div>
                         <!--end::Input group-->
                       </div>
@@ -964,21 +760,80 @@
                         </div>
                         <!--end::Input group-->
                       </div>
-                      <div class="fv-row">
+                      <div class="col-sm-6">
+                        <!--begin::Label-->
+                        <label class="fs-6 fw-bold mb-2"> Email </label>
+                        <!--end::Label-->
+
+                        <!--begin::Input-->
+                        <el-form-item prop="email">
+                          <el-input
+                            type="text"
+                            v-model="patientInfoData.email"
+                            placeholder="Enter Email"
+                          />
+                        </el-form-item>
+                        <!--end::Input-->
+                      </div>
+                      <div class="col-sm-6">
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Contact Number
+                          <label class="fs-6 fw-bold mb-2">
+                            Appointment Confirm Method
                           </label>
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="contact_number">
+                          <el-form-item prop="appointment_confirm">
+                            <el-select
+                              class="w-100"
+                              v-model="otherInfoData.appointment_confirm"
+                              placeholder="Appointment Confirm Method"
+                            >
+                              <el-option value="phone" label="SMS" />
+                              <el-option value="email" label="Email" />
+                            </el-select>
+                          </el-form-item>
+                          <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+                      </div>
+
+                      <div class="col-sm-6">
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                          <!--begin::Label-->
+                          <label class="fs-6 fw-bold mb-2"> Allergies </label>
+                          <!--end::Label-->
+
+                          <!--begin::Input-->
+                          <el-form-item prop="allergies">
                             <el-input
-                              type="text"
-                              v-model="patientInfoData.contact_number"
-                              placeholder="Enter Contact Number"
+                              type="textarea"
+                              v-model="otherInfoData.allergies"
+                              placeholder="Enter Allergies"
+                            />
+                          </el-form-item>
+                          <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+                      </div>
+                      <div class="col-sm-6">
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                          <!--begin::Label-->
+                          <label class="fs-6 fw-bold mb-2">
+                            Clinical Alerts
+                          </label>
+                          <!--end::Label-->
+
+                          <!--begin::Input-->
+                          <el-form-item prop="clinical_alerts">
+                            <el-input
+                              type="textarea"
+                              v-model="otherInfoData.clinical_alerts"
+                              placeholder="Enter Clinical Alerts"
                             />
                           </el-form-item>
                           <!--end::Input-->
@@ -990,42 +845,27 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
-                        @click="handleCancel"
-                        data-bs-dismiss="modal"
+                        data-kt-stepper-action="previous"
+                        @click="patientPrevStep"
                       >
                         <span class="svg-icon svg-icon-4 me-1">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr063.svg"
                           />
                         </span>
-                        Cancel
+                        Back
                       </button>
-                      <div class="d-flex flex-row gap-3">
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-light-primary me-3"
-                          data-kt-stepper-action="previous"
-                          @click="patientPrevStep"
-                        >
-                          <span class="svg-icon svg-icon-4 me-1">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr063.svg"
-                            />
-                          </span>
-                          Back
-                        </button>
-                        <button
-                          type="submit"
-                          class="btn btn-lg btn-primary align-self-end"
-                        >
-                          Continue
-                          <span class="svg-icon svg-icon-4 ms-1 me-0">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr064.svg"
-                            />
-                          </span>
-                        </button>
-                      </div>
+                      <button
+                        type="submit"
+                        class="btn btn-lg btn-primary align-self-end"
+                      >
+                        Continue
+                        <span class="svg-icon svg-icon-4 ms-1 me-0">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr064.svg"
+                          />
+                        </span>
+                      </button>
                     </div>
                   </el-form>
                 </div>
@@ -1052,7 +892,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Procedure Price
                               </label>
                               <!--end::Label-->
@@ -1147,7 +987,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Medicare Expiry Date
                               </label>
                               <!--end::Label-->
@@ -1179,7 +1019,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Health Fund
                               </label>
                               <!--end::Label-->
@@ -1216,7 +1056,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Health Fund Membership Number
                               </label>
                               <!--end::Label-->
@@ -1251,7 +1091,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Health Fund Reference Number
                               </label>
                               <!--end::Label-->
@@ -1284,7 +1124,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Health Fund Expiry Date
                               </label>
                               <!--end::Label-->
@@ -1313,7 +1153,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Fund Excess
                               </label>
                               <!--end::Label-->
@@ -1338,7 +1178,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Pension Card Number
                               </label>
                               <!--end::Label-->
@@ -1363,7 +1203,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 Healthcare Card Number
                               </label>
                               <!--end::Label-->
@@ -1392,8 +1232,8 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Expiry Date
+                              <label class="fs-6 fw-bold mb-2">
+                                Pension Date Expiry Date
                               </label>
                               <!--end::Label-->
 
@@ -1419,7 +1259,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 DVA Number
                               </label>
                               <!--end::Label-->
@@ -1445,7 +1285,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 DVA Expiry Date
                               </label>
                               <!--end::Label-->
@@ -1472,7 +1312,7 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
+                              <label class="fs-6 fw-bold mb-2">
                                 DVA Type
                               </label>
                               <!--end::Label-->
@@ -1521,42 +1361,27 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
-                        @click="handleCancel"
-                        data-bs-dismiss="modal"
+                        data-kt-stepper-action="previous"
+                        @click="previousStep"
                       >
                         <span class="svg-icon svg-icon-4 me-1">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr063.svg"
                           />
                         </span>
-                        Cancel
+                        Back
                       </button>
-                      <div class="d-flex flex-row gap-3">
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-light-primary me-3"
-                          data-kt-stepper-action="previous"
-                          @click="previousStep"
-                        >
-                          <span class="svg-icon svg-icon-4 me-1">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr063.svg"
-                            />
-                          </span>
-                          Back
-                        </button>
-                        <button
-                          type="submit"
-                          class="btn btn-lg btn-primary align-self-end"
-                        >
-                          Continue
-                          <span class="svg-icon svg-icon-4 ms-1 me-0">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr064.svg"
-                            />
-                          </span>
-                        </button>
-                      </div>
+                      <button
+                        type="submit"
+                        class="btn btn-lg btn-primary align-self-end"
+                      >
+                        Continue
+                        <span class="svg-icon svg-icon-4 ms-1 me-0">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr064.svg"
+                          />
+                        </span>
+                      </button>
                     </div>
                   </el-form>
                 </div>
@@ -1576,7 +1401,7 @@
                     <div class="row scroll h-500px">
                       <div class="card-info">
                         <div class="fs-3 fw-bold text-muted mb-6">
-                          Other Information
+                          Extra Information
                         </div>
                         <div class="row">
                           <div v-if="apt_type == 'Procedure'" class="col-sm-6">
@@ -1669,116 +1494,120 @@
                               </div>
                             </template>
                           </div>
-                          <div class="fv-row">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Appointment Confirm
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="appointment_confirm">
-                                <el-select
-                                  class="w-100"
-                                  v-model="otherInfoData.appointment_confirm"
-                                  placeholder="Select Appointment Confirm"
-                                >
-                                  <el-option value="email" label="Email" />
-                                  <el-option value="phone" label="Phone" />
-                                  <el-option value="person" label="Person" />
-                                  <el-option value="other" label="Other" />
-                                </el-select>
-                              </el-form-item>
-                              <!--end::Input-->
+                          <el-divider />
+                          <!--start::Referral Information-->
+                          <div class="card-info">
+                            <div class="mb-6 d-flex justify-content-between">
+                              <span class="fs-3 fw-bold text-muted"
+                                >Referral Information</span
+                              >
+                              <el-checkbox
+                                type="checkbox"
+                                v-model="aptInfoData.no_referral"
+                                label="No Referral"
+                              />
                             </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Note
-                              </label>
-                              <!--end::Label-->
+                            <div class="row">
+                              <template v-if="aptInfoData.no_referral">
+                                <div class="col-sm-6">
+                                  <!--begin::Input group-->
+                                  <div class="fv-row mb-7">
+                                    <!--begin::Label-->
+                                    <label class="fs-6 fw-bold mb-2">
+                                      No Referral Reason
+                                    </label>
+                                    <!--end::Label-->
 
-                              <!--begin::Input-->
-                              <el-form-item prop="note">
-                                <el-input
-                                  type="textarea"
-                                  v-model="otherInfoData.note"
-                                  placeholder="Enter Note"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Important Details
-                              </label>
-                              <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <el-form-item prop="no_referral_reason">
+                                      <el-input
+                                        type="text"
+                                        v-model="aptInfoData.no_referral_reason"
+                                        placeholder="Please Enter Reason"
+                                      />
+                                    </el-form-item>
+                                    <!--end::Input-->
+                                  </div>
+                                  <!--end::Input group-->
+                                </div>
+                              </template>
+                              <template v-else>
+                                <div class="col-sm-6">
+                                  <!--begin::Input group-->
+                                  <div class="fv-row mb-7">
+                                    <!--begin::Label-->
+                                    <label class="fs-6 fw-bold mb-2">
+                                      Referring Doctor
+                                    </label>
+                                    <!--end::Label-->
 
-                              <!--begin::Input-->
-                              <el-form-item prop="important_details">
-                                <el-input
-                                  type="textarea"
-                                  v-model="otherInfoData.important_details"
-                                  placeholder=""
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Allergies
-                              </label>
-                              <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <el-form-item prop="referring_doctor">
+                                      <el-select
+                                        class="w-100"
+                                        v-model="aptInfoData.referring_doctor"
+                                        placeholder="Select Referring Doctor"
+                                      />
+                                    </el-form-item>
+                                    <!--end::Input-->
+                                  </div>
+                                  <!--end::Input group-->
+                                </div>
+                                <div class="col-sm-6">
+                                  <!--begin::Input group-->
+                                  <div class="fv-row mb-7">
+                                    <!--begin::Label-->
+                                    <label class="fs-6 fw-bold mb-2">
+                                      Referral Duration
+                                    </label>
+                                    <!--end::Label-->
 
-                              <!--begin::Input-->
-                              <el-form-item prop="allergies">
-                                <el-input
-                                  type="textarea"
-                                  v-model="otherInfoData.allergies"
-                                  placeholder="Enter Allergies"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Clinical Alerts
-                              </label>
-                              <!--end::Label-->
+                                    <!--begin::Input-->
+                                    <el-form-item prop="referral_duration">
+                                      <el-select
+                                        class="w-100"
+                                        v-model="aptInfoData.referral_duration"
+                                        placeholder="Enter Referral Duration"
+                                      >
+                                        <el-option
+                                          value="0"
+                                          label="Indefinite"
+                                        />
+                                        <el-option value="3" label="3 Months" />
+                                        <el-option
+                                          value="12"
+                                          label="12 Months"
+                                        />
+                                      </el-select>
+                                    </el-form-item>
+                                    <!--end::Input-->
+                                  </div>
+                                  <!--end::Input group-->
+                                </div>
+                                <div class="col-sm-6">
+                                  <!--begin::Input group-->
+                                  <div class="fv-row mb-7">
+                                    <!--begin::Label-->
+                                    <label class="fs-6 fw-bold mb-2">
+                                      Referral Date
+                                    </label>
+                                    <!--end::Label-->
 
-                              <!--begin::Input-->
-                              <el-form-item prop="clinical_alerts">
-                                <el-input
-                                  type="textarea"
-                                  v-model="otherInfoData.clinical_alerts"
-                                  placeholder="Enter Clinical Alerts"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
+                                    <!--begin::Input-->
+                                    <el-form-item prop="referral_date">
+                                      <el-date-picker
+                                        class="w-100"
+                                        v-model="aptInfoData.referral_date"
+                                      />
+                                    </el-form-item>
+                                    <!--end::Input-->
+                                  </div>
+                                  <!--end::Input group-->
+                                </div>
+                              </template>
                             </div>
-                            <!--end::Input group-->
                           </div>
+                          <!--end::Referral Information-->
                         </div>
                       </div>
                     </div>
@@ -1786,42 +1615,27 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
-                        @click="handleCancel"
-                        data-bs-dismiss="modal"
+                        data-kt-stepper-action="previous"
+                        @click="previousStep"
                       >
                         <span class="svg-icon svg-icon-4 me-1">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr063.svg"
                           />
                         </span>
-                        Cancel
+                        Back
                       </button>
-                      <div class="d-flex flex-row gap-3">
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-light-primary me-3"
-                          data-kt-stepper-action="previous"
-                          @click="previousStep"
-                        >
-                          <span class="svg-icon svg-icon-4 me-1">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr063.svg"
-                            />
-                          </span>
-                          Back
-                        </button>
-                        <button
-                          type="submit"
-                          class="btn btn-lg btn-primary align-self-end"
-                        >
-                          Submit
-                          <span class="svg-icon svg-icon-4 ms-1 me-0">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr064.svg"
-                            />
-                          </span>
-                        </button>
-                      </div>
+                      <button
+                        type="submit"
+                        class="btn btn-lg btn-primary align-self-end"
+                      >
+                        Create Appointment
+                        <span class="svg-icon svg-icon-4 ms-1 me-0">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr064.svg"
+                          />
+                        </span>
+                      </button>
                     </div>
                   </el-form>
                 </div>
@@ -1955,7 +1769,7 @@ export default defineComponent({
       appointment_type_id: [
         {
           required: true,
-          message: "Appointment Type cannot be blank.",
+          message: "Please select an appointment type.",
           trigger: "blur",
         },
       ],
@@ -2015,29 +1829,29 @@ export default defineComponent({
       ],
       medicare_number: [
         {
-          required: true,
+          required: false,
           message: "Medicare number cannot be blank.",
           trigger: "blur",
         },
       ],
       medicare_reference_number: [
         {
-          required: true,
+          required: false,
           message: "Medicare Reference Number cannot be blank.",
           trigger: "blur",
         },
       ],
       medicare_expiry_date: [
         {
-          required: true,
+          required: false,
           message: "Medicare expiry date cannot be blank.",
           trigger: "blur",
         },
       ],
       appointment_confirm: [
         {
-          required: true,
-          message: "Appointmentconfirm cannot be blank.",
+          required: false,
+          message: "Appointment confirm cannot be blank.",
           trigger: "blur",
         },
       ],
