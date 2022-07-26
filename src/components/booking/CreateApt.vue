@@ -248,29 +248,25 @@
                             <!--end::Input-->
                           </div>
                           <!--end::Input group-->
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2"> Room </label>
-                              <!--end::Label-->
-                              <!--begin::Input-->
-                              <el-form-item prop="room_id">
-                                <el-select
-                                  class="w-100"
-                                  v-model.number="aptInfoData.room_id"
-                                >
-                                  <el-option
-                                    v-for="item in rooms"
-                                    :value="item.id"
-                                    :label="item.name"
-                                    :key="item.id"
-                                  />
-                                </el-select>
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
+                          <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="fs-6 fw-bold mb-2"> Room </label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <el-form-item prop="room_id">
+                              <el-select
+                                class="w-100"
+                                v-model.number="aptInfoData.room_id"
+                              >
+                                <el-option
+                                  v-for="item in rooms"
+                                  :value="item.id"
+                                  :label="item.name"
+                                  :key="item.id"
+                                />
+                              </el-select>
+                            </el-form-item>
+                            <!--end::Input-->
                           </div>
                           <!--begin::Input group-->
                           <div class="fv-row mb-7">
@@ -2000,7 +1996,6 @@ export default defineComponent({
     const patientList = computed(() => store.getters.patientsList);
 
     watch(_appointment, () => {
-      debugger;
       aptInfoData.value.appointment_type_id = _appointment.value;
       const _selected = aptTypeList.value.filter(
         (aptType) => aptType.id === _appointment.value
