@@ -884,479 +884,570 @@
                     @submit.prevent="handleStep_4"
                   >
                     <div class="row">
-                      <div class="card-info">
-                        <div class="fs-3 fw-bold text-muted mb-6">
-                          Billing Details
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <!--begin::Input group-->
+                          <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="fs-6 fw-bold mb-2">
+                              Appointment Price
+                            </label>
+                            <!--end::Label-->
+
+                            <!--begin::Input-->
+                            <el-form-item prop="procedure_price">
+                              <el-input
+                                type="text"
+                                v-model.number="billingInfoData.procedure_price"
+                                disabled
+                              />
+                            </el-form-item>
+                            <!--end::Input-->
+                          </div>
+                          <!--end::Input group-->
                         </div>
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Procedure Price
-                              </label>
-                              <!--end::Label-->
+                        <div class="col-sm-6">
+                          <!--begin::Input group-->
+                          <div class="fv-row mb-7">
+                            <!--begin::Label-->
+                            <label class="required fs-6 fw-bold mb-2">
+                              Charge Type
+                            </label>
+                            <!--end::Label-->
 
-                              <!--begin::Input-->
-                              <el-form-item prop="procedure_price">
-                                <el-input
-                                  type="text"
-                                  v-model.number="
-                                    billingInfoData.procedure_price
-                                  "
-                                  disabled
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Charge Type
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="charge_type">
-                                <el-select
-                                  class="w-100"
-                                  v-model="billingInfoData.charge_type"
-                                  placeholder="Select Charge Type"
-                                >
-                                  <el-option
-                                    v-for="type in chargeTypes"
-                                    :key="type.value"
-                                    :value="type.value"
-                                    :label="type.label"
-                                  />
-                                </el-select>
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Medicare Number
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="medicare_number">
-                                <el-input
-                                  type="text"
-                                  v-model="billingInfoData.medicare_number"
-                                  placeholder="Enter Medicare Number"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Medicare Reference Number
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="medicare_reference_number">
-                                <el-input
-                                  type="text"
-                                  v-model="
-                                    billingInfoData.medicare_reference_number
-                                  "
-                                  placeholder=""
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Medicare Expiry Date
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="medicare_expiry_date">
-                                <el-date-picker
-                                  class="w-100"
-                                  v-model="billingInfoData.medicare_expiry_date"
-                                  format="YYYY-MM"
-                                  placeholder="Enter Expiry Date"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            class="col-sm-6"
-                            v-if="
-                              billingInfoData.charge_type ===
-                                'private-health-excess' ||
-                              billingInfoData.charge_type ===
-                                'private-health-excess-0' ||
-                              billingInfoData.charge_type ===
-                                'private-health-pension'
-                            "
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Health Fund
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="health_fund_id">
-                                <el-select
-                                  class="w-100"
-                                  v-model="billingInfoData.health_fund_id"
-                                >
-                                  <el-option
-                                    v-for="item in healthFundsList"
-                                    :value="item.id"
-                                    :label="item.code + '-' + item.name"
-                                    :key="item.id"
-                                  />
-                                </el-select>
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            class="col-sm-6"
-                            v-if="
-                              billingInfoData.charge_type ===
-                                'private-health-excess' ||
-                              billingInfoData.charge_type ===
-                                'private-health-excess-0' ||
-                              billingInfoData.charge_type ===
-                                'private-health-pension'
-                            "
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Health Fund Membership Number
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item
-                                prop="health_fund_membership_number"
+                            <!--begin::Input-->
+                            <el-form-item prop="charge_type">
+                              <el-select
+                                class="w-100"
+                                v-model="billingInfoData.charge_type"
+                                placeholder="Select Charge Type"
                               >
-                                <el-input
-                                  type="text"
-                                  v-model="
-                                    billingInfoData.health_fund_membership_number
-                                  "
-                                  placeholder="12345678"
+                                <el-option
+                                  v-for="type in chargeTypes"
+                                  :key="type.value"
+                                  :value="type.value"
+                                  :label="type.label"
                                 />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
+                              </el-select>
+                            </el-form-item>
+                            <!--end::Input-->
                           </div>
-                          <div
-                            class="col-sm-6"
-                            v-if="
-                              billingInfoData.charge_type ===
-                                'private-health-excess' ||
-                              billingInfoData.charge_type ===
-                                'private-health-excess-0' ||
-                              billingInfoData.charge_type ===
-                                'private-health-pension'
-                            "
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Health Fund Reference Number
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="health_fund_reference_number">
-                                <el-input
-                                  type="text"
-                                  v-model="
-                                    billingInfoData.health_fund_reference_number
-                                  "
-                                  placeholder="00"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            class="col-sm-6"
-                            v-if="
-                              billingInfoData.charge_type ===
-                                'private-health-excess' ||
-                              billingInfoData.charge_type ===
-                                'private-health-excess-0' ||
-                              billingInfoData.charge_type ===
-                                'private-health-pension'
-                            "
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Health Fund Expiry Date
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="health_fund_expiry_date">
-                                <el-date-picker
-                                  class="w-100"
-                                  v-model="
-                                    billingInfoData.health_fund_expiry_date
-                                  "
-                                  format="YYYY-MM"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            class="col-sm-6"
-                            v-if="
-                              billingInfoData.charge_type ===
-                              'private-health-excess'
-                            "
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Fund Excess
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="fund_excess">
-                                <el-input
-                                  type="text"
-                                  v-model.number="billingInfoData.fund_excess"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            class="col-sm-6"
-                            v-if="
-                              billingInfoData.charge_type === 'pension-card'
-                            "
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Pension Card Number
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="pension_card_number">
-                                <el-input
-                                  class="w-100"
-                                  v-model="billingInfoData.pension_card_number"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            class="col-sm-6"
-                            v-if="
-                              billingInfoData.charge_type === 'healthcare-card'
-                            "
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Healthcare Card Number
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="healthcare_card_number">
-                                <el-input
-                                  class="w-100"
-                                  v-model="
-                                    billingInfoData.healthcare_card_number
-                                  "
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            class="col-sm-6"
-                            v-if="
-                              billingInfoData.charge_type ===
-                                'healthcare-card' ||
-                              billingInfoData.charge_type === 'pension-card'
-                            "
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Pension Date Expiry Date
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="expiry_date">
-                                <el-date-picker
-                                  class="w-100"
-                                  format="YYYY-MM"
-                                  v-model="billingInfoData.expiry_date"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            class="col-sm-6"
-                            v-if="
-                              billingInfoData.charge_type ===
-                              'department-veteran'
-                            "
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                DVA Number
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="dva_number">
-                                <el-input
-                                  class="w-100"
-                                  v-model="billingInfoData.dva_number"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            class="col-sm-6"
-                            v-if="
-                              billingInfoData.charge_type ===
-                              'department-veteran'
-                            "
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                DVA Expiry Date
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="dva_expiry_date">
-                                <el-date-picker
-                                  class="w-100"
-                                  format="YYYY-MM"
-                                  v-model="billingInfoData.dva_expiry_date"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            class="col-sm-6"
-                            v-if="
-                              billingInfoData.charge_type ===
-                              'department-veteran'
-                            "
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                DVA Type
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="dva_type">
-                                <el-select
-                                  class="w-100"
-                                  v-model="billingInfoData.dva_type"
-                                >
-                                  <el-option value="white" label="White" />
-                                  <el-option value="gold" label="Gold" />
-                                  <el-option value="orange" label="Orange" />
-                                </el-select>
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            class="col-sm-6 d-flex align-items-center justify-content-center"
-                          >
-                            <!--begin::Input group-->
-                            <div class="fv-row">
-                              <!--begin::Input-->
-                              <el-form-item
-                                class="m-0"
-                                prop="add_other_account_holder"
-                              >
-                                <el-checkbox
-                                  type="checkbox"
-                                  v-model="
-                                    billingInfoData.add_other_account_holder
-                                  "
-                                  label="Add other account holder"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
+                          <!--end::Input group-->
                         </div>
                       </div>
+                      <el-divider />
+                      <div class="py-0">
+                        <!--begin::Header-->
+                        <div class="py-5 d-flex flex-stack flex-wrap">
+                          <!--begin::Toggle-->
+                          <div
+                            class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
+                            data-bs-toggle="collapse"
+                            href="#patient_billing_details"
+                            role="button"
+                            aria-expanded="false"
+                            aria-controls="patient_billing_details"
+                          >
+                            <!--begin::Summary-->
+                            <div class="me-3">
+                              <div class="d-flex align-items-center">
+                                <div class="text-gray-800 fw-bolder">
+                                  Billing Details
+                                </div>
+                              </div>
+                            </div>
+                            <!--end::Summary-->
+                            <!--begin::Arrow-->
+                            <div class="me-3 rotate-90">
+                              <span class="svg-icon svg-icon-3">
+                                <inline-svg
+                                  src="media/icons/duotune/arrows/arr071.svg"
+                                />
+                              </span>
+                            </div>
+                            <!--end::Arrow-->
+                          </div>
+
+                          <!--end::Toggle-->
+                        </div>
+                        <!--end::Header-->
+                        <!--begin::Body-->
+                        <div
+                          id="patient_billing_details"
+                          class="fs-6 ps-10 collapse hide"
+                          data-bs-parent="#patient_billing_details"
+                        >
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Medicare Number
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="medicare_number">
+                                  <el-input
+                                    type="text"
+                                    v-model="billingInfoData.medicare_number"
+                                    placeholder="Enter Medicare Number"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Medicare Reference Number
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="medicare_reference_number">
+                                  <el-input
+                                    type="text"
+                                    v-model="
+                                      billingInfoData.medicare_reference_number
+                                    "
+                                    placeholder=""
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Medicare Expiry Date
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="medicare_expiry_date">
+                                  <el-date-picker
+                                    class="w-100"
+                                    v-model="
+                                      billingInfoData.medicare_expiry_date
+                                    "
+                                    format="YYYY-MM"
+                                    placeholder="Enter Expiry Date"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6"
+                              v-if="
+                                billingInfoData.charge_type ===
+                                  'private-health-excess' ||
+                                billingInfoData.charge_type ===
+                                  'private-health-excess-0' ||
+                                billingInfoData.charge_type ===
+                                  'private-health-pension'
+                              "
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Health Fund
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="health_fund_id">
+                                  <el-select
+                                    class="w-100"
+                                    v-model="billingInfoData.health_fund_id"
+                                  >
+                                    <el-option
+                                      v-for="item in healthFundsList"
+                                      :value="item.id"
+                                      :label="item.code + '-' + item.name"
+                                      :key="item.id"
+                                    />
+                                  </el-select>
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6"
+                              v-if="
+                                billingInfoData.charge_type ===
+                                  'private-health-excess' ||
+                                billingInfoData.charge_type ===
+                                  'private-health-excess-0' ||
+                                billingInfoData.charge_type ===
+                                  'private-health-pension'
+                              "
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Health Fund Membership Number
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item
+                                  prop="health_fund_membership_number"
+                                >
+                                  <el-input
+                                    type="text"
+                                    v-model="
+                                      billingInfoData.health_fund_membership_number
+                                    "
+                                    placeholder="12345678"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6"
+                              v-if="
+                                billingInfoData.charge_type ===
+                                  'private-health-excess' ||
+                                billingInfoData.charge_type ===
+                                  'private-health-excess-0' ||
+                                billingInfoData.charge_type ===
+                                  'private-health-pension'
+                              "
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Health Fund Reference Number
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item
+                                  prop="health_fund_reference_number"
+                                >
+                                  <el-input
+                                    type="text"
+                                    v-model="
+                                      billingInfoData.health_fund_reference_number
+                                    "
+                                    placeholder="00"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6"
+                              v-if="
+                                billingInfoData.charge_type ===
+                                  'private-health-excess' ||
+                                billingInfoData.charge_type ===
+                                  'private-health-excess-0' ||
+                                billingInfoData.charge_type ===
+                                  'private-health-pension'
+                              "
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Health Fund Expiry Date
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="health_fund_expiry_date">
+                                  <el-date-picker
+                                    class="w-100"
+                                    v-model="
+                                      billingInfoData.health_fund_expiry_date
+                                    "
+                                    format="YYYY-MM"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6"
+                              v-if="
+                                billingInfoData.charge_type ===
+                                'private-health-excess'
+                              "
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Fund Excess
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="fund_excess">
+                                  <el-input
+                                    type="text"
+                                    v-model.number="billingInfoData.fund_excess"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6"
+                              v-if="
+                                billingInfoData.charge_type === 'pension-card'
+                              "
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Pension Card Number
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="pension_card_number">
+                                  <el-input
+                                    class="w-100"
+                                    v-model="
+                                      billingInfoData.pension_card_number
+                                    "
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6"
+                              v-if="
+                                billingInfoData.charge_type ===
+                                'healthcare-card'
+                              "
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Healthcare Card Number
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="healthcare_card_number">
+                                  <el-input
+                                    class="w-100"
+                                    v-model="
+                                      billingInfoData.healthcare_card_number
+                                    "
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6"
+                              v-if="
+                                billingInfoData.charge_type ===
+                                  'healthcare-card' ||
+                                billingInfoData.charge_type === 'pension-card'
+                              "
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Pension Date Expiry Date
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="expiry_date">
+                                  <el-date-picker
+                                    class="w-100"
+                                    format="YYYY-MM"
+                                    v-model="billingInfoData.expiry_date"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6"
+                              v-if="
+                                billingInfoData.charge_type ===
+                                'department-veteran'
+                              "
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  DVA Number
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="dva_number">
+                                  <el-input
+                                    class="w-100"
+                                    v-model="billingInfoData.dva_number"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6"
+                              v-if="
+                                billingInfoData.charge_type ===
+                                'department-veteran'
+                              "
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  DVA Expiry Date
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="dva_expiry_date">
+                                  <el-date-picker
+                                    class="w-100"
+                                    format="YYYY-MM"
+                                    v-model="billingInfoData.dva_expiry_date"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6"
+                              v-if="
+                                billingInfoData.charge_type ===
+                                'department-veteran'
+                              "
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  DVA Type
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="dva_type">
+                                  <el-select
+                                    class="w-100"
+                                    v-model="billingInfoData.dva_type"
+                                  >
+                                    <el-option value="white" label="White" />
+                                    <el-option value="gold" label="Gold" />
+                                    <el-option value="orange" label="Orange" />
+                                  </el-select>
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-6 d-flex align-items-center justify-content-center"
+                            >
+                              <!--begin::Input group-->
+                              <div class="fv-row">
+                                <!--begin::Input-->
+                                <el-form-item
+                                  class="m-0"
+                                  prop="add_other_account_holder"
+                                >
+                                  <el-checkbox
+                                    type="checkbox"
+                                    v-model="
+                                      billingInfoData.add_other_account_holder
+                                    "
+                                    label="Add other account holder"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                          </div>
+                        </div>
+                        <!--end::Body-->
+                      </div>
+                      <el-divider />
+                      <div class="py-0">
+                        <!--begin::Header-->
+                        <div class="py-5 d-flex flex-stack flex-wrap">
+                          <!--begin::Toggle-->
+                          <div
+                            class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
+                            data-bs-toggle="collapse"
+                            href="#patient_billing_take_deposit"
+                            role="button"
+                            aria-expanded="false"
+                            aria-controls="patient_billing_take_deposit"
+                          >
+                            <!--begin::Summary-->
+                            <div class="me-3">
+                              <div class="d-flex align-items-center">
+                                <div class="text-gray-800 fw-bolder">
+                                  Take Deposit
+                                </div>
+                              </div>
+                            </div>
+                            <!--end::Summary-->
+                            <!--begin::Arrow-->
+                            <div class="me-3 rotate-90">
+                              <span class="svg-icon svg-icon-3">
+                                <inline-svg
+                                  src="media/icons/duotune/arrows/arr071.svg"
+                                />
+                              </span>
+                            </div>
+                            <!--end::Arrow-->
+                          </div>
+                          <!--end::Toggle-->
+                        </div>
+                        <!--end::Header-->
+                        <!--begin::Body-->
+                        <div
+                          id="patient_billing_take_deposit"
+                          class="fs-6 ps-10 collapse hide"
+                          data-bs-parent="#patient_billing_take_deposit"
+                        ></div>
+                        <!--end::Body-->
+                      </div>
+                      <el-divider />
                     </div>
                     <div class="d-flex justify-content-between">
                       <button
@@ -1609,6 +1700,49 @@
                             </div>
                           </div>
                           <!--end::Referral Information-->
+                        </div>
+                        <el-divider />
+                        <div class="py-0">
+                          <!--begin::Header-->
+                          <div class="py-5 d-flex flex-stack flex-wrap">
+                            <!--begin::Toggle-->
+                            <div
+                              class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
+                              data-bs-toggle="collapse"
+                              href="#patient_appointment_history"
+                              role="button"
+                              aria-expanded="false"
+                              aria-controls="patient_appointment_history"
+                            >
+                              <!--begin::Summary-->
+                              <div class="me-3">
+                                <div class="d-flex align-items-center">
+                                  <div class="text-gray-800 fw-bolder">
+                                    View Appointment History
+                                  </div>
+                                </div>
+                              </div>
+                              <!--end::Summary-->
+                              <!--begin::Arrow-->
+                              <div class="me-3 rotate-90">
+                                <span class="svg-icon svg-icon-3">
+                                  <inline-svg
+                                    src="media/icons/duotune/arrows/arr071.svg"
+                                  />
+                                </span>
+                              </div>
+                              <!--end::Arrow-->
+                            </div>
+                            <!--end::Toggle-->
+                          </div>
+                          <!--end::Header-->
+                          <!--begin::Body-->
+                          <div
+                            id="patient_appointment_history"
+                            class="fs-6 ps-10 collapse hide"
+                            data-bs-parent="#patient_appointment_history"
+                          ></div>
+                          <!--end::Body-->
                         </div>
                       </div>
                     </div>

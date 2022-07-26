@@ -32,11 +32,11 @@
         :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-reference_number="{ row: item }">
-          {{ item.reference_number }}
-        </template>
         <template v-slot:cell-date="{ row: item }">
-          {{ item.date }} {{ item.start_time }}
+          <div class="d-flex flex-column">
+            <span>#{{ item.reference_number }} </span>
+            <span>{{ item.date }} {{ item.start_time }}</span>
+          </div>
         </template>
         <template v-slot:cell-specialist="{ row: item }">
           <div class="d-flex flex-column">
@@ -56,29 +56,28 @@
           </button>
         </template>
         <template v-slot:cell-attendance_status="{ row: item }">
-          <span
-            :class="`text-uppercase badge badge-light-${
-              item.attendance_status === 'not_present'
-                ? 'dark'
-                : item.attendance_status === 'waiting'
-                ? 'warning'
-                : item.attendance_status === 'checked_in'
-                ? 'success'
-                : 'primary'
-            }`"
-          >
-            {{ item.attendance_status.replace("_", " ") }}
-            <div v-if="item.attendance_status === 'checked_in'">
-              <span>collecting_person_name</span>
-              <span>collecting_person_phone</span>
-              <span>collecting_person_alternate_contact</span>
-              <button
-                class="btn btn-bg-light btn-active-color-primary btn-sm me-1"
-              >
-                Update Collecting Person
-              </button>
-            </div>
-          </span>
+          <div class="d-flex flex-column">
+            <span
+              :class="`text-uppercase badge badge-light-${
+                item.attendance_status === 'not_present'
+                  ? 'dark'
+                  : item.attendance_status === 'waiting'
+                  ? 'warning'
+                  : item.attendance_status === 'checked_in'
+                  ? 'success'
+                  : 'primary'
+              }`"
+            >
+              {{ item.attendance_status.replace("_", " ") }}</span
+            >
+
+            <span>collecting_person_name</span>
+            <span>collecting_person_phone</span>
+            <span>collecting_person_alternate_contact</span>
+          </div>
+          <button class="btn btn-bg-light btn-active-color-primary btn-sm me-1">
+            Update Collecting Person
+          </button>
         </template>
         <template v-slot:cell-payment>
           <button
@@ -151,11 +150,6 @@ export default defineComponent({
     const list = computed(() => store.getters.selectedPatient);
     const formData = ref();
     const tableHeader = ref([
-      {
-        name: "Service Ref Number",
-        key: "reference_number",
-        sortable: true,
-      },
       {
         name: "Date / Time",
         key: "date",
