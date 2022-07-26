@@ -13,100 +13,68 @@
               <!--begin::Row-->
               <div class="row g-8">
                 <!--begin::Col-->
-                <div class="col-xxl-6">
-                  <!--begin::Row-->
-                  <div class="row g-8">
-                    <!--begin::Col-->
-                    <div class="col-lg-6">
-                      <label class="fs-6 form-label fw-bolder text-dark"
-                        >First Name</label
-                      >
-                      <el-form-item prop="first_name">
-                        <el-input
-                          type="text"
-                          v-model="filterFirstName"
-                          placeholder="First Name"
-                        />
-                      </el-form-item>
-                    </div>
-                    <!--end::Col-->
-                    <!--begin::Col-->
-                    <div class="col-lg-6">
-                      <label class="fs-6 form-label fw-bolder text-dark"
-                        >Last Name</label
-                      >
-                      <el-form-item prop="last_name">
-                        <el-input
-                          type="text"
-                          v-model="filterLastName"
-                          placeholder="Last Name"
-                        />
-                      </el-form-item>
-                    </div>
-                    <!--end::Col-->
-                  </div>
-                  <!--end::Row-->
+                <div class="col-lg-4">
+                  <label class="fs-6 form-label fw-bolder text-dark"
+                    >First Name</label
+                  >
+                  <el-form-item prop="first_name">
+                    <el-input
+                      type="text"
+                      v-model="filterFirstName"
+                      placeholder="First Name"
+                    />
+                  </el-form-item>
                 </div>
                 <!--end::Col-->
                 <!--begin::Col-->
-                <div class="col-xxl-6">
-                  <!--begin::Row-->
-                  <div class="row g-8">
-                    <!--begin::Col-->
-                    <div class="col-lg-6">
-                      <label class="fs-6 form-label fw-bolder text-dark"
-                        >Date of Birth</label
-                      >
-                      <el-form-item prop="date">
-                        <el-date-picker
-                          class="w-100"
-                          v-model="filterBirth"
-                          format="YYYY-MM-DD"
-                          placeholder="1990-01-01"
-                        />
-                      </el-form-item>
-                    </div>
-                    <!--end::Col-->
-                    <!--begin::Col-->
-                    <div class="col-lg-6">
-                      <label class="fs-6 form-label fw-bolder text-dark"
-                        >UR Number</label
-                      >
-                      <el-form-item prop="ur_number">
-                        <el-input
-                          type="text"
-                          v-model="filterUR"
-                          placeholder="UR Number"
-                        />
-                      </el-form-item>
+                <div class="col-lg-4">
+                  <label class="fs-6 form-label fw-bolder text-dark"
+                    >Last Name</label
+                  >
+                  <el-form-item prop="last_name">
+                    <el-input
+                      type="text"
+                      v-model="filterLastName"
+                      placeholder="Last Name"
+                    />
+                  </el-form-item>
+                </div>
+                <!--begin::Col-->
+                <div class="col-lg-4">
+                  <label class="fs-6 form-label fw-bolder text-dark"
+                    >Date of Birth</label
+                  >
+                  <el-form-item prop="date">
+                    <el-date-picker
+                      class="w-100"
+                      v-model="filterBirth"
+                      format="YYYY-MM-DD"
+                      placeholder="1990-01-01"
+                    />
+                  </el-form-item>
 
-                      <div
-                        class="d-flex align-items-center justify-content-end mt-5"
-                      >
-                        <button
-                          type="submit"
-                          class="btn btn-primary me-5 w-50"
-                          @click="searchPatient"
-                        >
-                          SEARCH
-                        </button>
-                        <button
-                          type="submit"
-                          class="btn btn-light-primary w-50"
-                          @click="clearFilters"
-                        >
-                          CLEAR FILTERS
-                        </button>
-                      </div>
-                    </div>
-                    <!--end::Col-->
+                  <div
+                    class="d-flex align-items-center justify-content-end mt-5"
+                  >
+                    <button
+                      type="submit"
+                      class="btn btn-primary me-5 w-50"
+                      @click="searchPatient"
+                    >
+                      SEARCH
+                    </button>
+                    <button
+                      type="submit"
+                      class="btn btn-light-primary w-50"
+                      @click="clearFilters"
+                    >
+                      CLEAR
+                    </button>
                   </div>
-                  <!--end::Row-->
                 </div>
                 <!--end::Col-->
               </div>
               <!--end::Row-->
-              <!--begin::Separator-->
             </el-form>
           </div>
         </div>
@@ -121,8 +89,8 @@
         :loading="loading"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-UR_number="{ row: item }">
-          {{ item.UR_number }}
+        <template v-slot:cell-id="{ row: item }">
+          {{ generateID(item.id) }}
         </template>
         <template v-slot:cell-full_name="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
@@ -198,8 +166,8 @@ export default defineComponent({
     const router = useRouter();
     const tableHeader = ref([
       {
-        name: "UR Number",
-        key: "UR_number",
+        name: "ID",
+        key: "id",
         sortable: true,
         searchable: true,
       },
@@ -237,10 +205,19 @@ export default defineComponent({
     const filterFirstName = ref("");
     const filterLastName = ref("");
     const filterBirth = ref("");
-    const filterUR = ref("");
     const tableKey = ref(0);
 
     const renderTable = () => tableKey.value++;
+
+    const generateID = (id) => {
+      let prefix = "";
+      let i = 0;
+      while (i < 6 - id.toString().length) {
+        prefix += "0";
+        i++;
+      }
+      return prefix + id.toString();
+    };
 
     const searchPatient = () => {
       tableData.value = patientData.value.filter((data) => {
@@ -262,11 +239,6 @@ export default defineComponent({
             .toString();
           result = result && data.date_of_birth === searchDate;
         }
-        if (filterUR.value) {
-          result =
-            result &&
-            data.ur_number.toLowerCase() === filterUR.value.toLowerCase();
-        }
         return result;
       });
       renderTable();
@@ -276,7 +248,6 @@ export default defineComponent({
       filterFirstName.value = "";
       filterLastName.value = "";
       filterBirth.value = "";
-      filterUR.value = "";
       tableData.value = patientData.value;
       renderTable();
     };
@@ -310,8 +281,8 @@ export default defineComponent({
       filterFirstName,
       filterLastName,
       filterBirth,
-      filterUR,
       tableKey,
+      generateID,
       handleView,
       handleBadge,
       searchPatient,
