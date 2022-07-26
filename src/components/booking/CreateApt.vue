@@ -1701,6 +1701,49 @@
                           </div>
                           <!--end::Referral Information-->
                         </div>
+                        <el-divider />
+                        <div class="py-0">
+                          <!--begin::Header-->
+                          <div class="py-5 d-flex flex-stack flex-wrap">
+                            <!--begin::Toggle-->
+                            <div
+                              class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
+                              data-bs-toggle="collapse"
+                              href="#patient_appointment_history"
+                              role="button"
+                              aria-expanded="false"
+                              aria-controls="patient_appointment_history"
+                            >
+                              <!--begin::Summary-->
+                              <div class="me-3">
+                                <div class="d-flex align-items-center">
+                                  <div class="text-gray-800 fw-bolder">
+                                    View Appointment History
+                                  </div>
+                                </div>
+                              </div>
+                              <!--end::Summary-->
+                              <!--begin::Arrow-->
+                              <div class="me-3 rotate-90">
+                                <span class="svg-icon svg-icon-3">
+                                  <inline-svg
+                                    src="media/icons/duotune/arrows/arr071.svg"
+                                  />
+                                </span>
+                              </div>
+                              <!--end::Arrow-->
+                            </div>
+                            <!--end::Toggle-->
+                          </div>
+                          <!--end::Header-->
+                          <!--begin::Body-->
+                          <div
+                            id="patient_appointment_history"
+                            class="fs-6 ps-10 collapse hide"
+                            data-bs-parent="#patient_appointment_history"
+                          ></div>
+                          <!--end::Body-->
+                        </div>
                       </div>
                     </div>
                     <div class="d-flex justify-content-between">
