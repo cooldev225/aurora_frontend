@@ -3,11 +3,16 @@ import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
+export interface IAutoText {
+  id: number;
+  text: string;
+}
+
 export interface IReportSection {
   id: number;
   title: string;
   free_text_default: string;
-  auto_texts: Array<string>;
+  auto_texts: Array<IAutoText>;
 }
 
 export interface IReportTemplate {

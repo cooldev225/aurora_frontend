@@ -65,6 +65,84 @@
                   <!--end::Input-->
                 </div>
                 <!--end::Input group-->
+
+                <div
+                  class="ps-lg-10"
+                  v-for="(report_section, section_index) in formData.sections"
+                  :key="section_index"
+                >
+                  <el-form-item prop="report_section.title">
+                    <el-input
+                      v-model="report_section.title"
+                      class="w-100"
+                      type="text"
+                      placeholder="Section Title"
+                    />
+                  </el-form-item>
+
+                  <div
+                    class="ps-lg-10"
+                    v-for="(
+                      auto_text, auto_text_index
+                    ) in reportSection.auto_text"
+                    :key="auto_text_index"
+                  >
+                    <el-form-item prop="auto_text.text">
+                      <el-input
+                        v-model="auto_text.text"
+                        class="w-100"
+                        type="text"
+                        placeholder="Enter Auto Text"
+                      />
+
+                      <button
+                        @click="
+                          handleDeleteAutoText(section_index, auto_text_index)
+                        "
+                        class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
+                      >
+                        <span class="svg-icon svg-icon-3">
+                          <inline-svg
+                            src="media/icons/duotune/general/gen027.svg"
+                          />
+                        </span>
+                      </button>
+                    </el-form-item>
+                  </div>
+
+                  <div class="col-12 col-sm-2">
+                    <button
+                      type="button"
+                      class="btn btn-light-primary ms-auto"
+                      @click="handleAddAutoText()"
+                    >
+                      <span class="svg-icon svg-icon-2">
+                        <inline-svg
+                          src="media/icons/duotune/arrows/arr075.svg"
+                        />
+                      </span>
+                      Add Auto Text
+                    </button>
+                  </div>
+                  <button
+                    @click="handleDeleteSection(section_index)"
+                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
+                  >
+                    - Delete Section
+                  </button>
+                </div>
+                <div class="col-12 col-sm-2">
+                  <button
+                    type="button"
+                    class="btn btn-light-primary ms-auto"
+                    @click="handleAddSection()"
+                  >
+                    <span class="svg-icon svg-icon-2">
+                      <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
+                    </span>
+                    Add Section
+                  </button>
+                </div>
               </div>
             </div>
             <!--end::Scroll-->
@@ -109,7 +187,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -125,6 +203,7 @@ export default defineComponent({
     const loading = ref(false);
 
     const formData = ref({
+      id: 0,
       title: "",
       sections: [],
     });
@@ -139,6 +218,32 @@ export default defineComponent({
       ],
     });
 
+    const handleAddSection = () => {
+      let new_section = {};
+
+      new_section.title = "";
+      new_section.free_text_default = "";
+      new_section.auto_texts = [];
+
+      formData.value.sections.push(new_section);
+    };
+
+    const handleDeleteSection = (section_index) => {
+      formData.value.sections.splice(section_index, 1);
+    };
+
+    const handleAddAutoText = (section_index) => {
+      let new_auto_text = {};
+
+      new_auto_text.text = "";
+
+      formData.value.sections[section_index].push(new_auto_text);
+    };
+
+    const handleDeleteAutoText = (section_index, auto_text_index) => {
+      formData.value.sections[section_index].splice(auto_text_index, 1);
+    };
+
     const submit = () => {
       if (!formRef.value) {
         return;
@@ -147,33 +252,65 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          store
-            .dispatch(Actions.REPORT_TEMPLATES.CREATE, formData.value)
-            .then(() => {
-              loading.value = false;
-              store.dispatch(Actions.REPORT_TEMPLATES.LIST);
-              Swal.fire({
-                text: "Successfully Updated!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                hideModal(createReportTemplateModalRef.value);
+
+          const is_update = formData.value.id > 0 ? true : false;
+
+          if (is_update) {
+            store
+              .dispatch(Actions.REPORT_TEMPLATES.CREATE, formData.value)
+              .then(() => {
+                loading.value = false;
+                store.dispatch(Actions.REPORT_TEMPLATES.LIST);
+                Swal.fire({
+                  text: "Successfully Created!",
+                  icon: "success",
+                  buttonsStyling: false,
+                  confirmButtonText: "Ok, got it!",
+                  customClass: {
+                    confirmButton: "btn btn-primary",
+                  },
+                }).then(() => {
+                  hideModal(createReportTemplateModalRef.value);
+                });
+              })
+              .catch(({ response }) => {
+                loading.value = false;
+                console.log(response.data.error);
               });
-            })
-            .catch(({ response }) => {
-              loading.value = false;
-              console.log(response.data.error);
-            });
+          } else {
+            store
+              .dispatch(Actions.REPORT_TEMPLATES.UPDATE, formData.value)
+              .then(() => {
+                loading.value = false;
+                store.dispatch(Actions.REPORT_TEMPLATES.LIST);
+                Swal.fire({
+                  text: "Successfully Updated!",
+                  icon: "success",
+                  buttonsStyling: false,
+                  confirmButtonText: "Ok, got it!",
+                  customClass: {
+                    confirmButton: "btn btn-primary",
+                  },
+                }).then(() => {
+                  hideModal(createReportTemplateModalRef.value);
+                });
+              })
+              .catch(({ response }) => {
+                loading.value = false;
+                console.log(response.data.error);
+              });
+          }
+
           formRef.value.resetFields();
         } else {
           // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
+
+    watchEffect(() => {
+      formData.value = store.getters.getReportTemplateSelected;
+    });
 
     return {
       formData,
@@ -182,6 +319,10 @@ export default defineComponent({
       loading,
       createReportTemplateModalRef,
       submit,
+      handleAddSection,
+      handleDeleteSection,
+      handleAddAutoText,
+      handleDeleteAutoText,
     };
   },
 });

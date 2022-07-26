@@ -7,8 +7,7 @@
         <button
           type="button"
           class="btn btn-light-primary ms-auto"
-          data-bs-toggle="modal"
-          data-bs-target="#modal_add_report_template"
+          @click="handleEdit()"
         >
           <span class="svg-icon svg-icon-2">
             <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
@@ -82,9 +81,21 @@ export default defineComponent({
     ]);
 
     const tableData = ref([]);
-    const reportTemplates = computed(
-      () => store.getters.getReportTemplatesList
-    );
+    const reportTemplates = computed(() => store.getters.getReportTemplateList);
+
+    const handleAdd = () => {
+      const new_item = {
+        id: 0,
+        title: "",
+        sections: [],
+      };
+
+      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, new_item);
+      const modal = new Modal(
+        document.getElementById("modal_add_report_template")
+      );
+      modal.show();
+    };
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, item);
@@ -123,7 +134,7 @@ export default defineComponent({
       tableData.value = reportTemplates;
     });
 
-    return { tableHeader, tableData, handleEdit, handleDelete };
+    return { tableHeader, tableData, handleAdd, handleEdit, handleDelete };
   },
 });
 </script>
