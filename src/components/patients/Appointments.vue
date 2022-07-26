@@ -32,9 +32,13 @@
         :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
       >
+        <template v-slot:cell-id="{ row: item }">
+          <div class="d-flex flex-column">
+            <span>#{{ generateID(item.id) }} </span>
+          </div>
+        </template>
         <template v-slot:cell-date="{ row: item }">
           <div class="d-flex flex-column">
-            <span>#{{ item.reference_number }} </span>
             <span>{{ item.date }} {{ item.start_time }}</span>
           </div>
         </template>
@@ -51,7 +55,7 @@
             <span>referral_duration</span>
             <span>referral_expiry date</span>
           </div>
-          <button class="btn btn-bg-light btn-active-color-primary btn-sm me-1">
+          <button class="btn btn-bg-light btn-active-color-primary btn-sm mt-2">
             Update Referral
           </button>
         </template>
@@ -66,7 +70,8 @@
                   : item.attendance_status === 'checked_in'
                   ? 'success'
                   : 'primary'
-              }`"
+              } mb-2`"
+              style="width: fit-content"
             >
               {{ item.attendance_status.replace("_", " ") }}</span
             >
@@ -75,7 +80,7 @@
             <span>collecting_person_phone</span>
             <span>collecting_person_alternate_contact</span>
           </div>
-          <button class="btn btn-bg-light btn-active-color-primary btn-sm me-1">
+          <button class="btn btn-bg-light btn-active-color-primary btn-sm mt-2">
             Update Collecting Person
           </button>
         </template>
@@ -151,6 +156,11 @@ export default defineComponent({
     const formData = ref();
     const tableHeader = ref([
       {
+        name: "ID",
+        key: "id",
+        sortable: true,
+      },
+      {
         name: "Date / Time",
         key: "date",
         sortable: true,
@@ -195,6 +205,16 @@ export default defineComponent({
       router.push({ name: "make-payment-view" });
     };
 
+    const generateID = (id) => {
+      let prefix = "";
+      let i = 0;
+      while (i < 6 - id.toString().length) {
+        prefix += "0";
+        i++;
+      }
+      return prefix + id.toString();
+    };
+
     watch(showFutureApt, () => {
       console.log(showFutureApt.value);
       const today = moment(new Date());
@@ -210,10 +230,12 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = list.value.appointments;
-      const today = moment(new Date());
-      tableData.value = formData.value.filter((data) => {
-        return moment(data.date).isSameOrBefore(today.startOf("day"), "day");
-      });
+      if (formData.value) {
+        const today = moment(new Date());
+        tableData.value = formData.value.filter((data) => {
+          return moment(data.date).isSameOrBefore(today.startOf("day"), "day");
+        });
+      }
     });
 
     onMounted(() => {
@@ -226,6 +248,7 @@ export default defineComponent({
       tableKey,
       formData,
       showFutureApt,
+      generateID,
       handlePay,
       handleView,
     };
