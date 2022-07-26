@@ -113,7 +113,11 @@
                   Recall Reminder
                 </a>
 
-                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
+                <a
+                  class="btn btn-sm btn-light me-2"
+                  id="kt_user_follow_button"
+                  @click="handleReport"
+                >
                   <i class="bi bi-plus fs-3"></i>
                   Report
                 </a>
@@ -206,6 +210,7 @@
   </div>
   <!--end::Navbar-->
   <RecallReminderModal></RecallReminderModal>
+  <ReportModal></ReportModal>
   <router-view></router-view>
 </template>
 
@@ -213,12 +218,15 @@
 import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { Modal } from "bootstrap";
+import { Actions } from "@/store/enums/StoreEnums";
 import RecallReminderModal from "@/components/patients/RecallReminderModal.vue";
+import ReportModal from "@/components/patients/ReportModal.vue";
 
 export default defineComponent({
   name: "patients-view",
   components: {
     RecallReminderModal,
+    ReportModal,
   },
 
   setup() {
@@ -232,6 +240,12 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleReport = () => {
+      store.dispatch(Actions.REPORT_TEMPLATES.LIST);
+      const modal = new Modal(document.getElementById("modal_report"));
+      modal.show();
+    };
+
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
     });
@@ -239,6 +253,7 @@ export default defineComponent({
     return {
       formData,
       handleRecallReminder,
+      handleReport,
     };
   },
 });

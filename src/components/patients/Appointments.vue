@@ -235,6 +235,8 @@ export default defineComponent({
         tableData.value = formData.value.filter((data) => {
           return moment(data.date).isSameOrBefore(today.startOf("day"), "day");
         });
+      } else {
+        tableData.value = formData.value;
       }
     });
 
