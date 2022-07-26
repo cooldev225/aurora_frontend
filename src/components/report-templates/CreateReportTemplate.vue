@@ -67,7 +67,7 @@
                 <!--end::Input group-->
 
                 <div
-                  class="report-template-section-wrapper mb-10 p-10"
+                  class="border border-5 border-muted mb-10 p-10"
                   v-for="(reportSection, sectionIndex) in formData.sections"
                   :key="sectionIndex"
                 >
@@ -124,8 +124,8 @@
                   </div>
 
                   <div
-                    class="cursor-pointer text-center text-nowrap color-add-action col-9 border border-gray-300 h-40px"
-                    style="font-size: 1.2rem; line-height: 40px"
+                    class="cursor-pointer text-center text-nowrap col-9 border border-gray-300 h-40px"
+                    style="font-size: 1.2rem; line-height: 40px; color: #bd5"
                     @click="handleAddAutoText(sectionIndex)"
                   >
                     <span><span>+</span> Add Auto Text</span>
@@ -139,8 +139,8 @@
                   </div>
                 </div>
                 <div
-                  class="cursor-pointer text-center col-12 report-template-section-wrapper color-add-action"
-                  style="font-size: 2rem"
+                  class="cursor-pointer text-center col-12 border border-5 border-muted"
+                  style="font-size: 2rem; color: #bd5; line-height: 70px"
                   @click="handleAddSection()"
                 >
                   <span><span>+</span> Add Section</span>
