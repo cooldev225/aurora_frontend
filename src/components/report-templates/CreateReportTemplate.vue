@@ -67,13 +67,13 @@
                 <!--end::Input group-->
 
                 <div
-                  class="ps-lg-10"
-                  v-for="(report_section, section_index) in formData.sections"
-                  :key="section_index"
+                  class="report-template-section-wrapper mb-10"
+                  v-for="(reportSection, sectionIndex) in formData.sections"
+                  :key="sectionIndex"
                 >
-                  <el-form-item prop="report_section.title">
+                  <el-form-item prop="reportSection.title">
                     <el-input
-                      v-model="report_section.title"
+                      v-model="reportSection.title"
                       class="w-100"
                       type="text"
                       placeholder="Section Title"
@@ -81,15 +81,15 @@
                   </el-form-item>
 
                   <div
-                    class="report-template-section-wrapper"
+                    class="report-template-auto-text-wrapper"
                     v-for="(
-                      auto_text, auto_text_index
-                    ) in reportSection.auto_text"
-                    :key="auto_text_index"
+                      autoText, autoTextIndex
+                    ) in reportSection.auto_texts"
+                    :key="autoTextIndex"
                   >
-                    <el-form-item prop="auto_text.text">
+                    <el-form-item prop="autoText.text">
                       <el-input
-                        v-model="auto_text.text"
+                        v-model="autoText.text"
                         class="w-100"
                         type="text"
                         placeholder="Enter Auto Text"
@@ -97,7 +97,7 @@
 
                       <button
                         @click="
-                          handleDeleteAutoText(section_index, auto_text_index)
+                          handleDeleteAutoText(sectionIndex, autoTextIndex)
                         "
                         class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
                       >
@@ -125,7 +125,7 @@
                     </button>
                   </div>
                   <button
-                    @click="handleDeleteSection(section_index)"
+                    @click="handleDeleteSection(sectionIndex)"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
                   >
                     - Delete Section
@@ -223,20 +223,20 @@ export default defineComponent({
       formData.value.sections.push(new_section);
     };
 
-    const handleDeleteSection = (section_index) => {
-      formData.value.sections.splice(section_index, 1);
+    const handleDeleteSection = (sectionIndex) => {
+      formData.value.sections.splice(sectionIndex, 1);
     };
 
-    const handleAddAutoText = (section_index) => {
+    const handleAddAutoText = (sectionIndex) => {
       let new_auto_text = {};
 
       new_auto_text.text = "";
 
-      formData.value.sections[section_index].push(new_auto_text);
+      formData.value.sections[sectionIndex].push(new_auto_text);
     };
 
-    const handleDeleteAutoText = (section_index, auto_text_index) => {
-      formData.value.sections[section_index].splice(auto_text_index, 1);
+    const handleDeleteAutoText = (sectionIndex, autoTextIndex) => {
+      formData.value.sections[sectionIndex].splice(autoTextIndex, 1);
     };
 
     const submit = () => {

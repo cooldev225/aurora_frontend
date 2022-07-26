@@ -7,7 +7,7 @@
         <button
           type="button"
           class="btn btn-light-primary ms-auto text-nowrap"
-          @click="handleEdit()"
+          @click="handleAdd()"
         >
           <span class="svg-icon svg-icon-2">
             <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
