@@ -113,12 +113,13 @@ export default class ReportTemplateModule
   [Actions.REPORT_TEMPLATES.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
+
       ApiService.delete("report-templates/" + id)
-        .then(({ data }) => {
-          return data.data;
+        .then((data) => {
+          return data;
         })
-        .catch(({ response }) => {
-          console.log(response.data.error);
+        .catch((response) => {
+          console.log(response);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

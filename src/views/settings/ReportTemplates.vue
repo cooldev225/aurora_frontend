@@ -116,18 +116,9 @@ export default defineComponent({
       store
         .dispatch(Actions.REPORT_TEMPLATES.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.SET_REPORT_TEMPLATES.LIST);
-          Swal.fire({
-            text: "Successfully Deleted!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          });
+          store.dispatch(Actions.REPORT_TEMPLATES.LIST);
         })
-        .catch(({ response }) => {
+        .catch((response) => {
           console.log(response);
         });
     };
