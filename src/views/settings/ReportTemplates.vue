@@ -24,27 +24,30 @@
         :rows-per-page="20"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-name="{ row: item }">
+        <template v-slot:cell-title="{ row: item }">
           <div class="d-flex align-items-center">
-            <button
-              @click="handleEdit(item)"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            >
-              <span class="svg-icon svg-icon-3">
-                <inline-svg src="media/icons/duotune/art/art005.svg" />
-              </span>
-            </button>
-
-            <button
-              @click="handleDelete(item.id)"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
-            >
-              <span class="svg-icon svg-icon-3">
-                <inline-svg src="media/icons/duotune/general/gen027.svg" />
-              </span>
-            </button>
             {{ item.title }}
           </div>
+        </template>
+
+        <template v-slot:cell-action="{ row: item }">
+          <button
+            @click="handleEdit(item)"
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+          >
+            <span class="svg-icon svg-icon-3">
+              <inline-svg src="media/icons/duotune/art/art005.svg" />
+            </span>
+          </button>
+
+          <button
+            @click="handleDelete(item.id)"
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+          >
+            <span class="svg-icon svg-icon-3">
+              <inline-svg src="media/icons/duotune/general/gen027.svg" />
+            </span>
+          </button>
         </template>
       </Datatable>
     </div>
@@ -77,6 +80,10 @@ export default defineComponent({
         name: "Title",
         key: "title",
         sortable: true,
+      },
+      {
+        name: "Action",
+        key: "action",
       },
     ]);
 
