@@ -252,25 +252,6 @@
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Start Time
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="start_time">
-                                <el-time-select
-                                  v-model="_start_time"
-                                  start="00:00"
-                                  step="00:15"
-                                  end="23:59"
-                                  clearable="false"
-                                  placeholder="Select time"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-
-                              <!--begin::Label-->
                               <label class="fs-6 fw-bold mb-2"> Room </label>
                               <!--end::Label-->
                               <!--begin::Input-->
@@ -284,52 +265,6 @@
                                     :value="item.id"
                                     :label="item.name"
                                     :key="item.id"
-                                  />
-                                </el-select>
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Label-->
-                              <label class="required fs-6 fw-bold mb-2">
-                                Specialist
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="specialist_id">
-                                <el-select class="w-100" v-model="_specialist">
-                                  <el-option
-                                    v-for="item in ava_specialist"
-                                    :value="item.id"
-                                    :label="item.name"
-                                    :key="item.id"
-                                  />
-                                </el-select>
-                              </el-form-item>
-                              <!--end::Input-->
-
-                              <!--begin::Label-->
-                              <label class="fs-6 fw-bold mb-2">
-                                Anesthetist
-                              </label>
-                              <!--end::Label-->
-
-                              <!--begin::Input-->
-                              <el-form-item prop="anesthetist_id">
-                                <el-select
-                                  class="w-100"
-                                  v-model="aptInfoData.anesthetist_id"
-                                  disabled
-                                >
-                                  <el-option
-                                    :value="anesthetist.id"
-                                    :label="anesthetist.name"
                                   />
                                 </el-select>
                               </el-form-item>
