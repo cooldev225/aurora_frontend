@@ -220,7 +220,7 @@ import { useStore } from "vuex";
 import { Modal } from "bootstrap";
 import { Actions } from "@/store/enums/StoreEnums";
 import RecallReminderModal from "@/components/patients/RecallReminderModal.vue";
-import ReportModal from "@/components/patients/ReportModal.vue";
+import ReportModal from "@/components/patients/ReportTemplateModal.vue";
 
 export default defineComponent({
   name: "patients-view",
