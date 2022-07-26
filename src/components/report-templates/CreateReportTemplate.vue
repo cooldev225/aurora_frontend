@@ -67,11 +67,11 @@
                 <!--end::Input group-->
 
                 <div
-                  class="report-template-section-wrapper mb-10"
+                  class="report-template-section-wrapper mb-10 p-10"
                   v-for="(reportSection, sectionIndex) in formData.sections"
                   :key="sectionIndex"
                 >
-                  <el-form-item prop="reportSection.title">
+                  <el-form-item :prop="'section-' + sectionIndex">
                     <el-input
                       v-model="reportSection.title"
                       class="w-100"
@@ -80,60 +80,59 @@
                     />
                   </el-form-item>
 
+                  <el-divider />
+
+                  <h3>Auto Texts</h3>
+
                   <div
-                    class="report-template-auto-text-wrapper"
+                    class="report-template-auto-text-wrapper text-nowrap mb-5"
                     v-for="(
                       autoText, autoTextIndex
                     ) in reportSection.auto_texts"
                     :key="autoTextIndex"
                   >
-                    <el-form-item prop="autoText.text">
+                    <div class="d-flex flex-row col-9">
                       <el-input
                         v-model="autoText.text"
-                        class="w-100"
+                        class="flex-grow-1"
                         type="text"
                         placeholder="Enter Auto Text"
                       />
-
-                      <button
-                        @click="
-                          handleDeleteAutoText(sectionIndex, autoTextIndex)
-                        "
-                        class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
-                      >
-                        <span class="svg-icon svg-icon-3">
-                          <inline-svg
-                            src="media/icons/duotune/general/gen027.svg"
-                          />
-                        </span>
-                      </button>
-                    </el-form-item>
+                      <div class="ms-10">
+                        <button
+                          @click="
+                            handleDeleteAutoText(sectionIndex, autoTextIndex)
+                          "
+                          class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                        >
+                          <span class="svg-icon svg-icon-3">
+                            <inline-svg
+                              src="media/icons/duotune/general/gen027.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
-                  <div class="col-12 col-sm-2">
-                    <button
-                      type="button"
-                      class="btn btn-light-primary ms-auto"
-                      @click="handleAddAutoText()"
-                    >
-                      <span class="svg-icon svg-icon-2">
-                        <inline-svg
-                          src="media/icons/duotune/arrows/arr075.svg"
-                        />
-                      </span>
-                      Add Auto Text
-                    </button>
-                  </div>
-                  <button
-                    @click="handleDeleteSection(sectionIndex)"
-                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
+                  <div
+                    class="cursor-pointer text-center text-nowrap color-add-action col-9"
+                    style="font-size: 1.2rem"
+                    @click="handleAddAutoText()"
                   >
-                    - Delete Section
-                  </button>
+                    <span><span>+</span> Add Auto Text</span>
+                  </div>
+                  <div class="d-flex flex-row-reverse">
+                    <span
+                      @click="handleDeleteSection(sectionIndex)"
+                      class="cursor-pointer text-nowrap text-danger text-right"
+                      >- Delete Section</span
+                    >
+                  </div>
                 </div>
                 <div
-                  class="cursor-pointer text-center col-sm-12 report-template-section-wrapper"
-                  style="font-size: 2rem; color: #d0ff76"
+                  class="cursor-pointer text-center col-12 report-template-section-wrapper color-add-action"
+                  style="font-size: 2rem"
                   @click="handleAddSection()"
                 >
                   <span><span>+</span> Add Section</span>

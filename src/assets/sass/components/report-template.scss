@@ -1,8 +1,12 @@
 .report-template-section-wrapper {
-  border: 7px solid #888;
+  border: 7px solid #eee;
   min-height: 70px;
 
   > span {
     line-height: 70px;
   }
+}
+
+.color-add-action {
+  color: #bd5
 }
