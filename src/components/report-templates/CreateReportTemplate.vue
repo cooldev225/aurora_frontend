@@ -8,7 +8,7 @@
     data-bs-backdrop="static"
   >
     <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-650px">
+    <div class="modal-dialog modal-dialog-centered mw-800px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
@@ -50,7 +50,7 @@
               data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
               data-kt-scroll-offset="300px"
             >
-              <div class="row">
+              <div class="report-template-wrapper">
                 <!--begin::Input group-->
                 <div class="fv-row col-12 mb-5">
                   <!--begin::Input-->
@@ -81,7 +81,7 @@
                   </el-form-item>
 
                   <div
-                    class="ps-lg-10"
+                    class="report-template-section-wrapper"
                     v-for="(
                       auto_text, auto_text_index
                     ) in reportSection.auto_text"
@@ -131,17 +131,12 @@
                     - Delete Section
                   </button>
                 </div>
-                <div class="col-12 col-sm-2">
-                  <button
-                    type="button"
-                    class="btn btn-light-primary ms-auto"
-                    @click="handleAddSection()"
-                  >
-                    <span class="svg-icon svg-icon-2">
-                      <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
-                    </span>
-                    Add Section
-                  </button>
+                <div
+                  class="cursor-pointer text-center col-sm-12 report-template-section-wrapper"
+                  style="font-size: 2rem; color: #d0ff76"
+                  @click="handleAddSection()"
+                >
+                  <span><span>+</span> Add Section</span>
                 </div>
               </div>
             </div>

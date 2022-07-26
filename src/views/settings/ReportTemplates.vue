@@ -3,10 +3,10 @@
     <div class="card-header row border-0 p-6">
       <div class="card-title col"></div>
       <!--begin::Add button-->
-      <div class="card-toolbar col-12 col-sm-2">
+      <div class="card-toolbar text-center col-sm-2">
         <button
           type="button"
-          class="btn btn-light-primary ms-auto"
+          class="btn btn-light-primary ms-auto text-nowrap"
           @click="handleEdit()"
         >
           <span class="svg-icon svg-icon-2">
