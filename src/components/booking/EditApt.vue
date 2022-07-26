@@ -255,7 +255,7 @@
                             <el-form-item prop="note">
                               <el-input
                                 type="textarea"
-                                v-model="otherInfoData.note"
+                                v-model="aptInfoData.note"
                                 placeholder="Enter appointment notes"
                               />
                             </el-form-item>
@@ -437,7 +437,7 @@
                           <el-form-item prop="appointment_confirm">
                             <el-select
                               class="w-100"
-                              v-model="otherInfoData.appointment_confirm"
+                              v-model="patientInfoData.appointment_confirm"
                               placeholder="Appointment Confirm Method"
                             >
                               <el-option value="phone" label="SMS" />
@@ -460,7 +460,7 @@
                           <el-form-item prop="allergies">
                             <el-input
                               type="textarea"
-                              v-model="otherInfoData.allergies"
+                              v-model="patientInfoData.allergies"
                               placeholder="Enter Allergies"
                             />
                           </el-form-item>
@@ -481,7 +481,7 @@
                           <el-form-item prop="clinical_alerts">
                             <el-input
                               type="textarea"
-                              v-model="otherInfoData.clinical_alerts"
+                              v-model="patientInfoData.clinical_alerts"
                               placeholder="Enter Clinical Alerts"
                             />
                           </el-form-item>
@@ -1248,7 +1248,7 @@
                               />
                             </div>
                             <div class="row">
-                              <template v-if="aptInfoData.no_referral">
+                              <template v-if="otherInfoData.no_referral">
                                 <div class="col-sm-6">
                                   <!--begin::Input group-->
                                   <div class="fv-row mb-7">
@@ -1262,7 +1262,9 @@
                                     <el-form-item prop="no_referral_reason">
                                       <el-input
                                         type="text"
-                                        v-model="aptInfoData.no_referral_reason"
+                                        v-model="
+                                          otherInfoData.no_referral_reason
+                                        "
                                         placeholder="Please Enter Reason"
                                       />
                                     </el-form-item>
@@ -1285,7 +1287,7 @@
                                     <el-form-item prop="referring_doctor">
                                       <el-select
                                         class="w-100"
-                                        v-model="aptInfoData.referring_doctor"
+                                        v-model="otherInfoData.referring_doctor"
                                         placeholder="Select Referring Doctor"
                                       />
                                     </el-form-item>
@@ -1306,7 +1308,9 @@
                                     <el-form-item prop="referral_duration">
                                       <el-select
                                         class="w-100"
-                                        v-model="aptInfoData.referral_duration"
+                                        v-model="
+                                          otherInfoData.referral_duration
+                                        "
                                         placeholder="Enter Referral Duration"
                                       >
                                         <el-option
@@ -1337,7 +1341,7 @@
                                     <el-form-item prop="referral_date">
                                       <el-date-picker
                                         class="w-100"
-                                        v-model="aptInfoData.referral_date"
+                                        v-model="otherInfoData.referral_date"
                                       />
                                     </el-form-item>
                                     <!--end::Input-->
@@ -1478,16 +1482,9 @@ export default defineComponent({
       arrival_time: "",
       time_slot: ["2022-06-20T09:00", "2022-06-20T17:00"],
       appointment_type_id: "",
-      clinical_code: "",
-      mbs_code: "",
       specialist_id: "",
       room_id: "",
-      anesthetist_id: "",
-      referring_doctor: "",
-      referral_duration: "",
-      referral_date: "",
-      no_referral: false,
-      no_referral_reason: "",
+      note: "",
     });
 
     const patientInfoData = ref({
@@ -1497,6 +1494,9 @@ export default defineComponent({
       email: "",
       address: "",
       contact_number: "",
+      appointment_confirm: "",
+      allergies: "",
+      clinical_alerts: "",
     });
 
     const billingInfoData = ref({
@@ -1520,15 +1520,15 @@ export default defineComponent({
     });
 
     const otherInfoData = ref({
-      appointment_confirm: "",
-      note: "",
-      important_details: "",
-      allergies: "",
-      clinical_alerts: "",
       anesthetic_questions: false,
       anesthetic_answers: [],
       procedure_questions: false,
       procedure_answers: [],
+      referring_doctor: "",
+      referral_duration: "",
+      referral_date: "",
+      no_referral: false,
+      no_referral_reason: "",
     });
 
     const rules = ref({
@@ -1641,6 +1641,7 @@ export default defineComponent({
       double: 2,
       triple: 3,
     });
+
     const appointment_time = ref(30);
 
     const _stepperObj = ref(null);
@@ -1673,6 +1674,24 @@ export default defineComponent({
     const aptTypeList = computed(() => store.getters.getAptTypesList);
     const searchVal = computed(() => store.getters.getSearchVariable);
     const organisation = computed(() => store.getters.orgList);
+    const aptData = computed(() => store.getters.getAptSelected);
+
+    watch(aptData, () => {
+      console.log(aptData.value);
+      for (let key in aptInfoData.value)
+        aptInfoData.value[key] = aptData.value[key];
+      aptInfoData.value.time_slot = [];
+      aptInfoData.value.time_slot.push(aptData.value.start_time);
+      aptInfoData.value.time_slot.push(aptData.value.end_time);
+      _appointment.value = aptData.value.appointment_type_id;
+      for (let key in patientInfoData.value)
+        patientInfoData.value[key] = aptData.value[key];
+      for (let key in billingInfoData.value)
+        billingInfoData.value[key] = aptData.value[key];
+      for (let key in otherInfoData.value)
+        otherInfoData.value[key] = aptData.value[key];
+      console.log(aptInfoData.value);
+    });
 
     watch(_appointment, () => {
       aptInfoData.value.appointment_type_id = _appointment.value;
@@ -1750,9 +1769,9 @@ export default defineComponent({
         appointment_time.value = organisation.value.appointment_length;
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
-      if (bookingData.time_slots) {
-        _start_time.value = moment(bookingData.time_slots[0]).format("HH:mm");
-        _end_time.value = moment(bookingData.time_slots[1]).format("HH:mm");
+      if (bookingData.time_slot) {
+        _start_time.value = moment(bookingData.time_slot[0]).format("HH:mm");
+        _end_time.value = moment(bookingData.time_slot[1]).format("HH:mm");
       }
       aptInfoData.value.date = bookingData.date;
       if (bookingData.selected_specialist) {
