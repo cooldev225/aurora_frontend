@@ -253,7 +253,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, computed, watchEffect } from "vue";
-import { Actions } from "@/store/enums/StoreEnums";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
@@ -291,7 +291,7 @@ export default defineComponent({
     };
 
     const handleEdit = () => {
-      console.log(aptData.value);
+      store.commit(Mutations.SET_APT.SELECT, aptData.value);
       const modal = new Modal(document.getElementById("modal_edit_apt"));
       modal.show();
       DrawerComponent?.getInstance("booking-drawer")?.hide();
@@ -332,7 +332,6 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      console.log(aptData.value);
       displayData.reference_number = aptData.value.reference_number;
       displayData.clinic_name = aptData.value.clinic_name;
       displayData.start_time = aptData.value.start_time;
