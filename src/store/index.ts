@@ -23,6 +23,7 @@ import AppointmentModule from "@/store/modules/AppointmentModule";
 import ProcedureModule from "@/store/modules/ProcedureModule";
 import AptTypesModule from "@/store/modules/AptTypesModule";
 import AptTimeRequireModule from "@/store/modules/AptTimeRequireModule";
+import ReportTemplatesModule from "@/store/modules/ReportTemplatesModule";
 import SpecialistsModule from "@/store/modules/SpecialistsModule";
 import NtfTemplatesModule from "@/store/modules/NtfTemplatesModule";
 import MPaymentModule from "@/store/modules/MPaymentModule";
@@ -55,6 +56,7 @@ const store = createStore({
     ProcedureModule,
     AptTypesModule,
     AptTimeRequireModule,
+    ReportTemplatesModule,
     SpecialistsModule,
     MPaymentModule,
     ProfileModule,
