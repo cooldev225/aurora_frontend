@@ -114,7 +114,7 @@ export default defineComponent({
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.SET_REPORT_TEMPLATES.DELETE, id)
+        .dispatch(Actions.REPORT_TEMPLATES.DELETE, id)
         .then(() => {
           store.dispatch(Actions.SET_REPORT_TEMPLATES.LIST);
           Swal.fire({
@@ -128,7 +128,7 @@ export default defineComponent({
           });
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          console.log(response);
         });
     };
 

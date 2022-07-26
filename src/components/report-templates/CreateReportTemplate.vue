@@ -14,7 +14,7 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_add_customer_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Create Report Template</h2>
+          <h2 class="fw-bolder">{{ modalTexts.title }}</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -82,7 +82,15 @@
 
                   <el-divider />
 
-                  <h3>Auto Texts</h3>
+                  <el-form-item>
+                    <el-input
+                      type="textarea"
+                      v-model="reportSection.free_text_default"
+                      placeholder="Write Free Text Default"
+                    />
+                  </el-form-item>
+
+                  <h3 class="mb-4" style="font-size: 1.5rem">Auto Texts</h3>
 
                   <div
                     class="report-template-auto-text-wrapper text-nowrap mb-5"
@@ -116,9 +124,9 @@
                   </div>
 
                   <div
-                    class="cursor-pointer text-center text-nowrap color-add-action col-9"
-                    style="font-size: 1.2rem"
-                    @click="handleAddAutoText()"
+                    class="cursor-pointer text-center text-nowrap color-add-action col-9 border border-gray-300 h-40px"
+                    style="font-size: 1.2rem; line-height: 40px"
+                    @click="handleAddAutoText(sectionIndex)"
                   >
                     <span><span>+</span> Add Auto Text</span>
                   </div>
@@ -162,7 +170,9 @@
               class="btn btn-lg btn-primary"
               type="submit"
             >
-              <span v-if="!loading" class="indicator-label"> Create </span>
+              <span v-if="!loading" class="indicator-label">
+                {{ modalTexts.submit }}
+              </span>
               <span v-if="loading" class="indicator-progress">
                 Please wait...
                 <span
@@ -196,11 +206,15 @@ export default defineComponent({
     const createReportTemplateModalRef = ref(null);
     const loading = ref(false);
 
+    let is_create = false;
+
     const formData = ref({
       id: 0,
       title: "",
       sections: [],
     });
+
+    const modalTexts = ref({});
 
     const rules = ref({
       title: [
@@ -231,11 +245,11 @@ export default defineComponent({
 
       new_auto_text.text = "";
 
-      formData.value.sections[sectionIndex].push(new_auto_text);
+      formData.value.sections[sectionIndex].auto_texts.push(new_auto_text);
     };
 
     const handleDeleteAutoText = (sectionIndex, autoTextIndex) => {
-      formData.value.sections[sectionIndex].splice(autoTextIndex, 1);
+      formData.value.sections[sectionIndex].auto_texts.splice(autoTextIndex, 1);
     };
 
     const submit = () => {
@@ -247,9 +261,7 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
 
-          const is_update = formData.value.id > 0 ? true : false;
-
-          if (is_update) {
+          if (is_create) {
             store
               .dispatch(Actions.REPORT_TEMPLATES.CREATE, formData.value)
               .then(() => {
@@ -304,10 +316,25 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.getReportTemplateSelected;
+
+      is_create = formData.value.id > 0 ? false : true;
+
+      if (is_create) {
+        modalTexts.value = {
+          title: "Create Report Template",
+          submit: "Create",
+        };
+      } else {
+        modalTexts.value = {
+          title: "Edit Report Template",
+          submit: "Update",
+        };
+      }
     });
 
     return {
       formData,
+      modalTexts,
       rules,
       formRef,
       loading,
