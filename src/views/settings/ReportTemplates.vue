@@ -8,7 +8,7 @@
           type="button"
           class="btn btn-light-primary ms-auto"
           data-bs-toggle="modal"
-          data-bs-target="#modal_add_apt_type"
+          data-bs-target="#modal_add_report_template"
         >
           <span class="svg-icon svg-icon-2">
             <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
@@ -44,20 +44,13 @@
                 <inline-svg src="media/icons/duotune/general/gen027.svg" />
               </span>
             </button>
-            {{ item.name }}
+            {{ item.title }}
           </div>
-        </template>
-        <template v-slot:cell-type="{ row: item }">
-          {{ item.type }}
-        </template>
-        <template v-slot:cell-appointment_time="{ row: item }">
-          <span class="text-capitalize">{{ item.appointment_time }}</span>
         </template>
       </Datatable>
     </div>
   </div>
-  <CreateModal></CreateModal>
-  <EditModal></EditModal>
+  <CreateReportTemplate />
 </template>
 
 <script>
@@ -65,37 +58,25 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateModal from "@/components/apt-types/CreateAptType.vue";
-import EditModal from "@/components/apt-types/EditAptType.vue";
+import CreateReportTemplate from "@/components/report-templates/CreateReportTemplate.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
-  name: "apt-types",
+  name: "report-templates",
 
   components: {
     Datatable,
-    CreateModal,
-    EditModal,
+    CreateReportTemplate,
   },
 
   setup() {
     const store = useStore();
     const tableHeader = ref([
       {
-        name: "Name",
-        key: "name",
-        sortable: true,
-      },
-      {
-        name: "Type",
-        key: "type",
-        sortable: true,
-      },
-      {
-        name: "Appointment Time",
-        key: "appointment_time",
+        name: "Title",
+        key: "title",
         sortable: true,
       },
     ]);
@@ -108,16 +89,16 @@ export default defineComponent({
     const handleEdit = (item) => {
       store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, item);
       const modal = new Modal(
-        document.getElementById("modal_edit_report_template")
+        document.getElementById("modal_add_report_template")
       );
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.APT.TYPES.DELETE, id)
+        .dispatch(Actions.SET_REPORT_TEMPLATES.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.APT.TYPES.LIST);
+          store.dispatch(Actions.SET_REPORT_TEMPLATES.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
