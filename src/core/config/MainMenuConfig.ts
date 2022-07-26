@@ -94,6 +94,10 @@ const OrgAdminMenu = [
         heading: "Notification Templates",
         route: "/settings/notification-templates",
       },
+      {
+        heading: "Report Templates",
+        route: "/settings/report-templates",
+      },
     ],
   },
 ];

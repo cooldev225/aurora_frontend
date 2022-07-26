@@ -320,7 +320,7 @@ export default defineComponent({
     const handleAddApt = (specialist, startTime, endTime) => {
       const _date = moment(_apt_date.value).format("YYYY-MM-DD").toString();
       const item = {
-        time_slots: [_date + "T" + startTime, _date + "T" + endTime],
+        time_slot: [_date + "T" + startTime, _date + "T" + endTime],
         date: _date,
         ava_specialist: _ava_specialists,
         selected_specialist: specialist,

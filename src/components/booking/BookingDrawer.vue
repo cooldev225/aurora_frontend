@@ -129,6 +129,25 @@
         <!--end::Appointment Info-->
         <!--begin::Appointment Actions-->
         <div class="d-flex flex-column gap-5 mt-5">
+          <a @click="handleEdit">
+            <label
+              class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
+              for="kt_create_account_form_account_type_personal"
+            >
+              <span class="svg-icon svg-icon-3x me-5">
+                <inline-svg src="media/icons/duotune/general/gen056.svg" />
+              </span>
+
+              <!--begin::Info-->
+              <span class="d-block fw-bold text-start">
+                <span class="text-dark fw-bolder d-block fs-4 mb-2">
+                  Edit
+                </span>
+                <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
+              </span>
+              <!--end::Info-->
+            </label>
+          </a>
           <a>
             <label
               class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
@@ -229,19 +248,24 @@
       </div>
     </div>
   </div>
+  <EditModal></EditModal>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, computed, watchEffect } from "vue";
-import { Actions } from "@/store/enums/StoreEnums";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
+import EditModal from "@/components/booking/EditApt.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "booing-drawer",
-  components: {},
+  components: {
+    EditModal,
+  },
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -264,6 +288,13 @@ export default defineComponent({
       store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
       DrawerComponent?.getInstance("booking-drawer")?.hide();
       router.push({ name: "patients-view-administration" });
+    };
+
+    const handleEdit = () => {
+      store.commit(Mutations.SET_APT.SELECT, aptData.value);
+      const modal = new Modal(document.getElementById("modal_edit_apt"));
+      modal.show();
+      DrawerComponent?.getInstance("booking-drawer")?.hide();
     };
 
     const handleCancel = () => {
@@ -301,7 +332,6 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      console.log(aptData.value);
       displayData.reference_number = aptData.value.reference_number;
       displayData.clinic_name = aptData.value.clinic_name;
       displayData.start_time = aptData.value.start_time;
@@ -317,6 +347,7 @@ export default defineComponent({
 
     return {
       displayData,
+      handleEdit,
       handleView,
       handleCancel,
     };
