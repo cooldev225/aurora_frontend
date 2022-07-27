@@ -205,7 +205,7 @@
               <!--end::Info-->
             </label>
           </a>
-          <a>
+          <a @click="handleCheckIn">
             <label
               class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
               for="kt_create_account_form_account_type_personal"
@@ -249,6 +249,7 @@
     </div>
   </div>
   <EditModal></EditModal>
+  <CheckInModal></CheckInModal>
 </template>
 
 <script lang="ts">
@@ -259,12 +260,14 @@ import { useRouter } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import EditModal from "@/components/booking/EditApt.vue";
+import CheckInModal from "@/components/booking/CheckInModal.vue";
 import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "booing-drawer",
   components: {
     EditModal,
+    CheckInModal,
   },
   setup() {
     const store = useStore();
@@ -331,6 +334,11 @@ export default defineComponent({
       });
     };
 
+    const handleCheckIn = () => {
+      const modal = new Modal(document.getElementById("modal_check_in_apt"));
+      modal.show();
+    };
+
     watchEffect(() => {
       displayData.reference_number = aptData.value.reference_number;
       displayData.clinic_name = aptData.value.clinic_name;
@@ -350,6 +358,7 @@ export default defineComponent({
       handleEdit,
       handleView,
       handleCancel,
+      handleCheckIn,
     };
   },
 });
