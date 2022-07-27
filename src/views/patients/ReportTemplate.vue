@@ -12,8 +12,8 @@
     <!--begin::Card header-->
     <!--begin::Card body-->
     <div class="card-body">
-      <div class="report-template-wrapper">
-        <el-form>
+      <el-form>
+        <div class="report-template-wrapper">
           <!--begin::Input group-->
           <div class="fv-row col-12 mb-5">
             <h2
@@ -65,8 +65,14 @@
               />
             </el-form-item>
           </div>
-        </el-form>
-      </div>
+        </div>
+        <div class="d-flex ms-auto justify-content-end w-25">
+          <button type="submit" class="btn btn-primary w-25">Create</button>
+          <button type="reset" class="btn btn-light-primary w-25 ms-2">
+            Cancel
+          </button>
+        </div>
+      </el-form>
     </div>
     <!--end::Card body-->
   </div>
