@@ -17,17 +17,21 @@
             Check In {{ aptData.first_name }} {{ aptData.last_name }}
           </h2>
           <!--end::Modal title-->
-
-          <!--begin::Close-->
-          <div
-            id="kt_modal_add_customer_close"
-            data-bs-dismiss="modal"
-            class="btn btn-icon btn-sm btn-active-icon-primary"
-          >
-            <span class="svg-icon svg-icon-1">
-              <inline-svg src="media/icons/duotune/arrows/arr061.svg" />
-            </span>
+          <div>
+            <div class="btn btn-lg btn-light-danger me-3 mb-1">
+              Print Hospital Cerificate
+            </div>
+            <div
+              id="kt_modal_add_customer_close"
+              data-bs-dismiss="modal"
+              class="btn btn-icon btn-sm btn-active-icon-primary"
+            >
+              <span class="svg-icon svg-icon-1">
+                <inline-svg src="media/icons/duotune/arrows/arr061.svg" />
+              </span>
+            </div>
           </div>
+          <!--begin::Close-->
           <!--end::Close-->
         </div>
         <!--end::Modal header-->
