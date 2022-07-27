@@ -5,7 +5,7 @@
     <div class="card-header cursor-pointer">
       <!--begin::Card title-->
       <div class="card-title m-0">
-        <h3 class="fw-bolder m-0">Report Details</h3>
+        <h3 class="fw-bolder m-0">Create Report</h3>
       </div>
       <!--end::Card title-->
     </div>
@@ -16,48 +16,31 @@
         <el-form>
           <!--begin::Input group-->
           <div class="fv-row col-12 mb-5">
-            <!--begin::Input-->
-            <el-form-item prop="title">
-              <el-input
-                class="w-100"
-                type="text"
-                placeholder="Report Template Title"
-                v-model="templateData.title"
-                disabled
-              />
-            </el-form-item>
-            <!--end::Input-->
+            <h2
+              style="
+                font-weight: 600;
+                color: #373fa2;
+                font-size: 25px;
+                margin-bottom: 4px;
+              "
+            >
+              {{ templateData.title }}
+            </h2>
+            <p>
+              DATE:
+              {{
+                moment(templateData.created_at).format("YYYY-MM-DD").toString()
+              }}
+            </p>
           </div>
           <!--end::Input group-->
 
           <div
+            v-show="templateData.sections.length > 0"
             v-for="section in templateData.sections"
             :key="section.id"
-            class="border border-5 border-muted mb-10 p-10"
           >
-            <el-form-item :prop="'section' + section.id">
-              <el-input
-                class="w-100"
-                type="text"
-                placeholder="Section Title"
-                v-model="section.title"
-                disabled
-              />
-            </el-form-item>
-
-            <el-divider />
-
-            <el-form-item>
-              <el-input
-                type="textarea"
-                placeholder="Write Free Text Default"
-                v-model="section.free_text_default"
-                disabled
-              />
-            </el-form-item>
-
-            <h3 class="mb-4" style="font-size: 1.5rem">Auto Texts</h3>
-
+            <h5>{{ section.title }}</h5>
             <div
               class="report-template-auto-text-wrapper text-nowrap mb-5"
               v-for="autoText in section.auto_texts"
@@ -69,10 +52,18 @@
                   class="flex-grow-1"
                   type="text"
                   placeholder="Enter Auto Text"
-                  disabled
                 />
               </div>
             </div>
+            <el-form-item>
+              <el-input
+                class="col-9"
+                type="textarea"
+                rows="3"
+                placeholder="Write Free Text Default"
+                v-model="section.free_text_default"
+              />
+            </el-form-item>
           </div>
         </el-form>
       </div>
@@ -86,6 +77,7 @@
 import { defineComponent, watchEffect, ref, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
+import moment from "moment";
 
 export default defineComponent({
   name: "patient-report",
@@ -106,6 +98,7 @@ export default defineComponent({
 
     return {
       templateData,
+      moment,
     };
   },
 });

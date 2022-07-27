@@ -140,7 +140,7 @@ export default defineComponent({
     const submit = () => {
       store.commit(
         Mutations.SET_REPORT_TEMPLATES.SELECT,
-        reportTemplatesData.value[reportTemplate.value]
+        reportTemplatesData.value[reportTemplate.value - 1]
       );
       Swal.fire({
         text: "Successfully Selected!",
@@ -152,7 +152,7 @@ export default defineComponent({
         },
       }).then(() => {
         hideModal(reportModal.value);
-        router.push({ name: "patients-view-report" });
+        router.push({ name: "patients-report" });
       });
     };
 
