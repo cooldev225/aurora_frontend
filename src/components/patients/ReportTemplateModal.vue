@@ -60,9 +60,9 @@
                     placeholder="Select Report Template"
                   >
                     <el-option
-                      v-for="option in reportTemplatesData"
+                      v-for="(option, idx) in reportTemplatesData"
                       :key="option.id"
-                      :value="option.id"
+                      :value="idx"
                       :label="option.title"
                     />
                   </el-select>
@@ -140,7 +140,7 @@ export default defineComponent({
     const submit = () => {
       store.commit(
         Mutations.SET_REPORT_TEMPLATES.SELECT,
-        reportTemplatesData.value[reportTemplate.value - 1]
+        reportTemplatesData.value[reportTemplate.value]
       );
       Swal.fire({
         text: "Successfully Selected!",

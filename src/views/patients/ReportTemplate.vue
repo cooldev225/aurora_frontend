@@ -15,7 +15,7 @@
       <el-form>
         <div class="report-template-wrapper">
           <!--begin::Input group-->
-          <div class="fv-row col-12 mb-5">
+          <div class="fv-row mb-10">
             <h2
               style="
                 font-weight: 600;
@@ -26,44 +26,135 @@
             >
               {{ templateData.title }}
             </h2>
-            <p>
+            <label class="col-md-6 fs-4 fw-bold mb-2">
               DATE:
-              {{
+              <span style="font-weight: 400">{{
                 moment(templateData.created_at).format("YYYY-MM-DD").toString()
-              }}
-            </p>
+              }}</span>
+            </label>
           </div>
           <!--end::Input group-->
 
-          <div
-            v-show="templateData.sections.length > 0"
-            v-for="section in templateData.sections"
-            :key="section.id"
-          >
-            <h5>{{ section.title }}</h5>
-            <div
-              class="report-template-auto-text-wrapper text-nowrap mb-5"
-              v-for="autoText in section.auto_texts"
-              :key="autoText.id"
-            >
-              <div class="d-flex flex-row col-9">
-                <el-input
-                  v-model="autoText.text"
-                  class="flex-grow-1"
-                  type="text"
-                  placeholder="Enter Auto Text"
-                />
-              </div>
+          <div class="d-flex flex-column gap-2 m">
+            <!--begin::Input group-->
+            <div class="fv-row">
+              <label class="col-md-6 fs-4 fw-bold mb-2">
+                NAME:
+                <span style="font-weight: 400"
+                  >{{ patientData.title }} {{ patientData.first_name }}
+                  {{ patientData.last_name }}</span
+                >
+              </label>
             </div>
-            <el-form-item>
-              <el-input
-                class="col-9"
-                type="textarea"
-                rows="3"
-                placeholder="Write Free Text Default"
-                v-model="section.free_text_default"
-              />
-            </el-form-item>
+            <!--end::Input group-->
+            <!--begin::Input group-->
+            <div class="fv-row">
+              <label class="col-md-6 fs-4 fw-bold mb-2">
+                DOB:
+                <span style="font-weight: 400">{{
+                  patientData.date_of_birth
+                }}</span>
+              </label>
+            </div>
+            <!--end::Input group-->
+            <!--begin::Input group-->
+            <div class="fv-row">
+              <label class="col-md-6 fs-4 fw-bold mb-2">
+                GENDER:
+                <span style="font-weight: 400">{{ patientData.gender }}</span>
+              </label>
+            </div>
+            <!--end::Input group-->
+            <!--begin::Input group-->
+            <div class="fv-row">
+              <label class="col-md-6 fs-4 fw-bold mb-2">
+                ADDRESS:
+                <span style="font-weight: 400">{{ patientData.address }}</span>
+              </label>
+            </div>
+            <!--end::Input group-->
+            <!--begin::Input group-->
+            <div class="fv-row">
+              <label class="col-md-6 fs-4 fw-bold mb-2">
+                REFERRING DOCTOR:
+                <span style="font-weight: 400">{{
+                  patientData.referring_doctor
+                }}</span>
+              </label>
+            </div>
+            <!--end::Input group-->
+            <!--begin::Input group-->
+            <div class="fv-row">
+              <label class="col-md-6 fs-4 fw-bold mb-2">
+                APPOINTMENT TYPES:
+                <span style="font-weight: 400">{{
+                  patientData.appointment_type_name
+                }}</span>
+              </label>
+            </div>
+            <!--end::Input group-->
+            <!--begin::Input group-->
+            <div class="fv-row">
+              <label class="col-md-6 fs-4 fw-bold mb-2">
+                SPECIALIST:
+                <span style="font-weight: 400">{{
+                  patientData.specialist_name
+                }}</span>
+              </label>
+            </div>
+            <!--end::Input group-->
+            <!--begin::Input group-->
+            <div class="fv-row">
+              <label class="col-md-6 fs-4 fw-bold mb-2">
+                PROVIDER NUMBER:
+                <span style="font-weight: 400">{{
+                  patientData.provider_number
+                }}</span>
+              </label>
+            </div>
+            <!--end::Input group-->
+          </div>
+
+          <div class="fv-row my-10">
+            <label class="col-md-6 fs-4 fw-bold mb-2">
+              Dear Dr MIMERAN:
+              <span style="font-weight: 400"
+                >Thank you for referring this patient</span
+              >
+            </label>
+          </div>
+          <div class="d-flex flex-column gap-2">
+            <div class="fv-row">
+              <!--begin::Label-->
+              <label class="required fs-6 fw-bold mb-2"
+                >Indication for procedure</label
+              >
+              <!--end::Label-->
+              <el-form-item>
+                <el-select
+                  class="w-100"
+                  multiple
+                  v-model="formData.indication"
+                  v-show="templateData.sections.length > 0"
+                >
+                  <el-option
+                    v-for="section in templateData.sections"
+                    :key="section.id"
+                    :label="section.title"
+                    :value="section.id"
+                  />
+                </el-select>
+              </el-form-item>
+            </div>
+            <div class="fv-row">
+              <el-form-item prop="note">
+                <el-input
+                  type="textarea"
+                  v-model="formData.free_text"
+                  placeholder="Free Text"
+                />
+              </el-form-item>
+            </div>
           </div>
         </div>
         <div class="d-flex ms-auto justify-content-end w-25">
@@ -90,12 +181,31 @@ export default defineComponent({
   components: {},
   setup() {
     const store = useStore();
-    const list = computed(() => store.getters.getReportTemplateSelected);
-    const templateData = ref();
+    const templateList = computed(
+      () => store.getters.getReportTemplateSelected
+    );
+    const patientList = computed(() => store.getters.selectedPatient);
+
+    const templateData = ref({
+      id: "",
+      title: "",
+      organization_id: "",
+      sections: [],
+      created_at: "",
+      update_at: "",
+    });
+
+    const patientData = ref();
+    const formData = ref({
+      indication: [],
+      free_text: "",
+    });
 
     watchEffect(() => {
-      templateData.value = list.value;
+      templateData.value = templateList.value;
+      patientData.value = patientList.value;
       console.log(templateData.value);
+      console.log(patientData.value);
     });
 
     onMounted(() => {
@@ -104,6 +214,8 @@ export default defineComponent({
 
     return {
       templateData,
+      patientData,
+      formData,
       moment,
     };
   },
