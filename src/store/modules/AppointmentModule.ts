@@ -258,4 +258,38 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.APT.CHECK_IN](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("appointments/check-in", data.id, {})
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.APT.CHECK_OUT](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("appointments/check-out", data.id, {})
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }

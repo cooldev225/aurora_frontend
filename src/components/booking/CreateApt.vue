@@ -86,9 +86,9 @@
 
                   <!--begin::Label-->
                   <div class="stepper-label">
-                    <h3 class="stepper-title">Select Patient</h3>
+                    <h3 class="stepper-title">Patient Info</h3>
 
-                    <div class="stepper-desc">Setup Patient</div>
+                    <div class="stepper-desc">Setup Personal Details</div>
                   </div>
                   <!--begin::Label-->
                 </div>
@@ -105,29 +105,6 @@
                     <i class="stepper-check fas fa-check"></i>
                     <span class="stepper-number">3</span>
                   </div>
-                  <!--begin::Icon-->
-
-                  <!--begin::Label-->
-                  <div class="stepper-label">
-                    <h3 class="stepper-title">Patient Info</h3>
-
-                    <div class="stepper-desc">Setup Personal Details</div>
-                  </div>
-                  <!--begin::Label-->
-                </div>
-                <!--end::Step 3-->
-
-                <!--begin::Step 4-->
-                <div class="stepper-item" data-kt-stepper-element="nav">
-                  <!--begin::Line-->
-                  <div class="stepper-line w-40px"></div>
-                  <!--end::Line-->
-
-                  <!--begin::Icon-->
-                  <div class="stepper-icon w-40px h-40px">
-                    <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">4</span>
-                  </div>
                   <!--end::Icon-->
 
                   <!--begin::Label-->
@@ -138,14 +115,14 @@
                   </div>
                   <!--end::Label-->
                 </div>
-                <!--end::Step 4 -->
+                <!--end::Step 3 -->
 
-                <!--begin::Step 5 -->
+                <!--begin::Step 4 -->
                 <div class="stepper-item" data-kt-stepper-element="nav">
                   <!--begin::Icon-->
                   <div class="stepper-icon w-40px h-40px">
                     <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">5</span>
+                    <span class="stepper-number">4</span>
                   </div>
                   <!--end::Icon-->
 
@@ -157,7 +134,7 @@
                   </div>
                   <!--end::Label-->
                 </div>
-                <!--end::Step 5-->
+                <!--end::Step 4-->
                 <!--begin::Appointment Overview-->
                 <div
                   class="p-4 mb-4 card border border-dashed border-primary d-flex flex-column gap-2"
@@ -225,66 +202,144 @@
                   >
                     <div class="row scroll h-500px">
                       <div class="card-info">
-                        <div class="row">
-                          <!--begin::Input group-->
-                          <div class="fv-row mb-7">
-                            <!--begin::Label-->
-                            <label class="required fs-6 fw-bold mb-2">
-                              Appointment Type
-                            </label>
-                            <!--end::Label-->
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                          <!--begin::Label-->
+                          <label class="required fs-6 fw-bold mb-2">
+                            Appointment Type
+                          </label>
+                          <!--end::Label-->
 
-                            <!--begin::Input-->
-                            <el-form-item prop="appointment_type_id">
-                              <el-select class="w-100" v-model="_appointment">
-                                <el-option
-                                  v-for="item in aptTypeList"
-                                  :value="item.id"
-                                  :label="item.name"
-                                  :key="item.id"
-                                />
-                              </el-select>
-                            </el-form-item>
-                            <!--end::Input-->
-                          </div>
-                          <!--end::Input group-->
-                          <div class="fv-row mb-7">
-                            <!--begin::Label-->
-                            <label class="fs-6 fw-bold mb-2"> Room </label>
-                            <!--end::Label-->
-                            <!--begin::Input-->
-                            <el-form-item prop="room_id">
-                              <el-select
-                                class="w-100"
-                                v-model.number="aptInfoData.room_id"
-                              >
-                                <el-option
-                                  v-for="item in rooms"
-                                  :value="item.id"
-                                  :label="item.name"
-                                  :key="item.id"
-                                />
-                              </el-select>
-                            </el-form-item>
-                            <!--end::Input-->
-                          </div>
-                          <!--begin::Input group-->
-                          <div class="fv-row mb-7">
-                            <!--begin::Label-->
-                            <label class="fs-6 fw-bold mb-2"> Note </label>
-                            <!--end::Label-->
-
-                            <!--begin::Input-->
-                            <el-form-item prop="note">
-                              <el-input
-                                type="textarea"
-                                v-model="aptInfoData.note"
-                                placeholder="Enter appointment notes"
+                          <!--begin::Input-->
+                          <el-form-item prop="appointment_type_id">
+                            <el-select class="w-100" v-model="_appointment">
+                              <el-option
+                                v-for="item in aptTypeList"
+                                :value="item.id"
+                                :label="item.name"
+                                :key="item.id"
                               />
-                            </el-form-item>
-                            <!--end::Input-->
+                            </el-select>
+                          </el-form-item>
+                          <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+                        <div class="fv-row mb-7">
+                          <!--begin::Label-->
+                          <label class="fs-6 fw-bold mb-2"> Room </label>
+                          <!--end::Label-->
+                          <!--begin::Input-->
+                          <el-form-item prop="room_id">
+                            <el-select
+                              class="w-100"
+                              v-model.number="aptInfoData.room_id"
+                            >
+                              <el-option
+                                v-for="item in rooms"
+                                :value="item.id"
+                                :label="item.name"
+                                :key="item.id"
+                              />
+                            </el-select>
+                          </el-form-item>
+                          <!--end::Input-->
+                        </div>
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7">
+                          <!--begin::Label-->
+                          <label class="fs-6 fw-bold mb-2"> Note </label>
+                          <!--end::Label-->
+
+                          <!--begin::Input-->
+                          <el-form-item prop="note">
+                            <el-input
+                              type="textarea"
+                              v-model="aptInfoData.note"
+                              placeholder="Enter appointment notes"
+                            />
+                          </el-form-item>
+                          <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+                      </div>
+                      <el-divider />
+                      <div class="card-info">
+                        <div class="d-flex flex-row gap-3">
+                          <!--begin::Col-->
+                          <div class="fv-row">
+                            <!--begin::Option-->
+                            <input
+                              type="radio"
+                              class="btn-check"
+                              name="patientType"
+                              value="new"
+                              checked="checked"
+                              id="create-new-patient"
+                              v-model="patientStatus"
+                            />
+                            <label
+                              class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-10"
+                              for="create-new-patient"
+                            >
+                              <span class="svg-icon svg-icon-3x me-5">
+                                <inline-svg
+                                  src="media/icons/duotune/communication/com005.svg"
+                                />
+                              </span>
+
+                              <!--begin::Info-->
+                              <span class="d-block fw-bold text-start">
+                                <span
+                                  class="text-dark fw-bolder d-block fs-4 mb-2"
+                                >
+                                  New Patient
+                                </span>
+                                <span class="text-gray-400 fw-bold fs-6"
+                                  >Create New Patient</span
+                                >
+                              </span>
+                              <!--end::Info-->
+                            </label>
+                            <!--end::Option-->
                           </div>
-                          <!--end::Input group-->
+                          <!--end::Col-->
+
+                          <!--begin::Col-->
+                          <div class="fv-row">
+                            <!--begin::Option-->
+                            <input
+                              type="radio"
+                              class="btn-check"
+                              name="patientType"
+                              value="exist"
+                              id="select-existing-patient"
+                              v-model="patientStatus"
+                            />
+                            <label
+                              class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center"
+                              for="select-existing-patient"
+                            >
+                              <span class="svg-icon svg-icon-3x me-5">
+                                <inline-svg
+                                  src="media/icons/duotune/finance/fin006.svg"
+                                />
+                              </span>
+
+                              <!--begin::Info-->
+                              <span class="d-block fw-bold text-start">
+                                <span
+                                  class="text-dark fw-bolder d-block fs-4 mb-2"
+                                  >Existing Patient</span
+                                >
+                                <span class="text-gray-400 fw-bold fs-6"
+                                  >Import Existing Patient</span
+                                >
+                              </span>
+                              <!--end::Info-->
+                            </label>
+                            <!--end::Option-->
+                          </div>
+                          <!--end::Col-->
                         </div>
                       </div>
                     </div>
@@ -307,119 +362,6 @@
                 </div>
               </div>
               <!--end::Step 1-->
-
-              <!--begin::Step 2-->
-              <div data-kt-stepper-element="content">
-                <div class="w-100">
-                  <el-form
-                    class="w-100"
-                    ref="formRef_2"
-                    @submit.prevent="handleStep_2"
-                  >
-                    <div class="d-flex flex-column py-20 gap-10">
-                      <!--begin::Col-->
-                      <div class="fv-row">
-                        <!--begin::Option-->
-                        <input
-                          type="radio"
-                          class="btn-check"
-                          name="patientType"
-                          value="new"
-                          checked="checked"
-                          id="create-new-patient"
-                          v-model="patientStatus"
-                        />
-                        <label
-                          class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-10"
-                          for="create-new-patient"
-                        >
-                          <span class="svg-icon svg-icon-3x me-5">
-                            <inline-svg
-                              src="media/icons/duotune/communication/com005.svg"
-                            />
-                          </span>
-
-                          <!--begin::Info-->
-                          <span class="d-block fw-bold text-start">
-                            <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                              New Patient
-                            </span>
-                            <span class="text-gray-400 fw-bold fs-6"
-                              >Create New Patient</span
-                            >
-                          </span>
-                          <!--end::Info-->
-                        </label>
-                        <!--end::Option-->
-                      </div>
-                      <!--end::Col-->
-
-                      <!--begin::Col-->
-                      <div class="fv-row">
-                        <!--begin::Option-->
-                        <input
-                          type="radio"
-                          class="btn-check"
-                          name="patientType"
-                          value="exist"
-                          id="select-existing-patient"
-                          v-model="patientStatus"
-                        />
-                        <label
-                          class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center"
-                          for="select-existing-patient"
-                        >
-                          <span class="svg-icon svg-icon-3x me-5">
-                            <inline-svg
-                              src="media/icons/duotune/finance/fin006.svg"
-                            />
-                          </span>
-
-                          <!--begin::Info-->
-                          <span class="d-block fw-bold text-start">
-                            <span class="text-dark fw-bolder d-block fs-4 mb-2"
-                              >Existing Patient</span
-                            >
-                            <span class="text-gray-400 fw-bold fs-6"
-                              >Import Existing Patient</span
-                            >
-                          </span>
-                          <!--end::Info-->
-                        </label>
-                        <!--end::Option-->
-                      </div>
-                      <!--end::Col-->
-                    </div>
-                    <div class="d-flex justify-content-between">
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-light-primary me-3"
-                        data-kt-stepper-action="previous"
-                        @click="previousStep"
-                      >
-                        <span class="svg-icon svg-icon-4 me-1">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr063.svg"
-                          />
-                        </span>
-                        Back
-                      </button>
-                      <button
-                        type="submit"
-                        class="btn btn-lg btn-primary align-self-end"
-                      >
-                        Continue
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
-                        </span>
-                      </button>
-                    </div>
-                  </el-form>
-                </div>
-              </div>
-              <!--end::Step 2-->
 
               <!--begin::Step 3-->
               <div data-kt-stepper-element="content">
@@ -575,8 +517,8 @@
                     class="w-100"
                     :model="patientInfoData"
                     :rules="rules"
-                    ref="formRef_3"
-                    @submit.prevent="handleStep_3"
+                    ref="formRef_2"
+                    @submit.prevent="handleStep_2"
                   >
                     <div class="row scroll h-500px">
                       <div class="col-sm-6">
@@ -811,8 +753,8 @@
                     class="w-100"
                     :model="billingInfoData"
                     :rules="rules"
-                    ref="formRef_4"
-                    @submit.prevent="handleStep_4"
+                    ref="formRef_3"
+                    @submit.prevent="handleStep_3"
                   >
                     <div class="row">
                       <div class="row">
@@ -1418,7 +1360,7 @@
                     class="w-100"
                     :model="otherInfoData"
                     :rules="rules"
-                    ref="formRef_5"
+                    ref="formRef_4"
                     @submit.prevent="submit"
                   >
                     <div class="row scroll h-500px">
@@ -1757,7 +1699,6 @@ export default defineComponent({
     const formRef_2 = ref(null);
     const formRef_3 = ref(null);
     const formRef_4 = ref(null);
-    const formRef_5 = ref(null);
     const loading = ref(false);
 
     const aptInfoData = ref({
@@ -1922,6 +1863,7 @@ export default defineComponent({
         },
       ],
     });
+
     const appointment_length = reactive({
       single: 1,
       double: 2,
@@ -2141,6 +2083,19 @@ export default defineComponent({
         return;
       }
 
+      patientInfoData.value = {
+        first_name: "",
+        last_name: "",
+        date_of_birth: "",
+        email: "",
+        address: "",
+        contact_number: "",
+        appointment_confirm: "",
+        allergies: "",
+        clinical_alerts: "",
+      };
+
+      if (formRef_2.value) formRef_2.value.resetFields();
       formRef_1.value.validate((valid) => {
         if (valid) {
           currentStepIndex.value++;
@@ -2156,12 +2111,16 @@ export default defineComponent({
       if (!formRef_2.value) {
         return;
       }
-      currentStepIndex.value++;
-      if (!_stepperObj.value) {
-        return;
-      }
-      _stepperObj.value.goNext();
-      if (formRef_3.value) formRef_3.value.resetFields();
+
+      formRef_2.value.validate((valid) => {
+        if (valid) {
+          currentStepIndex.value++;
+          if (!_stepperObj.value) {
+            return;
+          }
+          _stepperObj.value.goNext();
+        }
+      });
     };
 
     const handleStep_3 = () => {
@@ -2180,30 +2139,13 @@ export default defineComponent({
       });
     };
 
-    const handleStep_4 = () => {
-      if (!formRef_4.value) {
-        return;
-      }
-
-      formRef_4.value.validate((valid) => {
-        if (valid) {
-          currentStepIndex.value++;
-          if (!_stepperObj.value) {
-            return;
-          }
-          _stepperObj.value.goNext();
-        }
-      });
-    };
-
     const handleCancel = () => {
       currentStepIndex.value = 0;
       _stepperObj.value.goFirst();
       formRef_1.value.resetFields();
-      formRef_2.value.resetFields();
-      if (formRef_3.value) formRef_3.value.resetFields();
+      if (formRef_2.value) formRef_2.value.resetFields();
+      formRef_3.value.resetFields();
       formRef_4.value.resetFields();
-      formRef_5.value.resetFields();
     };
 
     const handleAddressChange = (e) => {
@@ -2219,10 +2161,10 @@ export default defineComponent({
     };
 
     const submit = () => {
-      if (!formRef_5.value) {
+      if (!formRef_4.value) {
         return;
       }
-      formRef_5.value.validate((valid) => {
+      formRef_4.value.validate((valid) => {
         if (valid) {
           loading.value = true;
           store
@@ -2337,13 +2279,11 @@ export default defineComponent({
       formRef_2,
       formRef_3,
       formRef_4,
-      formRef_5,
       loading,
       previousStep,
       handleStep_1,
       handleStep_2,
       handleStep_3,
-      handleStep_4,
       handleCancel,
       currentStepIndex,
       createAptRef,

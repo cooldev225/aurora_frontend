@@ -131,7 +131,7 @@
         <div class="d-flex flex-column gap-5 mt-5">
           <a @click="handleEdit">
             <label
-              class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
+              class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
               for="kt_create_account_form_account_type_personal"
             >
               <span class="svg-icon svg-icon-3x me-5">
