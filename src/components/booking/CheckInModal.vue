@@ -124,9 +124,12 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, computed, watch } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
+import { hideModal } from "@/core/helpers/dom";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
   name: "create-apt-modal",
@@ -134,18 +137,36 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const aptData = computed(() => store.getters.getAptSelected);
+    const searchVal = computed(() => store.getters.getSearchVariable);
+    const checkInAptModalRef = ref(null);
 
-    const handleCheckIn = () => {
-      store.dispatch(Actions.APT.CHECK_IN, aptData.value.id);
-    };
-
-    const handleCheckOut = () => {
-      store.dispatch(Actions.APT.CHECK_IN, aptData.value.id);
+    const handleCheckIn = async () => {
+      await store
+        .dispatch(Actions.APT.CHECK_IN, aptData.value)
+        .then(() => {
+          store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
+          Swal.fire({
+            text: "Successfully Checked In!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          }).then(() => {
+            hideModal(checkInAptModalRef.value);
+            DrawerComponent?.getInstance("booking-drawer")?.hide();
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
     };
 
     return {
       aptData,
       handleCheckIn,
+      checkInAptModalRef,
     };
   },
 });
