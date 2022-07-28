@@ -187,6 +187,8 @@ const Actions = {
       DELETE: "deleteCancellationApt",
       UPDATE: "updateCancellationApt",
     },
+    CHECK_IN: "checkInApt",
+    CHECK_OUT: "checkOutApt",
   },
 
   // EMPLOYEE_ROLE: {

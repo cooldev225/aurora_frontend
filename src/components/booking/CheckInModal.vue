@@ -105,7 +105,7 @@
           <button
             :data-kt-indicator="loading ? 'on' : null"
             class="btn btn-lg btn-primary"
-            type="submit"
+            @click="handleCheckIn"
           >
             <span v-if="!loading" class="indicator-label"> Check In </span>
             <span v-if="loading" class="indicator-progress">
@@ -125,6 +125,7 @@
 
 <script>
 import { defineComponent, onMounted, computed, watch } from "vue";
+import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 
 export default defineComponent({
@@ -134,8 +135,17 @@ export default defineComponent({
     const store = useStore();
     const aptData = computed(() => store.getters.getAptSelected);
 
+    const handleCheckIn = () => {
+      store.dispatch(Actions.APT.CHECK_IN, aptData.value.id);
+    };
+
+    const handleCheckOut = () => {
+      store.dispatch(Actions.APT.CHECK_IN, aptData.value.id);
+    };
+
     return {
       aptData,
+      handleCheckIn,
     };
   },
 });
