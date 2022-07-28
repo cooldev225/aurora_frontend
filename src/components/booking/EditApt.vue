@@ -1416,7 +1416,7 @@
                         type="submit"
                         class="btn btn-lg btn-primary align-self-end"
                       >
-                        Create Appointment
+                        Update Appointment
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
                           <inline-svg
                             src="media/icons/duotune/arrows/arr064.svg"
@@ -1900,7 +1900,8 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.APT.CREATE, {
+            .dispatch(Actions.APT.UPDATE, {
+              id: aptData.value.id,
               ...aptInfoData.value,
               ...patientInfoData.value,
               ...billingInfoData.value,
