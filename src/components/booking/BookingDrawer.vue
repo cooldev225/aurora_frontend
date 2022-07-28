@@ -205,7 +205,10 @@
               <!--end::Info-->
             </label>
           </a>
-          <a @click="handleCheckIn">
+          <a
+            v-if="aptData.attendance_status === 'NOT_PRESENT'"
+            @click="handleCheckIn"
+          >
             <label
               class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
               for="kt_create_account_form_account_type_personal"
@@ -217,13 +220,53 @@
               <!--begin::Info-->
               <span class="d-block fw-bold text-start">
                 <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                  CHECK IN / CHECK OUT
+                  CHECK IN
                 </span>
                 <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
               </span>
               <!--end::Info-->
             </label>
           </a>
+          <a
+            v-if="aptData.attendance_status === 'CHECKED_IN'"
+            @click="handleCheckOut"
+          >
+            <label
+              class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
+              for="kt_create_account_form_account_type_personal"
+            >
+              <span class="svg-icon svg-icon-3x me-5">
+                <inline-svg src="media/icons/duotune/general/gen027.svg" />
+              </span>
+
+              <!--begin::Info-->
+              <span class="d-block fw-bold text-start">
+                <span class="text-dark fw-bolder d-block fs-4 mb-2">
+                  CHECK OUT
+                </span>
+                <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
+              </span>
+              <!--end::Info-->
+            </label>
+          </a>
+          <label
+            v-if="aptData.attendance_status === 'CHECKED_OUT'"
+            class="btn btn-light-grey border border-grey shadow p-5 d-flex align-items-center"
+            for="kt_create_account_form_account_type_personal"
+          >
+            <span class="svg-icon svg-icon-3x me-5">
+              <inline-svg src="media/icons/duotune/general/gen027.svg" />
+            </span>
+
+            <!--begin::Info-->
+            <span class="d-block fw-bold text-start">
+              <span class="text-dark fw-bolder d-block fs-4 mb-2">
+                CHECKED OUT
+              </span>
+              <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
+            </span>
+            <!--end::Info-->
+          </label>
           <a @click="handleCancel">
             <label
               class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
@@ -339,6 +382,28 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleCheckOut = async () => {
+      await store
+        .dispatch(Actions.APT.CHECK_OUT, aptData.value)
+        .then(() => {
+          store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
+          Swal.fire({
+            text: "Successfully Checked Out!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          }).then(() => {
+            DrawerComponent?.getInstance("booking-drawer")?.hide();
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    };
+
     watchEffect(() => {
       displayData.reference_number = aptData.value.reference_number;
       displayData.clinic_name = aptData.value.clinic_name;
@@ -355,10 +420,12 @@ export default defineComponent({
 
     return {
       displayData,
+      aptData,
       handleEdit,
       handleView,
       handleCancel,
       handleCheckIn,
+      handleCheckOut,
     };
   },
 });
