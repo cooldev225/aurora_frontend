@@ -76,33 +76,23 @@
 
           <!--begin::Appointment Info-->
           <div class="d-flex flex-column gap-3">
-            <label class="fs-3 text-primary"
-              >Clinic Name:
-              <span class="text-black fs-5">{{
-                displayData.clinic_name
-              }}</span></label
-            >
-            <label class="fs-3 text-primary"
-              >Time:
-              <span class="text-black fs-5"
-                >{{ displayData.start_time }} - {{ displayData.end_time }}</span
-              >
-              <span v-if="true" class="text-black fs-5"
-                >(Arrival: {{ displayData.arrival_time }})</span
-              ></label
-            >
-            <label class="fs-3 text-primary"
-              >Appointment Type:
-              <span class="text-black fs-5">{{
-                displayData.appointment_type_name
-              }}</span></label
-            >
-            <label class="fs-3 text-primary"
-              >Specialist:
-              <span class="text-black fs-5">{{
-                displayData.specialist_name
-              }}</span></label
-            >
+            <AppointmentInfoSection :heading="'Clinic Name'">{{
+              displayData.clinic_name
+            }}</AppointmentInfoSection>
+
+            <AppointmentInfoSection :heading="'Time'">
+              {{ displayData.start_time }} -
+              {{ displayData.end_time }} (Arrival:
+              {{ displayData.arrival_time }})
+            </AppointmentInfoSection>
+
+            <AppointmentInfoSection :heading="'Type'">{{
+              displayData.appointment_type_name
+            }}</AppointmentInfoSection>
+
+            <AppointmentInfoSection :heading="'Specialist'">{{
+              displayData.specialist_name
+            }}</AppointmentInfoSection>
           </div>
           <!--end::Appointment Info-->
 
@@ -205,6 +195,7 @@ import CheckInModal from "@/components/booking/CheckInModal.vue";
 import { Modal } from "bootstrap";
 import BookingDrawerButton from "@/components/presets/BookingDrawer/BookingDrawerButton.vue";
 import BookingStatusBadge from "@/components/presets/BookingDrawer/BookingStatusBadge.vue";
+import AppointmentInfoSection from "@/components/presets/BookingDrawer/AppointmentInfoSection.vue";
 
 export default defineComponent({
   name: "booing-drawer",
@@ -213,6 +204,7 @@ export default defineComponent({
     CheckInModal,
     BookingDrawerButton,
     BookingStatusBadge,
+    AppointmentInfoSection,
   },
   setup() {
     const store = useStore();
