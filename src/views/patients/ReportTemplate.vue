@@ -123,25 +123,28 @@
               >
             </label>
           </div>
-          <div class="d-flex flex-column gap-2">
+          <div
+            v-for="section in templateData.sections"
+            class="d-flex flex-column gap-2"
+            :key="section.id"
+          >
             <div class="fv-row">
               <!--begin::Label-->
-              <label class="required fs-6 fw-bold mb-2"
-                >Indication for procedure</label
-              >
+              <label class="required fs-6 fw-bold mb-2">{{
+                section.title
+              }}</label>
               <!--end::Label-->
               <el-form-item>
                 <el-select
                   class="w-100"
                   multiple
-                  v-model="formData.indication"
-                  v-show="templateData.sections.length > 0"
+                  v-model="formData.section['section' + section.id]"
                 >
                   <el-option
-                    v-for="section in templateData.sections"
-                    :key="section.id"
-                    :label="section.title"
-                    :value="section.id"
+                    v-for="item in section.auto_texts"
+                    :key="item.id"
+                    :label="item.text"
+                    :value="item.id"
                   />
                 </el-select>
               </el-form-item>
@@ -150,7 +153,7 @@
               <el-form-item prop="note">
                 <el-input
                   type="textarea"
-                  v-model="formData.free_text"
+                  v-model="section.free_text_default"
                   placeholder="Free Text"
                 />
               </el-form-item>
@@ -197,8 +200,7 @@ export default defineComponent({
 
     const patientData = ref();
     const formData = ref({
-      indication: [],
-      free_text: "",
+      section: {},
     });
 
     watchEffect(() => {
