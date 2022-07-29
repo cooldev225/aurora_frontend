@@ -281,9 +281,13 @@
                         </div>
                       </div>
                     </div>
-                    <div
-                      class="d-flex justify-content-between flex-row-reverse"
-                    >
+                    <div class="d-flex justify-content-end">
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-light-primary me-3"
+                      >
+                        Save
+                      </button>
                       <button
                         type="submit"
                         class="btn btn-lg btn-primary align-self-end"
@@ -520,17 +524,25 @@
                         </span>
                         Back
                       </button>
-                      <button
-                        type="submit"
-                        class="btn btn-lg btn-primary align-self-end"
-                      >
-                        Continue
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
-                        </span>
-                      </button>
+                      <div>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-lg btn-primary align-self-end"
+                        >
+                          Continue
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </el-form>
                 </div>
@@ -1127,17 +1139,25 @@
                         </span>
                         Back
                       </button>
-                      <button
-                        type="submit"
-                        class="btn btn-lg btn-primary align-self-end"
-                      >
-                        Continue
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
-                        </span>
-                      </button>
+                      <div>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-lg btn-primary align-self-end"
+                        >
+                          Continue
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </el-form>
                 </div>
@@ -1428,17 +1448,25 @@
                         </span>
                         Back
                       </button>
-                      <button
-                        type="submit"
-                        class="btn btn-lg btn-primary align-self-end"
-                      >
-                        Update Appointment
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
-                        </span>
-                      </button>
+                      <div>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-lg btn-primary align-self-end"
+                        >
+                          Update Appointment
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </el-form>
                 </div>
