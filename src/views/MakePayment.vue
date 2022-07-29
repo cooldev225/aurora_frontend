@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card w-xxl-75 m-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
@@ -10,7 +10,7 @@
             v-model="currentClinic"
             @change="handleClinic"
           >
-            <option label="All" :value="0">All</option>
+            <option label="All Clinics" :value="0">All</option>
             <option
               v-for="clinic in clinicsList"
               :key="clinic.id"

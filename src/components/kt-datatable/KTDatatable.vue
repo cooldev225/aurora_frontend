@@ -26,7 +26,6 @@
                   :class="[
                     cell.name && 'min-w-125px',
                     cell.sortable !== false && 'sorting',
-                    tableHeader.length - 1 === i && 'text-end',
                     currentSort ===
                       `${
                         cell.sortingField ? cell.sortingField : cell.key
@@ -66,7 +65,7 @@
                 }`"
               >
                 <template v-for="(cell, i) in tableHeader" :key="i">
-                  <td :class="{ 'text-end': tableHeader.length - 1 === i }">
+                  <td>
                     <slot :name="`cell-${cell.key}`" :row="item">
                       {{ item[prop] }}
                     </slot>
