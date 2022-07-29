@@ -32,21 +32,34 @@
         :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-id="{ row: item }">
-          <div class="d-flex flex-column">
-            <span>#{{ generateID(item.id) }} </span>
-          </div>
-        </template>
         <template v-slot:cell-date="{ row: item }">
-          <div class="d-flex flex-column">
+          <div class="p-4 d-flex flex-column">
+            <span>#{{ generateID(item.id) }} </span>
             <span>{{ item.date }} {{ item.start_time }}</span>
+            <span>@ {{ item.clinic_name }}</span>
           </div>
         </template>
         <template v-slot:cell-specialist="{ row: item }">
           <div class="d-flex flex-column">
+            <span
+              :class="`mb-1 p-2 rounded text-uppercase badge-xl badge-${
+                item.confirmation_status === 'CONFIRMED'
+                  ? 'success'
+                  : item.confirmation_status === 'CANCELED'
+                  ? 'danger'
+                  : item.confirmation_status === 'MISSED'
+                  ? 'danger'
+                  : 'warning'
+              } mb-2`"
+              style="width: fit-content"
+            >
+              {{ item.confirmation_status.replace("_", " ") }}</span
+            >
+            <div v-if="item.confirmation_status === 'CANCELED'">
+              Reason: cancel_reason
+            </div>
             <span>{{ item.appointment_type_name }}</span>
             <span> {{ item.specialist_name }}</span>
-            <span>@ {{ item.clinic_name }}</span>
           </div>
         </template>
         <template v-slot:cell-referral="">
@@ -84,41 +97,31 @@
             Update Collecting Person
           </button>
         </template>
-        <template v-slot:cell-payment>
-          <button
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            @click="handlePay"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/finance/fin002.svg" />
-            </span>
-          </button>
-
-          <button
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-            @click="handleView"
-          >
-            <span class="svg-icon svg-icon-3">
-              <i class="fas fa-eye"></i>
-            </span>
-          </button>
-        </template>
         <template v-slot:cell-report="{ row: item }">
           <div class="d-flex flex-column">
             <a
-              class="btn btn-sm btn-light mb-2 me-2"
-              id="kt_user_follow_button"
+              @click="handlePay"
+              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
             >
-              <i class="bi bi-printer fs-3"></i>
+              <span class="svg-icon svg-icon-1">
+                <inline-svg src="media/icons/duotune/finance/fin002.svg" />
+              </span>
+              Payment
+            </a>
+            <a class="btn btn-sm btn-light btn-icon-primary me-2 mb-2">
+              <span class="svg-icon svg-icon-1">
+                <inline-svg src="media/icons/duotune/files/fil017.svg" />
+              </span>
               Hospital Certificate
             </a>
             <a
               v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
-              class="btn btn-sm btn-light me-2"
-              id="kt_user_follow_button"
+              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
             >
-              <i class="bi bi-printer fs-3"></i>
-              Upload Pre-Admission Form / View Pre-Admission Form
+              <span class="svg-icon svg-icon-1">
+                <inline-svg src="media/icons/duotune/general/gen004.svg" />
+              </span>
+              Pre-Admission Form
             </a>
           </div>
         </template>
@@ -156,12 +159,7 @@ export default defineComponent({
     const formData = ref();
     const tableHeader = ref([
       {
-        name: "ID",
-        key: "id",
-        sortable: true,
-      },
-      {
-        name: "Date / Time",
+        name: "Time/Place",
         key: "date",
         sortable: true,
       },
@@ -178,11 +176,6 @@ export default defineComponent({
       {
         name: "Attendance Status",
         key: "attendance_status",
-        sortable: false,
-      },
-      {
-        name: "Payment",
-        key: "payment",
         sortable: false,
       },
       {
