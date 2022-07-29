@@ -1,12 +1,7 @@
 <template>
-  <div class="card">
+  <div class="card w-xxl-75 m-auto">
     <div class="card-header border-0 p-5">
       <div class="card border border-dashed border-primary w-100">
-        <div class="card-header">
-          <div class="card-title">
-            <span>SEARCH PATIENTS</span>
-          </div>
-        </div>
         <div class="card-body">
           <div class="card-info">
             <el-form class="w-100" ref="formRef_1">
@@ -89,11 +84,16 @@
         :loading="loading"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-id="{ row: item }">
-          {{ generateID(item.id) }}
-        </template>
         <template v-slot:cell-full_name="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
+            <button
+              @click="handleView(item)"
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            >
+              <span class="svg-icon svg-icon-3">
+                <i class="fas fa-eye"></i>
+              </span>
+            </button>
             {{ item.first_name }} {{ item.last_name }}
           </span>
         </template>
@@ -130,16 +130,6 @@
             }}</span
           >
         </template>
-        <template v-slot:cell-action="{ row: item }">
-          <button
-            @click="handleView(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <i class="fas fa-eye"></i>
-            </span>
-          </button>
-        </template>
       </Datatable>
     </div>
   </div>
@@ -166,12 +156,6 @@ export default defineComponent({
     const router = useRouter();
     const tableHeader = ref([
       {
-        name: "ID",
-        key: "id",
-        sortable: true,
-        searchable: true,
-      },
-      {
         name: "Full Name",
         key: "full_name",
         sortable: true,
@@ -192,10 +176,6 @@ export default defineComponent({
       {
         name: "Upcoming Appointment",
         key: "upcoming",
-      },
-      {
-        name: "",
-        key: "action",
       },
     ]);
     const patientData = ref([]);
