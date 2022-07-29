@@ -43,75 +43,56 @@
         <!--begin::Appointment Info-->
         <div>
           <!--begin::Approval Status Badges-->
-          <div v-if="displayData.procedure_approval_status != 'NOT_RELEVANT'">
-            <div
-              v-if="displayData.procedure_approval_status === 'NOT_APPROVED'"
-              class="alert bg-light-danger border border-danger d-flex flex-column flex-sm-row w-100 p-5 mb-10"
-            >
-              <span class="svg-icon svg-icon-2hx svg-icon-danger">
-                <inline-svg src="media/icons/duotune/arrows/arr015.svg" />
-              </span>
-              <h5 class="mx-2 my-auto">This procedure has not been approved</h5>
-            </div>
 
-            <div
-              v-if="displayData.procedure_approval_status === 'NOT_ACCESSED'"
-              class="alert bg-light-warning border border-warning d-flex flex-column flex-sm-row w-100 p-5 mb-10"
-            >
-              <span class="svg-icon svg-icon-2hx svg-icon-warning">
-                <inline-svg src="media/icons/duotune/arrows/arr015.svg" />
-              </span>
-              <h5 class="mx-2 my-auto">
-                This procedure has not yet been accessed
-              </h5>
-            </div>
+          <BookingStatusBadge
+            v-if="displayData.procedure_approval_status === 'NOT_APPROVED'"
+            :text="'This procedure has not been approved'"
+            :color="'danger'"
+            :iconPath="'media/icons/duotune/arrows/arr015.svg'"
+          />
 
-            <div
-              v-if="displayData.procedure_approval_status === 'APPROVED'"
-              class="alert bg-light-success border border-success d-flex flex-column flex-sm-row w-100 p-5 mb-10"
-            >
-              <span class="svg-icon svg-icon-2hx svg-icon-success">
-                <inline-svg src="media/icons/duotune/arrows/arr016.svg" />
-              </span>
-              <h5 class="mx-2 my-auto">This procedure has been approved</h5>
-            </div>
-          </div>
+          <BookingStatusBadge
+            v-if="displayData.procedure_approval_status === 'NOT_ACCESSED'"
+            :text="'This procedure has not yet been accessed'"
+            :color="'warning'"
+            :iconPath="'media/icons/duotune/arrows/arr015.svg'"
+          />
+
+          <BookingStatusBadge
+            v-if="displayData.procedure_approval_status === 'APPROVED'"
+            :text="'This procedure has been approved'"
+            :color="'success'"
+            :iconPath="'media/icons/duotune/arrows/arr016.svg'"
+          />
+
+          <BookingStatusBadge
+            v-if="displayData.procedure_approval_status === 'CONSULT_REQUIRED'"
+            :text="'This procedure requires a consult prior'"
+            :color="'danger'"
+            :iconPath="'media/icons/duotune/arrows/arr015.svg'"
+          />
+
           <!--end::Approval Status Badges-->
+
           <!--begin::Appointment Info-->
           <div class="d-flex flex-column gap-3">
-            <label class="fs-3 text-primary"
-              >Service Reference Number:
-              <span class="text-black fs-5">{{
-                displayData.reference_number
-              }}</span></label
-            >
-            <label class="fs-3 text-primary"
-              >Clinic Name:
-              <span class="text-black fs-5">{{
-                displayData.clinic_name
-              }}</span></label
-            >
-            <label class="fs-3 text-primary"
-              >Time:
-              <span class="text-black fs-5"
-                >{{ displayData.start_time }} - {{ displayData.end_time }}</span
-              >
-              <span v-if="true" class="text-black fs-5"
-                >(Arrival: {{ displayData.arrival_time }})</span
-              ></label
-            >
-            <label class="fs-3 text-primary"
-              >Appointment Type:
-              <span class="text-black fs-5">{{
-                displayData.appointment_type_name
-              }}</span></label
-            >
-            <label class="fs-3 text-primary"
-              >Specialist:
-              <span class="text-black fs-5">{{
-                displayData.specialist_name
-              }}</span></label
-            >
+            <AppointmentInfoSection :heading="'Clinic Name'">{{
+              displayData.clinic_name
+            }}</AppointmentInfoSection>
+
+            <AppointmentInfoSection :heading="'Time'">
+              {{ displayData.start_time }} -
+              {{ displayData.end_time }} (Arrival:
+              {{ displayData.arrival_time }})
+            </AppointmentInfoSection>
+
+            <AppointmentInfoSection :heading="'Type'">{{
+              displayData.appointment_type_name
+            }}</AppointmentInfoSection>
+
+            <AppointmentInfoSection :heading="'Specialist'">{{
+              displayData.specialist_name
+            }}</AppointmentInfoSection>
           </div>
           <!--end::Appointment Info-->
 
@@ -129,163 +110,70 @@
         <!--end::Appointment Info-->
         <!--begin::Appointment Actions-->
         <div class="d-flex flex-column gap-5 mt-5">
-          <a @click="handleEdit">
-            <label
-              class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
-              for="kt_create_account_form_account_type_personal"
-            >
-              <span class="svg-icon svg-icon-3x me-5">
-                <inline-svg src="media/icons/duotune/general/gen056.svg" />
-              </span>
-
-              <!--begin::Info-->
-              <span class="d-block fw-bold text-start">
-                <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                  Edit
-                </span>
-                <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-              </span>
-              <!--end::Info-->
-            </label>
-          </a>
-          <a>
-            <label
-              class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
-              for="kt_create_account_form_account_type_personal"
-            >
-              <span class="svg-icon svg-icon-3x me-5">
-                <inline-svg src="media/icons/duotune/general/gen056.svg" />
-              </span>
-
-              <!--begin::Info-->
-              <span class="d-block fw-bold text-start">
-                <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                  MOVE
-                </span>
-                <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-              </span>
-              <!--end::Info-->
-            </label>
-          </a>
-          <a @click="handleView">
-            <label
-              class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
-              for="kt_create_account_form_account_type_personal"
-            >
-              <span class="svg-icon svg-icon-3x me-5">
-                <inline-svg src="media/icons/duotune/general/gen055.svg" />
-              </span>
-
-              <!--begin::Info-->
-              <span class="d-block fw-bold text-start">
-                <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                  VIEW
-                </span>
-                <span class="text-gray-400 fw-bold fs-6">PATIENT</span>
-              </span>
-              <!--end::Info-->
-            </label>
-          </a>
-          <a>
-            <label
-              class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
-              for="kt_create_account_form_account_type_personal"
-            >
-              <span class="svg-icon svg-icon-3x me-5">
-                <inline-svg src="media/icons/duotune/general/gen027.svg" />
-              </span>
-
-              <!--begin::Info-->
-              <span class="d-block fw-bold text-start">
-                <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                  MAKE PAYMENT
-                </span>
-                <span class="text-gray-400 fw-bold fs-6">BILLING</span>
-              </span>
-              <!--end::Info-->
-            </label>
-          </a>
-          <a
+          <!--Check In Button-->
+          <BookingDrawerButton
             v-if="aptData.attendance_status === 'NOT_PRESENT'"
             @click="handleCheckIn"
-          >
-            <label
-              class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
-              for="kt_create_account_form_account_type_personal"
-            >
-              <span class="svg-icon svg-icon-3x me-5">
-                <inline-svg src="media/icons/duotune/general/gen027.svg" />
-              </span>
+            :heading="'Check In'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :color="'primary'"
+          />
 
-              <!--begin::Info-->
-              <span class="d-block fw-bold text-start">
-                <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                  CHECK IN
-                </span>
-                <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-              </span>
-              <!--end::Info-->
-            </label>
-          </a>
-          <a
+          <!--Check Out Button-->
+          <BookingDrawerButton
             v-if="aptData.attendance_status === 'CHECKED_IN'"
             @click="handleCheckOut"
-          >
-            <label
-              class="btn btn-light-danger border border-danger shadow p-5 d-flex align-items-center"
-              for="kt_create_account_form_account_type_personal"
-            >
-              <span class="svg-icon svg-icon-3x me-5">
-                <inline-svg src="media/icons/duotune/general/gen027.svg" />
-              </span>
+            :heading="'Check Out'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :color="'primary'"
+          />
 
-              <!--begin::Info-->
-              <span class="d-block fw-bold text-start">
-                <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                  CHECK OUT
-                </span>
-                <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-              </span>
-              <!--end::Info-->
-            </label>
-          </a>
-          <label
+          <!--Checked Out Label-->
+          <BookingDrawerButton
             v-if="aptData.attendance_status === 'CHECKED_OUT'"
-            class="btn btn-light-grey border border-grey shadow p-5 d-flex align-items-center"
-            for="kt_create_account_form_account_type_personal"
-          >
-            <span class="svg-icon svg-icon-3x me-5">
-              <inline-svg src="media/icons/duotune/general/gen027.svg" />
-            </span>
+            :heading="'Checked Out'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :color="'grey'"
+          />
 
-            <!--begin::Info-->
-            <span class="d-block fw-bold text-start">
-              <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                CHECKED OUT
-              </span>
-              <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-            </span>
-            <!--end::Info-->
-          </label>
-          <a @click="handleCancel">
-            <label
-              class="btn btn-light-success border border-success shadow p-5 d-flex align-items-center"
-              for="kt_create_account_form_account_type_personal"
-            >
-              <span class="svg-icon svg-icon-3x me-5">
-                <inline-svg src="media/icons/duotune/general/gen027.svg" />
-              </span>
+          <!--View Patient-->
+          <BookingDrawerButton
+            @click="handleView"
+            :heading="'View'"
+            :subheading="'Patient'"
+            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :color="'primary'"
+          />
 
-              <!--begin::Info-->
-              <span class="d-block fw-bold text-start">
-                <span class="text-dark fw-bolder d-block fs-4 mb-2">
-                  CANCEL
-                </span>
-                <span class="text-gray-400 fw-bold fs-6">APPOINTMENT</span>
-              </span>
-              <!--end::Info-->
-            </label>
-          </a>
+          <!--Edit Appointment-->
+          <BookingDrawerButton
+            @click="handleEdit"
+            :heading="'Edit'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :color="'success'"
+          />
+          <!--Move Appointment-->
+          <BookingDrawerButton
+            @click="handleEdit"
+            :heading="'Move'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :color="'success'"
+          />
+
+          <!--Cancel Appointment Button-->
+          <BookingDrawerButton
+            v-if="aptData.attendance_status === 'CHECKED_OUT'"
+            @click="handleCancel"
+            :heading="'Cancel'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :color="'danger'"
+          />
         </div>
         <!--end::Appointment Actions-->
       </div>
@@ -305,12 +193,18 @@ import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import EditModal from "@/components/booking/EditApt.vue";
 import CheckInModal from "@/components/booking/CheckInModal.vue";
 import { Modal } from "bootstrap";
+import BookingDrawerButton from "@/components/presets/BookingDrawer/BookingDrawerButton.vue";
+import BookingStatusBadge from "@/components/presets/BookingDrawer/BookingStatusBadge.vue";
+import AppointmentInfoSection from "@/components/presets/BookingDrawer/AppointmentInfoSection.vue";
 
 export default defineComponent({
   name: "booing-drawer",
   components: {
     EditModal,
     CheckInModal,
+    BookingDrawerButton,
+    BookingStatusBadge,
+    AppointmentInfoSection,
   },
   setup() {
     const store = useStore();
