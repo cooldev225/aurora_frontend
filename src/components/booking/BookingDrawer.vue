@@ -167,7 +167,6 @@
 
           <!--Cancel Appointment Button-->
           <BookingDrawerButton
-            v-if="aptData.attendance_status === 'CHECKED_OUT'"
             @click="handleCancel"
             :heading="'Cancel'"
             :subheading="'Appointment'"
