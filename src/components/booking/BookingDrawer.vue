@@ -43,40 +43,37 @@
         <!--begin::Appointment Info-->
         <div>
           <!--begin::Approval Status Badges-->
-          <div v-if="displayData.procedure_approval_status != 'NOT_RELEVANT'">
-            <div
-              v-if="displayData.procedure_approval_status === 'NOT_APPROVED'"
-              class="alert bg-light-danger border border-danger d-flex flex-column flex-sm-row w-100 p-5 mb-10"
-            >
-              <span class="svg-icon svg-icon-2hx svg-icon-danger">
-                <inline-svg src="media/icons/duotune/arrows/arr015.svg" />
-              </span>
-              <h5 class="mx-2 my-auto">This procedure has not been approved</h5>
-            </div>
 
-            <div
-              v-if="displayData.procedure_approval_status === 'NOT_ACCESSED'"
-              class="alert bg-light-warning border border-warning d-flex flex-column flex-sm-row w-100 p-5 mb-10"
-            >
-              <span class="svg-icon svg-icon-2hx svg-icon-warning">
-                <inline-svg src="media/icons/duotune/arrows/arr015.svg" />
-              </span>
-              <h5 class="mx-2 my-auto">
-                This procedure has not yet been accessed
-              </h5>
-            </div>
+          <BookingStatusBadge
+            v-if="displayData.procedure_approval_status === 'NOT_APPROVED'"
+            :text="'This procedure has not been approved'"
+            :color="'danger'"
+            :iconPath="'media/icons/duotune/arrows/arr015.svg'"
+          />
 
-            <div
-              v-if="displayData.procedure_approval_status === 'APPROVED'"
-              class="alert bg-light-success border border-success d-flex flex-column flex-sm-row w-100 p-5 mb-10"
-            >
-              <span class="svg-icon svg-icon-2hx svg-icon-success">
-                <inline-svg src="media/icons/duotune/arrows/arr016.svg" />
-              </span>
-              <h5 class="mx-2 my-auto">This procedure has been approved</h5>
-            </div>
-          </div>
+          <BookingStatusBadge
+            v-if="displayData.procedure_approval_status === 'NOT_ACCESSED'"
+            :text="'This procedure has not yet been accessed'"
+            :color="'warning'"
+            :iconPath="'media/icons/duotune/arrows/arr015.svg'"
+          />
+
+          <BookingStatusBadge
+            v-if="displayData.procedure_approval_status === 'APPROVED'"
+            :text="'This procedure has been approved'"
+            :color="'success'"
+            :iconPath="'media/icons/duotune/arrows/arr016.svg'"
+          />
+
+          <BookingStatusBadge
+            v-if="displayData.procedure_approval_status === 'CONSULT_REQUIRED'"
+            :text="'This procedure requires a consult prior'"
+            :color="'danger'"
+            :iconPath="'media/icons/duotune/arrows/arr015.svg'"
+          />
+
           <!--end::Approval Status Badges-->
+
           <!--begin::Appointment Info-->
           <div class="d-flex flex-column gap-3">
             <label class="fs-3 text-primary"
@@ -207,6 +204,7 @@ import EditModal from "@/components/booking/EditApt.vue";
 import CheckInModal from "@/components/booking/CheckInModal.vue";
 import { Modal } from "bootstrap";
 import BookingDrawerButton from "@/components/presets/BookingDrawer/BookingDrawerButton.vue";
+import BookingStatusBadge from "@/components/presets/BookingDrawer/BookingStatusBadge.vue";
 
 export default defineComponent({
   name: "booing-drawer",
@@ -214,6 +212,7 @@ export default defineComponent({
     EditModal,
     CheckInModal,
     BookingDrawerButton,
+    BookingStatusBadge,
   },
   setup() {
     const store = useStore();
