@@ -49,7 +49,11 @@
               <!--begin::Nav-->
               <div class="stepper-nav ps-lg-10">
                 <!--begin::Step 1-->
-                <div class="stepper-item current" data-kt-stepper-element="nav">
+                <div
+                  class="stepper-item current cursor-pointer"
+                  data-kt-stepper-element="nav"
+                  @click="gotoPage(1)"
+                >
                   <!--begin::Line-->
                   <div class="stepper-line w-40px"></div>
                   <!--end::Line-->
@@ -72,7 +76,11 @@
                 <!--end::Step 1-->
 
                 <!--begin::Step 2-->
-                <div class="stepper-item" data-kt-stepper-element="nav">
+                <div
+                  class="stepper-item cursor-pointer"
+                  data-kt-stepper-element="nav"
+                  @click="gotoPage(2)"
+                >
                   <!--begin::Line-->
                   <div class="stepper-line w-40px"></div>
                   <!--end::Line-->
@@ -95,7 +103,11 @@
                 <!--end::Step 3-->
 
                 <!--begin::Step 4-->
-                <div class="stepper-item" data-kt-stepper-element="nav">
+                <div
+                  class="stepper-item cursor-pointer"
+                  data-kt-stepper-element="nav"
+                  @click="gotoPage(3)"
+                >
                   <!--begin::Line-->
                   <div class="stepper-line w-40px"></div>
                   <!--end::Line-->
@@ -118,7 +130,11 @@
                 <!--end::Step 4 -->
 
                 <!--begin::Step 5 -->
-                <div class="stepper-item" data-kt-stepper-element="nav">
+                <div
+                  class="stepper-item cursor-pointer"
+                  data-kt-stepper-element="nav"
+                  @click="gotoPage(4)"
+                >
                   <!--begin::Icon-->
                   <div class="stepper-icon w-40px h-40px">
                     <i class="stepper-check fas fa-check"></i>
@@ -495,7 +511,7 @@
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
                         data-kt-stepper-action="previous"
-                        @click="patientPrevStep"
+                        @click="previousStep"
                       >
                         <span class="svg-icon svg-icon-4 me-1">
                           <inline-svg
@@ -1910,29 +1926,19 @@ export default defineComponent({
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.APT.LIST);
-              Swal.fire({
-                text: "Successfully Created!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                hideModal(editAptModalRef.value);
-                if (searchVal.value.date) {
-                  store.dispatch(Actions.BOOKING.SEARCH.DATE, {
-                    ...searchVal.value,
-                  });
-                  store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-                    ...searchVal.value,
-                  });
-                } else {
-                  store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
-                    ...searchVal.value,
-                  });
-                }
-              });
+              hideModal(editAptModalRef.value);
+              if (searchVal.value.date) {
+                store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+                  ...searchVal.value,
+                });
+                store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+                  ...searchVal.value,
+                });
+              } else {
+                store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+                  ...searchVal.value,
+                });
+              }
             })
             .catch(({ response }) => {
               loading.value = false;
@@ -1942,6 +1948,11 @@ export default defineComponent({
           // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
+    };
+
+    const gotoPage = (page) => {
+      currentStepIndex.value = Number(page - 1);
+      _stepperObj.value.goto(page);
     };
 
     return {
@@ -1988,6 +1999,7 @@ export default defineComponent({
       patientInfoData,
       billingInfoData,
       otherInfoData,
+      gotoPage,
     };
   },
 });
