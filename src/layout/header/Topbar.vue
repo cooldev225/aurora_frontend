@@ -3,14 +3,14 @@
   <div class="d-flex align-items-stretch flex-shrink-0">
     <!--begin::Mailbox-->
     <div class="d-flex align-items-center">
-      <div
+      <a
         class="btn btn-icon btn-active-light-primary position-relative w-30px h-30px w-md-40px h-md-40px"
-        id="kt_drawer_chat_toggle"
+        href="#/mailbox/list"
       >
         <span class="svg-icon svg-icon-2x">
           <inline-svg src="media/icons/duotune/communication/com002.svg" />
         </span>
-      </div>
+      </a>
     </div>
     <!--end::Mailbox-->
 
