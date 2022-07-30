@@ -142,10 +142,17 @@ const Actions = {
   },
 
   REPORT_TEMPLATES: {
-    LIST: "listReportTemplates",
-    CREATE: "createReportTemplates",
-    UPDATE: "updateReportTemplates",
-    DELETE: "deleteReportTemplates",
+    LIST: "listReportTemplate",
+    CREATE: "createReportTemplate",
+    UPDATE: "updateReportTemplate",
+    DELETE: "deleteReportTemplate",
+  },
+
+  MAILS: {
+    LIST: "listMail",
+    CREATE: "createMail",
+    UPDATE: "updateMail",
+    DELETE: "deleteMail",
   },
 
   APT_TIME_REQUIREMENT: {
@@ -338,8 +345,13 @@ const Mutations = {
   },
 
   SET_REPORT_TEMPLATES: {
-    LIST: "setReportTemplate",
+    LIST: "setReportTemplates",
     SELECT: "setSelectReportTemplate",
+  },
+
+  SET_MAILS: {
+    LIST: "setMails",
+    SELECT: "setSelectedMail",
   },
 
   SET_APT_TIME_REQUIREMENT: {
