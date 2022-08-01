@@ -113,6 +113,14 @@ export default defineComponent({
             name: selected_specialist.anesthetist_name,
           };
 
+          let dayOfWeek = moment(date).format("dddd").toString();
+
+          dayOfWeek = dayOfWeek.toLowerCase();
+
+          const work_hours = JSON.parse(selected_specialist.work_hours);
+
+          selected_specialist.work_hours = work_hours[dayOfWeek];
+
           available_specialists.push(selected_specialist);
         }
       }
