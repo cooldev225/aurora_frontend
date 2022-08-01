@@ -84,6 +84,14 @@
                     >
                       {{ slot_item.start_time }}
                     </span>
+                    <p v-if="clinic_name == 'Any'">
+                      {{
+                        clinicNameFromSlot(slot_item.specialist_ids, apt_date)
+                      }}
+                    </p>
+                    <p v-if="specialist_name == 'Any'">
+                      {{ specialistNameFromSlot(slot_item.specialist_ids) }}
+                    </p>
                   </div>
                 </template>
               </div>
@@ -204,8 +212,58 @@ export default defineComponent({
       current_modal.hide();
     };
 
+    const specialistNameFromSlot = (specialist_ids) => {
+      if (specialist_ids == undefined) {
+        return "";
+      }
+
+      if (props.allSpecialists == undefined) {
+        return "";
+      }
+
+      const selected_specialist = props.allSpecialists.find(
+        ({ id }) => id === specialist_ids[0]
+      );
+
+      if (selected_specialist == undefined) {
+        return "";
+      }
+
+      return selected_specialist.name;
+    };
+
+    const clinicNameFromSlot = (specialist_ids, date) => {
+      if (specialist_ids == undefined) {
+        return "";
+      }
+
+      if (props.allSpecialists == undefined) {
+        return "";
+      }
+
+      const selected_specialist = props.allSpecialists.find(
+        ({ id }) => id === specialist_ids[0]
+      );
+
+      if (selected_specialist == undefined) {
+        return "";
+      }
+
+      let dayOfWeek = moment(date).format("dddd").toString();
+
+      dayOfWeek = dayOfWeek.toLowerCase();
+
+      let work_hours = JSON.parse(selected_specialist.work_hours);
+
+      work_hours = work_hours[dayOfWeek];
+
+      return work_hours.locations.name;
+    };
+
     return {
       handleAddApt,
+      clinicNameFromSlot,
+      specialistNameFromSlot,
       clinic_name,
       specialist_name,
       time_requirement,
