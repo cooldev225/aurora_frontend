@@ -32,14 +32,36 @@
 
         <!--begin::Modal body-->
         <div class="scroll modal-body py-lg-10 px-lg-10 h-500px">
-          <template v-if="_available_slots_by_date">
-            <div class="pb-lg-15 d-flex flex-row gap-5">
+          <h3 class="text-nowrap mb-5">Search Params</h3>
+          <div class="search-params d-flex flex-wrap mb-10 gap-4">
+            <h4 class="text-nowrap" style="color: var(--el-color-info)">
+              Clinic:
+              <span class="text-primary">{{ clinic_name }}</span>
+            </h4>
+            <h4 class="text-nowrap" style="color: var(--el-color-info)">
+              Specialist:
+              <span class="text-primary">{{ specialist_name }}</span>
+            </h4>
+            <h4 class="text-nowrap" style="color: var(--el-color-info)">
+              Time Requirement:
+              <span class="text-primary">{{ time_requirement }}</span>
+            </h4>
+            <h4 class="text-nowrap" style="color: var(--el-color-info)">
+              Time Frame: <span class="text-primary">{{ time_frame }}</span>
+            </h4>
+            <h4 class="text-nowrap" style="color: var(--el-color-info)">
+              Appointment Type:
+              <span class="text-primary">{{ appointment_type }}</span>
+            </h4>
+          </div>
+          <template v-if="availableSlotsByDate">
+            <div class="pb-15 d-flex flex-row gap-15">
               <div
-                class="ps-lg-10"
-                v-for="(slot_list, apt_date) in _available_slots_by_date"
+                class="text-nowrap"
+                v-for="(slot_list, apt_date) in availableSlotsByDate"
                 :key="apt_date"
               >
-                <h3 style="white-space: nowrap">
+                <h3>
                   {{ slot_list.formatted_date }}
                 </h3>
                 <template
@@ -88,15 +110,54 @@ import { Modal } from "bootstrap";
 export default defineComponent({
   name: "appointment-list-popup",
   props: {
-    available_slots_by_date: { type: Array, required: true },
+    availableSlotsByDate: { type: Object, required: true },
     allSpecialists: { type: Array, required: true },
+    searchNextApts: { type: Object, required: true },
+    aptTypeList: { type: Array, required: true },
+    clinicList: { type: Array, required: true },
+    aptTimeRequireList: { type: Array, required: true },
+    xWeeks: { type: Object, required: true },
   },
   setup(props) {
-    const _available_slots_by_date = computed(
-      () => props.available_slots_by_date
-    );
-    const _allSpecialists = computed(() => props.allSpecialists);
     const store = useStore();
+
+    const clinic_name = computed(() => {
+      const clinic = props.clinicList.find(
+        ({ id }) => id === props.searchNextApts.clinic_id
+      );
+
+      return clinic == undefined ? "Any" : clinic.name;
+    });
+
+    const specialist_name = computed(() => {
+      const specialist = props.allSpecialists.find(
+        ({ id }) => id === props.searchNextApts.specialist_id
+      );
+
+      return specialist == undefined ? "Any" : specialist.name;
+    });
+
+    const time_requirement = computed(() => {
+      const time_requirement = props.aptTimeRequireList.find(
+        ({ id }) => id === props.searchNextApts.time_requirement
+      );
+
+      return time_requirement == undefined ? "Any" : time_requirement.title;
+    });
+
+    const time_frame = computed(() =>
+      props.xWeeks[props.searchNextApts.x_weeks] == undefined
+        ? "Any"
+        : props.xWeeks[props.searchNextApts.x_weeks]
+    );
+
+    const appointment_type = computed(() => {
+      const appointment_type = props.aptTypeList.find(
+        ({ id }) => id === props.searchNextApts.appointment_type_id
+      );
+
+      return appointment_type == undefined ? "Any" : appointment_type.name;
+    });
 
     const handleAddApt = (specialist_ids, date, startTime, endTime) => {
       const _date = moment(date).format("YYYY-MM-DD").toString();
@@ -104,7 +165,7 @@ export default defineComponent({
       let selected_specialist = null;
       let available_specialists = [];
 
-      for (let specialist of _allSpecialists.value) {
+      for (let specialist of props.allSpecialists) {
         if (specialist_ids.includes(specialist.id)) {
           selected_specialist = specialist;
 
@@ -143,15 +204,13 @@ export default defineComponent({
       current_modal.hide();
     };
 
-    const timeStr2Number = (time) => {
-      return Number(time.split(":")[0] + time.split(":")[1]);
-    };
-
     return {
-      _available_slots_by_date,
-      _allSpecialists,
       handleAddApt,
-      timeStr2Number,
+      clinic_name,
+      specialist_name,
+      time_requirement,
+      time_frame,
+      appointment_type,
     };
   },
 });
