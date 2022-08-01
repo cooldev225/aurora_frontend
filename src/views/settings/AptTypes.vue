@@ -44,7 +44,15 @@
                 <inline-svg src="media/icons/duotune/general/gen027.svg" />
               </span>
             </button>
-            {{ item.name }}
+            <span
+              class="p-2"
+              :style="{
+                'border-radius': '5px',
+                color: 'black',
+                'background-color': item.color,
+              }"
+              >{{ item.name }}</span
+            >
           </div>
         </template>
         <template v-slot:cell-type="{ row: item }">
