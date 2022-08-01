@@ -25,9 +25,9 @@
               <!--begin::Button-->
               <router-link
                 to="/mailbox/compose"
-                class="btn btn-primary text-uppercase w-100 mb-10"
+                class="btn btn-primary text-capitalize w-100 mb-10"
               >
-                New Message
+                Compose
               </router-link>
               <!--end::Button-->
               <!--begin::Menu-->
@@ -60,12 +60,12 @@
                 <!--end::Menu item-->
                 <!--begin::Menu item-->
                 <div class="menu-item mb-3">
-                  <!--begin::Marked-->
+                  <!--begin::Starred-->
                   <span
                     :class="`menu-link ${
-                      emailType.data === 'marked' ? 'active' : ''
+                      emailType.data === 'starred' ? 'active' : ''
                     }`"
-                    @click="switchType('marked')"
+                    @click="switchType('starred')"
                   >
                     <span class="menu-icon">
                       <!--begin::Svg Icon | path: icons/duotune/abstract/abs024.svg-->
@@ -76,9 +76,32 @@
                       </span>
                       <!--end::Svg Icon-->
                     </span>
-                    <span class="menu-title fw-bolder">Marked</span>
+                    <span class="menu-title fw-bolder">Starred</span>
                   </span>
-                  <!--end::Marked-->
+                  <!--end::Starred-->
+                </div>
+                <!--end::Menu item-->
+                <!--begin::Menu item-->
+                <div class="menu-item mb-3">
+                  <!--begin::Draft-->
+                  <span
+                    :class="`menu-link ${
+                      emailType.data === 'draft' ? 'active' : ''
+                    }`"
+                    @click="switchType('draft')"
+                  >
+                    <span class="menu-icon">
+                      <!--begin::Svg Icon | path: icons/duotune/files/fil024.svg-->
+                      <span class="svg-icon svg-icon-2 me-3">
+                        <inline-svg
+                          src="media/icons/duotune/files/fil024.svg"
+                        />
+                      </span>
+                      <!--end::Svg Icon-->
+                    </span>
+                    <span class="menu-title fw-bolder">Draft</span>
+                  </span>
+                  <!--end::Draft-->
                 </div>
                 <!--end::Menu item-->
                 <!--begin::Menu item-->
