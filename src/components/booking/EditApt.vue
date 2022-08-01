@@ -285,6 +285,7 @@
                       <button
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
+                        @click="handleSave"
                       >
                         Save
                       </button>
@@ -528,6 +529,7 @@
                         <button
                           type="button"
                           class="btn btn-lg btn-light-primary me-3"
+                          @click="handleSave"
                         >
                           Save
                         </button>
@@ -1143,6 +1145,7 @@
                         <button
                           type="button"
                           class="btn btn-lg btn-light-primary me-3"
+                          @click="handleSave"
                         >
                           Save
                         </button>
@@ -1452,19 +1455,9 @@
                         <button
                           type="button"
                           class="btn btn-lg btn-light-primary me-3"
+                          @click="handleSave"
                         >
                           Save
-                        </button>
-                        <button
-                          type="submit"
-                          class="btn btn-lg btn-primary align-self-end"
-                        >
-                          Update Appointment
-                          <span class="svg-icon svg-icon-4 ms-1 me-0">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr064.svg"
-                            />
-                          </span>
                         </button>
                       </div>
                     </div>
@@ -1915,6 +1908,39 @@ export default defineComponent({
       });
     };
 
+    const handleSave = () => {
+      loading.value = true;
+      store
+        .dispatch(Actions.APT.UPDATE, {
+          id: aptData.value.id,
+          ...aptInfoData.value,
+          ...patientInfoData.value,
+          ...billingInfoData.value,
+          ...otherInfoData.value,
+        })
+        .then(() => {
+          loading.value = false;
+          store.dispatch(Actions.APT.LIST);
+          hideModal(editAptModalRef.value);
+          if (searchVal.value.date) {
+            store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+              ...searchVal.value,
+            });
+            store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+              ...searchVal.value,
+            });
+          } else {
+            store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+              ...searchVal.value,
+            });
+          }
+        })
+        .catch(({ response }) => {
+          loading.value = false;
+          console.log(response.data.error);
+        });
+    };
+
     const handleCancel = () => {
       currentStepIndex.value = 0;
       _stepperObj.value.goFirst();
@@ -2013,6 +2039,7 @@ export default defineComponent({
       handleStep_1,
       handleStep_2,
       handleStep_3,
+      handleSave,
       handleCancel,
       currentStepIndex,
       editAptRef,

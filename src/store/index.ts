@@ -29,6 +29,7 @@ import SpecialistsModule from "@/store/modules/SpecialistsModule";
 import NtfTemplatesModule from "@/store/modules/NtfTemplatesModule";
 import MPaymentModule from "@/store/modules/MPaymentModule";
 import ProfileModule from "@/store/modules/ProfileModule";
+import ReferralDoctorModule from "@/store/modules/ReferralDoctorModule";
 
 config.rawError = true;
 
@@ -62,6 +63,7 @@ const store = createStore({
     SpecialistsModule,
     MPaymentModule,
     ProfileModule,
+    ReferralDoctorModule,
   },
 });
 
