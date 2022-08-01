@@ -32,30 +32,36 @@
 
         <!--begin::Modal body-->
         <div class="scroll modal-body py-lg-10 px-lg-10 h-500px">
-          <div class="search-params">
-            <h4 class="text-nowrap">
+          <h3 class="text-nowrap mb-5">Search Params</h3>
+          <div class="search-params d-flex flex-wrap mb-10 gap-4">
+            <h4 class="text-nowrap" style="color: var(--el-color-info)">
               Clinic:
-              {{ clinic_name + searchNextApts.clinic_id }}
+              <span class="text-primary">{{ clinic_name }}</span>
             </h4>
-            <h4 class="text-nowrap">Specialist: {{ specialist_name }}</h4>
-            <h4 class="text-nowrap">
+            <h4 class="text-nowrap" style="color: var(--el-color-info)">
+              Specialist:
+              <span class="text-primary">{{ specialist_name }}</span>
+            </h4>
+            <h4 class="text-nowrap" style="color: var(--el-color-info)">
               Time Requirement:
-              {{ time_requirement }}
+              <span class="text-primary">{{ time_requirement }}</span>
             </h4>
-            <h4 class="text-nowrap">Time Frame: {{ time_frame }}</h4>
-            <h4 class="text-nowrap">
+            <h4 class="text-nowrap" style="color: var(--el-color-info)">
+              Time Frame: <span class="text-primary">{{ time_frame }}</span>
+            </h4>
+            <h4 class="text-nowrap" style="color: var(--el-color-info)">
               Appointment Type:
-              {{ appointment_type }}
+              <span class="text-primary">{{ appointment_type }}</span>
             </h4>
           </div>
           <template v-if="availableSlotsByDate">
-            <div class="pb-lg-15 d-flex flex-row gap-5">
+            <div class="pb-15 d-flex flex-row gap-15">
               <div
-                class="ps-lg-10"
+                class="text-nowrap"
                 v-for="(slot_list, apt_date) in availableSlotsByDate"
                 :key="apt_date"
               >
-                <h3 style="white-space: nowrap">
+                <h3>
                   {{ slot_list.formatted_date }}
                 </h3>
                 <template
