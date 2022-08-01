@@ -116,6 +116,7 @@
             </a>
             <a
               v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
+              @click="handlePreAdmission"
               class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
             >
               <span class="svg-icon svg-icon-1">
@@ -194,6 +195,10 @@ export default defineComponent({
       router.push({ name: "make-payment-pay" });
     };
 
+    const handlePreAdmission = () => {
+      router.push({ name: "pre-admission-form1" });
+    };
+
     const handleView = () => {
       router.push({ name: "make-payment-view" });
     };
@@ -245,6 +250,7 @@ export default defineComponent({
       showFutureApt,
       generateID,
       handlePay,
+      handlePreAdmission,
       handleView,
     };
   },
