@@ -69,7 +69,19 @@
                   <!--end::Input-->
                 </div>
                 <!--end::Input group-->
+                <InputWrapper label="Appointment Color Preview" prop="type">
+                  <span :style="{ 'background-color': formData.color }"
+                    >John Smith</span
+                  >
+                </InputWrapper>
 
+                <ColorPicker
+                  :prop="color"
+                  :color="formData.color"
+                  @color-change="changeColor"
+                  default-format="hex"
+                  alpha-channel="hide"
+                />
                 <!--begin::Input group-->
                 <div class="fv-row col-6 mb-5">
                   <!--begin::Label-->
@@ -461,10 +473,17 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
+import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
+import { ColorPicker } from "vue-accessible-color-picker";
 
 export default defineComponent({
   name: "edit-apt-type-modal",
-  components: {},
+  components: { InputWrapper, ColorPicker },
+  methods: {
+    changeColor(color) {
+      this.formData.color = color.cssColor;
+    },
+  },
   setup() {
     const store = useStore();
     const formRef = ref(null);

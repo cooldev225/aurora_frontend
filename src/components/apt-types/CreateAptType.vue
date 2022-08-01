@@ -1,6 +1,6 @@
 <template>
   <div
-    class="modal fade"
+    class="modal modal-fullscreen fade"
     id="modal_add_apt_type"
     tabindex="-1"
     aria-hidden="true"
@@ -8,10 +8,8 @@
     data-bs-backdrop="static"
   >
     <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-650px">
-      <!--begin::Modal content-->
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_add_customer_header">
           <!--begin::Modal title-->
           <h2 class="fw-bolder">Create Appointment Type</h2>
@@ -51,371 +49,159 @@
               data-kt-scroll-offset="300px"
             >
               <div class="row">
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">Name</label>
-                  <!--end::Label-->
+                <!--Input: Appointment Type Name-->
+                <InputWrapper
+                  required
+                  label="Appointment Type Name"
+                  prop="name"
+                >
+                  <el-input
+                    v-model="formData.name"
+                    type="text"
+                    placeholder="e.g. Long Consultation"
+                  />
+                </InputWrapper>
 
-                  <!--begin::Input-->
-                  <el-form-item prop="name">
-                    <el-input
-                      v-model="formData.name"
-                      class="w-100"
-                      type="text"
-                      placeholder="Name"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-6 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">Type</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="type">
-                    <el-select v-model="formData.type" class="w-100">
-                      <el-option value="Consultation" label="Consultation" />
-                      <el-option value="Procedure" label="Procedure" />
-                    </el-select>
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-6 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">Invoice By</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="invoice_by">
-                    <el-select v-model="formData.invoice_by" class="w-100">
-                      <el-option value="Clinic" label="Clinic" />
-                      <el-option value="Specialist" label="Specialist" />
-                    </el-select>
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Input-->
-                  <el-form-item prop="anesthetist_required">
-                    <el-checkbox
-                      type="checkbox"
-                      v-model="formData.anesthetist_required"
-                      label="Anesthetist Required"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-6 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">MBS Code</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="mbs_code">
-                    <el-input
-                      v-model="formData.mbs_code"
-                      class="w-100"
-                      type="number"
-                      placeholder="MBS Code"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-6 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Clinical Code</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="clinical_code">
-                    <el-input
-                      v-model="formData.clinical_code"
-                      class="w-100"
-                      type="number"
-                      placeholder="Clinical Code"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-6 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2">Arrival Time</label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="arrival_time">
-                    <el-input
-                      v-model="formData.arrival_time"
-                      class="w-100"
-                      type="number"
-                      placeholder="Arrival Time"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-6 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Appointment Time</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="appointment_time ">
-                    <el-select
-                      v-model="formData.appointment_time"
-                      class="w-100"
-                    >
-                      <el-option value="single" label="Single" />
-                      <el-option value="double" label="Double" />
-                      <el-option value="triple" label="Triple" />
-                    </el-select>
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Payment Tier 1 (Self-insured) $</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="payment_tier_1">
-                    <el-input
-                      v-model="formData.payment_tier_1"
-                      class="w-100"
-                      type="number"
-                      placeholder="Payment Tier1"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Payment Tier 2 (Private health insurance with excess)
-                    $</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="payment_tier_2">
-                    <el-input
-                      v-model="formData.payment_tier_2"
-                      class="w-100"
-                      type="number"
-                      placeholder="Payment Tier2"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Payment Tier 3 (Private health insurance with $0 excess)
-                    $</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="payment_tier_3">
-                    <el-input
-                      v-model="formData.payment_tier_3"
-                      class="w-100"
-                      type="number"
-                      placeholder="Payment Tier3"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Payment Tier 4 (Private Health Insurance +
-                    Pension/Healthcare Card) $</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="payment_tier_4">
-                    <el-input
-                      v-model="formData.payment_tier_4"
-                      class="w-100"
-                      type="number"
-                      placeholder="Payment Tier4"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Payment Tier 5 (Pension Card) $</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="payment_tier_5">
-                    <el-input
-                      v-model="formData.payment_tier_5"
-                      class="w-100"
-                      type="number"
-                      placeholder="Payment Tier5"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Payment Tier 6 (Healthcare Card) $</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="payment_tier_6">
-                    <el-input
-                      v-model="formData.payment_tier_6"
-                      class="w-100"
-                      type="number"
-                      placeholder="Payment Tier6"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Payment Tier 7 (Department of Veteran Affairs) $</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="payment_tier_7">
-                    <el-input
-                      v-model="formData.payment_tier_7"
-                      class="w-100"
-                      type="number"
-                      placeholder="Payment Tier7"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Payment Tier 8 (Work Cover) $</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="payment_tier_8">
-                    <el-input
-                      v-model="formData.payment_tier_8"
-                      class="w-100"
-                      type="number"
-                      placeholder="Payment Tier8"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Payment Tier 9 (Transport Accident Commission) $</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="payment_tier_9">
-                    <el-input
-                      v-model="formData.payment_tier_9"
-                      class="w-100"
-                      type="number"
-                      placeholder="Payment Tier9"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Label-->
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Payment Tier 10 (AMA) $</label
-                  >
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="payment_tier_10">
-                    <el-input
-                      v-model="formData.payment_tier_10"
-                      class="w-100"
-                      type="number"
-                      placeholder="Payment Tier10"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
+                <!--Input: Appointment Type -->
+                <InputWrapper label="Type" prop="type">
+                  <el-select v-model="formData.type" class="w-100">
+                    <el-option value="Consultation" label="Consultation" />
+                    <el-option value="Procedure" label="Procedure" />
+                  </el-select>
+                </InputWrapper>
               </div>
+
+              <InputWrapper label="Appointment Color Preview" prop="type">
+                <span :style="{ 'background-color': formData.color }"
+                  >John Smith</span
+                >
+              </InputWrapper>
+
+              <ColorPicker
+                :prop="color"
+                :color="formData.color"
+                @color-change="changeColor"
+                default-format="hex"
+                alpha-channel="hide"
+              />
+
+              <!--Input: Invoice By -->
+              <InputWrapper label="Invoice By" prop="invoice_by">
+                <el-select v-model="formData.invoice_by" class="w-100">
+                  <el-option value="Clinic" label="Clinic" />
+                  <el-option value="Specialist" label="Specialist" />
+                </el-select>
+              </InputWrapper>
+
+              <!--Input: Anesthetist Required-->
+              <InputWrapper prop="anesthetist_required">
+                <el-checkbox
+                  type="checkbox"
+                  v-model="formData.anesthetist_required"
+                  label="Anesthetist Required"
+                />
+              </InputWrapper>
+
+              <!--Input: Arrival Time-->
+              <InputWrapper label="Arrival extra time" prop="arrival_time">
+                <el-input
+                  v-model="formData.arrival_time"
+                  type="number"
+                  placeholder="Arrival Time"
+                />
+              </InputWrapper>
+
+              <!--Input: Appointment Length -->
+              <InputWrapper label="Appointment Length" prop="appointment_time">
+                <el-select v-model="formData.appointment_time" class="w-100">
+                  <el-option value="single" label="Single" />
+                  <el-option value="double" label="Double" />
+                  <el-option value="triple" label="Triple" />
+                </el-select>
+              </InputWrapper>
+
+              <!--Input: Payment Tier 1 -->
+              <InputWrapper
+                label="Payment Tier 1 (Self-insured) $"
+                prop="payment_tier_1"
+              >
+                <el-input v-model="formData.payment_tier_1" type="number" />
+              </InputWrapper>
+
+              <!--Input: Payment Tier 2 -->
+              <InputWrapper
+                label="Payment Tier 2 (Private health insurance with excess)"
+                prop="payment_tier_2"
+              >
+                <el-input v-model="formData.payment_tier_2" type="number" />
+              </InputWrapper>
+
+              <!--Input: Payment Tier 3 -->
+              <InputWrapper
+                label="Payment Tier 3 (Private health insurance with $0 excess)"
+                prop="payment_tier_3"
+              >
+                <el-input v-model="formData.payment_tier_3" type="number" />
+              </InputWrapper>
             </div>
-            <!--end::Scroll-->
+
+            <!--Input: Payment Tier 4 -->
+            <InputWrapper
+              label="Payment Tier 4 (Private Health Insurance + Pension/Healthcare
+                Card)"
+              prop="payment_tier_4"
+            >
+              <el-input v-model="formData.payment_tier_4" type="number" />
+            </InputWrapper>
+
+            <!--Input: Payment Tier 5 -->
+            <InputWrapper
+              label="Payment Tier 5 (Pension Card)"
+              prop="payment_tier_5"
+            >
+              <el-input v-model="formData.payment_tier_5" type="number" />
+            </InputWrapper>
+
+            <!--Input: Payment Tier 6 -->
+            <InputWrapper
+              label="Payment Tier 6 (Healthcare Card)"
+              prop="payment_tier_6"
+            >
+              <el-input v-model="formData.payment_tier_6" type="number" />
+            </InputWrapper>
+
+            <!--Input: Payment Tier 7 -->
+            <InputWrapper
+              label="Payment Tier 7 (Department of Veteran Affairs)"
+              prop="payment_tier_7"
+            >
+              <el-input v-model="formData.payment_tier_7" type="number" />
+            </InputWrapper>
+
+            <!--Input: Payment Tier 8 -->
+            <InputWrapper
+              label="Payment Tier 8 (Department of Veteran Affairs)"
+              prop="payment_tier_8"
+            >
+              <el-input v-model="formData.payment_tier_8" type="number" />
+            </InputWrapper>
+
+            <!--Input: Payment Tier 9 -->
+            <InputWrapper
+              label="Payment Tier 8 (Work Cover)"
+              prop="payment_tier_9"
+            >
+              <el-input v-model="formData.payment_tier_9" type="number" />
+            </InputWrapper>
+
+            <!--Input: Payment Tier 10 -->
+            <InputWrapper label="Payment Tier 10 (AMA)" prop="payment_tier_10">
+              <el-input v-model="formData.payment_tier_10" type="number" />
+            </InputWrapper>
           </div>
+
+          <!--end::Scroll-->
+
           <!--end::Modal body-->
 
           <!--begin::Modal footer-->
@@ -461,10 +247,20 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
+import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
+import { ColorPicker } from "vue-accessible-color-picker";
 
 export default defineComponent({
   name: "create-apt-type-modal",
-  components: {},
+  components: {
+    InputWrapper,
+    ColorPicker,
+  },
+  methods: {
+    changeColor(color) {
+      this.formData.color = color.cssColor;
+    },
+  },
   setup() {
     const store = useStore();
     const formRef = ref(null);
@@ -475,6 +271,7 @@ export default defineComponent({
       name: "",
       type: "Consultation",
       anesthetist_required: 0,
+      color: "#eeeeee",
       mbs_code: 0,
       clinical_code: 0,
       invoice_by: "Clinic",
