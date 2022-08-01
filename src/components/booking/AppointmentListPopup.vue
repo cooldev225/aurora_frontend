@@ -32,11 +32,11 @@
 
         <!--begin::Modal body-->
         <div class="scroll modal-body py-lg-10 px-lg-10 h-500px">
-          <template v-if="_available_slots_by_date">
+          <template v-if="available_slots_by_date">
             <div class="pb-lg-15 d-flex flex-row gap-5">
               <div
                 class="ps-lg-10"
-                v-for="(slot_list, apt_date) in _available_slots_by_date"
+                v-for="(slot_list, apt_date) in available_slots_by_date"
                 :key="apt_date"
               >
                 <h3 style="white-space: nowrap">
@@ -88,14 +88,17 @@ import { Modal } from "bootstrap";
 export default defineComponent({
   name: "appointment-list-popup",
   props: {
-    available_slots_by_date: { type: Array, required: true },
+    availableSlotsByDate: { type: Object, required: true },
     allSpecialists: { type: Array, required: true },
+    searchNextApts: { type: Object, required: true },
+    aptTypeList: { type: Array, required: true },
+    clinicList: { type: Array, required: true },
+    aptTimeRequireList: { type: Array, required: true },
+    xWeeks: { type: Object, required: true },
   },
   setup(props) {
-    const _available_slots_by_date = computed(
-      () => props.available_slots_by_date
-    );
-    const _allSpecialists = computed(() => props.allSpecialists);
+    const available_slots_by_date = computed(() => props.availableSlotsByDate);
+    const all_specialists = computed(() => props.allSpecialists);
     const store = useStore();
 
     const handleAddApt = (specialist_ids, date, startTime, endTime) => {
@@ -104,7 +107,7 @@ export default defineComponent({
       let selected_specialist = null;
       let available_specialists = [];
 
-      for (let specialist of _allSpecialists.value) {
+      for (let specialist of all_specialists.value) {
         if (specialist_ids.includes(specialist.id)) {
           selected_specialist = specialist;
 
@@ -143,15 +146,10 @@ export default defineComponent({
       current_modal.hide();
     };
 
-    const timeStr2Number = (time) => {
-      return Number(time.split(":")[0] + time.split(":")[1]);
-    };
-
     return {
-      _available_slots_by_date,
-      _allSpecialists,
+      available_slots_by_date,
+      all_specialists,
       handleAddApt,
-      timeStr2Number,
     };
   },
 });

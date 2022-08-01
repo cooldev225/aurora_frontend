@@ -264,8 +264,13 @@
 
   <CreateModal></CreateModal>
   <AppointmentListPopup
-    :available_slots_by_date="_available_slots_by_date"
-    :allSpecialists="_allSpecialists"
+    :available-slots-by-date="_available_slots_by_date"
+    :all-specialists="_allSpecialists"
+    :search-next-apts="_search_next_apts"
+    :apt-type-list="_aptTypelist"
+    :clinic-list="_clinic_list"
+    :apt-time-require-list="_aptTimeRequireList"
+    :x-weeks="_x_weeks"
   />
   <!-- <EditModal></EditModal> -->
 </template>
