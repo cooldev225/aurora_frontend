@@ -198,6 +198,10 @@ const Actions = {
     CHECK_OUT: "checkOutApt",
   },
 
+  REFERRAL_DOCTOR: {
+    LIST: "searchReferralDoctor",
+  },
+
   // EMPLOYEE_ROLE: {
   //   LIST: "listEmployeeRoles",
   //   CREATE: "createEmployeeRoles",
@@ -337,6 +341,10 @@ const Mutations = {
       LIST: "setCancellationApt",
       SELECT: "setSelectCancellationApt",
     },
+  },
+
+  SET_REFERRAL_DOCTOR: {
+    LIST: "setReferralDoctor",
   },
 
   SET_MAKE_PAYMENT: {
