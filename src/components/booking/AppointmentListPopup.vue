@@ -32,11 +32,27 @@
 
         <!--begin::Modal body-->
         <div class="scroll modal-body py-lg-10 px-lg-10 h-500px">
-          <template v-if="available_slots_by_date">
+          <div class="search-params">
+            <h4 class="text-nowrap">
+              Clinic:
+              {{ clinic_name + searchNextApts.clinic_id }}
+            </h4>
+            <h4 class="text-nowrap">Specialist: {{ specialist_name }}</h4>
+            <h4 class="text-nowrap">
+              Time Requirement:
+              {{ time_requirement }}
+            </h4>
+            <h4 class="text-nowrap">Time Frame: {{ time_frame }}</h4>
+            <h4 class="text-nowrap">
+              Appointment Type:
+              {{ appointment_type }}
+            </h4>
+          </div>
+          <template v-if="availableSlotsByDate">
             <div class="pb-lg-15 d-flex flex-row gap-5">
               <div
                 class="ps-lg-10"
-                v-for="(slot_list, apt_date) in available_slots_by_date"
+                v-for="(slot_list, apt_date) in availableSlotsByDate"
                 :key="apt_date"
               >
                 <h3 style="white-space: nowrap">
@@ -97,9 +113,45 @@ export default defineComponent({
     xWeeks: { type: Object, required: true },
   },
   setup(props) {
-    const available_slots_by_date = computed(() => props.availableSlotsByDate);
-    const all_specialists = computed(() => props.allSpecialists);
     const store = useStore();
+
+    const clinic_name = computed(() => {
+      const clinic = props.clinicList.find(
+        ({ id }) => id === props.searchNextApts.clinic_id
+      );
+
+      return clinic == undefined ? "Any" : clinic.name;
+    });
+
+    const specialist_name = computed(() => {
+      const specialist = props.allSpecialists.find(
+        ({ id }) => id === props.searchNextApts.specialist_id
+      );
+
+      return specialist == undefined ? "Any" : specialist.name;
+    });
+
+    const time_requirement = computed(() => {
+      const time_requirement = props.aptTimeRequireList.find(
+        ({ id }) => id === props.searchNextApts.time_requirement
+      );
+
+      return time_requirement == undefined ? "Any" : time_requirement.title;
+    });
+
+    const time_frame = computed(() =>
+      props.xWeeks[props.searchNextApts.x_weeks] == undefined
+        ? "Any"
+        : props.xWeeks[props.searchNextApts.x_weeks]
+    );
+
+    const appointment_type = computed(() => {
+      const appointment_type = props.aptTypeList.find(
+        ({ id }) => id === props.searchNextApts.appointment_type_id
+      );
+
+      return appointment_type == undefined ? "Any" : appointment_type.name;
+    });
 
     const handleAddApt = (specialist_ids, date, startTime, endTime) => {
       const _date = moment(date).format("YYYY-MM-DD").toString();
@@ -107,7 +159,7 @@ export default defineComponent({
       let selected_specialist = null;
       let available_specialists = [];
 
-      for (let specialist of all_specialists.value) {
+      for (let specialist of props.allSpecialists) {
         if (specialist_ids.includes(specialist.id)) {
           selected_specialist = specialist;
 
@@ -147,9 +199,12 @@ export default defineComponent({
     };
 
     return {
-      available_slots_by_date,
-      all_specialists,
       handleAddApt,
+      clinic_name,
+      specialist_name,
+      time_requirement,
+      time_frame,
+      appointment_type,
     };
   },
 });
