@@ -262,6 +262,28 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
+    path: "/pre-admission",
+    name: "pre-admission",
+    component: () => import("@/views/pre-admission/index.vue"),
+    children: [
+      {
+        path: "/pre-admission/form1",
+        name: "pre-admission-form1",
+        component: () => import("@/components/pre-admission/Form1.vue"),
+      },
+      {
+        path: "/pre-admission/form2",
+        name: "pre-admission-form2",
+        component: () => import("@/components/pre-admission/Form2.vue"),
+      },
+      {
+        path: "/pre-admission/form3",
+        name: "pre-admission-form3",
+        component: () => import("@/components/pre-admission/Form3.vue"),
+      },
+    ],
+  },
+  {
     path: "/multi-step-sign-up",
     name: "multi-step-sign-up",
     component: () =>
