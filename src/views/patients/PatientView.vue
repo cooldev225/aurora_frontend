@@ -1,7 +1,7 @@
 <template>
   <!--begin::Navbar-->
   <div class="card mb-5 mb-xxl-8">
-    <div class="card-body pt-9 pb-0">
+    <div class="card-body pt-3 pb-0">
       <!--begin::Details-->
       <div class="d-flex flex-wrap flex-sm-nowrap mb-3">
         <!--begin::Info-->
@@ -10,139 +10,70 @@
           <div
             class="d-flex justify-content-between align-items-start flex-wrap mb-2"
           >
-            <!--begin::User-->
-            <div class="d-flex flex-column">
-              <!--begin::Name-->
-              <div class="d-flex align-items-center mb-2">
-                <span
-                  class="text-gray-800 text-hover-primary fs-2 fw-bolder me-1"
-                >
-                  {{ formData.first_name }} {{ formData.last_name }}
-                </span>
-                <span
-                  v-if="formData.UR_number"
-                  class="btn btn-sm btn-light-success fw-bolder ms-2 fs-8 py-1 px-3"
-                  >{{ formData.UR_number }}</span
-                >
-              </div>
-              <!--end::Name-->
-
-              <!--begin::Info-->
-              <div class="d-flex flex-wrap fw-bold fs-6 mb-4 pe-2">
-                <a
-                  href="#"
-                  v-if="formData.email"
-                  class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2"
-                >
-                  <span class="svg-icon svg-icon-4 me-1">
-                    <inline-svg
-                      src="media/icons/duotune/communication/com011.svg"
-                    />
-                  </span>
-                  {{ formData.email }}
-                </a>
-                <span
-                  href="#"
-                  v-if="formData.address"
-                  class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2"
-                >
-                  <span class="svg-icon svg-icon-4 me-1">
-                    <inline-svg src="media/icons/duotune/general/gen018.svg" />
-                  </span>
-                  {{ formData.address }}
-                </span>
-                <span
-                  v-if="formData.date_of_birth"
-                  class="d-flex align-items-center text-gray-400 text-hover-primary mb-2"
-                >
-                  <span class="svg-icon svg-icon-4 me-1">
-                    <inline-svg src="media/icons/duotune/general/gen014.svg" />
-                  </span>
-                  {{ formData.date_of_birth }}
-                </span>
-              </div>
-              <!--end::Info-->
-
-              <!--begin::Stats-->
-              <div class="d-flex flex-wrap flex-stack">
-                <!--begin::Progress-->
-                <span
-                  v-if="formData.upcoming_appointment"
-                  class="badge"
-                  :style="`width: fit-content; background-color: ${formData.upcoming_appointment.color}`"
-                  >{{
-                    formData.upcoming_appointment.date +
-                    " " +
-                    formData.upcoming_appointment.start_time +
-                    "(" +
-                    formData.upcoming_appointment.procedure_name +
-                    ")"
-                  }}</span
-                >
-                <!--end::Progress-->
-              </div>
-              <!--end::Stats-->
-            </div>
-            <!--end::User-->
+            <span
+              class="my-auto text-gray-800 text-hover-primary fs-2 fw-bolder me-1"
+            >
+              {{ formData.first_name }} {{ formData.last_name }}
+            </span>
 
             <!--begin::Actions-->
             <div class="my-4">
-              <div class="d-flex mb-3">
-                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
-                  <i class="bi bi-printer fs-3"></i>
-                  Labels
-                </a>
-
-                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
-                  <i class="bi bi-printer fs-3"></i>
-                  Details
-                </a>
-              </div>
               <div class="d-flex">
-                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
-                  <i class="bi bi-file-plus fs-3"></i>
-                  Document
-                </a>
-
-                <a
-                  class="btn btn-sm btn-light me-2"
-                  id="kt_user_follow_button"
+                <IconButton label="Print Label" />
+                <IconButton label="Upload Document" />
+                <IconButton
                   @click="handleRecallReminder"
-                >
-                  <i class="bi bi-file-plus fs-3"></i>
-                  Recall Reminder
-                </a>
-
-                <a
-                  class="btn btn-sm btn-light me-2"
-                  id="kt_user_follow_button"
+                  label="Add Recall Reminder"
+                />
+                <!-- SPECIALIST ONLY ACTIONS-->
+                <IconButton
+                  iconSRC="media/icons/duotune/arrows/arr009.svg"
                   @click="handleReport"
-                >
-                  <i class="bi bi-plus fs-3"></i>
-                  Report
-                </a>
-                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
-                  <i class="bi bi-plus fs-3"></i>
-                  Clinical Note
-                </a>
-                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
-                  <i class="bi bi-plus fs-3"></i>
-                  Audio
-                </a>
-                <a class="btn btn-sm btn-light me-2" id="kt_user_follow_button">
-                  <i class="bi bi-send fs-3"></i>
-                  Letter
-                </a>
+                  label="Report"
+                />
+                <IconButton
+                  iconSRC="media/icons/duotune/arrows/arr009.svg"
+                  @click="handleReport"
+                  label="Clinical Note"
+                />
+                <IconButton
+                  iconSRC="media/icons/duotune/arrows/arr009.svg"
+                  @click="handleReport"
+                  label="Letter"
+                />
+                <IconButton
+                  iconSRC="media/icons/duotune/arrows/arr009.svg"
+                  @click="handleReport"
+                  label="Audio"
+                />
+                <!--END SPECIALIST ONLY ACTIONS-->
               </div>
             </div>
-            <!--end::Actions-->
           </div>
           <!--end::Title-->
         </div>
         <!--end::Info-->
       </div>
       <!--end::Details-->
+      <!--begin::Info-->
+      <div class="d-flex flex-wrap fw-bold fs-6 mb-4 pe-2">
+        <IconText iconSRC="media/icons/duotune/communication/com011.svg">
+          {{ formData.email }}
+        </IconText>
 
+        <IconText iconSRC="media/icons/duotune/general/gen018.svg">
+          {{ formData.address }}
+        </IconText>
+
+        <IconText iconSRC="media/icons/duotune/files/fil002.svg">
+          {{ formData.date_of_birth }}
+        </IconText>
+
+        <IconText iconSRC="media/icons/duotune/electronics/elc002.svg">
+          {{ formData.contact_number }}
+        </IconText>
+      </div>
+      <!--end::Info-->
       <!--begin::Navs-->
       <div class="d-flex overflow-auto h-55px">
         <ul
@@ -199,7 +130,7 @@
               to="/patients/view/administration"
               active-class="active"
             >
-              Administration
+              Demographic
             </router-link>
           </li>
           <!--end::Nav item-->
@@ -221,12 +152,16 @@ import { Modal } from "bootstrap";
 import { Actions } from "@/store/enums/StoreEnums";
 import RecallReminderModal from "@/components/patients/RecallReminderModal.vue";
 import ReportModal from "@/components/patients/ReportTemplateModal.vue";
+import IconText from "@/components/presets/GeneralElements/IconText.vue";
+import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 
 export default defineComponent({
   name: "patients-view",
   components: {
     RecallReminderModal,
     ReportModal,
+    IconText,
+    IconButton,
   },
 
   setup() {
