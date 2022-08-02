@@ -1,6 +1,6 @@
 <template>
   <a>
-    <label class="fs-3 text-primary"
+    <label class="fs-5 text-primary"
       >{{ heading }}: <span class="text-black fs-5"><slot /></span
     ></label>
   </a>
