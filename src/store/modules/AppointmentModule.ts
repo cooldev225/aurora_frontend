@@ -263,7 +263,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   [Actions.APT.CHECK_IN](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("appointments/check-in", data.id, {})
+      ApiService.update("appointments/check-in", data.id, data)
         .then(({ data }) => {
           return data.data;
         })
