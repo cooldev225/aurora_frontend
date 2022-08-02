@@ -8,7 +8,7 @@
     aria-hidden="true"
   >
     <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-1000px">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 96%">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
@@ -62,15 +62,18 @@
                 :key="apt_date"
               >
                 <h3>
-                  {{ slot_list.formatted_date }}
+                  {{ formattedSlotDate(apt_date) }}
                 </h3>
                 <template
                   v-for="(slot_item, idx_2) in slot_list.time_slot_list"
                   :key="idx_2"
                 >
-                  <div class="mt-5 justify-content-center align-items-center">
+                  <div
+                    class="mt-5 justify-content-center align-items-center mw-250 text-wrap"
+                  >
                     <span
-                      class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-5"
+                      class="w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
+                      style="color: var(--el-color-primary)"
                       data-kt-drawer-toggle="true"
                       data-kt-drawer-target="#kt_drawer_chat"
                       @click="
@@ -84,6 +87,21 @@
                     >
                       {{ slot_item.start_time }}
                     </span>
+                    <p
+                      class="mb-1"
+                      style="color: var(--el-text-color-secondary)"
+                      v-if="clinic_name == 'Any'"
+                    >
+                      {{
+                        clinicNameFromSlot(slot_item.specialist_ids, apt_date)
+                      }}
+                    </p>
+                    <p
+                      style="color: var(--el-color-warning)"
+                      v-if="specialist_name == 'Any'"
+                    >
+                      {{ specialistNameFromSlot(slot_item.specialist_ids) }}
+                    </p>
                   </div>
                 </template>
               </div>
@@ -162,29 +180,34 @@ export default defineComponent({
     const handleAddApt = (specialist_ids, date, startTime, endTime) => {
       const _date = moment(date).format("YYYY-MM-DD").toString();
 
-      let selected_specialist = null;
       let available_specialists = [];
 
       for (let specialist of props.allSpecialists) {
-        if (specialist_ids.includes(specialist.id)) {
-          selected_specialist = specialist;
+        if (Object.values(specialist_ids).includes(specialist.id)) {
+          let temp_specialist = specialist;
 
-          selected_specialist.anesthetist = {
-            id: selected_specialist.anesthetist_id,
-            name: selected_specialist.anesthetist_name,
+          temp_specialist.anesthetist = {
+            id: temp_specialist.anesthetist_id,
+            name: temp_specialist.anesthetist_name,
           };
 
           let dayOfWeek = moment(date).format("dddd").toString();
 
           dayOfWeek = dayOfWeek.toLowerCase();
 
-          const work_hours = JSON.parse(selected_specialist.work_hours);
+          const work_hours = JSON.parse(temp_specialist.work_hours);
 
-          selected_specialist.work_hours = work_hours[dayOfWeek];
+          temp_specialist.work_hours = work_hours[dayOfWeek];
 
-          available_specialists.push(selected_specialist);
+          available_specialists.push(temp_specialist);
         }
       }
+
+      const specialist_id = Object.values(specialist_ids)[0];
+
+      const selected_specialist = props.allSpecialists.find(
+        ({ id }) => id == specialist_id
+      );
 
       const item = {
         time_slots: [_date + "T" + startTime, _date + "T" + endTime],
@@ -204,8 +227,59 @@ export default defineComponent({
       current_modal.hide();
     };
 
+    const specialistNameFromSlot = (specialist_ids) => {
+      if (specialist_ids == undefined) {
+        return "";
+      }
+
+      if (props.allSpecialists == undefined) {
+        return "";
+      }
+
+      const specialist_id = Object.values(specialist_ids)[0];
+
+      const selected_specialist = props.allSpecialists.find(
+        ({ id }) => id == specialist_id
+      );
+
+      return selected_specialist.name;
+    };
+
+    const formattedSlotDate = (date) => {
+      return moment(date).format("MMM Do, ddd").toString();
+    };
+
+    const clinicNameFromSlot = (specialist_ids, date) => {
+      if (specialist_ids == undefined) {
+        return "";
+      }
+
+      if (props.allSpecialists == undefined) {
+        return "";
+      }
+
+      const specialist_id = Object.values(specialist_ids)[0];
+
+      const selected_specialist = props.allSpecialists.find(
+        ({ id }) => id == specialist_id
+      );
+
+      let dayOfWeek = moment(date).format("dddd").toString();
+
+      dayOfWeek = dayOfWeek.toLowerCase();
+
+      let work_hours = JSON.parse(selected_specialist.work_hours);
+
+      work_hours = work_hours[dayOfWeek];
+
+      return work_hours.locations.name;
+    };
+
     return {
       handleAddApt,
+      formattedSlotDate,
+      clinicNameFromSlot,
+      specialistNameFromSlot,
       clinic_name,
       specialist_name,
       time_requirement,
