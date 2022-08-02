@@ -69,6 +69,7 @@
                           value-key="full_name"
                           :fetch-suggestions="searchReferralDoctor"
                           placeholder="Please input"
+                          :trigger-on-focus="false"
                           @select="handleSelect"
                         >
                           <template #default="{ item }">

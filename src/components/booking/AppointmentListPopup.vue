@@ -184,7 +184,7 @@ export default defineComponent({
 
       for (let specialist of props.allSpecialists) {
         if (Object.values(specialist_ids).includes(specialist.id)) {
-          let temp_specialist = specialist;
+          let temp_specialist = Object.assign({}, specialist);
 
           temp_specialist.anesthetist = {
             id: temp_specialist.anesthetist_id,
@@ -205,7 +205,7 @@ export default defineComponent({
 
       const specialist_id = Object.values(specialist_ids)[0];
 
-      const selected_specialist = props.allSpecialists.find(
+      const selected_specialist = available_specialists.find(
         ({ id }) => id == specialist_id
       );
 
