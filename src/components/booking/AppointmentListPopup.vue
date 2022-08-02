@@ -205,7 +205,7 @@ export default defineComponent({
 
       const specialist_id = Object.values(specialist_ids)[0];
 
-      const selected_specialist = props.allSpecialists.find(
+      const selected_specialist = available_specialists.find(
         ({ id }) => id == specialist_id
       );
 
