@@ -5,7 +5,7 @@
       color +
       ' border border-' +
       color +
-      ' d-flex flex-column flex-sm-row w-100 p-5 mb-10'
+      ' d-flex flex-column flex-sm-row w-100 p-2 mb-6'
     "
   >
     <span :class="'svg-icon svg-icon-2hx svg-icon-' + color">

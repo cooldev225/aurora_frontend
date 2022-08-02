@@ -100,6 +100,7 @@
                   <template v-else-if="item_2.time_length === 0"></template>
                   <template v-else>
                     <td
+                      @click="handleEdit(item_2.appointment)"
                       :rowspan="item_2.time_length"
                       :style="{
                         'min-width': '220px',
@@ -108,16 +109,39 @@
                       :colspan="item_1.appointment.length === 2 ? 1 : 2"
                     >
                       <div
-                        class="d-flex justify-content-center align-items-center"
+                        class="fw-bold d-flex flex-column justify-content-center align-items-center"
                       >
-                        <span
-                          class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-5"
-                          @click="handleEdit(item_2.appointment)"
-                        >
+                        <span class="">
                           {{ item_2.appointment.first_name }}
                           {{ item_2.appointment.last_name }} ({{
                             item_2.appointment.contact_number
                           }})
+                        </span>
+                        <span>
+                          <span
+                            v-if="item_2.appointment.allergies != ''"
+                            class="badge badge-light-danger opacity-50 mx-2"
+                          >
+                            ALLERGY
+                          </span>
+                          <span
+                            v-if="
+                              item_2.appointment.attendance_status ==
+                              'CHECKED_IN'
+                            "
+                            class="badge badge-success"
+                          >
+                            CHECKED IN
+                          </span>
+                          <span
+                            v-if="
+                              item_2.appointment.attendance_status ==
+                              'CHECKED_OUT'
+                            "
+                            class="opacity-50 badge badge-light-dark disabled"
+                          >
+                            CHECKED OUT
+                          </span>
                         </span>
                       </div>
                     </td>

@@ -76,7 +76,10 @@
 
           <!--begin::Appointment Info-->
           <div class="d-flex flex-column gap-3">
-            <AppointmentInfoSection :heading="'Clinic Name'">{{
+            <AppointmentInfoSection :heading="'Patient'"
+              >{{ displayData.patient_name }} ({{ displayData.patient_number }})
+            </AppointmentInfoSection>
+            <AppointmentInfoSection :heading="'Clinic'">{{
               displayData.clinic_name
             }}</AppointmentInfoSection>
 
@@ -95,28 +98,36 @@
             }}</AppointmentInfoSection>
           </div>
           <!--end::Appointment Info-->
-
           <el-divider />
           <div v-if="displayData.notes">
-            <label class="fs-3 text-primary"
+            <label class="fs-5 text-primary"
               >Notes:
               <span class="text-black fs-5">{{
                 displayData.notes
               }}</span></label
             >
+            <el-divider v-if="displayData.allergies" />
+            <div v-if="displayData.allergies">
+              <label class="fs-5 text-danger"
+                >Allergies:
+                <span class="text-black fs-5">{{
+                  displayData.allergies
+                }}</span></label
+              >
+            </div>
             <el-divider />
           </div>
         </div>
         <!--end::Appointment Info-->
         <!--begin::Appointment Actions-->
-        <div class="d-flex flex-column gap-5 mt-5">
+        <div class="d-flex flex-column gap-3 mt-5">
           <!--Check In Button-->
           <BookingDrawerButton
             v-if="aptData.attendance_status === 'NOT_PRESENT'"
             @click="handleCheckIn"
             :heading="'Check In'"
             :subheading="'Appointment'"
-            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :iconPath="'media/icons/duotune/arrows/arr024.svg'"
             :color="'primary'"
           />
 
@@ -126,7 +137,7 @@
             @click="handleCheckOut"
             :heading="'Check Out'"
             :subheading="'Appointment'"
-            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :iconPath="'media/icons/duotune/arrows/arr021.svg'"
             :color="'primary'"
           />
 
@@ -135,7 +146,7 @@
             v-if="aptData.attendance_status === 'CHECKED_OUT'"
             :heading="'Checked Out'"
             :subheading="'Appointment'"
-            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :iconPath="'media/icons/duotune/arrows/arr021.svg'"
             :color="'grey'"
           />
 
@@ -144,7 +155,7 @@
             @click="handleView"
             :heading="'View'"
             :subheading="'Patient'"
-            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :iconPath="'media/icons/duotune/medicine/med001.svg'"
             :color="'primary'"
           />
 
@@ -161,7 +172,7 @@
             @click="handleEdit"
             :heading="'Move'"
             :subheading="'Appointment'"
-            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :iconPath="'media/icons/duotune/arrows/arr035.svg'"
             :color="'success'"
           />
 
@@ -170,7 +181,7 @@
             @click="handleCancel"
             :heading="'Cancel'"
             :subheading="'Appointment'"
-            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :iconPath="'media/icons/duotune/arrows/arr011.svg'"
             :color="'danger'"
           />
         </div>
@@ -220,6 +231,9 @@ export default defineComponent({
       appointment_type_name: "",
       specialist_name: "",
       notes: "",
+      allergies: "",
+      patient_name: "",
+      patient_number: "",
       procedure_approval_status: "",
     });
 
@@ -298,6 +312,8 @@ export default defineComponent({
     };
 
     watchEffect(() => {
+      console.log("data:");
+      console.log(aptData.value);
       displayData.reference_number = aptData.value.reference_number;
       displayData.clinic_name = aptData.value.clinic_name;
       displayData.start_time = aptData.value.start_time;
@@ -307,6 +323,12 @@ export default defineComponent({
       displayData.appointment_type_name = aptData.value.appointment_type_name;
       displayData.specialist_name = aptData.value.specialist_name;
       displayData.notes = aptData.value.note;
+
+      displayData.allergies = aptData.value.allergies;
+      displayData.patient_name =
+        aptData.value.first_name + " " + aptData.value.last_name;
+      displayData.patient_number = aptData.value.contact_number;
+
       displayData.procedure_approval_status =
         aptData.value.procedure_approval_status;
     });
