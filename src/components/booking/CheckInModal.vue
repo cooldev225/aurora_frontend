@@ -93,14 +93,30 @@
                       <!--end::Label-->
                       <!--begin::Input-->
                       <el-form-item prop="referral_file">
-                        <el-upload
-                          action="#"
-                          ref="upload"
-                          :limit="1"
-                          :auto-upload="false"
-                        >
-                          <el-button type="primary">Choose File</el-button>
-                        </el-upload>
+                        <el-space wrap>
+                          <el-upload
+                            action="#"
+                            ref="upload"
+                            class="mr-20"
+                            :limit="1"
+                            :auto-upload="false"
+                          >
+                            <el-button type="primary" class="btn btn-primary"
+                              >Choose File</el-button
+                            >
+                          </el-upload>
+                          <el-button
+                            v-show="
+                              aptData.referral_file !== null &&
+                              aptData.referral_file !== ''
+                            "
+                            type="button"
+                            class="btn btn-success"
+                            @click="handleClickReferralFile"
+                          >
+                            View
+                          </el-button>
+                        </el-space>
                       </el-form-item>
                       <!--end::Input-->
                     </div>
@@ -299,6 +315,10 @@ export default defineComponent({
       };
     };
 
+    const handleClickReferralFile = () => {
+      window.open(aptData.value.referral_file, "_blank");
+    };
+
     const handleCheckIn = async () => {
       await store
         .dispatch(Actions.APT.CHECK_IN, aptData.value)
@@ -328,6 +348,7 @@ export default defineComponent({
 
     return {
       aptData,
+      handleClickReferralFile,
       handleCheckIn,
       searchReferralDoctor,
       handleSelect,
