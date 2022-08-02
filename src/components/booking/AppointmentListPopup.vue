@@ -184,7 +184,7 @@ export default defineComponent({
 
       for (let specialist of props.allSpecialists) {
         if (Object.values(specialist_ids).includes(specialist.id)) {
-          let temp_specialist = specialist;
+          let temp_specialist = Object.assign({}, specialist);
 
           temp_specialist.anesthetist = {
             id: temp_specialist.anesthetist_id,
