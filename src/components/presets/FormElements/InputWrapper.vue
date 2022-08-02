@@ -1,8 +1,11 @@
 <template>
-  <div class="px-6 py-3">
-    <label class="fs-6 fw-bold mb-2" :class="{ required: required }">{{
-      label
-    }}</label>
+  <div class="px-6">
+    <label
+      class="fs-6 fw-bold mb-2"
+      style="color: grey"
+      :class="{ required: required }"
+      >{{ label }}</label
+    >
 
     <el-form-item prop="prop">
       <slot></slot>

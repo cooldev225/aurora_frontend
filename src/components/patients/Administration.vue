@@ -5,180 +5,207 @@
     :rules="rules"
     ref="formRef"
   >
-    <div
-      class="card mb-5 mb-xl-10 m-auto"
-      id="patient_view_administration_patient"
-    >
-      <div class="container py-6">
-        <div class="row justify-content-md-center">
-          <InputWrapper :class="colString" label="Title" prop="title">
-            <el-select
-              class="w-100"
-              v-model="formData.title"
-              placeholder="Select Title"
-            >
-              <el-option
-                v-for="item in titles"
-                :key="item.value"
-                :value="item.value"
-                :label="item.label"
-              />
-            </el-select>
-          </InputWrapper>
+    <div class="card mb-5 mb-xl-10" id="patient_view_administration_patient">
+      <div id="patient_view_administration_patient" class="card-body pt-0">
+        <div class="py-0">
+          <div class="me-3 mt-6">
+            <div class="d-flex align-items-center">
+              <div class="text-gray-800 fw-bolder">Patient Details</div>
+            </div>
+          </div>
+          <div class="container py-6">
+            <div class="row justify-content-md-center">
+              <InputWrapper :class="colString" label="Title" prop="title">
+                <el-select
+                  class="w-100"
+                  v-model="formData.title"
+                  placeholder="Select Title"
+                >
+                  <el-option
+                    v-for="item in titles"
+                    :key="item.value"
+                    :value="item.value"
+                    :label="item.label"
+                  />
+                </el-select>
+              </InputWrapper>
 
-          <InputWrapper :class="colString" label="First Name" prop="first_name">
-            <el-input
-              type="text"
-              v-model="formData.first_name"
-              placeholder="First Name"
-            />
-          </InputWrapper>
+              <InputWrapper
+                :class="colString"
+                label="First Name"
+                prop="first_name"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.first_name"
+                  placeholder="First Name"
+                />
+              </InputWrapper>
 
-          <InputWrapper :class="colString" label="Last Name" prop="last_name">
-            <el-input
-              type="text"
-              v-model="formData.last_name"
-              placeholder="Last Name"
-            />
-          </InputWrapper>
+              <InputWrapper
+                :class="colString"
+                label="Last Name"
+                prop="last_name"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.last_name"
+                  placeholder="Last Name"
+                />
+              </InputWrapper>
 
-          <InputWrapper
-            :class="colString"
-            label="Date Of Birth"
-            prop="date_of_birth"
-          >
-            <el-date-picker
-              class="w-100"
-              v-model="formData.date_of_birth"
-              format="YYYY-MM-DD"
-              placeholder="1990-01-01"
-            />
-          </InputWrapper>
+              <InputWrapper
+                :class="colString"
+                label="Date Of Birth"
+                prop="date_of_birth"
+              >
+                <el-date-picker
+                  class="w-100"
+                  v-model="formData.date_of_birth"
+                  format="YYYY-MM-DD"
+                  placeholder="1990-01-01"
+                />
+              </InputWrapper>
 
-          <InputWrapper
-            :class="colString"
-            label="Contact Number"
-            prop="contact_number"
-          >
-            <el-input
-              type="text"
-              v-model="formData.contact_number"
-              placeholder="Contact Number"
-            />
-          </InputWrapper>
+              <InputWrapper
+                :class="colString"
+                label="Contact Number"
+                prop="contact_number"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.contact_number"
+                  placeholder="Contact Number"
+                />
+              </InputWrapper>
 
-          <InputWrapper :class="colString" label="Email" prop="email">
-            <el-input
-              type="email"
-              v-model="formData.email"
-              placeholder="Email"
-            />
-          </InputWrapper>
+              <InputWrapper :class="colString" label="Email" prop="email">
+                <el-input
+                  type="email"
+                  v-model="formData.email"
+                  placeholder="Email"
+                />
+              </InputWrapper>
 
-          <InputWrapper :class="colString" label="Address" prop="address">
-            <el-input
-              type="text"
-              v-model="formData.address"
-              placeholder="Address"
-            />
-          </InputWrapper>
+              <InputWrapper :class="colString" label="Address" prop="address">
+                <el-input
+                  type="text"
+                  v-model="formData.address"
+                  placeholder="Address"
+                />
+              </InputWrapper>
 
-          <InputWrapper :class="colString" label="Gender" prop="gender">
-            <el-select
-              class="w-100"
-              v-model="formData.gender"
-              placeholder="Select Gender"
-            >
-              <el-option value="male" label="Male" />
-              <el-option value="female" label="Female" />
-              <el-option value="other" label="Other" />
-              <el-option
-                value="undisclosed"
-                label="Not Stated / Inadequately Described"
-              />
-            </el-select>
-          </InputWrapper>
-          <InputWrapper
-            :class="colString"
-            label="Marital Status"
-            prop="marital_status"
-          >
-            <el-select
-              class="w-100"
-              v-model="formData.marital_status"
-              placeholder="Marital Status"
-            >
-              <el-option
-                v-for="status in maritalStatus"
-                :key="status.value"
-                :value="status.value"
-                :label="status.label"
-              />
-            </el-select>
-          </InputWrapper>
+              <InputWrapper :class="colString" label="Gender" prop="gender">
+                <el-select
+                  class="w-100"
+                  v-model="formData.gender"
+                  placeholder="Select Gender"
+                >
+                  <el-option value="male" label="Male" />
+                  <el-option value="female" label="Female" />
+                  <el-option value="other" label="Other" />
+                  <el-option
+                    value="undisclosed"
+                    label="Not Stated / Inadequately Described"
+                  />
+                </el-select>
+              </InputWrapper>
+              <InputWrapper
+                :class="colString"
+                label="Marital Status"
+                prop="marital_status"
+              >
+                <el-select
+                  class="w-100"
+                  v-model="formData.marital_status"
+                  placeholder="Marital Status"
+                >
+                  <el-option
+                    v-for="status in maritalStatus"
+                    :key="status.value"
+                    :value="status.value"
+                    :label="status.label"
+                  />
+                </el-select>
+              </InputWrapper>
 
-          <InputWrapper :class="colString" label="Occupation" prop="occupation">
-            <el-input
-              type="text"
-              v-model="formData.occupation"
-              placeholder="Occupation"
-            />
-          </InputWrapper>
+              <InputWrapper
+                :class="colString"
+                label="Occupation"
+                prop="occupation"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.occupation"
+                  placeholder="Occupation"
+                />
+              </InputWrapper>
 
-          <InputWrapper
-            :class="colString"
-            label="Aboriginal or Torres Strait Islander?"
-            prop="aborginality"
-          >
-            <el-select
-              class="w-100"
-              v-model="formData.aborginality"
-              placeholder="Aborginality"
-            >
-              <el-option :value="0" label="No" />
-              <el-option :value="1" label="Yes" />
-            </el-select>
-          </InputWrapper>
-          <span :class="colString"></span>
+              <InputWrapper
+                :class="colString"
+                label="Aboriginal or Torres Strait Islander?"
+                prop="aborginality"
+              >
+                <el-select
+                  class="w-100"
+                  v-model="formData.aborginality"
+                  placeholder="Aborginality"
+                >
+                  <el-option :value="0" label="No" />
+                  <el-option :value="1" label="Yes" />
+                </el-select>
+              </InputWrapper>
+              <span :class="colString"></span>
+            </div>
+          </div>
         </div>
         <div class="separator separator-dashed"></div>
-        <div class="row justify-content-md-center">
-          <InputWrapper :class="colString" label="Name" prop="kin_name">
-            <el-input
-              type="text"
-              v-model="formData.kin_name"
-              placeholder="Kin First Name"
-            />
-          </InputWrapper>
-          <InputWrapper
-            :class="colString"
-            label="Phone Number"
-            prop="kin_phone_number"
-          >
-            <el-input
-              type="text"
-              v-model="formData.kin_phone_number"
-              placeholder="Kin Phone Number"
-            />
-          </InputWrapper>
-          <InputWrapper
-            :class="colString"
-            label="Kin Relationship"
-            prop="kin_relationship"
-          >
-            <el-input
-              type="text"
-              v-model="formData.kin_relationship"
-              placeholder="Kin Relationship"
-            />
-          </InputWrapper>
-          <span :class="colString"></span>
-        </div>
-        <div class="d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary w-25">Save</button>
-          <button type="reset" class="btn btn-light-primary w-25 ms-2">
-            Cancel
-          </button>
+        <div class="py-0">
+          <div class="me-3 mt-6">
+            <div class="d-flex align-items-center">
+              <div class="text-gray-800 fw-bolder">Nex Of Kin</div>
+            </div>
+          </div>
+          <div class="container py-6">
+            <div class="row justify-content-md-center">
+              <InputWrapper :class="colString" label="Name" prop="kin_name">
+                <el-input
+                  type="text"
+                  v-model="formData.kin_name"
+                  placeholder="Kin First Name"
+                />
+              </InputWrapper>
+              <InputWrapper
+                :class="colString"
+                label="Phone Number"
+                prop="kin_phone_number"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.kin_phone_number"
+                  placeholder="Kin Phone Number"
+                />
+              </InputWrapper>
+              <InputWrapper
+                :class="colString"
+                label="Kin Relationship"
+                prop="kin_relationship"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.kin_relationship"
+                  placeholder="Kin Relationship"
+                />
+              </InputWrapper>
+              <span :class="colString"></span>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary w-25 mt-3">
+                Save
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -274,7 +301,7 @@ export default defineComponent({
       kin_phone_number: [
         {
           required: true,
-          message: "Kin Number cannnot be blank",
+          message: "Kin Number cannot be blank",
           trigger: "change",
         },
       ],
@@ -294,6 +321,7 @@ export default defineComponent({
       }
 
       formRef.value.validate((valid) => {
+        console.log(valid);
         if (valid) {
           loading.value = true;
           store
