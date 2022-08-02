@@ -1,5 +1,5 @@
 <template>
-  <div class="fv-row col-12 mb-5">
+  <div class="px-6 py-3">
     <label class="fs-6 fw-bold mb-2" :class="{ required: required }">{{
       label
     }}</label>
