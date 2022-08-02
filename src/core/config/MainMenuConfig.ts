@@ -104,12 +104,6 @@ const OrgAdminMenu = [
 
 const OrgManagerMenu = [
   {
-    heading: "Mailbox",
-    route: "/mailbox/list",
-    svgIcon: "media/icons/duotune/communication/com002.svg",
-    fontIcon: "bi-envelope",
-  },
-  {
     heading: "Booking",
     route: "/booking",
     svgIcon: "media/icons/duotune/general/gen014.svg",
@@ -188,13 +182,6 @@ const OrgManagerMenu = [
 ];
 
 const ReceptionistMenu = [
-  {
-    heading: "Mailbox",
-    role: ["admin", "org_manager"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
   {
     heading: "Booking",
     route: "/crafted",
@@ -289,37 +276,23 @@ const ReceptionistMenu = [
   {
     heading: "HRM (Employee)",
     route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-layers",
   },
 ];
 
 const SpecialistMenu = [
   {
-    heading: "Dashboard",
-    route: "/dashboard",
-    svgIcon: "media/icons/duotune/art/art002.svg",
-    fontIcon: "bi-house fs-2",
-  },
-  {
-    heading: "Mailbox",
-    role: ["admin", "org_manager"],
+    heading: "Bookings",
     route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "My Bookings",
-    role: ["admin", "org_manager"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/general/gen014.svg",
     fontIcon: "bi-layers",
   },
   {
     heading: "HRM (Employee)",
     role: ["admin", "org_manager"],
     route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-layers",
   },
   {
@@ -331,19 +304,6 @@ const SpecialistMenu = [
 ];
 
 const PathologistMenu = [
-  {
-    heading: "Dashboard",
-    route: "/dashboard",
-    svgIcon: "media/icons/duotune/art/art002.svg",
-    fontIcon: "bi-house fs-2",
-  },
-  {
-    heading: "Mailbox",
-    role: ["admin", "org_manager"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
   {
     heading: "Pathologist Dashbaord",
     role: ["admin", "org_manager"],
@@ -362,25 +322,12 @@ const PathologistMenu = [
     heading: "HRM (Employee)",
     role: ["admin", "org_manager"],
     route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-layers",
   },
 ];
 
 const ScientistMenu = [
-  {
-    heading: "Dashboard",
-    route: "/dashboard",
-    svgIcon: "media/icons/duotune/art/art002.svg",
-    fontIcon: "bi-house fs-2",
-  },
-  {
-    heading: "Mailbox",
-    role: ["admin", "org_manager"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
   {
     heading: "Scientist Dashboard",
     role: ["admin", "org_manager"],
@@ -399,7 +346,7 @@ const ScientistMenu = [
     heading: "HRM (Employee)",
     role: ["admin", "org_manager"],
     route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-layers",
   },
 ];
@@ -410,13 +357,6 @@ const TypistMenu = [
     route: "/dashboard",
     svgIcon: "media/icons/duotune/art/art002.svg",
     fontIcon: "bi-house fs-2",
-  },
-  {
-    heading: "Mailbox",
-    role: ["admin", "org_manager"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
   },
   {
     heading: "Typist Dashboard",
@@ -436,27 +376,20 @@ const TypistMenu = [
     heading: "HRM (Employee)",
     role: ["admin", "org_manager"],
     route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-layers",
   },
 ];
 
 const AnesthetistMenu = [
   {
-    heading: "Dashboard",
+    heading: "Procedure Approvals",
     route: "/dashboard",
-    svgIcon: "media/icons/duotune/art/art002.svg",
+    svgIcon: "media/icons/duotune/arrows/arr012.svg",
     fontIcon: "bi-house fs-2",
   },
   {
-    heading: "Mailbox",
-    role: ["admin", "org_manager"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
-    fontIcon: "bi-layers",
-  },
-  {
-    heading: "My Bookings",
+    heading: "Bookings",
     role: ["admin", "org_manager"],
     route: "/builder",
     svgIcon: "media/icons/duotune/general/gen019.svg",
@@ -466,7 +399,7 @@ const AnesthetistMenu = [
     heading: "HRM (Employee)",
     role: ["admin", "org_manager"],
     route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-layers",
   },
 ];

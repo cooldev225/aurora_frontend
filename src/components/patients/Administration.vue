@@ -5,444 +5,209 @@
     :rules="rules"
     ref="formRef"
   >
-    <!--begin::details View-->
     <div class="card mb-5 mb-xl-10" id="patient_view_administration_patient">
-      <!--begin::Card header-->
-      <div class="card-header cursor-pointer">
-        <!--begin::Card title-->
-        <div class="card-title m-0">
-          <h3 class="fw-bolder m-0">Patient Details</h3>
-        </div>
-        <!--end::Card title-->
-      </div>
-      <!--end::Card header-->
-      <!--begin::Card body-->
-      <div id="patient_view_administration_details" class="card-body pt-0">
-        <!--begin::Option-->
+      <div id="patient_view_administration_patient" class="card-body pt-0">
         <div class="py-0">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
-              data-bs-toggle="collapse"
-              href="#patient_view_administration_profile"
-              role="button"
-              aria-expanded="true"
-              aria-controls="patient_view_administration_profile"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">General</div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
+          <div class="me-3 mt-6">
+            <div class="d-flex align-items-center">
+              <div class="text-gray-800 fw-bolder">Patient Details</div>
             </div>
-            <!--end::Toggle-->
           </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div
-            id="patient_view_administration_profile"
-            class="fs-6 ps-10 collapse show"
-            data-bs-parent="#patient_view_administration_details"
-          >
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Title
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="title">
-                          <el-select
-                            class="w-50"
-                            v-model="formData.title"
-                            placeholder="Select Title"
-                          >
-                            <el-option
-                              v-for="item in titles"
-                              :key="item.value"
-                              :value="item.value"
-                              :label="item.label"
-                            />
-                          </el-select>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        First Name
-                      </td>
-                      <td class="text-gray-800 text-capitalize">
-                        <el-form-item prop="first_name">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.first_name"
-                            placeholder="First Name"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Last Name
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="last_name">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.last_name"
-                            placeholder="Last Name"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Date of Birth
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="date_of_birth">
-                          <el-date-picker
-                            class="w-50"
-                            v-model="formData.date_of_birth"
-                            format="YYYY-MM-DD"
-                            placeholder="1990-01-01"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Contact Number
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="contact_number">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.contact_number"
-                            placeholder="Contact Number"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Email
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="email">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.email"
-                            placeholder="Email"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Address
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="address">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.address"
-                            placeholder="Address"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
+          <div class="container py-6">
+            <div class="row justify-content-md-center">
+              <InputWrapper :class="colString" label="Title" prop="title">
+                <el-select
+                  class="w-100"
+                  v-model="formData.title"
+                  placeholder="Select Title"
+                >
+                  <el-option
+                    v-for="item in titles"
+                    :key="item.value"
+                    :value="item.value"
+                    :label="item.label"
+                  />
+                </el-select>
+              </InputWrapper>
+
+              <InputWrapper
+                :class="colString"
+                label="First Name"
+                prop="first_name"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.first_name"
+                  placeholder="First Name"
+                />
+              </InputWrapper>
+
+              <InputWrapper
+                :class="colString"
+                label="Last Name"
+                prop="last_name"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.last_name"
+                  placeholder="Last Name"
+                />
+              </InputWrapper>
+
+              <InputWrapper
+                :class="colString"
+                label="Date Of Birth"
+                prop="date_of_birth"
+              >
+                <el-date-picker
+                  class="w-100"
+                  v-model="formData.date_of_birth"
+                  format="YYYY-MM-DD"
+                  placeholder="1990-01-01"
+                />
+              </InputWrapper>
+
+              <InputWrapper
+                :class="colString"
+                label="Contact Number"
+                prop="contact_number"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.contact_number"
+                  placeholder="Contact Number"
+                />
+              </InputWrapper>
+
+              <InputWrapper :class="colString" label="Email" prop="email">
+                <el-input
+                  type="email"
+                  v-model="formData.email"
+                  placeholder="Email"
+                />
+              </InputWrapper>
+
+              <InputWrapper :class="colString" label="Address" prop="address">
+                <el-input
+                  type="text"
+                  v-model="formData.address"
+                  placeholder="Address"
+                />
+              </InputWrapper>
+
+              <InputWrapper :class="colString" label="Gender" prop="gender">
+                <el-select
+                  class="w-100"
+                  v-model="formData.gender"
+                  placeholder="Select Gender"
+                >
+                  <el-option value="male" label="Male" />
+                  <el-option value="female" label="Female" />
+                  <el-option value="other" label="Other" />
+                  <el-option
+                    value="undisclosed"
+                    label="Not Stated / Inadequately Described"
+                  />
+                </el-select>
+              </InputWrapper>
+              <InputWrapper
+                :class="colString"
+                label="Marital Status"
+                prop="marital_status"
+              >
+                <el-select
+                  class="w-100"
+                  v-model="formData.marital_status"
+                  placeholder="Marital Status"
+                >
+                  <el-option
+                    v-for="status in maritalStatus"
+                    :key="status.value"
+                    :value="status.value"
+                    :label="status.label"
+                  />
+                </el-select>
+              </InputWrapper>
+
+              <InputWrapper
+                :class="colString"
+                label="Occupation"
+                prop="occupation"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.occupation"
+                  placeholder="Occupation"
+                />
+              </InputWrapper>
+
+              <InputWrapper
+                :class="colString"
+                label="Aboriginal or Torres Strait Islander?"
+                prop="aborginality"
+              >
+                <el-select
+                  class="w-100"
+                  v-model="formData.aborginality"
+                  placeholder="Aborginality"
+                >
+                  <el-option :value="0" label="No" />
+                  <el-option :value="1" label="Yes" />
+                </el-select>
+              </InputWrapper>
+              <span :class="colString"></span>
             </div>
-            <!--end::Details-->
           </div>
-          <!--end::Body-->
         </div>
-        <!--end::Option-->
         <div class="separator separator-dashed"></div>
-        <!--begin::Option-->
         <div class="py-0">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
-              data-bs-toggle="collapse"
-              href="#patient_view_administration_demographic"
-              role="button"
-              aria-expanded="true"
-              aria-controls="patient_view_administration_demographic"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">Patient Demographic</div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
+          <div class="me-3 mt-6">
+            <div class="d-flex align-items-center">
+              <div class="text-gray-800 fw-bolder">Nex Of Kin</div>
             </div>
-            <!--end::Toggle-->
           </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div
-            id="patient_view_administration_demographic"
-            class="fs-6 ps-10 collapse show"
-            data-bs-parent="#patient_view_administration_details"
-          >
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Gender
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="gender">
-                          <el-select
-                            class="w-50"
-                            v-model="formData.gender"
-                            placeholder="Select Gender"
-                          >
-                            <el-option value="male" label="Male" />
-                            <el-option value="female" label="Female" />
-                            <el-option value="other" label="Other" />
-                            <el-option
-                              value="undisclosed"
-                              label="Not Stated / Inadequately Desribed"
-                            />
-                          </el-select>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-250px">
-                        Do you identify as Aboriginal or Torres Strait Islander?
-                      </td>
-                      <td class="text-gray-800 text-capitalize">
-                        <el-form-item prop="aborginality">
-                          <el-select
-                            class="w-50"
-                            v-model="formData.aborginality"
-                            placeholder="Aborginality"
-                          >
-                            <el-option :value="0" label="No" />
-                            <el-option :value="1" label="Yes" />
-                          </el-select>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Occupation
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="occupation">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.occupation"
-                            placeholder="Occupation"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Marital Status
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="marital_status">
-                          <el-select
-                            class="w-50"
-                            v-model="formData.marital_status"
-                            placeholder="Marital Status"
-                          >
-                            <el-option
-                              v-for="status in maritalStatus"
-                              :key="status.value"
-                              :value="status.value"
-                              :label="status.label"
-                            />
-                          </el-select>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
+          <div class="container py-6">
+            <div class="row justify-content-md-center">
+              <InputWrapper :class="colString" label="Name" prop="kin_name">
+                <el-input
+                  type="text"
+                  v-model="formData.kin_name"
+                  placeholder="Kin First Name"
+                />
+              </InputWrapper>
+              <InputWrapper
+                :class="colString"
+                label="Phone Number"
+                prop="kin_phone_number"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.kin_phone_number"
+                  placeholder="Kin Phone Number"
+                />
+              </InputWrapper>
+              <InputWrapper
+                :class="colString"
+                label="Kin Relationship"
+                prop="kin_relationship"
+              >
+                <el-input
+                  type="text"
+                  v-model="formData.kin_relationship"
+                  placeholder="Kin Relationship"
+                />
+              </InputWrapper>
+              <span :class="colString"></span>
             </div>
-            <!--end::Details-->
+
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary w-25 mt-3">
+                Save
+              </button>
+            </div>
           </div>
-          <!--end::Body-->
         </div>
-        <!--end::Option-->
-        <div class="separator separator-dashed"></div>
-        <!--begin::Option-->
-        <div class="py-0">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
-              data-bs-toggle="collapse"
-              href="#patient_view_administration_kin"
-              role="button"
-              aria-expanded="true"
-              aria-controls="patient_view_administration_kin"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">Next of KIN</div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
-            </div>
-            <!--end::Toggle-->
-          </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div
-            id="patient_view_administration_kin"
-            class="fs-6 ps-10 collapse show"
-            data-bs-parent="#patient_view_administration_details"
-          >
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Name
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="kin_name">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.kin_name"
-                            placeholder="Kin Name"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Number
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="kin_phone_number">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.kin_phone_number"
-                            placeholder="Kin Number"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Relationship
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="kin_relationship">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.kin_relationship"
-                            placeholder="Kin Relationship"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Details-->
-          </div>
-          <!--end::Body-->
-        </div>
-        <!--end::Option-->
       </div>
-      <!--end::Card body-->
-    </div>
-    <!--end::details View-->
-    <div class="d-flex ms-auto justify-content-end w-25">
-      <button type="submit" class="btn btn-primary w-25">Save</button>
-      <button type="reset" class="btn btn-light-primary w-25 ms-2">
-        Cancel
-      </button>
     </div>
   </el-form>
 </template>
@@ -455,10 +220,16 @@ import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import maritalStatus from "@/core/data/marital-status";
 import titles from "@/core/data/titles";
+import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 export default defineComponent({
   name: "patient-administration",
-  components: {},
+  components: { InputWrapper },
+  data: function () {
+    return {
+      colString: "col-12 col-sm-6 col-lg-4 ",
+    };
+  },
   setup() {
     const store = useStore();
     const formRef = ref<null | HTMLFormElement>(null);
@@ -530,7 +301,7 @@ export default defineComponent({
       kin_phone_number: [
         {
           required: true,
-          message: "Kin Number cannnot be blank",
+          message: "Kin Number cannot be blank",
           trigger: "change",
         },
       ],
@@ -550,6 +321,7 @@ export default defineComponent({
       }
 
       formRef.value.validate((valid) => {
+        console.log(valid);
         if (valid) {
           loading.value = true;
           store
@@ -584,7 +356,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Administration", ["Patients"]);
+      setCurrentPageBreadcrumbs("Demographic", ["Patients"]);
     });
 
     return {
