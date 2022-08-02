@@ -65,13 +65,15 @@
                       <el-form-item prop="referral_doctor">
                         <el-autocomplete
                           class="w-100"
-                          v-model="aptData.referral_doctor"
+                          v-model="aptData.referring_doctor_name"
+                          value-key="full_name"
                           :fetch-suggestions="searchReferralDoctor"
                           placeholder="Please input"
                           @select="handleSelect"
                         >
                           <template #default="{ item }">
                             <div class="name">
+                              {{ item.title }}
                               {{ item.first_name }} {{ item.last_name }}
                             </div>
                             <div class="address">{{ item.address }}</div>
@@ -263,7 +265,7 @@ export default defineComponent({
     const checkInAptModalRef = ref(null);
 
     const handleSelect = (item) => {
-      console.log(item);
+      aptData.value.referring_doctor_id = item.id;
     };
 
     let timeout;
@@ -279,15 +281,20 @@ export default defineComponent({
     };
 
     const createFilter = (term) => {
+      const keyword = term.toString();
       return (referralDoctor) => {
         const full_name =
-          referralDoctor.first_name + " " + referralDoctor.last_name;
+          referralDoctor.title +
+          " " +
+          referralDoctor.first_name +
+          " " +
+          referralDoctor.last_name;
         const full_name_pos = full_name
           .toLowerCase()
-          .indexOf(term.toLowerCase());
+          .indexOf(keyword.toLowerCase());
         const address_pos = referralDoctor.address
           .toLowerCase()
-          .indexOf(term.toLowerCase());
+          .indexOf(keyword.toLowerCase());
         return full_name_pos !== -1 || address_pos !== -1;
       };
     };
