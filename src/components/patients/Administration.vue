@@ -356,7 +356,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Administration", ["Patients"]);
+      setCurrentPageBreadcrumbs("Demographic", ["Patients"]);
     });
 
     return {
