@@ -8,7 +8,7 @@
     aria-hidden="true"
   >
     <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-1000px">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 96%">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
@@ -62,15 +62,17 @@
                 :key="apt_date"
               >
                 <h3>
-                  {{ slot_list.formatted_date }}
+                  {{ formattedSlotDate(apt_date) }}
                 </h3>
                 <template
                   v-for="(slot_item, idx_2) in slot_list.time_slot_list"
                   :key="idx_2"
                 >
-                  <div class="mt-5 justify-content-center align-items-center">
+                  <div
+                    class="mt-5 justify-content-center align-items-center mw-250 text-wrap"
+                  >
                     <span
-                      class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-5"
+                      class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
                       data-kt-drawer-toggle="true"
                       data-kt-drawer-target="#kt_drawer_chat"
                       @click="
@@ -84,12 +86,19 @@
                     >
                       {{ slot_item.start_time }}
                     </span>
-                    <p v-if="clinic_name == 'Any'">
+                    <p
+                      class="mb-1"
+                      style="color: var(--el-text-color-secondary)"
+                      v-if="clinic_name == 'Any'"
+                    >
                       {{
                         clinicNameFromSlot(slot_item.specialist_ids, apt_date)
                       }}
                     </p>
-                    <p v-if="specialist_name == 'Any'">
+                    <p
+                      style="color: var(--el-color-primary-light-3)"
+                      v-if="specialist_name == 'Any'"
+                    >
                       {{ specialistNameFromSlot(slot_item.specialist_ids) }}
                     </p>
                   </div>
@@ -230,6 +239,10 @@ export default defineComponent({
       return selected_specialist.name;
     };
 
+    const formattedSlotDate = (date) => {
+      return moment(date).format("MMM Do ddd").toString();
+    };
+
     const clinicNameFromSlot = (specialist_ids, date) => {
       if (specialist_ids == undefined) {
         return "";
@@ -258,6 +271,7 @@ export default defineComponent({
 
     return {
       handleAddApt,
+      formattedSlotDate,
       clinicNameFromSlot,
       specialistNameFromSlot,
       clinic_name,
