@@ -117,22 +117,31 @@
                             item_2.appointment.contact_number
                           }})
                         </span>
-                        <span
-                          v-if="
-                            item_2.appointment.attendance_status == 'CHECKED_IN'
-                          "
-                          class="badge badge-primary"
-                        >
-                          CHECKED IN
-                        </span>
-                        <span
-                          v-if="
-                            item_2.appointment.attendance_status ==
-                            'CHECKED_OUT'
-                          "
-                          class="opacity-50 badge badge-light-dark disabled"
-                        >
-                          CHECKED OUT
+                        <span>
+                          <span
+                            v-if="item_2.appointment.allergies != ''"
+                            class="badge badge-light-danger opacity-50 mx-2"
+                          >
+                            ALLERGY
+                          </span>
+                          <span
+                            v-if="
+                              item_2.appointment.attendance_status ==
+                              'CHECKED_IN'
+                            "
+                            class="badge badge-success"
+                          >
+                            CHECKED IN
+                          </span>
+                          <span
+                            v-if="
+                              item_2.appointment.attendance_status ==
+                              'CHECKED_OUT'
+                            "
+                            class="opacity-50 badge badge-light-dark disabled"
+                          >
+                            CHECKED OUT
+                          </span>
                         </span>
                       </div>
                     </td>
