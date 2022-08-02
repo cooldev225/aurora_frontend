@@ -112,7 +112,7 @@
             </a>
             <a
               v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
-              @click="handlePreAdmission"
+              @click="handlePreAdmission(item)"
               class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
             >
               <span class="svg-icon svg-icon-1">
@@ -143,6 +143,7 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import moment from "moment";
+import { Mutations } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "patient-appointments",
@@ -186,7 +187,8 @@ export default defineComponent({
       router.push({ name: "make-payment-pay" });
     };
 
-    const handlePreAdmission = () => {
+    const handlePreAdmission = (item) => {
+      store.commit(Mutations.SET_APT.SELECT, item);
       router.push({ name: "pre-admission-form1" });
     };
 
@@ -227,6 +229,7 @@ export default defineComponent({
       } else {
         tableData.value = formData.value;
       }
+      console.log(formData.value);
     });
 
     onMounted(() => {

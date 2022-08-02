@@ -9,17 +9,102 @@
     <div class="card w-100 h-100">
       <!--begin::Card header-->
       <div class="card-header border-0 p-5">
-        <img
-          src=""
-          alt="organization logo"
-          class="m-auto border border-success border-3"
-          width="250"
-          height="250"
-        />
+        <div
+          class="m-auto border border-success border-3 d-flex align-items-center justify-content-center w-250px h-250px"
+        >
+          <img
+            v-if="orgLogo"
+            :src="{ orgLogo }"
+            alt="organization logo"
+            class="w-100 h-100"
+          />
+          <h1 v-else>Organization</h1>
+        </div>
       </div>
       <!--end::Card header-->
       <!--begin::Card body-->
       <div class="card-body pt-0">
+        <!--begin::Option-->
+        <div class="py-0">
+          <!--begin::Header-->
+          <div class="py-5 d-flex flex-stack flex-wrap">
+            <!--begin::Toggle-->
+            <div
+              class="d-flex justify-content-between w-100 align-items-center"
+            >
+              <!--begin::Summary-->
+              <div class="me-3">
+                <div class="d-flex align-items-center">
+                  <div class="text-gray-800 fw-bolder">
+                    Appointment Information
+                  </div>
+                </div>
+              </div>
+              <!--end::Summary-->
+              <!--begin::Arrow-->
+              <div class="me-3 rotate-90">
+                <span class="svg-icon svg-icon-3">
+                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
+                </span>
+              </div>
+              <!--end::Arrow-->
+            </div>
+            <!--end::Toggle-->
+          </div>
+          <!--end::Header-->
+          <!--begin::Body-->
+          <div class="fs-6 ps-10">
+            <!--begin::Details-->
+            <div class="d-flex flex-wrap py-5">
+              <!--begin::Col-->
+              <div class="flex-equal me-5">
+                <table class="table table-flush fw-bold gy-1">
+                  <tbody>
+                    <tr>
+                      <td class="text-muted min-w-125px w-125px w-md-150px">
+                        Specialist
+                      </td>
+                      <td class="text-gray-800">
+                        <label>{{ aptData.specialist_name }}</label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted min-w-125px w-125px w-md-150px">
+                        Appointment Type
+                      </td>
+                      <td class="text-gray-800 text-capitalize">
+                        <label>{{ aptData.appointment_type_name }} </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted min-w-125px w-125px w-md-150px">
+                        Date and TIme
+                      </td>
+                      <td class="text-gray-800">
+                        <label>{{
+                          aptData.date + " " + aptData.start_time
+                        }}</label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted min-w-125px w-125px w-md-150px">
+                        Clinic
+                      </td>
+                      <td class="text-gray-800">
+                        <label>{{ aptData.clinic_name }}</label>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--end::Col-->
+            </div>
+            <!--end::Details-->
+          </div>
+          <!--end::Body-->
+        </div>
+        <!--end::Option-->
+        <div class="separator separator-dashed"></div>
         <!--begin::Option-->
         <div class="py-0">
           <!--begin::Header-->
@@ -409,6 +494,143 @@
           <!--end::Body-->
         </div>
         <!--end::Option-->
+        <div class="separator separator-dashed"></div>
+        <div class="py-0">
+          <!--begin::Header-->
+          <div class="py-5 d-flex flex-stack flex-wrap">
+            <!--begin::Toggle-->
+            <div
+              class="d-flex justify-content-between w-100 align-items-center"
+            >
+              <!--begin::Summary-->
+              <div class="me-3">
+                <div class="d-flex align-items-center">
+                  <div class="text-gray-800 fw-bolder">
+                    Question and Consent
+                  </div>
+                </div>
+              </div>
+              <!--end::Summary-->
+              <!--begin::Arrow-->
+              <div class="me-3 rotate-90">
+                <span class="svg-icon svg-icon-3">
+                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
+                </span>
+              </div>
+              <!--end::Arrow-->
+            </div>
+            <!--end::Toggle-->
+          </div>
+          <!--end::Header-->
+          <!--begin::Body-->
+          <div class="fs-6 ps-10">
+            <!--begin::Details-->
+            <div class="d-flex flex-wrap py-5">
+              <!--begin::Col-->
+              <div class="flex-equal me-5">
+                <table class="table table-flush fw-bold gy-1">
+                  <tbody>
+                    <tr>
+                      <td class="text-muted min-w-125px w-125px w-md-150px">
+                        Previous surgery? What & When?
+                      </td>
+                      <td class="text-gray-800">
+                        <el-form-item prop="question1">
+                          <el-input
+                            type="text"
+                            class="w-50"
+                            v-model="qaData.question1"
+                            placeholder="Previous Surgery"
+                          />
+                        </el-form-item>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted min-w-125px w-125px w-md-150px">
+                        Previous anaesthetic?
+                      </td>
+                      <td class="text-gray-800">
+                        <el-form-item prop="question2">
+                          <el-input
+                            type="text"
+                            class="w-50"
+                            v-model="qaData.question2"
+                            placeholder="Prevous Anaesthetic"
+                          />
+                        </el-form-item>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--end::Col-->
+              <!--begin::Col-->
+              <div class="flex-equal">
+                <table class="table table-flush fw-bold gy-1">
+                  <tbody>
+                    <tr>
+                      <td class="text-muted min-w-125px w-125px w-md-300px">
+                        Has a family member had life threatening complications
+                        with anaesthetic
+                      </td>
+                      <td class="text-gray-800">
+                        <el-form-item prop="select1">
+                          <el-radio-group v-model="qaData.select1" class="ml-4">
+                            <el-radio label="Yes" size="large">Yes</el-radio>
+                            <el-radio label="No" size="large">No</el-radio>
+                          </el-radio-group>
+                        </el-form-item>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted min-w-125px w-125px w-md-300px">
+                        Do you suffer from reflux
+                      </td>
+                      <td class="text-gray-800">
+                        <el-form-item prop="select2">
+                          <el-radio-group v-model="qaData.select2" class="ml-4">
+                            <el-radio label="Yes" size="large">Yes</el-radio>
+                            <el-radio label="No" size="large">No</el-radio>
+                          </el-radio-group>
+                        </el-form-item>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted min-w-125px w-125px w-md-300px">
+                        Do you have any false teeth, caps, crowns, loose or
+                        chipped teeth or other dental work
+                      </td>
+                      <td class="text-gray-800">
+                        <el-form-item prop="select3">
+                          <el-radio-group v-model="qaData.select3" class="ml-4">
+                            <el-radio label="Yes" size="large">Yes</el-radio>
+                            <el-radio label="No" size="large">No</el-radio>
+                          </el-radio-group>
+                        </el-form-item>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted min-w-125px w-125px w-md-300px">
+                        Do you have any issues with your neck or jaw
+                      </td>
+                      <td class="text-gray-800">
+                        <el-form-item prop="select4">
+                          <el-radio-group v-model="qaData.select4" class="ml-4">
+                            <el-radio label="Yes" size="large">Yes</el-radio>
+                            <el-radio label="No" size="large">No</el-radio>
+                          </el-radio-group>
+                        </el-form-item>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--end::Col-->
+            </div>
+            <!--end::Details-->
+          </div>
+          <!--end::Body-->
+        </div>
       </div>
       <div class="d-flex ms-auto justify-content-end mb-5 me-5">
         <button type="submit" class="btn btn-primary w-min-250px">
@@ -455,7 +677,16 @@ export default defineComponent({
       kin_phone_number: "",
       kin_relationship: "",
     });
+    const qaData = ref({
+      question1: "",
+      question2: "",
+      select1: "",
+      select2: "",
+      select3: "",
+      select4: "",
+    });
 
+    const aptData = ref({});
     const rules = ref({
       first_name: [
         {
@@ -538,6 +769,9 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
+      aptData.value = store.getters.getAptSelected;
+
+      console.log(aptData.value);
     });
 
     onMounted(() => {
@@ -545,6 +779,8 @@ export default defineComponent({
     });
 
     return {
+      aptData,
+      qaData,
       formData,
       formRef,
       rules,
