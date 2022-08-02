@@ -221,13 +221,11 @@ export default defineComponent({
         return "";
       }
 
-      const selected_specialist = props.allSpecialists.find(
-        ({ id }) => id === specialist_ids[0]
-      );
+      const specialist_id = Object.values(specialist_ids)[0];
 
-      if (selected_specialist == undefined) {
-        return "";
-      }
+      const selected_specialist = props.allSpecialists.find(
+        ({ id }) => id == specialist_id
+      );
 
       return selected_specialist.name;
     };
@@ -241,13 +239,11 @@ export default defineComponent({
         return "";
       }
 
-      const selected_specialist = props.allSpecialists.find(
-        ({ id }) => id === specialist_ids[0]
-      );
+      const specialist_id = Object.values(specialist_ids)[0];
 
-      if (selected_specialist == undefined) {
-        return "";
-      }
+      const selected_specialist = props.allSpecialists.find(
+        ({ id }) => id == specialist_id
+      );
 
       let dayOfWeek = moment(date).format("dddd").toString();
 
