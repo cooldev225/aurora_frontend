@@ -34,13 +34,6 @@
       >
         <template v-slot:cell-date="{ row: item }">
           <div class="p-4 d-flex flex-column">
-            <span>#{{ generateID(item.id) }} </span>
-            <span>{{ item.date }} {{ item.start_time }}</span>
-            <span>@ {{ item.clinic_name }}</span>
-          </div>
-        </template>
-        <template v-slot:cell-specialist="{ row: item }">
-          <div class="d-flex flex-column">
             <span
               :class="`mb-1 p-2 rounded text-uppercase badge-xl badge-${
                 item.confirmation_status === 'CONFIRMED'
@@ -58,6 +51,9 @@
             <div v-if="item.confirmation_status === 'CANCELED'">
               Reason: cancel_reason
             </div>
+            <span>{{ item.date }} {{ item.start_time }}</span>
+            <span>@ {{ item.clinic_name }}</span>
+
             <span>{{ item.appointment_type_name }}</span>
             <span> {{ item.specialist_name }}</span>
           </div>
@@ -163,11 +159,6 @@ export default defineComponent({
         name: "Time/Place",
         key: "date",
         sortable: true,
-      },
-      {
-        name: "Overview",
-        key: "specialist",
-        sortable: false,
       },
       {
         name: "Referral",

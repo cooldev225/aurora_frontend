@@ -20,7 +20,6 @@
             <div class="my-4">
               <div class="d-flex">
                 <IconButton label="Print Label" />
-                <IconButton label="Print File" />
                 <IconButton label="Upload Document" />
                 <IconButton
                   @click="handleRecallReminder"
