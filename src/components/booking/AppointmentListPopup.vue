@@ -72,7 +72,8 @@
                     class="mt-5 justify-content-center align-items-center mw-250 text-wrap"
                   >
                     <span
-                      class="text-primary w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
+                      class="w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
+                      style="color: var(--el-color-primary)"
                       data-kt-drawer-toggle="true"
                       data-kt-drawer-target="#kt_drawer_chat"
                       @click="
@@ -96,7 +97,7 @@
                       }}
                     </p>
                     <p
-                      style="color: var(--el-color-primary-light-3)"
+                      style="color: var(--el-color-warning)"
                       v-if="specialist_name == 'Any'"
                     >
                       {{ specialistNameFromSlot(slot_item.specialist_ids) }}
@@ -179,29 +180,34 @@ export default defineComponent({
     const handleAddApt = (specialist_ids, date, startTime, endTime) => {
       const _date = moment(date).format("YYYY-MM-DD").toString();
 
-      let selected_specialist = null;
       let available_specialists = [];
 
       for (let specialist of props.allSpecialists) {
-        if (specialist_ids.includes(specialist.id)) {
-          selected_specialist = specialist;
+        if (Object.values(specialist_ids).includes(specialist.id)) {
+          let temp_specialist = specialist;
 
-          selected_specialist.anesthetist = {
-            id: selected_specialist.anesthetist_id,
-            name: selected_specialist.anesthetist_name,
+          temp_specialist.anesthetist = {
+            id: temp_specialist.anesthetist_id,
+            name: temp_specialist.anesthetist_name,
           };
 
           let dayOfWeek = moment(date).format("dddd").toString();
 
           dayOfWeek = dayOfWeek.toLowerCase();
 
-          const work_hours = JSON.parse(selected_specialist.work_hours);
+          const work_hours = JSON.parse(temp_specialist.work_hours);
 
-          selected_specialist.work_hours = work_hours[dayOfWeek];
+          temp_specialist.work_hours = work_hours[dayOfWeek];
 
-          available_specialists.push(selected_specialist);
+          available_specialists.push(temp_specialist);
         }
       }
+
+      const specialist_id = Object.values(specialist_ids)[0];
+
+      const selected_specialist = props.allSpecialists.find(
+        ({ id }) => id == specialist_id
+      );
 
       const item = {
         time_slots: [_date + "T" + startTime, _date + "T" + endTime],
@@ -240,7 +246,7 @@ export default defineComponent({
     };
 
     const formattedSlotDate = (date) => {
-      return moment(date).format("MMM Do ddd").toString();
+      return moment(date).format("MMM Do, ddd").toString();
     };
 
     const clinicNameFromSlot = (specialist_ids, date) => {
