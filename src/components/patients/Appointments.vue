@@ -144,6 +144,7 @@ import { useRouter } from "vue-router";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import moment from "moment";
 import { Mutations } from "@/store/enums/StoreEnums";
+import md5 from "js-md5";
 
 export default defineComponent({
   name: "patient-appointments",
@@ -188,8 +189,10 @@ export default defineComponent({
     };
 
     const handlePreAdmission = (item) => {
-      store.commit(Mutations.SET_APT.SELECT, item);
-      router.push({ name: "pre-admission-form1" });
+      // store.commit(Mutations.SET_APT.SELECT, item);
+      router.push({
+        path: "/appointment_pre_admissions/show/" + md5(item.id.toString()),
+      });
     };
 
     const handleView = () => {
