@@ -1,6 +1,12 @@
 <template>
-  <!--begin::Toolbar-->
-  <div class="toolbar" id="kt_toolbar">
+  <div class="toolbar d-flex flex-column" id="kt_toolbar">
+    <div
+      class="w-100 opacity-50 mb-n5 text-center font-weight-bold text-uppercase"
+      :style="{ background: bannerColor }"
+      v-if="isBanner"
+    >
+      {{ bannerText }}
+    </div>
     <!--begin::Container-->
     <div
       id="kt_toolbar_container"
@@ -33,14 +39,6 @@
           v-if="breadcrumbs"
           class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1"
         >
-          <li class="breadcrumb-item pe-3">
-            <router-link to="/dashboard" class="text-muted text-hover-primary">
-              Home
-            </router-link>
-          </li>
-          <li class="breadcrumb-item">
-            <span class="bullet bg-gray-200 w-5px h-2px"></span>
-          </li>
           <template v-for="(item, index) in breadcrumbs" :key="index">
             <li class="breadcrumb-item text-muted">
               {{ item }}
@@ -78,6 +76,13 @@ export default defineComponent({
   props: {
     breadcrumbs: Array,
     title: String,
+  },
+  data: function () {
+    return {
+      isBanner: process.env.VUE_APP_IS_BANNER,
+      bannerText: process.env.VUE_APP_BANNER_TEXT,
+      bannerColor: process.env.VUE_APP_BANNER_COLOR,
+    };
   },
   components: {
     KTTopbar,
