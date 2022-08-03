@@ -245,9 +245,25 @@
           <button
             :data-kt-indicator="loading ? 'on' : null"
             class="btn btn-lg btn-primary"
+            @click="handleCheckIn(true)"
+          >
+            <span v-if="!loading" class="indicator-label">
+              Make Payment and Check In
+            </span>
+            <span v-if="loading" class="indicator-progress">
+              Please wait...
+              <span
+                class="spinner-border spinner-border-sm align-middle ms-2"
+              ></span>
+            </span>
+          </button>
+
+          <button
+            :data-kt-indicator="loading ? 'on' : null"
+            class="btn btn-lg btn-primary"
             @click="handleCheckIn"
           >
-            <span v-if="!loading" class="indicator-label"> Check In </span>
+            <span v-if="!loading" class="indicator-label"> Check In Only </span>
             <span v-if="loading" class="indicator-progress">
               Please wait...
               <span
@@ -267,6 +283,7 @@
 import { defineComponent, computed, ref, onMounted } from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
@@ -280,6 +297,7 @@ export default defineComponent({
     const searchVal = computed(() => store.getters.getSearchVariable);
     const referralDoctors = computed(() => store.getters.getReferralDoctorList);
     const checkInAptModalRef = ref(null);
+    const router = useRouter();
 
     const handleSelect = (item) => {
       aptData.value.referring_doctor_id = item.id;
@@ -320,7 +338,7 @@ export default defineComponent({
       window.open(aptData.value.referral_file, "_blank");
     };
 
-    const handleCheckIn = async () => {
+    const handleCheckIn = async (is_move = false) => {
       await store
         .dispatch(Actions.APT.CHECK_IN, aptData.value)
         .then(() => {
@@ -335,7 +353,11 @@ export default defineComponent({
             },
           }).then(() => {
             hideModal(checkInAptModalRef.value);
-            DrawerComponent?.getInstance("booking-drawer")?.hide();
+            if (is_move === true) {
+              router.push({ name: "make-payment-pay" });
+              store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
+              DrawerComponent?.getInstance("booking-drawer")?.hide();
+            }
           });
         })
         .catch(({ response }) => {
