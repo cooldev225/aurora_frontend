@@ -287,6 +287,7 @@ import { useRouter } from "vue-router";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
+import { Mutations } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "create-apt-modal",
@@ -357,6 +358,9 @@ export default defineComponent({
               router.push({ name: "make-payment-pay" });
               store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
               DrawerComponent?.getInstance("booking-drawer")?.hide();
+            } else {
+              aptData.value.attendance_status = "CHECKED_IN";
+              store.commit(Mutations.SET_APT.SELECT, aptData);
             }
           });
         })
