@@ -5,12 +5,11 @@
         class="m-auto border border-success border-3 d-flex align-items-center justify-content-center w-250px h-250px"
       >
         <img
-          v-if="orgLogo"
-          :src="{ orgLogo }"
+          :src="orgData.organization_logo"
           alt="organization logo"
           class="w-100 h-100"
         />
-        <h1 v-else>Organization</h1>
+        <!-- <h1 v-else>Organization</h1> -->
       </div>
     </div>
     <div class="card-body pt-0">
@@ -52,9 +51,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
-// import { useStore } from "vuex";
+import { defineComponent, onMounted, ref, computed } from "vue";
+import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "pre-admission-form1",
@@ -62,10 +62,11 @@ export default defineComponent({
   components: {},
 
   setup() {
-    // const store = useStore();
+    const store = useStore();
     const router = useRouter();
     const loading = ref(true);
     const formRef = ref<null | HTMLFormElement>(null);
+    const orgData = computed(() => store.getters.getAptPreAdmissionOrg);
     const formData = ref({
       date_of_birth: "",
       last_name: "",
@@ -87,6 +88,7 @@ export default defineComponent({
       ],
     });
     const orgLogo = ref("");
+    const apt_id = ref<string>("");
 
     const submit = () => {
       if (!formRef.value) {
@@ -105,10 +107,13 @@ export default defineComponent({
 
     onMounted(() => {
       loading.value = true;
+      apt_id.value = router.currentRoute.value.params.id.toString();
+      store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
     });
 
     return {
       orgLogo,
+      orgData,
       formRef,
       formData,
       rules,

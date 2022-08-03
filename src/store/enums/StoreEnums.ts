@@ -196,6 +196,9 @@ const Actions = {
     },
     CHECK_IN: "checkInApt",
     CHECK_OUT: "checkOutApt",
+    PRE_ADMISSION: {
+      ORG: "listAptPreAdmissionOrg",
+    },
   },
 
   REFERRAL_DOCTOR: {
@@ -340,6 +343,9 @@ const Mutations = {
     CANCELLATION: {
       LIST: "setCancellationApt",
       SELECT: "setSelectCancellationApt",
+    },
+    PRE_ADMISSION: {
+      ORG: "setAptPreAdmissionOrg",
     },
   },
 

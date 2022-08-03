@@ -262,12 +262,12 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/pre-admission",
+    path: "/appointment_pre_admissions/show",
     name: "pre-admission",
     component: () => import("@/views/pre-admission/index.vue"),
     children: [
       {
-        path: "/pre-admission/form1",
+        path: "/appointment_pre_admissions/show/:id",
         name: "pre-admission-form1",
         component: () => import("@/components/pre-admission/Form1.vue"),
       },

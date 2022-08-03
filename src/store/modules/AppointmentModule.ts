@@ -14,6 +14,7 @@ export interface AptInfo {
   unapprovedAptData: Array<IApt>;
   cancellationAptData: Array<IApt>;
   aptSelectData: IApt;
+  aptPreAddmissionOrgData: IApt;
 }
 
 @Module
@@ -24,6 +25,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   unapprovedAptData = [] as Array<IApt>;
   cancellationAptData = [] as Array<IApt>;
   aptSelectData = {} as IApt;
+  aptPreAddmissionOrgData = {} as IApt;
 
   /**
    * Get current user object
@@ -71,6 +73,14 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
     return this.aptSelectData;
   }
 
+  /**
+   * Get current user object
+   * @returns SelectedaptData
+   */
+  get getAptPreAdmissionOrg(): IApt {
+    return this.aptPreAddmissionOrgData;
+  }
+
   @Mutation
   [Mutations.SET_APT.LIST](aptData) {
     this.aptData = aptData;
@@ -99,6 +109,11 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   @Mutation
   [Mutations.SET_APT.SELECT](data) {
     this.aptSelectData = data;
+  }
+
+  @Mutation
+  [Mutations.SET_APT.PRE_ADMISSION.ORG](data) {
+    this.aptPreAddmissionOrgData = data;
   }
 
   @Action
@@ -283,6 +298,24 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
       ApiService.setHeader();
       ApiService.update("appointments/check-out", data.id, {})
         .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.APT.PRE_ADMISSION.ORG](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.get("appointment_pre_admissions/show/" + id)
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_APT.PRE_ADMISSION.ORG, data.data);
           return data.data;
         })
         .catch(({ response }) => {
