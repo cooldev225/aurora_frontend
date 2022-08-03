@@ -142,6 +142,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("appointments/cancel", data.id, {
+        missed: data.missed,
         reason: data.reason,
       })
         .then(({ data }) => {
