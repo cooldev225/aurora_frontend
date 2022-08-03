@@ -251,13 +251,17 @@ export default defineComponent({
     };
 
     const handleCancel = () => {
+      const html =
+        "<h3>Are you sure you want to cancel?</h3><br/>" +
+        '<h4><input type="checkbox" id="chkMissed"> ' +
+        '<label for="chkMissed">Mark as Missed</label></h4>';
       Swal.fire({
-        text: "Are you should you want to cancel?",
         input: "text",
         inputAttributes: {
           autocapitalize: "off",
           placeholder: "Enter the Reason",
         },
+        html: html,
         icon: "warning",
         showCancelButton: true,
         cancelButtonText: "Cancel",
@@ -267,13 +271,17 @@ export default defineComponent({
           cancelButton: "btn btn-light-primary",
         },
         preConfirm: async (data) => {
+          var missed = Swal.getPopup().querySelector("#chkMissed").checked;
+
           await store
             .dispatch(Actions.APT.CANCELLATION.CREATE, {
               id: aptData.value.appointment_id,
+              missed: missed,
               reason: data,
             })
             .then((res) => {
               store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
+              DrawerComponent?.getInstance("booking-drawer")?.hide();
             });
         },
       }).then((result) => {
