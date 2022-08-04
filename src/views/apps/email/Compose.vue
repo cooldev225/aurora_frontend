@@ -35,21 +35,18 @@
       <el-upload
         action="#"
         ref="upload"
-        list-type="picture-card"
-        :class="{ disabled: uploadDisabled }"
-        :limit="1"
+        class="mr-20"
+        multiple
         :on-change="handleChange"
         :on-remove="handleRemove"
         :on-preview="handlePreview"
+        :limit="100"
         :auto-upload="false"
-        accept="image/*"
       >
-        <i class="fa fa-plus"></i>
+        <el-button type="primary" class="btn btn-primary"
+          >Choose Files</el-button
+        >
       </el-upload>
-
-      <el-dialog v-model="dialogVisible">
-        <img w-full :src="dialogImageUrl" alt="Preview Image" />
-      </el-dialog>
     </el-form-item>
 
     <div class="d-flex flex-row-reverse">
