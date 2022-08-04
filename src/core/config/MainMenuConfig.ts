@@ -284,7 +284,7 @@ const ReceptionistMenu = [
 const SpecialistMenu = [
   {
     heading: "Bookings",
-    route: "/builder",
+    route: "/employee-booking-dashboard",
     svgIcon: "media/icons/duotune/general/gen014.svg",
     fontIcon: "bi-layers",
   },
@@ -390,9 +390,8 @@ const AnesthetistMenu = [
   },
   {
     heading: "Bookings",
-    role: ["admin", "org_manager"],
-    route: "/builder",
-    svgIcon: "media/icons/duotune/general/gen019.svg",
+    route: "/employee-booking-dashboard",
+    svgIcon: "media/icons/duotune/general/gen014.svg",
     fontIcon: "bi-layers",
   },
   {
