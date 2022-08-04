@@ -19,29 +19,40 @@
             <!--begin::Actions-->
             <div class="my-4">
               <div class="d-flex">
-                <IconButton label="Print Label" />
-                <IconButton label="Upload Document" />
+                <IconButton
+                  v-if="userRole != 'specialist'"
+                  label="Print Label"
+                />
+                <IconButton
+                  v-if="userRole != 'specialist'"
+                  label="Upload Document"
+                />
                 <IconButton
                   @click="handleRecallReminder"
                   label="Add Recall Reminder"
                 />
                 <!-- SPECIALIST ONLY ACTIONS-->
+
                 <IconButton
+                  v-if="userRole == 'specialist'"
                   iconSRC="media/icons/duotune/arrows/arr009.svg"
                   @click="handleReport"
                   label="Report"
                 />
                 <IconButton
+                  v-if="userRole == 'specialist'"
                   iconSRC="media/icons/duotune/arrows/arr009.svg"
                   @click="handleReport"
                   label="Clinical Note"
                 />
                 <IconButton
+                  v-if="userRole == 'specialist'"
                   iconSRC="media/icons/duotune/arrows/arr009.svg"
                   @click="handleReport"
                   label="Letter"
                 />
                 <IconButton
+                  v-if="userRole == 'specialist'"
                   iconSRC="media/icons/duotune/arrows/arr009.svg"
                   @click="handleReport"
                   label="Audio"
@@ -146,7 +157,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref, watchEffect, computed } from "vue";
 import { useStore } from "vuex";
 import { Modal } from "bootstrap";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -154,6 +165,7 @@ import RecallReminderModal from "@/components/patients/RecallReminderModal.vue";
 import ReportModal from "@/components/patients/ReportTemplateModal.vue";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
+import store from "@/store";
 
 export default defineComponent({
   name: "patients-view",
@@ -163,11 +175,15 @@ export default defineComponent({
     IconText,
     IconButton,
   },
+  data: function () {
+    return {
+      userRole: computed(() => store.getters.userRole),
+    };
+  },
 
   setup() {
     const store = useStore();
     const formData = ref({});
-
     const handleRecallReminder = () => {
       const modal = new Modal(
         document.getElementById("modal_patient_recall_reminder")

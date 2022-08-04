@@ -240,6 +240,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "procedure-approvals",
         component: () => import("@/views/ProcedureApprovals.vue"),
       },
+      {
+        path: "/employee-booking-dashboard",
+        name: "employee-booking-dashboard",
+        component: () => import("@/views/booking/EmployeeBookings.vue"),
+      },
     ],
   },
   {
