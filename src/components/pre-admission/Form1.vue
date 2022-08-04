@@ -50,11 +50,12 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Actions } from "@/store/enums/StoreEnums";
+import moment from "moment";
 
 export default defineComponent({
   name: "pre-admission-form1",
@@ -65,8 +66,11 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const loading = ref(true);
-    const formRef = ref<null | HTMLFormElement>(null);
+    const formRef = ref(null);
     const orgData = computed(() => store.getters.getAptPreAdmissionOrg);
+    const validateMsg = computed(
+      () => store.getters.getAptPreAdmissionValidateMsg
+    );
     const formData = ref({
       date_of_birth: "",
       last_name: "",
@@ -88,20 +92,30 @@ export default defineComponent({
       ],
     });
     const orgLogo = ref("");
-    const apt_id = ref<string>("");
+    const apt_id = ref("");
 
     const submit = () => {
       if (!formRef.value) {
         return;
       }
 
-      formRef.value.validate((valid) => {
+      formRef.value.validate(async (valid) => {
         if (valid) {
-          loading.value = true;
-          router.push({
-            path:
-              "/appointment_pre_admissions/show/" + apt_id.value + "/form_2",
+          await store.dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
+            apt_id: apt_id.value,
+            ...formData.value,
           });
+          if (validateMsg.value === "Appointment Pre Admission")
+            router.push({
+              path:
+                "/appointment_pre_admissions/show/" + apt_id.value + "/form_2",
+              query: {
+                last_name: formData.value.last_name,
+                date_of_birth: moment(formData.value.date_of_birth)
+                  .format("YYYY-MM-DD")
+                  .toString(),
+              },
+            });
         } else {
           console.log("validation failed");
         }

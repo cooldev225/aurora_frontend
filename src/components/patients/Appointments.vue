@@ -190,6 +190,7 @@ export default defineComponent({
 
     const handlePreAdmission = (item) => {
       // store.commit(Mutations.SET_APT.SELECT, item);
+      console.log(item.id);
       router.push({
         path:
           "/appointment_pre_admissions/show/" +

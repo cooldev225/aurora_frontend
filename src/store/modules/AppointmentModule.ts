@@ -2,7 +2,7 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-
+import moment from "moment";
 export interface IApt {
   id: number;
 }
@@ -14,7 +14,9 @@ export interface AptInfo {
   unapprovedAptData: Array<IApt>;
   cancellationAptData: Array<IApt>;
   aptSelectData: IApt;
-  aptPreAddmissionOrgData: IApt;
+  aptPreAdmissionOrgData: IApt;
+  aptPreAdmissionValidateData: IApt;
+  aptPreAdmissionValidateMsg: string;
 }
 
 @Module
@@ -25,7 +27,9 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   unapprovedAptData = [] as Array<IApt>;
   cancellationAptData = [] as Array<IApt>;
   aptSelectData = {} as IApt;
-  aptPreAddmissionOrgData = {} as IApt;
+  aptPreAdmissionOrgData = {} as IApt;
+  aptPreAdmissionValidateData = {} as IApt;
+  aptPreAdmissionValidateMsg = "" as string;
 
   /**
    * Get current user object
@@ -78,7 +82,23 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
    * @returns SelectedaptData
    */
   get getAptPreAdmissionOrg(): IApt {
-    return this.aptPreAddmissionOrgData;
+    return this.aptPreAdmissionOrgData;
+  }
+
+  /**
+   * Get current user object
+   * @returns SelectedaptData
+   */
+  get getAptPreAdmissionValidateData(): IApt {
+    return this.aptPreAdmissionValidateData;
+  }
+
+  /**
+   * Get current user object
+   * @returns SelectedaptData
+   */
+  get getAptPreAdmissionValidateMsg(): string {
+    return this.aptPreAdmissionValidateMsg;
   }
 
   @Mutation
@@ -113,7 +133,17 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Mutation
   [Mutations.SET_APT.PRE_ADMISSION.ORG](data) {
-    this.aptPreAddmissionOrgData = data;
+    this.aptPreAdmissionOrgData = data;
+  }
+
+  @Mutation
+  [Mutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA](data) {
+    this.aptPreAdmissionValidateData = data;
+  }
+
+  @Mutation
+  [Mutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG](data) {
+    this.aptPreAdmissionValidateMsg = data;
   }
 
   @Action
@@ -317,6 +347,36 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
         .then(({ data }) => {
           this.context.commit(Mutations.SET_APT.PRE_ADMISSION.ORG, data.data);
           return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.APT.PRE_ADMISSION.VALIDATE](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("appointment_pre_admissions/validate/" + data.apt_id, {
+        last_name: data.last_name,
+        date_of_birth: moment(data.date_of_birth)
+          .format("YYYY-MM-DD")
+          .toString(),
+      })
+        .then(({ data }) => {
+          this.context.commit(
+            Mutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
+            data.message
+          );
+          this.context.commit(
+            Mutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
+            data.data
+          );
+          return data.message;
         })
         .catch(({ response }) => {
           console.log(response.data.error);
