@@ -44,66 +44,34 @@
               data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
               data-kt-scroll-offset="300px"
             >
-              <!--begin::Alert-->
-              <div class="alert alert-warning">
-                <!--begin::Wrapper-->
-                <div class="d-flex flex-column">
-                  <!--begin::Content-->
-                  <span
-                    >Select when this recall is due. An email will be sent to
-                    the patient xx days prior to the due date (based on
-                    settings)</span
-                  >
-                  <!--end::Content-->
-                </div>
-                <!--end::Wrapper-->
-              </div>
-              <!--end::Alert-->
-
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Time Frame</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="time_frame">
-                  <el-select
-                    class="w-100"
-                    v-model="formData.time_frame"
-                    placeholder="Select Time Frame"
-                  >
-                    <el-option
-                      v-for="option in timeFrames"
-                      :key="option.value"
-                      :value="option.value"
-                      :label="option.label"
-                    />
-                  </el-select>
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="fs-6 fw-bold mb-2">Reason</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="reason">
-                  <el-input
-                    v-model="formData.reason"
-                    class="w-100"
-                    type="textarea"
-                    rows="3"
-                    placeholder="Reason for update"
+              <InputWrapper
+                :class="colString"
+                label="Time Frame"
+                prop="time_frame"
+              >
+                <el-select
+                  class="w-100"
+                  v-model="formData.time_frame"
+                  placeholder="Select Time Frame"
+                >
+                  <el-option
+                    v-for="option in timeFrames"
+                    :key="option.value"
+                    :value="option.value"
+                    :label="option.label"
                   />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
+                </el-select>
+              </InputWrapper>
+
+              <InputWrapper label="Reason" prop="reason">
+                <el-input
+                  v-model="formData.reason"
+                  class="w-100"
+                  type="textarea"
+                  rows="3"
+                  placeholder="Reason for recall"
+                />
+              </InputWrapper>
             </div>
             <!--end::Scroll-->
           </div>
@@ -153,10 +121,11 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import timeFrames from "@/core/data/time-frames";
+import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 export default defineComponent({
   name: "patient-recall-reminder-modal",
-  components: {},
+  components: { InputWrapper },
   setup() {
     const store = useStore();
     const formRef = ref(null);
