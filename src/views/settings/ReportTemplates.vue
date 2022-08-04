@@ -63,7 +63,6 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import CreateReportTemplate from "@/components/report-templates/CreateReportTemplate.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
   name: "report-templates",
