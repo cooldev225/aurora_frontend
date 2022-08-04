@@ -129,7 +129,7 @@ export default defineComponent({
     const Data = new FormData();
     const dialogImageUrl = ref("");
     const dialogVisible = ref(false);
-    const sendableUsers = computed(() => store.getters.employeeList);
+    const sendableUsers = computed(() => store.getters.getUserList);
 
     const handleChange = (file, fileList) => {
       upload.value.clearFiles();
@@ -150,7 +150,7 @@ export default defineComponent({
     onMounted(() => {
       setCurrentPageBreadcrumbs("Compose", ["Mail"]);
 
-      store.dispatch(Actions.EMPLOYEE.LIST).then(() => {
+      store.dispatch(Actions.USER_LIST).then(() => {
         loading.value = false;
       });
     });

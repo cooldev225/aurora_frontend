@@ -12,6 +12,7 @@ const Actions = {
   UPDATE_USER: "updateUser",
   FORGOT_PASSWORD: "forgotPassword",
   SET_BREADCRUMB_ACTION: "setBreadcrumbAction",
+  USER_LIST: "userList",
 
   PROFILE: {
     VIEW: "viewProfile",
@@ -233,6 +234,7 @@ const Mutations = {
   RESET_LAYOUT_CONFIG: "resetLayoutConfig",
   OVERRIDE_LAYOUT_CONFIG: "overrideLayoutConfig",
   OVERRIDE_PAGE_LAYOUT_CONFIG: "overridePageLayoutConfig",
+  SET_USER_LIST: "setUserList",
 
   SET_SPECIALIST: {
     LIST: "setSpecialists",
