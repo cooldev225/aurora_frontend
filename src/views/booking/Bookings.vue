@@ -135,9 +135,12 @@
                         v-for="(item, index) in _ava_specialists"
                         :key="index"
                       >
-                        <el-checkbox size="large" :label="item.id">{{
-                          item.name
-                        }}</el-checkbox>
+                        <el-checkbox
+                          size="large"
+                          :label="item.id"
+                          :checked="true"
+                          >{{ item.name }}</el-checkbox
+                        >
                       </template>
                     </el-checkbox-group>
                   </div>
