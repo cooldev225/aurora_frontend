@@ -123,10 +123,10 @@ export default defineComponent({
       to_user_ids: [],
       subject: "",
       body: "",
+      attachment: [],
     });
     const uploadDisabled = ref(false);
     const upload = ref(null);
-    const Data = new FormData();
     const dialogImageUrl = ref("");
     const dialogVisible = ref(false);
     const sendableUsers = computed(() => store.getters.getUserList);
@@ -134,7 +134,7 @@ export default defineComponent({
     const handleChange = (file, fileList) => {
       upload.value.clearFiles();
       uploadDisabled.value = false;
-      Data.append("attachment", file.raw);
+      formData.value.attachment.push(file.raw);
       uploadDisabled.value = fileList.length >= 1;
     };
 
@@ -162,17 +162,14 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
-          Object.keys(formData.value).forEach((key) => {
-            Data.append(key, formData.value[key]);
-          });
           loading.value = true;
           store
-            .dispatch(Actions.MAILS.CREATE, Data)
+            .dispatch(Actions.MAILS.CREATE, formData.value)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.ORG.LIST);
               Swal.fire({
-                text: "Mail Sent Successfully!",
+                text: "Mail Saved!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -180,7 +177,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                router.push({ name: "mails" });
+                router.push({ name: "mailbox-list" });
               });
             })
             .catch(({ response }) => {
@@ -198,12 +195,9 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
-          Object.keys(formData.value).forEach((key) => {
-            Data.append(key, formData.value[key]);
-          });
           loading.value = true;
           store
-            .dispatch(Actions.MAILS.SEND, Data)
+            .dispatch(Actions.MAILS.SEND, formData.value)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.ORG.LIST);
@@ -216,7 +210,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                router.push({ name: "mails" });
+                router.push({ name: "mailbox-list" });
               });
             })
             .catch(({ response }) => {
