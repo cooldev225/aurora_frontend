@@ -98,7 +98,10 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          router.push({ name: "pre-admission-form2" });
+          router.push({
+            path:
+              "/appointment_pre_admissions/show/" + apt_id.value + "/form_2",
+          });
         } else {
           console.log("validation failed");
         }

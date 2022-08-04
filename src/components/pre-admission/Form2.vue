@@ -13,12 +13,10 @@
           class="m-auto border border-success border-3 d-flex align-items-center justify-content-center w-250px h-250px"
         >
           <img
-            v-if="orgLogo"
-            :src="{ orgLogo }"
+            :src="orgData.organization_logo"
             alt="organization logo"
             class="w-100 h-100"
           />
-          <h1 v-else>Organization</h1>
         </div>
       </div>
       <!--end::Card header-->
@@ -647,12 +645,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect, onMounted } from "vue";
+import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import maritalStatus from "@/core/data/marital-status";
 import titles from "@/core/data/titles";
+import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "pre-admission-form2",
@@ -661,6 +660,7 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const formRef = ref<null | HTMLFormElement>(null);
+    const orgData = computed(() => store.getters.getAptPreAdmissionOrg);
     const formData = ref({
       title: "",
       first_name: "",
@@ -760,7 +760,10 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          router.push({ name: "pre-admission-form3" });
+          router.push({
+            path:
+              "/appointment_pre_admissions/show/" + apt_id.value + "/form_3",
+          });
         } else {
           console.log("validation error");
         }
@@ -774,8 +777,12 @@ export default defineComponent({
       console.log(aptData.value);
     });
 
+    const apt_id = ref("");
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("Administration", ["Patients"]);
+      apt_id.value = router.currentRoute.value.params.id.toString();
+      store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
     });
 
     return {
@@ -786,6 +793,7 @@ export default defineComponent({
       rules,
       titles,
       maritalStatus,
+      orgData,
       submit,
     };
   },
