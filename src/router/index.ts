@@ -235,6 +235,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "password-change",
         component: () => import("@/components/auth/Password.vue"),
       },
+      {
+        path: "/procedure-approvals",
+        name: "procedure-approvals",
+        component: () => import("@/views/ProcedureApprovals.vue"),
+      },
     ],
   },
   {

@@ -119,7 +119,7 @@
                         </span>
                         <span>
                           <span
-                            v-if="item_2.appointment.allergies != ''"
+                            v-if="item_2.appointment.allergies"
                             class="badge badge-light-danger opacity-50 mx-2"
                           >
                             ALLERGY
