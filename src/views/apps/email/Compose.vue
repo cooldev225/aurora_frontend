@@ -203,7 +203,7 @@ export default defineComponent({
           });
           loading.value = true;
           store
-            .dispatch(Actions.MAILS.CREATE, Data)
+            .dispatch(Actions.MAILS.SEND, Data)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.ORG.LIST);
@@ -242,6 +242,7 @@ export default defineComponent({
       formData,
       submit,
       ClassicEditor,
+      formRef,
     };
   },
 });

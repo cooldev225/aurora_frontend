@@ -68,7 +68,7 @@ export default class MailModule extends VuexModule implements MailInfo {
   }
 
   @Action
-  [Actions.MAILS.CREATE](item) {
+  [Actions.MAILS.COMPOSE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("mails", item)
@@ -84,7 +84,23 @@ export default class MailModule extends VuexModule implements MailInfo {
   }
 
   @Action
-  [Actions.MAILS.UPDATE](item) {
+  [Actions.MAILS.SEND](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("mails/send", item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAILS.UPDATE_DRAFT](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("mails", item.id, item)
@@ -100,7 +116,7 @@ export default class MailModule extends VuexModule implements MailInfo {
   }
 
   @Action
-  [Actions.MAILS.DELETE](id) {
+  [Actions.MAILS.DELETE_DRAFT](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
 

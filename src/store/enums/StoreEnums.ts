@@ -151,9 +151,14 @@ const Actions = {
 
   MAILS: {
     LIST: "listMail",
-    CREATE: "createMail",
-    UPDATE: "updateMail",
+    COMPOSE: "composeMail",
+    SEND: "sendMail",
+    SEND_DRAFT: "mailSendDraft",
+    BOOKMARK: "bookmarkMail",
     DELETE: "deleteMail",
+    RESTORE: "restoreMail",
+    DELETE_DRAFT: "deleteMailDraft",
+    UPDATE_DRAFT: "updateMailDraft",
   },
 
   APT_TIME_REQUIREMENT: {
