@@ -12,6 +12,7 @@ const Actions = {
   UPDATE_USER: "updateUser",
   FORGOT_PASSWORD: "forgotPassword",
   SET_BREADCRUMB_ACTION: "setBreadcrumbAction",
+  USER_LIST: "userList",
 
   PROFILE: {
     VIEW: "viewProfile",
@@ -150,9 +151,14 @@ const Actions = {
 
   MAILS: {
     LIST: "listMail",
-    CREATE: "createMail",
-    UPDATE: "updateMail",
+    COMPOSE: "composeMail",
+    SEND: "sendMail",
+    SEND_DRAFT: "mailSendDraft",
+    BOOKMARK: "bookmarkMail",
     DELETE: "deleteMail",
+    RESTORE: "restoreMail",
+    DELETE_DRAFT: "deleteMailDraft",
+    UPDATE_DRAFT: "updateMailDraft",
   },
 
   APT_TIME_REQUIREMENT: {
@@ -233,6 +239,7 @@ const Mutations = {
   RESET_LAYOUT_CONFIG: "resetLayoutConfig",
   OVERRIDE_LAYOUT_CONFIG: "overrideLayoutConfig",
   OVERRIDE_PAGE_LAYOUT_CONFIG: "overridePageLayoutConfig",
+  SET_USER_LIST: "setUserList",
 
   SET_SPECIALIST: {
     LIST: "setSpecialists",

@@ -124,7 +124,7 @@
                   </div>
 
                   <div
-                    class="cursor-pointer text-center text-nowrap col-9 border border-gray-300 h-40px"
+                    class="cursor-pointer text-center text-nowrap col-9 border border-gray-300 h-40px d-flex flex-center"
                     style="font-size: 1.2rem; line-height: 40px; color: #bd5"
                     @click="handleAddAutoText(sectionIndex)"
                   >

@@ -1,666 +1,711 @@
 <template>
   <el-form
-    @submit.prevent="submit()"
+    @submit.prevent="generatePDF()"
     :model="formData"
     :rules="rules"
     ref="formRef"
   >
-    <!--begin::details View-->
-    <div class="card w-100 h-100">
-      <!--begin::Card header-->
-      <div class="card-header border-0 p-5">
-        <div
-          class="m-auto border border-success border-3 d-flex align-items-center justify-content-center w-250px h-250px"
-        >
-          <img
-            v-if="orgLogo"
-            :src="{ orgLogo }"
-            alt="organization logo"
-            class="w-100 h-100"
-          />
-          <h1 v-else>Organization</h1>
-        </div>
-      </div>
-      <!--end::Card header-->
-      <!--begin::Card body-->
-      <div class="card-body pt-0">
-        <!--begin::Option-->
-        <div class="py-0">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
+    <vue3-html2pdf
+      :show-layout="false"
+      :float-layout="false"
+      :enable-download="false"
+      :preview-modal="true"
+      :paginate-elements-by-height="3000"
+      filename="template"
+      :pdf-quality="2"
+      :manual-pagination="false"
+      pdf-format="a2"
+      :pdf-margin="10"
+      pdf-orientation="portrait"
+      pdf-content-width="100%"
+      @progress="onProgress($event)"
+      ref="html2Pdf"
+    >
+      <template v-slot:pdf-content>
+        <!--begin::details View-->
+        <div class="card w-100 h-100">
+          <!--begin::Card header-->
+          <div class="card-header border-0 p-5">
             <div
-              class="d-flex justify-content-between w-100 align-items-center"
+              class="m-auto border border-success border-3 d-flex align-items-center justify-content-center w-250px h-250px"
             >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">
-                    Appointment Information
+              <img
+                :src="orgData.organization_logo"
+                alt="organization logo"
+                class="w-100 h-100"
+              />
+            </div>
+          </div>
+          <!--end::Card header-->
+          <!--begin::Card body-->
+          <div class="card-body pt-0">
+            <!--begin::Option-->
+            <div class="py-0">
+              <!--begin::Header-->
+              <div class="py-5 d-flex flex-stack flex-wrap">
+                <!--begin::Toggle-->
+                <div
+                  class="d-flex justify-content-between w-100 align-items-center"
+                >
+                  <!--begin::Summary-->
+                  <div class="me-3">
+                    <div class="d-flex align-items-center">
+                      <div class="text-gray-800 fw-bolder">
+                        Appointment Information
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
-            </div>
-            <!--end::Toggle-->
-          </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div class="fs-6 ps-10">
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Specialist
-                      </td>
-                      <td class="text-gray-800">
-                        <label>{{ aptData.specialist_name }}</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Appointment Type
-                      </td>
-                      <td class="text-gray-800 text-capitalize">
-                        <label>{{ aptData.appointment_type_name }} </label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Date and TIme
-                      </td>
-                      <td class="text-gray-800">
-                        <label>{{
-                          aptData.date + " " + aptData.start_time
-                        }}</label>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Clinic
-                      </td>
-                      <td class="text-gray-800">
-                        <label>{{ aptData.clinic_name }}</label>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Details-->
-          </div>
-          <!--end::Body-->
-        </div>
-        <!--end::Option-->
-        <div class="separator separator-dashed"></div>
-        <!--begin::Option-->
-        <div class="py-0">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">General</div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
-            </div>
-            <!--end::Toggle-->
-          </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div class="fs-6 ps-10">
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Title
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="title">
-                          <el-select
-                            class="w-50"
-                            v-model="formData.title"
-                            placeholder="Select Title"
-                          >
-                            <el-option
-                              v-for="item in titles"
-                              :key="item.value"
-                              :value="item.value"
-                              :label="item.label"
-                            />
-                          </el-select>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        First Name
-                      </td>
-                      <td class="text-gray-800 text-capitalize">
-                        <el-form-item prop="first_name">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.first_name"
-                            placeholder="First Name"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Last Name
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="last_name">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.last_name"
-                            placeholder="Last Name"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Date of Birth
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="date_of_birth">
-                          <el-date-picker
-                            class="w-50"
-                            v-model="formData.date_of_birth"
-                            format="YYYY-MM-DD"
-                            placeholder="1990-01-01"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Contact Number
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="contact_number">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.contact_number"
-                            placeholder="Contact Number"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Email
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="email">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.email"
-                            placeholder="Email"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Address
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="address">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.address"
-                            placeholder="Address"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Details-->
-          </div>
-          <!--end::Body-->
-        </div>
-        <!--end::Option-->
-        <div class="separator separator-dashed"></div>
-        <!--begin::Option-->
-        <div class="py-0">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">Patient Demographic</div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
-            </div>
-            <!--end::Toggle-->
-          </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div class="fs-6 ps-10">
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Gender
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="gender">
-                          <el-select
-                            class="w-50"
-                            v-model="formData.gender"
-                            placeholder="Select Gender"
-                          >
-                            <el-option value="male" label="Male" />
-                            <el-option value="female" label="Female" />
-                            <el-option value="other" label="Other" />
-                            <el-option
-                              value="undisclosed"
-                              label="Not Stated / Inadequately Desribed"
-                            />
-                          </el-select>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-250px">
-                        Do you identify as Aboriginal or Torres Strait Islander?
-                      </td>
-                      <td class="text-gray-800 text-capitalize">
-                        <el-form-item prop="aborginality">
-                          <el-select
-                            class="w-50"
-                            v-model="formData.aborginality"
-                            placeholder="Aborginality"
-                          >
-                            <el-option :value="0" label="No" />
-                            <el-option :value="1" label="Yes" />
-                          </el-select>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Occupation
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="occupation">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.occupation"
-                            placeholder="Occupation"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Marital Status
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="marital_status">
-                          <el-select
-                            class="w-50"
-                            v-model="formData.marital_status"
-                            placeholder="Marital Status"
-                          >
-                            <el-option
-                              v-for="status in maritalStatus"
-                              :key="status.value"
-                              :value="status.value"
-                              :label="status.label"
-                            />
-                          </el-select>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Details-->
-          </div>
-          <!--end::Body-->
-        </div>
-        <!--end::Option-->
-        <div class="separator separator-dashed"></div>
-        <!--begin::Option-->
-        <div class="py-0">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">Next of KIN</div>
-                </div>
-              </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
-              </div>
-              <!--end::Arrow-->
-            </div>
-            <!--end::Toggle-->
-          </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div class="fs-6 ps-10">
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Name
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="kin_name">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.kin_name"
-                            placeholder="Kin Name"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Number
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="kin_phone_number">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.kin_phone_number"
-                            placeholder="Kin Number"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Relationship
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="kin_relationship">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="formData.kin_relationship"
-                            placeholder="Kin Relationship"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Details-->
-          </div>
-          <!--end::Body-->
-        </div>
-        <!--end::Option-->
-        <div class="separator separator-dashed"></div>
-        <div class="py-0">
-          <!--begin::Header-->
-          <div class="py-5 d-flex flex-stack flex-wrap">
-            <!--begin::Toggle-->
-            <div
-              class="d-flex justify-content-between w-100 align-items-center"
-            >
-              <!--begin::Summary-->
-              <div class="me-3">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">
-                    Question and Consent
+                  <!--end::Summary-->
+                  <!--begin::Arrow-->
+                  <div class="me-3 rotate-90">
+                    <span class="svg-icon svg-icon-3">
+                      <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
+                    </span>
                   </div>
+                  <!--end::Arrow-->
                 </div>
+                <!--end::Toggle-->
               </div>
-              <!--end::Summary-->
-              <!--begin::Arrow-->
-              <div class="me-3 rotate-90">
-                <span class="svg-icon svg-icon-3">
-                  <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
-                </span>
+              <!--end::Header-->
+              <!--begin::Body-->
+              <div class="fs-6 ps-10">
+                <!--begin::Details-->
+                <div class="d-flex flex-wrap py-5">
+                  <!--begin::Col-->
+                  <div class="flex-equal me-5">
+                    <table class="table table-flush fw-bold gy-1">
+                      <tbody>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Specialist
+                          </td>
+                          <td class="text-gray-800">
+                            <label>{{ aptData.specialist_name }}</label>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Appointment Type
+                          </td>
+                          <td class="text-gray-800 text-capitalize">
+                            <label>{{ aptData.appointment_type_name }} </label>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Date and TIme
+                          </td>
+                          <td class="text-gray-800">
+                            <label>{{
+                              aptData.date + " " + aptData.start_time
+                            }}</label>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Clinic
+                          </td>
+                          <td class="text-gray-800">
+                            <label>{{ aptData.clinic_name }}</label>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--end::Col-->
+                </div>
+                <!--end::Details-->
               </div>
-              <!--end::Arrow-->
+              <!--end::Body-->
             </div>
-            <!--end::Toggle-->
-          </div>
-          <!--end::Header-->
-          <!--begin::Body-->
-          <div class="fs-6 ps-10">
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap py-5">
-              <!--begin::Col-->
-              <div class="flex-equal me-5">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Previous surgery? What & When?
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="question1">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="qaData.question1"
-                            placeholder="Previous Surgery"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-150px">
-                        Previous anaesthetic?
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="question2">
-                          <el-input
-                            type="text"
-                            class="w-50"
-                            v-model="qaData.question2"
-                            placeholder="Prevous Anaesthetic"
-                          />
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+            <!--end::Option-->
+            <div class="separator separator-dashed"></div>
+            <!--begin::Option-->
+            <div class="py-0">
+              <!--begin::Header-->
+              <div class="py-5 d-flex flex-stack flex-wrap">
+                <!--begin::Toggle-->
+                <div
+                  class="d-flex justify-content-between w-100 align-items-center"
+                >
+                  <!--begin::Summary-->
+                  <div class="me-3">
+                    <div class="d-flex align-items-center">
+                      <div class="text-gray-800 fw-bolder">General</div>
+                    </div>
+                  </div>
+                  <!--end::Summary-->
+                  <!--begin::Arrow-->
+                  <div class="me-3 rotate-90">
+                    <span class="svg-icon svg-icon-3">
+                      <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
+                    </span>
+                  </div>
+                  <!--end::Arrow-->
+                </div>
+                <!--end::Toggle-->
               </div>
-              <!--end::Col-->
-              <!--begin::Col-->
-              <div class="flex-equal">
-                <table class="table table-flush fw-bold gy-1">
-                  <tbody>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-300px">
-                        Has a family member had life threatening complications
-                        with anaesthetic
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="select1">
-                          <el-radio-group v-model="qaData.select1" class="ml-4">
-                            <el-radio label="Yes" size="large">Yes</el-radio>
-                            <el-radio label="No" size="large">No</el-radio>
-                          </el-radio-group>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-300px">
-                        Do you suffer from reflux
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="select2">
-                          <el-radio-group v-model="qaData.select2" class="ml-4">
-                            <el-radio label="Yes" size="large">Yes</el-radio>
-                            <el-radio label="No" size="large">No</el-radio>
-                          </el-radio-group>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-300px">
-                        Do you have any false teeth, caps, crowns, loose or
-                        chipped teeth or other dental work
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="select3">
-                          <el-radio-group v-model="qaData.select3" class="ml-4">
-                            <el-radio label="Yes" size="large">Yes</el-radio>
-                            <el-radio label="No" size="large">No</el-radio>
-                          </el-radio-group>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="text-muted min-w-125px w-125px w-md-300px">
-                        Do you have any issues with your neck or jaw
-                      </td>
-                      <td class="text-gray-800">
-                        <el-form-item prop="select4">
-                          <el-radio-group v-model="qaData.select4" class="ml-4">
-                            <el-radio label="Yes" size="large">Yes</el-radio>
-                            <el-radio label="No" size="large">No</el-radio>
-                          </el-radio-group>
-                        </el-form-item>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <!--end::Header-->
+              <!--begin::Body-->
+              <div class="fs-6 ps-10">
+                <!--begin::Details-->
+                <div class="d-flex flex-wrap py-5">
+                  <!--begin::Col-->
+                  <div class="flex-equal me-5">
+                    <table class="table table-flush fw-bold gy-1">
+                      <tbody>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Title
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="title">
+                              <el-select
+                                class="w-50"
+                                v-model="formData.title"
+                                placeholder="Select Title"
+                              >
+                                <el-option
+                                  v-for="item in titles"
+                                  :key="item.value"
+                                  :value="item.value"
+                                  :label="item.label"
+                                />
+                              </el-select>
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            First Name
+                          </td>
+                          <td class="text-gray-800 text-capitalize">
+                            <el-form-item prop="first_name">
+                              <el-input
+                                type="text"
+                                class="w-50"
+                                v-model="formData.first_name"
+                                placeholder="First Name"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Last Name
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="last_name">
+                              <el-input
+                                type="text"
+                                class="w-50"
+                                v-model="formData.last_name"
+                                placeholder="Last Name"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Date of Birth
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="date_of_birth">
+                              <el-date-picker
+                                class="w-50"
+                                v-model="formData.date_of_birth"
+                                format="YYYY-MM-DD"
+                                placeholder="1990-01-01"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--end::Col-->
+                  <!--begin::Col-->
+                  <div class="flex-equal">
+                    <table class="table table-flush fw-bold gy-1">
+                      <tbody>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Contact Number
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="contact_number">
+                              <el-input
+                                type="text"
+                                class="w-50"
+                                v-model="formData.contact_number"
+                                placeholder="Contact Number"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Email
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="email">
+                              <el-input
+                                type="text"
+                                class="w-50"
+                                v-model="formData.email"
+                                placeholder="Email"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Address
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="address">
+                              <el-input
+                                type="text"
+                                class="w-50"
+                                v-model="formData.address"
+                                placeholder="Address"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--end::Col-->
+                </div>
+                <!--end::Details-->
               </div>
-              <!--end::Col-->
+              <!--end::Body-->
             </div>
-            <!--end::Details-->
+            <!--end::Option-->
+            <div class="separator separator-dashed"></div>
+            <!--begin::Option-->
+            <div class="py-0">
+              <!--begin::Header-->
+              <div class="py-5 d-flex flex-stack flex-wrap">
+                <!--begin::Toggle-->
+                <div
+                  class="d-flex justify-content-between w-100 align-items-center"
+                >
+                  <!--begin::Summary-->
+                  <div class="me-3">
+                    <div class="d-flex align-items-center">
+                      <div class="text-gray-800 fw-bolder">
+                        Patient Demographic
+                      </div>
+                    </div>
+                  </div>
+                  <!--end::Summary-->
+                  <!--begin::Arrow-->
+                  <div class="me-3 rotate-90">
+                    <span class="svg-icon svg-icon-3">
+                      <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
+                    </span>
+                  </div>
+                  <!--end::Arrow-->
+                </div>
+                <!--end::Toggle-->
+              </div>
+              <!--end::Header-->
+              <!--begin::Body-->
+              <div class="fs-6 ps-10">
+                <!--begin::Details-->
+                <div class="d-flex flex-wrap py-5">
+                  <!--begin::Col-->
+                  <div class="flex-equal me-5">
+                    <table class="table table-flush fw-bold gy-1">
+                      <tbody>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Gender
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="gender">
+                              <el-select
+                                class="w-50"
+                                v-model="formData.gender"
+                                placeholder="Select Gender"
+                              >
+                                <el-option value="male" label="Male" />
+                                <el-option value="female" label="Female" />
+                                <el-option value="other" label="Other" />
+                                <el-option
+                                  value="undisclosed"
+                                  label="Not Stated / Inadequately Desribed"
+                                />
+                              </el-select>
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-250px">
+                            Do you identify as Aboriginal or Torres Strait
+                            Islander?
+                          </td>
+                          <td class="text-gray-800 text-capitalize">
+                            <el-form-item prop="aborginality">
+                              <el-select
+                                class="w-50"
+                                v-model="formData.aborginality"
+                                placeholder="Aborginality"
+                              >
+                                <el-option :value="0" label="No" />
+                                <el-option :value="1" label="Yes" />
+                              </el-select>
+                            </el-form-item>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--end::Col-->
+                  <!--begin::Col-->
+                  <div class="flex-equal">
+                    <table class="table table-flush fw-bold gy-1">
+                      <tbody>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Occupation
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="occupation">
+                              <el-input
+                                type="text"
+                                class="w-50"
+                                v-model="formData.occupation"
+                                placeholder="Occupation"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Marital Status
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="marital_status">
+                              <el-select
+                                class="w-50"
+                                v-model="formData.marital_status"
+                                placeholder="Marital Status"
+                              >
+                                <el-option
+                                  v-for="status in maritalStatus"
+                                  :key="status.value"
+                                  :value="status.value"
+                                  :label="status.label"
+                                />
+                              </el-select>
+                            </el-form-item>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--end::Col-->
+                </div>
+                <!--end::Details-->
+              </div>
+              <!--end::Body-->
+            </div>
+            <!--end::Option-->
+            <div class="separator separator-dashed"></div>
+            <!--begin::Option-->
+            <div class="py-0">
+              <!--begin::Header-->
+              <div class="py-5 d-flex flex-stack flex-wrap">
+                <!--begin::Toggle-->
+                <div
+                  class="d-flex justify-content-between w-100 align-items-center"
+                >
+                  <!--begin::Summary-->
+                  <div class="me-3">
+                    <div class="d-flex align-items-center">
+                      <div class="text-gray-800 fw-bolder">Next of KIN</div>
+                    </div>
+                  </div>
+                  <!--end::Summary-->
+                  <!--begin::Arrow-->
+                  <div class="me-3 rotate-90">
+                    <span class="svg-icon svg-icon-3">
+                      <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
+                    </span>
+                  </div>
+                  <!--end::Arrow-->
+                </div>
+                <!--end::Toggle-->
+              </div>
+              <!--end::Header-->
+              <!--begin::Body-->
+              <div class="fs-6 ps-10">
+                <!--begin::Details-->
+                <div class="d-flex flex-wrap py-5">
+                  <!--begin::Col-->
+                  <div class="flex-equal me-5">
+                    <table class="table table-flush fw-bold gy-1">
+                      <tbody>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Name
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="kin_name">
+                              <el-input
+                                type="text"
+                                class="w-50"
+                                v-model="formData.kin_name"
+                                placeholder="Kin Name"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Number
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="kin_phone_number">
+                              <el-input
+                                type="text"
+                                class="w-50"
+                                v-model="formData.kin_phone_number"
+                                placeholder="Kin Number"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--end::Col-->
+                  <!--begin::Col-->
+                  <div class="flex-equal">
+                    <table class="table table-flush fw-bold gy-1">
+                      <tbody>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Relationship
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="kin_relationship">
+                              <el-input
+                                type="text"
+                                class="w-50"
+                                v-model="formData.kin_relationship"
+                                placeholder="Kin Relationship"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--end::Col-->
+                </div>
+                <!--end::Details-->
+              </div>
+              <!--end::Body-->
+            </div>
+            <!--end::Option-->
+            <div class="separator separator-dashed"></div>
+            <div class="py-0">
+              <!--begin::Header-->
+              <div class="py-5 d-flex flex-stack flex-wrap">
+                <!--begin::Toggle-->
+                <div
+                  class="d-flex justify-content-between w-100 align-items-center"
+                >
+                  <!--begin::Summary-->
+                  <div class="me-3">
+                    <div class="d-flex align-items-center">
+                      <div class="text-gray-800 fw-bolder">
+                        Question and Consent
+                      </div>
+                    </div>
+                  </div>
+                  <!--end::Summary-->
+                  <!--begin::Arrow-->
+                  <div class="me-3 rotate-90">
+                    <span class="svg-icon svg-icon-3">
+                      <inline-svg src="media/icons/duotune/arrows/arr071.svg" />
+                    </span>
+                  </div>
+                  <!--end::Arrow-->
+                </div>
+                <!--end::Toggle-->
+              </div>
+              <!--end::Header-->
+              <!--begin::Body-->
+              <div class="fs-6 ps-10">
+                <!--begin::Details-->
+                <div class="d-flex flex-wrap py-5">
+                  <!--begin::Col-->
+                  <div class="flex-equal me-5">
+                    <table class="table table-flush fw-bold gy-1">
+                      <tbody>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Previous surgery? What & When?
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="question1">
+                              <el-input
+                                type="text"
+                                class="w-50"
+                                v-model="qaData.question1"
+                                placeholder="Previous Surgery"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-150px">
+                            Previous anaesthetic?
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="question2">
+                              <el-input
+                                type="text"
+                                class="w-50"
+                                v-model="qaData.question2"
+                                placeholder="Prevous Anaesthetic"
+                              />
+                            </el-form-item>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--end::Col-->
+                  <!--begin::Col-->
+                  <div class="flex-equal">
+                    <table class="table table-flush fw-bold gy-1">
+                      <tbody>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-300px">
+                            Has a family member had life threatening
+                            complications with anaesthetic
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="select1">
+                              <el-radio-group
+                                v-model="qaData.select1"
+                                class="ml-4"
+                              >
+                                <el-radio label="Yes" size="large"
+                                  >Yes</el-radio
+                                >
+                                <el-radio label="No" size="large">No</el-radio>
+                              </el-radio-group>
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-300px">
+                            Do you suffer from reflux
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="select2">
+                              <el-radio-group
+                                v-model="qaData.select2"
+                                class="ml-4"
+                              >
+                                <el-radio label="Yes" size="large"
+                                  >Yes</el-radio
+                                >
+                                <el-radio label="No" size="large">No</el-radio>
+                              </el-radio-group>
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-300px">
+                            Do you have any false teeth, caps, crowns, loose or
+                            chipped teeth or other dental work
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="select3">
+                              <el-radio-group
+                                v-model="qaData.select3"
+                                class="ml-4"
+                              >
+                                <el-radio label="Yes" size="large"
+                                  >Yes</el-radio
+                                >
+                                <el-radio label="No" size="large">No</el-radio>
+                              </el-radio-group>
+                            </el-form-item>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-muted min-w-125px w-125px w-md-300px">
+                            Do you have any issues with your neck or jaw
+                          </td>
+                          <td class="text-gray-800">
+                            <el-form-item prop="select4">
+                              <el-radio-group
+                                v-model="qaData.select4"
+                                class="ml-4"
+                              >
+                                <el-radio label="Yes" size="large"
+                                  >Yes</el-radio
+                                >
+                                <el-radio label="No" size="large">No</el-radio>
+                              </el-radio-group>
+                            </el-form-item>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--end::Col-->
+                </div>
+                <!--end::Details-->
+              </div>
+              <!--end::Body-->
+            </div>
           </div>
-          <!--end::Body-->
+          <div class="d-flex ms-auto justify-content-end mb-5 me-5">
+            <button type="submit" class="btn btn-primary w-min-250px">
+              Confirm
+            </button>
+            <button type="reset" class="btn btn-light-primary w-min-250px ms-2">
+              Cancel
+            </button>
+          </div>
+          <!--end::Card body-->
         </div>
-      </div>
-      <div class="d-flex ms-auto justify-content-end mb-5 me-5">
-        <button type="submit" class="btn btn-primary w-min-250px">
-          Confirm
-        </button>
-        <button type="reset" class="btn btn-light-primary w-min-250px ms-2">
-          Cancel
-        </button>
-      </div>
-      <!--end::Card body-->
-    </div>
-    <!--end::details View-->
+        <!--end::details View-->
+      </template>
+    </vue3-html2pdf>
   </el-form>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, watchEffect, onMounted } from "vue";
+<script>
+import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import maritalStatus from "@/core/data/marital-status";
 import titles from "@/core/data/titles";
+import { Actions } from "@/store/enums/StoreEnums";
+import Vue3Html2pdf from "vue3-html2pdf";
 
 export default defineComponent({
   name: "pre-admission-form2",
-  components: {},
+  components: {
+    Vue3Html2pdf,
+  },
   setup() {
     const store = useStore();
     const router = useRouter();
-    const formRef = ref<null | HTMLFormElement>(null);
+    const formRef = ref(null);
+    const orgData = computed(() => store.getters.getAptPreAdmissionOrg);
     const formData = ref({
       title: "",
       first_name: "",
@@ -760,7 +805,10 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          router.push({ name: "pre-admission-form3" });
+          router.push({
+            path:
+              "/appointment_pre_admissions/show/" + apt_id.value + "/form_3",
+          });
         } else {
           console.log("validation error");
         }
@@ -774,9 +822,24 @@ export default defineComponent({
       console.log(aptData.value);
     });
 
+    const apt_id = ref("");
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("Administration", ["Patients"]);
+      apt_id.value = router.currentRoute.value.params.id.toString();
+      store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
     });
+
+    const html2Pdf = ref("");
+
+    const generatePDF = () => {
+      html2Pdf.value.generatePdf();
+      console.log(1);
+    };
+
+    const onProgress = (event) => {
+      console.log(`Processed: ${event} / 100`);
+    };
 
     return {
       aptData,
@@ -786,7 +849,11 @@ export default defineComponent({
       rules,
       titles,
       maritalStatus,
+      orgData,
+      html2Pdf,
       submit,
+      onProgress,
+      generatePDF,
     };
   },
 });

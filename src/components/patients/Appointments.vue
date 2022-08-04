@@ -191,7 +191,10 @@ export default defineComponent({
     const handlePreAdmission = (item) => {
       // store.commit(Mutations.SET_APT.SELECT, item);
       router.push({
-        path: "/appointment_pre_admissions/show/" + md5(item.id.toString()),
+        path:
+          "/appointment_pre_admissions/show/" +
+          md5(item.id.toString()) +
+          "/form_1",
       });
     };
 
