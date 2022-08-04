@@ -6,6 +6,7 @@ import BodyModule from "@/store/modules/BodyModule";
 import BreadcrumbsModule from "@/store/modules/BreadcrumbsModule";
 import ConfigModule from "@/store/modules/ConfigModule";
 import AdminModule from "@/store/modules/AdminModule";
+import UserModule from "@/store/modules/UserModule";
 import OrganisationModule from "@/store/modules/OrganisationModule";
 import OrgManagerModule from "@/store/modules/OrgManagerModule";
 import OrgAdminModule from "@/store/modules/OrgAdminModule";
@@ -40,6 +41,7 @@ const store = createStore({
     BreadcrumbsModule,
     ConfigModule,
     AdminModule,
+    UserModule,
     SpecialistTypeModule,
     SpecialistTitleModule,
     OrganisationModule,

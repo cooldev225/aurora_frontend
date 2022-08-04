@@ -175,9 +175,10 @@
                   >
                   <label class="fs-5 text-primary"
                     >Time:
-                    <span class="text-black fs-5"
-                      >{{ _start_time }} - {{ aptInfoData.time_slot[1] }}</span
-                    >
+                    <span class="text-black fs-5">
+                      {{ aptInfoData.time_slot[0] }}
+                      - {{ aptInfoData.time_slot[1] }}
+                    </span>
                     <span
                       v-if="aptInfoData.arrival_time"
                       class="text-black fs-5"
@@ -1739,16 +1740,6 @@ export default defineComponent({
       _appointment_time.value = Number(
         appointment_length[_selected.appointment_time] * appointment_time.value
       );
-      _end_time.value = moment(_start_time.value, "HH:mm")
-        .add(_appointment_time.value, "minutes")
-        .format("HH:mm")
-        .toString();
-      aptInfoData.value.time_slot[1] = _end_time.value;
-      _arrival_time.value = Number(_selected.arrival_time);
-      aptInfoData.value.arrival_time = moment(_start_time.value, "HH:mm")
-        .subtract(_arrival_time.value, "minutes")
-        .format("HH:mm")
-        .toString();
       aptInfoData.value.clinical_code = _selected.clinical_code;
       aptInfoData.value.mbs_code = _selected.mbs_code;
       apt_type.value = _selected.type;
@@ -1804,39 +1795,6 @@ export default defineComponent({
     watchEffect(() => {
       if (organisation.value.appointment_length)
         appointment_time.value = organisation.value.appointment_length;
-      const bookingData = store.getters.bookingDatas;
-      ava_specialist.value = bookingData.ava_specialist;
-      if (bookingData.time_slot) {
-        _start_time.value = moment(bookingData.time_slot[0]).format("HH:mm");
-        _end_time.value = moment(bookingData.time_slot[1]).format("HH:mm");
-      }
-      aptInfoData.value.date = bookingData.date;
-      if (bookingData.selected_specialist) {
-        _specialist.value = bookingData.selected_specialist.id;
-        if (bookingData.selected_specialist.anesthetist) {
-          anesthetist.value = bookingData.selected_specialist.anesthetist;
-        }
-        if (bookingData.selected_specialist.work_hours.locations) {
-          clinic.value = bookingData.selected_specialist.work_hours.locations;
-          aptInfoData.value.clinic_name =
-            bookingData.selected_specialist.work_hours.locations.name;
-          aptInfoData.value.clinic_id =
-            bookingData.selected_specialist.work_hours.locations.id;
-          if (JwtService.getToken()) {
-            ApiService.setHeader();
-            ApiService.get("clinics/" + clinic.value.id + "/rooms")
-              .then(({ data }) => {
-                rooms.value = data.data;
-              })
-              .catch(({ response }) => {
-                console.log(response.data.errors);
-                // this.context.commit(Mutations.PURGE_AUTH);
-              });
-          } else {
-            // this.context.commit(Mutations.PURGE_AUTH);
-          }
-        }
-      }
 
       if (_appointment.value && billingInfoData.value.charge_type) {
         debugger;

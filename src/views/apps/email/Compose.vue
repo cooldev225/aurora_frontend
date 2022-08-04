@@ -1,661 +1,242 @@
 <template>
-  <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
-    <!--begin::Container-->
-    <div id="kt_content_container">
-      <!--begin::Inbox App - Messages -->
-      <div class="d-flex flex-column flex-lg-row">
-        <!--begin::Sidebar-->
-        <div
-          class="flex-column flex-lg-row-auto w-100 w-lg-275px mb-10 mb-lg-0"
+  <el-form
+    @submit.prevent="submit()"
+    :model="formData"
+    :rules="rules"
+    ref="formRef"
+  >
+    <h3>Compose New Mail</h3>
+    <el-form-item prop="to_user_ids">
+      <el-select
+        class="mt-10 w-100"
+        placeholder="To:"
+        v-model="formData.to_user_ids"
+        filterable
+        multiple
+      >
+        <el-option
+          v-for="item in sendableUsers"
+          :value="item.id"
+          :label="item.username"
+          :key="item.id"
+        />
+      </el-select>
+    </el-form-item>
+
+    <el-form-item prop="subject">
+      <el-input v-model="formData.subject" type="text" placeholder="Subject" />
+    </el-form-item>
+
+    <el-form-item prop="body">
+      <ckeditor :editor="ClassicEditor" v-model="formData.body" />
+    </el-form-item>
+
+    <el-form-item label="Attachment">
+      <el-upload
+        action="#"
+        ref="upload"
+        class="mr-20"
+        multiple
+        :on-change="handleChange"
+        :on-remove="handleRemove"
+        :on-preview="handlePreview"
+        :limit="100"
+        :auto-upload="false"
+      >
+        <el-button type="primary" class="btn btn-primary"
+          >Choose Files</el-button
         >
-          <!--begin::Sticky aside-->
-          <div
-            class="card card-flush mb-0"
-            data-kt-sticky="false"
-            data-kt-sticky-name="inbox-aside-sticky"
-            data-kt-sticky-offset="{default: false, xl: '0px'}"
-            data-kt-sticky-width="{lg: '275px'}"
-            data-kt-sticky-left="auto"
-            data-kt-sticky-top="150px"
-            data-kt-sticky-animation="false"
-            data-kt-sticky-zindex="95"
-          >
-            <!--begin::Aside content-->
-            <div class="card-body">
-              <!--begin::Button-->
-              <a href="#" class="btn btn-primary text-uppercase w-100 mb-10">
-                New Message
-              </a>
-              <!--end::Button-->
-              <!--begin::Menu-->
-              <div
-                class="menu menu-column menu-rounded menu-state-bg menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary mb-10"
-              >
-                <!--begin::Menu item-->
-                <div class="menu-item mb-3">
-                  <!--begin::Inbox-->
-                  <span
-                    :class="`menu-link ${
-                      emailType.data === 'inbox' ? 'active' : ''
-                    }`"
-                    @click="switchType('inbox')"
-                  >
-                    <span class="menu-icon">
-                      <!--begin::Svg Icon | path: icons/duotune/communication/com010.svg-->
-                      <span class="svg-icon svg-icon-2 me-3">
-                        <inline-svg
-                          src="media/icons/duotune/communication/com010.svg"
-                        />
-                      </span>
-                      <!--end::Svg Icon-->
-                    </span>
-                    <span class="menu-title fw-bolder">Inbox</span>
-                    <span class="badge badge-light-success">3</span>
-                  </span>
-                  <!--end::Inbox-->
-                </div>
-                <!--end::Menu item-->
-                <!--begin::Menu item-->
-                <div class="menu-item mb-3">
-                  <!--begin::Marked-->
-                  <span
-                    :class="`menu-link ${
-                      emailType.data === 'marked' ? 'active' : ''
-                    }`"
-                    @click="switchType('marked')"
-                  >
-                    <span class="menu-icon">
-                      <!--begin::Svg Icon | path: icons/duotune/abstract/abs024.svg-->
-                      <span class="svg-icon svg-icon-2 me-3">
-                        <inline-svg
-                          src="media/icons/duotune/abstract/abs024.svg"
-                        />
-                      </span>
-                      <!--end::Svg Icon-->
-                    </span>
-                    <span class="menu-title fw-bolder">Marked</span>
-                  </span>
-                  <!--end::Marked-->
-                </div>
-                <!--end::Menu item-->
-                <!--begin::Menu item-->
-                <div class="menu-item mb-3">
-                  <!--begin::Sent-->
-                  <span
-                    :class="`menu-link ${
-                      emailType.data === 'sent' ? 'active' : ''
-                    }`"
-                    @click="switchType('sent')"
-                  >
-                    <span class="menu-icon">
-                      <!--begin::Svg Icon | path: icons/duotune/general/gen016.svg-->
-                      <span class="svg-icon svg-icon-2 me-3">
-                        <inline-svg
-                          src="media/icons/duotune/general/gen016.svg"
-                        />
-                      </span>
-                      <!--end::Svg Icon-->
-                    </span>
-                    <span class="menu-title fw-bolder">Sent</span>
-                  </span>
-                  <!--end::Sent-->
-                </div>
-                <!--end::Menu item-->
-                <!--begin::Menu item-->
-                <div class="menu-item">
-                  <!--begin::Trash-->
-                  <span
-                    :class="`menu-link ${
-                      emailType.data === 'trash' ? 'active' : ''
-                    }`"
-                    @click="switchType('trash')"
-                  >
-                    <span class="menu-icon">
-                      <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
-                      <span class="svg-icon svg-icon-2 me-3">
-                        <inline-svg
-                          src="media/icons/duotune/general/gen027.svg"
-                        />
-                      </span>
-                      <!--end::Svg Icon-->
-                    </span>
-                    <span class="menu-title fw-bolder">Trash</span>
-                  </span>
-                  <!--end::Trash-->
-                </div>
-                <!--end::Menu item-->
-              </div>
-              <!--end::Menu-->
-            </div>
-            <!--end::Aside content-->
-          </div>
-          <!--end::Sticky aside-->
-        </div>
-        <!--end::Sidebar-->
-        <!--begin::Content-->
-        <div class="flex-lg-row-fluid ms-lg-7 ms-xl-10">
-          <!--begin::Card-->
-          <div class="card">
-            <div class="card-header align-items-center py-5 gap-2 gap-md-5">
-              <!--begin::Actions-->
-              <div class="d-flex flex-wrap gap-1">
-                <!--begin::Checkbox-->
-                <div
-                  class="form-check form-check-sm form-check-custom form-check-solid me-3"
-                >
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    data-kt-check="true"
-                    data-kt-check-target="#kt_inbox_listing .form-check-input"
-                    value="1"
-                    v-model="checkAll"
-                  />
-                </div>
-                <!--end::Checkbox-->
-                <!--begin::Filter-->
-                <div>
-                  <a
-                    href="#"
-                    class="btn btn-sm btn-icon btn-clear btn-active-light-primary"
-                    data-kt-menu-trigger="click"
-                    data-kt-menu-placement="bottom-start"
-                  >
-                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
-                    <span class="svg-icon svg-icon-2">
-                      <inline-svg src="media/icons/duotune/arrows/arr072.svg" />
-                    </span>
-                    <!--end::Svg Icon-->
-                  </a>
-                  <!--begin::Menu-->
-                  <div
-                    class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-125px py-4"
-                    data-kt-menu="true"
-                  >
-                    <!--begin::Menu item-->
-                    <div class="menu-item px-3">
-                      <a
-                        class="menu-link px-3"
-                        data-kt-inbox-listing-filter="show_all"
-                        @click="selectByType('all')"
-                        >All</a
-                      >
-                    </div>
-                    <!--end::Menu item-->
-                    <!--begin::Menu item-->
-                    <div class="menu-item px-3">
-                      <a
-                        class="menu-link px-3"
-                        data-kt-inbox-listing-filter="show_none"
-                        @click="selectByType('none')"
-                        >None</a
-                      >
-                    </div>
-                    <!--end::Menu item-->
-                    <!--begin::Menu item-->
-                    <div class="menu-item px-3">
-                      <a
-                        class="menu-link px-3"
-                        data-kt-inbox-listing-filter="show_read"
-                        @click="selectByType('read')"
-                        >Read</a
-                      >
-                    </div>
-                    <!--end::Menu item-->
-                    <!--begin::Menu item-->
-                    <div class="menu-item px-3">
-                      <a
-                        class="menu-link px-3"
-                        data-kt-inbox-listing-filter="show_unread"
-                        @click="selectByType('unread')"
-                        >Unread</a
-                      >
-                    </div>
-                    <!--end::Menu item-->
-                    <!--begin::Menu item-->
-                    <div class="menu-item px-3">
-                      <a
-                        class="menu-link px-3"
-                        data-kt-inbox-listing-filter="show_starred"
-                        @click="selectByType('marked')"
-                        >Starred</a
-                      >
-                    </div>
-                    <!--end::Menu item-->
-                    <!--begin::Menu item-->
-                    <div class="menu-item px-3">
-                      <a
-                        class="menu-link px-3"
-                        data-kt-inbox-listing-filter="show_unstarred"
-                        @click="selectByType('unmarked')"
-                        >Unstarred</a
-                      >
-                    </div>
-                    <!--end::Menu item-->
-                  </div>
-                  <!--end::Menu-->
-                </div>
-                <!--end::Filter-->
-                <!--begin::Reload-->
-                <a
-                  href="#"
-                  class="btn btn-sm btn-icon btn-clear btn-active-light-primary"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Reload"
-                >
-                  <!--begin::Svg Icon | path: icons/duotune/arrows/arr029.svg-->
-                  <span class="svg-icon svg-icon-2">
-                    <inline-svg src="media/icons/duotune/arrows/arr029.svg" />
-                  </span>
-                  <!--end::Svg Icon-->
-                </a>
-                <!--end::Reload-->
-                <!--begin::Delete-->
-                <a
-                  href="#"
-                  class="btn btn-sm btn-icon btn-light btn-active-light-primary"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Delete"
-                >
-                  <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
-                  <span class="svg-icon svg-icon-2">
-                    <inline-svg src="media/icons/duotune/general/gen027.svg" />
-                  </span>
-                  <!--end::Svg Icon-->
-                </a>
-                <!--end::Delete-->
-                <!--begin::Mark as read-->
-                <a
-                  href="#"
-                  class="btn btn-sm btn-icon btn-light btn-active-light-primary"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Mark as read"
-                >
-                  <!--begin::Svg Icon | path: icons/duotune/general/gen028.svg-->
-                  <span class="svg-icon svg-icon-2">
-                    <inline-svg src="media/icons/duotune/general/gen028.svg" />
-                  </span>
-                  <!--end::Svg Icon-->
-                </a>
-                <!--end::Mark as read-->
-              </div>
-              <!--end::Actions-->
-              <!--begin::Pagination-->
-              <div class="d-flex align-items-center flex-wrap gap-2">
-                <!--begin::Search-->
-                <div class="d-flex align-items-center position-relative">
-                  <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
-                  <span class="svg-icon svg-icon-2 position-absolute ms-4">
-                    <inline-svg src="media/icons/duotune/general/gen021.svg" />
-                  </span>
-                  <!--end::Svg Icon-->
-                  <input
-                    type="text"
-                    data-kt-inbox-listing-filter="search"
-                    class="form-control form-control-sm form-control-solid mw-100 min-w-150px min-w-md-200px ps-12"
-                    placeholder="Search Inbox"
-                    v-model="searchText"
-                  />
-                </div>
-                <!--end::Search-->
-                <!--begin::Sort-->
-                <span>
-                  <a
-                    href=""
-                    class="btn btn-sm btn-icon btn-light btn-active-light-primary"
-                    data-kt-menu-trigger="click"
-                    data-kt-menu-placement="bottom-end"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    title="Sort"
-                  >
-                    <!--begin::Svg Icon | path: icons/duotune/general/gen059.svg-->
-                    <span class="svg-icon svg-icon-2 m-0">
-                      <inline-svg
-                        src="media/icons/duotune/general/gen059.svg"
-                      />
-                    </span>
-                    <!--end::Svg Icon-->
-                  </a>
-                  <!--begin::Menu-->
-                  <div
-                    class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-125px py-4"
-                    data-kt-menu="true"
-                  >
-                    <!--begin::Menu item-->
-                    <div class="menu-item px-3">
-                      <a
-                        class="menu-link px-3"
-                        data-kt-inbox-listing-filter="filter_newest"
-                        @click="sortByDate(true)"
-                        >Newest</a
-                      >
-                    </div>
-                    <!--end::Menu item-->
-                    <!--begin::Menu item-->
-                    <div class="menu-item px-3">
-                      <a
-                        class="menu-link px-3"
-                        data-kt-inbox-listing-filter="filter_oldest"
-                        @click="sortByDate(false)"
-                        >Oldest</a
-                      >
-                    </div>
-                    <!--end::Menu item-->
-                    <!--begin::Menu item-->
-                    <div class="menu-item px-3">
-                      <a
-                        class="menu-link px-3"
-                        data-kt-inbox-listing-filter="filter_unread"
-                        @click="sortByUnread()"
-                        >Unread</a
-                      >
-                    </div>
-                    <!--end::Menu item-->
-                  </div>
-                  <!--end::Menu-->
-                </span>
-                <!--end::Sort-->
-              </div>
-              <!--end::Pagination-->
-            </div>
-            <div class="card-body pt-0">
-              <Datatable
-                :table-header="tableHeader"
-                :table-data="tableData"
-                :rows-per-page="10"
-                :loading="loading"
-                :enable-items-per-page-dropdown="true"
-                :disable-table-header="true"
-              >
-                <template v-slot:cell-checkbox="{ row: item }">
-                  <!--begin::Checkbox-->
-                  <div
-                    class="form-check form-check-sm form-check-custom form-check-solid"
-                  >
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      value="1"
-                      :checked="item.checked"
-                      @change="selectMessage(item.id)"
-                    />
-                  </div>
-                  <!--end::Checkbox-->
-                </template>
-                <template v-slot:cell-actions="{ row: item }">
-                  <!--begin::Star-->
-                  <a
-                    href="#"
-                    class="btn btn-icon btn-sm btn-active-color-primary"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="right"
-                    title="Star"
-                  >
-                    <span
-                      :class="`svg-icon svg-icon-2 ${
-                        item.marked ? 'svg-icon-warning' : ''
-                      }`"
-                    >
-                      <inline-svg
-                        src="media/icons/duotune/general/gen029.svg"
-                      />
-                    </span>
-                  </a>
-                  <!--end::Star-->
-                </template>
-                <template v-slot:cell-name="{ row: item }">
-                  <a
-                    href="../../demo6/dist/apps/inbox/reply.html"
-                    class="d-flex align-items-center text-dark"
-                  >
-                    <div v-if="item.avatar" class="symbol symbol-35px me-3">
-                      <span
-                        class="symbol-label"
-                        :style="`background-image: url(${item.avatar})`"
-                      >
-                      </span>
-                    </div>
-                    <!--begin::Avatar-->
-                    <div v-else class="symbol symbol-35px me-3">
-                      <div class="symbol-label bg-light-danger">
-                        <span class="text-danger">U</span>
-                      </div>
-                    </div>
-                    <!--end::Avatar-->
-                    <!--begin::Name-->
-                    <span :class="`${item.unread ? 'fw-bolder' : 'fw-normal'}`">
-                      {{ item.name }}
-                    </span>
-                    <!--end::Name-->
-                  </a>
-                </template>
-                <template v-slot:cell-message="{ row: item }">
-                  <div class="text-dark mb-1">
-                    <!--begin::Heading-->
-                    <a href="" class="text-dark">
-                      <span
-                        :class="`${item.unread ? 'fw-bolder' : 'fw-normal'}`"
-                      >
-                        {{ item.subject }}
-                      </span>
-                      <span class="fw-normal"> - </span>
-                      <span class="fw-normal text-muted">
-                        {{ item.message.slice(0, 120 - item.subject.length) }}
-                        ...
-                      </span>
-                    </a>
-                    <!--end::Heading-->
-                  </div>
-                  <!--begin::Badges-->
-                  <div
-                    v-if="emailType.data === 'marked'"
-                    :class="`badge badge-light-${
-                      item.type === 'sent'
-                        ? 'warning'
-                        : item.type === 'trash'
-                        ? 'danger'
-                        : 'primary'
-                    }`"
-                  >
-                    {{ item.type }}
-                  </div>
-                  <!--end::Badges-->
-                </template>
-                <template v-slot:cell-date="{ row: item }">
-                  {{ moment.unix(item.date).format("DD/MM/YYYY hh:mm") }}
-                </template>
-              </Datatable>
-            </div>
-          </div>
-          <!--end::Card-->
-        </div>
-        <!--end::Content-->
-      </div>
-      <!--end::Inbox App - Messages -->
+      </el-upload>
+    </el-form-item>
+
+    <div class="d-flex flex-row-reverse">
+      <router-link
+        type="reset"
+        to="/mails"
+        id="kt_modal_mail_compose_cancel"
+        class="btn btn-light me-3"
+      >
+        Cancel
+      </router-link>
+
+      <button
+        :data-kt-indicator="loading ? 'on' : null"
+        class="btn btn-light me-3"
+        @click="handleSave()"
+      >
+        <span>Save</span>
+      </button>
+
+      <button
+        :data-kt-indicator="loading ? 'on' : null"
+        class="btn btn-lg btn-primary"
+        type="submit"
+      >
+        <span v-if="!loading" class="indicator-label">
+          Send
+          <span class="svg-icon svg-icon-3 ms-2 me-0">
+            <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
+          </span>
+        </span>
+        <span v-if="loading" class="indicator-progress">
+          Please wait...
+          <span
+            class="spinner-border spinner-border-sm align-middle ms-2"
+          ></span>
+        </span>
+      </button>
     </div>
-    <!--end::Container-->
-  </div>
+  </el-form>
 </template>
 
 <script>
-import {
-  defineComponent,
-  onMounted,
-  watch,
-  ref,
-  watchEffect,
-  reactive,
-} from "vue";
-import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import EmailList from "@/store/dummy/Email";
-import moment from "moment";
+import { defineComponent, onMounted, ref, computed } from "vue";
+import { useStore } from "vuex";
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
+import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import { Actions } from "@/store/enums/StoreEnums";
+import { useRouter } from "vue-router";
+import CKEditor from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default defineComponent({
   name: "email-compose",
-
   components: {
-    Datatable,
+    ckeditor: CKEditor.component,
   },
-
   setup() {
-    const tableHeader = ref([
-      {
-        name: "Checkbox",
-        key: "checkbox",
-      },
-      {
-        name: "Actions",
-        key: "actions",
-      },
-      {
-        name: "Name",
-        key: "name",
-      },
-      {
-        name: "Message",
-        key: "message",
-      },
-      {
-        name: "Date",
-        key: "date",
-      },
-    ]);
-    const tableData = ref([]);
-    const emailData = ref(EmailList);
-    const emailType = reactive({
-      data: "inbox",
-    });
-    const searchText = ref("");
-    const checkAll = ref(false);
-
-    // sort data by unread default
-    emailData.value = emailData.value.sort((a, b) => {
-      return b.unread - a.unread;
+    const rules = ref({
+      to_user_ids: [
+        {
+          required: true,
+          message: "Please select user",
+          trigger: "change",
+        },
+      ],
     });
 
-    // set check status of all data by false default
-    emailData.value.forEach((item) => {
-      item.checked = false;
+    const store = useStore();
+    const router = useRouter();
+    const formRef = ref(null);
+    const loading = ref(false);
+    const formData = ref({
+      to_user_ids: [],
+      subject: "",
+      body: "",
+      attachment: [],
     });
+    const uploadDisabled = ref(false);
+    const upload = ref(null);
+    const dialogImageUrl = ref("");
+    const dialogVisible = ref(false);
+    const sendableUsers = computed(() => store.getters.getUserList);
 
-    const switchType = (type) => {
-      emailType.data = type;
-
-      if (emailType.data === "marked") {
-        emailData.value = EmailList.filter((data) => data.marked);
-      } else {
-        emailData.value = EmailList.filter(
-          (data) => data.type === emailType.data
-        );
-      }
+    const handleChange = (file, fileList) => {
+      upload.value.clearFiles();
+      uploadDisabled.value = false;
+      formData.value.attachment.push(file.raw);
+      uploadDisabled.value = fileList.length >= 1;
     };
 
-    const sortByDate = (order) => {
-      if (order) {
-        emailData.value = emailData.value.sort((a, b) => {
-          return b.date - a.date;
-        });
-      } else {
-        emailData.value = emailData.value.sort((a, b) => {
-          return a.date - b.date;
-        });
-      }
+    const handleRemove = (file, fileList) => {
+      uploadDisabled.value = fileList.length - 1;
     };
 
-    const sortByUnread = () => {
-      emailData.value = emailData.value.sort((a, b) => {
-        return b.unread - a.unread;
+    const handlePreview = (uploadFile) => {
+      dialogImageUrl.value = uploadFile.url;
+      dialogVisible.value = true;
+    };
+
+    onMounted(() => {
+      setCurrentPageBreadcrumbs("Compose", ["Mail"]);
+
+      store.dispatch(Actions.USER_LIST).then(() => {
+        loading.value = false;
       });
-    };
+    });
 
-    const selectByType = (type) => {
-      emailData.value.forEach((item) => {
-        item.checked = false;
-      });
-
-      switch (type) {
-        case "all":
-          emailData.value.forEach((item) => {
-            item.checked = true;
-          });
-          checkAll.value = true;
-          break;
-        case "none":
-          emailData.value.forEach((item) => {
-            item.checked = false;
-          });
-          checkAll.value = false;
-          break;
-        case "read":
-          emailData.value.forEach((item) => {
-            if (!item.unread) item.checked = true;
-          });
-          break;
-        case "unread":
-          emailData.value.forEach((item) => {
-            if (item.unread) item.checked = true;
-          });
-          break;
-        case "marked":
-          emailData.value.forEach((item) => {
-            if (item.marked) item.checked = true;
-          });
-          break;
-        case "unmarked":
-          emailData.value.forEach((item) => {
-            if (!item.marked) item.checked = true;
-          });
-          break;
-        default:
-          break;
+    const handleSave = () => {
+      if (!formRef.value) {
+        return;
       }
-    };
 
-    const selectMessage = (idx) => {
-      emailData.value.forEach((item) => {
-        if (item.id === idx) {
-          item.checked = !item.checked;
-          return;
+      formRef.value.validate((valid) => {
+        if (valid) {
+          loading.value = true;
+          store
+            .dispatch(Actions.MAILS.CREATE, formData.value)
+            .then(() => {
+              loading.value = false;
+              store.dispatch(Actions.ORG.LIST);
+              Swal.fire({
+                text: "Mail Saved!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                router.push({ name: "mailbox-list" });
+              });
+            })
+            .catch(({ response }) => {
+              loading.value = false;
+              console.log(response.data.error);
+            });
         }
       });
     };
 
-    watch(searchText, () => {
-      emailData.value = emailData.value.filter((data) =>
-        data.subject.toLowerCase().includes(searchText.value)
-      );
-    });
+    const submit = () => {
+      if (!formRef.value) {
+        return;
+      }
 
-    watch(checkAll, () => {
-      emailData.value.forEach((item) => {
-        item.checked = checkAll.value;
+      formRef.value.validate((valid) => {
+        if (valid) {
+          loading.value = true;
+          store
+            .dispatch(Actions.MAILS.SEND, formData.value)
+            .then(() => {
+              loading.value = false;
+              store.dispatch(Actions.ORG.LIST);
+              Swal.fire({
+                text: "Mail Sent Successfully!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                router.push({ name: "mailbox-list" });
+              });
+            })
+            .catch(({ response }) => {
+              loading.value = false;
+              console.log(response.data.error);
+            });
+        } else {
+          // this.context.commit(Mutations.PURGE_AUTH);
+        }
       });
-    });
-
-    watchEffect(() => {
-      tableData.value = emailData;
-    });
-
-    onMounted(() => {
-      tableData.value = emailData;
-    });
+    };
 
     return {
-      moment,
-      tableHeader,
-      tableData,
-      emailType,
-      searchText,
-      checkAll,
-      switchType,
-      sortByDate,
-      sortByUnread,
-      selectByType,
-      selectMessage,
+      rules,
+      upload,
+      handleChange,
+      handleRemove,
+      handlePreview,
+      handleSave,
+      dialogVisible,
+      dialogImageUrl,
+      sendableUsers,
+      formData,
+      submit,
+      ClassicEditor,
+      formRef,
     };
   },
 });
