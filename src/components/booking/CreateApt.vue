@@ -484,6 +484,13 @@
                             {{ item.date_of_birth }}
                           </span>
                         </template>
+                        <template v-slot:cell-contact_number="{ row: item }">
+                          <span
+                            class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                          >
+                            {{ item.contact_number }}
+                          </span>
+                        </template>
                         <template v-slot:cell-action="{ row: item }">
                           <button
                             @click="selectPatient(item)"
@@ -1898,12 +1905,6 @@ export default defineComponent({
     const patientTableData = ref([]);
     const patientTableHeader = ref([
       {
-        name: "UR Number",
-        key: "UR_number",
-        sortable: true,
-        searchable: true,
-      },
-      {
         name: "Full Name",
         key: "full_name",
         sortable: true,
@@ -1912,6 +1913,12 @@ export default defineComponent({
       {
         name: "Date of Birth",
         key: "dob",
+        sortable: true,
+        searchable: true,
+      },
+      {
+        name: "Contact Number",
+        key: "contact_number",
         sortable: true,
         searchable: true,
       },
@@ -2056,7 +2063,6 @@ export default defineComponent({
       }
 
       if (_appointment.value && billingInfoData.value.charge_type) {
-        debugger;
         const filteredApt = aptTypeList.value.filter(
           (item) => item.id === _appointment.value
         )[0];

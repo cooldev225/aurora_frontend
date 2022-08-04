@@ -384,7 +384,7 @@ const TypistMenu = [
 const AnesthetistMenu = [
   {
     heading: "Procedure Approvals",
-    route: "/dashboard",
+    route: "/procedure-approvals",
     svgIcon: "media/icons/duotune/arrows/arr012.svg",
     fontIcon: "bi-house fs-2",
   },
