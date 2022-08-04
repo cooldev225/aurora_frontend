@@ -155,7 +155,13 @@ export default defineComponent({
           userRole.value === "receptionist"
         )
           router.push({ name: "booking-dashboard" });
-        else router.push({ name: "dashboard" });
+        if (userRole.value === "anesthetist")
+          router.push({ name: "procedure-approvals" });
+        if (userRole.value === "organizationAdmin")
+          router.push({ name: "employees" });
+        if (userRole.value === "admin") router.push({ name: "organisations" });
+        if (userRole.value === "specialist")
+          router.push({ name: "employee-booking-dashboard" });
       } else {
         Swal.fire({
           text: error[0],
