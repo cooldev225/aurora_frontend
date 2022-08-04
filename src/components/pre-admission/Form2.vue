@@ -1,27 +1,27 @@
 <template>
-  <vue3-html2pdf
-    :show-layout="false"
-    :float-layout="false"
-    :enable-download="false"
-    :preview-modal="true"
-    :paginate-elements-by-height="3000"
-    filename="template"
-    :pdf-quality="2"
-    :manual-pagination="false"
-    pdf-format="a2"
-    :pdf-margin="10"
-    pdf-orientation="portrait"
-    pdf-content-width="100%"
-    @progress="onProgress($event)"
-    ref="html2Pdf"
+  <el-form
+    @submit.prevent="generatePDF()"
+    :model="formData"
+    :rules="rules"
+    ref="formRef"
   >
-    <template v-slot:pdf-content>
-      <el-form
-        @submit.prevent="generatePDF()"
-        :model="formData"
-        :rules="rules"
-        ref="formRef"
-      >
+    <vue3-html2pdf
+      :show-layout="false"
+      :float-layout="false"
+      :enable-download="false"
+      :preview-modal="true"
+      :paginate-elements-by-height="3000"
+      filename="template"
+      :pdf-quality="2"
+      :manual-pagination="false"
+      pdf-format="a2"
+      :pdf-margin="10"
+      pdf-orientation="portrait"
+      pdf-content-width="100%"
+      @progress="onProgress($event)"
+      ref="html2Pdf"
+    >
+      <template v-slot:pdf-content>
         <!--begin::details View-->
         <div class="card w-100 h-100">
           <!--begin::Card header-->
@@ -681,9 +681,9 @@
           <!--end::Card body-->
         </div>
         <!--end::details View-->
-      </el-form>
-    </template>
-  </vue3-html2pdf>
+      </template>
+    </vue3-html2pdf>
+  </el-form>
 </template>
 
 <script>
