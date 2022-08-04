@@ -26,7 +26,7 @@
               <div
                 class="mt-2 alert alert-primary d-flex align-items-center justify-between p-5 mb-10"
               >
-                <i class="bi bi-info-circle fs-2x"></i>
+                <i class="bi bi-info-circle fs-2x me-5"></i>
                 <div class="d-flex flex-column">
                   <span
                     >An organisation is the client as a whole. It will conatain
@@ -97,7 +97,7 @@
               <div
                 class="mt-2 alert alert-primary d-flex align-items-center justify-between p-5 mb-10"
               >
-                <i class="bi bi-info-circle fs-2x"></i>
+                <i class="bi bi-info-circle fs-2x me-5"></i>
                 <div class="d-flex flex-column">
                   <span
                     >The contact details for the main point of contact for this
@@ -166,7 +166,7 @@
               <div
                 class="mt-2 alert alert-primary d-flex align-items-center justify-between p-5 mb-10"
               >
-                <i class="bi bi-info-circle fs-2x"></i>
+                <i class="bi bi-info-circle fs-2x me-5"></i>
                 <div class="d-flex flex-column">
                   <span
                     >Creates a user account with the role of Organisation
@@ -222,10 +222,10 @@
               <div
                 class="mt-2 alert alert-primary d-flex align-items-center justify-between p-5 mb-10"
               >
-                <i class="bi bi-info-circle fs-2x"></i>
+                <i class="bi bi-info-circle fs-2x me-5"></i>
                 <div class="d-flex flex-column">
                   <span
-                    >While not requred, Adding a logo for the organisation adds
+                    >While not required, Adding a logo for the organisation adds
                     an element of customization to their experience.</span
                   >
                 </div>
