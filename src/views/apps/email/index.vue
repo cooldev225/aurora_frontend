@@ -53,7 +53,7 @@
                       <!--end::Svg Icon-->
                     </span>
                     <span class="menu-title fw-bolder">Inbox</span>
-                    <span class="badge badge-light-success">3</span>
+                    <span class="badge badge-light-success"></span>
                   </span>
                   <!--end::Inbox-->
                 </div>
