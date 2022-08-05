@@ -288,13 +288,13 @@
             <!--end::Avatar-->
             <!--begin::Name-->
             <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
-              {{ usernameFromIds(item.to_user_ids) }}
+              {{ usernameFromIds(item) }}
             </span>
             <!--end::Name-->
           </a>
         </template>
         <template v-slot:cell-message="{ row: item }">
-          <div class="text-dark mb-1">
+          <div class="text-dark mb-1 mh-100px">
             <!--begin::Heading-->
             <a href="" class="text-dark">
               <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
@@ -469,8 +469,13 @@ export default defineComponent({
       });
     };
 
-    const usernameFromIds = (jsonIds) => {
-      const ids = JSON.parse(jsonIds);
+    const usernameFromIds = (item) => {
+      let ids = [item.from_user_id];
+
+      if (["sent", "draft"].includes(emailType.data)) {
+        ids = JSON.parse(item.to_user_ids);
+      }
+
       let usernameList = "";
 
       sendableUsers.value.forEach((item) => {
