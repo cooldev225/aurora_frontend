@@ -2183,6 +2183,7 @@ export default defineComponent({
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.APT.LIST);
+              handleCancel();
               Swal.fire({
                 text: "Successfully Created!",
                 icon: "success",
