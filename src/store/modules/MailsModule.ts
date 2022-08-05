@@ -197,6 +197,70 @@ export default class MailModule extends VuexModule implements MailInfo {
   }
 
   @Action
+  [Actions.MAILS.STAR](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("mails/bookmark", id, { is_starred: true })
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAILS.UN_STAR](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("mails/bookmark", id, { is_starred: false })
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAILS.DELETE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("mails/delete", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAILS.RESTORE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("mails/restore", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
   [Actions.MAILS.DELETE_DRAFT](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();

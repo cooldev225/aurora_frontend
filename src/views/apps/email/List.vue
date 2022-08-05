@@ -118,6 +118,7 @@
         <!--begin::Delete-->
         <a
           href="#"
+          @click="handleDelete()"
           class="btn btn-sm btn-icon btn-light btn-active-light-primary"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
@@ -251,7 +252,7 @@
         <template v-slot:cell-actions="{ row: item }">
           <!--begin::Star-->
           <a
-            href="#"
+            @click="handleToggleStar(item)"
             class="btn btn-icon btn-sm btn-active-color-primary"
             data-bs-toggle="tooltip"
             data-bs-placement="right"
@@ -259,7 +260,7 @@
           >
             <span
               :class="`svg-icon svg-icon-2 ${
-                item.marked ? 'svg-icon-warning' : ''
+                item.is_starred ? 'svg-icon-warning' : ''
               }`"
             >
               <inline-svg src="media/icons/duotune/general/gen029.svg" />
@@ -473,6 +474,38 @@ export default defineComponent({
       });
     };
 
+    const handleDelete = () => {
+      emailData.value.forEach((item) => {
+        if (item.checked) {
+          if (emailType.data == "draft") {
+            store.dispatch(Actions.MAILS.DELETE_DRAFT, item.id);
+          } else {
+            store.dispatch(Actions.MAILS.DELETE, item);
+          }
+        }
+      });
+    };
+
+    const handleRestore = () => {
+      emailData.value.forEach((item) => {
+        if (item.checked) {
+          store.dispatch(Actions.MAILS.RESTORE, item);
+        }
+      });
+    };
+
+    const handleToggleStar = (item) => {
+      if (item.is_starred) {
+        store.dispatch(Actions.MAILS.UN_STAR, item.id);
+      } else {
+        store.dispatch(Actions.MAILS.STAR, item.id);
+      }
+    };
+
+    const handleUnStar = (item) => {
+      store.dispatch(Actions.MAILS.UN_STAR, item.id);
+    };
+
     const usernameFromIds = (item) => {
       let ids = [item.from_user_id];
 
@@ -537,6 +570,10 @@ export default defineComponent({
       selectByType,
       selectMessage,
       usernameFromIds,
+      handleDelete,
+      handleRestore,
+      handleToggleStar,
+      handleUnStar,
     };
   },
 });

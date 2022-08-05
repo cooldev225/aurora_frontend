@@ -169,7 +169,7 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.MAILS.CREATE, Data)
+            .dispatch(Actions.MAILS.COMPOSE, Data)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.ORG.LIST);
