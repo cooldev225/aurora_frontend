@@ -279,7 +279,7 @@ export default defineComponent({
               missed: missed,
               reason: data,
             })
-            .then((res) => {
+            .then(() => {
               store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
               DrawerComponent?.getInstance("booking-drawer")?.hide();
             });

@@ -3,8 +3,6 @@ import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
-import roles from "@/core/data/roles";
-
 export interface User {
   username: string;
   email: string;
