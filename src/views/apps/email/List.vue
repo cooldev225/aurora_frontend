@@ -270,7 +270,7 @@
         <template v-slot:cell-name="{ row: item }">
           <router-link
             to="/mailbox/list"
-            class="d-flex align-items-center text-dark"
+            class="mw-200px d-flex align-items-center text-dark"
           >
             <div v-if="item.photo" class="symbol symbol-35px me-3">
               <span

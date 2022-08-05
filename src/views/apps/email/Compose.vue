@@ -123,8 +123,8 @@ export default defineComponent({
       to_user_ids: [],
       subject: "",
       body: "",
-      attachment: [],
     });
+    const Data = new FormData();
     const uploadDisabled = ref(false);
     const upload = ref(null);
     const dialogImageUrl = ref("");
@@ -134,11 +134,12 @@ export default defineComponent({
     const handleChange = (file, fileList) => {
       upload.value.clearFiles();
       uploadDisabled.value = false;
-      formData.value.attachment.push(file.raw);
+      Data.append("attachment[" + file.raw.uid + "]", file.raw);
       uploadDisabled.value = fileList.length >= 1;
     };
 
     const handleRemove = (file, fileList) => {
+      Data.delete("attachment[" + file.raw.uid + "]");
       uploadDisabled.value = fileList.length - 1;
     };
 
@@ -162,9 +163,13 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
+          Object.keys(formData.value).forEach((key) => {
+            Data.append(key, formData.value[key]);
+          });
           loading.value = true;
+
           store
-            .dispatch(Actions.MAILS.CREATE, formData.value)
+            .dispatch(Actions.MAILS.CREATE, Data)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.ORG.LIST);
@@ -195,9 +200,13 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
+          Object.keys(formData.value).forEach((key) => {
+            Data.append(key, formData.value[key]);
+          });
           loading.value = true;
+
           store
-            .dispatch(Actions.MAILS.SEND, formData.value)
+            .dispatch(Actions.MAILS.SEND, Data)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.ORG.LIST);
