@@ -377,7 +377,11 @@ const Mutations = {
   },
 
   SET_MAILS: {
-    LIST: "setMails",
+    INBOX: "setInboxMails",
+    STARRED: "setStarredMails",
+    DRAFT: "setDraftMails",
+    SENT: "setSentMails",
+    TRASH: "setTrashMails",
     SELECT: "setSelectedMail",
   },
 

@@ -324,7 +324,7 @@
           <!--end::Badges-->
         </template>
         <template v-slot:cell-date="{ row: item }">
-          {{ moment.unix(item.date).format("DD/MM/YYYY hh:mm") }}
+          {{ moment(item.sent_at).format("DD/MM/YYYY hh:mm:ss") }}
         </template>
       </Datatable>
     </div>
@@ -339,9 +339,11 @@ import {
   ref,
   watchEffect,
   reactive,
+  computed,
 } from "vue";
+import { useStore } from "vuex";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import EmailList from "@/store/dummy/Email";
+import { Actions } from "@/store/enums/StoreEnums";
 import moment from "moment";
 
 export default defineComponent({
@@ -356,6 +358,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const store = useStore();
+
     const tableHeader = ref([
       {
         name: "Checkbox",
@@ -379,16 +383,17 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const emailData = ref(EmailList);
     const emailType = reactive({
       data: "inbox",
     });
     const searchText = ref("");
     const checkAll = ref(false);
+    const emailInfo = computed(() => store.getters.mailInboxList);
+    const emailData = ref([]);
 
     // sort data by unread default
     emailData.value = emailData.value.sort((a, b) => {
-      return b.unread - a.unread;
+      return b.sent_at - a.sent_at;
     });
 
     // set check status of all data by false default
@@ -399,18 +404,18 @@ export default defineComponent({
     const sortByDate = (order) => {
       if (order) {
         emailData.value = emailData.value.sort((a, b) => {
-          return b.date - a.date;
+          return b.sent_at - a.sent_at;
         });
       } else {
         emailData.value = emailData.value.sort((a, b) => {
-          return a.date - b.date;
+          return a.sent_at - b.sent_at;
         });
       }
     };
 
     const sortByUnread = () => {
       emailData.value = emailData.value.sort((a, b) => {
-        return b.unread - a.unread;
+        return b.sent_at - a.sent_at;
       });
     };
 
@@ -434,22 +439,22 @@ export default defineComponent({
           break;
         case "read":
           emailData.value.forEach((item) => {
-            if (!item.unread) item.checked = true;
+            if (item.is_read) item.checked = true;
           });
           break;
         case "unread":
           emailData.value.forEach((item) => {
-            if (item.unread) item.checked = true;
+            if (!item.is_read) item.checked = true;
           });
           break;
         case "marked":
           emailData.value.forEach((item) => {
-            if (item.marked) item.checked = true;
+            if (item.is_starred) item.checked = true;
           });
           break;
         case "unmarked":
           emailData.value.forEach((item) => {
-            if (!item.marked) item.checked = true;
+            if (!item.is_starred) item.checked = true;
           });
           break;
         default:
@@ -475,13 +480,7 @@ export default defineComponent({
     watch(props.mailType, () => {
       emailType.data = props.mailType.data;
 
-      if (emailType.data === "marked") {
-        emailData.value = EmailList.filter((data) => data.marked);
-      } else {
-        emailData.value = EmailList.filter(
-          (data) => data.type === emailType.data
-        );
-      }
+      emailData.value = emailInfo.value[emailType.data];
     });
 
     watch(checkAll, () => {
@@ -495,6 +494,8 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      store.dispatch(Actions.MAILS.LIST);
+
       tableData.value = emailData;
     });
 
