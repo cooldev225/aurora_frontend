@@ -77,28 +77,6 @@ const OrgAdminMenu = [
     route: "/settings",
     svgIcon: "media/icons/duotune/coding/cod001.svg",
     fontIcon: "bi-gear",
-    pages: [
-      {
-        heading: "Appointment Types",
-        route: "/settings/apt-types",
-      },
-      {
-        heading: "Appointment Time Requirements",
-        route: "/settings/time-requirements",
-      },
-      {
-        heading: "Anesthetic Questions",
-        route: "/settings/anesthetic-questions",
-      },
-      {
-        heading: "Notification Templates",
-        route: "/settings/notification-templates",
-      },
-      {
-        heading: "Report Templates",
-        route: "/settings/report-templates",
-      },
-    ],
   },
 ];
 
@@ -107,7 +85,6 @@ const OrgManagerMenu = [
     heading: "Booking",
     route: "/booking",
     svgIcon: "media/icons/duotune/general/gen014.svg",
-    fontIcon: "bi-calendar-week",
     pages: [
       {
         heading: "Dashboard",

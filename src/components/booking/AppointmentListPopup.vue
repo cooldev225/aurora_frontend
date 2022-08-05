@@ -7,17 +7,33 @@
     tabindex="-1"
     aria-hidden="true"
   >
-    <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered" style="max-width: 96%">
-      <!--begin::Modal content-->
       <div class="modal-content">
-        <!--begin::Modal header-->
-        <div class="modal-header">
-          <!--begin::Modal title-->
-          <h2>Next Available Appointments</h2>
-          <!--end::Modal title-->
-
-          <!--begin::Close-->
+        <div class="modal-header d-flex flex-row">
+          <div class="my-auto">
+            <h2>Available Appointments</h2>
+            <div class="search-params d-flex flex-wrap gap-4">
+              <h4 class="text-nowrap" style="color: var(--el-color-info)">
+                Clinic:
+                <span class="text-primary">{{ clinic_name }}</span>
+              </h4>
+              <h4 class="text-nowrap" style="color: var(--el-color-info)">
+                Specialist:
+                <span class="text-primary">{{ specialist_name }}</span>
+              </h4>
+              <h4 class="text-nowrap" style="color: var(--el-color-info)">
+                Time Requirement:
+                <span class="text-primary">{{ time_requirement }}</span>
+              </h4>
+              <h4 class="text-nowrap" style="color: var(--el-color-info)">
+                Time Frame: <span class="text-primary">{{ time_frame }}</span>
+              </h4>
+              <h4 class="text-nowrap" style="color: var(--el-color-info)">
+                Appointment Type:
+                <span class="text-primary">{{ appointment_type }}</span>
+              </h4>
+            </div>
+          </div>
           <div
             class="btn btn-sm btn-icon btn-active-color-primary"
             data-bs-dismiss="modal"
@@ -26,84 +42,69 @@
               <inline-svg src="media/icons/duotune/arrows/arr061.svg" />
             </span>
           </div>
-          <!--end::Close-->
         </div>
-        <!--end::Modal header-->
-
         <!--begin::Modal body-->
-        <div class="scroll modal-body py-lg-10 px-lg-10 h-500px">
-          <h3 class="text-nowrap mb-5">Search Params</h3>
-          <div class="search-params d-flex flex-wrap mb-10 gap-4">
-            <h4 class="text-nowrap" style="color: var(--el-color-info)">
-              Clinic:
-              <span class="text-primary">{{ clinic_name }}</span>
-            </h4>
-            <h4 class="text-nowrap" style="color: var(--el-color-info)">
-              Specialist:
-              <span class="text-primary">{{ specialist_name }}</span>
-            </h4>
-            <h4 class="text-nowrap" style="color: var(--el-color-info)">
-              Time Requirement:
-              <span class="text-primary">{{ time_requirement }}</span>
-            </h4>
-            <h4 class="text-nowrap" style="color: var(--el-color-info)">
-              Time Frame: <span class="text-primary">{{ time_frame }}</span>
-            </h4>
-            <h4 class="text-nowrap" style="color: var(--el-color-info)">
-              Appointment Type:
-              <span class="text-primary">{{ appointment_type }}</span>
-            </h4>
-          </div>
+        <div class="scroll h-500px px-10">
           <template v-if="availableSlotsByDate">
-            <div class="pb-15 d-flex flex-row gap-15">
+            <div class="row justify-content-center">
               <div
-                class="text-nowrap"
+                class="col"
                 v-for="(slot_list, apt_date) in availableSlotsByDate"
                 :key="apt_date"
               >
-                <h3>
+                <h3
+                  class="py-3 position-fixed border-bottom border-bottom-dashed border-bottom-primary"
+                  style="
+                    background: white;
+                    border-bottom: solid black 2px;
+                    padding-right: 50px;
+                  "
+                >
                   {{ formattedSlotDate(apt_date) }}
                 </h3>
-                <template
-                  v-for="(slot_item, idx_2) in slot_list.time_slot_list"
-                  :key="idx_2"
-                >
-                  <div
-                    class="mt-5 justify-content-center align-items-center mw-250 text-wrap"
+                <div class="mt-20">
+                  <template
+                    v-for="(slot_item, idx_2) in slot_list.time_slot_list"
+                    :key="idx_2"
                   >
-                    <span
-                      class="w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
-                      style="color: var(--el-color-primary)"
-                      data-kt-drawer-toggle="true"
-                      data-kt-drawer-target="#kt_drawer_chat"
-                      @click="
-                        handleAddApt(
-                          slot_item.specialist_ids,
-                          apt_date,
-                          slot_item.start_time,
-                          slot_item.end_time
-                        )
-                      "
+                    <div
+                      class="mt-3 justify-content-center align-items-center mw-250 text-wrap"
                     >
-                      {{ slot_item.start_time }}
-                    </span>
-                    <p
-                      class="mb-1"
-                      style="color: var(--el-text-color-secondary)"
-                      v-if="clinic_name == 'Any'"
-                    >
-                      {{
-                        clinicNameFromSlot(slot_item.specialist_ids, apt_date)
-                      }}
-                    </p>
-                    <p
-                      style="color: var(--el-color-warning)"
-                      v-if="specialist_name == 'Any'"
-                    >
-                      {{ specialistNameFromSlot(slot_item.specialist_ids) }}
-                    </p>
-                  </div>
-                </template>
+                      <span
+                        class="w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
+                        style="color: var(--el-color-primary)"
+                        data-kt-drawer-toggle="true"
+                        data-kt-drawer-target="#kt_drawer_chat"
+                        @click="
+                          handleAddApt(
+                            slot_item.specialist_ids,
+                            apt_date,
+                            slot_item.start_time,
+                            slot_item.end_time
+                          )
+                        "
+                      >
+                        {{ slot_item.start_time }}
+                      </span>
+                      <p
+                        class="mb-1 small"
+                        style="color: var(--el-text-color-secondary)"
+                        v-if="clinic_name == 'Any'"
+                      >
+                        {{
+                          clinicNameFromSlot(slot_item.specialist_ids, apt_date)
+                        }}
+                      </p>
+                      <p
+                        class="small"
+                        style="color: var(--el-color-warning)"
+                        v-if="specialist_name == 'Any'"
+                      >
+                        {{ specialistNameFromSlot(slot_item.specialist_ids) }}
+                      </p>
+                    </div>
+                  </template>
+                </div>
               </div>
             </div>
           </template>
@@ -246,7 +247,7 @@ export default defineComponent({
     };
 
     const formattedSlotDate = (date) => {
-      return moment(date).format("MMM Do, ddd").toString();
+      return moment(date).format("ddd, MMM Do").toString();
     };
 
     const clinicNameFromSlot = (specialist_ids, date) => {
