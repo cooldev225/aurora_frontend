@@ -204,6 +204,8 @@ const Actions = {
     CHECK_OUT: "checkOutApt",
     PRE_ADMISSION: {
       ORG: "listAptPreAdmissionOrg",
+      VALIDATE: "validateAptPreAdmission",
+      CREATE: "createAptPreAdmission",
     },
   },
 
@@ -353,6 +355,10 @@ const Mutations = {
     },
     PRE_ADMISSION: {
       ORG: "setAptPreAdmissionOrg",
+      VALIDATE: {
+        DATA: "setValidateAptPreAdmission",
+        MSG: "setValidateAptPreAdmissionMsg",
+      },
     },
   },
 

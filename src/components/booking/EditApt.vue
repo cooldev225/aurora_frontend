@@ -1491,12 +1491,9 @@ import {
   reactive,
 } from "vue";
 import { useStore } from "vuex";
-import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
 import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";

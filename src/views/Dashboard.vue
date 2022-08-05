@@ -56,7 +56,6 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
-import StatsisticsWidget5 from "@/components/widgets/statsistics/Widget5.vue";
 import MixedWidget3 from "@/components/widgets/mixed/Widget3.vue";
 import MixedWidget4 from "@/components/widgets/mixed/Widget4.vue";
 import MixedWidget5 from "@/components/widgets/mixed/Widget5.vue";

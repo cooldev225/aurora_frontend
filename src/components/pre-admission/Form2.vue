@@ -19,6 +19,7 @@
       pdf-orientation="portrait"
       pdf-content-width="100%"
       @progress="onProgress($event)"
+      @beforeDownload="beforeDownload($event)"
       ref="html2Pdf"
     >
       <template v-slot:pdf-content>
@@ -30,7 +31,7 @@
               class="m-auto border border-success border-3 d-flex align-items-center justify-content-center w-250px h-250px"
             >
               <img
-                :src="orgData.organization_logo"
+                :src="patientData.organization_logo"
                 alt="organization logo"
                 class="w-100 h-100"
               />
@@ -687,7 +688,15 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
+import {
+  defineComponent,
+  ref,
+  watchEffect,
+  onMounted,
+  computed,
+  reactive,
+  watch,
+} from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -705,7 +714,9 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const formRef = ref(null);
-    const orgData = computed(() => store.getters.getAptPreAdmissionOrg);
+    const patientData = computed(
+      () => store.getters.getAptPreAdmissionValidateData
+    );
     const formData = ref({
       title: "",
       first_name: "",
@@ -815,19 +826,35 @@ export default defineComponent({
       });
     };
 
-    watchEffect(() => {
-      formData.value = store.getters.selectedPatient;
-      aptData.value = store.getters.getAptSelected;
-
-      console.log(aptData.value);
+    watch(patientData, () => {
+      console.log(patientData.value.patient);
+      debugger;
+      for (let key in formData.value)
+        formData.value[key] = patientData.value.patient[key];
     });
 
+    // watchEffect(() => {
+    //   console.log(aptData.value);
+    // });
+
     const apt_id = ref("");
+    const patientQuery = reactive({
+      last_name: "",
+      date_of_birth: "",
+    });
+    const Data = new FormData();
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Administration", ["Patients"]);
       apt_id.value = router.currentRoute.value.params.id.toString();
-      store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
+      patientQuery.last_name =
+        router.currentRoute.value.query.last_name.toString();
+      patientQuery.date_of_birth =
+        router.currentRoute.value.query.date_of_birth.toString();
+      store.dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
+        apt_id: apt_id.value,
+        ...patientQuery,
+      });
     });
 
     const html2Pdf = ref("");
@@ -841,6 +868,12 @@ export default defineComponent({
       console.log(`Processed: ${event} / 100`);
     };
 
+    const beforeDownload = async ({ html2pdf, options, pdfContent }) => {
+      debugger;
+      let data = html2pdf().from(pdfContent).toPdf().get("pdf");
+      console.log(data);
+    };
+
     return {
       aptData,
       qaData,
@@ -849,11 +882,12 @@ export default defineComponent({
       rules,
       titles,
       maritalStatus,
-      orgData,
+      patientData,
       html2Pdf,
       submit,
       onProgress,
       generatePDF,
+      beforeDownload,
     };
   },
 });

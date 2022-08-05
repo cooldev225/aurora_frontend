@@ -2,17 +2,7 @@
   <div class=""></div>
 </template>
 <script>
-import {
-  defineComponent,
-  ref,
-  watch,
-  reactive,
-  onMounted,
-  computed,
-} from "vue";
-import { useStore } from "vuex";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import { Modal } from "bootstrap";
+import { defineComponent, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 
 export default defineComponent({
