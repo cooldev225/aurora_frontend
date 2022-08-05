@@ -89,7 +89,9 @@ export default class MailModule extends VuexModule implements MailInfo {
   [Actions.MAILS.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("mails?status=inbox")
+      ApiService.query("mails", {
+        params: { status: "inbox" },
+      })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_MAILS.INBOX, data.data);
           return data.data;
@@ -98,7 +100,9 @@ export default class MailModule extends VuexModule implements MailInfo {
           console.log(response);
         });
 
-      ApiService.get("mails?status=starred")
+      ApiService.query("mails", {
+        params: { status: "starred" },
+      })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_MAILS.STARRED, data.data);
           return data.data;
@@ -107,7 +111,9 @@ export default class MailModule extends VuexModule implements MailInfo {
           console.log(response);
         });
 
-      ApiService.get("mails?status=draft")
+      ApiService.query("mails", {
+        params: { status: "draft" },
+      })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_MAILS.DRAFT, data.data);
           return data.data;
@@ -116,7 +122,9 @@ export default class MailModule extends VuexModule implements MailInfo {
           console.log(response);
         });
 
-      ApiService.get("mails?status=sent")
+      ApiService.query("mails", {
+        params: { status: "sent" },
+      })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_MAILS.SENT, data.data);
           return data.data;
@@ -125,7 +133,9 @@ export default class MailModule extends VuexModule implements MailInfo {
           console.log(response);
         });
 
-      ApiService.get("mails?status=deleted")
+      ApiService.query("mails", {
+        params: { status: "deleted" },
+      })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_MAILS.TRASH, data.data);
           return data.data;
