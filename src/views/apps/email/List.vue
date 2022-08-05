@@ -291,13 +291,15 @@
           </router-link>
         </template>
         <template v-slot:cell-message="{ row: item }">
-          <div class="min-w-300px text-dark mb-1 mh-100px">
+          <div
+            class="min-w-300px text-dark mb-1 mh-80px"
+            style="overflow: hidden"
+          >
             <!--begin::Heading-->
             <router-link to="/mailbox/list" class="text-dark">
               <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
                 {{ item.subject }}
               </span>
-              <span class="fw-normal"> - </span>
               <span class="fw-normal text-muted" v-html="item.body"> </span>
             </router-link>
             <!--end::Heading-->
