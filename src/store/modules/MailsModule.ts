@@ -15,30 +15,36 @@ export interface IMail {
   attachment: Array<string>;
 }
 
-export interface MailInfo {
+export interface IMailbox {
   inbox: Array<IMail>;
   starred: Array<IMail>;
   draft: Array<IMail>;
   sent: Array<IMail>;
   trash: Array<IMail>;
+}
+
+export interface MailInfo {
+  mailbox: IMailbox;
   mailSelectData: IMail;
 }
 
 @Module
 export default class MailModule extends VuexModule implements MailInfo {
-  inbox = [] as Array<IMail>;
-  starred = [] as Array<IMail>;
-  draft = [] as Array<IMail>;
-  sent = [] as Array<IMail>;
-  trash = [] as Array<IMail>;
+  mailbox = {
+    inbox: [],
+    starred: [],
+    draft: [],
+    sent: [],
+    trash: [],
+  } as IMailbox;
   mailSelectData = {} as IMail;
 
   /**
    * Get Mail info for current User
    * @returns this
    */
-  get getMailInfo(): MailModule {
-    return this;
+  get getMailInfo(): IMailbox {
+    return this.mailbox;
   }
 
   /**
@@ -51,27 +57,27 @@ export default class MailModule extends VuexModule implements MailInfo {
 
   @Mutation
   [Mutations.SET_MAILS.INBOX](data) {
-    this.inbox = data;
+    this.mailbox.inbox = data;
   }
 
   @Mutation
   [Mutations.SET_MAILS.STARRED](data) {
-    this.starred = data;
+    this.mailbox.starred = data;
   }
 
   @Mutation
   [Mutations.SET_MAILS.DRAFT](data) {
-    this.draft = data;
+    this.mailbox.draft = data;
   }
 
   @Mutation
   [Mutations.SET_MAILS.SENT](data) {
-    this.sent = data;
+    this.mailbox.sent = data;
   }
 
   @Mutation
   [Mutations.SET_MAILS.TRASH](data) {
-    this.trash = data;
+    this.mailbox.trash = data;
   }
 
   @Mutation

@@ -272,10 +272,10 @@
             href="../../demo6/dist/apps/inbox/reply.html"
             class="d-flex align-items-center text-dark"
           >
-            <div v-if="item.avatar" class="symbol symbol-35px me-3">
+            <div v-if="item.photo" class="symbol symbol-35px me-3">
               <span
                 class="symbol-label"
-                :style="`background-image: url(${item.avatar})`"
+                :style="`background-image: url(${item.photo})`"
               >
               </span>
             </div>
