@@ -270,7 +270,7 @@
         <template v-slot:cell-name="{ row: item }">
           <router-link
             to="/mailbox/list"
-            class="mw-200px d-flex align-items-center text-dark"
+            class="d-flex align-items-center text-dark"
           >
             <div v-if="item.photo" class="symbol symbol-35px me-3">
               <span
@@ -294,7 +294,7 @@
           </router-link>
         </template>
         <template v-slot:cell-message="{ row: item }">
-          <div class="text-dark mb-1 mh-100px">
+          <div class="min-w-300px text-dark mb-1 mh-100px">
             <!--begin::Heading-->
             <router-link to="/mailbox/list" class="text-dark">
               <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
