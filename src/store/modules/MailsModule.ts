@@ -10,26 +10,41 @@ export interface IMail {
   to_user_ids: Array<number>;
   body: string;
   is_starred: boolean;
+  is_read: boolean;
   sent_at: string;
   attachment: Array<string>;
 }
 
+export interface IMailbox {
+  inbox: Array<IMail>;
+  starred: Array<IMail>;
+  draft: Array<IMail>;
+  sent: Array<IMail>;
+  trash: Array<IMail>;
+}
+
 export interface MailInfo {
-  mailsData: Array<IMail>;
+  mailbox: IMailbox;
   mailSelectData: IMail;
 }
 
 @Module
 export default class MailModule extends VuexModule implements MailInfo {
-  mailsData = [] as Array<IMail>;
+  mailbox = {
+    inbox: [],
+    starred: [],
+    draft: [],
+    sent: [],
+    trash: [],
+  } as IMailbox;
   mailSelectData = {} as IMail;
 
   /**
-   * Get Mail for current User
-   * @returns mailsData
+   * Get Mail info for current User
+   * @returns this
    */
-  get getMailList(): Array<IMail> {
-    return this.mailsData;
+  get getMailInfo(): IMailbox {
+    return this.mailbox;
   }
 
   /**
@@ -41,8 +56,28 @@ export default class MailModule extends VuexModule implements MailInfo {
   }
 
   @Mutation
-  [Mutations.SET_MAILS.LIST](data) {
-    this.mailsData = data;
+  [Mutations.SET_MAILS.INBOX](data) {
+    this.mailbox.inbox = data;
+  }
+
+  @Mutation
+  [Mutations.SET_MAILS.STARRED](data) {
+    this.mailbox.starred = data;
+  }
+
+  @Mutation
+  [Mutations.SET_MAILS.DRAFT](data) {
+    this.mailbox.draft = data;
+  }
+
+  @Mutation
+  [Mutations.SET_MAILS.SENT](data) {
+    this.mailbox.sent = data;
+  }
+
+  @Mutation
+  [Mutations.SET_MAILS.TRASH](data) {
+    this.mailbox.trash = data;
   }
 
   @Mutation
@@ -54,9 +89,71 @@ export default class MailModule extends VuexModule implements MailInfo {
   [Actions.MAILS.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("mails")
+      ApiService.query("mails", {
+        params: { status: "inbox" },
+      })
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_MAILS.LIST, data.data);
+          this.context.commit(Mutations.SET_MAILS.INBOX, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+
+      ApiService.query("mails", {
+        params: { status: "starred" },
+      })
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_MAILS.STARRED, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+
+      ApiService.query("mails", {
+        params: { status: "draft" },
+      })
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_MAILS.DRAFT, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+
+      ApiService.query("mails", {
+        params: { status: "sent" },
+      })
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_MAILS.SENT, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+
+      ApiService.query("mails", {
+        params: { status: "deleted" },
+      })
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_MAILS.TRASH, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAILS.VIEW](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.get("mails", id)
+        .then(({ data }) => {
           return data.data;
         })
         .catch(({ response }) => {
@@ -104,6 +201,70 @@ export default class MailModule extends VuexModule implements MailInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("mails", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAILS.STAR](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("mails/bookmark", id, { is_starred: true })
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAILS.UN_STAR](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("mails/bookmark", id, { is_starred: false })
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAILS.DELETE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("mails/delete", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAILS.RESTORE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("mails/restore", item.id, item)
         .then(({ data }) => {
           return data.data;
         })

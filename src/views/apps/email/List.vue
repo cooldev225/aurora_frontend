@@ -20,7 +20,6 @@
         <!--begin::Filter-->
         <div>
           <a
-            href="#"
             class="btn btn-sm btn-icon btn-clear btn-active-light-primary"
             data-kt-menu-trigger="click"
             data-kt-menu-placement="bottom-start"
@@ -102,7 +101,6 @@
         <!--end::Filter-->
         <!--begin::Reload-->
         <a
-          href="#"
           class="btn btn-sm btn-icon btn-clear btn-active-light-primary"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
@@ -117,7 +115,7 @@
         <!--end::Reload-->
         <!--begin::Delete-->
         <a
-          href="#"
+          @click="handleDelete()"
           class="btn btn-sm btn-icon btn-light btn-active-light-primary"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
@@ -132,7 +130,7 @@
         <!--end::Delete-->
         <!--begin::Mark as read-->
         <a
-          href="#"
+          @click="handleMarkAsRead()"
           class="btn btn-sm btn-icon btn-light btn-active-light-primary"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
@@ -168,7 +166,6 @@
         <!--begin::Sort-->
         <span>
           <a
-            href=""
             class="btn btn-sm btn-icon btn-light btn-active-light-primary"
             data-kt-menu-trigger="click"
             data-kt-menu-placement="bottom-end"
@@ -251,7 +248,7 @@
         <template v-slot:cell-actions="{ row: item }">
           <!--begin::Star-->
           <a
-            href="#"
+            @click="handleToggleStar(item)"
             class="btn btn-icon btn-sm btn-active-color-primary"
             data-bs-toggle="tooltip"
             data-bs-placement="right"
@@ -259,7 +256,7 @@
           >
             <span
               :class="`svg-icon svg-icon-2 ${
-                item.marked ? 'svg-icon-warning' : ''
+                item.is_starred ? 'svg-icon-warning' : ''
               }`"
             >
               <inline-svg src="media/icons/duotune/general/gen029.svg" />
@@ -268,14 +265,14 @@
           <!--end::Star-->
         </template>
         <template v-slot:cell-name="{ row: item }">
-          <a
-            href="../../demo6/dist/apps/inbox/reply.html"
+          <router-link
+            to="/mailbox/list"
             class="d-flex align-items-center text-dark"
           >
-            <div v-if="item.avatar" class="symbol symbol-35px me-3">
+            <div v-if="item.photo" class="symbol symbol-35px me-3">
               <span
                 class="symbol-label"
-                :style="`background-image: url(${item.avatar})`"
+                :style="`background-image: url(${item.photo})`"
               >
               </span>
             </div>
@@ -287,34 +284,31 @@
             </div>
             <!--end::Avatar-->
             <!--begin::Name-->
-            <span :class="`${item.unread ? 'fw-bolder' : 'fw-normal'}`">
-              {{ item.name }}
+            <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
+              {{ usernameFromIds(item) }}
             </span>
             <!--end::Name-->
-          </a>
+          </router-link>
         </template>
         <template v-slot:cell-message="{ row: item }">
-          <div class="text-dark mb-1">
+          <div class="min-w-300px text-dark mb-1 mh-100px">
             <!--begin::Heading-->
-            <a href="" class="text-dark">
-              <span :class="`${item.unread ? 'fw-bolder' : 'fw-normal'}`">
+            <router-link to="/mailbox/list" class="text-dark">
+              <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
                 {{ item.subject }}
               </span>
               <span class="fw-normal"> - </span>
-              <span class="fw-normal text-muted">
-                {{ item.message.slice(0, 120 - item.subject.length) }}
-                ...
-              </span>
-            </a>
+              <span class="fw-normal text-muted" v-html="item.body"> </span>
+            </router-link>
             <!--end::Heading-->
           </div>
           <!--begin::Badges-->
           <div
             v-if="emailType.data === 'marked'"
             :class="`badge badge-light-${
-              item.type === 'sent'
+              item.status == 'sent'
                 ? 'warning'
-                : item.type === 'trash'
+                : item.type == 'deleted'
                 ? 'danger'
                 : 'primary'
             }`"
@@ -324,7 +318,11 @@
           <!--end::Badges-->
         </template>
         <template v-slot:cell-date="{ row: item }">
-          {{ moment.unix(item.date).format("DD/MM/YYYY hh:mm") }}
+          {{
+            item.sent_at == undefined
+              ? ""
+              : moment(item.sent_at).format("DD/MM/YYYY hh:mm:ss")
+          }}
         </template>
       </Datatable>
     </div>
@@ -339,9 +337,11 @@ import {
   ref,
   watchEffect,
   reactive,
+  computed,
 } from "vue";
+import { useStore } from "vuex";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import EmailList from "@/store/dummy/Email";
+import { Actions } from "@/store/enums/StoreEnums";
 import moment from "moment";
 
 export default defineComponent({
@@ -356,6 +356,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const store = useStore();
+
     const tableHeader = ref([
       {
         name: "Checkbox",
@@ -379,16 +381,18 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const emailData = ref(EmailList);
     const emailType = reactive({
       data: "inbox",
     });
     const searchText = ref("");
     const checkAll = ref(false);
+    const emailInfo = computed(() => store.getters.getMailInfo);
+    const emailData = ref([]);
+    const sendableUsers = computed(() => store.getters.getUserList);
 
     // sort data by unread default
     emailData.value = emailData.value.sort((a, b) => {
-      return b.unread - a.unread;
+      return b.sent_at - a.sent_at;
     });
 
     // set check status of all data by false default
@@ -399,18 +403,18 @@ export default defineComponent({
     const sortByDate = (order) => {
       if (order) {
         emailData.value = emailData.value.sort((a, b) => {
-          return b.date - a.date;
+          return b.sent_at - a.sent_at;
         });
       } else {
         emailData.value = emailData.value.sort((a, b) => {
-          return a.date - b.date;
+          return a.sent_at - b.sent_at;
         });
       }
     };
 
     const sortByUnread = () => {
       emailData.value = emailData.value.sort((a, b) => {
-        return b.unread - a.unread;
+        return b.sent_at - a.sent_at;
       });
     };
 
@@ -434,22 +438,22 @@ export default defineComponent({
           break;
         case "read":
           emailData.value.forEach((item) => {
-            if (!item.unread) item.checked = true;
+            if (item.is_read) item.checked = true;
           });
           break;
         case "unread":
           emailData.value.forEach((item) => {
-            if (item.unread) item.checked = true;
+            if (!item.is_read) item.checked = true;
           });
           break;
         case "marked":
           emailData.value.forEach((item) => {
-            if (item.marked) item.checked = true;
+            if (item.is_starred) item.checked = true;
           });
           break;
         case "unmarked":
           emailData.value.forEach((item) => {
-            if (!item.marked) item.checked = true;
+            if (!item.is_starred) item.checked = true;
           });
           break;
         default:
@@ -466,6 +470,78 @@ export default defineComponent({
       });
     };
 
+    const handleDelete = () => {
+      emailData.value.forEach((item) => {
+        if (item.checked) {
+          if (emailType.data == "draft") {
+            store.dispatch(Actions.MAILS.DELETE_DRAFT, item.id);
+          } else {
+            store.dispatch(Actions.MAILS.DELETE, item);
+          }
+        }
+      });
+
+      store.dispatch(Actions.MAILS.LIST);
+    };
+
+    const handleRestore = () => {
+      emailData.value.forEach((item) => {
+        if (item.checked) {
+          store.dispatch(Actions.MAILS.RESTORE, item);
+        }
+      });
+
+      store.dispatch(Actions.MAILS.LIST);
+    };
+
+    const handleToggleStar = (item) => {
+      if (item.is_starred) {
+        store.dispatch(Actions.MAILS.UN_STAR, item.id);
+      } else {
+        store.dispatch(Actions.MAILS.STAR, item.id);
+      }
+
+      store.dispatch(Actions.MAILS.LIST);
+    };
+
+    const handleUnStar = (item) => {
+      store.dispatch(Actions.MAILS.UN_STAR, item.id);
+
+      store.dispatch(Actions.MAILS.LIST);
+    };
+
+    const handleMarkAsRead = () => {
+      emailData.value.forEach((item) => {
+        if (item.checked) {
+          store.dispatch(Actions.MAILS.VIEW, item.id);
+        }
+      });
+
+      store.dispatch(Actions.MAILS.LIST);
+    };
+
+    const usernameFromIds = (item) => {
+      let ids = [item.from_user_id];
+
+      if (["sent", "draft"].includes(emailType.data)) {
+        ids = JSON.parse(item.to_user_ids);
+      }
+
+      let usernameList = "";
+
+      sendableUsers.value.forEach((item) => {
+        if (ids.includes(item.id)) {
+          if (usernameList != "") {
+            usernameList += ", ";
+          }
+
+          usernameList += item.username;
+        }
+      });
+
+      return usernameList;
+    };
+
     watch(checkAll, () => {
       emailData.value.forEach((item) => {
         item.checked = checkAll.value;
@@ -475,13 +551,7 @@ export default defineComponent({
     watch(props.mailType, () => {
       emailType.data = props.mailType.data;
 
-      if (emailType.data === "marked") {
-        emailData.value = EmailList.filter((data) => data.marked);
-      } else {
-        emailData.value = EmailList.filter(
-          (data) => data.type === emailType.data
-        );
-      }
+      emailData.value = emailInfo.value[emailType.data];
     });
 
     watch(checkAll, () => {
@@ -491,10 +561,14 @@ export default defineComponent({
     });
 
     watchEffect(() => {
+      emailData.value = emailInfo.value[emailType.data];
       tableData.value = emailData;
     });
 
     onMounted(() => {
+      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.USER_LIST);
+
       tableData.value = emailData;
     });
 
@@ -509,6 +583,12 @@ export default defineComponent({
       sortByUnread,
       selectByType,
       selectMessage,
+      usernameFromIds,
+      handleDelete,
+      handleRestore,
+      handleToggleStar,
+      handleUnStar,
+      handleMarkAsRead,
     };
   },
 });

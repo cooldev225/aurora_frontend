@@ -187,7 +187,6 @@ export default defineComponent({
 
     const switchType = (type) => {
       emailType.data = type;
-      console.log(emailType.data);
     };
 
     return {

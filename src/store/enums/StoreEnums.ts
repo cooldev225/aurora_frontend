@@ -151,10 +151,12 @@ const Actions = {
 
   MAILS: {
     LIST: "listMail",
+    VIEW: "viewMail",
     COMPOSE: "composeMail",
     SEND: "sendMail",
     SEND_DRAFT: "mailSendDraft",
-    BOOKMARK: "bookmarkMail",
+    STAR: "starMail",
+    UN_STAR: "unStarMail",
     DELETE: "deleteMail",
     RESTORE: "restoreMail",
     DELETE_DRAFT: "deleteMailDraft",
@@ -377,7 +379,11 @@ const Mutations = {
   },
 
   SET_MAILS: {
-    LIST: "setMails",
+    INBOX: "setInboxMails",
+    STARRED: "setStarredMails",
+    DRAFT: "setDraftMails",
+    SENT: "setSentMails",
+    TRASH: "setTrashMails",
     SELECT: "setSelectedMail",
   },
 
