@@ -288,7 +288,7 @@
             <!--end::Avatar-->
             <!--begin::Name-->
             <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
-              {{ item.to_user_ids }}
+              {{ usernameFromIds(item.to_user_ids) }}
             </span>
             <!--end::Name-->
           </a>
@@ -387,6 +387,7 @@ export default defineComponent({
     const checkAll = ref(false);
     const emailInfo = computed(() => store.getters.getMailInfo);
     const emailData = ref([]);
+    const sendableUsers = computed(() => store.getters.getUserList);
 
     // sort data by unread default
     emailData.value = emailData.value.sort((a, b) => {
@@ -468,6 +469,23 @@ export default defineComponent({
       });
     };
 
+    const usernameFromIds = (jsonIds) => {
+      const ids = JSON.parse(jsonIds);
+      let usernameList = "";
+
+      sendableUsers.value.forEach((item) => {
+        if (ids.includes(item.id)) {
+          if (usernameList != "") {
+            usernameList += ", ";
+          }
+
+          usernameList += item.username;
+        }
+      });
+
+      return usernameList;
+    };
+
     watch(checkAll, () => {
       emailData.value.forEach((item) => {
         item.checked = checkAll.value;
@@ -493,6 +511,7 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.USER_LIST);
 
       tableData.value = emailData;
     });
@@ -508,6 +527,7 @@ export default defineComponent({
       sortByUnread,
       selectByType,
       selectMessage,
+      usernameFromIds,
     };
   },
 });
