@@ -101,11 +101,8 @@
 <script>
 import { defineComponent, onMounted, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Actions } from "@/store/enums/StoreEnums";
-import PaymentList from "@/store/dummy/Payments";
 
 export default defineComponent({
   name: "procedure-approvals",
@@ -116,7 +113,6 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    const router = useRouter();
     const tableHeader = ref([
       {
         name: "Appointment Date",
@@ -151,7 +147,7 @@ export default defineComponent({
 
     const renderTable = () => tableKey.value++;
 
-    const handleView = (item) => {
+    const handleView = () => {
       // Show modal
     };
 
