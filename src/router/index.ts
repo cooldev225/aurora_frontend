@@ -97,6 +97,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/settings/SpecialistTitle.vue"),
       },
       {
+        path: "/settings",
+        name: "org-admin-settings",
+        component: () => import("@/views/settings/OrgAdminSettings.vue"),
+      },
+      {
         path: "/settings/apt-types",
         name: "aptTypes",
         component: () => import("@/views/settings/AptTypes.vue"),
@@ -108,8 +113,18 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/settings/anesthetic-questions",
-        name: "anestheticQuestions",
+        name: "anesthetic-questions",
         component: () => import("@/views/settings/AnestheticQuestions.vue"),
+      },
+      {
+        path: "/settings/pre-admission-questions",
+        name: "pre-admission-questions",
+        component: () => import("@/views/settings/PreAdmissionQuestions.vue"),
+      },
+      {
+        path: "/settings/pre-admission-consent",
+        name: "pre-admission-consent",
+        component: () => import("@/views/settings/PreAdmissionConsent.vue"),
       },
       {
         path: "/settings/notification-templates",
