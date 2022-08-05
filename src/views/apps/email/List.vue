@@ -287,8 +287,8 @@
             </div>
             <!--end::Avatar-->
             <!--begin::Name-->
-            <span :class="`${item.unread ? 'fw-bolder' : 'fw-normal'}`">
-              {{ item.name }}
+            <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
+              {{ item.to_user_ids }}
             </span>
             <!--end::Name-->
           </a>
@@ -297,14 +297,11 @@
           <div class="text-dark mb-1">
             <!--begin::Heading-->
             <a href="" class="text-dark">
-              <span :class="`${item.unread ? 'fw-bolder' : 'fw-normal'}`">
+              <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
                 {{ item.subject }}
               </span>
               <span class="fw-normal"> - </span>
-              <span class="fw-normal text-muted">
-                {{ item.message.slice(0, 120 - item.subject.length) }}
-                ...
-              </span>
+              <span class="fw-normal text-muted" v-html="item.body"> </span>
             </a>
             <!--end::Heading-->
           </div>
@@ -388,7 +385,7 @@ export default defineComponent({
     });
     const searchText = ref("");
     const checkAll = ref(false);
-    const emailInfo = computed(() => store.getters.mailInboxList);
+    const emailInfo = computed(() => store.getters.getMailInfo);
     const emailData = ref([]);
 
     // sort data by unread default
@@ -490,6 +487,7 @@ export default defineComponent({
     });
 
     watchEffect(() => {
+      emailData.value = emailInfo.value[emailType.data];
       tableData.value = emailData;
     });
 
