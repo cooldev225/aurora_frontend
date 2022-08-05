@@ -82,7 +82,10 @@
                             Specialist
                           </td>
                           <td class="text-gray-800">
-                            <label>{{ aptData.specialist_id }}</label>
+                            <label
+                              >{{ patientData.specialist_user.first_name }}
+                              {{ patientData.specialist_user.last_name }}</label
+                            >
                           </td>
                         </tr>
                         <tr>
@@ -90,7 +93,9 @@
                             Appointment Type
                           </td>
                           <td class="text-gray-800 text-capitalize">
-                            <label>{{ aptData.appointment_type_id }} </label>
+                            <label
+                              >{{ patientData.appointment_type.name }}
+                            </label>
                           </td>
                         </tr>
                         <tr>
@@ -108,7 +113,7 @@
                             Clinic
                           </td>
                           <td class="text-gray-800">
-                            <label>{{ aptData.clinic_id }}</label>
+                            <label>{{ patientData.clinic.name }}</label>
                           </td>
                         </tr>
                       </tbody>
@@ -675,8 +680,18 @@
         </template>
       </vue3-html2pdf>
       <div class="d-flex justify-content-end mb-5 me-5 gap-5">
-        <button type="submit" class="btn btn-primary w-min-250px">
-          Confirm
+        <button
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-primary"
+          type="submit"
+        >
+          <span v-if="!loading" class="indicator-label"> Confirm </span>
+          <span v-if="loading" class="indicator-progress">
+            Please wait...
+            <span
+              class="spinner-border spinner-border-sm align-middle ms-2"
+            ></span>
+          </span>
         </button>
         <button type="reset" class="btn btn-light-primary w-min-250px">
           Cancel
@@ -752,7 +767,6 @@ export default defineComponent({
       start_time: "",
       end_time: "",
       clinic_id: "",
-      clinic_name: "",
     });
 
     const rules = ref({
@@ -818,6 +832,7 @@ export default defineComponent({
         },
       ],
     });
+    const loading = ref(false);
 
     const submit = () => {
       if (!formRef.value) {
@@ -831,6 +846,7 @@ export default defineComponent({
           });
           Data.append("apt_id", apt_id.value);
           await store.dispatch(Actions.APT.PRE_ADMISSION.STORE, Data);
+          loading.value = false;
           router.push({
             path:
               "/appointment_pre_admissions/show/" + apt_id.value + "/form_3",
@@ -875,6 +891,7 @@ export default defineComponent({
     const html2Pdf = ref("");
 
     const generatePDF = () => {
+      loading.value = true;
       html2Pdf.value.generatePdf();
     };
 
@@ -905,6 +922,7 @@ export default defineComponent({
       maritalStatus,
       patientData,
       html2Pdf,
+      loading,
       submit,
       onProgress,
       generatePDF,

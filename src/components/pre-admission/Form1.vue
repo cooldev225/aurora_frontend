@@ -101,34 +101,39 @@ export default defineComponent({
         return;
       }
 
-      formRef.value.validate(async (valid) => {
+      formRef.value.validate((valid) => {
         if (valid) {
-          await store.dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
-            apt_id: apt_id.value,
-            ...formData.value,
-          });
-          if (validateMsg.value === "Appointment Pre Admission")
-            router.push({
-              path:
-                "/appointment_pre_admissions/show/" + apt_id.value + "/form_2",
-              query: {
-                last_name: formData.value.last_name,
-                date_of_birth: moment(formData.value.date_of_birth)
-                  .format("YYYY-MM-DD")
-                  .toString(),
-              },
+          store
+            .dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
+              apt_id: apt_id.value,
+              ...formData.value,
+            })
+            .then((res) => {
+              if (validateMsg.value === "Appointment Pre Admission")
+                router.push({
+                  path:
+                    "/appointment_pre_admissions/show/" +
+                    apt_id.value +
+                    "/form_2",
+                  query: {
+                    last_name: formData.value.last_name,
+                    date_of_birth: moment(formData.value.date_of_birth)
+                      .format("YYYY-MM-DD")
+                      .toString(),
+                  },
+                });
+              else {
+                Swal.fire({
+                  text: validateMsg.value,
+                  icon: "error",
+                  buttonsStyling: false,
+                  confirmButtonText: "Ok, got it!",
+                  customClass: {
+                    confirmButton: "btn btn-primary",
+                  },
+                });
+              }
             });
-          else {
-            Swal.fire({
-              text: validateMsg.value,
-              icon: "error",
-              buttonsStyling: false,
-              confirmButtonText: "Ok, got it!",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-            });
-          }
         } else {
           console.log("validation failed");
         }
