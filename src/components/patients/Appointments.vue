@@ -143,7 +143,6 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import moment from "moment";
-import { Mutations } from "@/store/enums/StoreEnums";
 import md5 from "js-md5";
 
 export default defineComponent({
@@ -190,6 +189,7 @@ export default defineComponent({
 
     const handlePreAdmission = (item) => {
       // store.commit(Mutations.SET_APT.SELECT, item);
+      console.log(item.id);
       router.push({
         path:
           "/appointment_pre_admissions/show/" +

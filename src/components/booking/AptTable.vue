@@ -162,10 +162,8 @@ import {
   ref,
   computed,
   onMounted,
-  reactive,
   watchEffect,
   watch,
-  onUnmounted,
 } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
@@ -380,7 +378,7 @@ export default defineComponent({
       }
     };
 
-    const handleEdit = (item, specialist) => {
+    const handleEdit = (item) => {
       store.commit(Mutations.SET_APT.SELECT, item);
       DrawerComponent?.getInstance("booking-drawer")?.toggle();
     };
