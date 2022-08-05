@@ -1737,6 +1737,19 @@ export default defineComponent({
       _appointment_time.value = Number(
         appointment_length[_selected.appointment_time] * appointment_time.value
       );
+
+      _start_time.value = aptInfoData.value.time_slot[0];
+      _end_time.value = moment(_start_time.value, "HH:mm")
+        .add(_appointment_time.value, "minutes")
+        .format("HH:mm")
+        .toString();
+      aptInfoData.value.time_slot[1] = _end_time.value;
+      _arrival_time.value = Number(_selected.arrival_time);
+      aptInfoData.value.arrival_time = moment(_start_time.value, "HH:mm")
+        .subtract(_arrival_time.value, "minutes")
+        .format("HH:mm")
+        .toString();
+
       aptInfoData.value.clinical_code = _selected.clinical_code;
       aptInfoData.value.mbs_code = _selected.mbs_code;
       apt_type.value = _selected.type;
