@@ -268,8 +268,8 @@
           <!--end::Star-->
         </template>
         <template v-slot:cell-name="{ row: item }">
-          <a
-            href="../../demo6/dist/apps/inbox/reply.html"
+          <router-link
+            to="/mailbox/list"
             class="d-flex align-items-center text-dark"
           >
             <div v-if="item.photo" class="symbol symbol-35px me-3">
@@ -291,27 +291,27 @@
               {{ usernameFromIds(item) }}
             </span>
             <!--end::Name-->
-          </a>
+          </router-link>
         </template>
         <template v-slot:cell-message="{ row: item }">
           <div class="text-dark mb-1 mh-100px">
             <!--begin::Heading-->
-            <a href="" class="text-dark">
+            <router-link to="/mailbox/list" class="text-dark">
               <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
                 {{ item.subject }}
               </span>
               <span class="fw-normal"> - </span>
               <span class="fw-normal text-muted" v-html="item.body"> </span>
-            </a>
+            </router-link>
             <!--end::Heading-->
           </div>
           <!--begin::Badges-->
           <div
             v-if="emailType.data === 'marked'"
             :class="`badge badge-light-${
-              item.type === 'sent'
+              item.status == 'sent'
                 ? 'warning'
-                : item.type === 'trash'
+                : item.type == 'deleted'
                 ? 'danger'
                 : 'primary'
             }`"
@@ -321,7 +321,11 @@
           <!--end::Badges-->
         </template>
         <template v-slot:cell-date="{ row: item }">
-          {{ moment(item.sent_at).format("DD/MM/YYYY hh:mm:ss") }}
+          {{
+            item.sent_at == undefined
+              ? ""
+              : moment(item.sent_at).format("DD/MM/YYYY hh:mm:ss")
+          }}
         </template>
       </Datatable>
     </div>
