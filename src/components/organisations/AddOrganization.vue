@@ -443,7 +443,6 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
-          loading.value = true;
           store
             .dispatch(Actions.ORG.CREATE, Data)
             .then(() => {

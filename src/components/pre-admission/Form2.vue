@@ -5,26 +5,26 @@
     :rules="rules"
     ref="formRef"
   >
-    <vue3-html2pdf
-      :show-layout="false"
-      :float-layout="false"
-      :enable-download="false"
-      :preview-modal="true"
-      :paginate-elements-by-height="3000"
-      filename="template"
-      :pdf-quality="2"
-      :manual-pagination="false"
-      pdf-format="a2"
-      :pdf-margin="10"
-      pdf-orientation="portrait"
-      pdf-content-width="100%"
-      @progress="onProgress($event)"
-      @beforeDownload="beforeDownload($event)"
-      ref="html2Pdf"
-    >
-      <template v-slot:pdf-content>
-        <!--begin::details View-->
-        <div class="card w-100 h-100">
+    <div class="card w-100 h-100">
+      <vue3-html2pdf
+        :show-layout="false"
+        :float-layout="false"
+        :enable-download="false"
+        :preview-modal="false"
+        :paginate-elements-by-height="3000"
+        filename="template"
+        :pdf-quality="2"
+        :manual-pagination="false"
+        pdf-format="a2"
+        :pdf-margin="10"
+        pdf-orientation="portrait"
+        pdf-content-width="100%"
+        @progress="onProgress($event)"
+        @beforeDownload="beforeDownload($event)"
+        ref="html2Pdf"
+      >
+        <template v-slot:pdf-content>
+          <!--begin::details View-->
           <!--begin::Card header-->
           <div class="card-header border-0 p-5">
             <div
@@ -671,19 +671,19 @@
               <!--end::Body-->
             </div>
           </div>
-          <div class="d-flex ms-auto justify-content-end mb-5 me-5">
-            <button type="submit" class="btn btn-primary w-min-250px">
-              Confirm
-            </button>
-            <button type="reset" class="btn btn-light-primary w-min-250px ms-2">
-              Cancel
-            </button>
-          </div>
-          <!--end::Card body-->
-        </div>
-        <!--end::details View-->
-      </template>
-    </vue3-html2pdf>
+        </template>
+      </vue3-html2pdf>
+      <div class="d-flex ms-auto justify-content-end mb-5 me-5">
+        <button type="submit" class="btn btn-primary w-min-250px">
+          Confirm
+        </button>
+        <button type="reset" class="btn btn-light-primary w-min-250px ms-2">
+          Cancel
+        </button>
+      </div>
+      <!--end::Card body-->
+    </div>
+    <!--end::details View-->
   </el-form>
 </template>
 
@@ -806,16 +806,19 @@ export default defineComponent({
         },
       ],
     });
-    const loading = ref(false);
 
     const submit = () => {
       if (!formRef.value) {
         return;
       }
 
-      formRef.value.validate((valid) => {
+      formRef.value.validate(async (valid) => {
         if (valid) {
-          loading.value = true;
+          Object.keys(formData.value).forEach((key) => {
+            Data.append(key, formData.value[key]);
+          });
+          Data.append("apt_id", apt_id.value);
+          await store.dispatch(Actions.APT.PRE_ADMISSION.STORE, Data);
           router.push({
             path:
               "/appointment_pre_admissions/show/" + apt_id.value + "/form_3",
@@ -827,8 +830,6 @@ export default defineComponent({
     };
 
     watch(patientData, () => {
-      console.log(patientData.value.patient);
-      debugger;
       for (let key in formData.value)
         formData.value[key] = patientData.value.patient[key];
     });
@@ -861,17 +862,23 @@ export default defineComponent({
 
     const generatePDF = () => {
       html2Pdf.value.generatePdf();
-      console.log(1);
     };
 
     const onProgress = (event) => {
       console.log(`Processed: ${event} / 100`);
     };
 
-    const beforeDownload = async ({ html2pdf, options, pdfContent }) => {
-      debugger;
-      let data = html2pdf().from(pdfContent).toPdf().get("pdf");
-      console.log(data);
+    const beforeDownload = ({ html2pdf, options, pdfContent }) => {
+      html2pdf()
+        .set(options)
+        .from(pdfContent)
+        .toPdf()
+        .get("pdf")
+        .output("datauristring")
+        .then((pdfAsString) => {
+          Data.append("pdf", pdfAsString);
+          submit();
+        });
     };
 
     return {
