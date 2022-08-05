@@ -125,7 +125,9 @@
                     <span>SPECIALISTS</span>
                   </div>
                 </div>
-                <div class="card-body card-scroll h-350px">
+                <div
+                  class="card-body card-scroll h-350px d-flex flex-column justify-content-between"
+                >
                   <div class="d-flex flex-column">
                     <el-checkbox-group
                       v-model="_specialists_search.specialist_ids"
@@ -144,6 +146,12 @@
                       </template>
                     </el-checkbox-group>
                   </div>
+                  <button
+                    class="btn btn-light-primary w-100 mt-2"
+                    @click="handleReset"
+                  >
+                    CLEAR FILTERS
+                  </button>
                 </div>
               </div>
             </div>
@@ -154,7 +162,7 @@
                     <span>SEARCH NEXT AVAILABLE APPOINTMENT</span>
                   </div>
                 </div>
-                <div class="card-body card-scroll h-300px">
+                <div class="card-body card-scroll h-350px">
                   <div class="card-info">
                     <el-select
                       class="w-100"
@@ -225,22 +233,14 @@
                         />
                       </el-select>
                     </div>
+                    <button
+                      class="btn btn-primary mt-3 w-100"
+                      @click="handleSearch"
+                    >
+                      SEARCH
+                    </button>
                   </div>
                 </div>
-              </div>
-              <div class="d-flex justify-content-md-between gap-2">
-                <button
-                  class="btn btn-primary mt-2 w-100"
-                  @click="handleSearch"
-                >
-                  SEARCH
-                </button>
-                <button
-                  class="btn btn-light-primary w-100 mt-2"
-                  @click="handleReset"
-                >
-                  CLEAR FILTERS
-                </button>
               </div>
             </div>
           </div>
