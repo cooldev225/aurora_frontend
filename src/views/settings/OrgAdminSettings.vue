@@ -55,7 +55,6 @@
 
 <script>
 import { defineComponent, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 
 export default defineComponent({
