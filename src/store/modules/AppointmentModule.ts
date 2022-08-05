@@ -358,6 +358,26 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Action
+  [Actions.APT.PRE_ADMISSION.STORE](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post(
+        "appointment_pre_admissions/store/" + data.get("apt_id").toString(),
+        data
+      )
+        .then(({ data }) => {
+          return data.message;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
   [Actions.APT.PRE_ADMISSION.VALIDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();

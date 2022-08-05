@@ -416,6 +416,7 @@
                           <!--begin::Input-->
                           <el-form-item prop="address">
                             <GMapAutocomplete
+                              :value="patientInfoData.address"
                               ref="addressRef"
                               placeholder="Enter the Address"
                               @place_changed="handleAddressChange"

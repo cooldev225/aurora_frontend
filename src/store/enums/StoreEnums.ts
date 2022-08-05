@@ -207,7 +207,7 @@ const Actions = {
     PRE_ADMISSION: {
       ORG: "listAptPreAdmissionOrg",
       VALIDATE: "validateAptPreAdmission",
-      CREATE: "createAptPreAdmission",
+      STORE: "createAptPreAdmission",
     },
   },
 

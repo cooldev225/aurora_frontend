@@ -1,8 +1,9 @@
 <template>
-  <div class="card w-100 h-100">
+  <div class="card w-100 h-100 p-10">
     <div class="card-header border-0 p-5">
       <div
         class="m-auto border border-success border-3 d-flex align-items-center justify-content-center w-250px h-250px"
+        style="border-radius: 50%"
       >
         <img
           :src="orgData.organization_logo"
@@ -12,10 +13,11 @@
       </div>
     </div>
     <div class="card-body pt-0">
-      <div class="w-50 m-auto text-center">
+      <div class="w-50 fs-4 m-auto text-center">
         Thank you for providing you details. <br />
-        If you have any further questions please contact [CLINIC NAME] on
-        [CLINIC NUMBER] on email us at [CLINIC EMAIL]
+        If you have any further questions please contact
+        {{ orgData.clinic.name }} on {{ orgData.clinic.phone_number }} on email
+        us at {{ orgData.clinic.email }}
       </div>
     </div>
   </div>

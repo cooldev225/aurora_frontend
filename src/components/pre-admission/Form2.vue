@@ -1,34 +1,35 @@
 <template>
-  <el-form
-    @submit.prevent="generatePDF()"
-    :model="formData"
-    :rules="rules"
-    ref="formRef"
-  >
-    <vue3-html2pdf
-      :show-layout="false"
-      :float-layout="false"
-      :enable-download="false"
-      :preview-modal="true"
-      :paginate-elements-by-height="3000"
-      filename="template"
-      :pdf-quality="2"
-      :manual-pagination="false"
-      pdf-format="a2"
-      :pdf-margin="10"
-      pdf-orientation="portrait"
-      pdf-content-width="100%"
-      @progress="onProgress($event)"
-      @beforeDownload="beforeDownload($event)"
-      ref="html2Pdf"
+  <div class="card w-100 h-100 px-20">
+    <el-form
+      @submit.prevent="generatePDF()"
+      :model="formData"
+      :rules="rules"
+      ref="formRef"
     >
-      <template v-slot:pdf-content>
-        <!--begin::details View-->
-        <div class="card w-100 h-100">
+      <vue3-html2pdf
+        :show-layout="false"
+        :float-layout="false"
+        :enable-download="false"
+        :preview-modal="false"
+        :paginate-elements-by-height="3000"
+        filename="template"
+        :pdf-quality="2"
+        :manual-pagination="false"
+        pdf-format="a2"
+        :pdf-margin="10"
+        pdf-orientation="portrait"
+        pdf-content-width="100%"
+        @progress="onProgress($event)"
+        @beforeDownload="beforeDownload($event)"
+        ref="html2Pdf"
+      >
+        <template v-slot:pdf-content>
+          <!--begin::details View-->
           <!--begin::Card header-->
           <div class="card-header border-0 p-5">
             <div
               class="m-auto border border-success border-3 d-flex align-items-center justify-content-center w-250px h-250px"
+              style="border-radius: 50%"
             >
               <img
                 :src="patientData.organization_logo"
@@ -81,7 +82,10 @@
                             Specialist
                           </td>
                           <td class="text-gray-800">
-                            <label>{{ aptData.specialist_name }}</label>
+                            <label
+                              >{{ patientData.specialist_user.first_name }}
+                              {{ patientData.specialist_user.last_name }}</label
+                            >
                           </td>
                         </tr>
                         <tr>
@@ -89,7 +93,9 @@
                             Appointment Type
                           </td>
                           <td class="text-gray-800 text-capitalize">
-                            <label>{{ aptData.appointment_type_name }} </label>
+                            <label
+                              >{{ patientData.appointment_type.name }}
+                            </label>
                           </td>
                         </tr>
                         <tr>
@@ -107,7 +113,7 @@
                             Clinic
                           </td>
                           <td class="text-gray-800">
-                            <label>{{ aptData.clinic_name }}</label>
+                            <label>{{ patientData.clinic.name }}</label>
                           </td>
                         </tr>
                       </tbody>
@@ -162,7 +168,7 @@
                           <td class="text-gray-800">
                             <el-form-item prop="title">
                               <el-select
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.title"
                                 placeholder="Select Title"
                               >
@@ -184,7 +190,7 @@
                             <el-form-item prop="first_name">
                               <el-input
                                 type="text"
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.first_name"
                                 placeholder="First Name"
                               />
@@ -199,7 +205,7 @@
                             <el-form-item prop="last_name">
                               <el-input
                                 type="text"
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.last_name"
                                 placeholder="Last Name"
                               />
@@ -213,7 +219,7 @@
                           <td class="text-gray-800">
                             <el-form-item prop="date_of_birth">
                               <el-date-picker
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.date_of_birth"
                                 format="YYYY-MM-DD"
                                 placeholder="1990-01-01"
@@ -237,7 +243,7 @@
                             <el-form-item prop="contact_number">
                               <el-input
                                 type="text"
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.contact_number"
                                 placeholder="Contact Number"
                               />
@@ -252,7 +258,7 @@
                             <el-form-item prop="email">
                               <el-input
                                 type="text"
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.email"
                                 placeholder="Email"
                               />
@@ -267,7 +273,7 @@
                             <el-form-item prop="address">
                               <el-input
                                 type="text"
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.address"
                                 placeholder="Address"
                               />
@@ -328,7 +334,7 @@
                           <td class="text-gray-800">
                             <el-form-item prop="gender">
                               <el-select
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.gender"
                                 placeholder="Select Gender"
                               >
@@ -351,7 +357,7 @@
                           <td class="text-gray-800 text-capitalize">
                             <el-form-item prop="aborginality">
                               <el-select
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.aborginality"
                                 placeholder="Aborginality"
                               >
@@ -377,7 +383,7 @@
                             <el-form-item prop="occupation">
                               <el-input
                                 type="text"
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.occupation"
                                 placeholder="Occupation"
                               />
@@ -391,7 +397,7 @@
                           <td class="text-gray-800">
                             <el-form-item prop="marital_status">
                               <el-select
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.marital_status"
                                 placeholder="Marital Status"
                               >
@@ -458,7 +464,7 @@
                             <el-form-item prop="kin_name">
                               <el-input
                                 type="text"
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.kin_name"
                                 placeholder="Kin Name"
                               />
@@ -473,7 +479,7 @@
                             <el-form-item prop="kin_phone_number">
                               <el-input
                                 type="text"
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.kin_phone_number"
                                 placeholder="Kin Number"
                               />
@@ -496,7 +502,7 @@
                             <el-form-item prop="kin_relationship">
                               <el-input
                                 type="text"
-                                class="w-50"
+                                class="w-75"
                                 v-model="formData.kin_relationship"
                                 placeholder="Kin Relationship"
                               />
@@ -557,7 +563,7 @@
                             <el-form-item prop="question1">
                               <el-input
                                 type="text"
-                                class="w-50"
+                                class="w-75"
                                 v-model="qaData.question1"
                                 placeholder="Previous Surgery"
                               />
@@ -572,7 +578,7 @@
                             <el-form-item prop="question2">
                               <el-input
                                 type="text"
-                                class="w-50"
+                                class="w-75"
                                 v-model="qaData.question2"
                                 placeholder="Prevous Anaesthetic"
                               />
@@ -671,20 +677,30 @@
               <!--end::Body-->
             </div>
           </div>
-          <div class="d-flex ms-auto justify-content-end mb-5 me-5">
-            <button type="submit" class="btn btn-primary w-min-250px">
-              Confirm
-            </button>
-            <button type="reset" class="btn btn-light-primary w-min-250px ms-2">
-              Cancel
-            </button>
-          </div>
-          <!--end::Card body-->
-        </div>
-        <!--end::details View-->
-      </template>
-    </vue3-html2pdf>
-  </el-form>
+        </template>
+      </vue3-html2pdf>
+      <div class="d-flex justify-content-end mb-5 me-5 gap-5">
+        <button
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-primary"
+          type="submit"
+        >
+          <span v-if="!loading" class="indicator-label"> Confirm </span>
+          <span v-if="loading" class="indicator-progress">
+            Please wait...
+            <span
+              class="spinner-border spinner-border-sm align-middle ms-2"
+            ></span>
+          </span>
+        </button>
+        <button type="reset" class="btn btn-light-primary w-min-250px">
+          Cancel
+        </button>
+      </div>
+      <!--end::Card body-->
+      <!--end::details View-->
+    </el-form>
+  </div>
 </template>
 
 <script>
@@ -742,7 +758,17 @@ export default defineComponent({
       select4: "",
     });
 
-    const aptData = ref({});
+    const aptData = ref({
+      specialist_id: "",
+      specialist_name: "",
+      appointment_type_id: "",
+      appointment_type_name: "",
+      date: "",
+      start_time: "",
+      end_time: "",
+      clinic_id: "",
+    });
+
     const rules = ref({
       first_name: [
         {
@@ -813,9 +839,14 @@ export default defineComponent({
         return;
       }
 
-      formRef.value.validate((valid) => {
+      formRef.value.validate(async (valid) => {
         if (valid) {
-          loading.value = true;
+          Object.keys(formData.value).forEach((key) => {
+            Data.append(key, formData.value[key]);
+          });
+          Data.append("apt_id", apt_id.value);
+          await store.dispatch(Actions.APT.PRE_ADMISSION.STORE, Data);
+          loading.value = false;
           router.push({
             path:
               "/appointment_pre_admissions/show/" + apt_id.value + "/form_3",
@@ -827,10 +858,10 @@ export default defineComponent({
     };
 
     watch(patientData, () => {
-      console.log(patientData.value.patient);
-      debugger;
       for (let key in formData.value)
         formData.value[key] = patientData.value.patient[key];
+      for (let key in aptData.value)
+        aptData.value[key] = patientData.value.appointment[key];
     });
 
     // watchEffect(() => {
@@ -860,18 +891,25 @@ export default defineComponent({
     const html2Pdf = ref("");
 
     const generatePDF = () => {
+      loading.value = true;
       html2Pdf.value.generatePdf();
-      console.log(1);
     };
 
     const onProgress = (event) => {
       console.log(`Processed: ${event} / 100`);
     };
 
-    const beforeDownload = async ({ html2pdf, options, pdfContent }) => {
-      debugger;
-      let data = html2pdf().from(pdfContent).toPdf().get("pdf");
-      console.log(data);
+    const beforeDownload = ({ html2pdf, options, pdfContent }) => {
+      html2pdf()
+        .set(options)
+        .from(pdfContent)
+        .toPdf()
+        .get("pdf")
+        .output("datauristring")
+        .then((pdfAsString) => {
+          Data.append("pdf", pdfAsString);
+          submit();
+        });
     };
 
     return {
@@ -884,6 +922,7 @@ export default defineComponent({
       maritalStatus,
       patientData,
       html2Pdf,
+      loading,
       submit,
       onProgress,
       generatePDF,

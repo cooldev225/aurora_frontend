@@ -1,12 +1,13 @@
 <template>
-  <div class="card w-100 h-100">
+  <div class="card w-100 h-100 p-10">
     <div class="card-header border-0 p-5">
       <div
         class="m-auto border border-success border-3 d-flex align-items-center justify-content-center w-250px h-250px"
+        style="border-radius: 50%"
       >
         <img
           :src="orgData.organization_logo"
-          alt="organization logo"
+          alt="Organization logo"
           class="w-100 h-100"
         />
         <!-- <h1 v-else>Organization</h1> -->
@@ -37,7 +38,7 @@
             placeholder="Last Name"
           />
         </el-form-item>
-        <div class="d-flex ms-auto justify-content-end">
+        <div class="d-flex justify-content-end gap-3">
           <button type="submit" class="btn btn-primary w-min-250px">
             Confirm
           </button>
@@ -56,6 +57,7 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Actions } from "@/store/enums/StoreEnums";
 import moment from "moment";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
   name: "pre-admission-form1",
@@ -99,22 +101,38 @@ export default defineComponent({
         return;
       }
 
-      formRef.value.validate(async (valid) => {
+      formRef.value.validate((valid) => {
         if (valid) {
-          await store.dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
-            apt_id: apt_id.value,
-            ...formData.value,
-          });
-          if (validateMsg.value === "Appointment Pre Admission")
-            router.push({
-              path:
-                "/appointment_pre_admissions/show/" + apt_id.value + "/form_2",
-              query: {
-                last_name: formData.value.last_name,
-                date_of_birth: moment(formData.value.date_of_birth)
-                  .format("YYYY-MM-DD")
-                  .toString(),
-              },
+          store
+            .dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
+              apt_id: apt_id.value,
+              ...formData.value,
+            })
+            .then((res) => {
+              if (validateMsg.value === "Appointment Pre Admission")
+                router.push({
+                  path:
+                    "/appointment_pre_admissions/show/" +
+                    apt_id.value +
+                    "/form_2",
+                  query: {
+                    last_name: formData.value.last_name,
+                    date_of_birth: moment(formData.value.date_of_birth)
+                      .format("YYYY-MM-DD")
+                      .toString(),
+                  },
+                });
+              else {
+                Swal.fire({
+                  text: validateMsg.value,
+                  icon: "error",
+                  buttonsStyling: false,
+                  confirmButtonText: "Ok, got it!",
+                  customClass: {
+                    confirmButton: "btn btn-primary",
+                  },
+                });
+              }
             });
         } else {
           console.log("validation failed");

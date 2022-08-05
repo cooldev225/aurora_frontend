@@ -333,10 +333,10 @@ export default defineComponent({
           _temp_specialists.value[Object.keys(_temp_specialists.value)[0]];
       }
 
-      if (showToggle.value) {
-        DrawerComponent?.getInstance("booking-drawer")?.toggle();
-        localStorage.setItem("booking-appointment-toggle", false);
-      }
+      // if (showToggle.value) {
+      //   DrawerComponent?.getInstance("booking-drawer")?.toggle();
+      //   localStorage.setItem("booking-appointment-toggle", false);
+      // }
     });
 
     const handleAddApt = (specialist, startTime, endTime) => {
