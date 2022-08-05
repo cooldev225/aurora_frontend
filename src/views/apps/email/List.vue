@@ -20,7 +20,6 @@
         <!--begin::Filter-->
         <div>
           <a
-            href="#"
             class="btn btn-sm btn-icon btn-clear btn-active-light-primary"
             data-kt-menu-trigger="click"
             data-kt-menu-placement="bottom-start"
@@ -102,7 +101,6 @@
         <!--end::Filter-->
         <!--begin::Reload-->
         <a
-          href="#"
           class="btn btn-sm btn-icon btn-clear btn-active-light-primary"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
@@ -117,7 +115,6 @@
         <!--end::Reload-->
         <!--begin::Delete-->
         <a
-          href="#"
           @click="handleDelete()"
           class="btn btn-sm btn-icon btn-light btn-active-light-primary"
           data-bs-toggle="tooltip"
@@ -133,7 +130,7 @@
         <!--end::Delete-->
         <!--begin::Mark as read-->
         <a
-          href="#"
+          @click="handleMarkAsRead()"
           class="btn btn-sm btn-icon btn-light btn-active-light-primary"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
@@ -169,7 +166,6 @@
         <!--begin::Sort-->
         <span>
           <a
-            href=""
             class="btn btn-sm btn-icon btn-light btn-active-light-primary"
             data-kt-menu-trigger="click"
             data-kt-menu-placement="bottom-end"
@@ -484,6 +480,8 @@ export default defineComponent({
           }
         }
       });
+
+      store.dispatch(Actions.MAILS.LIST);
     };
 
     const handleRestore = () => {
@@ -492,6 +490,8 @@ export default defineComponent({
           store.dispatch(Actions.MAILS.RESTORE, item);
         }
       });
+
+      store.dispatch(Actions.MAILS.LIST);
     };
 
     const handleToggleStar = (item) => {
@@ -500,10 +500,24 @@ export default defineComponent({
       } else {
         store.dispatch(Actions.MAILS.STAR, item.id);
       }
+
+      store.dispatch(Actions.MAILS.LIST);
     };
 
     const handleUnStar = (item) => {
       store.dispatch(Actions.MAILS.UN_STAR, item.id);
+
+      store.dispatch(Actions.MAILS.LIST);
+    };
+
+    const handleMarkAsRead = () => {
+      emailData.value.forEach((item) => {
+        if (item.checked) {
+          store.dispatch(Actions.MAILS.VIEW, item.id);
+        }
+      });
+
+      store.dispatch(Actions.MAILS.LIST);
     };
 
     const usernameFromIds = (item) => {
@@ -574,6 +588,7 @@ export default defineComponent({
       handleRestore,
       handleToggleStar,
       handleUnStar,
+      handleMarkAsRead,
     };
   },
 });

@@ -151,6 +151,7 @@ const Actions = {
 
   MAILS: {
     LIST: "listMail",
+    VIEW: "viewMail",
     COMPOSE: "composeMail",
     SEND: "sendMail",
     SEND_DRAFT: "mailSendDraft",
