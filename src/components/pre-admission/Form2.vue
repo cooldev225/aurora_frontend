@@ -899,16 +899,7 @@ export default defineComponent({
     };
 
     const beforeDownload = ({ html2pdf, options, pdfContent }) => {
-      html2pdf()
-        .set(options)
-        .from(pdfContent)
-        .toPdf()
-        .get("pdf")
-        .output("datauristring")
-        .then((pdfAsString) => {
-          Data.append("pdf", pdfAsString);
-          submit();
-        });
+      console.log(1);
     };
 
     return {
