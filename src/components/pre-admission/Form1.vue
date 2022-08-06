@@ -99,6 +99,7 @@ export default defineComponent({
       if (!formRef.value) {
         return;
       }
+
       await store.dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
         apt_id: apt_id.value,
         ...formData.value,

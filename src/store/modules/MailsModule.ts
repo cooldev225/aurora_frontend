@@ -103,6 +103,7 @@ export default class MailModule extends VuexModule implements MailInfo {
       ApiService.setHeader();
       ApiService.get("mails", id)
         .then(({ data }) => {
+          this.context.commit(Mutations.SET_MAILS.SELECT, data.data);
           return data.data;
         })
         .catch(({ response }) => {
