@@ -67,8 +67,8 @@ class ApiService {
    */
   public static post(
     resource: string,
-    params: any,
-    config?: any
+    params,
+    config?
   ): Promise<AxiosResponse> {
     return ApiService.vueInstance.axios.post(`${resource}`, params, config);
   }
@@ -83,7 +83,7 @@ class ApiService {
   public static update(
     resource: string,
     slug: string,
-    params: any
+    params
   ): Promise<AxiosResponse> {
     return ApiService.vueInstance.axios.put(`${resource}/${slug}`, params);
   }
@@ -94,7 +94,7 @@ class ApiService {
    * @param params: AxiosRequestConfig
    * @returns Promise<AxiosResponse>
    */
-  public static put(resource: string, params: any): Promise<AxiosResponse> {
+  public static put(resource: string, params): Promise<AxiosResponse> {
     return ApiService.vueInstance.axios.put(`${resource}`, params);
   }
 

@@ -108,7 +108,7 @@ export default defineComponent({
               apt_id: apt_id.value,
               ...formData.value,
             })
-            .then((res) => {
+            .then(() => {
               if (validateMsg.value === "Appointment Pre Admission")
                 router.push({
                   path:
