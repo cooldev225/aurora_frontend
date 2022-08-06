@@ -132,9 +132,9 @@
                   <!--begin::Trash-->
                   <span
                     :class="`menu-link ${
-                      emailType.data === 'trash' ? 'active' : ''
+                      emailType.data === 'deleted' ? 'active' : ''
                     }`"
-                    @click="switchType('trash')"
+                    @click="switchType('deleted')"
                   >
                     <span class="menu-icon">
                       <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->

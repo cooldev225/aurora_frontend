@@ -270,8 +270,10 @@
             </div>
             <!--end::Avatar-->
             <!--begin::Name-->
-            <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
-              {{ usernameFromIds(item) }}
+            <span
+              :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`"
+              v-html="item.name"
+            >
             </span>
             <!--end::Name-->
           </router-link>
@@ -309,7 +311,7 @@
           {{
             item.sent_at == undefined
               ? ""
-              : moment(item.sent_at).format("DD/MM/YYYY hh:mm:ss")
+              : moment(item.sent_at).format("hh:mm A MMM D")
           }}
         </template>
       </Datatable>
@@ -373,7 +375,7 @@ export default defineComponent({
       data: "inbox",
     });
     const filterAndSort = reactive({
-      sortBy: "unread",
+      sortBy: "newest",
       searchText: "",
     });
     const checkAll = ref(false);
@@ -382,28 +384,28 @@ export default defineComponent({
 
     const sendableUsers = computed(() => store.getters.getUserList);
 
-    // sort data by unread default
-    emailData.value = emailData.value.sort((a, b) => {
-      return b.sent_at - a.sent_at;
-    });
-
     // set check status of all data by false default
     emailData.value.forEach((item) => {
       item.checked = false;
     });
 
     const applyFilterAndSort = () => {
+      emailData.value = emailInfo.value[emailType.data];
       const emailList = emailData.value;
+
+      emailList.forEach((item) => {
+        item.name = usernameFromIds(item);
+      });
 
       if (filterAndSort.sortBy == "newest") {
         emailList.sort((a, b) => {
-          return moment(b.updated_at).unix() - moment(a.updated_at).unix();
+          return moment(b.sent_at).unix() - moment(a.sent_at).unix();
         });
       }
 
       if (filterAndSort.sortBy == "oldest") {
         emailList.sort((a, b) => {
-          return moment(a.updated_at).unix() - moment(b.updated_at).unix();
+          return moment(a.sent_at).unix() - moment(b.sent_at).unix();
         });
       }
 
@@ -413,13 +415,29 @@ export default defineComponent({
         });
       }
 
+      if (filterAndSort.searchText != "") {
+        emailData.value = emailList.filter((mail) => {
+          if (mail.subject.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          if (mail.body.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          if (mail.name.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          return false;
+        });
+      }
+
       tableData.value = emailData;
     };
 
     const setSortBy = (sortBy) => {
       filterAndSort.sortBy = sortBy;
-
-      applyFilterAndSort();
     };
 
     const selectByType = (type) => {
@@ -485,7 +503,7 @@ export default defineComponent({
         }
       });
 
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
     };
 
     const handleRestore = () => {
@@ -495,7 +513,7 @@ export default defineComponent({
         }
       });
 
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
     };
 
     const handleToggleStar = (item) => {
@@ -505,13 +523,13 @@ export default defineComponent({
         store.dispatch(Actions.MAILS.STAR, item.id);
       }
 
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
     };
 
     const handleUnStar = (item) => {
       store.dispatch(Actions.MAILS.UN_STAR, item.id);
 
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
     };
 
     const handleMarkAsRead = () => {
@@ -521,7 +539,7 @@ export default defineComponent({
         }
       });
 
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
     };
 
     const usernameFromIds = (item) => {
@@ -543,6 +561,14 @@ export default defineComponent({
         }
       });
 
+      if (item.status == "sent") {
+        usernameList = "To: " + usernameList;
+      }
+
+      if (item.status == "draft") {
+        usernameList += " <span style='color: #c62'>Draft</span>";
+      }
+
       return usernameList;
     };
 
@@ -552,26 +578,21 @@ export default defineComponent({
       });
     });
 
-    watch(props.mailType, () => {
-      emailType.data = props.mailType.data;
-
-      emailData.value = emailInfo.value[emailType.data];
+    watch(filterAndSort, () => {
+      applyFilterAndSort();
     });
 
-    watch(checkAll, () => {
-      emailData.value.forEach((item) => {
-        item.checked = checkAll.value;
-      });
+    watch(props.mailType, () => {
+      emailType.data = props.mailType.data;
+      applyFilterAndSort();
     });
 
     watchEffect(() => {
-      emailData.value = emailInfo.value[emailType.data];
-      tableData.value = emailData;
       applyFilterAndSort();
     });
 
     onMounted(() => {
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, "all");
       store.dispatch(Actions.USER_LIST);
     });
 

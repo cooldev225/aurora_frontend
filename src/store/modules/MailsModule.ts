@@ -12,6 +12,7 @@ export interface IMail {
   is_starred: boolean;
   is_read: boolean;
   sent_at: string;
+  updated_at: string;
   attachment: Array<string>;
 }
 
@@ -20,7 +21,7 @@ export interface IMailbox {
   starred: Array<IMail>;
   draft: Array<IMail>;
   sent: Array<IMail>;
-  trash: Array<IMail>;
+  deleted: Array<IMail>;
 }
 
 export interface MailInfo {
@@ -35,7 +36,7 @@ export default class MailModule extends VuexModule implements MailInfo {
     starred: [],
     draft: [],
     sent: [],
-    trash: [],
+    deleted: [],
   } as IMailbox;
   mailSelectData = {} as IMail;
 
@@ -56,28 +57,8 @@ export default class MailModule extends VuexModule implements MailInfo {
   }
 
   @Mutation
-  [Mutations.SET_MAILS.INBOX](data) {
-    this.mailbox.inbox = data;
-  }
-
-  @Mutation
-  [Mutations.SET_MAILS.STARRED](data) {
-    this.mailbox.starred = data;
-  }
-
-  @Mutation
-  [Mutations.SET_MAILS.DRAFT](data) {
-    this.mailbox.draft = data;
-  }
-
-  @Mutation
-  [Mutations.SET_MAILS.SENT](data) {
-    this.mailbox.sent = data;
-  }
-
-  @Mutation
-  [Mutations.SET_MAILS.TRASH](data) {
-    this.mailbox.trash = data;
+  [Mutations.SET_MAILS.INBOX](param) {
+    this.mailbox[param.boxType] = param.data;
   }
 
   @Mutation
@@ -86,63 +67,31 @@ export default class MailModule extends VuexModule implements MailInfo {
   }
 
   @Action
-  [Actions.MAILS.LIST]() {
+  [Actions.MAILS.LIST](boxType) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("mails", {
-        params: { status: "inbox" },
-      })
-        .then(({ data }) => {
-          this.context.commit(Mutations.SET_MAILS.INBOX, data.data);
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response);
-        });
 
-      ApiService.query("mails", {
-        params: { status: "starred" },
-      })
-        .then(({ data }) => {
-          this.context.commit(Mutations.SET_MAILS.STARRED, data.data);
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response);
-        });
+      let statusList = [boxType];
 
-      ApiService.query("mails", {
-        params: { status: "draft" },
-      })
-        .then(({ data }) => {
-          this.context.commit(Mutations.SET_MAILS.DRAFT, data.data);
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response);
-        });
+      if (boxType == "all") {
+        statusList = ["inbox", "starred", "draft", "sent", "deleted"];
+      }
 
-      ApiService.query("mails", {
-        params: { status: "sent" },
-      })
-        .then(({ data }) => {
-          this.context.commit(Mutations.SET_MAILS.SENT, data.data);
-          return data.data;
+      statusList.forEach((statusItem) => {
+        ApiService.query("mails", {
+          params: { status: statusItem },
         })
-        .catch(({ response }) => {
-          console.log(response);
-        });
-
-      ApiService.query("mails", {
-        params: { status: "deleted" },
-      })
-        .then(({ data }) => {
-          this.context.commit(Mutations.SET_MAILS.TRASH, data.data);
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response);
-        });
+          .then(({ data }) => {
+            this.context.commit(Mutations.SET_MAILS.INBOX, {
+              boxType: statusItem,
+              data: data.data,
+            });
+            return data.data;
+          })
+          .catch(({ response }) => {
+            console.log(response);
+          });
+      });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
     }
