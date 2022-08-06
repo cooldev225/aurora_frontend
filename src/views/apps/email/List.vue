@@ -504,6 +504,7 @@ export default defineComponent({
       });
 
       store.dispatch(Actions.MAILS.LIST, emailType.data);
+      store.dispatch(Actions.MAILS.LIST, "deleted");
     };
 
     const handleRestore = () => {
@@ -513,7 +514,7 @@ export default defineComponent({
         }
       });
 
-      store.dispatch(Actions.MAILS.LIST, emailType.data);
+      store.dispatch(Actions.MAILS.LIST, "all");
     };
 
     const handleToggleStar = (item) => {
@@ -523,13 +524,13 @@ export default defineComponent({
         store.dispatch(Actions.MAILS.STAR, item.id);
       }
 
-      store.dispatch(Actions.MAILS.LIST, emailType.data);
+      store.dispatch(Actions.MAILS.LIST, "all");
     };
 
     const handleUnStar = (item) => {
       store.dispatch(Actions.MAILS.UN_STAR, item.id);
 
-      store.dispatch(Actions.MAILS.LIST, emailType.data);
+      store.dispatch(Actions.MAILS.LIST, "all");
     };
 
     const handleMarkAsRead = () => {
