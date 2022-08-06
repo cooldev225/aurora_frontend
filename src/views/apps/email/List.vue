@@ -99,24 +99,10 @@
           <!--end::Menu-->
         </div>
         <!--end::Filter-->
-        <!--begin::Reload-->
-        <a
-          class="btn btn-sm btn-icon btn-clear btn-active-light-primary"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
-          title="Reload"
-        >
-          <!--begin::Svg Icon | path: icons/duotune/arrows/arr029.svg-->
-          <span class="svg-icon svg-icon-2">
-            <inline-svg src="media/icons/duotune/arrows/arr029.svg" />
-          </span>
-          <!--end::Svg Icon-->
-        </a>
-        <!--end::Reload-->
         <!--begin::Delete-->
         <a
           @click="handleDelete()"
-          class="btn btn-sm btn-icon btn-light btn-active-light-primary"
+          class="btn btn-sm btn-icon btn-light btn-active-light-primary ms-10"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
           title="Delete"
