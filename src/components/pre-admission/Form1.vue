@@ -6,7 +6,7 @@
         style="border-radius: 50%"
       >
         <img
-          :src="orgData.value.organization_logo"
+          :src="orgData.organization_logo"
           alt="Organization logo"
           class="w-100 h-100"
         />
