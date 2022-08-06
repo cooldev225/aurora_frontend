@@ -399,13 +399,13 @@ export default defineComponent({
 
       if (filterAndSort.sortBy == "newest") {
         emailList.sort((a, b) => {
-          return moment(b.updated_at).unix() - moment(a.updated_at).unix();
+          return moment(b.sent_at).unix() - moment(a.sent_at).unix();
         });
       }
 
       if (filterAndSort.sortBy == "oldest") {
         emailList.sort((a, b) => {
-          return moment(a.updated_at).unix() - moment(b.updated_at).unix();
+          return moment(a.sent_at).unix() - moment(b.sent_at).unix();
         });
       }
 
