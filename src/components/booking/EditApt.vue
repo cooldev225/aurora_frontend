@@ -1808,7 +1808,6 @@ export default defineComponent({
         appointment_time.value = organisation.value.appointment_length;
 
       if (_appointment.value && billingInfoData.value.charge_type) {
-        debugger;
         const filteredApt = aptTypeList.value.filter(
           (item) => item.id === _appointment.value
         )[0];

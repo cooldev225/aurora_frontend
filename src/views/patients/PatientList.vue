@@ -124,7 +124,7 @@
                   " " +
                   item.upcoming_appointment.start_time +
                   "(" +
-                  item.upcoming_appointment.procedure_name +
+                  item.upcoming_appointment.appointment_type_name +
                   ")"
                 : "none"
             }}</span
@@ -143,6 +143,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import moment from "moment";
+import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
   name: "patients-list",
@@ -239,7 +240,9 @@ export default defineComponent({
 
     const handleBadge = (item) => {
       store.commit(Mutations.SET_APT.SELECT, item.upcoming_appointment);
-      localStorage.setItem("booking-appointment-toggle", true);
+      DrawerComponent?.getInstance("booking-drawer")?.setBookingDrawerShown(
+        true
+      );
       router.push({ name: "booking-dashboard" });
     };
 
