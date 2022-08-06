@@ -343,7 +343,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   [Actions.APT.PRE_ADMISSION.ORG](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("appointment_pre_admissions/show/" + id)
+      ApiService.get("appointment_pre_admissions/show/" + id + "form_1")
         .then(({ data }) => {
           this.context.commit(Mutations.SET_APT.PRE_ADMISSION.ORG, data.data);
           return data.data;
