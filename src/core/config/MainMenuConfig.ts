@@ -360,6 +360,12 @@ const TypistMenu = [
 
 const AnesthetistMenu = [
   {
+    heading: "Dashboard",
+    route: "/anesthetist-dashboard",
+    svgIcon: "media/icons/duotune/art/art002.svg",
+    fontIcon: "bi-house fs-2",
+  },
+  {
     heading: "Procedure Approvals",
     route: "/procedure-approvals",
     svgIcon: "media/icons/duotune/arrows/arr012.svg",

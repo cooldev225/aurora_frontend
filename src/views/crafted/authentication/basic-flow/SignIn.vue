@@ -156,7 +156,7 @@ export default defineComponent({
         )
           router.push({ name: "booking-dashboard" });
         if (userRole.value === "anesthetist")
-          router.push({ name: "procedure-approvals" });
+          router.push({ name: "anesthetist-dashboard" });
         if (userRole.value === "organizationAdmin")
           router.push({ name: "org-admin-settings" });
         if (userRole.value === "admin") router.push({ name: "organisations" });
