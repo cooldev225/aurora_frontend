@@ -252,7 +252,9 @@
         </template>
         <template v-slot:cell-name="{ row: item }">
           <router-link
-            to="/mailbox/list"
+            :to="`/mailbox/${item.status == 'draft' ? 'edit' : 'view'}/${
+              item.id
+            }`"
             class="d-flex align-items-center text-dark"
           >
             <div v-if="item.photo" class="symbol symbol-35px me-3">
@@ -284,7 +286,12 @@
             style="overflow: hidden"
           >
             <!--begin::Heading-->
-            <router-link to="/mailbox/list" class="text-dark">
+            <router-link
+              :to="`/mailbox/${item.status == 'draft' ? 'edit' : 'view'}/${
+                item.id
+              }`"
+              class="text-dark"
+            >
               <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
                 {{ item.subject }}
               </span>

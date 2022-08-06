@@ -194,9 +194,14 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import("@/views/apps/email/Compose.vue"),
           },
           {
-            path: "reply",
-            name: "mailbox-reply",
-            component: () => import("@/views/apps/email/Reply.vue"),
+            path: "view/:id",
+            name: "mailbox-view",
+            component: () => import("@/views/apps/email/View.vue"),
+          },
+          {
+            path: "edit/:id",
+            name: "mailbox-edit",
+            component: () => import("@/views/apps/email/Edit.vue"),
           },
         ],
       },
