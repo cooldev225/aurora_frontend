@@ -95,7 +95,7 @@ import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
@@ -117,6 +117,7 @@ export default defineComponent({
 
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
     const formRef = ref(null);
     const loading = ref(false);
     const formData = ref({
@@ -155,7 +156,7 @@ export default defineComponent({
     onMounted(() => {
       setCurrentPageBreadcrumbs("View", ["Mail"]);
 
-      const id = router.params.id;
+      const id = route.params.id;
 
       store.dispatch(Actions.USER_LIST).then(() => {
         loading.value = false;
@@ -217,18 +218,7 @@ export default defineComponent({
             .dispatch(Actions.MAILS.SEND, Data)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.ORG.LIST);
-              Swal.fire({
-                text: "Mail Sent Successfully!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                router.push({ name: "mailbox-list" });
-              });
+              router.push({ name: "mailbox-list" });
             })
             .catch(({ response }) => {
               loading.value = false;

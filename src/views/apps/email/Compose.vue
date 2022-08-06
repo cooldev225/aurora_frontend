@@ -209,18 +209,7 @@ export default defineComponent({
             .dispatch(Actions.MAILS.SEND, Data)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.ORG.LIST);
-              Swal.fire({
-                text: "Mail Sent Successfully!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                router.push({ name: "mailbox-list" });
-              });
+              router.push({ name: "mailbox-list" });
             })
             .catch(({ response }) => {
               loading.value = false;
