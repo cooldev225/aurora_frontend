@@ -270,8 +270,10 @@
             </div>
             <!--end::Avatar-->
             <!--begin::Name-->
-            <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
-              {{ item.name }}
+            <span
+              :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`"
+              v-html="item.name"
+            >
             </span>
             <!--end::Name-->
           </router-link>
@@ -563,6 +565,14 @@ export default defineComponent({
           usernameList += item.username;
         }
       });
+
+      if (item.status == "sent") {
+        usernameList = "To: " + usernameList;
+      }
+
+      if (item.status == "draft") {
+        usernameList += " <span style='color: #c62'>Draft</span>";
+      }
 
       return usernameList;
     };
