@@ -393,6 +393,7 @@ export default defineComponent({
     });
 
     const applyFilterAndSort = () => {
+      emailData.value = emailInfo.value[emailType.data];
       const emailList = emailData.value;
 
       if (filterAndSort.sortBy == "newest") {
@@ -413,13 +414,25 @@ export default defineComponent({
         });
       }
 
+      if (filterAndSort.searchText != "") {
+        emailData.value = emailList.filter((mail) => {
+          if (mail.subject.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          if (mail.body.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          return false;
+        });
+      }
+
       tableData.value = emailData;
     };
 
     const setSortBy = (sortBy) => {
       filterAndSort.sortBy = sortBy;
-
-      applyFilterAndSort();
     };
 
     const selectByType = (type) => {
@@ -552,20 +565,16 @@ export default defineComponent({
       });
     });
 
-    watch(props.mailType, () => {
-      emailType.data = props.mailType.data;
-
-      emailData.value = emailInfo.value[emailType.data];
+    watch(filterAndSort, () => {
+      applyFilterAndSort();
     });
 
-    watch(checkAll, () => {
-      emailData.value.forEach((item) => {
-        item.checked = checkAll.value;
-      });
+    watch(props.mailType, () => {
+      emailType.data = props.mailType.data;
+      applyFilterAndSort();
     });
 
     watchEffect(() => {
-      emailData.value = emailInfo.value[emailType.data];
       applyFilterAndSort();
     });
 
