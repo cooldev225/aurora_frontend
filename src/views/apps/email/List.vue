@@ -375,7 +375,7 @@ export default defineComponent({
       data: "inbox",
     });
     const filterAndSort = reactive({
-      sortBy: "unread",
+      sortBy: "newest",
       searchText: "",
     });
     const checkAll = ref(false);
@@ -383,11 +383,6 @@ export default defineComponent({
     const emailData = ref([]);
 
     const sendableUsers = computed(() => store.getters.getUserList);
-
-    // sort data by unread default
-    emailData.value = emailData.value.sort((a, b) => {
-      return b.sent_at - a.sent_at;
-    });
 
     // set check status of all data by false default
     emailData.value.forEach((item) => {
@@ -508,7 +503,7 @@ export default defineComponent({
         }
       });
 
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
     };
 
     const handleRestore = () => {
@@ -518,7 +513,7 @@ export default defineComponent({
         }
       });
 
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
     };
 
     const handleToggleStar = (item) => {
@@ -528,13 +523,13 @@ export default defineComponent({
         store.dispatch(Actions.MAILS.STAR, item.id);
       }
 
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
     };
 
     const handleUnStar = (item) => {
       store.dispatch(Actions.MAILS.UN_STAR, item.id);
 
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
     };
 
     const handleMarkAsRead = () => {
@@ -544,7 +539,7 @@ export default defineComponent({
         }
       });
 
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
     };
 
     const usernameFromIds = (item) => {
@@ -597,7 +592,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      store.dispatch(Actions.MAILS.LIST);
+      store.dispatch(Actions.MAILS.LIST, "all");
       store.dispatch(Actions.USER_LIST);
     });
 
