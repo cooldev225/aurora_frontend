@@ -110,6 +110,16 @@ export default defineComponent({
       loading.value = true;
       apt_id.value = router.currentRoute.value.params.id.toString();
       store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
+      if (validateMsg.value === "Appointment Pre Admission")
+        router.push({
+          path: "/appointment_pre_admissions/show/" + apt_id.value + "/form_2",
+          query: {
+            last_name: formData.value.last_name,
+            date_of_birth: moment(formData.value.date_of_birth)
+              .format("YYYY-MM-DD")
+              .toString(),
+          },
+        });
     });
 
     return {
