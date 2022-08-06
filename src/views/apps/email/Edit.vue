@@ -52,7 +52,7 @@
     <div class="d-flex flex-row-reverse">
       <router-link
         type="reset"
-        to="/mails"
+        to="/mailbox/list"
         id="kt_modal_mail_compose_cancel"
         class="btn btn-light me-3"
       >
@@ -184,7 +184,7 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.MAILS.UPDATE_DRAFT, Data)
+            .dispatch(Actions.MAILS.UPDATE_DRAFT, formData.value.id, Data)
             .then(() => {
               loading.value = false;
               router.push({ name: "mailbox-list" });
@@ -210,7 +210,7 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.MAILS.SEND_DRAFT, Data)
+            .dispatch(Actions.MAILS.SEND_DRAFT, formData.value.id, Data)
             .then(() => {
               Swal.fire({
                 text: "Mail Sent Successfully!",

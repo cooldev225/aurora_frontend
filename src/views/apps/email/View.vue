@@ -204,12 +204,12 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.MAILS.SEND, Data)
+            .dispatch(Actions.MAILS.SEND, formData.value.id, Data)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.ORG.LIST);
+
               Swal.fire({
-                text: "Mail Sent Successfully!",
+                text: "Reply Mail Sent Successfully!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",

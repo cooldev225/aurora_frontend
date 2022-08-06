@@ -147,10 +147,10 @@ export default class MailModule extends VuexModule implements MailInfo {
   }
 
   @Action
-  [Actions.MAILS.SEND_DRAFT](item) {
+  [Actions.MAILS.SEND_DRAFT](id, item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("mails/send-draft", item.id, item)
+      ApiService.post("mails/send-draft", item)
         .then(({ data }) => {
           return data.data;
         })
@@ -166,7 +166,7 @@ export default class MailModule extends VuexModule implements MailInfo {
   [Actions.MAILS.UPDATE_DRAFT](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("mails", item.id, item)
+      ApiService.post("mails/update-draft", item)
         .then(({ data }) => {
           return data.data;
         })
