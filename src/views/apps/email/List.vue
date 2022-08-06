@@ -145,7 +145,7 @@
             data-kt-inbox-listing-filter="search"
             class="form-control form-control-sm form-control-solid mw-100 min-w-150px min-w-md-200px ps-12"
             placeholder="Search Inbox"
-            v-model="searchText"
+            v-model="filterAndSort.searchText"
           />
         </div>
         <!--end::Search-->
@@ -175,7 +175,7 @@
               <a
                 class="menu-link px-3"
                 data-kt-inbox-listing-filter="filter_newest"
-                @click="sortByDate(true)"
+                @click="setSortBy('newest')"
                 >Newest</a
               >
             </div>
@@ -185,7 +185,7 @@
               <a
                 class="menu-link px-3"
                 data-kt-inbox-listing-filter="filter_oldest"
-                @click="sortByDate(false)"
+                @click="setSortBy('oldest')"
                 >Oldest</a
               >
             </div>
@@ -195,7 +195,7 @@
               <a
                 class="menu-link px-3"
                 data-kt-inbox-listing-filter="filter_unread"
-                @click="sortByUnread()"
+                @click="setSortBy('unread')"
                 >Unread</a
               >
             </div>
@@ -211,7 +211,7 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :rows-per-page="10"
+        :rows-per-page="5"
         :loading="loading"
         :enable-items-per-page-dropdown="true"
         :disable-table-header="true"
@@ -372,10 +372,14 @@ export default defineComponent({
     const emailType = reactive({
       data: "inbox",
     });
-    const searchText = ref("");
+    const filterAndSort = reactive({
+      sortBy: "unread",
+      searchText: "",
+    });
     const checkAll = ref(false);
     const emailInfo = computed(() => store.getters.getMailInfo);
     const emailData = ref([]);
+
     const sendableUsers = computed(() => store.getters.getUserList);
 
     // sort data by unread default
@@ -388,22 +392,34 @@ export default defineComponent({
       item.checked = false;
     });
 
-    const sortByDate = (order) => {
-      if (order) {
-        emailData.value = emailData.value.sort((a, b) => {
-          return b.sent_at - a.sent_at;
-        });
-      } else {
-        emailData.value = emailData.value.sort((a, b) => {
-          return a.sent_at - b.sent_at;
+    const applyFilterAndSort = () => {
+      const emailList = emailData.value;
+
+      if (filterAndSort.sortBy == "newest") {
+        emailList.sort((a, b) => {
+          return moment(b.updated_at).unix() - moment(a.updated_at).unix();
         });
       }
+
+      if (filterAndSort.sortBy == "oldest") {
+        emailList.sort((a, b) => {
+          return moment(a.updated_at).unix() - moment(b.updated_at).unix();
+        });
+      }
+
+      if (filterAndSort.sortBy == "unread") {
+        emailList.sort((a, b) => {
+          return a.is_read - b.is_read;
+        });
+      }
+
+      tableData.value = emailData;
     };
 
-    const sortByUnread = () => {
-      emailData.value = emailData.value.sort((a, b) => {
-        return b.sent_at - a.sent_at;
-      });
+    const setSortBy = (sortBy) => {
+      filterAndSort.sortBy = sortBy;
+
+      applyFilterAndSort();
     };
 
     const selectByType = (type) => {
@@ -551,13 +567,12 @@ export default defineComponent({
     watchEffect(() => {
       emailData.value = emailInfo.value[emailType.data];
       tableData.value = emailData;
+      applyFilterAndSort();
     });
 
     onMounted(() => {
       store.dispatch(Actions.MAILS.LIST);
       store.dispatch(Actions.USER_LIST);
-
-      tableData.value = emailData;
     });
 
     return {
@@ -565,10 +580,9 @@ export default defineComponent({
       tableHeader,
       tableData,
       emailType,
-      searchText,
+      filterAndSort,
       checkAll,
-      sortByDate,
-      sortByUnread,
+      setSortBy,
       selectByType,
       selectMessage,
       usernameFromIds,
