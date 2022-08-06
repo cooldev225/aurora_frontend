@@ -6,7 +6,7 @@
         style="border-radius: 50%"
       >
         <img
-          :src="orgData.organization_logo"
+          :src="orgData.value.organization_logo"
           alt="Organization logo"
           class="w-100 h-100"
         />
@@ -93,7 +93,6 @@ export default defineComponent({
         },
       ],
     });
-    const orgLogo = ref("");
     const apt_id = ref("");
 
     const submit = async () => {
@@ -123,7 +122,6 @@ export default defineComponent({
     });
 
     return {
-      orgLogo,
       orgData,
       formRef,
       formData,
