@@ -271,7 +271,7 @@
             <!--end::Avatar-->
             <!--begin::Name-->
             <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
-              {{ usernameFromIds(item) }}
+              {{ item.name }}
             </span>
             <!--end::Name-->
           </router-link>
@@ -396,6 +396,10 @@ export default defineComponent({
       emailData.value = emailInfo.value[emailType.data];
       const emailList = emailData.value;
 
+      emailList.forEach((item) => {
+        item.name = usernameFromIds(item);
+      });
+
       if (filterAndSort.sortBy == "newest") {
         emailList.sort((a, b) => {
           return moment(b.updated_at).unix() - moment(a.updated_at).unix();
@@ -421,6 +425,10 @@ export default defineComponent({
           }
 
           if (mail.body.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          if (mail.name.search(filterAndSort.searchText) >= 0) {
             return true;
           }
 
