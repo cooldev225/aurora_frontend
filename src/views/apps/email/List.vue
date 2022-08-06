@@ -309,7 +309,7 @@
           {{
             item.sent_at == undefined
               ? ""
-              : moment(item.sent_at).format("DD/MM/YYYY hh:mm:ss")
+              : moment(item.sent_at).format("hh:mm A MMM D")
           }}
         </template>
       </Datatable>
@@ -566,7 +566,6 @@ export default defineComponent({
 
     watchEffect(() => {
       emailData.value = emailInfo.value[emailType.data];
-      tableData.value = emailData;
       applyFilterAndSort();
     });
 
