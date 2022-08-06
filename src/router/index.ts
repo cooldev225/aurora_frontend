@@ -265,6 +265,14 @@ const routes: Array<RouteRecordRaw> = [
         name: "employee-booking-dashboard",
         component: () => import("@/views/booking/EmployeeBookings.vue"),
       },
+
+      ////////////////////////////////////////////////////////////////////////
+      // Anesthetist
+      {
+        path: "/anesthetist-dashboard",
+        name: "anesthetist-dashboard",
+        component: () => import("@/views/anesthetist/dashboard.vue"),
+      },
     ],
   },
   {
