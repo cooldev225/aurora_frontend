@@ -150,7 +150,13 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      formData.value = store.getters.getMailSelected;
+      const repliedMails = store.getters.getRepliedMails;
+
+      if (repliedMails.length > 0) {
+        formData.value = repliedMails[0];
+        formData.value.to_user_ids = JSON.parse(formData.value.to_user_ids);
+        delete formData.value.attachment;
+      }
     });
 
     onMounted(() => {
@@ -178,21 +184,10 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.MAILS.COMPOSE, Data)
+            .dispatch(Actions.MAILS.UPDATE_DRAFT, Data)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.ORG.LIST);
-              Swal.fire({
-                text: "Mail Saved!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                router.push({ name: "mailbox-list" });
-              });
+              router.push({ name: "mailbox-list" });
             })
             .catch(({ response }) => {
               loading.value = false;
@@ -215,10 +210,19 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.MAILS.SEND, Data)
+            .dispatch(Actions.MAILS.SEND_DRAFT, Data)
             .then(() => {
-              loading.value = false;
-              router.push({ name: "mailbox-list" });
+              Swal.fire({
+                text: "Mail Sent Successfully!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                router.push({ name: "mailbox-list" });
+              });
             })
             .catch(({ response }) => {
               loading.value = false;

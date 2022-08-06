@@ -26,7 +26,7 @@ export interface IMailbox {
 
 export interface MailInfo {
   mailbox: IMailbox;
-  mailSelectData: IMail;
+  repliedMails: Array<IMail>;
 }
 
 @Module
@@ -38,7 +38,7 @@ export default class MailModule extends VuexModule implements MailInfo {
     sent: [],
     deleted: [],
   } as IMailbox;
-  mailSelectData = {} as IMail;
+  repliedMails = [] as Array<IMail>;
 
   /**
    * Get Mail info for current User
@@ -52,8 +52,8 @@ export default class MailModule extends VuexModule implements MailInfo {
    * Get Selected Mail for current User
    * @returns mailSelectData
    */
-  get getMailSelected(): IMail {
-    return this.mailSelectData;
+  get getRepliedMails(): IMail[] {
+    return this.repliedMails;
   }
 
   @Mutation
@@ -63,7 +63,7 @@ export default class MailModule extends VuexModule implements MailInfo {
 
   @Mutation
   [Mutations.SET_MAILS.SELECT](data) {
-    this.mailSelectData = data;
+    this.repliedMails = data;
   }
 
   @Action
@@ -135,6 +135,22 @@ export default class MailModule extends VuexModule implements MailInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("mails/send", item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAILS.SEND_DRAFT](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("mails/send-draft", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
