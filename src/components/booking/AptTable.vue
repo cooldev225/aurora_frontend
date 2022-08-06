@@ -199,9 +199,6 @@ export default defineComponent({
     };
 
     const appointment = ref();
-    const showToggle = computed(() =>
-      localStorage.getItem("booking-appointment-toggle")
-    );
 
     onMounted(() => {
       store.dispatch(Actions.ORG.LIST);
@@ -333,10 +330,13 @@ export default defineComponent({
           _temp_specialists.value[Object.keys(_temp_specialists.value)[0]];
       }
 
-      // if (showToggle.value) {
-      //   DrawerComponent?.getInstance("booking-drawer")?.toggle();
-      //   localStorage.setItem("booking-appointment-toggle", false);
-      // }
+      if (
+        DrawerComponent?.getInstance(
+          "booking-drawer"
+        )?.isBookingDrawerShown() === true
+      ) {
+        DrawerComponent?.getInstance("booking-drawer")?.show();
+      }
     });
 
     const handleAddApt = (specialist, startTime, endTime) => {

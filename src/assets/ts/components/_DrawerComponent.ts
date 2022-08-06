@@ -69,6 +69,7 @@ class DrawerComponent {
   shown: boolean = false
   lastWidth: number = 0
   closeElement: HTMLElement | null = null
+  bookingDrawerShown: boolean = false
 
   constructor(_element: HTMLElement, options: DrawerOptions) {
     this.element = _element
@@ -78,6 +79,7 @@ class DrawerComponent {
     this.name = this.element.getAttribute('data-kt-drawer-name') || ''
     this.shown = false
     this.toggleElement = null
+    this.bookingDrawerShown = false
     // Event Handlers
     this._handlers()
     // Update Instance
@@ -103,6 +105,7 @@ class DrawerComponent {
         e.preventDefault()
         this.closeElement = document.getElementById(closers)
 
+        this.bookingDrawerShown = false
         this._hide()
       })
     }
@@ -197,6 +200,10 @@ class DrawerComponent {
       return
     }
 
+    if (this.shown === true) {
+      return
+    }
+
     this.shown = true
     this._createOverlay()
     document.body.setAttribute(`data-kt-drawer-${this.name}`, 'on')
@@ -224,6 +231,7 @@ class DrawerComponent {
       }
       this.overlayElement.addEventListener('click', (e) => {
         e.preventDefault()
+        this.bookingDrawerShown = false
         this._hide()
       })
     }
@@ -273,6 +281,14 @@ class DrawerComponent {
 
   public goElement = () => {
     return this.element
+  }
+
+  public setBookingDrawerShown = (shown) => {
+    this.bookingDrawerShown = shown
+  }
+
+  public isBookingDrawerShown = () => {
+    return this.bookingDrawerShown
   }
 
   // Event API
