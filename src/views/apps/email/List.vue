@@ -252,9 +252,11 @@
         </template>
         <template v-slot:cell-name="{ row: item }">
           <router-link
-            :to="`/mailbox/${item.status == 'draft' ? 'edit' : 'view'}/${
-              item.id
-            }`"
+            :to="`/mailbox/${
+              item.status == 'draft' && parseInt(item.reply_id) == 0
+                ? 'edit'
+                : 'view'
+            }/${item.id}`"
             class="d-flex align-items-center text-dark"
           >
             <div v-if="item.photo" class="symbol symbol-35px me-3">
@@ -287,9 +289,11 @@
           >
             <!--begin::Heading-->
             <router-link
-              :to="`/mailbox/${item.status == 'draft' ? 'edit' : 'view'}/${
-                item.id
-              }`"
+              :to="`/mailbox/${
+                item.status == 'draft' && parseInt(item.reply_id) == 0
+                  ? 'edit'
+                  : 'view'
+              }/${item.id}`"
               class="text-dark"
             >
               <span
