@@ -5,7 +5,7 @@
     :rules="rules"
     ref="formRef"
   >
-    <h3 class="text-capitalize mb-10">{{ formData.subject }}</h3>
+    <h3 class="fs-2 text-capitalize mb-10">{{ formData.subject }}</h3>
     <div class="w-100" v-for="item in sentRepliedMails" :key="item.id">
       <div class="d-flex align-items-center text-dark">
         <div v-if="item.photo" class="symbol symbol-35px me-3">
@@ -31,8 +31,8 @@
       </div>
       <section v-html="item.body" class="mt-5 ms-15"></section>
     </div>
-    <div v-if="!formData.isShow" class="d-flex flex-row mb-15">
-      <button class="btn btn-light me-3" @click="handleReply(true)">
+    <div v-if="!formData.isShow" class="d-flex flex-row mt-10">
+      <button class="btn fs-4 text-primary me-3" @click="handleReply(true)">
         <span>Reply</span>
       </button>
     </div>
@@ -171,11 +171,14 @@ export default defineComponent({
         formData.value = Object.assign({}, repliedMails.value[0]);
         formData.value.to_user_ids = [formData.value.from_user_id];
         delete formData.value.attachment;
-        formData.value.isShow = true;
 
         if (repliedMails.value[0].status != "draft") {
           formData.value.isShow = false;
           formData.value.body = "";
+          formData.value.reply_id = formData.value.id;
+          delete formData.value.id;
+        } else {
+          formData.value.isShow = true;
         }
 
         sentRepliedMails.value = [];
