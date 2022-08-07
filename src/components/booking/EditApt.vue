@@ -416,6 +416,7 @@
                           <!--begin::Input-->
                           <el-form-item prop="address">
                             <GMapAutocomplete
+                              :value="patientInfoData.address"
                               ref="addressRef"
                               placeholder="Enter the Address"
                               @place_changed="handleAddressChange"
@@ -1491,12 +1492,9 @@ import {
   reactive,
 } from "vue";
 import { useStore } from "vuex";
-import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
 import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
@@ -1740,6 +1738,19 @@ export default defineComponent({
       _appointment_time.value = Number(
         appointment_length[_selected.appointment_time] * appointment_time.value
       );
+
+      _start_time.value = aptInfoData.value.time_slot[0];
+      _end_time.value = moment(_start_time.value, "HH:mm")
+        .add(_appointment_time.value, "minutes")
+        .format("HH:mm")
+        .toString();
+      aptInfoData.value.time_slot[1] = _end_time.value;
+      _arrival_time.value = Number(_selected.arrival_time);
+      aptInfoData.value.arrival_time = moment(_start_time.value, "HH:mm")
+        .subtract(_arrival_time.value, "minutes")
+        .format("HH:mm")
+        .toString();
+
       aptInfoData.value.clinical_code = _selected.clinical_code;
       aptInfoData.value.mbs_code = _selected.mbs_code;
       apt_type.value = _selected.type;
@@ -1797,7 +1808,6 @@ export default defineComponent({
         appointment_time.value = organisation.value.appointment_length;
 
       if (_appointment.value && billingInfoData.value.charge_type) {
-        debugger;
         const filteredApt = aptTypeList.value.filter(
           (item) => item.id === _appointment.value
         )[0];

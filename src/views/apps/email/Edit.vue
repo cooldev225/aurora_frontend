@@ -5,7 +5,7 @@
     :rules="rules"
     ref="formRef"
   >
-    <h3>Compose New Mail</h3>
+    <h3>Edit Mail Draft</h3>
     <el-form-item prop="to_user_ids">
       <el-select
         class="mt-10 w-100"
@@ -52,7 +52,7 @@
     <div class="d-flex flex-row-reverse">
       <router-link
         type="reset"
-        to="/mails"
+        to="/mailbox/list"
         id="kt_modal_mail_compose_cancel"
         class="btn btn-light me-3"
       >
@@ -90,17 +90,17 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed } from "vue";
+import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default defineComponent({
-  name: "email-compose",
+  name: "email-edit",
   components: {
     ckeditor: CKEditor.component,
   },
@@ -117,6 +117,7 @@ export default defineComponent({
 
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
     const formRef = ref(null);
     const loading = ref(false);
     const formData = ref({
@@ -130,6 +131,7 @@ export default defineComponent({
     const dialogImageUrl = ref("");
     const dialogVisible = ref(false);
     const sendableUsers = computed(() => store.getters.getUserList);
+    const repliedMails = computed(() => store.getters.getRepliedMails);
 
     const handleChange = (file, fileList) => {
       upload.value.clearFiles();
@@ -148,12 +150,24 @@ export default defineComponent({
       dialogVisible.value = true;
     };
 
+    watchEffect(() => {
+      if (repliedMails.value.length > 0) {
+        formData.value = Object.assign({}, repliedMails.value[0]);
+        formData.value.to_user_ids = JSON.parse(formData.value.to_user_ids);
+        delete formData.value.attachment;
+      }
+    });
+
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Compose", ["Mail"]);
+      setCurrentPageBreadcrumbs("View", ["Mail"]);
+
+      const id = route.params.id;
 
       store.dispatch(Actions.USER_LIST).then(() => {
         loading.value = false;
       });
+
+      store.dispatch(Actions.MAILS.VIEW, id);
     });
 
     const handleSave = () => {
@@ -169,9 +183,10 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.MAILS.COMPOSE, Data)
+            .dispatch(Actions.MAILS.UPDATE_DRAFT, Data)
             .then(() => {
               loading.value = false;
+              store.dispatch(Actions.MAILS.LIST, "all");
               router.push({ name: "mailbox-list" });
             })
             .catch(({ response }) => {
@@ -195,12 +210,10 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.MAILS.SEND, Data)
+            .dispatch(Actions.MAILS.SEND_DRAFT, Data)
             .then(() => {
-              loading.value = false;
-
               Swal.fire({
-                text: "Mail Sent Successfully!",
+                text: "Mail Sent Successfully From Draft!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -208,6 +221,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
+                store.dispatch(Actions.MAILS.LIST, "all");
                 router.push({ name: "mailbox-list" });
               });
             })

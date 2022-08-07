@@ -183,14 +183,7 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  onMounted,
-  ref,
-  computed,
-  watchEffect,
-  reactive,
-} from "vue";
+import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";

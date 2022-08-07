@@ -20,7 +20,6 @@
         <!--begin::Filter-->
         <div>
           <a
-            href="#"
             class="btn btn-sm btn-icon btn-clear btn-active-light-primary"
             data-kt-menu-trigger="click"
             data-kt-menu-placement="bottom-start"
@@ -100,25 +99,10 @@
           <!--end::Menu-->
         </div>
         <!--end::Filter-->
-        <!--begin::Reload-->
-        <a
-          href="#"
-          class="btn btn-sm btn-icon btn-clear btn-active-light-primary"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
-          title="Reload"
-        >
-          <!--begin::Svg Icon | path: icons/duotune/arrows/arr029.svg-->
-          <span class="svg-icon svg-icon-2">
-            <inline-svg src="media/icons/duotune/arrows/arr029.svg" />
-          </span>
-          <!--end::Svg Icon-->
-        </a>
-        <!--end::Reload-->
         <!--begin::Delete-->
         <a
-          href="#"
-          class="btn btn-sm btn-icon btn-light btn-active-light-primary"
+          @click="handleDelete()"
+          class="btn btn-sm btn-icon btn-light btn-active-light-primary ms-10"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
           title="Delete"
@@ -132,7 +116,7 @@
         <!--end::Delete-->
         <!--begin::Mark as read-->
         <a
-          href="#"
+          @click="handleMarkAsRead()"
           class="btn btn-sm btn-icon btn-light btn-active-light-primary"
           data-bs-toggle="tooltip"
           data-bs-placement="top"
@@ -161,14 +145,13 @@
             data-kt-inbox-listing-filter="search"
             class="form-control form-control-sm form-control-solid mw-100 min-w-150px min-w-md-200px ps-12"
             placeholder="Search Inbox"
-            v-model="searchText"
+            v-model="filterAndSort.searchText"
           />
         </div>
         <!--end::Search-->
         <!--begin::Sort-->
         <span>
           <a
-            href=""
             class="btn btn-sm btn-icon btn-light btn-active-light-primary"
             data-kt-menu-trigger="click"
             data-kt-menu-placement="bottom-end"
@@ -192,7 +175,7 @@
               <a
                 class="menu-link px-3"
                 data-kt-inbox-listing-filter="filter_newest"
-                @click="sortByDate(true)"
+                @click="setSortBy('newest')"
                 >Newest</a
               >
             </div>
@@ -202,7 +185,7 @@
               <a
                 class="menu-link px-3"
                 data-kt-inbox-listing-filter="filter_oldest"
-                @click="sortByDate(false)"
+                @click="setSortBy('oldest')"
                 >Oldest</a
               >
             </div>
@@ -212,7 +195,7 @@
               <a
                 class="menu-link px-3"
                 data-kt-inbox-listing-filter="filter_unread"
-                @click="sortByUnread()"
+                @click="setSortBy('unread')"
                 >Unread</a
               >
             </div>
@@ -228,7 +211,7 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :rows-per-page="10"
+        :rows-per-page="5"
         :loading="loading"
         :enable-items-per-page-dropdown="true"
         :disable-table-header="true"
@@ -251,7 +234,7 @@
         <template v-slot:cell-actions="{ row: item }">
           <!--begin::Star-->
           <a
-            href="#"
+            @click="handleToggleStar(item)"
             class="btn btn-icon btn-sm btn-active-color-primary"
             data-bs-toggle="tooltip"
             data-bs-placement="right"
@@ -259,7 +242,7 @@
           >
             <span
               :class="`svg-icon svg-icon-2 ${
-                item.marked ? 'svg-icon-warning' : ''
+                item.is_starred ? 'svg-icon-warning' : ''
               }`"
             >
               <inline-svg src="media/icons/duotune/general/gen029.svg" />
@@ -268,14 +251,18 @@
           <!--end::Star-->
         </template>
         <template v-slot:cell-name="{ row: item }">
-          <a
-            href="../../demo6/dist/apps/inbox/reply.html"
+          <router-link
+            :to="`/mailbox/${
+              item.status == 'draft' && parseInt(item.reply_id) == 0
+                ? 'edit'
+                : 'view'
+            }/${item.id}`"
             class="d-flex align-items-center text-dark"
           >
-            <div v-if="item.avatar" class="symbol symbol-35px me-3">
+            <div v-if="item.photo" class="symbol symbol-35px me-3">
               <span
                 class="symbol-label"
-                :style="`background-image: url(${item.avatar})`"
+                :style="`background-image: url(${item.photo})`"
               >
               </span>
             </div>
@@ -287,34 +274,46 @@
             </div>
             <!--end::Avatar-->
             <!--begin::Name-->
-            <span :class="`${item.unread ? 'fw-bolder' : 'fw-normal'}`">
-              {{ item.name }}
+            <span
+              :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`"
+              v-html="item.name"
+            >
             </span>
             <!--end::Name-->
-          </a>
+          </router-link>
         </template>
         <template v-slot:cell-message="{ row: item }">
-          <div class="text-dark mb-1">
+          <div
+            class="min-w-300px text-dark mb-1 mh-80px"
+            style="overflow: hidden"
+          >
             <!--begin::Heading-->
-            <a href="" class="text-dark">
-              <span :class="`${item.unread ? 'fw-bolder' : 'fw-normal'}`">
+            <router-link
+              :to="`/mailbox/${
+                item.status == 'draft' && parseInt(item.reply_id) == 0
+                  ? 'edit'
+                  : 'view'
+              }/${item.id}`"
+              class="text-dark"
+            >
+              <span
+                :class="`text-capitalize ${
+                  !item.is_read ? 'fw-bolder' : 'fw-normal'
+                }`"
+              >
                 {{ item.subject }}
               </span>
-              <span class="fw-normal"> - </span>
-              <span class="fw-normal text-muted">
-                {{ item.message.slice(0, 120 - item.subject.length) }}
-                ...
-              </span>
-            </a>
+              <span class="fw-normal text-muted" v-html="item.body"> </span>
+            </router-link>
             <!--end::Heading-->
           </div>
           <!--begin::Badges-->
           <div
             v-if="emailType.data === 'marked'"
             :class="`badge badge-light-${
-              item.type === 'sent'
+              item.status == 'sent'
                 ? 'warning'
-                : item.type === 'trash'
+                : item.type == 'deleted'
                 ? 'danger'
                 : 'primary'
             }`"
@@ -324,7 +323,11 @@
           <!--end::Badges-->
         </template>
         <template v-slot:cell-date="{ row: item }">
-          {{ moment.unix(item.date).format("DD/MM/YYYY hh:mm") }}
+          {{
+            item.sent_at == undefined
+              ? ""
+              : moment(item.sent_at).format("hh:mm A MMM D")
+          }}
         </template>
       </Datatable>
     </div>
@@ -339,9 +342,11 @@ import {
   ref,
   watchEffect,
   reactive,
+  computed,
 } from "vue";
+import { useStore } from "vuex";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import EmailList from "@/store/dummy/Email";
+import { Actions } from "@/store/enums/StoreEnums";
 import moment from "moment";
 
 export default defineComponent({
@@ -356,6 +361,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const store = useStore();
+
     const tableHeader = ref([
       {
         name: "Checkbox",
@@ -379,39 +386,73 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const emailData = ref(EmailList);
     const emailType = reactive({
-      data: "inbox",
+      data: props.mailType.data,
     });
-    const searchText = ref("");
+    const filterAndSort = reactive({
+      sortBy: "newest",
+      searchText: "",
+    });
     const checkAll = ref(false);
+    const emailInfo = computed(() => store.getters.getMailInfo);
+    const emailData = ref([]);
 
-    // sort data by unread default
-    emailData.value = emailData.value.sort((a, b) => {
-      return b.unread - a.unread;
-    });
+    const sendableUsers = computed(() => store.getters.getUserList);
 
     // set check status of all data by false default
     emailData.value.forEach((item) => {
       item.checked = false;
     });
 
-    const sortByDate = (order) => {
-      if (order) {
-        emailData.value = emailData.value.sort((a, b) => {
-          return b.date - a.date;
-        });
-      } else {
-        emailData.value = emailData.value.sort((a, b) => {
-          return a.date - b.date;
+    const applyFilterAndSort = () => {
+      emailData.value = emailInfo.value[emailType.data];
+      const emailList = emailData.value;
+
+      emailList.forEach((item) => {
+        item.name = usernameFromIds(item);
+      });
+
+      if (filterAndSort.sortBy == "newest") {
+        emailList.sort((a, b) => {
+          return moment(b.sent_at).unix() - moment(a.sent_at).unix();
         });
       }
+
+      if (filterAndSort.sortBy == "oldest") {
+        emailList.sort((a, b) => {
+          return moment(a.sent_at).unix() - moment(b.sent_at).unix();
+        });
+      }
+
+      if (filterAndSort.sortBy == "unread") {
+        emailList.sort((a, b) => {
+          return a.is_read - b.is_read;
+        });
+      }
+
+      if (filterAndSort.searchText != "") {
+        emailData.value = emailList.filter((mail) => {
+          if (mail.subject.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          if (mail.body.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          if (mail.name.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          return false;
+        });
+      }
+
+      tableData.value = emailData;
     };
 
-    const sortByUnread = () => {
-      emailData.value = emailData.value.sort((a, b) => {
-        return b.unread - a.unread;
-      });
+    const setSortBy = (sortBy) => {
+      filterAndSort.sortBy = sortBy;
     };
 
     const selectByType = (type) => {
@@ -434,22 +475,22 @@ export default defineComponent({
           break;
         case "read":
           emailData.value.forEach((item) => {
-            if (!item.unread) item.checked = true;
+            if (item.is_read) item.checked = true;
           });
           break;
         case "unread":
           emailData.value.forEach((item) => {
-            if (item.unread) item.checked = true;
+            if (!item.is_read) item.checked = true;
           });
           break;
         case "marked":
           emailData.value.forEach((item) => {
-            if (item.marked) item.checked = true;
+            if (item.is_starred) item.checked = true;
           });
           break;
         case "unmarked":
           emailData.value.forEach((item) => {
-            if (!item.marked) item.checked = true;
+            if (!item.is_starred) item.checked = true;
           });
           break;
         default:
@@ -466,36 +507,109 @@ export default defineComponent({
       });
     };
 
+    const handleDelete = () => {
+      emailData.value.forEach((item) => {
+        if (item.checked) {
+          if (emailType.data == "draft") {
+            store.dispatch(Actions.MAILS.DELETE_DRAFT, item.id);
+          } else {
+            store.dispatch(Actions.MAILS.DELETE, item);
+          }
+        }
+      });
+
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
+      store.dispatch(Actions.MAILS.LIST, "deleted");
+    };
+
+    const handleRestore = () => {
+      emailData.value.forEach((item) => {
+        if (item.checked) {
+          store.dispatch(Actions.MAILS.RESTORE, item);
+        }
+      });
+
+      store.dispatch(Actions.MAILS.LIST, "all");
+    };
+
+    const handleToggleStar = (item) => {
+      if (item.is_starred) {
+        store.dispatch(Actions.MAILS.UN_STAR, item.id);
+      } else {
+        store.dispatch(Actions.MAILS.STAR, item.id);
+      }
+
+      store.dispatch(Actions.MAILS.LIST, "all");
+    };
+
+    const handleUnStar = (item) => {
+      store.dispatch(Actions.MAILS.UN_STAR, item.id);
+
+      store.dispatch(Actions.MAILS.LIST, "all");
+    };
+
+    const handleMarkAsRead = () => {
+      emailData.value.forEach((item) => {
+        if (item.checked) {
+          store.dispatch(Actions.MAILS.VIEW, item.id);
+        }
+      });
+
+      store.dispatch(Actions.MAILS.LIST, emailType.data);
+    };
+
+    const usernameFromIds = (item) => {
+      let ids = [item.from_user_id];
+
+      if (["sent", "draft"].includes(emailType.data)) {
+        ids = JSON.parse(item.to_user_ids);
+      }
+
+      let usernameList = "";
+
+      sendableUsers.value.forEach((item) => {
+        if (ids.includes(item.id)) {
+          if (usernameList != "") {
+            usernameList += ", ";
+          }
+
+          usernameList += item.username;
+        }
+      });
+
+      if (item.status == "sent") {
+        usernameList = "To: " + usernameList;
+      }
+
+      if (item.status == "draft") {
+        usernameList += " <span style='color: #c62'>Draft</span>";
+      }
+
+      return usernameList;
+    };
+
     watch(checkAll, () => {
       emailData.value.forEach((item) => {
         item.checked = checkAll.value;
       });
+    });
+
+    watch(filterAndSort, () => {
+      applyFilterAndSort();
     });
 
     watch(props.mailType, () => {
       emailType.data = props.mailType.data;
-
-      if (emailType.data === "marked") {
-        emailData.value = EmailList.filter((data) => data.marked);
-      } else {
-        emailData.value = EmailList.filter(
-          (data) => data.type === emailType.data
-        );
-      }
-    });
-
-    watch(checkAll, () => {
-      emailData.value.forEach((item) => {
-        item.checked = checkAll.value;
-      });
+      applyFilterAndSort();
     });
 
     watchEffect(() => {
-      tableData.value = emailData;
+      applyFilterAndSort();
     });
 
     onMounted(() => {
-      tableData.value = emailData;
+      store.dispatch(Actions.MAILS.LIST, "all");
+      store.dispatch(Actions.USER_LIST);
     });
 
     return {
@@ -503,12 +617,17 @@ export default defineComponent({
       tableHeader,
       tableData,
       emailType,
-      searchText,
+      filterAndSort,
       checkAll,
-      sortByDate,
-      sortByUnread,
+      setSortBy,
       selectByType,
       selectMessage,
+      usernameFromIds,
+      handleDelete,
+      handleRestore,
+      handleToggleStar,
+      handleUnStar,
+      handleMarkAsRead,
     };
   },
 });

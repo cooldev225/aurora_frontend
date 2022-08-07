@@ -53,7 +53,7 @@
                       <!--end::Svg Icon-->
                     </span>
                     <span class="menu-title fw-bolder">Inbox</span>
-                    <span class="badge badge-light-success">3</span>
+                    <span class="badge badge-light-success"></span>
                   </span>
                   <!--end::Inbox-->
                 </div>
@@ -132,9 +132,9 @@
                   <!--begin::Trash-->
                   <span
                     :class="`menu-link ${
-                      emailType.data === 'trash' ? 'active' : ''
+                      emailType.data === 'deleted' ? 'active' : ''
                     }`"
-                    @click="switchType('trash')"
+                    @click="switchType('deleted')"
                   >
                     <span class="menu-icon">
                       <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
@@ -174,6 +174,7 @@
 
 <script>
 import { defineComponent, reactive } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "email-list",
@@ -185,9 +186,11 @@ export default defineComponent({
       data: "inbox",
     });
 
+    const router = useRouter();
+
     const switchType = (type) => {
       emailType.data = type;
-      console.log(emailType.data);
+      router.push({ name: "mailbox-list" });
     };
 
     return {

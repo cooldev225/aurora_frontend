@@ -162,10 +162,8 @@ import {
   ref,
   computed,
   onMounted,
-  reactive,
   watchEffect,
   watch,
-  onUnmounted,
 } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
@@ -201,9 +199,6 @@ export default defineComponent({
     };
 
     const appointment = ref();
-    const showToggle = computed(() =>
-      localStorage.getItem("booking-appointment-toggle")
-    );
 
     onMounted(() => {
       store.dispatch(Actions.ORG.LIST);
@@ -335,9 +330,12 @@ export default defineComponent({
           _temp_specialists.value[Object.keys(_temp_specialists.value)[0]];
       }
 
-      if (showToggle.value) {
-        DrawerComponent?.getInstance("booking-drawer")?.toggle();
-        localStorage.setItem("booking-appointment-toggle", false);
+      if (
+        DrawerComponent?.getInstance(
+          "booking-drawer"
+        )?.isBookingDrawerShown() === true
+      ) {
+        DrawerComponent?.getInstance("booking-drawer")?.show();
       }
     });
 
@@ -380,7 +378,7 @@ export default defineComponent({
       }
     };
 
-    const handleEdit = (item, specialist) => {
+    const handleEdit = (item) => {
       store.commit(Mutations.SET_APT.SELECT, item);
       DrawerComponent?.getInstance("booking-drawer")?.toggle();
     };

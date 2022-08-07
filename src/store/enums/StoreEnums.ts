@@ -151,10 +151,12 @@ const Actions = {
 
   MAILS: {
     LIST: "listMail",
+    VIEW: "viewMail",
     COMPOSE: "composeMail",
     SEND: "sendMail",
     SEND_DRAFT: "mailSendDraft",
-    BOOKMARK: "bookmarkMail",
+    STAR: "starMail",
+    UN_STAR: "unStarMail",
     DELETE: "deleteMail",
     RESTORE: "restoreMail",
     DELETE_DRAFT: "deleteMailDraft",
@@ -205,7 +207,7 @@ const Actions = {
     PRE_ADMISSION: {
       ORG: "listAptPreAdmissionOrg",
       VALIDATE: "validateAptPreAdmission",
-      CREATE: "createAptPreAdmission",
+      STORE: "createAptPreAdmission",
     },
   },
 
@@ -377,7 +379,7 @@ const Mutations = {
   },
 
   SET_MAILS: {
-    LIST: "setMails",
+    INBOX: "setInboxMails",
     SELECT: "setSelectedMail",
   },
 

@@ -279,7 +279,7 @@ export default defineComponent({
               missed: missed,
               reason: data,
             })
-            .then((res) => {
+            .then(() => {
               store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
               DrawerComponent?.getInstance("booking-drawer")?.hide();
             });
@@ -320,8 +320,6 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      console.log("data:");
-      console.log(aptData.value);
       displayData.reference_number = aptData.value.reference_number;
       displayData.clinic_name = aptData.value.clinic_name;
       displayData.start_time = aptData.value.start_time;

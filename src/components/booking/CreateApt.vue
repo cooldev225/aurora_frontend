@@ -2183,6 +2183,7 @@ export default defineComponent({
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.APT.LIST);
+              handleCancel();
               Swal.fire({
                 text: "Successfully Created!",
                 icon: "success",
@@ -2205,6 +2206,13 @@ export default defineComponent({
                     ...searchVal.value,
                   });
                 }
+
+                currentStepIndex.value = 0;
+                _stepperObj.value.goFirst();
+                formRef_1.value.resetFields();
+                if (formRef_2.value) formRef_2.value.resetFields();
+                formRef_3.value.resetFields();
+                formRef_4.value.resetFields();
               });
             })
             .catch(({ response }) => {

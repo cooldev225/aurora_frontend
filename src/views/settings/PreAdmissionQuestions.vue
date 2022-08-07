@@ -1,16 +1,20 @@
 <template>
-  <div class=""></div>
+  <div></div>
 </template>
+
 <script>
 import { defineComponent, onMounted } from "vue";
+
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 
 export default defineComponent({
-  name: "employee-bookings-dashboard",
+  name: "pre-admission-questions",
+
   components: {},
+
   setup() {
     onMounted(() => {
-      setCurrentPageBreadcrumbs("My Bookings", ["Booking Dashboard"]);
+      setCurrentPageBreadcrumbs("Pre-Admission Question", ["Settings"]);
     });
   },
 });

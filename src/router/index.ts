@@ -97,6 +97,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/settings/SpecialistTitle.vue"),
       },
       {
+        path: "/settings",
+        name: "org-admin-settings",
+        component: () => import("@/views/settings/OrgAdminSettings.vue"),
+      },
+      {
         path: "/settings/apt-types",
         name: "aptTypes",
         component: () => import("@/views/settings/AptTypes.vue"),
@@ -108,8 +113,18 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/settings/anesthetic-questions",
-        name: "anestheticQuestions",
+        name: "anesthetic-questions",
         component: () => import("@/views/settings/AnestheticQuestions.vue"),
+      },
+      {
+        path: "/settings/pre-admission-questions",
+        name: "pre-admission-questions",
+        component: () => import("@/views/settings/PreAdmissionQuestions.vue"),
+      },
+      {
+        path: "/settings/pre-admission-consent",
+        name: "pre-admission-consent",
+        component: () => import("@/views/settings/PreAdmissionConsent.vue"),
       },
       {
         path: "/settings/notification-templates",
@@ -179,9 +194,14 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import("@/views/apps/email/Compose.vue"),
           },
           {
-            path: "reply",
-            name: "mailbox-reply",
-            component: () => import("@/views/apps/email/Reply.vue"),
+            path: "view/:id",
+            name: "mailbox-view",
+            component: () => import("@/views/apps/email/View.vue"),
+          },
+          {
+            path: "edit/:id",
+            name: "mailbox-edit",
+            component: () => import("@/views/apps/email/Edit.vue"),
           },
         ],
       },
@@ -244,6 +264,14 @@ const routes: Array<RouteRecordRaw> = [
         path: "/employee-booking-dashboard",
         name: "employee-booking-dashboard",
         component: () => import("@/views/booking/EmployeeBookings.vue"),
+      },
+
+      ////////////////////////////////////////////////////////////////////////
+      // Anesthetist
+      {
+        path: "/anesthetist-dashboard",
+        name: "anesthetist-dashboard",
+        component: () => import("@/views/anesthetist/dashboard.vue"),
       },
     ],
   },
