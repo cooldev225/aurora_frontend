@@ -180,13 +180,13 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
-          debugger;
           loading.value = true;
 
           store
-            .dispatch(Actions.MAILS.UPDATE_DRAFT, formData.value.id, Data)
+            .dispatch(Actions.MAILS.UPDATE_DRAFT, Data)
             .then(() => {
               loading.value = false;
+              store.dispatch(Actions.MAILS.LIST, "all");
               router.push({ name: "mailbox-list" });
             })
             .catch(({ response }) => {
@@ -210,7 +210,7 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.MAILS.SEND_DRAFT, formData.value.id, Data)
+            .dispatch(Actions.MAILS.SEND_DRAFT, Data)
             .then(() => {
               Swal.fire({
                 text: "Mail Sent Successfully From Draft!",
@@ -221,6 +221,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
+                store.dispatch(Actions.MAILS.LIST, "all");
                 router.push({ name: "mailbox-list" });
               });
             })
