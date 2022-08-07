@@ -252,9 +252,11 @@
         </template>
         <template v-slot:cell-name="{ row: item }">
           <router-link
-            :to="`/mailbox/${item.status == 'draft' ? 'edit' : 'view'}/${
-              item.id
-            }`"
+            :to="`/mailbox/${
+              item.status == 'draft' && parseInt(item.reply_id) == 0
+                ? 'edit'
+                : 'view'
+            }/${item.id}`"
             class="d-flex align-items-center text-dark"
           >
             <div v-if="item.photo" class="symbol symbol-35px me-3">
@@ -287,12 +289,18 @@
           >
             <!--begin::Heading-->
             <router-link
-              :to="`/mailbox/${item.status == 'draft' ? 'edit' : 'view'}/${
-                item.id
-              }`"
+              :to="`/mailbox/${
+                item.status == 'draft' && parseInt(item.reply_id) == 0
+                  ? 'edit'
+                  : 'view'
+              }/${item.id}`"
               class="text-dark"
             >
-              <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
+              <span
+                :class="`text-capitalize ${
+                  !item.is_read ? 'fw-bolder' : 'fw-normal'
+                }`"
+              >
                 {{ item.subject }}
               </span>
               <span class="fw-normal text-muted" v-html="item.body"> </span>
@@ -379,7 +387,7 @@ export default defineComponent({
     ]);
     const tableData = ref([]);
     const emailType = reactive({
-      data: "inbox",
+      data: props.mailType.data,
     });
     const filterAndSort = reactive({
       sortBy: "newest",

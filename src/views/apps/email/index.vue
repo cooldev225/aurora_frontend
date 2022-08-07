@@ -174,6 +174,7 @@
 
 <script>
 import { defineComponent, reactive } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "email-list",
@@ -185,8 +186,11 @@ export default defineComponent({
       data: "inbox",
     });
 
+    const router = useRouter();
+
     const switchType = (type) => {
       emailType.data = type;
+      router.push({ name: "mailbox-list" });
     };
 
     return {

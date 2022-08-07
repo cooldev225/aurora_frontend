@@ -5,87 +5,93 @@
     :rules="rules"
     ref="formRef"
   >
-    <h3>{{ formData.subject }}</h3>
-    <el-form-item prop="to_user_ids">
-      <el-select
-        class="mt-10 w-100"
-        placeholder="To:"
-        v-model="formData.to_user_ids"
-        filterable
-        multiple
-      >
-        <el-option
-          v-for="item in sendableUsers"
-          :value="item.id"
-          :label="item.username"
-          :key="item.id"
-        />
-      </el-select>
-    </el-form-item>
-
-    <el-form-item prop="subject">
-      <el-input v-model="formData.subject" type="text" placeholder="Subject" />
-    </el-form-item>
-
-    <el-form-item prop="body">
-      <ckeditor :editor="ClassicEditor" v-model="formData.body" />
-    </el-form-item>
-
-    <el-form-item label="Attachment">
-      <el-upload
-        action="#"
-        ref="upload"
-        class="mr-20"
-        multiple
-        :on-change="handleChange"
-        :on-remove="handleRemove"
-        :on-preview="handlePreview"
-        :limit="100"
-        :auto-upload="false"
-      >
-        <el-button type="primary" class="btn btn-primary"
-          >Choose Files</el-button
-        >
-      </el-upload>
-    </el-form-item>
-
-    <div class="d-flex flex-row-reverse">
-      <router-link
-        type="reset"
-        to="/mails"
-        id="kt_modal_mail_compose_cancel"
-        class="btn btn-light me-3"
-      >
-        Cancel
-      </router-link>
-
-      <button
-        :data-kt-indicator="loading ? 'on' : null"
-        class="btn btn-light me-3"
-        @click="handleSave()"
-      >
-        <span>Save</span>
-      </button>
-
-      <button
-        :data-kt-indicator="loading ? 'on' : null"
-        class="btn btn-lg btn-primary"
-        type="submit"
-      >
-        <span v-if="!loading" class="indicator-label">
-          Send
-          <span class="svg-icon svg-icon-3 ms-2 me-0">
-            <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
-          </span>
-        </span>
-        <span v-if="loading" class="indicator-progress">
-          Please wait...
+    <h3 class="fs-2 text-capitalize mb-10">{{ formData.subject }}</h3>
+    <div class="w-100" v-for="item in sentRepliedMails" :key="item.id">
+      <div class="d-flex align-items-center text-dark">
+        <div v-if="item.photo" class="symbol symbol-35px me-3">
           <span
-            class="spinner-border spinner-border-sm align-middle ms-2"
-          ></span>
+            class="symbol-label"
+            :style="`background-image: url(${item.photo})`"
+          >
+          </span>
+        </div>
+        <!--begin::Avatar-->
+        <div v-else class="symbol symbol-35px me-3">
+          <div class="symbol-label bg-light-danger">
+            <span class="text-danger">U</span>
+          </div>
+        </div>
+        <!--end::Avatar-->
+        <!--begin::Name-->
+        <span
+          :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`"
+          v-html="item.name"
+        >
         </span>
+      </div>
+      <section v-html="item.body" class="mt-5 ms-15"></section>
+    </div>
+    <div v-if="!formData.isShow" class="d-flex flex-row mt-10">
+      <button class="btn fs-4 text-primary me-3" @click="handleReply(true)">
+        <span>Reply</span>
       </button>
     </div>
+    <template v-if="formData.isShow">
+      <el-form-item prop="body">
+        <ckeditor :editor="ClassicEditor" v-model="formData.body" />
+      </el-form-item>
+
+      <el-form-item label="Attachment">
+        <el-upload
+          action="#"
+          ref="upload"
+          class="mr-20"
+          multiple
+          :on-change="handleChange"
+          :on-remove="handleRemove"
+          :on-preview="handlePreview"
+          :limit="100"
+          :auto-upload="false"
+        >
+          <el-button type="primary" class="btn btn-primary"
+            >Choose Files</el-button
+          >
+        </el-upload>
+      </el-form-item>
+
+      <div class="d-flex flex-row-reverse">
+        <button class="btn btn-light me-3" @click="handleReply(false)">
+          <span>Cancel</span>
+        </button>
+
+        <button
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-light me-3"
+          @click="handleSave()"
+        >
+          <span>Save</span>
+        </button>
+
+        <button
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-primary"
+          type="submit"
+        >
+          <span v-if="!loading" class="indicator-label">
+            Send
+            <span class="svg-icon svg-icon-3 ms-2 me-0">
+              <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
+            </span>
+          </span>
+          <span v-if="loading" class="indicator-progress">
+            Please wait...
+            <span
+              class="spinner-border spinner-border-sm align-middle ms-2"
+            ></span>
+          </span>
+        </button>
+      </div>
+    </template>
   </el-form>
 </template>
 
@@ -95,21 +101,21 @@ import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default defineComponent({
-  name: "email-view",
+  name: "view-edit",
   components: {
     ckeditor: CKEditor.component,
   },
   setup() {
     const rules = ref({
-      to_user_ids: [
+      body: [
         {
           required: true,
-          message: "Please select user",
+          message: "Please write text",
           trigger: "change",
         },
       ],
@@ -117,12 +123,14 @@ export default defineComponent({
 
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
     const formRef = ref(null);
     const loading = ref(false);
     const formData = ref({
       to_user_ids: [],
       subject: "",
       body: "",
+      isShow: false,
     });
     const Data = new FormData();
     const uploadDisabled = ref(false);
@@ -130,6 +138,12 @@ export default defineComponent({
     const dialogImageUrl = ref("");
     const dialogVisible = ref(false);
     const sendableUsers = computed(() => store.getters.getUserList);
+    const repliedMails = computed(() => store.getters.getRepliedMails);
+    const sentRepliedMails = ref([]);
+
+    const handleReply = (isShow) => {
+      formData.value.isShow = isShow;
+    };
 
     const handleChange = (file, fileList) => {
       upload.value.clearFiles();
@@ -149,13 +163,47 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      formData.value = store.getters.getMailSelected;
+      if (repliedMails.value.length > 0) {
+        repliedMails.value.forEach((item) => {
+          item.toUserIds = JSON.parse(item.to_user_ids);
+        });
+
+        formData.value = Object.assign({}, repliedMails.value[0]);
+        formData.value.to_user_ids = [formData.value.from_user_id];
+        delete formData.value.attachment;
+
+        if (repliedMails.value[0].status != "draft") {
+          formData.value.isShow = false;
+          formData.value.body = "";
+          formData.value.reply_id = formData.value.id;
+          delete formData.value.id;
+        } else {
+          formData.value.isShow = true;
+        }
+
+        sentRepliedMails.value = [];
+
+        repliedMails.value.forEach((item) => {
+          if (item.status != "draft") {
+            sentRepliedMails.value.unshift(item);
+          }
+        });
+
+        repliedMails.value.forEach((mail) => {
+          sendableUsers.value.forEach((user) => {
+            if (mail.from_user_id == user.id) {
+              mail.name = user.username;
+              mail.photo = user.photo;
+            }
+          });
+        });
+      }
     });
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("View", ["Mail"]);
 
-      const id = router.params.id;
+      const id = route.params.id;
 
       store.dispatch(Actions.USER_LIST).then(() => {
         loading.value = false;
@@ -174,24 +222,21 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
+
           loading.value = true;
 
+          let actionName = Actions.MAILS.UPDATE_DRAFT;
+
+          if (formData.value.id == undefined) {
+            actionName = Actions.MAILS.COMPOSE;
+          }
+
           store
-            .dispatch(Actions.MAILS.COMPOSE, Data)
+            .dispatch(actionName, Data)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.ORG.LIST);
-              Swal.fire({
-                text: "Mail Saved!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                router.push({ name: "mailbox-list" });
-              });
+              store.dispatch(Actions.MAILS.LIST, "all");
+              router.push({ name: "mailbox-list" });
             })
             .catch(({ response }) => {
               loading.value = false;
@@ -211,15 +256,20 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
+
           loading.value = true;
 
+          let actionName = Actions.MAILS.SEND_DRAFT;
+
+          if (formData.value.id == undefined) {
+            actionName = Actions.MAILS.SEND;
+          }
+
           store
-            .dispatch(Actions.MAILS.SEND, Data)
+            .dispatch(actionName, Data)
             .then(() => {
-              loading.value = false;
-              store.dispatch(Actions.ORG.LIST);
               Swal.fire({
-                text: "Mail Sent Successfully!",
+                text: "Reply Mail Sent Successfully!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -227,6 +277,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
+                store.dispatch(Actions.MAILS.LIST, "all");
                 router.push({ name: "mailbox-list" });
               });
             })
@@ -247,9 +298,11 @@ export default defineComponent({
       handleRemove,
       handlePreview,
       handleSave,
+      handleReply,
       dialogVisible,
       dialogImageUrl,
       sendableUsers,
+      sentRepliedMails,
       formData,
       submit,
       ClassicEditor,
