@@ -292,7 +292,11 @@
               }`"
               class="text-dark"
             >
-              <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
+              <span
+                :class="`text-capitalize ${
+                  !item.is_read ? 'fw-bolder' : 'fw-normal'
+                }`"
+              >
                 {{ item.subject }}
               </span>
               <span class="fw-normal text-muted" v-html="item.body"> </span>

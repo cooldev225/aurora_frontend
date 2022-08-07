@@ -147,7 +147,7 @@ export default class MailModule extends VuexModule implements MailInfo {
   }
 
   @Action
-  [Actions.MAILS.SEND_DRAFT](id, item) {
+  [Actions.MAILS.SEND_DRAFT](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("mails/send-draft", item)
