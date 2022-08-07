@@ -131,6 +131,7 @@ export default defineComponent({
     const dialogImageUrl = ref("");
     const dialogVisible = ref(false);
     const sendableUsers = computed(() => store.getters.getUserList);
+    const repliedMails = computed(() => store.getters.getRepliedMails);
 
     const handleChange = (file, fileList) => {
       upload.value.clearFiles();
@@ -150,10 +151,8 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      const repliedMails = store.getters.getRepliedMails;
-
-      if (repliedMails.length > 0) {
-        formData.value = repliedMails[0];
+      if (repliedMails.value.length > 0) {
+        formData.value = Object.assign({}, repliedMails.value[0]);
         formData.value.to_user_ids = JSON.parse(formData.value.to_user_ids);
         delete formData.value.attachment;
       }
@@ -181,6 +180,7 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
+          debugger;
           loading.value = true;
 
           store
@@ -213,7 +213,7 @@ export default defineComponent({
             .dispatch(Actions.MAILS.SEND_DRAFT, formData.value.id, Data)
             .then(() => {
               Swal.fire({
-                text: "Mail Sent Successfully!",
+                text: "Mail Sent Successfully From Draft!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",

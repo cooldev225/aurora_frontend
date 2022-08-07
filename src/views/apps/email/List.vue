@@ -379,7 +379,7 @@ export default defineComponent({
     ]);
     const tableData = ref([]);
     const emailType = reactive({
-      data: "inbox",
+      data: props.mailType.data,
     });
     const filterAndSort = reactive({
       sortBy: "newest",
