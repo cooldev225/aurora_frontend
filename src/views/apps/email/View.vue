@@ -5,10 +5,31 @@
     :rules="rules"
     ref="formRef"
   >
-    <h3 class="text-capitalize">{{ formData.subject }}</h3>
+    <h3 class="text-capitalize mb-10">{{ formData.subject }}</h3>
     <div class="w-100" v-for="item in sentRepliedMails" :key="item.id">
-      <h4>{{ item.name }}</h4>
-      <section v-html="item.body"></section>
+      <div class="d-flex align-items-center text-dark">
+        <div v-if="item.photo" class="symbol symbol-35px me-3">
+          <span
+            class="symbol-label"
+            :style="`background-image: url(${item.photo})`"
+          >
+          </span>
+        </div>
+        <!--begin::Avatar-->
+        <div v-else class="symbol symbol-35px me-3">
+          <div class="symbol-label bg-light-danger">
+            <span class="text-danger">U</span>
+          </div>
+        </div>
+        <!--end::Avatar-->
+        <!--begin::Name-->
+        <span
+          :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`"
+          v-html="item.name"
+        >
+        </span>
+      </div>
+      <section v-html="item.body" class="mt-5 ms-15"></section>
     </div>
     <div v-if="!formData.isShow" class="d-flex flex-row mb-15">
       <button class="btn btn-light me-3" @click="handleReply(true)">
@@ -141,19 +162,6 @@ export default defineComponent({
       dialogVisible.value = true;
     };
 
-    const usernameFromIds = (item) => {
-      let id = item.from_user_id;
-      let usernameList = "";
-
-      sendableUsers.value.forEach((item) => {
-        if (id == item.id) {
-          usernameList = item.username;
-        }
-      });
-
-      return usernameList;
-    };
-
     watchEffect(() => {
       if (repliedMails.value.length > 0) {
         repliedMails.value.forEach((item) => {
@@ -163,9 +171,10 @@ export default defineComponent({
         formData.value = Object.assign({}, repliedMails.value[0]);
         formData.value.to_user_ids = [formData.value.from_user_id];
         delete formData.value.attachment;
+        formData.value.isShow = true;
 
-        if (repliedMails.value[0].status == "draft") {
-          formData.value.isShow = true;
+        if (repliedMails.value[0].status != "draft") {
+          formData.value.isShow = false;
           formData.value.body = "";
         }
 
@@ -177,8 +186,13 @@ export default defineComponent({
           }
         });
 
-        repliedMails.value.forEach((item) => {
-          item.name = usernameFromIds(item);
+        repliedMails.value.forEach((mail) => {
+          sendableUsers.value.forEach((user) => {
+            if (mail.from_user_id == user.id) {
+              mail.name = user.username;
+              mail.photo = user.photo;
+            }
+          });
         });
       }
     });
