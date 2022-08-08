@@ -9,6 +9,7 @@
           :src="orgData.organization_logo"
           alt="Organization logo"
           class="w-100 h-100"
+          style="border-radius: 50%"
         />
         <!-- <h1 v-else>Organization</h1> -->
       </div>
@@ -52,11 +53,14 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed } from "vue";
+import { defineComponent, onMounted, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { Actions } from "@/store/enums/StoreEnums";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import moment from "moment";
+import ApiService from "@/core/services/ApiService";
+import JwtService from "@/core/services/JwtService";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
   name: "pre-admission-form1",
@@ -99,26 +103,67 @@ export default defineComponent({
         return;
       }
 
-      await store.dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
-        apt_id: apt_id.value,
-        ...formData.value,
-      });
+      if (JwtService.getToken()) {
+        ApiService.setHeader();
+        ApiService.post("appointment_pre_admissions/validate/" + apt_id.value, {
+          last_name: formData.value.last_name,
+          date_of_birth: moment(formData.value.date_of_birth)
+            .format("YYYY-MM-DD")
+            .toString(),
+        })
+          .then(({ data }) => {
+            if (data.message === "Appointment Pre Admission") {
+              store.commit(
+                Mutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
+                data.data
+              );
+              router.push({
+                path:
+                  "/appointment_pre_admissions/show/" +
+                  apt_id.value +
+                  "/form_2",
+              });
+            } else {
+              Swal.fire({
+                text: data.message,
+                icon: "error",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              });
+            }
+          })
+          .catch(({ response }) => {
+            console.log(response.data.error);
+          });
+      } else {
+        store.commit(Mutations.PURGE_AUTH);
+      }
+
+      // await store.dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
+      //   apt_id: apt_id.value,
+      //   ...formData.value,
+      // });
+
+      // console.log(validateMsg.value);
+      // // if (validateMsg.value !== "Credential is not correct") {
+      // //   router.push({
+      // //     path: "/appointment_pre_admissions/show/" + apt_id.value + "/form_2",
+      // //   });
+      // // }
     };
+
+    watch(validateMsg, () => {
+      if (validateMsg.value === "") return;
+      // if (validateMsg.value === "")
+    });
 
     onMounted(() => {
       loading.value = true;
       apt_id.value = router.currentRoute.value.params.id.toString();
       store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
-      if (validateMsg.value === "Appointment Pre Admission")
-        router.push({
-          path: "/appointment_pre_admissions/show/" + apt_id.value + "/form_2",
-          query: {
-            last_name: formData.value.last_name,
-            date_of_birth: moment(formData.value.date_of_birth)
-              .format("YYYY-MM-DD")
-              .toString(),
-          },
-        });
     });
 
     return {

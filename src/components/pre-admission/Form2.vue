@@ -35,6 +35,7 @@
                 :src="patientData.organization_logo"
                 alt="organization logo"
                 class="w-100 h-100"
+                style="border-radius: 50%"
               />
             </div>
           </div>
@@ -82,10 +83,14 @@
                             Specialist
                           </td>
                           <td class="text-gray-800">
-                            <label
-                              >{{ patientData.specialist_user.first_name }}
-                              {{ patientData.specialist_user.last_name }}</label
-                            >
+                            <template v-if="patientData.specialist_user">
+                              <label
+                                >{{ patientData.specialist_user.first_name }}
+                                {{
+                                  patientData.specialist_user.last_name
+                                }}</label
+                              >
+                            </template>
                           </td>
                         </tr>
                         <tr>
@@ -93,9 +98,11 @@
                             Appointment Type
                           </td>
                           <td class="text-gray-800 text-capitalize">
-                            <label
-                              >{{ patientData.appointment_type.name }}
-                            </label>
+                            <template v-if="patientData.appointment_type">
+                              <label
+                                >{{ patientData.appointment_type.name }}
+                              </label>
+                            </template>
                           </td>
                         </tr>
                         <tr>
@@ -113,7 +120,9 @@
                             Clinic
                           </td>
                           <td class="text-gray-800">
-                            <label>{{ patientData.clinic.name }}</label>
+                            <template v-if="patientData.clinic">
+                              <label>{{ patientData.clinic.name }}</label>
+                            </template>
                           </td>
                         </tr>
                       </tbody>
@@ -729,9 +738,10 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const formRef = ref(null);
-    const patientData = computed(
-      () => store.getters.getAptPreAdmissionValidateData
-    );
+    // const patientData = computed(
+    //   () => store.getters.getAptPreAdmissionValidateData
+    // );
+    const patientData = computed(() => store.getters.getAptPreAdmissionOrg);
     const formData = ref({
       title: "",
       first_name: "",
@@ -863,28 +873,24 @@ export default defineComponent({
         aptData.value[key] = patientData.value.appointment[key];
     });
 
-    // watchEffect(() => {
-    //   console.log(aptData.value);
-    // });
-
     const apt_id = ref("");
-    const patientQuery = reactive({
-      last_name: "",
-      date_of_birth: "",
-    });
     const Data = new FormData();
 
-    onMounted(() => {
+    onMounted(async () => {
       setCurrentPageBreadcrumbs("Administration", ["Patients"]);
       apt_id.value = router.currentRoute.value.params.id.toString();
-      patientQuery.last_name =
-        router.currentRoute.value.query.last_name.toString();
-      patientQuery.date_of_birth =
-        router.currentRoute.value.query.date_of_birth.toString();
-      store.dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
-        apt_id: apt_id.value,
-        ...patientQuery,
-      });
+      await store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
+    });
+
+    watch(patientData, () => {
+      if (
+        patientData.value.status !== "BOOKED" &&
+        patientData.value.status !== "VALIDATED"
+      ) {
+        router.push({
+          path: "/appointment_pre_admissions/show/" + apt_id.value + "/form_1",
+        });
+      }
     });
 
     const html2Pdf = ref("");
