@@ -1,96 +1,58 @@
 <template>
   <!--begin::Card-->
-  <div class="card mb-5 mb-xxl-8">
-    <div class="card-header border-0 pt-5">
-      <h3 class="card-title align-items-start flex-column">
-        <span class="card-label fw-bold fs-3 mb-1">Patient Details</span>
-      </h3>
-    </div>
-    <div class="card-body pt-3 pb-0">
-      <div class="row">
-        <div class="col-sm-3">
-          <div class="fv-row mb-7">
-            <label class="text-muted fs-6 fw-bold mb-2 d-block">Name</label>
-            <label class="fs-6 text-gray-800">{{
+  <div class="row gx-5">
+    <div class="col-6 card mb-5 mb-xxl-8">
+      <div class="card-header border-0 pt-5">
+        <h3 class="card-title align-items-start flex-column">
+          <span class="card-label fw-bold fs-3 mb-1">Patient Details</span>
+        </h3>
+      </div>
+      <div class="card-body pt-3 pb-5">
+        <div class="row">
+          <InfoSection :heading="'Name'"
+            >{{
               billingData.patient.first_name +
               " " +
               billingData.patient.last_name
-            }}</label>
-          </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="fv-row mb-7">
-            <label class="text-muted fs-6 fw-bold mb-2 d-block">Address</label>
-            <label class="fs-6 text-gray-800">{{
-              billingData.patient.address
-            }}</label>
-          </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="fv-row mb-7">
-            <label class="text-muted fs-6 fw-bold mb-2 d-block"
-              >Contact Number</label
-            >
-            <label class="fs-6 text-gray-800">{{
-              billingData.patient.contact_number
-            }}</label>
-          </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="fv-row mb-7">
-            <label class="text-muted fs-6 fw-bold mb-2 d-block"
-              >Date of Birth</label
-            >
-            <label class="fs-6 text-gray-800"
-              >{{ billingData.patient.date_of_birth }}
-            </label>
-          </div>
+            }}
+          </InfoSection>
+          <InfoSection :heading="'Address'"
+            >{{ billingData.patient.address }}
+          </InfoSection>
+          <InfoSection :heading="'Contact Number'"
+            >{{ billingData.patient.contact_number }}
+          </InfoSection>
+          <InfoSection :heading="'Date of Birth'"
+            >{{ billingData.patient.date_of_birth }}
+          </InfoSection>
         </div>
       </div>
     </div>
-  </div>
-  <!--end::Card-->
-  <!--begin::Card-->
-  <div class="card mb-5 mb-xxl-8">
-    <div class="card-header border-0 pt-5">
-      <h3 class="card-title align-items-start flex-column">
-        <span class="card-label fw-bold fs-3 mb-1">Appointment Details</span>
-      </h3>
-    </div>
-    <div class="card-body pt-3 pb-0">
-      <div class="row">
-        <div class="col-sm-3">
-          <div class="fv-row mb-7">
-            <label class="text-muted fs-6 fw-bold mb-2 d-block"
-              >Service Reference Number</label
-            >
-            <label class="fs-6 text-gray-800">{{
-              billingData.appointment.reference_number
-            }}</label>
-          </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="fv-row mb-7">
-            <label class="text-muted fs-6 fw-bold mb-2 d-block"
-              >Appointment Date and Time</label
-            >
-            <label class="fs-6 text-gray-800">{{
-              billingData.appointment.date +
+    <!--end::Card-->
+    <!--begin::Card-->
+    <div class="col-6 card mb-5 mb-xxl-8">
+      <div class="card-header border-0 pt-5">
+        <h3 class="card-title align-items-start flex-column">
+          <span class="card-label fw-bold fs-3 mb-1">Appointment Details</span>
+        </h3>
+      </div>
+      <div class="card-body pt-3 pb-5">
+        <div class="row">
+          <InfoSection :heading="'Date'"
+            >{{ billingData.appointment.date }}
+          </InfoSection>
+          <InfoSection :heading="'Time'"
+            >{{ billingData.appointment.start_time }}
+          </InfoSection>
+          <InfoSection :heading="'Specialist'"
+            >{{
+              billingData.specialist.title +
               " " +
-              billingData.appointment.start_time
-            }}</label>
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="fv-row mb-7">
-            <label class="text-muted fs-6 fw-bold mb-2 d-block"
-              >Specialist</label
-            >
-            <label class="fs-6 text-gray-800">{{
               billingData.specialist.first_name +
+              " " +
               billingData.specialist.last_name
-            }}</label>
-          </div>
+            }}
+          </InfoSection>
         </div>
       </div>
     </div>
@@ -199,6 +161,28 @@
           <br />
           Amount Paid: ${{ billingData.payment.paid_amount }}
           <br />
+          <ul>
+            <li
+              class="p-5"
+              v-for="payment in billingData.payment_list"
+              :key="payment.id"
+            >
+              <span
+                >${{ payment.amount }}
+                <span v-if="payment.is_deposit"> deposit </span>
+                <span v-if="payment.payment_type == 'CASH'">
+                  paid in cash
+                </span>
+                <span v-if="payment.payment_type == 'EFTPOS'">
+                  paid via eftpos
+                </span>
+                to {{ payment.confirmed_user.first_name }}
+                {{ payment.confirmed_user.last_name }} ({{
+                  payment.created_at
+                }}) </span
+              ><br />
+            </li>
+          </ul>
           Amount Outstanding: ${{
             getProcedurePrice(
               billingData.payment,
@@ -237,6 +221,14 @@
               placeholder="Procedure Price"
               v-model="formData.amount"
             />
+            <el-form-item class="m-0" prop="add_other_account_holder">
+              <el-checkbox
+                type="checkbox"
+                v-model="formData.is_deposit"
+                label="is deposit?"
+              />
+            </el-form-item>
+
             <button type="submit" class="btn btn-primary mt-5 w-50">
               Confirm
             </button>
@@ -256,10 +248,11 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 
 export default defineComponent({
   name: "make-payment-pay",
-  components: {},
+  components: { InfoSection },
 
   setup() {
     const store = useStore();
@@ -279,6 +272,7 @@ export default defineComponent({
       appointment_id: 0,
       payment_type: "",
       amount: 0,
+      is_deposit: 0,
     });
 
     const submit = () => {
