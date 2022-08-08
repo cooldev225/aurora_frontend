@@ -33,8 +33,9 @@
             >
               <img
                 :src="patientData.organization_logo"
-                alt="organization logo"
+                alt="Logo"
                 class="w-100 h-100"
+                style="border-radius: 50%"
               />
             </div>
           </div>
@@ -82,10 +83,14 @@
                             Specialist
                           </td>
                           <td class="text-gray-800">
-                            <label
-                              >{{ patientData.specialist_user.first_name }}
-                              {{ patientData.specialist_user.last_name }}</label
-                            >
+                            <template v-if="patientData.specialist_user">
+                              <label
+                                >{{ patientData.specialist_user.first_name }}
+                                {{
+                                  patientData.specialist_user.last_name
+                                }}</label
+                              >
+                            </template>
                           </td>
                         </tr>
                         <tr>
@@ -93,9 +98,11 @@
                             Appointment Type
                           </td>
                           <td class="text-gray-800 text-capitalize">
-                            <label
-                              >{{ patientData.appointment_type.name }}
-                            </label>
+                            <template v-if="patientData.appointment_type">
+                              <label
+                                >{{ patientData.appointment_type.name }}
+                              </label>
+                            </template>
                           </td>
                         </tr>
                         <tr>
@@ -113,7 +120,9 @@
                             Clinic
                           </td>
                           <td class="text-gray-800">
-                            <label>{{ patientData.clinic.name }}</label>
+                            <template v-if="patientData.clinic">
+                              <label>{{ patientData.clinic.name }}</label>
+                            </template>
                           </td>
                         </tr>
                       </tbody>
@@ -549,130 +558,27 @@
               <!--end::Header-->
               <!--begin::Body-->
               <div class="fs-6 ps-10">
-                <!--begin::Details-->
-                <div class="d-flex flex-wrap py-5">
-                  <!--begin::Col-->
-                  <div class="flex-equal me-5">
-                    <table class="table table-flush fw-bold gy-1">
-                      <tbody>
-                        <tr>
-                          <td class="text-muted min-w-125px w-125px w-md-150px">
-                            Previous surgery? What & When?
-                          </td>
-                          <td class="text-gray-800">
-                            <el-form-item prop="question1">
-                              <el-input
-                                type="text"
-                                class="w-75"
-                                v-model="qaData.question1"
-                                placeholder="Previous Surgery"
-                              />
-                            </el-form-item>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-muted min-w-125px w-125px w-md-150px">
-                            Previous anaesthetic?
-                          </td>
-                          <td class="text-gray-800">
-                            <el-form-item prop="question2">
-                              <el-input
-                                type="text"
-                                class="w-75"
-                                v-model="qaData.question2"
-                                placeholder="Prevous Anaesthetic"
-                              />
-                            </el-form-item>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                <div class="row">
+                  <div
+                    v-for="i in 5"
+                    :key="i"
+                    class="col-lg-4 col-md-6 col-sm-12 d-flex flex-column align-items-center gap-3 mb-10"
+                  >
+                    <!--begin::Details-->
+                    <h4 class="text-muted">
+                      PreAdmission Section Title - {{ i }}
+                    </h4>
+                    <span>PreAdmission Question Text - {{ i }}</span>
+                    <div class="text-gray-800">
+                      <el-radio-group v-model="qaData.select1" class="ml-4">
+                        <el-radio label="Yes" size="large">Yes</el-radio>
+                        <el-radio label="No" size="large">No</el-radio>
+                      </el-radio-group>
+                    </div>
+                    <span>PreAdmission Question Text - {{ i }}</span>
+                    <el-input class="w-75" />
                   </div>
-                  <!--end::Col-->
-                  <!--begin::Col-->
-                  <div class="flex-equal">
-                    <table class="table table-flush fw-bold gy-1">
-                      <tbody>
-                        <tr>
-                          <td class="text-muted min-w-125px w-125px w-md-300px">
-                            Has a family member had life threatening
-                            complications with anaesthetic
-                          </td>
-                          <td class="text-gray-800">
-                            <el-form-item prop="select1">
-                              <el-radio-group
-                                v-model="qaData.select1"
-                                class="ml-4"
-                              >
-                                <el-radio label="Yes" size="large"
-                                  >Yes</el-radio
-                                >
-                                <el-radio label="No" size="large">No</el-radio>
-                              </el-radio-group>
-                            </el-form-item>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-muted min-w-125px w-125px w-md-300px">
-                            Do you suffer from reflux
-                          </td>
-                          <td class="text-gray-800">
-                            <el-form-item prop="select2">
-                              <el-radio-group
-                                v-model="qaData.select2"
-                                class="ml-4"
-                              >
-                                <el-radio label="Yes" size="large"
-                                  >Yes</el-radio
-                                >
-                                <el-radio label="No" size="large">No</el-radio>
-                              </el-radio-group>
-                            </el-form-item>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-muted min-w-125px w-125px w-md-300px">
-                            Do you have any false teeth, caps, crowns, loose or
-                            chipped teeth or other dental work
-                          </td>
-                          <td class="text-gray-800">
-                            <el-form-item prop="select3">
-                              <el-radio-group
-                                v-model="qaData.select3"
-                                class="ml-4"
-                              >
-                                <el-radio label="Yes" size="large"
-                                  >Yes</el-radio
-                                >
-                                <el-radio label="No" size="large">No</el-radio>
-                              </el-radio-group>
-                            </el-form-item>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-muted min-w-125px w-125px w-md-300px">
-                            Do you have any issues with your neck or jaw
-                          </td>
-                          <td class="text-gray-800">
-                            <el-form-item prop="select4">
-                              <el-radio-group
-                                v-model="qaData.select4"
-                                class="ml-4"
-                              >
-                                <el-radio label="Yes" size="large"
-                                  >Yes</el-radio
-                                >
-                                <el-radio label="No" size="large">No</el-radio>
-                              </el-radio-group>
-                            </el-form-item>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <!--end::Col-->
                 </div>
-                <!--end::Details-->
               </div>
               <!--end::Body-->
             </div>
@@ -729,9 +635,10 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const formRef = ref(null);
-    const patientData = computed(
-      () => store.getters.getAptPreAdmissionValidateData
-    );
+    // const patientData = computed(
+    //   () => store.getters.getAptPreAdmissionValidateData
+    // );
+    const patientData = computed(() => store.getters.getAptPreAdmissionOrg);
     const formData = ref({
       title: "",
       first_name: "",
@@ -863,28 +770,24 @@ export default defineComponent({
         aptData.value[key] = patientData.value.appointment[key];
     });
 
-    // watchEffect(() => {
-    //   console.log(aptData.value);
-    // });
-
     const apt_id = ref("");
-    const patientQuery = reactive({
-      last_name: "",
-      date_of_birth: "",
-    });
     const Data = new FormData();
 
-    onMounted(() => {
+    onMounted(async () => {
       setCurrentPageBreadcrumbs("Administration", ["Patients"]);
       apt_id.value = router.currentRoute.value.params.id.toString();
-      patientQuery.last_name =
-        router.currentRoute.value.query.last_name.toString();
-      patientQuery.date_of_birth =
-        router.currentRoute.value.query.date_of_birth.toString();
-      store.dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
-        apt_id: apt_id.value,
-        ...patientQuery,
-      });
+      await store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
+    });
+
+    watch(patientData, () => {
+      if (
+        patientData.value.status !== "BOOKED" &&
+        patientData.value.status !== "VALIDATED"
+      ) {
+        router.push({
+          path: "/appointment_pre_admissions/show/" + apt_id.value + "/form_1",
+        });
+      }
     });
 
     const html2Pdf = ref("");

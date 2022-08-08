@@ -198,7 +198,7 @@
                     :rules="rules"
                     :model="aptInfoData"
                     ref="formRef_1"
-                    @submit.prevent="handleStep_1"
+                    @submit.prevent=""
                   >
                     <div class="row scroll h-500px">
                       <div class="card-info">
@@ -347,8 +347,9 @@
                       class="d-flex justify-content-between flex-row-reverse"
                     >
                       <button
-                        type="submit"
+                        type="button"
                         class="btn btn-lg btn-primary align-self-end"
+                        @click="handleStep_1"
                       >
                         Continue
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -370,7 +371,7 @@
                     v-if="patientStep === 1"
                     class="w-100"
                     :model="filterPatient"
-                    @submit.prevent="patientStep_1"
+                    @submit.prevent=""
                   >
                     <div class="d-flex flex-column">
                       <div class="row g-8">
@@ -404,10 +405,11 @@
                           >
                           <el-form-item prop="filter_date">
                             <el-date-picker
+                              editable
                               class="w-100"
                               v-model="filterPatient.date_of_birth"
-                              format="YYYY-MM-DD"
-                              placeholder="1990-01-01"
+                              format="DD-MM-YYYY"
+                              placeholder="01-01-1990"
                             />
                           </el-form-item>
                         </div>
@@ -440,8 +442,9 @@
                           Back
                         </button>
                         <button
-                          type="submit"
+                          type="button"
                           class="btn btn-lg btn-primary align-self-end"
+                          @click="patientStep_1"
                         >
                           Search
                           <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -458,7 +461,7 @@
                   <el-form
                     v-if="patientStep === 2"
                     class="w-100"
-                    @submit.prevent="patientStep_2"
+                    @submit.prevent=""
                   >
                     <div class="row scroll h-500px">
                       <Datatable
@@ -481,7 +484,7 @@
                           <span
                             class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
                           >
-                            {{ item.date_of_birth }}
+                            {{ formatDate(item.date_of_birth) }}
                           </span>
                         </template>
                         <template v-slot:cell-contact_number="{ row: item }">
@@ -525,7 +528,7 @@
                     :model="patientInfoData"
                     :rules="rules"
                     ref="formRef_2"
-                    @submit.prevent="handleStep_2"
+                    @submit.prevent=""
                   >
                     <div class="row scroll h-500px">
                       <div class="col-sm-6">
@@ -582,7 +585,9 @@
                           <!--begin::Input-->
                           <el-form-item prop="date_of_birth">
                             <el-date-picker
+                              editable
                               class="w-100"
+                              format="DD-MM-YYYY"
                               v-model="patientInfoData.date_of_birth"
                               placeholder=""
                             />
@@ -626,6 +631,7 @@
                           <!--begin::Input-->
                           <el-form-item prop="address">
                             <GMapAutocomplete
+                              :value="patientInfoData.address"
                               ref="addressRef"
                               placeholder="Enter the Address"
                               @place_changed="handleAddressChange"
@@ -666,13 +672,15 @@
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="appointment_confirm">
+                          <el-form-item prop="appointment_confirm_method">
                             <el-select
                               class="w-100"
-                              v-model="patientInfoData.appointment_confirm"
+                              v-model="
+                                patientInfoData.appointment_confirm_method
+                              "
                               placeholder="Appointment Confirm Method"
                             >
-                              <el-option value="phone" label="SMS" />
+                              <el-option value="sms" label="SMS" />
                               <el-option value="email" label="Email" />
                             </el-select>
                           </el-form-item>
@@ -737,8 +745,9 @@
                         Back
                       </button>
                       <button
-                        type="submit"
+                        type="button"
                         class="btn btn-lg btn-primary align-self-end"
+                        @click="handleStep_2"
                       >
                         Continue
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -761,7 +770,7 @@
                     :model="billingInfoData"
                     :rules="rules"
                     ref="formRef_3"
-                    @submit.prevent="handleStep_3"
+                    @submit.prevent=""
                   >
                     <div class="row">
                       <div class="row">
@@ -914,11 +923,12 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="medicare_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     v-model="
                                       billingInfoData.medicare_expiry_date
                                     "
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                     placeholder="Enter Expiry Date"
                                   />
                                 </el-form-item>
@@ -1055,11 +1065,12 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="health_fund_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     v-model="
                                       billingInfoData.health_fund_expiry_date
                                     "
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                   />
                                 </el-form-item>
                                 <!--end::Input-->
@@ -1166,8 +1177,9 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                     v-model="billingInfoData.expiry_date"
                                   />
                                 </el-form-item>
@@ -1219,8 +1231,9 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="dva_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                     v-model="billingInfoData.dva_expiry_date"
                                   />
                                 </el-form-item>
@@ -1344,8 +1357,9 @@
                         Back
                       </button>
                       <button
-                        type="submit"
+                        type="button"
                         class="btn btn-lg btn-primary align-self-end"
+                        @click="handleStep_3"
                       >
                         Continue
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -1368,7 +1382,7 @@
                     :model="otherInfoData"
                     :rules="rules"
                     ref="formRef_4"
-                    @submit.prevent="submit"
+                    @submit.prevent=""
                   >
                     <div class="row scroll h-500px">
                       <div class="card-info">
@@ -1572,7 +1586,9 @@
                                     <!--begin::Input-->
                                     <el-form-item prop="referral_date">
                                       <el-date-picker
+                                        editable
                                         class="w-100"
+                                        format="DD-MM-YYYY"
                                         v-model="otherInfoData.referral_date"
                                       />
                                     </el-form-item>
@@ -1645,8 +1661,9 @@
                         Back
                       </button>
                       <button
-                        type="submit"
+                        type="button"
                         class="btn btn-lg btn-primary align-self-end"
+                        @click="submit"
                       >
                         Create Appointment
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -1728,7 +1745,7 @@ export default defineComponent({
       email: "",
       address: "",
       contact_number: "",
-      appointment_confirm: "",
+      appointment_confirm_method: "",
       allergies: "",
       clinical_alerts: "",
     });
@@ -1862,7 +1879,7 @@ export default defineComponent({
           trigger: "blur",
         },
       ],
-      appointment_confirm: [
+      appointment_confirm_method: [
         {
           required: false,
           message: "Appointment confirm cannot be blank.",
@@ -1943,6 +1960,10 @@ export default defineComponent({
     const searchVal = computed(() => store.getters.getSearchVariable);
     const organisation = computed(() => store.getters.orgList);
     const patientList = computed(() => store.getters.patientsList);
+
+    const formatDate = (date) => {
+      return moment(date).format("DD-MM-YYYY").toString();
+    };
 
     watch(_appointment, () => {
       aptInfoData.value.appointment_type_id = _appointment.value;
@@ -2096,7 +2117,7 @@ export default defineComponent({
         email: "",
         address: "",
         contact_number: "",
-        appointment_confirm: "",
+        appointment_confirm_method: "",
         allergies: "",
         clinical_alerts: "",
       };
@@ -2260,6 +2281,15 @@ export default defineComponent({
     const selectPatient = (item) => {
       store.dispatch(Actions.PATIENTS.VIEW, item.id);
       patientInfoData.value = item;
+
+      for (let key in billingInfoData.value) {
+        if (key === "charge_type") {
+          continue;
+        }
+
+        billingInfoData.value[key] = item[key];
+      }
+
       patientStep.value++;
     };
 
@@ -2320,6 +2350,7 @@ export default defineComponent({
       patientInfoData,
       billingInfoData,
       otherInfoData,
+      formatDate,
     };
   },
 });

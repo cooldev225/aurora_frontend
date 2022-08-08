@@ -372,6 +372,7 @@
                           <!--begin::Input-->
                           <el-form-item prop="date_of_birth">
                             <el-date-picker
+                              editable
                               class="w-100"
                               v-model="patientInfoData.date_of_birth"
                               placeholder=""
@@ -457,13 +458,15 @@
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="appointment_confirm">
+                          <el-form-item prop="appointment_confirm_method">
                             <el-select
                               class="w-100"
-                              v-model="patientInfoData.appointment_confirm"
+                              v-model="
+                                patientInfoData.appointment_confirm_method
+                              "
                               placeholder="Appointment Confirm Method"
                             >
-                              <el-option value="phone" label="SMS" />
+                              <el-option value="sms" label="SMS" />
                               <el-option value="email" label="Email" />
                             </el-select>
                           </el-form-item>
@@ -714,6 +717,7 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="medicare_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     v-model="
                                       billingInfoData.medicare_expiry_date
@@ -855,6 +859,7 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="health_fund_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     v-model="
                                       billingInfoData.health_fund_expiry_date
@@ -966,6 +971,7 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     format="YYYY-MM"
                                     v-model="billingInfoData.expiry_date"
@@ -1019,6 +1025,7 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="dva_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     format="YYYY-MM"
                                     v-model="billingInfoData.dva_expiry_date"
@@ -1381,6 +1388,7 @@
                                     <!--begin::Input-->
                                     <el-form-item prop="referral_date">
                                       <el-date-picker
+                                        editable
                                         class="w-100"
                                         v-model="otherInfoData.referral_date"
                                       />
@@ -1530,7 +1538,7 @@ export default defineComponent({
       email: "",
       address: "",
       contact_number: "",
-      appointment_confirm: "",
+      appointment_confirm_method: "",
       allergies: "",
       clinical_alerts: "",
     });
@@ -1664,7 +1672,7 @@ export default defineComponent({
           trigger: "blur",
         },
       ],
-      appointment_confirm: [
+      appointment_confirm_method: [
         {
           required: false,
           message: "Appointment confirm cannot be blank.",
