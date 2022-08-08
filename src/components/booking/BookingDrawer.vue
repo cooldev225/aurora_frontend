@@ -76,26 +76,26 @@
 
           <!--begin::Appointment Info-->
           <div class="d-flex flex-column gap-3">
-            <AppointmentInfoSection :heading="'Patient'"
+            <InfoSection :heading="'Patient'"
               >{{ displayData.patient_name }} ({{ displayData.patient_number }})
-            </AppointmentInfoSection>
-            <AppointmentInfoSection :heading="'Clinic'">{{
+            </InfoSection>
+            <InfoSection :heading="'Clinic'">{{
               displayData.clinic_name
-            }}</AppointmentInfoSection>
+            }}</InfoSection>
 
-            <AppointmentInfoSection :heading="'Time'">
+            <InfoSection :heading="'Time'">
               {{ displayData.start_time }} -
               {{ displayData.end_time }} (Arrival:
               {{ displayData.arrival_time }})
-            </AppointmentInfoSection>
+            </InfoSection>
 
-            <AppointmentInfoSection :heading="'Type'">{{
+            <InfoSection :heading="'Type'">{{
               displayData.appointment_type_name
-            }}</AppointmentInfoSection>
+            }}</InfoSection>
 
-            <AppointmentInfoSection :heading="'Specialist'">{{
+            <InfoSection :heading="'Specialist'">{{
               displayData.specialist_name
-            }}</AppointmentInfoSection>
+            }}</InfoSection>
           </div>
           <!--end::Appointment Info-->
           <el-divider />
@@ -205,7 +205,7 @@ import CheckInModal from "@/components/booking/CheckInModal.vue";
 import { Modal } from "bootstrap";
 import BookingDrawerButton from "@/components/presets/BookingDrawer/BookingDrawerButton.vue";
 import BookingStatusBadge from "@/components/presets/BookingDrawer/BookingStatusBadge.vue";
-import AppointmentInfoSection from "@/components/presets/BookingDrawer/AppointmentInfoSection.vue";
+import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 
 export default defineComponent({
   name: "booing-drawer",
@@ -214,7 +214,7 @@ export default defineComponent({
     CheckInModal,
     BookingDrawerButton,
     BookingStatusBadge,
-    AppointmentInfoSection,
+    InfoSection,
   },
   setup() {
     const store = useStore();
