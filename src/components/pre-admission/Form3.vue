@@ -20,9 +20,6 @@
         {{ orgData.clinic.name }} on {{ orgData.clinic.phone_number }} on email
         us at {{ orgData.clinic.email }}
       </div>
-      <div class="d-flex justify-content-end mb-5 me-5 gap-5">
-        <button class="btn btn-lg btn-primary" @click="submit">Submit</button>
-      </div>
     </div>
   </div>
 </template>
@@ -49,13 +46,8 @@ export default defineComponent({
       store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
     });
 
-    const submit = () => {
-      router.push("patients");
-    };
-
     return {
       orgData,
-      submit,
     };
   },
 });
