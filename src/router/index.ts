@@ -256,11 +256,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/components/auth/Password.vue"),
       },
       {
-        path: "/procedure-approvals",
-        name: "procedure-approvals",
-        component: () => import("@/views/ProcedureApprovals.vue"),
-      },
-      {
         path: "/employee-booking-dashboard",
         name: "employee-booking-dashboard",
         component: () => import("@/views/booking/EmployeeBookings.vue"),
