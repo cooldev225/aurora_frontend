@@ -7,7 +7,7 @@
       >
         <img
           :src="orgData.organization_logo"
-          alt="Organization logo"
+          alt="Logo"
           class="w-100 h-100"
           style="border-radius: 50%"
         />
