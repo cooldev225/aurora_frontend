@@ -482,7 +482,7 @@
                           <span
                             class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
                           >
-                            {{ item.date_of_birth }}
+                            {{ formatDate(item.date_of_birth) }}
                           </span>
                         </template>
                         <template v-slot:cell-contact_number="{ row: item }">
@@ -1951,6 +1951,10 @@ export default defineComponent({
     const organisation = computed(() => store.getters.orgList);
     const patientList = computed(() => store.getters.patientsList);
 
+    const formatDate = (date) => {
+      return moment(date).format("DD-MM-YYYY").toString();
+    };
+
     watch(_appointment, () => {
       aptInfoData.value.appointment_type_id = _appointment.value;
       const _selected = aptTypeList.value.filter(
@@ -2327,6 +2331,7 @@ export default defineComponent({
       patientInfoData,
       billingInfoData,
       otherInfoData,
+      formatDate,
     };
   },
 });
