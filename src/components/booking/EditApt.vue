@@ -458,13 +458,15 @@
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="appointment_confirm">
+                          <el-form-item prop="appointment_confirm_method">
                             <el-select
                               class="w-100"
-                              v-model="patientInfoData.appointment_confirm"
+                              v-model="
+                                patientInfoData.appointment_confirm_method
+                              "
                               placeholder="Appointment Confirm Method"
                             >
-                              <el-option value="phone" label="SMS" />
+                              <el-option value="sms" label="SMS" />
                               <el-option value="email" label="Email" />
                             </el-select>
                           </el-form-item>
@@ -1536,7 +1538,7 @@ export default defineComponent({
       email: "",
       address: "",
       contact_number: "",
-      appointment_confirm: "",
+      appointment_confirm_method: "",
       allergies: "",
       clinical_alerts: "",
     });
@@ -1670,7 +1672,7 @@ export default defineComponent({
           trigger: "blur",
         },
       ],
-      appointment_confirm: [
+      appointment_confirm_method: [
         {
           required: false,
           message: "Appointment confirm cannot be blank.",
