@@ -560,24 +560,52 @@
               <div class="fs-6 ps-10">
                 <div class="row">
                   <div
-                    v-for="i in 5"
-                    :key="i"
-                    class="col-lg-4 col-md-6 col-sm-12 d-flex flex-column align-items-center gap-3 mb-10"
+                    v-for="section in patientData.pre_admission_sections"
+                    :key="section.id"
+                    class="col-md-6 col-sm-12 d-flex flex-column align-items-center gap-3 mb-10"
                   >
                     <!--begin::Details-->
-                    <h4 class="text-muted">
-                      PreAdmission Section Title - {{ i }}
+                    <h4 class="text-primary">
+                      {{ section.title }}
                     </h4>
-                    <span>PreAdmission Question Text - {{ i }}</span>
-                    <div class="text-gray-800">
-                      <el-radio-group v-model="qaData.select1" class="ml-4">
-                        <el-radio label="Yes" size="large">Yes</el-radio>
-                        <el-radio label="No" size="large">No</el-radio>
-                      </el-radio-group>
-                    </div>
-                    <span>PreAdmission Question Text - {{ i }}</span>
-                    <el-input class="w-75" />
+                    <template
+                      v-for="question in section.questions"
+                      :key="question.id"
+                    >
+                      <span class="text-muted">{{ question.text }}</span>
+                      <el-input
+                        v-if="question.answer_format === 'TEXT'"
+                        v-model="
+                          pre_admission_answers[
+                            section.id.toString() + question.id.toString()
+                          ]
+                        "
+                        class="w-75"
+                      />
+                      <div v-else class="text-gray-800">
+                        <el-radio-group
+                          v-model="
+                            pre_admission_answers[
+                              section.id.toString() + question.id.toString()
+                            ]
+                          "
+                          class="ml-4"
+                        >
+                          <el-radio label="Yes" size="large">Yes</el-radio>
+                          <el-radio label="No" size="large">No</el-radio>
+                        </el-radio-group>
+                      </div>
+                    </template>
                   </div>
+                </div>
+                <div class="row d-flex flex-column gap-2">
+                  <span class="text-primary">Consent</span>
+                  <el-input
+                    type="textarea"
+                    v-model="patientData.pre_admission_consent.text"
+                    rows="5"
+                    readonly
+                  />
                 </div>
               </div>
               <!--end::Body-->
@@ -655,14 +683,8 @@ export default defineComponent({
       kin_phone_number: "",
       kin_relationship: "",
     });
-    const qaData = ref({
-      question1: "",
-      question2: "",
-      select1: "",
-      select2: "",
-      select3: "",
-      select4: "",
-    });
+
+    const pre_admission_answers = ref([]);
 
     const aptData = ref({
       specialist_id: "",
@@ -816,7 +838,6 @@ export default defineComponent({
 
     return {
       aptData,
-      qaData,
       formData,
       formRef,
       rules,
@@ -825,6 +846,7 @@ export default defineComponent({
       patientData,
       html2Pdf,
       loading,
+      pre_admission_answers,
       submit,
       onProgress,
       generatePDF,
