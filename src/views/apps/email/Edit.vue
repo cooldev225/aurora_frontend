@@ -17,7 +17,7 @@
         <el-option
           v-for="item in sendableUsers"
           :value="item.id"
-          :label="user.first_name + ' ' + user.last_name"
+          :label="item.first_name + ' ' + item.last_name"
           :key="item.id"
         />
       </el-select>
