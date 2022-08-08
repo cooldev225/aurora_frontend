@@ -78,6 +78,12 @@
           </span>
         </template>
 
+        <template v-slot:cell-date_time="{ row: item }">
+          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
+            {{ item.date }} {{ item.start_time }}
+          </span>
+        </template>
+
         <template v-slot:cell-specialist_name="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
             {{ item.specialist_name }}
@@ -130,6 +136,12 @@ export default defineComponent({
         searchable: true,
       },
       {
+        name: "Date/Time",
+        key: "date_time",
+        sortable: true,
+        searchable: true,
+      },
+      {
         name: "Specialist Name",
         key: "specialist_name",
         sortable: true,
@@ -156,7 +168,7 @@ export default defineComponent({
     ]);
     const patientData = ref([]);
     const tableData = ref([]);
-    const list = computed(() => store.getters.patientsList);
+    const list = computed(() => store.getters.procedureApprovalsList);
     const loading = ref(true);
     const filterFirstName = ref("");
     const filterLastName = ref("");
@@ -191,6 +203,7 @@ export default defineComponent({
       filterLastName.value = "";
       tableData.value = patientData.value;
       renderTable();
+      return false;
     };
 
     watch(list, () => {
@@ -202,7 +215,7 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Dashboard", ["Anesthetist"]);
-      store.dispatch(Actions.PATIENTS.LIST);
+      store.dispatch(Actions.PROCEDURE_APPROVALS.LIST);
     });
 
     return {
