@@ -31,7 +31,6 @@ import NtfTemplatesModule from "@/store/modules/NtfTemplatesModule";
 import MPaymentModule from "@/store/modules/MPaymentModule";
 import ProfileModule from "@/store/modules/ProfileModule";
 import ReferralDoctorModule from "@/store/modules/ReferralDoctorModule";
-import ProcedureApprovalsModule from "@/store/modules/ProcedureApprovalsModule";
 
 config.rawError = true;
 
@@ -67,7 +66,6 @@ const store = createStore({
     MPaymentModule,
     ProfileModule,
     ReferralDoctorModule,
-    ProcedureApprovalsModule,
   },
 });
 
