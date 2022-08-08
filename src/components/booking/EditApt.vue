@@ -372,6 +372,7 @@
                           <!--begin::Input-->
                           <el-form-item prop="date_of_birth">
                             <el-date-picker
+                              editable
                               class="w-100"
                               v-model="patientInfoData.date_of_birth"
                               placeholder=""
@@ -714,6 +715,7 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="medicare_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     v-model="
                                       billingInfoData.medicare_expiry_date
@@ -855,6 +857,7 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="health_fund_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     v-model="
                                       billingInfoData.health_fund_expiry_date
@@ -966,6 +969,7 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     format="YYYY-MM"
                                     v-model="billingInfoData.expiry_date"
@@ -1019,6 +1023,7 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="dva_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     format="YYYY-MM"
                                     v-model="billingInfoData.dva_expiry_date"
@@ -1381,6 +1386,7 @@
                                     <!--begin::Input-->
                                     <el-form-item prop="referral_date">
                                       <el-date-picker
+                                        editable
                                         class="w-100"
                                         v-model="otherInfoData.referral_date"
                                       />
