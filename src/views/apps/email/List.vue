@@ -573,7 +573,7 @@ export default defineComponent({
             usernameList += ", ";
           }
 
-          usernameList += item.username;
+          usernameList += item.first_name + " " + item.last_name;
         }
       });
 

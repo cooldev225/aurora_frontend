@@ -192,7 +192,7 @@ export default defineComponent({
         repliedMails.value.forEach((mail) => {
           sendableUsers.value.forEach((user) => {
             if (mail.from_user_id == user.id) {
-              mail.name = user.username;
+              mail.name = user.first_name + " " + user.last_name;
               mail.photo = user.photo;
             }
           });
