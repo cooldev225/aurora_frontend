@@ -198,7 +198,7 @@
                     :rules="rules"
                     :model="aptInfoData"
                     ref="formRef_1"
-                    @submit.prevent="handleStep_1"
+                    @submit.prevent=""
                   >
                     <div class="row scroll h-500px">
                       <div class="card-info">
@@ -347,8 +347,9 @@
                       class="d-flex justify-content-between flex-row-reverse"
                     >
                       <button
-                        type="submit"
+                        type="button"
                         class="btn btn-lg btn-primary align-self-end"
+                        @click="handleStep_1"
                       >
                         Continue
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -370,7 +371,7 @@
                     v-if="patientStep === 1"
                     class="w-100"
                     :model="filterPatient"
-                    @submit.prevent="patientStep_1"
+                    @submit.prevent=""
                   >
                     <div class="d-flex flex-column">
                       <div class="row g-8">
@@ -441,8 +442,9 @@
                           Back
                         </button>
                         <button
-                          type="submit"
+                          type="button"
                           class="btn btn-lg btn-primary align-self-end"
+                          @click="patientStep_1"
                         >
                           Search
                           <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -459,7 +461,7 @@
                   <el-form
                     v-if="patientStep === 2"
                     class="w-100"
-                    @submit.prevent="patientStep_2"
+                    @submit.prevent=""
                   >
                     <div class="row scroll h-500px">
                       <Datatable
@@ -526,7 +528,7 @@
                     :model="patientInfoData"
                     :rules="rules"
                     ref="formRef_2"
-                    @submit.prevent="handleStep_2"
+                    @submit.prevent=""
                   >
                     <div class="row scroll h-500px">
                       <div class="col-sm-6">
@@ -739,8 +741,9 @@
                         Back
                       </button>
                       <button
-                        type="submit"
+                        type="button"
                         class="btn btn-lg btn-primary align-self-end"
+                        @click="handleStep_2"
                       >
                         Continue
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -763,7 +766,7 @@
                     :model="billingInfoData"
                     :rules="rules"
                     ref="formRef_3"
-                    @submit.prevent="handleStep_3"
+                    @submit.prevent=""
                   >
                     <div class="row">
                       <div class="row">
@@ -1350,8 +1353,9 @@
                         Back
                       </button>
                       <button
-                        type="submit"
+                        type="button"
                         class="btn btn-lg btn-primary align-self-end"
+                        @click="handleStep_3"
                       >
                         Continue
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -1374,7 +1378,7 @@
                     :model="otherInfoData"
                     :rules="rules"
                     ref="formRef_4"
-                    @submit.prevent="submit"
+                    @submit.prevent=""
                   >
                     <div class="row scroll h-500px">
                       <div class="card-info">
@@ -1652,8 +1656,9 @@
                         Back
                       </button>
                       <button
-                        type="submit"
+                        type="button"
                         class="btn btn-lg btn-primary align-self-end"
+                        @click="submit"
                       >
                         Create Appointment
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
