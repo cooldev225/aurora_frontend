@@ -6,7 +6,11 @@
     ref="formRef"
   >
     <h3 class="fs-2 text-capitalize mb-10">{{ formData.subject }}</h3>
-    <div class="w-100" v-for="item in sentRepliedMails" :key="item.id">
+    <div
+      class="w-100 mt-10 mb-10"
+      v-for="item in sentRepliedMails"
+      :key="item.id"
+    >
       <div class="d-flex align-items-center text-dark">
         <div v-if="item.photo" class="symbol symbol-35px me-3">
           <span
@@ -29,7 +33,15 @@
         >
         </span>
       </div>
-      <section v-html="item.body" class="mt-5 ms-15"></section>
+      <div class="mt-5 ms-15">
+        <section v-html="item.body"></section>
+        <footer v-if="item.attachment.length > 0">
+          <hr />
+          <div v-for="attachmentLink in item.attachment" :key="attachmentLink">
+            <a class="fs-3" :href="attachmentLink">{{ attachmentLink }}</a>
+          </div>
+        </footer>
+      </div>
     </div>
     <div v-if="!formData.isShow" class="d-flex flex-row mt-10">
       <button class="btn fs-4 text-primary me-3" @click="handleReply(true)">
