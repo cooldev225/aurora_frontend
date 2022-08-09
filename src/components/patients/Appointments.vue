@@ -49,7 +49,7 @@
               {{ item.confirmation_status.replace("_", " ") }}</span
             >
             <div v-if="item.confirmation_status === 'CANCELED'">
-              Reason: cancel_reason
+              Reason: {{ item.cancel_reason }}
             </div>
             <span>{{ item.date }} {{ item.start_time }}</span>
             <span>@ {{ item.clinic_name }}</span>
