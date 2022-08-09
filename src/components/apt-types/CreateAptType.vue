@@ -143,63 +143,65 @@
               >
                 <el-input v-model="formData.payment_tier_3" type="number" />
               </InputWrapper>
-            </div>
 
-            <!--Input: Payment Tier 4 -->
-            <InputWrapper
-              label="Payment Tier 4 (Private Health Insurance + Pension/Healthcare
+              <!--Input: Payment Tier 4 -->
+              <InputWrapper
+                label="Payment Tier 4 (Private Health Insurance + Pension/Healthcare
                 Card)"
-              prop="payment_tier_4"
-            >
-              <el-input v-model="formData.payment_tier_4" type="number" />
-            </InputWrapper>
+                prop="payment_tier_4"
+              >
+                <el-input v-model="formData.payment_tier_4" type="number" />
+              </InputWrapper>
 
-            <!--Input: Payment Tier 5 -->
-            <InputWrapper
-              label="Payment Tier 5 (Pension Card)"
-              prop="payment_tier_5"
-            >
-              <el-input v-model="formData.payment_tier_5" type="number" />
-            </InputWrapper>
+              <!--Input: Payment Tier 5 -->
+              <InputWrapper
+                label="Payment Tier 5 (Pension Card)"
+                prop="payment_tier_5"
+              >
+                <el-input v-model="formData.payment_tier_5" type="number" />
+              </InputWrapper>
 
-            <!--Input: Payment Tier 6 -->
-            <InputWrapper
-              label="Payment Tier 6 (Healthcare Card)"
-              prop="payment_tier_6"
-            >
-              <el-input v-model="formData.payment_tier_6" type="number" />
-            </InputWrapper>
+              <!--Input: Payment Tier 6 -->
+              <InputWrapper
+                label="Payment Tier 6 (Healthcare Card)"
+                prop="payment_tier_6"
+              >
+                <el-input v-model="formData.payment_tier_6" type="number" />
+              </InputWrapper>
 
-            <!--Input: Payment Tier 7 -->
-            <InputWrapper
-              label="Payment Tier 7 (Department of Veteran Affairs)"
-              prop="payment_tier_7"
-            >
-              <el-input v-model="formData.payment_tier_7" type="number" />
-            </InputWrapper>
+              <!--Input: Payment Tier 7 -->
+              <InputWrapper
+                label="Payment Tier 7 (Department of Veteran Affairs)"
+                prop="payment_tier_7"
+              >
+                <el-input v-model="formData.payment_tier_7" type="number" />
+              </InputWrapper>
 
-            <!--Input: Payment Tier 8 -->
-            <InputWrapper
-              label="Payment Tier 8 (Department of Veteran Affairs)"
-              prop="payment_tier_8"
-            >
-              <el-input v-model="formData.payment_tier_8" type="number" />
-            </InputWrapper>
+              <!--Input: Payment Tier 8 -->
+              <InputWrapper
+                label="Payment Tier 8 (Department of Veteran Affairs)"
+                prop="payment_tier_8"
+              >
+                <el-input v-model="formData.payment_tier_8" type="number" />
+              </InputWrapper>
 
-            <!--Input: Payment Tier 9 -->
-            <InputWrapper
-              label="Payment Tier 8 (Work Cover)"
-              prop="payment_tier_9"
-            >
-              <el-input v-model="formData.payment_tier_9" type="number" />
-            </InputWrapper>
+              <!--Input: Payment Tier 9 -->
+              <InputWrapper
+                label="Payment Tier 8 (Work Cover)"
+                prop="payment_tier_9"
+              >
+                <el-input v-model="formData.payment_tier_9" type="number" />
+              </InputWrapper>
 
-            <!--Input: Payment Tier 10 -->
-            <InputWrapper label="Payment Tier 10 (AMA)" prop="payment_tier_10">
-              <el-input v-model="formData.payment_tier_10" type="number" />
-            </InputWrapper>
+              <!--Input: Payment Tier 10 -->
+              <InputWrapper
+                label="Payment Tier 10 (AMA)"
+                prop="payment_tier_10"
+              >
+                <el-input v-model="formData.payment_tier_10" type="number" />
+              </InputWrapper>
+            </div>
           </div>
-
           <!--end::Scroll-->
 
           <!--end::Modal body-->

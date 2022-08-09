@@ -215,6 +215,14 @@ const Actions = {
     LIST: "searchReferralDoctor",
   },
 
+  LETTER_TEMPLATE: {
+    LIST: "listLetterTemplate",
+  },
+
+  LETTER: {
+    CREATE: "createLetter",
+  },
+
   // EMPLOYEE_ROLE: {
   //   LIST: "listEmployeeRoles",
   //   CREATE: "createEmployeeRoles",
@@ -366,6 +374,10 @@ const Mutations = {
 
   SET_REFERRAL_DOCTOR: {
     LIST: "setReferralDoctor",
+  },
+
+  SET_LETTER_TEMPLATE: {
+    LIST: "setLetterTemplate",
   },
 
   SET_MAKE_PAYMENT: {

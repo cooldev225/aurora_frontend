@@ -8,17 +8,27 @@
         :enable-items-per-page-dropdown="false"
       >
         <template v-slot:cell-title="{ row: item }">
-          <button
-            @click="handleEdit(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/art/art005.svg" />
-            </span>
-          </button>
-          {{ item.title }}
+          <div class="row">
+            <div class="col-auto">
+              <button
+                @click="handleEdit(item)"
+                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
+              >
+                <span class="svg-icon svg-icon-3">
+                  <inline-svg src="media/icons/duotune/art/art005.svg" />
+                </span>
+              </button>
+            </div>
+            <div class="col-auto">
+              <span class="text-primary">{{ item.title }}</span> <br />
+              <span v-if="item.title != 'Appointment Booked'"
+                >Days Before: {{ item.days_before }}<br />
+              </span>
+              Status: {{ item.status }} <br />
+              {{ item.description }} <br />
+            </div>
+          </div>
         </template>
-        <template v-slot:cell-action=""></template>
       </Datatable>
     </div>
   </div>
@@ -67,7 +77,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Notification Templates", ["Settings"]);
+      setCurrentPageBreadcrumbs("Patient Notifications", ["Settings"]);
       store.dispatch(Actions.NTF_TEMPLATES.LIST);
       tableData.value = ntfTemplates;
       console.log(ntfTemplates);

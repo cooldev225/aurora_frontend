@@ -163,7 +163,7 @@
         <div class="py-0">
           <div class="me-3 mt-6">
             <div class="d-flex align-items-center">
-              <div class="text-gray-800 fw-bolder">Nex Of Kin</div>
+              <div class="text-gray-800 fw-bolder">Next Of Kin</div>
             </div>
           </div>
           <div class="container py-6">

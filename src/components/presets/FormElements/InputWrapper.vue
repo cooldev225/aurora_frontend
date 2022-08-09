@@ -7,7 +7,7 @@
       >{{ label }}</label
     >
 
-    <el-form-item prop="prop">
+    <el-form-item :prop="prop">
       <slot></slot>
     </el-form-item>
   </div>

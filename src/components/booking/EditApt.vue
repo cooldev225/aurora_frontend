@@ -372,9 +372,11 @@
                           <!--begin::Input-->
                           <el-form-item prop="date_of_birth">
                             <el-date-picker
+                              editable
                               class="w-100"
                               v-model="patientInfoData.date_of_birth"
                               placeholder=""
+                              format="DD-MM-YYYY"
                             />
                           </el-form-item>
                           <!--end::Input-->
@@ -457,13 +459,15 @@
                           <!--end::Label-->
 
                           <!--begin::Input-->
-                          <el-form-item prop="appointment_confirm">
+                          <el-form-item prop="appointment_confirm_method">
                             <el-select
                               class="w-100"
-                              v-model="patientInfoData.appointment_confirm"
+                              v-model="
+                                patientInfoData.appointment_confirm_method
+                              "
                               placeholder="Appointment Confirm Method"
                             >
-                              <el-option value="phone" label="SMS" />
+                              <el-option value="sms" label="SMS" />
                               <el-option value="email" label="Email" />
                             </el-select>
                           </el-form-item>
@@ -714,11 +718,12 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="medicare_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     v-model="
                                       billingInfoData.medicare_expiry_date
                                     "
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                     placeholder="Enter Expiry Date"
                                   />
                                 </el-form-item>
@@ -855,11 +860,12 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="health_fund_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
                                     v-model="
                                       billingInfoData.health_fund_expiry_date
                                     "
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                   />
                                 </el-form-item>
                                 <!--end::Input-->
@@ -966,8 +972,9 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                     v-model="billingInfoData.expiry_date"
                                   />
                                 </el-form-item>
@@ -1019,8 +1026,9 @@
                                 <!--begin::Input-->
                                 <el-form-item prop="dva_expiry_date">
                                   <el-date-picker
+                                    editable
                                     class="w-100"
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                     v-model="billingInfoData.dva_expiry_date"
                                   />
                                 </el-form-item>
@@ -1381,6 +1389,7 @@
                                     <!--begin::Input-->
                                     <el-form-item prop="referral_date">
                                       <el-date-picker
+                                        editable
                                         class="w-100"
                                         v-model="otherInfoData.referral_date"
                                       />
@@ -1498,6 +1507,8 @@ import { countryList, timeZoneList } from "@/core/data/country";
 import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
+import ApiService from "@/core/services/ApiService";
+import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "create-apt-modal",
@@ -1511,7 +1522,6 @@ export default defineComponent({
     const loading = ref(false);
 
     const aptInfoData = ref({
-      reference_number: 22100349,
       clinic_name: "",
       clinic_id: "",
       date: new Date(),
@@ -1530,7 +1540,7 @@ export default defineComponent({
       email: "",
       address: "",
       contact_number: "",
-      appointment_confirm: "",
+      appointment_confirm_method: "",
       allergies: "",
       clinical_alerts: "",
     });
@@ -1568,20 +1578,6 @@ export default defineComponent({
     });
 
     const rules = ref({
-      clinic_id: [
-        {
-          required: true,
-          message: "Clinic Name cannot be blank.",
-          trigger: "blur",
-        },
-      ],
-      arrival_time: [
-        {
-          required: true,
-          message: "Arrival time cannot be blank.",
-          trigger: "blur",
-        },
-      ],
       appointment_type_id: [
         {
           required: true,
@@ -1620,7 +1616,7 @@ export default defineComponent({
       contact_number: [
         {
           required: true,
-          message: "Mobile Number cannot be blank.",
+          message: "Contact Number cannot be blank.",
           trigger: "blur",
         },
       ],
@@ -1629,12 +1625,6 @@ export default defineComponent({
           required: true,
           message: "Charge Type cannot be blank.",
           trigger: "blur",
-        },
-      ],
-      procedure_price: [
-        {
-          type: "number",
-          message: "Procedure price must be a number",
         },
       ],
       fund_excess: [
@@ -1646,14 +1636,16 @@ export default defineComponent({
       medicare_number: [
         {
           required: false,
-          message: "Medicare number cannot be blank.",
+          type: "number",
+          message: "Medicare number must be a number",
           trigger: "blur",
         },
       ],
       medicare_reference_number: [
         {
           required: false,
-          message: "Medicare Reference Number cannot be blank.",
+          type: "number",
+          message: "Medicare reference number must be a number",
           trigger: "blur",
         },
       ],
@@ -1664,7 +1656,7 @@ export default defineComponent({
           trigger: "blur",
         },
       ],
-      appointment_confirm: [
+      appointment_confirm_method: [
         {
           required: false,
           message: "Appointment confirm cannot be blank.",
@@ -1757,6 +1749,20 @@ export default defineComponent({
       if (apt_type.value === "Consultation") {
         otherInfoData.value.anesthetic_questions = false;
         otherInfoData.value.procedure_questions = false;
+      }
+
+      if (JwtService.getToken()) {
+        ApiService.setHeader();
+        ApiService.get("clinics/" + aptInfoData.value.clinic_id + "/rooms")
+          .then(({ data }) => {
+            rooms.value = data.data;
+          })
+          .catch(({ response }) => {
+            console.log(response.data.errors);
+            // this.context.commit(Mutations.PURGE_AUTH);
+          });
+      } else {
+        // this.context.commit(Mutations.PURGE_AUTH);
       }
     });
 

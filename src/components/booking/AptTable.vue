@@ -126,6 +126,14 @@
                           </span>
                           <span
                             v-if="
+                              item_2.appointment.confirmation_status == 'MISSED'
+                            "
+                            class="badge badge-warning opacity-50 mx-2"
+                          >
+                            MISSED
+                          </span>
+                          <span
+                            v-if="
                               item_2.appointment.attendance_status ==
                               'CHECKED_IN'
                             "

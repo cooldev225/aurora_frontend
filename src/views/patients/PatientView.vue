@@ -48,7 +48,7 @@
                 <IconButton
                   v-if="userRole == 'specialist'"
                   iconSRC="media/icons/duotune/arrows/arr009.svg"
-                  @click="handleReport"
+                  @click="handleLetter"
                   label="Letter"
                 />
                 <IconButton
@@ -153,6 +153,7 @@
   <!--end::Navbar-->
   <RecallReminderModal></RecallReminderModal>
   <ReportModal></ReportModal>
+  <LetterModal :patientId="formData.id"></LetterModal>
   <router-view></router-view>
 </template>
 
@@ -163,6 +164,7 @@ import { Modal } from "bootstrap";
 import { Actions } from "@/store/enums/StoreEnums";
 import RecallReminderModal from "@/components/patients/RecallReminderModal.vue";
 import ReportModal from "@/components/patients/ReportTemplateModal.vue";
+import LetterModal from "@/components/patients/LetterModal.vue";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import store from "@/store";
@@ -172,6 +174,7 @@ export default defineComponent({
   components: {
     RecallReminderModal,
     ReportModal,
+    LetterModal,
     IconText,
     IconButton,
   },
@@ -197,6 +200,11 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleLetter = () => {
+      const modal = new Modal(document.getElementById("modal_letter"));
+      modal.show();
+    };
+
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
     });
@@ -205,6 +213,7 @@ export default defineComponent({
       formData,
       handleRecallReminder,
       handleReport,
+      handleLetter,
     };
   },
 });
