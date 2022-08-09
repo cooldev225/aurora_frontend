@@ -31,14 +31,19 @@
         <article v-html="item.body"></article>
         <footer v-if="item.attachmentInfo.length > 0">
           <hr />
-          <div
+          <template
             v-for="attachmentLink in item.attachmentInfo"
             :key="attachmentLink.url"
           >
-            <a class="fs-3" :href="attachmentLink.url" target="_blank">{{
-              attachmentLink.fileName
-            }}</a>
-          </div>
+            <div class="mb-2">
+              <a class="fs-3" :href="attachmentLink.url" target="_blank">
+                <span class="svg-icon svg-icon-2">
+                  <inline-svg src="media/icons/duotune/files/fil003.svg" />
+                </span>
+                <span class="ms-3">{{ attachmentLink.fileName }}</span>
+              </a>
+            </div>
+          </template>
         </footer>
       </div>
     </div>
@@ -70,9 +75,7 @@
           :limit="100"
           :auto-upload="false"
         >
-          <el-button type="primary" class="btn btn-primary"
-            >Choose Files</el-button
-          >
+          <el-button class="btn btn-primary">Choose Files</el-button>
         </el-upload>
       </el-form-item>
 
@@ -81,30 +84,16 @@
           <span>Cancel</span>
         </button>
 
-        <button
-          :data-kt-indicator="loading ? 'on' : null"
-          class="btn btn-light me-3"
-          @click="handleSave()"
-        >
+        <button class="btn btn-light me-3" @click="handleSave()">
           <span>Save</span>
         </button>
 
-        <button
-          :data-kt-indicator="loading ? 'on' : null"
-          class="btn btn-lg btn-primary"
-          type="submit"
-        >
-          <span v-if="!loading" class="indicator-label">
+        <button class="btn btn-lg btn-primary" type="submit">
+          <span class="indicator-label">
             Send
             <span class="svg-icon svg-icon-3 ms-2 me-0">
               <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
             </span>
-          </span>
-          <span v-if="loading" class="indicator-progress">
-            Please wait...
-            <span
-              class="spinner-border spinner-border-sm align-middle ms-2"
-            ></span>
           </span>
         </button>
       </div>
@@ -142,7 +131,6 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const formRef = ref(null);
-    const loading = ref(false);
     const formData = ref({
       to_user_ids: [],
       subject: "",
@@ -238,9 +226,7 @@ export default defineComponent({
 
       const id = route.params.id;
 
-      store.dispatch(Actions.USER_LIST).then(() => {
-        loading.value = false;
-      });
+      store.dispatch(Actions.USER_LIST);
 
       store.dispatch(Actions.MAILS.VIEW, id);
     });
@@ -256,8 +242,6 @@ export default defineComponent({
             Data.append(key, formData.value[key]);
           });
 
-          loading.value = true;
-
           let actionName = Actions.MAILS.UPDATE_DRAFT;
 
           if (formData.value.id == undefined) {
@@ -267,12 +251,10 @@ export default defineComponent({
           store
             .dispatch(actionName, Data)
             .then(() => {
-              loading.value = false;
               store.dispatch(Actions.MAILS.LIST, "all");
               router.push({ name: "mailbox-list" });
             })
             .catch(({ response }) => {
-              loading.value = false;
               console.log(response.data.error);
             });
         }
@@ -289,8 +271,6 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
-
-          loading.value = true;
 
           let actionName = Actions.MAILS.SEND_DRAFT;
 
@@ -315,7 +295,6 @@ export default defineComponent({
               });
             })
             .catch(({ response }) => {
-              loading.value = false;
               console.log(response.data.error);
             });
         } else {
