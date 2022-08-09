@@ -2057,7 +2057,6 @@ export default defineComponent({
     };
 
     watch(patientList, () => {
-      console.log(patientList.value);
       patientTableData.value = patientList;
     });
 
@@ -2198,6 +2197,7 @@ export default defineComponent({
       patientStatus.value = "new";
       patientStep.value = 1;
       patientTableData.value = patientList.value;
+      store.dispatch(Actions.PATIENTS.LIST);
     };
 
     const handleCancel = () => {
