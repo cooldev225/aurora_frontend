@@ -376,6 +376,7 @@
                               class="w-100"
                               v-model="patientInfoData.date_of_birth"
                               placeholder=""
+                              format="DD-MM-YYYY"
                             />
                           </el-form-item>
                           <!--end::Input-->
@@ -722,7 +723,7 @@
                                     v-model="
                                       billingInfoData.medicare_expiry_date
                                     "
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                     placeholder="Enter Expiry Date"
                                   />
                                 </el-form-item>
@@ -864,7 +865,7 @@
                                     v-model="
                                       billingInfoData.health_fund_expiry_date
                                     "
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                   />
                                 </el-form-item>
                                 <!--end::Input-->
@@ -973,7 +974,7 @@
                                   <el-date-picker
                                     editable
                                     class="w-100"
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                     v-model="billingInfoData.expiry_date"
                                   />
                                 </el-form-item>
@@ -1027,7 +1028,7 @@
                                   <el-date-picker
                                     editable
                                     class="w-100"
-                                    format="YYYY-MM"
+                                    format="MM-YYYY"
                                     v-model="billingInfoData.dva_expiry_date"
                                   />
                                 </el-form-item>
@@ -1519,7 +1520,6 @@ export default defineComponent({
     const loading = ref(false);
 
     const aptInfoData = ref({
-      reference_number: 22100349,
       clinic_name: "",
       clinic_id: "",
       date: new Date(),
@@ -1576,20 +1576,6 @@ export default defineComponent({
     });
 
     const rules = ref({
-      clinic_id: [
-        {
-          required: true,
-          message: "Clinic Name cannot be blank.",
-          trigger: "blur",
-        },
-      ],
-      arrival_time: [
-        {
-          required: true,
-          message: "Arrival time cannot be blank.",
-          trigger: "blur",
-        },
-      ],
       appointment_type_id: [
         {
           required: true,
@@ -1628,7 +1614,7 @@ export default defineComponent({
       contact_number: [
         {
           required: true,
-          message: "Mobile Number cannot be blank.",
+          message: "Contact Number cannot be blank.",
           trigger: "blur",
         },
       ],
@@ -1637,12 +1623,6 @@ export default defineComponent({
           required: true,
           message: "Charge Type cannot be blank.",
           trigger: "blur",
-        },
-      ],
-      procedure_price: [
-        {
-          type: "number",
-          message: "Procedure price must be a number",
         },
       ],
       fund_excess: [
@@ -1654,14 +1634,16 @@ export default defineComponent({
       medicare_number: [
         {
           required: false,
-          message: "Medicare number cannot be blank.",
+          type: "number",
+          message: "Medicare number must be a number",
           trigger: "blur",
         },
       ],
       medicare_reference_number: [
         {
           required: false,
-          message: "Medicare Reference Number cannot be blank.",
+          type: "number",
+          message: "Medicare reference number must be a number",
           trigger: "blur",
         },
       ],

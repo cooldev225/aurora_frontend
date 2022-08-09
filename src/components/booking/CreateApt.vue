@@ -1970,23 +1970,38 @@ export default defineComponent({
       const _selected = aptTypeList.value.filter(
         (aptType) => aptType.id === _appointment.value
       )[0];
-      _appointment_name.value = _selected.name;
-      _appointment_time.value = Number(
-        appointment_length[_selected.appointment_time] * appointment_time.value
-      );
+
+      if (typeof _selected === "undefined") {
+        _appointment_name.value = "";
+        _appointment_time.value = Number(appointment_time.value);
+        _arrival_time.value = 30;
+
+        aptInfoData.value.clinical_code = "";
+        aptInfoData.value.mbs_code = "";
+        apt_type.value = "";
+      } else {
+        _appointment_name.value = _selected.name;
+        _appointment_time.value = Number(
+          appointment_length[_selected.appointment_time] *
+            appointment_time.value
+        );
+        _arrival_time.value = Number(_selected.arrival_time);
+
+        aptInfoData.value.clinical_code = _selected.clinical_code;
+        aptInfoData.value.mbs_code = _selected.mbs_code;
+        apt_type.value = _selected.type;
+      }
+
       _end_time.value = moment(_start_time.value, "HH:mm")
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
         .toString();
       aptInfoData.value.time_slot[1] = _end_time.value;
-      _arrival_time.value = Number(_selected.arrival_time);
       aptInfoData.value.arrival_time = moment(_start_time.value, "HH:mm")
         .subtract(_arrival_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      aptInfoData.value.clinical_code = _selected.clinical_code;
-      aptInfoData.value.mbs_code = _selected.mbs_code;
-      apt_type.value = _selected.type;
+
       if (apt_type.value === "Consultation") {
         otherInfoData.value.anesthetic_questions = false;
         otherInfoData.value.procedure_questions = false;
@@ -2166,13 +2181,27 @@ export default defineComponent({
       });
     };
 
-    const handleCancel = () => {
+    const resetCreateModal = () => {
       currentStepIndex.value = 0;
       _stepperObj.value.goFirst();
       formRef_1.value.resetFields();
       if (formRef_2.value) formRef_2.value.resetFields();
       formRef_3.value.resetFields();
       formRef_4.value.resetFields();
+
+      filterPatient.first_name = "";
+      filterPatient.last_name = "";
+      filterPatient.date_of_birth = "";
+      filterPatient.ur_number = "";
+
+      _appointment.value = "";
+      patientStatus.value = "new";
+      patientStep.value = 1;
+      patientTableData.value = patientList.value;
+    };
+
+    const handleCancel = () => {
+      resetCreateModal();
     };
 
     const handleAddressChange = (e) => {
@@ -2228,12 +2257,7 @@ export default defineComponent({
                   });
                 }
 
-                currentStepIndex.value = 0;
-                _stepperObj.value.goFirst();
-                formRef_1.value.resetFields();
-                if (formRef_2.value) formRef_2.value.resetFields();
-                formRef_3.value.resetFields();
-                formRef_4.value.resetFields();
+                resetCreateModal();
               });
             })
             .catch(({ response }) => {
