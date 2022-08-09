@@ -84,12 +84,14 @@
             >
               {{ item.attendance_status.replace("_", " ") }}</span
             >
-
-            <span>collecting_person_name</span>
-            <span>collecting_person_phone</span>
-            <span>collecting_person_alternate_contact</span>
+            <span>{{ item.collecting_person_name }}</span>
+            <span>{{ item.collecting_person_phone }}</span>
+            <span>{{ item.collecting_person_alternate_contact }}</span>
           </div>
-          <button class="btn btn-bg-light btn-active-color-primary btn-sm mt-2">
+          <button
+            class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
+            @click="handleCollectingPerson(item)"
+          >
             Update Collecting Person
           </button>
         </template>
@@ -126,6 +128,7 @@
     </div>
     <!--end::Card body-->
   </div>
+  <CollectingPersonModal :selectedApt="selectedApt"></CollectingPersonModal>
   <!--end::details View-->
 </template>
 
@@ -144,11 +147,15 @@ import { useRouter } from "vue-router";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import moment from "moment";
 import md5 from "js-md5";
+import { Mutations } from "@/store/enums/StoreEnums";
+import CollectingPersonModal from "./CollectingPerson.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "patient-appointments",
   components: {
     Datatable,
+    CollectingPersonModal,
   },
   setup() {
     const store = useStore();
@@ -188,8 +195,6 @@ export default defineComponent({
     };
 
     const handlePreAdmission = (item) => {
-      // store.commit(Mutations.SET_APT.SELECT, item);
-      console.log(item.id);
       router.push({
         path:
           "/appointment_pre_admissions/show/" +
@@ -200,6 +205,20 @@ export default defineComponent({
 
     const handleView = () => {
       router.push({ name: "make-payment-view" });
+    };
+
+    const selectedApt = ref({});
+
+    const handleCollectingPerson = (item) => {
+      selectedApt.value = {
+        patient_id: list.value.id,
+        ...item,
+      };
+      // store.commit(Mutations.SET_APT.SELECT, item);
+      const modal = new Modal(
+        document.getElementById("modal_collecting_person")
+      );
+      modal.show();
     };
 
     const generateID = (id) => {
@@ -248,9 +267,11 @@ export default defineComponent({
       tableKey,
       formData,
       showFutureApt,
+      selectedApt,
       generateID,
       handlePay,
       handlePreAdmission,
+      handleCollectingPerson,
       handleView,
     };
   },

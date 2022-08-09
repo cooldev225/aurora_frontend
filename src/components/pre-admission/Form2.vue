@@ -663,10 +663,11 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const formRef = ref(null);
-    // const patientData = computed(
-    //   () => store.getters.getAptPreAdmissionValidateData
-    // );
     const patientData = computed(() => store.getters.getAptPreAdmissionOrg);
+    const pre_admission_answers = ref([]);
+    const apt_id = ref("");
+    const Data = new FormData();
+    const html2Pdf = ref("");
     const formData = ref({
       title: "",
       first_name: "",
@@ -683,8 +684,7 @@ export default defineComponent({
       kin_phone_number: "",
       kin_relationship: "",
     });
-
-    const pre_admission_answers = ref([]);
+    const loading = ref(false);
 
     const aptData = ref({
       specialist_id: "",
@@ -760,7 +760,6 @@ export default defineComponent({
         },
       ],
     });
-    const loading = ref(false);
 
     const submit = () => {
       if (!formRef.value) {
@@ -792,9 +791,6 @@ export default defineComponent({
         aptData.value[key] = patientData.value.appointment[key];
     });
 
-    const apt_id = ref("");
-    const Data = new FormData();
-
     onMounted(async () => {
       setCurrentPageBreadcrumbs("Administration", ["Patients"]);
       apt_id.value = router.currentRoute.value.params.id.toString();
@@ -811,8 +807,6 @@ export default defineComponent({
         });
       }
     });
-
-    const html2Pdf = ref("");
 
     const generatePDF = () => {
       loading.value = true;
