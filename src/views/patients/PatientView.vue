@@ -153,7 +153,7 @@
   <!--end::Navbar-->
   <RecallReminderModal></RecallReminderModal>
   <ReportModal></ReportModal>
-  <LetterModal></LetterModal>
+  <LetterModal :patientId="formData.id"></LetterModal>
   <router-view></router-view>
 </template>
 

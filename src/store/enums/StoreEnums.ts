@@ -219,6 +219,10 @@ const Actions = {
     LIST: "listLetterTemplate",
   },
 
+  LETTER: {
+    CREATE: "createLetter",
+  },
+
   // EMPLOYEE_ROLE: {
   //   LIST: "listEmployeeRoles",
   //   CREATE: "createEmployeeRoles",

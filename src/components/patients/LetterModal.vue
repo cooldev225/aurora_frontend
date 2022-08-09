@@ -4,7 +4,7 @@
     id="modal_letter"
     tabindex="-1"
     aria-hidden="true"
-    ref="letterTemplateModalRef"
+    ref="letterModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -186,19 +186,23 @@ export default defineComponent({
     ckeditor: CKEditor.component,
   },
   props: {
-    selectedApt: { type: Object, required: true },
+    patientId: { type: String, required: true },
   },
   setup(props) {
     const store = useStore();
     const formRef = ref(null);
-    const letterTemplateModalRef = ref(null);
+    const letterModalRef = ref(null);
     const loading = ref(false);
     const letter_template = ref("");
-    const aptData = computed(() => props.selectedApt);
+    const patientId = computed(() => props.patientId);
     const referralDoctors = computed(() => store.getters.getReferralDoctorList);
     const letterTemplates = computed(() => store.getters.getLetterTemplateList);
 
     const formData = ref({
+      from: 1,
+      to: 1,
+      document_type: "LETTER",
+      patient_id: patientId.value,
       referring_doctor_name: "",
       referring_doctor_id: "",
       letter: "",
@@ -239,14 +243,13 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.APT.UPDATE, {
-              id: aptData.value.id,
+            .dispatch(Actions.LETTER.CREATE, {
               ...formData.value,
             })
             .then(() => {
               loading.value = false;
               Swal.fire({
-                text: "Successfully Updated!",
+                text: "Successfully Created!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -254,8 +257,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
-                hideModal(letterTemplateModalRef.value);
+                hideModal(letterModalRef.value);
               });
             })
             .catch(({ response }) => {
@@ -324,7 +326,7 @@ export default defineComponent({
       loading,
       ClassicEditor,
       letterTemplates,
-      letterTemplateModalRef,
+      letterModalRef,
       letter_template,
       submit,
       handleSelect,

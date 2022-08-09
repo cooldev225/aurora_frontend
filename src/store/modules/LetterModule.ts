@@ -24,7 +24,7 @@ export default class LetterModule extends VuexModule implements ILetterInfo {
   }
 
   @Mutation
-  [Mutations.SET_PATIENT.LIST](letterTemplateData) {
+  [Mutations.SET_LETTER_TEMPLATE.LIST](letterTemplateData) {
     this.letterTemplateData = letterTemplateData;
   }
 
@@ -34,7 +34,24 @@ export default class LetterModule extends VuexModule implements ILetterInfo {
       ApiService.setHeader();
       ApiService.get("letter-templates")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_PATIENT.LIST, data.data);
+          this.context.commit(Mutations.SET_LETTER_TEMPLATE.LIST, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.LETTER.CREATE](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("/patient-documents", data)
+        .then(({ data }) => {
           return data.data;
         })
         .catch(({ response }) => {
