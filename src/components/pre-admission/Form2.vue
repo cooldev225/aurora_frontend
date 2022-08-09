@@ -348,29 +348,27 @@
                   v-for="question in section.questions"
                   :key="question.id"
                 >
-                  <span class="text-muted">{{ question.text }}</span>
-                  <el-input
-                    v-if="question.answer_format === 'TEXT'"
-                    v-model="
-                      pre_admission_answers[
-                        section.id.toString() + question.id.toString()
-                      ]
-                    "
-                    class="w-75"
-                  />
-                  <div v-else class="text-gray-800">
-                    <el-radio-group
+                  <InputWrapper :label="question.text">
+                    <el-input
+                      v-if="question.answer_format === 'TEXT'"
                       v-model="
                         pre_admission_answers[
                           section.id.toString() + question.id.toString()
                         ]
                       "
-                      class="ml-4"
+                    />
+                    <el-radio-group
+                      v-if="question.answer_format === 'BOOLEAN'"
+                      v-model="
+                        pre_admission_answers[
+                          section.id.toString() + question.id.toString()
+                        ]
+                      "
                     >
                       <el-radio label="Yes" size="large">Yes</el-radio>
                       <el-radio label="No" size="large">No</el-radio>
                     </el-radio-group>
-                  </div>
+                  </InputWrapper>
                 </template>
               </div>
               <!--end::Body-->
