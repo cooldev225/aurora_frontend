@@ -77,6 +77,30 @@
         >
           <el-button class="btn btn-primary">Choose Files</el-button>
         </el-upload>
+
+        <template
+          v-for="attachmentLink in formData.attachmentUploaded"
+          :key="attachmentLink.url"
+        >
+          <div
+            class="mt-3 d-flex"
+            style="line-height: 20px; justify-content: space-between"
+          >
+            <a class="fs-5" :href="attachmentLink.url" target="_blank">
+              <span class="svg-icon svg-icon-2">
+                <inline-svg src="media/icons/duotune/files/fil003.svg" />
+              </span>
+              <span class="ms-3">{{ attachmentLink.fileName }}</span>
+            </a>
+
+            <span
+              class="svg-icon svg-icon-2 cursor-pointer"
+              @click="handleRemoveUploaded(attachmentLink.url)"
+            >
+              <inline-svg src="media/icons/duotune/general/gen040.svg" />
+            </span>
+          </div>
+        </template>
       </el-form-item>
 
       <div class="d-flex flex-row-reverse">
@@ -102,7 +126,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import { defineComponent, onMounted, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -162,33 +186,23 @@ export default defineComponent({
       uploadDisabled.value = fileList.length - 1;
     };
 
+    const handleRemoveUploaded = (url) => {
+      formData.value.attachmentUploaded =
+        formData.value.attachmentUploaded.filter((e) => e.url != url);
+    };
+
     const handlePreview = (uploadFile) => {
       dialogImageUrl.value = uploadFile.url;
       dialogVisible.value = true;
     };
 
-    watchEffect(() => {
+    watch(repliedMails, () => {
       if (repliedMails.value.length > 0) {
-        repliedMails.value.forEach((item) => {
-          item.toUserIds = JSON.parse(item.to_user_ids);
-        });
-
-        formData.value = Object.assign({}, repliedMails.value[0]);
-        formData.value.to_user_ids = [formData.value.from_user_id];
-        delete formData.value.attachment;
-
-        if (repliedMails.value[0].status != "draft") {
-          formData.value.isShow = false;
-          formData.value.body = "";
-          formData.value.reply_id = formData.value.id;
-          delete formData.value.id;
-        } else {
-          formData.value.isShow = true;
-        }
-
         sentRepliedMails.value = [];
 
         repliedMails.value.forEach((item) => {
+          item.toUserIds = JSON.parse(item.to_user_ids);
+
           if (item.status != "draft") {
             sentRepliedMails.value.unshift(item);
           }
@@ -218,6 +232,19 @@ export default defineComponent({
             });
           });
         });
+
+        formData.value = Object.assign({}, repliedMails.value[0]);
+        formData.value.to_user_ids = [formData.value.from_user_id];
+        delete formData.value.attachment;
+
+        if (repliedMails.value[0].status != "draft") {
+          formData.value.isShow = false;
+          formData.value.body = "";
+          formData.value.reply_id = formData.value.id;
+          delete formData.value.id;
+        } else {
+          formData.value.isShow = true;
+        }
       }
     });
 
@@ -308,6 +335,7 @@ export default defineComponent({
       upload,
       handleChange,
       handleRemove,
+      handleRemoveUploaded,
       handlePreview,
       handleSave,
       handleReply,
