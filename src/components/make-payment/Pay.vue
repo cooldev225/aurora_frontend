@@ -46,8 +46,7 @@
           </InfoSection>
           <InfoSection :heading="'Specialist'"
             >{{
-              billingData.specialist.title +
-              " " +
+              "Dr " +
               billingData.specialist.first_name +
               " " +
               billingData.specialist.last_name
@@ -96,30 +95,6 @@
   <!--end::Card-->
   <!--begin::Card-->
   <div class="card mb-5 mb-xxl-8">
-    <div class="card-header border-0 pt-5">
-      <h3 class="card-title align-items-start flex-column">
-        <span class="card-label fw-bold fs-3 mb-1">Your Payment Option</span>
-      </h3>
-    </div>
-    <div class="card-body pt-3 pb-0">
-      <div class="row">
-        <label class="text-muted fs-6 fw-bold mb-2 d-block"
-          >Payment Options</label
-        >
-        <!--begin::Input-->
-        <el-form>
-          <el-form-item prop="payment_type mb-0" class="mb-0">
-            <el-radio-group v-model="formData.payment_type" class="ml-4">
-              <el-radio label="CASH" size="large">Pay with Cash</el-radio>
-              <el-radio label="EFTPOS" size="large"
-                >Pay by Terminal(etfpos)</el-radio
-              >
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-        <!--end::Input-->
-      </div>
-    </div>
     <div class="card-header border-0 pt-0">
       <h3 class="card-title align-items-start flex-column">
         <span class="card-label fw-bold fs-3 mb-1">Payment Detail</span>
@@ -176,36 +151,44 @@
                 <span v-if="payment.payment_type == 'EFTPOS'">
                   paid via eftpos
                 </span>
-                to {{ payment.confirmed_user.first_name }}
-                {{ payment.confirmed_user.last_name }} ({{
-                  payment.created_at
-                }}) </span
+                ({{ payment.confirmed_user.first_name }}
+                {{ payment.confirmed_user.last_name }},
+                {{ payment.created_at }}) </span
               ><br />
             </li>
           </ul>
-          Amount Outstanding: ${{
-            getProcedurePrice(
-              billingData.payment,
-              billingData.patient.charge_type
-            ) - billingData.payment.paid_amount
-          }}
+          <span class="text-danger">
+            Outstanding: ${{
+              getProcedurePrice(
+                billingData.payment,
+                billingData.patient.charge_type
+              ) - billingData.payment.paid_amount
+            }}</span
+          >
         </label>
       </div>
     </div>
   </div>
   <!--end::Card-->
   <!--begin::Card-->
-  <div v-if="formData.payment_type" class="card mb-5 mb-xxl-8">
+  <div class="card mb-5 mb-xxl-8">
     <div class="card-header border-0 pt-0">
       <h3 class="card-title align-items-start flex-column">
-        <span class="card-label fw-bold fs-3 mb-1"
-          >PAY with
-          {{ formData.payment_type === "CASH" ? "Cash" : "Terminal" }}</span
-        >
+        <span class="card-label fw-bold fs-3 mb-1">Make a payment</span>
       </h3>
     </div>
     <div class="card-body py-0">
       <div class="row">
+        <!--begin::Input-->
+        <el-form>
+          <el-form-item prop="payment_type mb-0" class="mb-0">
+            <el-radio-group v-model="formData.payment_type" class="ml-4">
+              <el-radio label="EFTPOS" size="large">Etfpos</el-radio>
+              <el-radio label="CASH" size="large">Cash</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+        <!--end::Input-->
         <label class="text-muted fs-6 fw-bold mb-2 d-block">Amount($)</label>
         <!--begin::Input-->
         <el-form
@@ -270,7 +253,7 @@ export default defineComponent({
     const formRef = ref<null | HTMLFormElement>(null);
     const formData = ref({
       appointment_id: 0,
-      payment_type: "",
+      payment_type: "EFTPOS",
       amount: 0,
       is_deposit: 0,
     });
