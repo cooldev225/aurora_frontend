@@ -35,10 +35,15 @@
       </div>
       <div class="mt-5 ms-15">
         <section v-html="item.body"></section>
-        <footer v-if="item.attachment.length > 0">
+        <footer v-if="item.attachmentInfo.length > 0">
           <hr />
-          <div v-for="attachmentLink in item.attachment" :key="attachmentLink">
-            <a class="fs-3" :href="attachmentLink">{{ attachmentLink }}</a>
+          <div
+            v-for="attachmentLink in item.attachmentInfo"
+            :key="attachmentLink.url"
+          >
+            <a class="fs-3" :href="attachmentLink.url" target="_blank">{{
+              attachmentLink.fileName
+            }}</a>
           </div>
         </footer>
       </div>
@@ -207,6 +212,21 @@ export default defineComponent({
               mail.name = user.first_name + " " + user.last_name;
               mail.photo = user.photo;
             }
+
+            mail.attachmentInfo = [];
+
+            mail.attachment.forEach((attachmentLink) => {
+              const fileName = attachmentLink.substring(
+                attachmentLink.lastIndexOf("/") + 1
+              );
+
+              const fileInfo = {
+                fileName: fileName,
+                url: attachmentLink,
+              };
+
+              mail.attachmentInfo.push(fileInfo);
+            });
           });
         });
       }
