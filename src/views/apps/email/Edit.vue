@@ -1,5 +1,5 @@
 <template>
-  <section class="card ps-10 pt-10 pb-15">
+  <section class="card ps-10 pt-10 pb-15 pe-10">
     <el-form
       @submit.prevent="submit()"
       :model="formData"
@@ -98,7 +98,7 @@
           <span>Save</span>
         </button>
 
-        <button class="btn btn-lg btn-primary" type="submit">
+        <button class="btn btn-lg btn-primary me-3" type="submit">
           <span class="indicator-label">
             Send
             <span class="svg-icon svg-icon-3 ms-2 me-0">
@@ -220,6 +220,11 @@ export default defineComponent({
             Data.append(key, formData.value[key]);
           });
 
+          Data.set(
+            "attachmentUploaded",
+            JSON.stringify(formData.value.attachmentUploaded)
+          );
+
           store
             .dispatch(Actions.MAILS.UPDATE_DRAFT, Data)
             .then(() => {
@@ -243,6 +248,11 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
+
+          Data.set(
+            "attachmentUploaded",
+            JSON.stringify(formData.value.attachmentUploaded)
+          );
 
           store
             .dispatch(Actions.MAILS.SEND_DRAFT, Data)

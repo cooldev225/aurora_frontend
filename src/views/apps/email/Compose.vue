@@ -1,5 +1,5 @@
 <template>
-  <section class="card ps-10 pt-10 pb-15">
+  <section class="card ps-10 pt-10 pb-15 pe-10">
     <el-form
       @submit.prevent="submit()"
       :model="formData"
@@ -71,30 +71,16 @@
           Cancel
         </router-link>
 
-        <button
-          :data-kt-indicator="loading ? 'on' : null"
-          class="btn btn-light me-3"
-          @click="handleSave()"
-        >
+        <button class="btn btn-light me-3" @click="handleSave()">
           <span>Save</span>
         </button>
 
-        <button
-          :data-kt-indicator="loading ? 'on' : null"
-          class="btn btn-lg btn-primary"
-          type="submit"
-        >
-          <span v-if="!loading" class="indicator-label">
+        <button class="btn btn-lg btn-primary me-3" type="submit">
+          <span class="indicator-label">
             Send
             <span class="svg-icon svg-icon-3 ms-2 me-0">
               <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
             </span>
-          </span>
-          <span v-if="loading" class="indicator-progress">
-            Please wait...
-            <span
-              class="spinner-border spinner-border-sm align-middle ms-2"
-            ></span>
           </span>
         </button>
       </div>
@@ -131,7 +117,6 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const formRef = ref(null);
-    const loading = ref(false);
     const formData = ref({
       to_user_ids: [],
       subject: "",
@@ -164,9 +149,7 @@ export default defineComponent({
     onMounted(() => {
       setCurrentPageBreadcrumbs("Compose", ["Mail"]);
 
-      store.dispatch(Actions.USER_LIST).then(() => {
-        loading.value = false;
-      });
+      store.dispatch(Actions.USER_LIST);
     });
 
     const handleSave = () => {
@@ -179,16 +162,13 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
-          loading.value = true;
 
           store
             .dispatch(Actions.MAILS.COMPOSE, Data)
             .then(() => {
-              loading.value = false;
               router.push({ name: "mailbox-list" });
             })
             .catch(({ response }) => {
-              loading.value = false;
               console.log(response.data.error);
             });
         }
@@ -205,13 +185,10 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
-          loading.value = true;
 
           store
             .dispatch(Actions.MAILS.SEND, Data)
             .then(() => {
-              loading.value = false;
-
               Swal.fire({
                 text: "Mail Sent Successfully!",
                 icon: "success",
@@ -225,7 +202,6 @@ export default defineComponent({
               });
             })
             .catch(({ response }) => {
-              loading.value = false;
               console.log(response.data.error);
             });
         } else {
