@@ -270,9 +270,7 @@
         <template v-slot:cell-name="{ row: item }">
           <router-link
             :to="`/mailbox/${
-              item.status == 'draft' && parseInt(item.reply_id) == 0
-                ? 'edit'
-                : 'view'
+              item.status == 'draft' && item.reply_id == null ? 'edit' : 'view'
             }/${item.id}`"
             class="d-flex align-items-center text-dark"
           >
@@ -307,7 +305,7 @@
             <!--begin::Heading-->
             <router-link
               :to="`/mailbox/${
-                item.status == 'draft' && parseInt(item.reply_id) == 0
+                item.status == 'draft' && item.reply_id == null
                   ? 'edit'
                   : 'view'
               }/${item.id}`"

@@ -49,6 +49,19 @@
           >Choose Files</el-button
         >
       </el-upload>
+      <template
+        v-for="attachmentLink in formData.attachmentUploaded"
+        :key="attachmentLink.url"
+      >
+        <div class="mt-3" style="line-height: 20px">
+          <a class="fs-5" :href="attachmentLink.url" target="_blank">
+            <span class="svg-icon svg-icon-2">
+              <inline-svg src="media/icons/duotune/files/fil003.svg" />
+            </span>
+            <span class="ms-3">{{ attachmentLink.fileName }}</span>
+          </a>
+        </div>
+      </template>
     </el-form-item>
 
     <div class="d-flex flex-row-reverse">
@@ -156,6 +169,20 @@ export default defineComponent({
       if (repliedMails.value.length > 0) {
         formData.value = Object.assign({}, repliedMails.value[0]);
         formData.value.to_user_ids = JSON.parse(formData.value.to_user_ids);
+        formData.value.attachmentUploaded = [];
+
+        formData.value.attachment.forEach((attachmentLink) => {
+          const fileName = attachmentLink.substring(
+            attachmentLink.lastIndexOf("/") + 1
+          );
+
+          const fileInfo = {
+            fileName: fileName,
+            url: attachmentLink,
+          };
+
+          formData.value.attachmentUploaded.push(fileInfo);
+        });
         delete formData.value.attachment;
       }
     });

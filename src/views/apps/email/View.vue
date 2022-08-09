@@ -29,10 +29,10 @@
       </div>
       <div class="mt-5 ms-15">
         <article v-html="item.body"></article>
-        <footer v-if="item.attachmentInfo.length > 0">
+        <footer v-if="item.attachmentUploaded.length > 0">
           <hr />
           <template
-            v-for="attachmentLink in item.attachmentInfo"
+            v-for="attachmentLink in item.attachmentUploaded"
             :key="attachmentLink.url"
           >
             <div class="mb-2">
@@ -202,7 +202,7 @@ export default defineComponent({
               mail.photo = user.photo;
             }
 
-            mail.attachmentInfo = [];
+            mail.attachmentUploaded = [];
 
             mail.attachment.forEach((attachmentLink) => {
               const fileName = attachmentLink.substring(
@@ -214,7 +214,7 @@ export default defineComponent({
                 url: attachmentLink,
               };
 
-              mail.attachmentInfo.push(fileInfo);
+              mail.attachmentUploaded.push(fileInfo);
             });
           });
         });
