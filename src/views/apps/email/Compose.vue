@@ -18,7 +18,7 @@
           v-for="item in sendableUsers"
           :value="item.id"
           :label="
-            item.username + ' <' + item.first_name + ' ' + item.last_name + '>'
+            item.first_name + ' ' + item.last_name + ' <' + item.username + '>'
           "
           :key="item.id"
         />

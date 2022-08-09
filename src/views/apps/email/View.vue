@@ -1,18 +1,13 @@
 <template>
-  <el-form
-    @submit.prevent="submit()"
-    :model="formData"
-    :rules="rules"
-    ref="formRef"
-  >
-    <h3 class="fs-2 text-capitalize mb-10">{{ formData.subject }}</h3>
+  <section class="card ps-10 pt-10 pb-15">
+    <h3 class="fs-1 text-capitalize mb-5 ms-16">{{ formData.subject }}</h3>
     <div
       class="w-100 mt-10 mb-10"
       v-for="item in sentRepliedMails"
       :key="item.id"
     >
       <div class="d-flex align-items-center text-dark">
-        <div v-if="item.photo" class="symbol symbol-35px me-3">
+        <div v-if="item.photo" class="symbol symbol-35px me-5">
           <span
             class="symbol-label"
             :style="`background-image: url(${item.photo})`"
@@ -20,21 +15,20 @@
           </span>
         </div>
         <!--begin::Avatar-->
-        <div v-else class="symbol symbol-35px me-3">
+        <div v-else class="symbol symbol-35px me-5">
           <div class="symbol-label bg-light-danger">
             <span class="text-danger">U</span>
           </div>
         </div>
         <!--end::Avatar-->
         <!--begin::Name-->
-        <span
-          :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`"
-          v-html="item.name"
-        >
+        <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
+          <span class="fs-2">{{ item.name }}</span>
+          <span class="fs-5">{{ " <" + item.username + ">" }}</span>
         </span>
       </div>
       <div class="mt-5 ms-15">
-        <section v-html="item.body"></section>
+        <article v-html="item.body"></article>
         <footer v-if="item.attachmentInfo.length > 0">
           <hr />
           <div
@@ -48,12 +42,18 @@
         </footer>
       </div>
     </div>
-    <div v-if="!formData.isShow" class="d-flex flex-row mt-10">
-      <button class="btn fs-4 text-primary me-3" @click="handleReply(true)">
+    <div v-if="!formData.isShow" class="d-flex flex-row mt-5 ms-9" style="">
+      <button class="btn fs-4 text-primary" @click="handleReply(true)">
         <span>Reply</span>
       </button>
     </div>
-    <template v-if="formData.isShow">
+    <el-form
+      @submit.prevent="submit()"
+      :model="formData"
+      :rules="rules"
+      ref="formRef"
+      v-if="formData.isShow"
+    >
       <el-form-item prop="body">
         <ckeditor :editor="ClassicEditor" v-model="formData.body" />
       </el-form-item>
@@ -108,8 +108,8 @@
           </span>
         </button>
       </div>
-    </template>
-  </el-form>
+    </el-form>
+  </section>
 </template>
 
 <script>
@@ -210,6 +210,7 @@ export default defineComponent({
           sendableUsers.value.forEach((user) => {
             if (mail.from_user_id == user.id) {
               mail.name = user.first_name + " " + user.last_name;
+              mail.username = user.username;
               mail.photo = user.photo;
             }
 
