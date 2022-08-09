@@ -1,92 +1,105 @@
 <template>
-  <el-form
-    @submit.prevent="submit()"
-    :model="formData"
-    :rules="rules"
-    ref="formRef"
-  >
-    <h3>Compose New Mail</h3>
-    <el-form-item prop="to_user_ids">
-      <el-select
-        class="mt-10 w-100"
-        placeholder="To:"
-        v-model="formData.to_user_ids"
-        filterable
-        multiple
-      >
-        <el-option
-          v-for="item in sendableUsers"
-          :value="item.id"
-          :label="item.username"
-          :key="item.id"
-        />
-      </el-select>
-    </el-form-item>
-
-    <el-form-item prop="subject">
-      <el-input v-model="formData.subject" type="text" placeholder="Subject" />
-    </el-form-item>
-
-    <el-form-item prop="body">
-      <ckeditor :editor="ClassicEditor" v-model="formData.body" />
-    </el-form-item>
-
-    <el-form-item label="Attachment">
-      <el-upload
-        action="#"
-        ref="upload"
-        class="mr-20"
-        multiple
-        :on-change="handleChange"
-        :on-remove="handleRemove"
-        :on-preview="handlePreview"
-        :limit="100"
-        :auto-upload="false"
-      >
-        <el-button type="primary" class="btn btn-primary"
-          >Choose Files</el-button
+  <section class="card ps-10 pt-10 pb-15">
+    <el-form
+      @submit.prevent="submit()"
+      :model="formData"
+      :rules="rules"
+      ref="formRef"
+    >
+      <h3>Compose New Mail</h3>
+      <el-form-item prop="to_user_ids">
+        <el-select
+          class="mt-10 w-100"
+          placeholder="To:"
+          v-model="formData.to_user_ids"
+          filterable
+          multiple
         >
-      </el-upload>
-    </el-form-item>
+          <el-option
+            v-for="item in sendableUsers"
+            :value="item.id"
+            :label="
+              item.first_name +
+              ' ' +
+              item.last_name +
+              ' <' +
+              item.username +
+              '>'
+            "
+            :key="item.id"
+          />
+        </el-select>
+      </el-form-item>
 
-    <div class="d-flex flex-row-reverse">
-      <router-link
-        type="reset"
-        to="/mails"
-        id="kt_modal_mail_compose_cancel"
-        class="btn btn-light me-3"
-      >
-        Cancel
-      </router-link>
+      <el-form-item prop="subject">
+        <el-input
+          v-model="formData.subject"
+          type="text"
+          placeholder="Subject"
+        />
+      </el-form-item>
 
-      <button
-        :data-kt-indicator="loading ? 'on' : null"
-        class="btn btn-light me-3"
-        @click="handleSave()"
-      >
-        <span>Save</span>
-      </button>
+      <el-form-item prop="body">
+        <ckeditor :editor="ClassicEditor" v-model="formData.body" />
+      </el-form-item>
 
-      <button
-        :data-kt-indicator="loading ? 'on' : null"
-        class="btn btn-lg btn-primary"
-        type="submit"
-      >
-        <span v-if="!loading" class="indicator-label">
-          Send
-          <span class="svg-icon svg-icon-3 ms-2 me-0">
-            <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
+      <el-form-item label="Attachment">
+        <el-upload
+          action="#"
+          ref="upload"
+          class="mr-20"
+          multiple
+          :on-change="handleChange"
+          :on-remove="handleRemove"
+          :on-preview="handlePreview"
+          :limit="100"
+          :auto-upload="false"
+        >
+          <el-button type="primary" class="btn btn-primary"
+            >Choose Files</el-button
+          >
+        </el-upload>
+      </el-form-item>
+
+      <div class="d-flex flex-row-reverse">
+        <router-link
+          type="reset"
+          to="/mails"
+          id="kt_modal_mail_compose_cancel"
+          class="btn btn-light me-3"
+        >
+          Cancel
+        </router-link>
+
+        <button
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-light me-3"
+          @click="handleSave()"
+        >
+          <span>Save</span>
+        </button>
+
+        <button
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-primary"
+          type="submit"
+        >
+          <span v-if="!loading" class="indicator-label">
+            Send
+            <span class="svg-icon svg-icon-3 ms-2 me-0">
+              <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
+            </span>
           </span>
-        </span>
-        <span v-if="loading" class="indicator-progress">
-          Please wait...
-          <span
-            class="spinner-border spinner-border-sm align-middle ms-2"
-          ></span>
-        </span>
-      </button>
-    </div>
-  </el-form>
+          <span v-if="loading" class="indicator-progress">
+            Please wait...
+            <span
+              class="spinner-border spinner-border-sm align-middle ms-2"
+            ></span>
+          </span>
+        </button>
+      </div>
+    </el-form>
+  </section>
 </template>
 
 <script>

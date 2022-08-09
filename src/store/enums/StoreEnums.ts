@@ -235,10 +235,6 @@ const Actions = {
     VIEW: "viewMakePayment",
     CREATE: "createMakePayment",
   },
-
-  PROCEDURE_APPROVALS: {
-    LIST: "listProcedureApprovals",
-  },
 };
 
 const Mutations = {
@@ -407,10 +403,6 @@ const Mutations = {
   SET_NTF_TEMPLATES: {
     LIST: "setNtfTemplates",
     SELECT: "setSelectNtfTemplates",
-  },
-
-  SET_PROCEDURE_APPROVALS: {
-    LIST: "setProcedureApprovalsList",
   },
 
   // SET_EMPLOYEE_ROLES: {

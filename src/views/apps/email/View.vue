@@ -1,14 +1,13 @@
 <template>
-  <el-form
-    @submit.prevent="submit()"
-    :model="formData"
-    :rules="rules"
-    ref="formRef"
-  >
-    <h3 class="fs-2 text-capitalize mb-10">{{ formData.subject }}</h3>
-    <div class="w-100" v-for="item in sentRepliedMails" :key="item.id">
+  <section class="card ps-10 pt-10 pb-15">
+    <h3 class="fs-1 text-capitalize mb-5 ms-16">{{ formData.subject }}</h3>
+    <div
+      class="w-100 mt-10 mb-10"
+      v-for="item in sentRepliedMails"
+      :key="item.id"
+    >
       <div class="d-flex align-items-center text-dark">
-        <div v-if="item.photo" class="symbol symbol-35px me-3">
+        <div v-if="item.photo" class="symbol symbol-35px me-5">
           <span
             class="symbol-label"
             :style="`background-image: url(${item.photo})`"
@@ -16,27 +15,50 @@
           </span>
         </div>
         <!--begin::Avatar-->
-        <div v-else class="symbol symbol-35px me-3">
+        <div v-else class="symbol symbol-35px me-5">
           <div class="symbol-label bg-light-danger">
             <span class="text-danger">U</span>
           </div>
         </div>
         <!--end::Avatar-->
         <!--begin::Name-->
-        <span
-          :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`"
-          v-html="item.name"
-        >
+        <span :class="`${!item.is_read ? 'fw-bolder' : 'fw-normal'}`">
+          <span class="fs-2">{{ item.name }}</span>
+          <span class="fs-5">{{ " <" + item.username + ">" }}</span>
         </span>
       </div>
-      <section v-html="item.body" class="mt-5 ms-15"></section>
+      <div class="mt-5 ms-15">
+        <article v-html="item.body"></article>
+        <footer v-if="item.attachmentUploaded.length > 0">
+          <hr />
+          <template
+            v-for="attachmentLink in item.attachmentUploaded"
+            :key="attachmentLink.url"
+          >
+            <div class="mb-2">
+              <a class="fs-3" :href="attachmentLink.url" target="_blank">
+                <span class="svg-icon svg-icon-2">
+                  <inline-svg src="media/icons/duotune/files/fil003.svg" />
+                </span>
+                <span class="ms-3">{{ attachmentLink.fileName }}</span>
+              </a>
+            </div>
+          </template>
+        </footer>
+      </div>
     </div>
-    <div v-if="!formData.isShow" class="d-flex flex-row mt-10">
-      <button class="btn fs-4 text-primary me-3" @click="handleReply(true)">
+    <div v-if="!formData.isShow" class="d-flex flex-row mt-5 ms-9" style="">
+      <button class="btn fs-4 text-primary" @click="handleReply(true)">
         <span>Reply</span>
       </button>
     </div>
-    <template v-if="formData.isShow">
+    <el-form
+      @submit.prevent="submit()"
+      :model="formData"
+      :rules="rules"
+      ref="formRef"
+      v-if="formData.isShow"
+    >
       <el-form-item prop="body">
         <ckeditor :editor="ClassicEditor" v-model="formData.body" />
       </el-form-item>
@@ -53,10 +75,32 @@
           :limit="100"
           :auto-upload="false"
         >
-          <el-button type="primary" class="btn btn-primary"
-            >Choose Files</el-button
-          >
+          <el-button class="btn btn-primary">Choose Files</el-button>
         </el-upload>
+
+        <template
+          v-for="attachmentLink in formData.attachmentUploaded"
+          :key="attachmentLink.url"
+        >
+          <div
+            class="mt-3 d-flex"
+            style="line-height: 20px; justify-content: space-between"
+          >
+            <a class="fs-5" :href="attachmentLink.url" target="_blank">
+              <span class="svg-icon svg-icon-2">
+                <inline-svg src="media/icons/duotune/files/fil003.svg" />
+              </span>
+              <span class="ms-3">{{ attachmentLink.fileName }}</span>
+            </a>
+
+            <span
+              class="svg-icon svg-icon-2 cursor-pointer"
+              @click="handleRemoveUploaded(attachmentLink.url)"
+            >
+              <inline-svg src="media/icons/duotune/general/gen040.svg" />
+            </span>
+          </div>
+        </template>
       </el-form-item>
 
       <div class="d-flex flex-row-reverse">
@@ -64,39 +108,25 @@
           <span>Cancel</span>
         </button>
 
-        <button
-          :data-kt-indicator="loading ? 'on' : null"
-          class="btn btn-light me-3"
-          @click="handleSave()"
-        >
+        <button class="btn btn-light me-3" @click="handleSave()">
           <span>Save</span>
         </button>
 
-        <button
-          :data-kt-indicator="loading ? 'on' : null"
-          class="btn btn-lg btn-primary"
-          type="submit"
-        >
-          <span v-if="!loading" class="indicator-label">
+        <button class="btn btn-lg btn-primary" type="submit">
+          <span class="indicator-label">
             Send
             <span class="svg-icon svg-icon-3 ms-2 me-0">
               <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
             </span>
           </span>
-          <span v-if="loading" class="indicator-progress">
-            Please wait...
-            <span
-              class="spinner-border spinner-border-sm align-middle ms-2"
-            ></span>
-          </span>
         </button>
       </div>
-    </template>
-  </el-form>
+    </el-form>
+  </section>
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import { defineComponent, onMounted, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -125,7 +155,6 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const formRef = ref(null);
-    const loading = ref(false);
     const formData = ref({
       to_user_ids: [],
       subject: "",
@@ -157,15 +186,51 @@ export default defineComponent({
       uploadDisabled.value = fileList.length - 1;
     };
 
+    const handleRemoveUploaded = (url) => {
+      formData.value.attachmentUploaded =
+        formData.value.attachmentUploaded.filter((e) => e.url != url);
+    };
+
     const handlePreview = (uploadFile) => {
       dialogImageUrl.value = uploadFile.url;
       dialogVisible.value = true;
     };
 
-    watchEffect(() => {
+    watch(repliedMails, () => {
       if (repliedMails.value.length > 0) {
+        sentRepliedMails.value = [];
+
         repliedMails.value.forEach((item) => {
           item.toUserIds = JSON.parse(item.to_user_ids);
+
+          if (item.status != "draft") {
+            sentRepliedMails.value.unshift(item);
+          }
+        });
+
+        repliedMails.value.forEach((mail) => {
+          sendableUsers.value.forEach((user) => {
+            if (mail.from_user_id == user.id) {
+              mail.name = user.first_name + " " + user.last_name;
+              mail.username = user.username;
+              mail.photo = user.photo;
+            }
+
+            mail.attachmentUploaded = [];
+
+            mail.attachment.forEach((attachmentLink) => {
+              const fileName = attachmentLink.substring(
+                attachmentLink.lastIndexOf("/") + 1
+              );
+
+              const fileInfo = {
+                fileName: fileName,
+                url: attachmentLink,
+              };
+
+              mail.attachmentUploaded.push(fileInfo);
+            });
+          });
         });
 
         formData.value = Object.assign({}, repliedMails.value[0]);
@@ -180,23 +245,6 @@ export default defineComponent({
         } else {
           formData.value.isShow = true;
         }
-
-        sentRepliedMails.value = [];
-
-        repliedMails.value.forEach((item) => {
-          if (item.status != "draft") {
-            sentRepliedMails.value.unshift(item);
-          }
-        });
-
-        repliedMails.value.forEach((mail) => {
-          sendableUsers.value.forEach((user) => {
-            if (mail.from_user_id == user.id) {
-              mail.name = user.username;
-              mail.photo = user.photo;
-            }
-          });
-        });
       }
     });
 
@@ -205,9 +253,7 @@ export default defineComponent({
 
       const id = route.params.id;
 
-      store.dispatch(Actions.USER_LIST).then(() => {
-        loading.value = false;
-      });
+      store.dispatch(Actions.USER_LIST);
 
       store.dispatch(Actions.MAILS.VIEW, id);
     });
@@ -223,8 +269,6 @@ export default defineComponent({
             Data.append(key, formData.value[key]);
           });
 
-          loading.value = true;
-
           let actionName = Actions.MAILS.UPDATE_DRAFT;
 
           if (formData.value.id == undefined) {
@@ -234,12 +278,10 @@ export default defineComponent({
           store
             .dispatch(actionName, Data)
             .then(() => {
-              loading.value = false;
               store.dispatch(Actions.MAILS.LIST, "all");
               router.push({ name: "mailbox-list" });
             })
             .catch(({ response }) => {
-              loading.value = false;
               console.log(response.data.error);
             });
         }
@@ -256,8 +298,6 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
-
-          loading.value = true;
 
           let actionName = Actions.MAILS.SEND_DRAFT;
 
@@ -282,7 +322,6 @@ export default defineComponent({
               });
             })
             .catch(({ response }) => {
-              loading.value = false;
               console.log(response.data.error);
             });
         } else {
@@ -296,6 +335,7 @@ export default defineComponent({
       upload,
       handleChange,
       handleRemove,
+      handleRemoveUploaded,
       handlePreview,
       handleSave,
       handleReply,

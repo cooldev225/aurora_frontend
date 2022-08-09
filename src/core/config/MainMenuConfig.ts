@@ -366,6 +366,12 @@ const AnesthetistMenu = [
     fontIcon: "bi-house fs-2",
   },
   {
+    heading: "Procedure Approvals",
+    route: "/procedure-approvals",
+    svgIcon: "media/icons/duotune/arrows/arr012.svg",
+    fontIcon: "bi-house fs-2",
+  },
+  {
     heading: "Bookings",
     route: "/employee-booking-dashboard",
     svgIcon: "media/icons/duotune/general/gen014.svg",
