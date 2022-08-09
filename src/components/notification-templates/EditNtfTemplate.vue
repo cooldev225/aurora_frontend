@@ -65,7 +65,10 @@
               <!--end::Input group-->
 
               <!--begin::Input group-->
-              <div class="fv-row mb-7">
+              <div
+                v-if="formData.title != 'Appointment Booked'"
+                class="fv-row mb-7"
+              >
                 <!--begin::Label-->
                 <label class="required fs-6 fw-bold mb-2">Days Before</label>
                 <!--end::Label-->
