@@ -12,20 +12,6 @@
           class="d-flex justify-content-end"
           data-kt-subscription-table-toolbar="base"
         >
-          <!--begin::Export-->
-          <button
-            type="button"
-            class="btn btn-light-primary me-3"
-            data-bs-toggle="modal"
-            data-bs-target="#kt_subscriptions_export_modal"
-          >
-            <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr078.svg" />
-            </span>
-            Export
-          </button>
-          <!--end::Export-->
-
           <!--begin::Add subscription-->
           <button
             type="button"
