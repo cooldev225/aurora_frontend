@@ -2181,7 +2181,7 @@ export default defineComponent({
       });
     };
 
-    const handleCancel = () => {
+    const resetCreateModal = () => {
       currentStepIndex.value = 0;
       _stepperObj.value.goFirst();
       formRef_1.value.resetFields();
@@ -2189,7 +2189,19 @@ export default defineComponent({
       formRef_3.value.resetFields();
       formRef_4.value.resetFields();
 
+      filterPatient.first_name = "";
+      filterPatient.last_name = "";
+      filterPatient.date_of_birth = "";
+      filterPatient.ur_number = "";
+
       _appointment.value = "";
+      patientStatus.value = "new";
+      patientStep.value = 1;
+      patientTableData.value = patientList.value;
+    };
+
+    const handleCancel = () => {
+      resetCreateModal();
     };
 
     const handleAddressChange = (e) => {
@@ -2245,14 +2257,7 @@ export default defineComponent({
                   });
                 }
 
-                currentStepIndex.value = 0;
-                _stepperObj.value.goFirst();
-                formRef_1.value.resetFields();
-                if (formRef_2.value) formRef_2.value.resetFields();
-                formRef_3.value.resetFields();
-                formRef_4.value.resetFields();
-
-                _appointment.value = "";
+                resetCreateModal();
               });
             })
             .catch(({ response }) => {
