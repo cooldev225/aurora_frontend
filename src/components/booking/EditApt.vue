@@ -1507,6 +1507,8 @@ import { countryList, timeZoneList } from "@/core/data/country";
 import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
+import ApiService from "@/core/services/ApiService";
+import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "create-apt-modal",
@@ -1747,6 +1749,20 @@ export default defineComponent({
       if (apt_type.value === "Consultation") {
         otherInfoData.value.anesthetic_questions = false;
         otherInfoData.value.procedure_questions = false;
+      }
+
+      if (JwtService.getToken()) {
+        ApiService.setHeader();
+        ApiService.get("clinics/" + aptInfoData.value.clinic_id + "/rooms")
+          .then(({ data }) => {
+            rooms.value = data.data;
+          })
+          .catch(({ response }) => {
+            console.log(response.data.errors);
+            // this.context.commit(Mutations.PURGE_AUTH);
+          });
+      } else {
+        // this.context.commit(Mutations.PURGE_AUTH);
       }
     });
 

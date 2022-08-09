@@ -1,25 +1,24 @@
 <template>
   <div
     class="modal fade"
-    id="modal_edit_notification_template"
+    id="modal_collecting_person"
     tabindex="-1"
     aria-hidden="true"
-    ref="editNtfTemplateModalRef"
-    data-bs-backdrop="static"
+    ref="collectingPersonModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_add_customer_header">
+        <div class="modal-header" id="kt_modal_collecting_person_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Edit Notification Template</h2>
+          <h2 class="fw-bolder">Update Collecting Person</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
           <div
-            id="kt_modal_add_customer_close"
+            id="kt_modal_collecting_person_close"
             data-bs-dismiss="modal"
             class="btn btn-icon btn-sm btn-active-icon-primary"
           >
@@ -42,43 +41,26 @@
             <!--begin::Scroll-->
             <div
               class="scroll-y me-n7 pe-7"
-              id="kt_modal_add_customer_scroll"
+              id="kt_modal_collecting_person_scroll"
               data-kt-scroll="true"
               data-kt-scroll-activate="{default: false, lg: true}"
               data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#kt_modal_add_customer_header"
-              data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
+              data-kt-scroll-dependencies="#kt_modal_collecting_person_header"
+              data-kt-scroll-wrappers="#kt_modal_collecting_person_scroll"
               data-kt-scroll-offset="300px"
             >
               <!--begin::Input group-->
               <div class="fv-row mb-7">
                 <!--begin::Label-->
-                <label class="fs-6 fw-bold mb-2">Title</label>
+                <label class="required fs-6 fw-bold mb-2">Name</label>
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="title">
-                  <el-input v-model="formData.title" type="text" disabled />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-
-              <!--begin::Input group-->
-              <div
-                v-if="formData.title != 'Appointment Booked'"
-                class="fv-row mb-7"
-              >
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Days Before</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="days_before">
+                <el-form-item prop="collecting_person_name">
                   <el-input
-                    v-model="formData.days_before"
-                    type="number"
-                    placeholder="Days Before"
+                    v-model="formData.collecting_person_name"
+                    type="text"
+                    placeholder="Enter Name"
                   />
                 </el-form-item>
                 <!--end::Input-->
@@ -88,16 +70,15 @@
               <!--begin::Input group-->
               <div class="fv-row mb-7">
                 <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">SMS Template</label>
+                <label class="required fs-6 fw-bold mb-2">Phone</label>
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="sms_template">
+                <el-form-item prop="collecting_person_phone">
                   <el-input
-                    v-model="formData.sms_template"
-                    type="textarea"
-                    rows="3"
-                    placeholder="SMS Template"
+                    v-model="formData.collecting_person_phone"
+                    type="text"
+                    placeholder="Enter Phone"
                   />
                 </el-form-item>
                 <!--end::Input-->
@@ -108,17 +89,16 @@
               <div class="fv-row mb-7">
                 <!--begin::Label-->
                 <label class="required fs-6 fw-bold mb-2"
-                  >Email Print Template</label
+                  >Alternate Contact</label
                 >
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="email_print_template">
+                <el-form-item prop="collecting_person_alternate_contact">
                   <el-input
-                    v-model="formData.email_print_template"
-                    type="textarea"
-                    rows="3"
-                    placeholder="Email Print Template"
+                    v-model="formData.collecting_person_alternate_contact"
+                    type="text"
+                    placeholder="Enter Alternate Contact"
                   />
                 </el-form-item>
                 <!--end::Input-->
@@ -135,7 +115,7 @@
             <button
               type="reset"
               data-bs-dismiss="modal"
-              id="kt_modal_add_customer_cancel"
+              id="kt_modal_collecting_person_cancel"
               class="btn btn-light me-3"
             >
               Cancel
@@ -167,53 +147,53 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
+import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "edit-notification-template",
+  name: "update-collecting-person-modal",
   components: {},
-  setup() {
+  props: {
+    selectedApt: { type: Object, required: true },
+  },
+  setup(props) {
     const store = useStore();
     const formRef = ref(null);
-    const editNtfTemplateModalRef = ref(null);
+    const collectingPersonModalRef = ref(null);
     const loading = ref(false);
+    const aptData = computed(() => props.selectedApt);
 
     const formData = ref({
-      days_before: "",
-      sms_template: "",
-      email_print_template: "",
+      collecting_person_name: "",
+      collecting_person_phone: "",
+      collecting_person_alternate_contact: "",
     });
 
     const rules = ref({
-      days_before: [
+      collecting_person_name: [
         {
           required: true,
-          message: "Days before cannot be blank",
+          message: "Name cannot be blank",
           trigger: "change",
         },
       ],
-      sms_template: [
+      collecting_person_phone: [
         {
           required: true,
-          message: "SMS template cannot be blank",
+          message: "Phone cannnot be blank",
           trigger: "change",
         },
       ],
-      email_print_template: [
+      collecting_person_alternate_contact: [
         {
           required: true,
-          message: "Email print template cannot be blank",
+          message: "Alternate contact cannot be blank",
           trigger: "change",
         },
       ],
-    });
-
-    watchEffect(() => {
-      formData.value = store.getters.getNtfTemplatesSelected;
     });
 
     const submit = () => {
@@ -225,10 +205,12 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.NTF_TEMPLATES.UPDATE, formData.value)
+            .dispatch(Actions.APT.UPDATE, {
+              id: aptData.value.id,
+              ...formData.value,
+            })
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.NTF_TEMPLATES.LIST);
               Swal.fire({
                 text: "Successfully Updated!",
                 icon: "success",
@@ -238,7 +220,8 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(editNtfTemplateModalRef.value);
+                store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
+                hideModal(collectingPersonModalRef.value);
               });
             })
             .catch(({ response }) => {
@@ -252,13 +235,17 @@ export default defineComponent({
       });
     };
 
+    watch(aptData, () => {
+      for (let key in formData.value) formData.value[key] = aptData.value[key];
+    });
+
     return {
       formData,
       rules,
+      submit,
       formRef,
       loading,
-      editNtfTemplateModalRef,
-      submit,
+      collectingPersonModalRef,
     };
   },
 });

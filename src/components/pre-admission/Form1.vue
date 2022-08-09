@@ -141,23 +141,10 @@ export default defineComponent({
       } else {
         store.commit(Mutations.PURGE_AUTH);
       }
-
-      // await store.dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
-      //   apt_id: apt_id.value,
-      //   ...formData.value,
-      // });
-
-      // console.log(validateMsg.value);
-      // // if (validateMsg.value !== "Credential is not correct") {
-      // //   router.push({
-      // //     path: "/appointment_pre_admissions/show/" + apt_id.value + "/form_2",
-      // //   });
-      // // }
     };
 
     watch(validateMsg, () => {
       if (validateMsg.value === "") return;
-      // if (validateMsg.value === "")
     });
 
     onMounted(() => {

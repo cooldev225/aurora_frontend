@@ -128,7 +128,7 @@ export default defineComponent({
     //Create form validation object
     const login = Yup.object().shape({
       username: Yup.string().required().label("username"),
-      password: Yup.string().min(4).required().label("Password"),
+      password: Yup.string().required().label("Password"),
     });
 
     //Form submit function
