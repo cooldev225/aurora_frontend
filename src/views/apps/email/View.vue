@@ -1,5 +1,5 @@
 <template>
-  <section class="card ps-10 pt-10 pb-15">
+  <section class="card ps-10 pt-10 pb-15 pe-10">
     <h3 class="fs-1 text-capitalize mb-5 ms-16">{{ formData.subject }}</h3>
     <div
       class="w-100 mt-10 mb-10"
@@ -112,7 +112,7 @@
           <span>Save</span>
         </button>
 
-        <button class="btn btn-lg btn-primary" type="submit">
+        <button class="btn btn-lg btn-primary me-3" type="submit">
           <span class="indicator-label">
             Send
             <span class="svg-icon svg-icon-3 ms-2 me-0">
@@ -242,6 +242,7 @@ export default defineComponent({
           formData.value.body = "";
           formData.value.reply_id = formData.value.id;
           delete formData.value.id;
+          formData.value.attachmentUploaded = [];
         } else {
           formData.value.isShow = true;
         }
@@ -268,6 +269,11 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
+
+          Data.set(
+            "attachmentUploaded",
+            JSON.stringify(formData.value.attachmentUploaded)
+          );
 
           let actionName = Actions.MAILS.UPDATE_DRAFT;
 
@@ -298,6 +304,11 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
+
+          Data.set(
+            "attachmentUploaded",
+            JSON.stringify(formData.value.attachmentUploaded)
+          );
 
           let actionName = Actions.MAILS.SEND_DRAFT;
 
