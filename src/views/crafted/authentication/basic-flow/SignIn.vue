@@ -145,10 +145,9 @@ export default defineComponent({
 
       // Send login request
       await store.dispatch(Actions.LOGIN, values);
-      const [errorName] = Object.keys(store.getters.getErrors);
-      const error = store.getters.getErrors[errorName];
+      const error = store.getters.getErrors["status"];
 
-      if (!error) {
+      if (error != "failed") {
         // Go to page after successfully login
         if (
           userRole.value === "organizationManager" ||
@@ -164,7 +163,7 @@ export default defineComponent({
           router.push({ name: "employee-booking-dashboard" });
       } else {
         Swal.fire({
-          text: error[0],
+          text: "Incorrect username or password!!!",
           icon: "error",
           buttonsStyling: false,
           confirmButtonText: "Try again!",
