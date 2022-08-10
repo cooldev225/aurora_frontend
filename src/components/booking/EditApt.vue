@@ -238,6 +238,15 @@
                                   :key="item.id"
                                 />
                               </el-select>
+
+                              <div class="fv-row" v-if="overlapping_cnt >= 2">
+                                <!--begin::Label-->
+                                <label class="fs-7 fw-bold">
+                                  WARNING: this appointment will overlap with an
+                                  upcoming appointment
+                                </label>
+                                <!--end::Label-->
+                              </div>
                             </el-form-item>
                             <!--end::Input-->
                           </div>
@@ -1713,6 +1722,7 @@ export default defineComponent({
     const _specialist_name = ref("");
     const _appointment_time = ref(30);
     const _arrival_time = ref(30);
+    const overlapping_cnt = ref(0);
 
     const addressRef = ref(null);
 
@@ -1784,6 +1794,26 @@ export default defineComponent({
       } else {
         // this.context.commit(Mutations.PURGE_AUTH);
       }
+
+      const specialist = store.getters.getSelectedSpecialist;
+
+      let cnt = 0;
+      for (let i in specialist.appointments) {
+        let _apt_temp = specialist.appointments[i];
+        if (
+          (timeStr2Number(_start_time.value) <=
+            timeStr2Number(_apt_temp.start_time) &&
+            timeStr2Number(_apt_temp.start_time) <
+              timeStr2Number(_end_time.value)) ||
+          (timeStr2Number(_apt_temp.start_time) <=
+            timeStr2Number(_start_time.value) &&
+            timeStr2Number(_start_time.value) <
+              timeStr2Number(_apt_temp.end_time))
+        ) {
+          cnt++;
+        }
+      }
+      overlapping_cnt.value = cnt;
     });
 
     watch(_specialist, () => {
@@ -2044,6 +2074,10 @@ export default defineComponent({
       };
     };
 
+    const timeStr2Number = (time) => {
+      return Number(time.split(":")[0] + time.split(":")[1]);
+    };
+
     return {
       chargeTypes,
       rules,
@@ -2090,6 +2124,7 @@ export default defineComponent({
       billingInfoData,
       otherInfoData,
       gotoPage,
+      overlapping_cnt,
       searchReferralDoctor,
       handleSelectReferringDoctor,
     };

@@ -353,6 +353,7 @@ const Mutations = {
   SET_APT: {
     LIST: "setApt",
     SELECT: "setSelectApt",
+    SELECT_SPECIALIST: "setSelectedSpecialist",
     TYPES: {
       LIST: "setAptType",
       SELECT: "setSelectAptType",

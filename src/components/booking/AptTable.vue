@@ -100,7 +100,7 @@
                   <template v-else-if="item_2.time_length === 0"></template>
                   <template v-else>
                     <td
-                      @click="handleEdit(item_2.appointment)"
+                      @click="handleEdit(item_1.specialist, item_2.appointment)"
                       :rowspan="item_2.time_length"
                       :style="{
                         'min-width': '220px',
@@ -349,13 +349,6 @@ export default defineComponent({
 
     const handleAddApt = (specialist, startTime, endTime) => {
       const _date = moment(_apt_date.value).format("YYYY-MM-DD").toString();
-      const item = {
-        time_slot: [_date + "T" + startTime, _date + "T" + endTime],
-        date: _date,
-        ava_specialist: _ava_specialists,
-        selected_specialist: specialist,
-      };
-      store.commit(Mutations.SET_BOOKING.SELECT, item);
       let cnt = 0;
       for (let i in specialist.appointments) {
         let _apt_temp = specialist.appointments[i];
@@ -365,6 +358,16 @@ export default defineComponent({
         )
           cnt++;
       }
+      const item = {
+        time_slot: [_date + "T" + startTime, _date + "T" + endTime],
+        date: _date,
+        ava_specialist: _ava_specialists,
+        selected_specialist: specialist,
+        overlapping_cnt: cnt,
+      };
+
+      store.commit(Mutations.SET_BOOKING.SELECT, item);
+      store.commit(Mutations.SET_APT.SELECT_SPECIALIST, specialist);
       if (cnt >= 1) {
         Swal.fire({
           text: "Are you sure you want to double book this time slot?",
@@ -386,9 +389,10 @@ export default defineComponent({
       }
     };
 
-    const handleEdit = (item) => {
+    const handleEdit = (specialist, item) => {
       store.commit(Mutations.SET_APT.SELECT, item);
       DrawerComponent?.getInstance("booking-drawer")?.toggle();
+      store.commit(Mutations.SET_APT.SELECT_SPECIALIST, specialist);
     };
 
     return {
