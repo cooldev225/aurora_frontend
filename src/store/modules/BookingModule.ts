@@ -19,6 +19,7 @@ export interface IBookingData {
   time_slots: Array<string>;
   ava_specialist: Array<ISpecialist>;
   selected_specialist: ISpecialist;
+  overlapping_cnt: number;
 }
 
 export interface ISearchVariable {
