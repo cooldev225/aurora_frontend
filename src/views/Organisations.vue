@@ -177,7 +177,7 @@ export default defineComponent({
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_ORG.SELECT, item);
-      router.push({ name: "editOrganisation" });
+      router.push({ name: "editOrganisation", params: { id: item.id } });
     };
 
     const deleteAfterConfirmation = (item) => {

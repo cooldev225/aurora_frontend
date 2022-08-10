@@ -4,7 +4,7 @@
     <div class="card-header">
       <div class="card-title">
         <!--begin::Search-->
-        <span>Edit Organisation</span>
+        <span>{{ formInfo.title }}</span>
         <!--end::Search-->
       </div>
     </div>
@@ -337,7 +337,7 @@
             type="submit"
           >
             <span v-if="!loading" class="indicator-label">
-              Update
+              {{ formInfo.submitButtonName }}
               <span class="svg-icon svg-icon-3 ms-2 me-0">
                 <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
               </span>
@@ -359,9 +359,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  reactive,
+  computed,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -372,8 +379,15 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
     const formRef = ref<null | HTMLFormElement>(null);
     const loading = ref<boolean>(false);
+    const orgList = computed(() => store.getters.orgList);
+    const formInfo = reactive({
+      title: "Edit Organisation",
+      submitAction: Actions.ORG.UPDATE,
+      submitButtonName: "UPDATE",
+    });
     const formData = ref({
       first_name: "",
       last_name: "",
@@ -442,8 +456,14 @@ export default defineComponent({
       ],
     });
 
-    watchEffect(() => {
-      formData.value = store.getters.getOrgSelected;
+    watch(orgList, () => {
+      const id = route.params.id;
+
+      orgList.value.forEach((item) => {
+        if (item.id == id) {
+          formData.value = item;
+        }
+      });
     });
 
     const removeImage = () => {
@@ -451,7 +471,9 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Edit Organisation", ["Organisation"]);
+      store.dispatch(Actions.ORG.LIST);
+
+      setCurrentPageBreadcrumbs(formInfo.title, ["Organisation"]);
     });
 
     const changeLogo = (e) => {
@@ -468,7 +490,7 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.ORG.UPDATE, formData.value)
+            .dispatch(formInfo.submitAction, formData.value)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.ORG.LIST);
@@ -496,6 +518,7 @@ export default defineComponent({
 
     return {
       formData,
+      formInfo,
       rules,
       submit,
       formRef,

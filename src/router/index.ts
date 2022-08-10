@@ -28,13 +28,13 @@ const routes: Array<RouteRecordRaw> = [
         path: "/organisations/create",
         name: "createOrganisation",
         component: () =>
-          import("@/components/organisations/AddOrganization.vue"),
+          import("@/components/organisations/AddOrganisation.vue"),
       },
       {
-        path: "/organisations/edit",
+        path: "/organisations/edit/:id",
         name: "editOrganisation",
         component: () =>
-          import("@/components/organisations/EditOrganization.vue"),
+          import("@/components/organisations/EditOrganisation.vue"),
       },
       {
         path: "/organisationManagers",

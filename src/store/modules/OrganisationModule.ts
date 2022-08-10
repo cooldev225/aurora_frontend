@@ -27,7 +27,7 @@ export interface OrgInfo {
 }
 
 @Module
-export default class OrganizationModule extends VuexModule implements OrgInfo {
+export default class OrganisationModule extends VuexModule implements OrgInfo {
   orgData = [] as Array<IOrg>;
   orgSelectData = {} as IOrg;
 
