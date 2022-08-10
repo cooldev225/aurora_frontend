@@ -2329,7 +2329,7 @@ export default defineComponent({
       patientInfoData.value = item;
 
       for (let key in billingInfoData.value) {
-        if (key === "charge_type") {
+        if (key === "charge_type" || key === "procedure_price") {
           continue;
         }
 
