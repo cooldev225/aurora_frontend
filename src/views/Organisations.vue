@@ -204,15 +204,27 @@ export default defineComponent({
     const applyFilterAndSort = () => {
       if (filterAndSort.searchText != "") {
         filteredData.value = orgList.value.filter((org) => {
-          if (org.name.search(filterAndSort.searchText) >= 0) {
+          if (
+            org.name
+              .toLowerCase()
+              .search(filterAndSort.searchText.toLowerCase()) >= 0
+          ) {
             return true;
           }
 
-          if (org.email.search(filterAndSort.searchText) >= 0) {
+          if (
+            org.email
+              .toLowerCase()
+              .search(filterAndSort.searchText.toLowerCase()) >= 0
+          ) {
             return true;
           }
 
-          if (org.username.search(filterAndSort.searchText) >= 0) {
+          if (
+            org.username
+              .toLowerCase()
+              .search(filterAndSort.searchText.toLowerCase()) >= 0
+          ) {
             return true;
           }
 
