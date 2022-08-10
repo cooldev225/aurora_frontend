@@ -105,6 +105,9 @@ const Actions = {
     DELETE: "deletePatients",
     UPDATE: "updatePatients",
     VIEW: "viewPatient",
+    DOCUMENT: {
+      LIST: "listPatientsDocuments",
+    },
   },
 
   PATIENTS_RECALL: {
@@ -309,6 +312,9 @@ const Mutations = {
   SET_PATIENT: {
     LIST: "setPatientsList",
     SELECT: "setSelectPatient",
+    DOCUMENT: {
+      LIST: "setPatientDocumentList",
+    },
   },
 
   SET_PATIENT_RECALL: {
