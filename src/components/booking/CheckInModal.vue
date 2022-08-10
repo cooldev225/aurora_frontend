@@ -359,8 +359,7 @@ export default defineComponent({
               store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
               DrawerComponent?.getInstance("booking-drawer")?.hide();
             } else {
-              aptData.value.attendance_status = "CHECKED_IN";
-              store.commit(Mutations.SET_APT.SELECT, aptData);
+              DrawerComponent?.getInstance("booking-drawer")?.hide();
             }
           });
         })
