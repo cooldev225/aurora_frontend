@@ -1333,14 +1333,32 @@
                                     <!--end::Label-->
 
                                     <!--begin::Input-->
-                                    <el-form-item prop="referring_doctor">
-                                      <el-select
+                                    <el-form-item prop="referring_doctor_id">
+                                      <el-autocomplete
                                         class="w-100"
-                                        v-model="otherInfoData.referring_doctor"
-                                        placeholder="Select Referring Doctor"
-                                      />
+                                        v-model="
+                                          otherInfoData.referring_doctor_name
+                                        "
+                                        value-key="full_name"
+                                        :fetch-suggestions="
+                                          searchReferralDoctor
+                                        "
+                                        placeholder="Please input"
+                                        :trigger-on-focus="false"
+                                        @select="handleSelectReferringDoctor"
+                                      >
+                                        <template #default="{ item }">
+                                          <div class="name">
+                                            {{ item.title }}
+                                            {{ item.first_name }}
+                                            {{ item.last_name }}
+                                          </div>
+                                          <div class="address">
+                                            {{ item.address }}
+                                          </div>
+                                        </template>
+                                      </el-autocomplete>
                                     </el-form-item>
-                                    <!--end::Input-->
                                   </div>
                                   <!--end::Input group-->
                                 </div>
@@ -1520,6 +1538,7 @@ export default defineComponent({
     const formRef_3 = ref(null);
     const formRef_4 = ref(null);
     const loading = ref(false);
+    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
 
     const aptInfoData = ref({
       clinic_name: "",
@@ -1570,7 +1589,8 @@ export default defineComponent({
       anesthetic_answers: [],
       procedure_questions: false,
       procedure_answers: [],
-      referring_doctor: "",
+      referring_doctor_name: "",
+      referring_doctor_id: "",
       referral_duration: "",
       referral_date: "",
       no_referral: false,
@@ -1908,6 +1928,7 @@ export default defineComponent({
               ...searchVal.value,
             });
           }
+          resetEditModal();
         })
         .catch(({ response }) => {
           loading.value = false;
@@ -1915,13 +1936,18 @@ export default defineComponent({
         });
     };
 
-    const handleCancel = () => {
+    const resetEditModal = () => {
       currentStepIndex.value = 0;
       _stepperObj.value.goFirst();
       formRef_1.value.resetFields();
       formRef_2.value.resetFields();
       formRef_3.value.resetFields();
       formRef_4.value.resetFields();
+      store.dispatch(Actions.PATIENTS.LIST);
+    };
+
+    const handleCancel = () => {
+      resetEditModal();
     };
 
     const handleAddressChange = (e) => {
@@ -1983,6 +2009,41 @@ export default defineComponent({
       _stepperObj.value.goto(page);
     };
 
+    const handleSelectReferringDoctor = (item) => {
+      otherInfoData.value.referring_doctor_id = item.id;
+    };
+
+    let timeout;
+    const searchReferralDoctor = (term, cb) => {
+      const results = term
+        ? referralDoctors.value.filter(createReferringDotorFilter(term))
+        : referralDoctors.value;
+
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        cb(results);
+      }, 1000);
+    };
+
+    const createReferringDotorFilter = (term) => {
+      const keyword = term.toString();
+      return (referralDoctor) => {
+        const full_name =
+          referralDoctor.title +
+          " " +
+          referralDoctor.first_name +
+          " " +
+          referralDoctor.last_name;
+        const full_name_pos = full_name
+          .toLowerCase()
+          .indexOf(keyword.toLowerCase());
+        const address_pos = referralDoctor.address
+          .toLowerCase()
+          .indexOf(keyword.toLowerCase());
+        return full_name_pos !== -1 || address_pos !== -1;
+      };
+    };
+
     return {
       chargeTypes,
       rules,
@@ -2029,6 +2090,8 @@ export default defineComponent({
       billingInfoData,
       otherInfoData,
       gotoPage,
+      searchReferralDoctor,
+      handleSelectReferringDoctor,
     };
   },
 });
