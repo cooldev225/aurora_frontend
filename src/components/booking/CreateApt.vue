@@ -200,7 +200,7 @@
                     ref="formRef_1"
                     @submit.prevent=""
                   >
-                    <div class="row scroll h-500px">
+                    <div class="row scroll h-520px">
                       <div class="card-info">
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
@@ -220,10 +220,19 @@
                                 :key="item.id"
                               />
                             </el-select>
+
+                            <div class="fv-row" v-if="overlapping_cnt >= 1">
+                              <!--begin::Label-->
+                              <label class="fs-7 fw-bold">
+                                WARNING: this appointment will overlap with an
+                                upcoming appointment
+                              </label>
+                              <!--end::Label-->
+                            </div>
                           </el-form-item>
                           <!--end::Input-->
                         </div>
-                        <!--end::Input group-->
+
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
                           <label class="fs-6 fw-bold mb-2"> Room </label>
@@ -1974,6 +1983,8 @@ export default defineComponent({
     const patientStatus = ref("new");
     const patientStep = ref(3);
 
+    const overlapping_cnt = ref(0);
+
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
@@ -2027,6 +2038,26 @@ export default defineComponent({
         otherInfoData.value.anesthetic_questions = false;
         otherInfoData.value.procedure_questions = false;
       }
+
+      const specialist = store.getters.getSelectedSpecialist;
+
+      let cnt = 0;
+      for (let i in specialist.appointments) {
+        let _apt_temp = specialist.appointments[i];
+        if (
+          (timeStr2Number(_start_time.value) <=
+            timeStr2Number(_apt_temp.start_time) &&
+            timeStr2Number(_apt_temp.start_time) <
+              timeStr2Number(_end_time.value)) ||
+          (timeStr2Number(_apt_temp.start_time) <=
+            timeStr2Number(_start_time.value) &&
+            timeStr2Number(_start_time.value) <
+              timeStr2Number(_apt_temp.end_time))
+        ) {
+          cnt++;
+        }
+      }
+      overlapping_cnt.value = cnt;
     });
 
     watch(_specialist, () => {
@@ -2091,6 +2122,9 @@ export default defineComponent({
         _end_time.value = moment(bookingData.time_slot[1]).format("HH:mm");
       }
       aptInfoData.value.date = bookingData.date;
+      if (_appointment.value == "") {
+        overlapping_cnt.value = bookingData.overlapping_cnt;
+      }
       if (bookingData.selected_specialist) {
         _specialist.value = bookingData.selected_specialist.id;
         if (bookingData.selected_specialist.anesthetist) {
@@ -2379,6 +2413,10 @@ export default defineComponent({
       };
     };
 
+    const timeStr2Number = (time) => {
+      return Number(time.split(":")[0] + time.split(":")[1]);
+    };
+
     return {
       chargeTypes,
       rules,
@@ -2432,6 +2470,7 @@ export default defineComponent({
       billingInfoData,
       otherInfoData,
       formatDate,
+      overlapping_cnt,
       searchReferralDoctor,
       handleSelectReferringDoctor,
     };

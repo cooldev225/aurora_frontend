@@ -17,6 +17,7 @@ export interface AptInfo {
   aptPreAdmissionOrgData: IApt;
   aptPreAdmissionValidateData: IApt;
   aptPreAdmissionValidateMsg: string;
+  selectedSpecialistData;
 }
 
 @Module
@@ -30,6 +31,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   aptPreAdmissionOrgData = {} as IApt;
   aptPreAdmissionValidateData = {} as IApt;
   aptPreAdmissionValidateMsg = "" as string;
+  selectedSpecialistData = null;
 
   /**
    * Get current user object
@@ -75,6 +77,14 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
    */
   get getAptSelected(): IApt {
     return this.aptSelectData;
+  }
+
+  /**
+   * Get current user object
+   * @returns Selected specialist data
+   */
+  get getSelectedSpecialist() {
+    return this.selectedSpecialistData;
   }
 
   /**
@@ -129,6 +139,11 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   @Mutation
   [Mutations.SET_APT.SELECT](data) {
     this.aptSelectData = data;
+  }
+
+  @Mutation
+  [Mutations.SET_APT.SELECT_SPECIALIST](data) {
+    this.selectedSpecialistData = data;
   }
 
   @Mutation
