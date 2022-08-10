@@ -107,24 +107,25 @@
         </template>
         <template v-slot:cell-upcoming="{ row: item }">
           <span
+            v-for="upcoming_appointment in item.upcoming_appointments"
+            :key="upcoming_appointment.id"
             :class="`badge ${
-              item.upcoming_appointment.id ? '' : 'badge-light-success'
+              upcoming_appointment.id ? '' : 'badge-light-success'
             }`"
             :style="`width: fit-content; background-color: ${
-              item.upcoming_appointment.id
-                ? item.upcoming_appointment.color
-                : ''
-            }; cursor: ${
-              item.upcoming_appointment.id ? 'pointer' : 'not-allowed'
-            }`"
-            @click="item.upcoming_appointment.id ? handleBadge(item) : ''"
-            >{{
-              item.upcoming_appointment.id
-                ? item.upcoming_appointment.date +
+              upcoming_appointment.id ? upcoming_appointment.color : ''
+            }; cursor: ${upcoming_appointment.id ? 'pointer' : 'not-allowed'}`"
+            @click="
+              upcoming_appointment.id ? handleBadge(upcoming_appointment) : ''
+            "
+          >
+            {{
+              upcoming_appointment.id
+                ? upcoming_appointment.date +
                   " " +
-                  item.upcoming_appointment.start_time +
+                  upcoming_appointment.start_time +
                   "(" +
-                  item.upcoming_appointment.appointment_type_name +
+                  upcoming_appointment.appointment_type_name +
                   ")"
                 : "none"
             }}</span
@@ -175,7 +176,7 @@ export default defineComponent({
         searchable: true,
       },
       {
-        name: "Upcoming Appointment",
+        name: "Upcoming Appointments",
         key: "upcoming",
       },
     ]);
@@ -238,8 +239,8 @@ export default defineComponent({
       router.push({ name: "patients-view-appointments" });
     };
 
-    const handleBadge = (item) => {
-      store.commit(Mutations.SET_APT.SELECT, item.upcoming_appointment);
+    const handleBadge = (upcoming_appointment) => {
+      store.commit(Mutations.SET_APT.SELECT, upcoming_appointment);
       DrawerComponent?.getInstance("booking-drawer")?.setBookingDrawerShown(
         true
       );
