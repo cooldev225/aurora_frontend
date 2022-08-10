@@ -3,9 +3,18 @@
   <div class="card mb-5 mb-xl-10" id="patient_view_documents">
     <div class="row h-450px p-5">
       <div class="col-md-4">
-        <el-select class="w-100 mb-5" placeholder="Select Document Type">
+        <el-select
+          class="w-100 mb-5"
+          placeholder="Select Document Type"
+          v-model="documentType"
+        >
           <el-option label="LETTER" value="letter" />
-          <el-option label="NOTES" value="notes" />
+          <el-option label="REPORT" value="report" />
+          <el-option label="CLINICAL_NOTE" value="clinical_note" />
+          <el-option label="PATHOLOGY_REPORT" value="pathology_report" />
+          <el-option label="AUDIO" value="audio" />
+          <el-option label="USB_CAPTURE" value="usb_capture" />
+          <el-option label="OTHER" value="other" />
         </el-select>
         <div v-for="item in documentList" :key="item.id">
           <input
@@ -61,20 +70,18 @@ export default defineComponent({
     const selectedPatient = computed(() => store.getters.selectedPatient);
     const documentList = computed(() => store.getters.getPatientDocumentList);
     const document = ref(null);
+    const documentType = ref(null);
 
     onMounted(() => {
       store.dispatch(Actions.PATIENTS.DOCUMENT.LIST, selectedPatient.value.id);
       setCurrentPageBreadcrumbs("Documents", ["Patients"]);
     });
 
-    watch(documentList, () => {
-      console.log(documentList.value);
-    });
-
     return {
       formData,
       documentList,
       document,
+      documentType,
       moment,
     };
   },
