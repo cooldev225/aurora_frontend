@@ -186,7 +186,7 @@ export default defineComponent({
     ]);
     const tableData = ref([]);
     const tableKey = ref(0);
-    const showFutureApt = ref(false);
+    const showFutureApt = ref(true);
 
     const renderTable = () => tableKey.value++;
 
