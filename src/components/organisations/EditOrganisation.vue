@@ -129,7 +129,7 @@
                   <!--begin::Preview existing avatar-->
                   <div
                     class="image-input-wrapper w-125px h-125px"
-                    :style="`background-image: url(${formData.logo})`"
+                    :style="`background-image: url(${formData.logoUploaded})`"
                   ></div>
                   <!--end::Preview existing avatar-->
 
@@ -385,7 +385,7 @@ export default defineComponent({
     const orgList = computed(() => store.getters.orgList);
     const formInfo = reactive({
       title: "Edit Organisation",
-      submitAction: Actions.ORG.UPDATE,
+      submitAction: Actions.ORG.CREATE,
       submitButtonName: "UPDATE",
     });
     const formData = ref({
@@ -401,12 +401,20 @@ export default defineComponent({
       otac: "",
       key_expiry: "",
       device_expiry: "",
-      logo: "media/avatars/300-1.jpg",
+      logoUploaded: "media/avatars/300-1.jpg",
       max_clinics: "",
       max_employees: "",
     });
+    const Data = new FormData();
 
     const rules = ref({
+      name: [
+        {
+          required: true,
+          message: "Organization Name cannot be blank.",
+          trigger: "change",
+        },
+      ],
       first_name: [
         {
           required: true,
@@ -462,12 +470,15 @@ export default defineComponent({
       orgList.value.forEach((item) => {
         if (item.id == id) {
           formData.value = item;
+
+          formData.value.logoUploaded = item.logo;
         }
       });
     });
 
     const removeImage = () => {
-      formData.value.logo = "media/avatars/blank.png";
+      formData.value.logoUploaded = "media/avatars/blank.png";
+      Data.delete("logo");
     };
 
     onMounted(() => {
@@ -477,7 +488,8 @@ export default defineComponent({
     });
 
     const changeLogo = (e) => {
-      formData.value.logo = e.target.value;
+      formData.value.logoUploaded = e.target.value;
+      Data.append("logo", e.target.files[0]);
     };
 
     const submit = () => {
@@ -489,8 +501,14 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
 
+          Object.keys(formData.value).forEach((key) => {
+            if (key != "logo") {
+              Data.append(key, formData.value[key]);
+            }
+          });
+
           store
-            .dispatch(formInfo.submitAction, formData.value)
+            .dispatch(formInfo.submitAction, Data)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.ORG.LIST);

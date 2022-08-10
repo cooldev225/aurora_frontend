@@ -11,7 +11,7 @@ export interface IOrg {
   name: string;
   password: string;
   email: string;
-  logo: File;
+  logo: string;
   max_clinics: number;
   max_employees: number;
   device_name: string;
