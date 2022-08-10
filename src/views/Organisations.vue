@@ -13,6 +13,7 @@
             data-kt-subscription-table-filter="search"
             class="form-control form-control-solid w-250px ps-14"
             placeholder="Search Organisations"
+            v-model="filterAndSort.searchText"
           />
         </div>
         <!--end::Search-->
@@ -113,7 +114,15 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  watchEffect,
+  watch,
+  reactive,
+} from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -155,13 +164,19 @@ export default defineComponent({
         key: "action",
       },
     ]);
+
+    const filterAndSort = reactive({
+      searchText: "",
+    });
+
     const tableData = ref([]);
+    const filteredData = ref([]);
     const orgList = computed(() => store.getters.orgList);
     const loading = ref(true);
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_ORG.SELECT, item);
-      router.push({ name: "editOrganization" });
+      router.push({ name: "editOrganisation" });
     };
 
     const handleDelete = (id) => {
@@ -186,8 +201,40 @@ export default defineComponent({
         });
     };
 
+    const applyFilterAndSort = () => {
+      if (filterAndSort.searchText != "") {
+        filteredData.value = orgList.value.filter((org) => {
+          if (org.name.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          if (org.email.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          if (org.username.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          if (org.mobile_number.search(filterAndSort.searchText) >= 0) {
+            return true;
+          }
+
+          return false;
+        });
+      } else {
+        filteredData.value = orgList.value;
+      }
+
+      tableData.value = filteredData;
+    };
+
+    watch(filterAndSort, () => {
+      applyFilterAndSort();
+    });
+
     watchEffect(() => {
-      tableData.value = orgList;
+      applyFilterAndSort();
     });
 
     onMounted(() => {
@@ -199,7 +246,7 @@ export default defineComponent({
       });
     });
 
-    return { tableHeader, tableData, handleEdit, handleDelete };
+    return { tableHeader, tableData, handleEdit, filterAndSort, handleDelete };
   },
 });
 </script>
