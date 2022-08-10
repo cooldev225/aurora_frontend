@@ -10,19 +10,28 @@ export interface IPatient {
 export interface PatientsInfo {
   patientsData: Array<IPatient>;
   patientsSelectData: IPatient;
+  patientDocumentList: IPatient;
 }
 
 @Module
 export default class PatientsModule extends VuexModule implements PatientsInfo {
   patientsData = [] as Array<IPatient>;
   patientsSelectData = {} as IPatient;
-
+  patientDocumentList = {} as IPatient;
   /**
    * Get current Patients List
    * @returns Patients
    */
   get patientsList(): Array<IPatient> {
     return this.patientsData;
+  }
+
+  /**
+   * Get current Patients List
+   * @returns Patients
+   */
+  get getPatientDocumentList(): IPatient {
+    return this.patientDocumentList;
   }
 
   /**
@@ -36,6 +45,11 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   @Mutation
   [Mutations.SET_PATIENT.LIST](patientsData) {
     this.patientsData = patientsData;
+  }
+
+  @Mutation
+  [Mutations.SET_PATIENT.DOCUMENT.LIST](documentList) {
+    this.patientDocumentList = documentList;
   }
 
   @Mutation
@@ -85,6 +99,24 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       ApiService.get("patients/" + id)
         .then(({ data }) => {
           this.context.commit(Mutations.SET_PATIENT.SELECT, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.PATIENTS.DOCUMENT.LIST](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.query("patient-documents", { params: { patient_id: id } })
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_PATIENT.DOCUMENT.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
