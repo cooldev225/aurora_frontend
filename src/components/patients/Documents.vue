@@ -8,13 +8,13 @@
           placeholder="Select Document Type"
           v-model="documentType"
         >
-          <el-option label="LETTER" value="letter" />
-          <el-option label="REPORT" value="report" />
-          <el-option label="CLINICAL_NOTE" value="clinical_note" />
-          <el-option label="PATHOLOGY_REPORT" value="pathology_report" />
-          <el-option label="AUDIO" value="audio" />
-          <el-option label="USB_CAPTURE" value="usb_capture" />
-          <el-option label="OTHER" value="other" />
+          <el-option label="LETTER" value="LETTER" />
+          <el-option label="REPORT" value="REPORT" />
+          <el-option label="CLINICAL_NOTE" value="CLINICAL_NOTE" />
+          <el-option label="PATHOLOGY_REPORT" value="PATHOLOGY_REPORT" />
+          <el-option label="AUDIO" value="AUDIO" />
+          <el-option label="USB_CAPTURE" value="USB_CAPTURE" />
+          <el-option label="OTHER" value="OTHER" />
         </el-select>
         <div v-for="item in documentList" :key="item.id">
           <input
@@ -68,13 +68,24 @@ export default defineComponent({
     const store = useStore();
     const formData = ref({});
     const selectedPatient = computed(() => store.getters.selectedPatient);
-    const documentList = computed(() => store.getters.getPatientDocumentList);
+    const documentList = ref(null);
+    const _documentList = computed(() => store.getters.getPatientDocumentList);
     const document = ref(null);
     const documentType = ref(null);
 
     onMounted(() => {
       store.dispatch(Actions.PATIENTS.DOCUMENT.LIST, selectedPatient.value.id);
       setCurrentPageBreadcrumbs("Documents", ["Patients"]);
+    });
+
+    watch(_documentList, () => {
+      documentList.value = _documentList.value;
+    });
+
+    watch(documentType, () => {
+      documentList.value = _documentList.value.filter(
+        (item) => item.document_type === documentType.value
+      );
     });
 
     return {
