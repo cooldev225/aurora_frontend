@@ -22,42 +22,19 @@
         :rows-per-page="10"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-full_name="{ row: item }">
-          {{ item.first_name }} {{ item.last_name }}
+        <template v-slot:cell-appointment_details="{ row: item }">
+          {{ item.date }} {{ item.time }}
         </template>
-        <template v-slot:cell-username="{ row: item }">
-          {{ item.username }}
+        <template v-slot:cell-patient="{ row: item }">
+          {{ item.patient_first_name }} {{ item.patient_last_name }} ({{
+            item.contact_number
+          }})
         </template>
-        <template v-slot:cell-email="{ row: item }">
-          {{ item.email }}
+        <template v-slot:cell-specialist="{ row: item }">
+          {{ item.specialist_name }}
         </template>
-        <template v-slot:cell-action="{ row: item }">
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen019.svg" />
-            </span>
-          </a>
-
-          <button
-            @click="handleEdit(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/art/art005.svg" />
-            </span>
-          </button>
-
-          <button
-            @click="handleDelete(item.id)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen027.svg" />
-            </span>
-          </button>
+        <template v-slot:cell-appointment="{ row: item }">
+          {{ item.appointment_type_name }}
         </template>
       </Datatable>
     </div>
@@ -84,76 +61,29 @@ export default defineComponent({
     const store = useStore();
     const tableHeader = ref([
       {
-        name: "Clinic",
-        key: "clinic",
+        name: "Appointment Details",
+        key: "appointment_details",
+        sortable: true,
+      },
+      {
+        name: "Patient",
+        key: "patient",
         sortable: true,
       },
       {
         name: "Specialist",
         key: "specialist",
         sortable: true,
-        searchable: true,
       },
       {
-        name: "Procedure",
-        key: "procedure",
+        name: "Appointment",
+        key: "appointment",
         sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Patient Name",
-        key: "patient_name",
-      },
-      {
-        name: "Patient Number",
-        key: "patient_number",
-      },
-      {
-        name: "Appointment Date",
-        key: "appintment-date",
-      },
-      {
-        name: "Start Time",
-        key: "start_time",
-      },
-      {
-        name: "Status",
-        key: "status",
-      },
-      {
-        name: "Actions",
-        key: "actions",
       },
     ]);
     const tableData = ref([]);
     const unapproved_pro = computed(() => store.getters.getUnapprovedAptList);
     const loading = ref(true);
-
-    const handleEdit = (item) => {
-      store.commit(Mutations.SET_APT.UNAPPROVED.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_edit_admin"));
-      modal.show();
-    };
-
-    const handleDelete = (id) => {
-      store
-        .dispatch(Actions.APT.UNAPPROVED.DELETE, id)
-        .then(() => {
-          store.dispatch(Actions.APT.UNAPPROVED.LIST);
-          Swal.fire({
-            text: "Successfully Deleted!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          });
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
-    };
 
     onMounted(() => {
       loading.value = true;
@@ -162,13 +92,14 @@ export default defineComponent({
         tableData.value = unapproved_pro;
         loading.value = false;
       });
+      console.log(tableData.value);
     });
 
     watchEffect(() => {
       tableData.value = unapproved_pro;
       loading.value = false;
     });
-    return { tableHeader, tableData, handleEdit, handleDelete };
+    return { tableHeader, tableData };
   },
 });
 </script>
