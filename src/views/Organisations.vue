@@ -100,7 +100,7 @@
           </button>
 
           <button
-            @click="handleDelete(item.id)"
+            @click="handleDelete(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
           >
             <span class="svg-icon svg-icon-3">
@@ -172,33 +172,118 @@ export default defineComponent({
     const tableData = ref([]);
     const filteredData = ref([]);
     const orgList = computed(() => store.getters.orgList);
+    const currentUser = computed(() => store.getters.currentUser);
     const loading = ref(true);
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_ORG.SELECT, item);
-      router.push({ name: "editOrganisation" });
+      router.push({ name: "editOrganisation", params: { id: item.id } });
     };
 
-    const handleDelete = (id) => {
+    const deleteAfterConfirmation = (item) => {
+      const html =
+        '<p class="fs-2">Please type <b>' +
+        item.name +
+        "</b> to confirm</p><br/>";
+
+      Swal.fire({
+        input: "text",
+        inputAttributes: {
+          autocapitalize: "off",
+          placeholder: "Password",
+        },
+        html: html,
+        icon: "info",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Delete Organisation",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async (data) => {
+          if (data.toLowerCase() == item.name.toLowerCase()) {
+            return "success";
+          }
+
+          return false;
+        },
+      }).then((result) => {
+        if (result.value == "success") {
+          store
+            .dispatch(Actions.ORG.DELETE, item.id)
+            .then(() => {
+              store.dispatch(Actions.ORG.LIST);
+              loading.value = false;
+
+              Swal.fire({
+                text: "Successfully Deleted!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              });
+            })
+            .catch(({ response }) => {
+              console.log(response.data.error);
+            });
+        }
+      });
+    };
+
+    const handleDelete = (item) => {
       loading.value = true;
-      store
-        .dispatch(Actions.ORG.DELETE, id)
-        .then(() => {
-          store.dispatch(Actions.ORG.LIST);
-          loading.value = false;
-          Swal.fire({
-            text: "Successfully Deleted!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
+
+      const html = "<h3>To confirm it's you</h3><br/>";
+
+      Swal.fire({
+        input: "password",
+        inputAttributes: {
+          autocapitalize: "off",
+          placeholder: "Password",
+        },
+        html: html,
+        icon: "info",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async (data) => {
+          await store.dispatch(Actions.LOGIN, {
+            username: currentUser.value.username,
+            password: data,
           });
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
+
+          const error = store.getters.getErrors["status"];
+
+          if (error != "failed") {
+            return "success";
+          } else {
+            Swal.fire({
+              text: "Incorrect password!!!",
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "Try again!",
+              customClass: {
+                confirmButton: "btn fw-bold btn-light-danger",
+              },
+            }).then(() => {
+              handleDelete(item);
+            });
+
+            return false;
+          }
+        },
+      }).then((result) => {
+        if (result.value == "success") {
+          deleteAfterConfirmation(item);
+        }
+      });
     };
 
     const applyFilterAndSort = () => {

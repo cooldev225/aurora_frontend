@@ -360,6 +360,13 @@ export default defineComponent({
     };
 
     const rules = ref({
+      name: [
+        {
+          required: true,
+          message: "Organization Name cannot be blank.",
+          trigger: "change",
+        },
+      ],
       first_name: [
         {
           required: true,
@@ -422,6 +429,7 @@ export default defineComponent({
 
     const handleRemove = (file, fileList) => {
       uploadDisabled.value = fileList.length - 1;
+      Data.delete("logo");
     };
 
     const handlePreview = (uploadFile) => {
