@@ -194,7 +194,7 @@ export default defineComponent({
         input: "text",
         inputAttributes: {
           autocapitalize: "off",
-          placeholder: "Password",
+          placeholder: "Organization Name",
         },
         html: html,
         icon: "info",
