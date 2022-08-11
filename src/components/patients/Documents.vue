@@ -81,7 +81,7 @@
 
             <!--begin::Info-->
             <span class="d-block fw-bold text-start">
-              <span class="text-dark fw-bolder d-block fs-4 mb-2">
+              <span class="text-dark fw-bolder d-block fs-4 mb-1">
                 DOCUMENT - {{ idx + 1 }}
               </span>
               <span class="text-gray-400 fw-bold fs-6">{{
@@ -94,7 +94,6 @@
       </div>
       <div class="col-md-8 border scroll h-100">
         <img v-if="document" :src="document.file_path" alt="document" />
-        <!-- <VuePdf v-if="false"></VuePdf> -->
       </div>
     </div>
   </div>
