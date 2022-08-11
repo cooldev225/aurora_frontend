@@ -107,6 +107,7 @@ const Actions = {
     VIEW: "viewPatient",
     DOCUMENT: {
       LIST: "listPatientsDocuments",
+      CREATE: "createPatientsDocument",
     },
   },
 

@@ -127,4 +127,22 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.PATIENTS.DOCUMENT.CREATE](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("patient-documents", data)
+        .then(({ data }) => {
+          this.context.dispatch(Actions.PATIENTS.DOCUMENT.LIST);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }
