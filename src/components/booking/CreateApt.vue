@@ -1740,6 +1740,8 @@ import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import { useRouter } from "vue-router";
+
 export default defineComponent({
   name: "create-apt-modal",
   components: {
@@ -1753,6 +1755,7 @@ export default defineComponent({
     const formRef_4 = ref(null);
     const loading = ref(false);
     const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const router = useRouter();
 
     const aptInfoData = ref({
       reference_number: 22100349,
@@ -2297,8 +2300,11 @@ export default defineComponent({
                 confirmButtonText: "Ok, got it!",
                 customClass: {
                   confirmButton: "btn btn-primary",
+                  cancelButton: "btn btn-info",
                 },
-              }).then(() => {
+                showCancelButton: true,
+                cancelButtonText: "Deposit",
+              }).then((result) => {
                 hideModal(createAptModalRef.value);
                 if (searchVal.value.date) {
                   store.dispatch(Actions.BOOKING.SEARCH.DATE, {
@@ -2314,6 +2320,10 @@ export default defineComponent({
                 }
 
                 resetCreateModal();
+
+                if (result.dismiss === "cancel") {
+                  router.push({ name: "make-payment-pay" });
+                }
               });
             })
             .catch(({ response }) => {
