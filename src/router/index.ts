@@ -104,7 +104,17 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/settings/apt-types",
         name: "aptTypes",
-        component: () => import("@/views/settings/AptTypes.vue"),
+        component: () => import("@/views/settings/apt-types/AptTypeList.vue"),
+      },
+      {
+        path: "/settings/apt-types/create",
+        name: "createAptType",
+        component: () => import("@/views/settings/apt-types/EditAptType.vue"),
+      },
+      {
+        path: "/settings/apt-types/edit/:id",
+        name: "editAptType",
+        component: () => import("@/views/settings/apt-types/EditAptType.vue"),
       },
       {
         path: "/settings/time-requirements",

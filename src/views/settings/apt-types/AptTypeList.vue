@@ -3,18 +3,17 @@
     <div class="card-header row border-0 p-6">
       <div class="card-title col"></div>
       <!--begin::Add button-->
-      <div class="card-toolbar col-12 col-sm-2">
-        <button
+      <div class="card-toolbar col-12">
+        <router-link
+          to="/settings/apt-types/create"
           type="button"
-          class="btn btn-light-primary ms-auto"
-          data-bs-toggle="modal"
-          data-bs-target="#modal_add_apt_type"
+          class="text-nowrap btn btn-light-primary ms-auto"
         >
           <span class="svg-icon svg-icon-2">
             <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
           </span>
           Add
-        </button>
+        </router-link>
       </div>
       <!--end::Add button-->
     </div>
@@ -64,17 +63,14 @@
       </Datatable>
     </div>
   </div>
-  <CreateModal></CreateModal>
-  <EditModal></EditModal>
 </template>
 
 <script>
 import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateModal from "@/components/apt-types/CreateAptType.vue";
-import EditModal from "@/components/apt-types/EditAptType.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -84,12 +80,11 @@ export default defineComponent({
 
   components: {
     Datatable,
-    CreateModal,
-    EditModal,
   },
 
   setup() {
     const store = useStore();
+    const router = useRouter();
     const tableHeader = ref([
       {
         name: "Name",
@@ -111,9 +106,7 @@ export default defineComponent({
     const aptTypes = computed(() => store.getters.getAptTypesList);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_APT.TYPES.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_edit_apt_type"));
-      modal.show();
+      router.push({ name: "editAptType", params: { id: item.id } });
     };
 
     const handleDelete = (id) => {
