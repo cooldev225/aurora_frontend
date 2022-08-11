@@ -287,7 +287,6 @@ import { useRouter } from "vue-router";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
-import { Mutations } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "create-apt-modal",

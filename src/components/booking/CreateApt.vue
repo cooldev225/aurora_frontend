@@ -2187,7 +2187,7 @@ export default defineComponent({
         email: "",
         address: "",
         contact_number: "",
-        appointment_confirm_method: "",
+        appointment_confirm_method: "sms",
         allergies: "",
         clinical_alerts: "",
       };
