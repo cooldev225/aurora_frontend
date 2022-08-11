@@ -180,23 +180,31 @@
     <div class="card-body py-0">
       <div class="row">
         <!--begin::Input-->
-        <el-form>
-          <el-form-item prop="payment_type mb-0" class="mb-0">
-            <el-radio-group v-model="formData.payment_type" class="ml-4">
-              <el-radio label="EFTPOS" size="large">Etfpos</el-radio>
-              <el-radio label="CASH" size="large">Cash</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-        <!--end::Input-->
-        <label class="text-muted fs-6 fw-bold mb-2 d-block">Amount($)</label>
-        <!--begin::Input-->
         <el-form
-          class="d-flex align-items-center"
+          class="d-flex row align-items-center"
           @submit.prevent="submit()"
           :model="formData"
           ref="formRef"
         >
+          <div class="d-flex w-50 row justify-content-between">
+            <el-form-item prop="payment_type mb-0" class="col-6 mb-0">
+              <el-radio-group v-model="formData.payment_type" class="ml-4">
+                <el-radio label="EFTPOS" size="large">Etfpos</el-radio>
+                <el-radio label="CASH" size="large">Cash</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item
+              prop="is_deposit"
+              class="justify-content-end col-6 m-0"
+            >
+              <el-checkbox
+                type="checkbox"
+                v-model="formData.is_deposit"
+                label="Is deposit?"
+              />
+            </el-form-item>
+          </div>
+          <label class="text-muted fs-6 fw-bold mb-2 d-block">Amount($)</label>
           <el-form-item prop="procedure_price">
             <el-input
               type="number"
@@ -204,18 +212,26 @@
               placeholder="Procedure Price"
               v-model="formData.amount"
             />
-            <el-form-item class="m-0" prop="add_other_account_holder">
-              <el-checkbox
-                type="checkbox"
-                v-model="formData.is_deposit"
-                label="is deposit?"
-              />
-            </el-form-item>
-
-            <button type="submit" class="btn btn-primary mt-5 w-50">
-              Confirm
-            </button>
           </el-form-item>
+
+          <el-form-item prop="is_send_receipt" class="m-0">
+            <el-checkbox
+              type="checkbox"
+              v-model="formData.is_send_receipt"
+              label="Send receipt?"
+            />
+          </el-form-item>
+          <el-form-item prop="email" class="m-0">
+            <el-input
+              type="email"
+              class="w-100"
+              placeholder="Recipient Email"
+              v-model="formData.email"
+            />
+          </el-form-item>
+          <button type="submit" class="btn btn-primary mt-5 w-50">
+            Confirm
+          </button>
         </el-form>
         <!--end::Input-->
       </div>
@@ -255,7 +271,9 @@ export default defineComponent({
       appointment_id: 0,
       payment_type: "EFTPOS",
       amount: 0,
-      is_deposit: 0,
+      is_deposit: 1,
+      is_send_receipt: 1,
+      email: "",
     });
 
     const submit = () => {
@@ -278,8 +296,6 @@ export default defineComponent({
             customClass: {
               confirmButton: "btn btn-primary",
             },
-          }).then(() => {
-            console.log("confirmed");
           });
         })
         .catch(({ response }) => {
@@ -295,7 +311,6 @@ export default defineComponent({
           billingData.value.patient.charge_type
         );
       }
-      console.log(billingData.value);
     });
 
     onMounted(() => {
