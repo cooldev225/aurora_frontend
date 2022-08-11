@@ -12,9 +12,6 @@
           <el-option label="REPORT" value="REPORT" />
           <el-option label="CLINICAL_NOTE" value="CLINICAL_NOTE" />
           <el-option label="PATHOLOGY_REPORT" value="PATHOLOGY_REPORT" />
-          <el-option label="AUDIO" value="AUDIO" />
-          <el-option label="USB_CAPTURE" value="USB_CAPTURE" />
-          <el-option label="OTHER" value="OTHER" />
         </el-select>
         <div v-for="item in documentList" :key="item.id">
           <input
