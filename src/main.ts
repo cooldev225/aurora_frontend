@@ -15,6 +15,7 @@ import { initApexCharts } from "@/core/plugins/apexcharts";
 import { initInlineSvg } from "@/core/plugins/inline-svg";
 import { initVeeValidate } from "@/core/plugins/vee-validate";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
+// import VuePdf from "vue3-pdfjs";
 
 import "@/core/plugins/prismjs";
 import "bootstrap";
@@ -24,6 +25,7 @@ const app = createApp(App);
 app.use(store);
 app.use(router);
 app.use(ElementPlus);
+// app.use(VuePdf);
 app.use(VueGoogleMaps, {
   load: {
     key: "AIzaSyDCDe_kzdqziechOJ53yViPLc6hLQbhX1o",
