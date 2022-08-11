@@ -1,13 +1,6 @@
 <template>
   <!--begin::Stepper-->
   <div class="card">
-    <div class="card-header">
-      <div class="card-title">
-        <!--begin::Search-->
-        <span>{{ formInfo.title }}</span>
-        <!--end::Search-->
-      </div>
-    </div>
     <div class="card-body">
       <el-form
         @submit.prevent="submit()"

@@ -457,7 +457,7 @@ export default defineComponent({
               loading.value = false;
               store.dispatch(Actions.ORG.LIST);
               Swal.fire({
-                text: "Successfully Updated!",
+                text: "New Organisation Created!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
