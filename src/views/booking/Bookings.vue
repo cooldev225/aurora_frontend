@@ -254,7 +254,7 @@
             <template v-for="(item, key) in _specialists" :key="key">
               <AptTable
                 :ava_SPTData="item"
-                :date="moment(key.toString()).format('DD-MM-YYYY')"
+                :date="moment(key.toString()).format('MM-DD-YYYY')"
                 :SPTData="item"
                 :Title="moment(key.toString()).format('dddd, MMMM Do YYYY')"
               />

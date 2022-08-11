@@ -4,7 +4,7 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :rows-per-page="5"
+        :rows-per-page="10"
         :enable-items-per-page-dropdown="false"
       >
         <template v-slot:cell-title="{ row: item }">
@@ -21,7 +21,7 @@
             </div>
             <div class="col-auto">
               <span class="text-primary">{{ item.title }}</span> <br />
-              <span v-if="item.title != 'Appointment Booked'"
+              <span v-if="item.allow_day_edit != 0"
                 >Days Before: {{ item.days_before }}<br />
               </span>
               Status: {{ item.status }} <br />

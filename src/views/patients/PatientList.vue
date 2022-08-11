@@ -43,7 +43,7 @@
                     <el-date-picker
                       class="w-100"
                       v-model="filterBirth"
-                      format="YYYY-MM-DD"
+                      format="DD-MM-YYYY"
                       placeholder="1990-01-01"
                     />
                   </el-form-item>
@@ -217,7 +217,7 @@ export default defineComponent({
         }
         if (filterBirth.value) {
           let searchDate = moment(filterBirth.value)
-            .format("YYYY-MM-DD")
+            .format("DD-MM-YYYY")
             .toString();
           result = result && data.date_of_birth === searchDate;
         }

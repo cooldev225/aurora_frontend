@@ -1,5 +1,5 @@
 <template>
-  <div class="card w-xxl-75 m-auto">
+  <div class="card w-lg-75 m-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
       <div class="card-title">
@@ -82,7 +82,8 @@
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-time="{ row: item }">
-          {{ item.start_time }}
+          {{ item.start_time }} <br />
+          {{ item.date }}
         </template>
         <template v-slot:cell-patient_name="{ row: item }">
           {{ item.patient_name }}
@@ -102,27 +103,16 @@
             {{ item.attendance_status.replace("_", " ") }}
           </span>
         </template>
-        <template v-slot:cell-date="{ row: item }">
-          {{ item.date }}
-        </template>
         <template v-slot:cell-actions="{ row: item }">
           <!-- v-if="item.outstanding_balance > 0" -->
           <button
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            class="btn btn-bg-light btn-active-color-primary btn-sm me-1"
             @click="handlePay(item)"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/finance/fin002.svg" />
             </span>
-          </button>
-
-          <button
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-            @click="handleView(item)"
-          >
-            <span class="svg-icon svg-icon-3">
-              <i class="fas fa-eye"></i>
-            </span>
+            Pay
           </button>
         </template>
       </Datatable>
@@ -163,11 +153,6 @@ export default defineComponent({
       {
         name: "Attendance Status",
         key: "attendance_status",
-        sortable: true,
-      },
-      {
-        name: "Appointment Date",
-        key: "date",
         sortable: true,
       },
       {
