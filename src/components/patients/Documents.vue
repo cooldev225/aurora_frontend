@@ -8,35 +8,35 @@
           placeholder="Select Document Type"
           v-model="documentType"
         >
-          <el-option value="LETTER">
+          <el-option value="LETTER" label="LETTER">
             <inline-svg
               class="me-5"
               src="media/icons/duotune/general/gen005.svg"
             />
             LETTER
           </el-option>
-          <el-option value="REPORT">
+          <el-option value="REPORT" label="REPORT">
             <inline-svg
               class="me-5"
               src="media/icons/duotune/general/gen016.svg"
             />
             REPORT
           </el-option>
-          <el-option value="CLINICAL_NOTE">
+          <el-option value="CLINICAL_NOTE" label="CLINICAL NOTE">
             <inline-svg
               class="me-5"
               src="media/icons/duotune/files/fil003.svg"
             />
             CLINICAL NOTE
           </el-option>
-          <el-option label="PATHOLOGY_REPORT" value="PATHOLOGY_REPORT">
+          <el-option label="PATHOLOGY REPORT" value="PATHOLOGY_REPORT">
             <inline-svg
               class="me-5"
               src="media/icons/duotune/files/fil004.svg"
             />
             PATHOLOGY REPORT
           </el-option>
-          <el-option value="ALL">
+          <el-option value="ALL" label="ALL DOCUMENT TYPE">
             <inline-svg
               class="me-5"
               src="media/icons/duotune/general/gen054.svg"
