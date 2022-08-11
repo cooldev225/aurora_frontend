@@ -24,7 +24,7 @@ const AdminMenu = [
         fontIcon: "bi-archive",
       },
       {
-        heading: "Birthcode List",
+        heading: "BirthCode List",
         route: "/settings/birthCode",
         svgIcon: "media/icons/duotune/communication/com006.svg",
         fontIcon: "bi-person",
