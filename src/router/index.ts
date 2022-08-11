@@ -28,13 +28,13 @@ const routes: Array<RouteRecordRaw> = [
         path: "/organisations/create",
         name: "createOrganisation",
         component: () =>
-          import("@/components/organisations/AddOrganization.vue"),
+          import("@/components/organisations/AddOrganisation.vue"),
       },
       {
-        path: "/organisations/edit",
+        path: "/organisations/edit/:id",
         name: "editOrganisation",
         component: () =>
-          import("@/components/organisations/EditOrganization.vue"),
+          import("@/components/organisations/EditOrganisation.vue"),
       },
       {
         path: "/organisationManagers",
@@ -254,11 +254,6 @@ const routes: Array<RouteRecordRaw> = [
         path: "/profile/password-change",
         name: "password-change",
         component: () => import("@/components/auth/Password.vue"),
-      },
-      {
-        path: "/procedure-approvals",
-        name: "procedure-approvals",
-        component: () => import("@/views/ProcedureApprovals.vue"),
       },
       {
         path: "/employee-booking-dashboard",

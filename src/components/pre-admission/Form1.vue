@@ -11,7 +11,7 @@
           class="w-100 h-100"
           style="border-radius: 50%"
         />
-        <!-- <h1 v-else>Organization</h1> -->
+        <!-- <h1 v-else>Organisation</h1> -->
       </div>
     </div>
     <div class="card-body pt-0">

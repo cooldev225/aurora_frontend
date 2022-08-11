@@ -4,7 +4,7 @@
     <div class="card-header">
       <div class="card-title">
         <!--begin::Search-->
-        <span>Edit Organisation</span>
+        <span>{{ formInfo.title }}</span>
         <!--end::Search-->
       </div>
     </div>
@@ -129,7 +129,7 @@
                   <!--begin::Preview existing avatar-->
                   <div
                     class="image-input-wrapper w-125px h-125px"
-                    :style="`background-image: url(${formData.logo})`"
+                    :style="`background-image: url(${formData.logoUploaded})`"
                   ></div>
                   <!--end::Preview existing avatar-->
 
@@ -337,7 +337,7 @@
             type="submit"
           >
             <span v-if="!loading" class="indicator-label">
-              Update
+              {{ formInfo.submitButtonName }}
               <span class="svg-icon svg-icon-3 ms-2 me-0">
                 <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
               </span>
@@ -359,9 +359,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  reactive,
+  computed,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -372,8 +379,15 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
     const formRef = ref<null | HTMLFormElement>(null);
     const loading = ref<boolean>(false);
+    const orgList = computed(() => store.getters.orgList);
+    const formInfo = reactive({
+      title: "Edit Organisation",
+      submitAction: Actions.ORG.CREATE,
+      submitButtonName: "UPDATE",
+    });
     const formData = ref({
       first_name: "",
       last_name: "",
@@ -387,12 +401,20 @@ export default defineComponent({
       otac: "",
       key_expiry: "",
       device_expiry: "",
-      logo: "media/avatars/300-1.jpg",
+      logoUploaded: "media/avatars/300-1.jpg",
       max_clinics: "",
       max_employees: "",
     });
+    const Data = new FormData();
 
     const rules = ref({
+      name: [
+        {
+          required: true,
+          message: "Organization Name cannot be blank.",
+          trigger: "change",
+        },
+      ],
       first_name: [
         {
           required: true,
@@ -442,20 +464,32 @@ export default defineComponent({
       ],
     });
 
-    watchEffect(() => {
-      formData.value = store.getters.getOrgSelected;
+    watch(orgList, () => {
+      const id = route.params.id;
+
+      orgList.value.forEach((item) => {
+        if (item.id == id) {
+          formData.value = item;
+
+          formData.value.logoUploaded = item.logo;
+        }
+      });
     });
 
     const removeImage = () => {
-      formData.value.logo = "media/avatars/blank.png";
+      formData.value.logoUploaded = "media/avatars/blank.png";
+      Data.delete("logo");
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Edit Organisation", ["Organisation"]);
+      store.dispatch(Actions.ORG.LIST);
+
+      setCurrentPageBreadcrumbs(formInfo.title, ["Organisation"]);
     });
 
     const changeLogo = (e) => {
-      formData.value.logo = e.target.value;
+      formData.value.logoUploaded = e.target.value;
+      Data.append("logo", e.target.files[0]);
     };
 
     const submit = () => {
@@ -467,8 +501,14 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
 
+          Object.keys(formData.value).forEach((key) => {
+            if (key != "logo") {
+              Data.append(key, formData.value[key]);
+            }
+          });
+
           store
-            .dispatch(Actions.ORG.UPDATE, formData.value)
+            .dispatch(formInfo.submitAction, Data)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.ORG.LIST);
@@ -496,6 +536,7 @@ export default defineComponent({
 
     return {
       formData,
+      formInfo,
       rules,
       submit,
       formRef,

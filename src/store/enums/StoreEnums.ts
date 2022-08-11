@@ -105,6 +105,9 @@ const Actions = {
     DELETE: "deletePatients",
     UPDATE: "updatePatients",
     VIEW: "viewPatient",
+    DOCUMENT: {
+      LIST: "listPatientsDocuments",
+    },
   },
 
   PATIENTS_RECALL: {
@@ -235,6 +238,10 @@ const Actions = {
     VIEW: "viewMakePayment",
     CREATE: "createMakePayment",
   },
+
+  PROCEDURE_APPROVALS: {
+    LIST: "listProcedureApprovals",
+  },
 };
 
 const Mutations = {
@@ -305,6 +312,9 @@ const Mutations = {
   SET_PATIENT: {
     LIST: "setPatientsList",
     SELECT: "setSelectPatient",
+    DOCUMENT: {
+      LIST: "setPatientDocumentList",
+    },
   },
 
   SET_PATIENT_RECALL: {
@@ -343,6 +353,7 @@ const Mutations = {
   SET_APT: {
     LIST: "setApt",
     SELECT: "setSelectApt",
+    SELECT_SPECIALIST: "setSelectedSpecialist",
     TYPES: {
       LIST: "setAptType",
       SELECT: "setSelectAptType",
@@ -403,6 +414,10 @@ const Mutations = {
   SET_NTF_TEMPLATES: {
     LIST: "setNtfTemplates",
     SELECT: "setSelectNtfTemplates",
+  },
+
+  SET_PROCEDURE_APPROVALS: {
+    LIST: "setProcedureApprovalsList",
   },
 
   // SET_EMPLOYEE_ROLES: {

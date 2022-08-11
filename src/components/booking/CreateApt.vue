@@ -200,7 +200,7 @@
                     ref="formRef_1"
                     @submit.prevent=""
                   >
-                    <div class="row scroll h-500px">
+                    <div class="row scroll h-520px">
                       <div class="card-info">
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
@@ -220,10 +220,19 @@
                                 :key="item.id"
                               />
                             </el-select>
+
+                            <div class="fv-row" v-if="overlapping_cnt >= 1">
+                              <!--begin::Label-->
+                              <label class="fs-7 fw-bold">
+                                WARNING: this appointment will overlap with an
+                                upcoming appointment
+                              </label>
+                              <!--end::Label-->
+                            </div>
                           </el-form-item>
                           <!--end::Input-->
                         </div>
-                        <!--end::Input group-->
+
                         <div class="fv-row mb-7">
                           <!--begin::Label-->
                           <label class="fs-6 fw-bold mb-2"> Room </label>
@@ -1530,12 +1539,31 @@
                                     <!--end::Label-->
 
                                     <!--begin::Input-->
-                                    <el-form-item prop="referring_doctor">
-                                      <el-select
+                                    <el-form-item prop="referring_doctor_id">
+                                      <el-autocomplete
                                         class="w-100"
-                                        v-model="otherInfoData.referring_doctor"
-                                        placeholder="Select Referring Doctor"
-                                      />
+                                        v-model="
+                                          otherInfoData.referring_doctor_name
+                                        "
+                                        value-key="full_name"
+                                        :fetch-suggestions="
+                                          searchReferralDoctor
+                                        "
+                                        placeholder="Please input"
+                                        :trigger-on-focus="false"
+                                        @select="handleSelectReferringDoctor"
+                                      >
+                                        <template #default="{ item }">
+                                          <div class="name">
+                                            {{ item.title }}
+                                            {{ item.first_name }}
+                                            {{ item.last_name }}
+                                          </div>
+                                          <div class="address">
+                                            {{ item.address }}
+                                          </div>
+                                        </template>
+                                      </el-autocomplete>
                                     </el-form-item>
                                     <!--end::Input-->
                                   </div>
@@ -1724,6 +1752,7 @@ export default defineComponent({
     const formRef_3 = ref(null);
     const formRef_4 = ref(null);
     const loading = ref(false);
+    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
 
     const aptInfoData = ref({
       reference_number: 22100349,
@@ -1751,7 +1780,7 @@ export default defineComponent({
     });
 
     const billingInfoData = ref({
-      charge_type: "",
+      charge_type: chargeTypes[0].value,
       medicare_number: "",
       medicare_reference_number: "",
       medicare_expiry_date: "",
@@ -1775,7 +1804,8 @@ export default defineComponent({
       anesthetic_answers: [],
       procedure_questions: false,
       procedure_answers: [],
-      referring_doctor: "",
+      referring_doctor_name: "",
+      referring_doctor_id: "",
       referral_duration: "",
       referral_date: "",
       no_referral: false,
@@ -1953,6 +1983,8 @@ export default defineComponent({
     const patientStatus = ref("new");
     const patientStep = ref(3);
 
+    const overlapping_cnt = ref(0);
+
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
@@ -2006,6 +2038,26 @@ export default defineComponent({
         otherInfoData.value.anesthetic_questions = false;
         otherInfoData.value.procedure_questions = false;
       }
+
+      const specialist = store.getters.getSelectedSpecialist;
+
+      let cnt = 0;
+      for (let i in specialist.appointments) {
+        let _apt_temp = specialist.appointments[i];
+        if (
+          (timeStr2Number(_start_time.value) <=
+            timeStr2Number(_apt_temp.start_time) &&
+            timeStr2Number(_apt_temp.start_time) <
+              timeStr2Number(_end_time.value)) ||
+          (timeStr2Number(_apt_temp.start_time) <=
+            timeStr2Number(_start_time.value) &&
+            timeStr2Number(_start_time.value) <
+              timeStr2Number(_apt_temp.end_time))
+        ) {
+          cnt++;
+        }
+      }
+      overlapping_cnt.value = cnt;
     });
 
     watch(_specialist, () => {
@@ -2070,6 +2122,9 @@ export default defineComponent({
         _end_time.value = moment(bookingData.time_slot[1]).format("HH:mm");
       }
       aptInfoData.value.date = bookingData.date;
+      if (_appointment.value == "") {
+        overlapping_cnt.value = bookingData.overlapping_cnt;
+      }
       if (bookingData.selected_specialist) {
         _specialist.value = bookingData.selected_specialist.id;
         if (bookingData.selected_specialist.anesthetist) {
@@ -2117,6 +2172,7 @@ export default defineComponent({
       store.dispatch(Actions.APT.TYPES.LIST);
       store.dispatch(Actions.ORG.LIST);
       store.dispatch(Actions.PATIENTS.LIST);
+      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
     });
 
     const handleStep_1 = () => {
@@ -2307,7 +2363,7 @@ export default defineComponent({
       patientInfoData.value = item;
 
       for (let key in billingInfoData.value) {
-        if (key === "charge_type") {
+        if (key === "charge_type" || key === "procedure_price") {
           continue;
         }
 
@@ -2320,6 +2376,45 @@ export default defineComponent({
     const patientPrevStep = () => {
       if (patientStatus.value === "new") previousStep();
       else patientStep.value--;
+    };
+
+    const handleSelectReferringDoctor = (item) => {
+      otherInfoData.value.referring_doctor_id = item.id;
+    };
+
+    let timeout;
+    const searchReferralDoctor = (term, cb) => {
+      const results = term
+        ? referralDoctors.value.filter(createReferringDotorFilter(term))
+        : referralDoctors.value;
+
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        cb(results);
+      }, 1000);
+    };
+
+    const createReferringDotorFilter = (term) => {
+      const keyword = term.toString();
+      return (referralDoctor) => {
+        const full_name =
+          referralDoctor.title +
+          " " +
+          referralDoctor.first_name +
+          " " +
+          referralDoctor.last_name;
+        const full_name_pos = full_name
+          .toLowerCase()
+          .indexOf(keyword.toLowerCase());
+        const address_pos = referralDoctor.address
+          .toLowerCase()
+          .indexOf(keyword.toLowerCase());
+        return full_name_pos !== -1 || address_pos !== -1;
+      };
+    };
+
+    const timeStr2Number = (time) => {
+      return Number(time.split(":")[0] + time.split(":")[1]);
     };
 
     return {
@@ -2375,6 +2470,9 @@ export default defineComponent({
       billingInfoData,
       otherInfoData,
       formatDate,
+      overlapping_cnt,
+      searchReferralDoctor,
+      handleSelectReferringDoctor,
     };
   },
 });
