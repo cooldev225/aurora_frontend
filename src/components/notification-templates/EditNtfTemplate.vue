@@ -65,21 +65,14 @@
               <!--end::Input group-->
 
               <!--begin::Input group-->
-              <div
-                v-if="formData.title != 'Appointment Booked'"
-                class="fv-row mb-7"
-              >
+              <div v-if="formData.allow_day_edit != 0" class="fv-row mb-7">
                 <!--begin::Label-->
                 <label class="required fs-6 fw-bold mb-2">Days Before</label>
                 <!--end::Label-->
 
                 <!--begin::Input-->
                 <el-form-item prop="days_before">
-                  <el-input
-                    v-model="formData.days_before"
-                    type="number"
-                    placeholder="Days Before"
-                  />
+                  <el-input-number v-model="formData.days_before" :min="1" />
                 </el-form-item>
                 <!--end::Input-->
               </div>
@@ -189,13 +182,6 @@ export default defineComponent({
     });
 
     const rules = ref({
-      days_before: [
-        {
-          required: true,
-          message: "Days before cannot be blank",
-          trigger: "change",
-        },
-      ],
       sms_template: [
         {
           required: true,
