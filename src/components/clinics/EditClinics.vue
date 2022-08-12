@@ -1012,7 +1012,7 @@ export default defineComponent({
     const dialogVisible = ref(false);
 
     onMounted(() => {
-      _stepperObj.value = StepperComponent.createInsance(
+      _stepperObj.value = StepperComponent.createInstance(
         createClinicsRef.value
       );
 

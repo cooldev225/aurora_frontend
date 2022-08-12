@@ -176,7 +176,7 @@ class ToggleComponent {
     })
   }
 
-  public static createInsance = (
+  public static createInstance = (
     selector: string,
     options: ToggleOptions = defaultToggleOptions
   ): ToggleComponent | undefined => {
@@ -192,7 +192,7 @@ class ToggleComponent {
     return toggle
   }
 
-  public static reinitialization = () => {
+  public static reInitialization = () => {
     ToggleComponent.createInstances('[data-kt-toggle]')
   }
 

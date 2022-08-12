@@ -22,7 +22,7 @@ export default defineComponent({
   components: {},
   setup() {
     onMounted(() => {
-      ScrollTopComponent.reinitialization();
+      ScrollTopComponent.reInitialization();
     });
   },
 });

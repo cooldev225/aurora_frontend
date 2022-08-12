@@ -1777,7 +1777,7 @@ export default defineComponent({
         billingInfoData.value.procedure_price = getProcedurePrice(
           filteredApt,
           billingInfoData.value.charge_type
-        );
+        );createInstance
       }
     });
 

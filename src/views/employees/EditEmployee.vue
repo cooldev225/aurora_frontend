@@ -577,7 +577,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      _stepperObj.value = StepperComponent.createInsance(
+      _stepperObj.value = StepperComponent.createInstance(
         createEmployeeRef.value as HTMLElement
       );
 

@@ -4,7 +4,7 @@ export interface IImageInputOptions {}
 
 export interface IImageInputQueries {
   componentName: string
-  instanseQuery: string
+  instanceQuery: string
   inputQuery: string
   wrapperQuery: string
   cancelQuery: string
@@ -16,7 +16,7 @@ const defaultImageInputOptions = {}
 
 const defaultImageInputQueires: IImageInputQueries = {
   componentName: 'image-input',
-  instanseQuery: '[data-kt-image-input]',
+  instanceQuery: '[data-kt-image-input]',
   inputQuery: 'input[type="file"]',
   wrapperQuery: '.image-input-wrapper',
   cancelQuery: '[data-kt-image-input-action="cancel"]',
@@ -189,7 +189,7 @@ class ImageInputComponent {
   }
 
   public static createInstances = (
-    selector: string = defaultImageInputQueires.instanseQuery,
+    selector: string = defaultImageInputQueires.instanceQuery,
     options: IImageInputOptions = defaultImageInputOptions,
     queries: IImageInputQueries = defaultImageInputQueires
   ) => {
@@ -203,8 +203,8 @@ class ImageInputComponent {
     })
   }
 
-  public static createInsance = (
-    selector: string = defaultImageInputQueires.instanseQuery,
+  public static createInstance = (
+    selector: string = defaultImageInputQueires.instanceQuery,
     options: IImageInputOptions = defaultImageInputOptions,
     queries: IImageInputQueries = defaultImageInputQueires
   ): ImageInputComponent | undefined => {
@@ -220,11 +220,11 @@ class ImageInputComponent {
     return ImageInput
   }
 
-  public static bootstrap = (selector: string = defaultImageInputQueires.instanseQuery) => {
+  public static bootstrap = (selector: string = defaultImageInputQueires.instanceQuery) => {
     ImageInputComponent.createInstances(selector)
   }
 
-  public static reinitialization = (selector: string = defaultImageInputQueires.instanseQuery) => {
+  public static reInitialization = (selector: string = defaultImageInputQueires.instanceQuery) => {
     ImageInputComponent.createInstances(selector)
   }
 }
