@@ -223,88 +223,6 @@
               <!--end::Input-->
             </div>
             <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="">Device Name</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="device_name">
-                <el-input
-                  type="text"
-                  v-model="formData.device_name"
-                  placeholder="Enter Device Name"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="">OTAC</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="otac">
-                <el-input
-                  type="text"
-                  v-model="formData.otac"
-                  placeholder="Enter OTAC"
-                />
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="">Expire day of key</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="key_expiry">
-                <el-date-picker
-                  type="text"
-                  class="w-100"
-                  v-model="formData.key_expiry"
-                >
-                </el-date-picker>
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="col-sm-4 mb-7">
-              <!--begin::Label-->
-              <label class="fs-6 fw-bold mb-2">
-                <span class="">Expire day of device</span>
-              </label>
-              <!--end::Label-->
-
-              <!--begin::Input-->
-              <el-form-item prop="device_expiry">
-                <el-date-picker
-                  type="text"
-                  class="w-100"
-                  v-model="formData.device_expiry"
-                >
-                </el-date-picker>
-              </el-form-item>
-              <!--end::Input-->
-            </div>
-            <!--end::Input group-->
           </div>
           <!--end::Scroll-->
         </div>
@@ -390,10 +308,6 @@ export default defineComponent({
       mobile_number: "",
       password: "",
       password_confirmation: "",
-      device_name: "",
-      otac: "",
-      key_expiry: "",
-      device_expiry: "",
       logoUploaded: "media/avatars/300-1.jpg",
       max_clinics: "",
       max_employees: "",
