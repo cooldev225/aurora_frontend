@@ -407,6 +407,7 @@
                             <el-form-item prop="contact_number">
                               <el-input
                                 type="text"
+                                v-maska="'+61 0#-####-####'"
                                 v-model="patientInfoData.contact_number"
                                 placeholder="Enter Contact Number"
                               />
@@ -1438,8 +1439,13 @@ import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 
+import { maska } from "maska";
+
 export default defineComponent({
   name: "create-apt-modal",
+  directives: {
+    maska,
+  },
   components: {},
   setup() {
     const store = useStore();
@@ -1650,7 +1656,6 @@ export default defineComponent({
         billingInfoData.value[key] = aptData.value[key];
       for (let key in otherInfoData.value)
         otherInfoData.value[key] = aptData.value[key];
-      console.log(aptInfoData.value);
     });
 
     watch(_appointment, () => {

@@ -620,6 +620,7 @@
                             <el-form-item prop="contact_number">
                               <el-input
                                 type="text"
+                                v-maska="'+61 0#-####-####'"
                                 v-model="patientInfoData.contact_number"
                                 placeholder="Enter Contact Number"
                               />
@@ -1641,8 +1642,13 @@ import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { useRouter } from "vue-router";
 
+import { maska } from "maska";
+
 export default defineComponent({
   name: "create-apt-modal",
+  directives: {
+    maska,
+  },
   components: {
     Datatable,
   },
