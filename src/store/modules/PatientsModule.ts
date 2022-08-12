@@ -2,6 +2,7 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import { IApt } from "./AppointmentModule";
 
 export interface IPatient {
   id: string;
@@ -18,6 +19,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   patientsData = [] as Array<IPatient>;
   patientsSelectData = {} as IPatient;
   patientDocumentList = {} as IPatient;
+  patientAppointmentsData = [] as Array<IApt>;
   /**
    * Get current Patients List
    * @returns Patients
@@ -42,6 +44,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
     return this.patientsSelectData;
   }
 
+  get getPatientAppointments(): Array<IApt> {
+    return this.patientAppointmentsData;
+  }
+
   @Mutation
   [Mutations.SET_PATIENT.LIST](patientsData) {
     this.patientsData = patientsData;
@@ -55,6 +61,11 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   @Mutation
   [Mutations.SET_PATIENT.SELECT](data) {
     this.patientsSelectData = data;
+  }
+
+  @Mutation
+  [Mutations.SET_PATIENT.APPOINTMENTS](data) {
+    this.patientAppointmentsData = data;
   }
 
   @Action
@@ -111,12 +122,48 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
+  [Actions.PATIENTS.APPOINTMENTS](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.get("patients/appointments/" + id)
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_PATIENT.APPOINTMENTS, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
   [Actions.PATIENTS.DOCUMENT.LIST](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.query("patient-documents", { params: { patient_id: id } })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_PATIENT.DOCUMENT.LIST, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.PATIENTS.DOCUMENT.CREATE](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("patient-documents", data)
+        .then(({ data }) => {
+          this.context.dispatch(Actions.PATIENTS.DOCUMENT.LIST);
           return data.data;
         })
         .catch(({ response }) => {

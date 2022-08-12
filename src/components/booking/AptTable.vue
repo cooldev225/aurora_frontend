@@ -104,7 +104,11 @@
                       :rowspan="item_2.time_length"
                       :style="{
                         'min-width': '220px',
-                        'background-color': item_2.appointment.color,
+                        'background-color':
+                          item_2.appointment.confirmation_status == 'MISSED' ||
+                          item_2.appointment.attendance_status == 'CHECKED_OUT'
+                            ? '#cccccc'
+                            : item_2.appointment.color,
                       }"
                       :colspan="item_1.appointment.length === 2 ? 1 : 2"
                     >

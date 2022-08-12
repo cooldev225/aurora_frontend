@@ -194,7 +194,7 @@ export default defineComponent({
         input: "text",
         inputAttributes: {
           autocapitalize: "off",
-          placeholder: "Password",
+          placeholder: "Organization Name",
         },
         html: html,
         icon: "info",
@@ -217,7 +217,6 @@ export default defineComponent({
           store
             .dispatch(Actions.ORG.DELETE, item.id)
             .then(() => {
-              store.dispatch(Actions.ORG.LIST);
               loading.value = false;
 
               Swal.fire({
@@ -228,6 +227,8 @@ export default defineComponent({
                 customClass: {
                   confirmButton: "btn btn-primary",
                 },
+              }).then(() => {
+                store.dispatch(Actions.ORG.LIST);
               });
             })
             .catch(({ response }) => {
@@ -342,7 +343,6 @@ export default defineComponent({
       loading.value = true;
       setCurrentPageBreadcrumbs("Organisations", []);
       store.dispatch(Actions.ORG.LIST).then(() => {
-        tableData.value = orgList;
         loading.value = false;
       });
     });

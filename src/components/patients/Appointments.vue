@@ -147,7 +147,6 @@ import { useRouter } from "vue-router";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import moment from "moment";
 import md5 from "js-md5";
-import { Mutations } from "@/store/enums/StoreEnums";
 import CollectingPersonModal from "./CollectingPerson.vue";
 import { Modal } from "bootstrap";
 

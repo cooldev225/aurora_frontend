@@ -54,9 +54,7 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import { Modal } from "bootstrap";
+import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "admin-main",

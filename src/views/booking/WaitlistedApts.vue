@@ -54,9 +54,7 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import { Modal } from "bootstrap";
+import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "waitlisted-appointments",
@@ -97,12 +95,6 @@ export default defineComponent({
     const tableData = ref([]);
     const waitListed_Apts = computed(() => store.getters.getWaitlistedAptList);
     const loading = ref(true);
-
-    const handleEdit = (item) => {
-      store.commit(Mutations.SET_APT.WAITLISTED.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_edit_admin"));
-      modal.show();
-    };
 
     onMounted(() => {
       loading.value = true;
