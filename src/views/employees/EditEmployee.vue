@@ -98,12 +98,12 @@
                   </el-select>
                 </InputWrapper>
                 <InputWrapper class="col-6" label="Role" prop="role">
-                  <el-select v-model="formData.role" class="w-100">
+                  <el-select v-model="formData.role_id" class="w-100">
                     <el-option
                       v-for="item in employeeRoles"
-                      :value="item.value"
-                      :label="item.label"
-                      :key="item.value"
+                      :value="item.id"
+                      :label="item.name"
+                      :key="item.id"
                     />
                   </el-select>
                 </InputWrapper>
@@ -215,8 +215,9 @@ import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
 import employeeTypes from "@/core/data/employee-types";
-import employeeRoles from "@/core/data/employee-roles";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
+import ApiService from "@/core/services/ApiService";
+import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "create-employee",
@@ -234,6 +235,7 @@ export default defineComponent({
       submitButtonName: "Create",
       submittedText: "New Employee Created",
     });
+    const employeeRoles = ref([]);
 
     const weekList = ref([
       "monday",
@@ -252,7 +254,7 @@ export default defineComponent({
       password: "",
       first_name: "",
       last_name: "",
-      role: "specialist",
+      role_id: "",
       type: "full-time",
       work_hours: {
         monday: {
@@ -355,6 +357,26 @@ export default defineComponent({
     const currentStepIndex = ref(0);
     const clinicsList = computed(() => store.getters.clinicsList);
 
+    const initEmployeeRoles = () => {
+      ApiService.get("employee-roles")
+        .then(({ data }) => {
+          employeeRoles.value = data.data;
+
+          if (formData.value.role_id == "") {
+            employeeRoles.value.forEach((item) => {
+              if (item["slug"] == "specialist") {
+                formData.value.role_id = item["id"];
+              }
+            });
+          }
+
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+    };
+
     watch(employeeList, () => {
       const id = route.params.id;
 
@@ -375,6 +397,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initEmployeeRoles();
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
