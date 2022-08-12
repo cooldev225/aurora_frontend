@@ -169,6 +169,7 @@
           />
           <!--Move Appointment-->
           <BookingDrawerButton
+            @click="handleEdit"
             :heading="'Move'"
             :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr035.svg'"
