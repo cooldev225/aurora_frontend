@@ -620,7 +620,7 @@
                             <el-form-item prop="contact_number">
                               <el-input
                                 type="text"
-                                v-maska="'+61 0#-####-####'"
+                                v-mask="'0#-####-####'"
                                 v-model="patientInfoData.contact_number"
                                 placeholder="Enter Contact Number"
                               />
@@ -1642,12 +1642,13 @@ import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { useRouter } from "vue-router";
 
-import { maska } from "maska";
+import { mask } from "vue-the-mask";
+import { validatePhone } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "create-apt-modal",
   directives: {
-    maska,
+    mask,
   },
   components: {
     Datatable,
@@ -1776,6 +1777,7 @@ export default defineComponent({
           message: "Mobile Number cannot be blank.",
           trigger: "blur",
         },
+        { validator: validatePhone, trigger: "blur" },
       ],
       charge_type: [
         {
@@ -2278,6 +2280,7 @@ export default defineComponent({
       store.dispatch(Actions.PATIENTS.APPOINTMENTS, item.id);
       store.dispatch(Actions.PATIENTS.VIEW, item.id);
       patientInfoData.value = item;
+      aptInfoData.value.patient_id = item.id;
 
       for (let key in billingInfoData.value) {
         if (key === "charge_type" || key === "procedure_price") {

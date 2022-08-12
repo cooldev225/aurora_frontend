@@ -407,7 +407,7 @@
                             <el-form-item prop="contact_number">
                               <el-input
                                 type="text"
-                                v-maska="'+61 0#-####-####'"
+                                v-mask="'0#-####-####'"
                                 v-model="patientInfoData.contact_number"
                                 placeholder="Enter Contact Number"
                               />
@@ -1439,12 +1439,12 @@ import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 
-import { maska } from "maska";
+import { mask } from "vue-the-mask";
 
 export default defineComponent({
   name: "create-apt-modal",
   directives: {
-    maska,
+    mask,
   },
   components: {},
   setup() {
