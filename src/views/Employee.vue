@@ -169,7 +169,7 @@ export default defineComponent({
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_EMPLOYEE.SELECT, item);
-      router.push({ name: "employees-edit" });
+      router.push({ name: "employees-edit", params: { id: item.id } });
     };
 
     const deleteAfterConfirmation = (item) => {
@@ -214,6 +214,8 @@ export default defineComponent({
                 customClass: {
                   confirmButton: "btn btn-primary",
                 },
+              }).then(() => {
+                store.dispatch(Actions.EMPLOYEE.LIST);
               });
             })
             .catch(({ response }) => {
