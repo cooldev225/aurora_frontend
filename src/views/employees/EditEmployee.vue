@@ -46,7 +46,7 @@
               <InputWrapper class="col-6" label="Password" prop="password">
                 <el-input
                   v-model="formData.password"
-                  type="text"
+                  type="password"
                   placeholder="Password"
                 />
               </InputWrapper>
@@ -54,7 +54,7 @@
               <InputWrapper class="col-6" label="Email" prop="email">
                 <el-input
                   v-model="formData.email"
-                  type="text"
+                  type="email"
                   placeholder="Email"
                 />
               </InputWrapper>
@@ -72,7 +72,7 @@
 
               <InputWrapper class="col-12" label="Address" prop="address">
                 <el-input
-                  v-model="formData.mobile_number"
+                  v-model="formData.address"
                   type="address"
                   placeholder="Address"
                 />
@@ -217,7 +217,6 @@ import { Actions } from "@/store/enums/StoreEnums";
 import employeeTypes from "@/core/data/employee-types";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "create-employee",
@@ -259,7 +258,7 @@ export default defineComponent({
       work_hours: {
         monday: {
           available: false,
-          time_slot: "",
+          time_slot: ["09:00:00", "17:00:00"],
           locations: {
             id: "",
             name: "",
@@ -267,7 +266,7 @@ export default defineComponent({
         },
         tuesday: {
           available: false,
-          time_slot: "",
+          time_slot: ["09:00:00", "17:00:00"],
           locations: {
             id: "",
             name: "",
@@ -275,7 +274,7 @@ export default defineComponent({
         },
         wednesday: {
           available: false,
-          time_slot: "",
+          time_slot: ["09:00:00", "17:00:00"],
           locations: {
             id: "",
             name: "",
@@ -283,7 +282,7 @@ export default defineComponent({
         },
         thursday: {
           available: false,
-          time_slot: "",
+          time_slot: ["09:00:00", "17:00:00"],
           locations: {
             id: "",
             name: "",
@@ -291,7 +290,7 @@ export default defineComponent({
         },
         friday: {
           available: false,
-          time_slot: "",
+          time_slot: ["09:00:00", "17:00:00"],
           locations: {
             id: "",
             name: "",
@@ -299,7 +298,7 @@ export default defineComponent({
         },
         saturday: {
           available: false,
-          time_slot: "",
+          time_slot: ["09:00:00", "17:00:00"],
           locations: {
             id: "",
             name: "",
@@ -307,7 +306,7 @@ export default defineComponent({
         },
         sunday: {
           available: false,
-          time_slot: "",
+          time_slot: ["09:00:00", "17:00:00"],
           locations: {
             id: "",
             name: "",
@@ -343,6 +342,11 @@ export default defineComponent({
           required: true,
           message: "Email cannot be blank.",
           trigger: "change",
+        },
+        {
+          type: "email",
+          message: "Please input Valid email address",
+          trigger: ["blur", "change"],
         },
       ],
       mobile_number: [
