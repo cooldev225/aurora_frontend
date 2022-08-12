@@ -35,7 +35,7 @@
                 />
               </InputWrapper>
 
-              <InputWrapper class="col-6" label="Username" prop="username">
+              <InputWrapper class="col-4" label="Username" prop="username">
                 <el-input
                   v-model="formData.username"
                   type="text"
@@ -43,15 +43,7 @@
                 />
               </InputWrapper>
 
-              <InputWrapper class="col-6" label="Password" prop="password">
-                <el-input
-                  v-model="formData.password"
-                  type="password"
-                  placeholder="Password"
-                />
-              </InputWrapper>
-
-              <InputWrapper class="col-6" label="Email" prop="email">
+              <InputWrapper class="col-4" label="Email" prop="email">
                 <el-input
                   v-model="formData.email"
                   type="email"
@@ -59,7 +51,7 @@
                 />
               </InputWrapper>
               <InputWrapper
-                class="col-6"
+                class="col-4"
                 label="Contact Number"
                 prop="mobile_number"
               >
@@ -67,6 +59,18 @@
                   v-model="formData.mobile_number"
                   type="text"
                   placeholder="Contact Number"
+                />
+              </InputWrapper>
+              <InputWrapper
+                v-if="formInfo.isCreate"
+                class="col-6"
+                label="Password"
+                prop="password"
+              >
+                <el-input
+                  v-model="formData.password"
+                  type="password"
+                  placeholder="Password"
                 />
               </InputWrapper>
 
@@ -229,6 +233,7 @@ export default defineComponent({
     const employeeList = computed(() => store.getters.employeeList);
     const formRef = ref<null | HTMLFormElement>(null);
     const formInfo = reactive({
+      isCreate: true,
       title: "Create Employee",
       submitAction: Actions.EMPLOYEE.CREATE,
       submitButtonName: "Create",
@@ -253,6 +258,7 @@ export default defineComponent({
       password: "",
       first_name: "",
       last_name: "",
+      address: "",
       role_id: "",
       type: "full-time",
       work_hours: {
@@ -389,11 +395,6 @@ export default defineComponent({
           formData.value = item;
 
           formData.value.work_hours = JSON.parse(item.work_hours);
-
-          formInfo.title = "Edit Employee";
-          formInfo.submitAction = Actions.EMPLOYEE.UPDATE;
-          formInfo.submitButtonName = "Update";
-          formInfo.submittedText = "Employee Updated";
         }
       });
 
@@ -401,6 +402,16 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      const id = route.params.id;
+
+      if (id != undefined) {
+        formInfo.title = "Edit Employee";
+        formInfo.isCreate = false;
+        formInfo.submitAction = Actions.EMPLOYEE.UPDATE;
+        formInfo.submitButtonName = "Update";
+        formInfo.submittedText = "Employee Updated";
+      }
+
       initEmployeeRoles();
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
