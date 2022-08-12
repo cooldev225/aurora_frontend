@@ -175,7 +175,8 @@
               <!--begin::Input-->
               <el-form-item prop="mobile_number">
                 <el-input
-                  type="tel"
+                  type="text"
+                  v-mask="'0#-####-####'"
                   v-model="formData.mobile_number"
                   placeholder=""
                 />
@@ -284,8 +285,14 @@ import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
 
+import { mask } from "vue-the-mask";
+import { validatePhone } from "@/helpers/helpers.js";
+
 export default defineComponent({
   name: "edit-org",
+  directives: {
+    mask,
+  },
   components: {},
   setup() {
     const store = useStore();
@@ -354,6 +361,14 @@ export default defineComponent({
           message: "Please input correct email address",
           trigger: ["blur", "change"],
         },
+      ],
+      mobile_number: [
+        {
+          required: true,
+          message: "Mobile Number cannot be blank.",
+          trigger: "change",
+        },
+        { validator: validatePhone, trigger: "blur" },
       ],
       password: [
         {

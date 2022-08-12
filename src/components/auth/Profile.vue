@@ -131,6 +131,7 @@
                 <el-input
                   type="text"
                   class="w-100"
+                  v-mask="'0#-####-####'"
                   v-model="formData.mobile_number"
                   placeholder="Mobile Number"
                 />
@@ -158,7 +159,7 @@
             </div>
           </div>
         </div>
-        <div class="d-flex ms-auto justify-content-end w-25">
+        <div class="d-flex ms-auto justify-content-end w-50">
           <button type="submit" class="btn btn-primary w-100 w-sm-25">
             Save
           </button>
@@ -186,8 +187,14 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
+import { mask } from "vue-the-mask";
+import { validatePhone } from "@/helpers/helpers.js";
+
 export default defineComponent({
   name: "profile-page-layout",
+  directives: {
+    mask,
+  },
   components: {},
   setup() {
     const store = useStore();
@@ -221,6 +228,7 @@ export default defineComponent({
           message: "Contact Number cannot be blank",
           trigger: "change",
         },
+        { validator: validatePhone, trigger: "blur" },
       ],
       email: [
         {
