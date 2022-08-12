@@ -1,11 +1,11 @@
 <template>
   <!--begin::Stepper-->
-  <div class="mx-auto w-100 w-lg-75" ref="createEmployeeRef">
+  <div class="mx-auto w-100 w-lg-75">
     <!--begin::Content-->
     <div class="d-flex flex-row-fluid flex-center bg-white rounded">
       <!--begin::Form-->
       <!--begin::Step 1-->
-      <div class="current" data-kt-stepper-element="content">
+      <div class="current">
         <div class="w-100 py-20 px-9">
           <div class="pb-10 pb-lg-15">
             <h2 class="fw-bolder d-flex align-items-center text-dark">
@@ -17,7 +17,7 @@
             class="w-100 w-xl-700px w-xxl-800px"
             :rules="rules"
             :model="formData"
-            ref="formRef_3"
+            ref="formRef"
           >
             <div class="row">
               <InputWrapper class="col-6" label="First Name" prop="first_name">
@@ -108,23 +108,24 @@
                   </el-select>
                 </InputWrapper>
 
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-3" v-for="week in weekList" :key="week">
                   <div class="card border border-primary border-dashed">
                     <div
                       class="card-header border-bottom-dashed border-primary"
                     >
                       <div class="card-title">
                         <el-checkbox
-                          v-model="formData.work_hours.monday.available"
-                          label="Monday"
+                          class="text-capitalize"
+                          v-model="formData.work_hours[week].available"
+                          :label="week"
                           size="large"
                         />
                       </div>
                     </div>
                     <div class="p-3">
-                      <InputWrapper label="Time Slot" prop="monday_time">
+                      <InputWrapper label="Time Slot" :prop="week + '-time'">
                         <el-time-picker
-                          v-model="formData.work_hours.monday.time_slot"
+                          v-model="formData.work_hours[week].time_slot"
                           class="w-100"
                           is-range
                           range-separator="-"
@@ -133,253 +134,9 @@
                         />
                       </InputWrapper>
 
-                      <InputWrapper label="Location" prop="monday_locations">
+                      <InputWrapper label="Location" :prop="week + '-location'">
                         <el-select
-                          v-model="formData.work_hours.monday.locations"
-                          type="text"
-                        >
-                          <el-option
-                            v-for="item in clinicsList"
-                            :value="item.id"
-                            :label="item.name"
-                            :key="item.id"
-                          />
-                        </el-select>
-                      </InputWrapper>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                  <div class="card border border-primary border-dashed">
-                    <div
-                      class="card-header border-bottom-dashed border-primary"
-                    >
-                      <div class="card-title">
-                        <el-checkbox
-                          v-model="formData.work_hours.tuesday.available"
-                          label="Tuesday"
-                          size="large"
-                        />
-                      </div>
-                    </div>
-                    <div class="p-3">
-                      <InputWrapper label="Time Slot" prop="tuesday_time">
-                        <el-time-picker
-                          v-model="formData.work_hours.tuesday.time_slot"
-                          class="w-100"
-                          is-range
-                          range-separator="-"
-                          start-placeholder="From"
-                          end-placeholder="To"
-                        />
-                      </InputWrapper>
-
-                      <InputWrapper label="Location" prop="tuesday_locations">
-                        <el-select
-                          v-model="formData.work_hours.tuesday.locations"
-                          type="text"
-                        >
-                          <el-option
-                            v-for="item in clinicsList"
-                            :value="item.id"
-                            :label="item.name"
-                            :key="item.id"
-                          />
-                        </el-select>
-                      </InputWrapper>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                  <div class="card border border-primary border-dashed">
-                    <div
-                      class="card-header border-bottom-dashed border-primary"
-                    >
-                      <div class="card-title">
-                        <el-checkbox
-                          v-model="formData.work_hours.wednesday.available"
-                          label="Wednesday"
-                          size="large"
-                        />
-                      </div>
-                    </div>
-                    <div class="p-3">
-                      <InputWrapper label="Time Slot" prop="wednesday_time">
-                        <el-time-picker
-                          v-model="formData.work_hours.wednesday.time_slot"
-                          class="w-100"
-                          is-range
-                          range-separator="-"
-                          start-placeholder="From"
-                          end-placeholder="To"
-                        />
-                      </InputWrapper>
-
-                      <InputWrapper label="Location" prop="wednesday_locations">
-                        <el-select
-                          v-model="formData.work_hours.wednesday.locations"
-                          type="text"
-                        >
-                          <el-option
-                            v-for="item in clinicsList"
-                            :value="item.id"
-                            :label="item.name"
-                            :key="item.id"
-                          />
-                        </el-select>
-                      </InputWrapper>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                  <div class="card border border-primary border-dashed">
-                    <div
-                      class="card-header border-bottom-dashed border-primary"
-                    >
-                      <div class="card-title">
-                        <el-checkbox
-                          v-model="formData.work_hours.thursday.available"
-                          label="Thursday"
-                          size="large"
-                        />
-                      </div>
-                    </div>
-                    <div class="p-3">
-                      <InputWrapper label="Time Slot" prop="thursday_time">
-                        <el-time-picker
-                          v-model="formData.work_hours.thursday.time_slot"
-                          class="w-100"
-                          is-range
-                          range-separator="-"
-                          start-placeholder="From"
-                          end-placeholder="To"
-                        />
-                      </InputWrapper>
-
-                      <InputWrapper label="Location" prop="thursday_locations">
-                        <el-select
-                          v-model="formData.work_hours.thursday.locations"
-                          type="text"
-                        >
-                          <el-option
-                            v-for="item in clinicsList"
-                            :value="item.id"
-                            :label="item.name"
-                            :key="item.id"
-                          />
-                        </el-select>
-                      </InputWrapper>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                  <div class="card border border-primary border-dashed">
-                    <div
-                      class="card-header border-bottom-dashed border-primary"
-                    >
-                      <div class="card-title">
-                        <el-checkbox
-                          v-model="formData.work_hours.friday.available"
-                          label="Friday"
-                          size="large"
-                        />
-                      </div>
-                    </div>
-                    <div class="p-3">
-                      <InputWrapper label="Time Slot" prop="friday_time">
-                        <el-time-picker
-                          v-model="formData.work_hours.friday.time_slot"
-                          class="w-100"
-                          is-range
-                          range-separator="-"
-                          start-placeholder="From"
-                          end-placeholder="To"
-                        />
-                      </InputWrapper>
-
-                      <InputWrapper label="Location" prop="friday_locations">
-                        <el-select
-                          v-model="formData.work_hours.friday.locations"
-                          type="text"
-                        >
-                          <el-option
-                            v-for="item in clinicsList"
-                            :value="item.id"
-                            :label="item.name"
-                            :key="item.id"
-                          />
-                        </el-select>
-                      </InputWrapper>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                  <div class="card border border-primary border-dashed">
-                    <div
-                      class="card-header border-bottom-dashed border-primary"
-                    >
-                      <div class="card-title">
-                        <el-checkbox
-                          v-model="formData.work_hours.saturday.available"
-                          label="Saturday"
-                          size="large"
-                        />
-                      </div>
-                    </div>
-                    <div class="p-3">
-                      <InputWrapper label="Time Slot" prop="saturday_time">
-                        <el-time-picker
-                          v-model="formData.work_hours.saturday.time_slot"
-                          class="w-100"
-                          is-range
-                          range-separator="-"
-                          start-placeholder="From"
-                          end-placeholder="To"
-                        />
-                      </InputWrapper>
-
-                      <InputWrapper label="Location" prop="saturday_locations">
-                        <el-select
-                          v-model="formData.work_hours.saturday.locations"
-                          type="text"
-                        >
-                          <el-option
-                            v-for="item in clinicsList"
-                            :value="item.id"
-                            :label="item.name"
-                            :key="item.id"
-                          />
-                        </el-select>
-                      </InputWrapper>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                  <div class="card border border-primary border-dashed">
-                    <div class="card-header border-bottom-dashed border-primay">
-                      <div class="card-title">
-                        <el-checkbox
-                          v-model="formData.work_hours.sunday.available"
-                          label="Sunday"
-                          size="large"
-                        />
-                      </div>
-                    </div>
-                    <div class="p-3">
-                      <InputWrapper label="Time Slot" prop="sunday_time">
-                        <el-time-picker
-                          v-model="formData.work_hours.sunday.time_slot"
-                          class="w-100"
-                          is-range
-                          range-separator="-"
-                          start-placeholder="From"
-                          end-placeholder="To"
-                        />
-                      </InputWrapper>
-
-                      <InputWrapper label="Location" prop="sunday_locations">
-                        <el-select
-                          v-model="formData.work_hours.sunday.locations"
+                          v-model="formData.work_hours[week].locations.id"
                           type="text"
                         >
                           <el-option
@@ -446,7 +203,6 @@ import { useRouter, useRoute } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
-import { StepperComponent } from "@/assets/ts/components";
 import employeeTypes from "@/core/data/employee-types";
 import employeeRoles from "@/core/data/employee-roles";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
@@ -458,15 +214,26 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const route = useRoute();
-    const formRef_1 = ref<null | HTMLFormElement>(null);
     const loading = ref<boolean>(false);
     const employeeList = computed(() => store.getters.employeeList);
+    const formRef = ref<null | HTMLFormElement>(null);
     const formInfo = reactive({
       title: "Create Employee",
       submitAction: Actions.EMPLOYEE.CREATE,
       submitButtonName: "Create",
       submittedText: "New Employee Created",
     });
+
+    const weekList = ref([
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+    ]);
+
     const formData = ref({
       username: "",
       email: "",
@@ -480,37 +247,58 @@ export default defineComponent({
         monday: {
           available: false,
           time_slot: "",
-          locations: "",
+          locations: {
+            id: "",
+            name: "",
+          },
         },
         tuesday: {
           available: false,
           time_slot: "",
-          locations: "",
+          locations: {
+            id: "",
+            name: "",
+          },
         },
         wednesday: {
           available: false,
           time_slot: "",
-          locations: "",
+          locations: {
+            id: "",
+            name: "",
+          },
         },
         thursday: {
           available: false,
           time_slot: "",
-          locations: "",
+          locations: {
+            id: "",
+            name: "",
+          },
         },
         friday: {
           available: false,
           time_slot: "",
-          locations: "",
+          locations: {
+            id: "",
+            name: "",
+          },
         },
         saturday: {
           available: false,
           time_slot: "",
-          locations: "",
+          locations: {
+            id: "",
+            name: "",
+          },
         },
         sunday: {
           available: false,
           time_slot: "",
-          locations: "",
+          locations: {
+            id: "",
+            name: "",
+          },
         },
       },
     });
@@ -552,8 +340,7 @@ export default defineComponent({
         },
       ],
     });
-    const _stepperObj = ref<StepperComponent | null>(null);
-    const createEmployeeRef = ref<HTMLElement | null>(null);
+
     const currentStepIndex = ref(0);
     const clinicsList = computed(() => store.getters.clinicsList);
 
@@ -577,20 +364,16 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      _stepperObj.value = StepperComponent.createInstance(
-        createEmployeeRef.value as HTMLElement
-      );
-
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
 
     const submit = () => {
-      if (!formRef_1.value) {
+      if (!formRef.value) {
         return;
       }
 
-      formRef_1.value.validate((valid) => {
+      formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
 
@@ -600,7 +383,7 @@ export default defineComponent({
               loading.value = false;
               store.dispatch(Actions.EMPLOYEE.LIST);
               Swal.fire({
-                text: "Successfully Created!",
+                text: formInfo.submittedText,
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -626,9 +409,9 @@ export default defineComponent({
       formInfo,
       rules,
       submit,
-      formRef_1,
+      weekList,
+      formRef,
       loading,
-      createEmployeeRef,
       currentStepIndex,
       clinicsList,
       employeeTypes,
