@@ -180,7 +180,6 @@ export default defineComponent({
     const loading = ref(true);
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_ORG.SELECT, item);
       router.push({ name: "editOrganisation", params: { id: item.id } });
     };
 

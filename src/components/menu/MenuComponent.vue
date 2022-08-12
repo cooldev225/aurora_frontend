@@ -15,7 +15,7 @@ export default defineComponent({
   setup(props) {
     onMounted(() => {
       nextTick(() => {
-        MenuComponent.createInsance(props.menuSelector);
+        MenuComponent.createInstance(props.menuSelector);
       });
     });
   },

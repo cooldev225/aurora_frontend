@@ -276,7 +276,7 @@ class ScrollComponent {
     return scroll
   }
 
-  public static  reinitialization(attr: string = '[data-kt-scroll="true"]') {
+  public static  reInitialization(attr: string = '[data-kt-scroll="true"]') {
     ScrollComponent.createInstances(attr)
   }
 

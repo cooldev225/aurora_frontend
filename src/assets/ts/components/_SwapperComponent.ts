@@ -47,7 +47,7 @@ export interface ISwapperOptions {
 
 export interface ISwapperQueries {
   componentName: string
-  instanseQuery: string
+  instanceQuery: string
   attrQuery: string
 }
 
@@ -57,7 +57,7 @@ const defaultSwapperOptions: ISwapperOptions = {
 
 const defaultSwapperQueires: ISwapperQueries = {
   componentName: 'swapper',
-  instanseQuery: '[data-kt-swapper="true"]',
+  instanceQuery: '[data-kt-swapper="true"]',
   attrQuery: 'data-kt-swapper-',
 }
 
@@ -146,7 +146,7 @@ class SwapperComponent {
   }
 
   public static createInstances = (
-      selector: string = defaultSwapperQueires.instanseQuery,
+      selector: string = defaultSwapperQueires.instanceQuery,
       options: ISwapperOptions = defaultSwapperOptions,
       queries: ISwapperQueries = defaultSwapperQueires
   ) => {
@@ -160,8 +160,8 @@ class SwapperComponent {
     })
   }
 
-  public static createInsance = (
-      selector: string = defaultSwapperQueires.instanseQuery,
+  public static createInstance = (
+      selector: string = defaultSwapperQueires.instanceQuery,
       options: ISwapperOptions = defaultSwapperOptions,
       queries: ISwapperQueries = defaultSwapperQueires
   ): SwapperComponent | undefined => {
@@ -177,11 +177,11 @@ class SwapperComponent {
     return place
   }
 
-  public static bootstrap = (selector: string = defaultSwapperQueires.instanseQuery) => {
+  public static bootstrap = (selector: string = defaultSwapperQueires.instanceQuery) => {
     SwapperComponent.createInstances(selector)
   }
 
-  public static reinitialization = (selector: string = defaultSwapperQueires.instanseQuery) => {
+  public static reInitialization = (selector: string = defaultSwapperQueires.instanceQuery) => {
     SwapperComponent.createInstances(selector)
   }
 }
@@ -193,7 +193,7 @@ window.addEventListener('resize', function () {
       timer,
       () => {
         // Locate and update Offcanvas instances on window resize
-        const elements = document.querySelectorAll(defaultSwapperQueires.instanseQuery)
+        const elements = document.querySelectorAll(defaultSwapperQueires.instanceQuery)
         elements.forEach((el) => {
           const place = SwapperComponent.getInstance(el as HTMLElement)
           if (place) {

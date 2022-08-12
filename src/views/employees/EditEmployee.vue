@@ -400,7 +400,9 @@
                     class="btn btn-lg btn-primary me-3"
                     @click="submit()"
                   >
-                    <span class="indicator-label"> Create Employee </span>
+                    <span class="indicator-label">
+                      {{ formInfo.submitButtonName }}
+                    </span>
                     <span class="indicator-progress">
                       Please wait...
                       <span
@@ -408,6 +410,15 @@
                       ></span>
                     </span>
                   </button>
+                  <!--begin::Button-->
+                  <router-link
+                    type="reset"
+                    to="/employees"
+                    class="btn btn-light me-3"
+                  >
+                    Cancel
+                  </router-link>
+                  <!--end::Button-->
                 </div>
               </div>
             </div>
@@ -422,12 +433,19 @@
   <!--end::Stepper-->
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  reactive,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
+import { useRouter, useRoute } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
-import { useRouter } from "vue-router";
 import { StepperComponent } from "@/assets/ts/components";
 import employeeTypes from "@/core/data/employee-types";
 import employeeRoles from "@/core/data/employee-roles";
@@ -439,8 +457,16 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
     const formRef_1 = ref<null | HTMLFormElement>(null);
     const loading = ref<boolean>(false);
+    const employeeList = computed(() => store.getters.employeeList);
+    const formInfo = reactive({
+      title: "Create Employee",
+      submitAction: Actions.EMPLOYEE.CREATE,
+      submitButtonName: "Create",
+      submittedText: "New Employee Created",
+    });
     const formData = ref({
       username: "",
       email: "",
@@ -531,14 +557,32 @@ export default defineComponent({
     const currentStepIndex = ref(0);
     const clinicsList = computed(() => store.getters.clinicsList);
 
+    watch(employeeList, () => {
+      const id = route.params.id;
+
+      employeeList.value.forEach((item) => {
+        if (item.id == id) {
+          formData.value = item;
+
+          formData.value.work_hours = JSON.parse(item.work_hours);
+
+          formInfo.title = "Edit Employee";
+          formInfo.submitAction = Actions.EMPLOYEE.UPDATE;
+          formInfo.submitButtonName = "Update";
+          formInfo.submittedText = "Employee Updated";
+        }
+      });
+
+      setCurrentPageBreadcrumbs(formInfo.title, ["Employee"]);
+    });
+
     onMounted(() => {
-      _stepperObj.value = StepperComponent.createInsance(
+      _stepperObj.value = StepperComponent.createInstance(
         createEmployeeRef.value as HTMLElement
       );
 
-      setCurrentPageBreadcrumbs("Create Employee", ["Employee"]);
-
       store.dispatch(Actions.CLINICS.LIST);
+      store.dispatch(Actions.EMPLOYEE.LIST);
     });
 
     const submit = () => {
@@ -551,7 +595,7 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.EMPLOYEE.CREATE, formData.value)
+            .dispatch(formInfo.submitAction, formData.value)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.EMPLOYEE.LIST);
@@ -579,6 +623,7 @@ export default defineComponent({
 
     return {
       formData,
+      formInfo,
       rules,
       submit,
       formRef_1,

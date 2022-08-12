@@ -13,7 +13,7 @@ export interface IPasswordMeterOptions {
 
 export interface IPasswordMeterQueries {
   componentName: string
-  instanseQuery: string
+  instanceQuery: string
   inputQuery: string
   visibilityQuery: string
   highlightQuery: string
@@ -30,7 +30,7 @@ const defaultPasswordMeterOptions = {
 
 const defaultPasswordMeterQueires: IPasswordMeterQueries = {
   componentName: 'password-meter',
-  instanseQuery: '[data-kt-password-meter]',
+  instanceQuery: '[data-kt-password-meter]',
   inputQuery: 'input[type]',
   visibilityQuery: '[data-kt-password-meter-control="visibility"]',
   highlightQuery: '[data-kt-password-meter-control="highlight"]',
@@ -231,7 +231,7 @@ class PasswordMeterComponent {
   }
 
   public static createInstances = (
-    selector: string = defaultPasswordMeterQueires.instanseQuery,
+    selector: string = defaultPasswordMeterQueires.instanceQuery,
     options: IPasswordMeterOptions = defaultPasswordMeterOptions,
     queries: IPasswordMeterQueries = defaultPasswordMeterQueires
   ) => {
@@ -245,8 +245,8 @@ class PasswordMeterComponent {
     })
   }
 
-  public static createInsance = (
-    selector: string = defaultPasswordMeterQueires.instanseQuery,
+  public static createInstance = (
+    selector: string = defaultPasswordMeterQueires.instanceQuery,
     options: IPasswordMeterOptions = defaultPasswordMeterOptions,
     queries: IPasswordMeterQueries = defaultPasswordMeterQueires
   ): PasswordMeterComponent | undefined => {
@@ -262,12 +262,12 @@ class PasswordMeterComponent {
     return passwordMeter
   }
 
-  public static bootstrap = (selector: string = defaultPasswordMeterQueires.instanseQuery) => {
+  public static bootstrap = (selector: string = defaultPasswordMeterQueires.instanceQuery) => {
     PasswordMeterComponent.createInstances(selector)
   }
 
-  public static reinitialization = (
-      selector: string = defaultPasswordMeterQueires.instanseQuery
+  public static reInitialization = (
+      selector: string = defaultPasswordMeterQueires.instanceQuery
   ) => {
     PasswordMeterComponent.createInstances(selector)
   }

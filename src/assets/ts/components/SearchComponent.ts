@@ -23,7 +23,7 @@ export interface ISearchOptions {
 
 export interface ISearchQueries {
   componentName: string
-  instanseQuery: string
+  instanceQuery: string
   attrQuery: string
 }
 
@@ -35,9 +35,9 @@ const defaultSearchOptions: ISearchOptions = {
   showOnFocus: true, // Always show menu on input focus
 }
 
-const defaultSearchQueires: ISearchQueries = {
+const defaultSearchQueries: ISearchQueries = {
   componentName: 'search',
-  instanseQuery: '[data-kt-search]',
+  instanceQuery: '[data-kt-search]',
   attrQuery: 'data-kt-search-',
 }
 
@@ -426,7 +426,7 @@ class SearchComponent {
   // Static methods
   public static getInstance = (
     el: HTMLElement,
-    componentName: string = defaultSearchQueires.componentName
+    componentName: string = defaultSearchQueries.componentName
   ) => {
     const Search = DataUtil.get(el, componentName)
     if (Search) {
@@ -437,9 +437,9 @@ class SearchComponent {
   }
 
   public static createInstances = (
-    selector: string = defaultSearchQueires.instanseQuery,
+    selector: string = defaultSearchQueries.instanceQuery,
     options: ISearchOptions = defaultSearchOptions,
-    queries: ISearchQueries = defaultSearchQueires
+    queries: ISearchQueries = defaultSearchQueries
   ) => {
     const elements = document.body.querySelectorAll(selector)
     elements.forEach((el) => {
@@ -451,10 +451,10 @@ class SearchComponent {
     })
   }
 
-  public static createInsance = (
-    selector: string = defaultSearchQueires.instanseQuery,
+  public static createInstance = (
+    selector: string = defaultSearchQueries.instanceQuery,
     options: ISearchOptions = defaultSearchOptions,
-    queries: ISearchQueries = defaultSearchQueires
+    queries: ISearchQueries = defaultSearchQueries
   ): SearchComponent | undefined => {
     const element = document.body.querySelector(selector)
     if (!element) {
@@ -468,12 +468,12 @@ class SearchComponent {
     return Search
   }
 
-  public static bootstrap = (selector: string = defaultSearchQueires.instanseQuery) => {
+  public static bootstrap = (selector: string = defaultSearchQueries.instanceQuery) => {
     SearchComponent.createInstances(selector)
   }
 
-  public static reinitialization = (selector: string = defaultSearchQueires.instanseQuery) => {
+  public static reInitialization = (selector: string = defaultSearchQueries.instanceQuery) => {
     SearchComponent.createInstances(selector)
   }
 }
-export {SearchComponent, defaultSearchOptions, defaultSearchQueires}
+export {SearchComponent, defaultSearchOptions, defaultSearchQueries}
