@@ -223,7 +223,7 @@ export default defineComponent({
   props: {
     patientId: { type: String, required: true },
   },
-  setup() {
+  setup(props) {
     const store = useStore();
     const formRef = ref(null);
     const uploadDocumentRef = ref(null);
