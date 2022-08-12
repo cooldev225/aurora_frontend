@@ -1777,12 +1777,12 @@ export default defineComponent({
         billingInfoData.value.procedure_price = getProcedurePrice(
           filteredApt,
           billingInfoData.value.charge_type
-        );createInstance
+        );
       }
     });
 
     onMounted(() => {
-      _stepperObj.value = StepperComponent.createInsance(editAptRef.value);
+      _stepperObj.value = StepperComponent.createInstance(editAptRef.value);
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);

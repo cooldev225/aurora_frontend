@@ -2067,13 +2067,13 @@ export default defineComponent({
         )[0];
         billingInfoData.value.procedure_price = getProcedurePrice(
           filteredApt,
-          billingInfoData.value.charge_typecreateInstance
+          billingInfoData.value.charge_type
         );
       }
     });
 
     onMounted(() => {
-      _stepperObj.value = StepperComponent.createInsance(createAptRef.value);
+      _stepperObj.value = StepperComponent.createInstance(createAptRef.value);
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
