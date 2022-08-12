@@ -27,12 +27,12 @@
           data-kt-subscription-table-toolbar="base"
         >
           <!--begin::Add subscription-->
-          <router-link to="/employees/create" class="btn btn-primary">
+          <a @click="handleCreate" class="btn btn-primary">
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>
             Add
-          </router-link>
+          </a>
           <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
@@ -145,7 +145,27 @@ export default defineComponent({
     ]);
     const tableData = ref([]);
     const list = computed(() => store.getters.employeeList);
+    const orgList = computed(() => store.getters.orgList);
     const loading = ref(true);
+
+    const handleCreate = () => {
+      if (orgList.value[0].is_max_users) {
+        const html =
+          "<h3>You have reached your max allowed users.</h3><p>Please buy new user licenses to add more.</p><br/>";
+
+        Swal.fire({
+          html: html,
+          icon: "warning",
+          buttonsStyling: false,
+          confirmButtonText: "Ok, got it!",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+        });
+      } else {
+        router.push({ name: "employees-create" });
+      }
+    };
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_EMPLOYEE.SELECT, item);
@@ -175,6 +195,7 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Employees", []);
+      store.dispatch(Actions.ORG.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST).then(() => {
         tableData.value = list;
         loading.value = false;
@@ -185,7 +206,7 @@ export default defineComponent({
       tableData.value = list;
       loading.value = false;
     });
-    return { tableHeader, tableData, handleEdit, handleDelete };
+    return { tableHeader, tableData, handleEdit, handleDelete, handleCreate };
   },
 });
 </script>

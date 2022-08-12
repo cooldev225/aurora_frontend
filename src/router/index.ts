@@ -54,12 +54,12 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/employees/create",
         name: "employees-create",
-        component: () => import("@/components/employees/CreateEmployee.vue"),
+        component: () => import("@/views/employees/EditEmployee.vue"),
       },
       {
-        path: "/employees/edit",
+        path: "/employees/edit/:id",
         name: "employees-edit",
-        component: () => import("@/components/employees/EditEmployee.vue"),
+        component: () => import("@/views/employees/EditEmployee.vue"),
       },
       {
         path: "/clinics",
