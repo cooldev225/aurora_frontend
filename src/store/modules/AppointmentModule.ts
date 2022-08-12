@@ -18,6 +18,7 @@ export interface AptInfo {
   aptPreAdmissionValidateData: IApt;
   aptPreAdmissionValidateMsg: string;
   selectedSpecialistData;
+  aptDataById: Array<IApt>;
 }
 
 @Module
@@ -32,13 +33,21 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   aptPreAdmissionValidateData = {} as IApt;
   aptPreAdmissionValidateMsg = "" as string;
   selectedSpecialistData = null;
-
+  aptDataById = [] as Array<IApt>;
   /**
    * Get current user object
    * @returns AdminList
    */
   get getAptList(): Array<IApt> {
     return this.aptData;
+  }
+
+  /**
+   * Get current user object
+   * @returns AdminList
+   */
+  get getAptListById(): Array<IApt> {
+    return this.aptDataById;
   }
 
   /**
@@ -117,6 +126,11 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Mutation
+  [Mutations.SET_APT.LISTBYID](aptDataById) {
+    this.aptDataById = aptDataById;
+  }
+
+  @Mutation
   [Mutations.SET_APT.UNCONFIRMED.LIST](aptData) {
     this.unconfirmedAptData = aptData;
   }
@@ -159,6 +173,25 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   @Mutation
   [Mutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG](data) {
     this.aptPreAdmissionValidateMsg = data;
+  }
+
+  @Action
+  [Actions.APT.LISTBYID](id) {
+    console.log(id);
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.get("patients/appointments/" + id)
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_APT.LISTBYID, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
   }
 
   @Action
