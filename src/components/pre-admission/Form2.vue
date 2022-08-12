@@ -193,6 +193,7 @@
                   >
                     <el-input
                       type="text"
+                      v-mask="'0#-####-####'"
                       v-model="formData.contact_number"
                       placeholder="Contact Number"
                     />
@@ -305,6 +306,7 @@
                   >
                     <el-input
                       type="text"
+                      v-mask="'0#-####-####'"
                       v-model="formData.kin_phone_number"
                       placeholder="Kin Phone Number"
                     />
@@ -439,8 +441,14 @@ import { Actions } from "@/store/enums/StoreEnums";
 import Vue3Html2pdf from "vue3-html2pdf";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
+import { mask } from "vue-the-mask";
+import { validatePhone } from "@/helpers/helpers.js";
+
 export default defineComponent({
   name: "pre-admission-form2",
+  directives: {
+    mask,
+  },
   components: {
     Vue3Html2pdf,
     InputWrapper,
@@ -509,6 +517,7 @@ export default defineComponent({
           message: "Contact Number cannot be blank",
           trigger: "change",
         },
+        { validator: validatePhone, trigger: "blur" },
       ],
       email: [
         {
@@ -542,6 +551,7 @@ export default defineComponent({
           message: "Kin Number cannnot be blank",
           trigger: "change",
         },
+        { validator: validatePhone, trigger: "blur" },
       ],
       kin_relationship: [
         {

@@ -76,8 +76,9 @@
                 <!--begin::Input-->
                 <el-form-item prop="collecting_person_phone">
                   <el-input
-                    v-model="formData.collecting_person_phone"
                     type="text"
+                    v-mask="'0#-####-####'"
+                    v-model="formData.collecting_person_phone"
                     placeholder="Enter Phone"
                   />
                 </el-form-item>
@@ -153,8 +154,14 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
+import { mask } from "vue-the-mask";
+import { validatePhone } from "@/helpers/helpers.js";
+
 export default defineComponent({
   name: "update-collecting-person-modal",
+  directives: {
+    mask,
+  },
   components: {},
   props: {
     selectedApt: { type: Object, required: true },
@@ -186,6 +193,7 @@ export default defineComponent({
           message: "Phone cannnot be blank",
           trigger: "change",
         },
+        { validator: validatePhone, trigger: "blur" },
       ],
       collecting_person_alternate_contact: [
         {
