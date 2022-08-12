@@ -1527,47 +1527,36 @@
                       </div>
                       <!--end::Referral Information-->
                       <!--start::Appointment History-->
-                      <div class="card-info">
+                      <div v-if="patientStatus != 'new'" class="card-info">
                         <div class="mb-6 d-flex justify-content-between">
                           <span class="fs-3 fw-bold text-muted"
                             >Appointment History</span
                           >
                         </div>
                         <div class="row">
-                          <div class="row">
-                            <table class="table">
-                              <thead>
-                                <tr>
-                                  <th>Date / Time</th>
-                                  <th>Appointment Type</th>
-                                  <th>Specialist</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <template
-                                  v-for="(item, index) in patientAptData"
-                                  :key="index"
-                                >
-                                  <tr class="center-row">
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.date }} {{ item.start_time }}
-                                      </span>
-                                    </th>
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.appointment_type_name }}
-                                      </span>
-                                    </th>
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.specialist_name }}
-                                      </span>
-                                    </th>
-                                  </tr>
-                                </template>
-                              </tbody>
-                            </table>
+                          <div class="col">
+                            <span class="text-bold">Upcoming Appointments</span>
+                            <br />
+                            <span
+                              v-for="appointment in patientAptData.futureAppointments"
+                              :key="appointment.id"
+                            >
+                              {{ appointment.date }}
+                              {{ appointment.start_time }}
+                              {{ appointment.speclialist_name }}<br />
+                            </span>
+                          </div>
+                          <div class="col">
+                            <span class="text-bold">Previous Appointments</span>
+                            <br />
+                            <span
+                              v-for="appointment in patientAptData.pastAppointments"
+                              :key="appointment.id"
+                            >
+                              {{ appointment.date }}
+                              {{ appointment.start_time }}
+                              {{ appointment.speclialist_name }}<br />
+                            </span>
                           </div>
                         </div>
                       </div>
