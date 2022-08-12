@@ -169,7 +169,6 @@
           />
           <!--Move Appointment-->
           <BookingDrawerButton
-            @click="handleEdit"
             :heading="'Move'"
             :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr035.svg'"
@@ -244,6 +243,7 @@ export default defineComponent({
     };
 
     const handleEdit = () => {
+      store.dispatch(Actions.PATIENTS.APPOINTMENTS, aptData.value.patient_id);
       store.commit(Mutations.SET_APT.SELECT, aptData.value);
       const modal = new Modal(document.getElementById("modal_edit_apt"));
       modal.show();

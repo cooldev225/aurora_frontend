@@ -119,7 +119,7 @@ class ScrollTopComponent {
     })
   }
 
-  public static createInsance = (
+  public static createInstance = (
     selector: string,
     options: IScrollTopOptions = defaultScrollTopOptions
   ): ScrollTopComponent | undefined => {
@@ -139,7 +139,7 @@ class ScrollTopComponent {
     ScrollTopComponent.createInstances('[data-kt-scrolltop="true"]')
   }
 
-  public static reinitialization = () => {
+  public static reInitialization = () => {
     ScrollTopComponent.createInstances('[data-kt-scrolltop="true"]')
   }
 

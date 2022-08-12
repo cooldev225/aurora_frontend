@@ -620,6 +620,7 @@
                             <el-form-item prop="contact_number">
                               <el-input
                                 type="text"
+                                v-maska="'+61 0#-####-####'"
                                 v-model="patientInfoData.contact_number"
                                 placeholder="Enter Contact Number"
                               />
@@ -1307,49 +1308,6 @@
                         <!--end::Body-->
                       </div>
                       <el-divider />
-                      <div class="py-0">
-                        <!--begin::Header-->
-                        <div class="py-5 d-flex flex-stack flex-wrap">
-                          <!--begin::Toggle-->
-                          <div
-                            class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
-                            data-bs-toggle="collapse"
-                            href="#patient_billing_take_deposit"
-                            role="button"
-                            aria-expanded="false"
-                            aria-controls="patient_billing_take_deposit"
-                          >
-                            <!--begin::Summary-->
-                            <div class="me-3">
-                              <div class="d-flex align-items-center">
-                                <div class="text-gray-800 fw-bolder">
-                                  Take Deposit
-                                </div>
-                              </div>
-                            </div>
-                            <!--end::Summary-->
-                            <!--begin::Arrow-->
-                            <div class="me-3 rotate-90">
-                              <span class="svg-icon svg-icon-3">
-                                <inline-svg
-                                  src="media/icons/duotune/arrows/arr071.svg"
-                                />
-                              </span>
-                            </div>
-                            <!--end::Arrow-->
-                          </div>
-                          <!--end::Toggle-->
-                        </div>
-                        <!--end::Header-->
-                        <!--begin::Body-->
-                        <div
-                          id="patient_billing_take_deposit"
-                          class="fs-6 ps-10 collapse hide"
-                          data-bs-parent="#patient_billing_take_deposit"
-                        ></div>
-                        <!--end::Body-->
-                      </div>
-                      <el-divider />
                     </div>
                     <div class="d-flex justify-content-between">
                       <button
@@ -1394,12 +1352,12 @@
                     @submit.prevent=""
                   >
                     <div class="row scroll h-500px">
-                      <div class="card-info">
+                      <div v-if="apt_type == 'Procedure'" class="card-info">
                         <div class="fs-3 fw-bold text-muted mb-6">
-                          Extra Information
+                          Pre-Procedure Questions
                         </div>
                         <div class="row">
-                          <div v-if="apt_type == 'Procedure'" class="col-sm-6">
+                          <div class="col-sm-6">
                             <!--begin::Input group-->
                             <div class="fv-row mb-7">
                               <!--begin::Input-->
@@ -1416,11 +1374,7 @@
                             </div>
                             <!--end::Input group-->
                           </div>
-                          <div
-                            v-if="apt_type == 'Procedure'"
-                            class="col-sm-12 collapse"
-                            id="toogle_ane_ques"
-                          >
+                          <div class="col-sm-12 collapse" id="toogle_ane_ques">
                             <template
                               v-for="(item, idx) in aneQuestions"
                               :key="idx"
@@ -1444,235 +1398,181 @@
                               </div>
                             </template>
                           </div>
-                          <div v-if="apt_type == 'Procedure'" class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Input-->
-                              <el-form-item prop="procedure_questions">
-                                <el-checkbox
-                                  class="w-100"
-                                  v-model="otherInfoData.procedure_questions"
-                                  label="Procedure Questions"
-                                  data-bs-toggle="collapse"
-                                  href="#toogle_pro_ques"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div
-                            v-if="apt_type == 'Procedure'"
-                            class="col-sm-12 collapse"
-                            id="toogle_pro_ques"
-                          >
-                            <template
-                              v-for="(item, idx) in proQuestions"
-                              :key="idx"
-                            >
-                              <div class="row mb-2">
-                                <div class="col-10">{{ item.question }}</div>
-                                <div class="col-2">
-                                  <el-switch
-                                    v-model="proAnswers[idx]"
-                                    :active-value="true"
-                                    :inactive-value="false"
-                                    @change="handleProQuestions"
-                                    style="
-                                      --el-switch-on-color: #13ce66;
-                                      --el-switch-off-color: #ff4949;
-                                    "
-                                    active-text="Y"
-                                    inactive-text="N"
-                                  />
-                                </div>
-                              </div>
-                            </template>
-                          </div>
                           <el-divider />
-                          <!--start::Referral Information-->
-                          <div class="card-info">
-                            <div class="mb-6 d-flex justify-content-between">
-                              <span class="fs-3 fw-bold text-muted"
-                                >Referral Information</span
-                              >
-                              <el-checkbox
-                                type="checkbox"
-                                v-model="otherInfoData.no_referral"
-                                label="No Referral"
-                              />
-                            </div>
-                            <div class="row">
-                              <template v-if="otherInfoData.no_referral">
-                                <div class="col-sm-6">
-                                  <!--begin::Input group-->
-                                  <div class="fv-row mb-7">
-                                    <!--begin::Label-->
-                                    <label class="fs-6 fw-bold mb-2">
-                                      No Referral Reason
-                                    </label>
-                                    <!--end::Label-->
-
-                                    <!--begin::Input-->
-                                    <el-form-item prop="no_referral_reason">
-                                      <el-input
-                                        type="text"
-                                        v-model="
-                                          otherInfoData.no_referral_reason
-                                        "
-                                        placeholder="Please Enter Reason"
-                                      />
-                                    </el-form-item>
-                                    <!--end::Input-->
-                                  </div>
-                                  <!--end::Input group-->
-                                </div>
-                              </template>
-                              <template v-else>
-                                <div class="col-sm-6">
-                                  <!--begin::Input group-->
-                                  <div class="fv-row mb-7">
-                                    <!--begin::Label-->
-                                    <label class="fs-6 fw-bold mb-2">
-                                      Referring Doctor
-                                    </label>
-                                    <!--end::Label-->
-
-                                    <!--begin::Input-->
-                                    <el-form-item prop="referring_doctor_id">
-                                      <el-autocomplete
-                                        class="w-100"
-                                        v-model="
-                                          otherInfoData.referring_doctor_name
-                                        "
-                                        value-key="full_name"
-                                        :fetch-suggestions="
-                                          searchReferralDoctor
-                                        "
-                                        placeholder="Please input"
-                                        :trigger-on-focus="false"
-                                        @select="handleSelectReferringDoctor"
-                                      >
-                                        <template #default="{ item }">
-                                          <div class="name">
-                                            {{ item.title }}
-                                            {{ item.first_name }}
-                                            {{ item.last_name }}
-                                          </div>
-                                          <div class="address">
-                                            {{ item.address }}
-                                          </div>
-                                        </template>
-                                      </el-autocomplete>
-                                    </el-form-item>
-                                    <!--end::Input-->
-                                  </div>
-                                  <!--end::Input group-->
-                                </div>
-                                <div class="col-sm-6">
-                                  <!--begin::Input group-->
-                                  <div class="fv-row mb-7">
-                                    <!--begin::Label-->
-                                    <label class="fs-6 fw-bold mb-2">
-                                      Referral Duration
-                                    </label>
-                                    <!--end::Label-->
-
-                                    <!--begin::Input-->
-                                    <el-form-item prop="referral_duration">
-                                      <el-select
-                                        class="w-100"
-                                        v-model="
-                                          otherInfoData.referral_duration
-                                        "
-                                        placeholder="Enter Referral Duration"
-                                      >
-                                        <el-option
-                                          value="0"
-                                          label="Indefinite"
-                                        />
-                                        <el-option value="3" label="3 Months" />
-                                        <el-option
-                                          value="12"
-                                          label="12 Months"
-                                        />
-                                      </el-select>
-                                    </el-form-item>
-                                    <!--end::Input-->
-                                  </div>
-                                  <!--end::Input group-->
-                                </div>
-                                <div class="col-sm-6">
-                                  <!--begin::Input group-->
-                                  <div class="fv-row mb-7">
-                                    <!--begin::Label-->
-                                    <label class="fs-6 fw-bold mb-2">
-                                      Referral Date
-                                    </label>
-                                    <!--end::Label-->
-
-                                    <!--begin::Input-->
-                                    <el-form-item prop="referral_date">
-                                      <el-date-picker
-                                        editable
-                                        class="w-100"
-                                        format="DD-MM-YYYY"
-                                        v-model="otherInfoData.referral_date"
-                                      />
-                                    </el-form-item>
-                                    <!--end::Input-->
-                                  </div>
-                                  <!--end::Input group-->
-                                </div>
-                              </template>
-                            </div>
-                          </div>
-                          <!--end::Referral Information-->
-                        </div>
-                        <el-divider />
-                        <div class="py-0">
-                          <!--begin::Header-->
-                          <div class="py-5 d-flex flex-stack flex-wrap">
-                            <!--begin::Toggle-->
-                            <div
-                              class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
-                              data-bs-toggle="collapse"
-                              href="#patient_appointment_history"
-                              role="button"
-                              aria-expanded="false"
-                              aria-controls="patient_appointment_history"
-                            >
-                              <!--begin::Summary-->
-                              <div class="me-3">
-                                <div class="d-flex align-items-center">
-                                  <div class="text-gray-800 fw-bolder">
-                                    View Appointment History
-                                  </div>
-                                </div>
-                              </div>
-                              <!--end::Summary-->
-                              <!--begin::Arrow-->
-                              <div class="me-3 rotate-90">
-                                <span class="svg-icon svg-icon-3">
-                                  <inline-svg
-                                    src="media/icons/duotune/arrows/arr071.svg"
-                                  />
-                                </span>
-                              </div>
-                              <!--end::Arrow-->
-                            </div>
-                            <!--end::Toggle-->
-                          </div>
-                          <!--end::Header-->
-                          <!--begin::Body-->
-                          <div
-                            id="patient_appointment_history"
-                            class="fs-6 ps-10 collapse hide"
-                            data-bs-parent="#patient_appointment_history"
-                          ></div>
-                          <!--end::Body-->
                         </div>
                       </div>
+                      <!--start::Referral Information-->
+                      <div class="card-info">
+                        <div class="mb-6 d-flex justify-content-between">
+                          <span class="fs-3 fw-bold text-muted"
+                            >Referral Information</span
+                          >
+                          <el-checkbox
+                            type="checkbox"
+                            v-model="otherInfoData.no_referral"
+                            label="No Referral"
+                          />
+                        </div>
+                        <div class="row">
+                          <template v-if="otherInfoData.no_referral">
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  No Referral Reason
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="no_referral_reason">
+                                  <el-input
+                                    type="text"
+                                    v-model="otherInfoData.no_referral_reason"
+                                    placeholder="Please Enter Reason"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                          </template>
+                          <template v-else>
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Referring Doctor
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="referring_doctor_id">
+                                  <el-autocomplete
+                                    class="w-100"
+                                    v-model="
+                                      otherInfoData.referring_doctor_name
+                                    "
+                                    value-key="full_name"
+                                    :fetch-suggestions="searchReferralDoctor"
+                                    placeholder="Please input"
+                                    :trigger-on-focus="false"
+                                    @select="handleSelectReferringDoctor"
+                                  >
+                                    <template #default="{ item }">
+                                      <div class="name">
+                                        {{ item.title }}
+                                        {{ item.first_name }}
+                                        {{ item.last_name }}
+                                      </div>
+                                      <div class="address">
+                                        {{ item.address }}
+                                      </div>
+                                    </template>
+                                  </el-autocomplete>
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Referral Duration
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="referral_duration">
+                                  <el-select
+                                    class="w-100"
+                                    v-model="otherInfoData.referral_duration"
+                                    placeholder="Enter Referral Duration"
+                                  >
+                                    <el-option value="0" label="Indefinite" />
+                                    <el-option value="3" label="3 Months" />
+                                    <el-option value="12" label="12 Months" />
+                                  </el-select>
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Label-->
+                                <label class="fs-6 fw-bold mb-2">
+                                  Referral Date
+                                </label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <el-form-item prop="referral_date">
+                                  <el-date-picker
+                                    editable
+                                    class="w-100"
+                                    format="DD-MM-YYYY"
+                                    v-model="otherInfoData.referral_date"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                          </template>
+                        </div>
+                      </div>
+                      <!--end::Referral Information-->
+                      <!--start::Appointment History-->
+                      <div class="card-info">
+                        <div class="mb-6 d-flex justify-content-between">
+                          <span class="fs-3 fw-bold text-muted"
+                            >Appointment History</span
+                          >
+                        </div>
+                        <div class="row">
+                          <div class="row">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th>Date / Time</th>
+                                  <th>Appointment Type</th>
+                                  <th>Specialist</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <template
+                                  v-for="(item, index) in patientAptData"
+                                  :key="index"
+                                >
+                                  <tr class="center-row">
+                                    <th>
+                                      <span class="fs-5 d-block">
+                                        {{ item.date }} {{ item.start_time }}
+                                      </span>
+                                    </th>
+                                    <th>
+                                      <span class="fs-5 d-block">
+                                        {{ item.appointment_type_name }}
+                                      </span>
+                                    </th>
+                                    <th>
+                                      <span class="fs-5 d-block">
+                                        {{ item.specialist_name }}
+                                      </span>
+                                    </th>
+                                  </tr>
+                                </template>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <!--end::Appointment History-->
                     </div>
                     <div class="d-flex justify-content-between">
                       <button
@@ -1740,8 +1640,15 @@ import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import { useRouter } from "vue-router";
+
+import { maska } from "maska";
+
 export default defineComponent({
   name: "create-apt-modal",
+  directives: {
+    maska,
+  },
   components: {
     Datatable,
   },
@@ -1753,6 +1660,7 @@ export default defineComponent({
     const formRef_4 = ref(null);
     const loading = ref(false);
     const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const router = useRouter();
 
     const aptInfoData = ref({
       reference_number: 22100349,
@@ -1992,6 +1900,7 @@ export default defineComponent({
     const searchVal = computed(() => store.getters.getSearchVariable);
     const organisation = computed(() => store.getters.orgList);
     const patientList = computed(() => store.getters.patientsList);
+    const patientAptData = computed(() => store.getters.getPatientAppointments);
 
     const formatDate = (date) => {
       return moment(date).format("DD-MM-YYYY").toString();
@@ -2164,7 +2073,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      _stepperObj.value = StepperComponent.createInsance(createAptRef.value);
+      _stepperObj.value = StepperComponent.createInstance(createAptRef.value);
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
@@ -2297,8 +2206,11 @@ export default defineComponent({
                 confirmButtonText: "Ok, got it!",
                 customClass: {
                   confirmButton: "btn btn-primary",
+                  cancelButton: "btn btn-info",
                 },
-              }).then(() => {
+                showCancelButton: true,
+                cancelButtonText: "Deposit",
+              }).then((result) => {
                 hideModal(createAptModalRef.value);
                 if (searchVal.value.date) {
                   store.dispatch(Actions.BOOKING.SEARCH.DATE, {
@@ -2314,6 +2226,10 @@ export default defineComponent({
                 }
 
                 resetCreateModal();
+
+                if (result.dismiss === "cancel") {
+                  router.push({ name: "make-payment-pay" });
+                }
               });
             })
             .catch(({ response }) => {
@@ -2359,6 +2275,7 @@ export default defineComponent({
     };
 
     const selectPatient = (item) => {
+      store.dispatch(Actions.PATIENTS.APPOINTMENTS, item.id);
       store.dispatch(Actions.PATIENTS.VIEW, item.id);
       patientInfoData.value = item;
 
@@ -2470,6 +2387,7 @@ export default defineComponent({
       billingInfoData,
       otherInfoData,
       formatDate,
+      patientAptData,
       overlapping_cnt,
       searchReferralDoctor,
       handleSelectReferringDoctor,

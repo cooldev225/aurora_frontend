@@ -308,7 +308,7 @@ class StepperComponent {
     })
   }
 
-  public static createInsance = (
+  public static createInstance = (
     element: HTMLElement,
     options: IStepperOptions = defaultStepperOptions
   ): StepperComponent | null => {

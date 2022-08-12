@@ -1150,7 +1150,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      _stepperObj.value = StepperComponent.createInsance(
+      _stepperObj.value = StepperComponent.createInstance(
         createAccountRef.value as HTMLElement
       );
     });

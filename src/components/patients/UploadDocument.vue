@@ -211,7 +211,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
@@ -223,7 +223,7 @@ export default defineComponent({
   props: {
     patientId: { type: String, required: true },
   },
-  setup(props) {
+  setup() {
     const store = useStore();
     const formRef = ref(null);
     const uploadDocumentRef = ref(null);
