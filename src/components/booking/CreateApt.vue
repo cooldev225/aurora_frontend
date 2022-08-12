@@ -1344,9 +1344,45 @@
                         <!--begin::Body-->
                         <div
                           id="patient_billing_take_deposit"
-                          class="fs-6 ps-10 collapse hide"
+                          class="fs-6 ps-10 collapse hide mb-7"
                           data-bs-parent="#patient_billing_take_deposit"
-                        ></div>
+                        >
+                          <div class="row">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th>Date / Time</th>
+                                  <th>Appointment Type</th>
+                                  <th>Specialist</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <template
+                                  v-for="(item, index) in patientAptData"
+                                  :key="index"
+                                >
+                                  <tr class="center-row">
+                                    <th>
+                                      <span class="fs-5 d-block">
+                                        {{ item.date }} {{ item.start_time }}
+                                      </span>
+                                    </th>
+                                    <th>
+                                      <span class="fs-5 d-block">
+                                        {{ item.appointment_type_name }}
+                                      </span>
+                                    </th>
+                                    <th>
+                                      <span class="fs-5 d-block">
+                                        {{ item.specialist_name }}
+                                      </span>
+                                    </th>
+                                  </tr>
+                                </template>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
                         <!--end::Body-->
                       </div>
                       <el-divider />
@@ -1740,6 +1776,8 @@ import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import { useRouter } from "vue-router";
+
 export default defineComponent({
   name: "create-apt-modal",
   components: {
@@ -1753,6 +1791,7 @@ export default defineComponent({
     const formRef_4 = ref(null);
     const loading = ref(false);
     const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const router = useRouter();
 
     const aptInfoData = ref({
       reference_number: 22100349,
@@ -1992,6 +2031,7 @@ export default defineComponent({
     const searchVal = computed(() => store.getters.getSearchVariable);
     const organisation = computed(() => store.getters.orgList);
     const patientList = computed(() => store.getters.patientsList);
+    const patientAptData = computed(() => store.getters.getPatientAppointments);
 
     const formatDate = (date) => {
       return moment(date).format("DD-MM-YYYY").toString();
@@ -2297,8 +2337,11 @@ export default defineComponent({
                 confirmButtonText: "Ok, got it!",
                 customClass: {
                   confirmButton: "btn btn-primary",
+                  cancelButton: "btn btn-info",
                 },
-              }).then(() => {
+                showCancelButton: true,
+                cancelButtonText: "Deposit",
+              }).then((result) => {
                 hideModal(createAptModalRef.value);
                 if (searchVal.value.date) {
                   store.dispatch(Actions.BOOKING.SEARCH.DATE, {
@@ -2314,6 +2357,10 @@ export default defineComponent({
                 }
 
                 resetCreateModal();
+
+                if (result.dismiss === "cancel") {
+                  router.push({ name: "make-payment-pay" });
+                }
               });
             })
             .catch(({ response }) => {
@@ -2359,6 +2406,7 @@ export default defineComponent({
     };
 
     const selectPatient = (item) => {
+      store.dispatch(Actions.PATIENTS.APPOINTMENTS, item.id);
       store.dispatch(Actions.PATIENTS.VIEW, item.id);
       patientInfoData.value = item;
 
@@ -2470,6 +2518,7 @@ export default defineComponent({
       billingInfoData,
       otherInfoData,
       formatDate,
+      patientAptData,
       overlapping_cnt,
       searchReferralDoctor,
       handleSelectReferringDoctor,

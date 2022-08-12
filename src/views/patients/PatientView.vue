@@ -26,6 +26,7 @@
                 <IconButton
                   v-if="userRole != 'specialist'"
                   label="Upload Document"
+                  @click="handleUploadDocument"
                 />
                 <IconButton
                   @click="handleRecallReminder"
@@ -154,6 +155,7 @@
   <RecallReminderModal></RecallReminderModal>
   <ReportModal></ReportModal>
   <LetterModal :patientId="formData.id"></LetterModal>
+  <UploadDocument :patientId="formData.id"></UploadDocument>
   <router-view></router-view>
 </template>
 
@@ -165,6 +167,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import RecallReminderModal from "@/components/patients/RecallReminderModal.vue";
 import ReportModal from "@/components/patients/ReportTemplateModal.vue";
 import LetterModal from "@/components/patients/LetterModal.vue";
+import UploadDocument from "@/components/patients/UploadDocument.vue";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import store from "@/store";
@@ -175,6 +178,7 @@ export default defineComponent({
     RecallReminderModal,
     ReportModal,
     LetterModal,
+    UploadDocument,
     IconText,
     IconButton,
   },
@@ -209,11 +213,17 @@ export default defineComponent({
       formData.value = store.getters.selectedPatient;
     });
 
+    const handleUploadDocument = () => {
+      const modal = new Modal(document.getElementById("modal_upload_document"));
+      modal.show();
+    };
+
     return {
       formData,
       handleRecallReminder,
       handleReport,
       handleLetter,
+      handleUploadDocument,
     };
   },
 });

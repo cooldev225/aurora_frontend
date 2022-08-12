@@ -277,6 +277,14 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
       ApiService.setHeader();
       ApiService.post("appointments", payload)
         .then(({ data }) => {
+          ApiService.get("payments/" + data.data.id)
+            .then(({ data }) => {
+              this.context.commit(Mutations.SET_MAKE_PAYMENT.SELECT, data.data);
+              return data.data;
+            })
+            .catch(({ response }) => {
+              console.log(response.data.error);
+            });
           return data.data;
         })
         .catch(({ response }) => {

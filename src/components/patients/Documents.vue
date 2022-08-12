@@ -92,8 +92,20 @@
           </label>
         </div>
       </div>
-      <div class="col-md-8 border scroll h-100">
-        <img v-if="document" :src="document.file_path" alt="document" />
+      <div class="col-md-8 d-flex flex-column">
+        <div class="d-flex flex-row justify-content-end align-items-end">
+          <IconButton
+            iconSRC="media/icons/duotune/general/gen060.svg"
+            label="Print"
+          />
+          <IconButton
+            iconSRC="media/icons/duotune/communication/com011.svg"
+            label="Email"
+          />
+        </div>
+        <div class="h-100 scroll border">
+          <img v-if="document" :src="document.file_path" alt="document" />
+        </div>
       </div>
     </div>
   </div>
@@ -106,13 +118,16 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import moment from "moment";
+import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 // import { VuePdf, createLoadingTask } from "vue3-pdfjs/esm";
 // import { VuePdfPropsType } from "vue3-pdfjs/components/vue-pdf/vue-pdf-props";
 // import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 
 export default defineComponent({
   name: "patient-documents",
-  components: {},
+  components: {
+    IconButton,
+  },
   setup() {
     const store = useStore();
     const formData = ref({});
