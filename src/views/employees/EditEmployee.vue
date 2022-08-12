@@ -124,14 +124,25 @@
                     </div>
                     <div class="p-3">
                       <InputWrapper label="Time Slot" :prop="week + '-time'">
-                        <el-time-picker
-                          v-model="formData.work_hours[week].time_slot"
-                          class="w-100"
-                          is-range
-                          range-separator="-"
-                          start-placeholder="From"
-                          end-placeholder="To"
-                        />
+                        <div class="demo-time-range">
+                          <el-time-select
+                            v-model="formData.work_hours[week].time_slot[0]"
+                            :max-time="formData.work_hours[week].time_slot[1]"
+                            class="mr-4"
+                            placeholder="Start time"
+                            start="07:00"
+                            step="00:15"
+                            end="18:30"
+                          />
+                          <el-time-select
+                            v-model="formData.work_hours[week].time_slot[1]"
+                            :min-time="formData.work_hours[week].time_slot[0]"
+                            placeholder="End time"
+                            start="07:00"
+                            step="00:15"
+                            end="18:30"
+                          />
+                        </div>
                       </InputWrapper>
 
                       <InputWrapper label="Location" :prop="week + '-location'">
