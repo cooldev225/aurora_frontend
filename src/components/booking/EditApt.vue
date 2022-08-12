@@ -1440,6 +1440,7 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 
 import { mask } from "vue-the-mask";
+import { validatePhone } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "create-apt-modal",
@@ -1555,6 +1556,7 @@ export default defineComponent({
           message: "Contact Number cannot be blank.",
           trigger: "blur",
         },
+        { validator: validatePhone, trigger: "blur" },
       ],
       charge_type: [
         {
