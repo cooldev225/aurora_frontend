@@ -211,205 +211,120 @@
                     @submit.prevent="handleStep_2"
                   >
                     <div class="row scroll h-500px">
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            First Name
-                          </label>
-                          <!--end::Label-->
+                      <InputWrapper
+                        required
+                        class="col-6"
+                        label="First Name"
+                        prop="first_name"
+                      >
+                        <el-input
+                          type="text"
+                          v-model="patientInfoData.first_name"
+                          placeholder="Enter First Name"
+                        />
+                      </InputWrapper>
+                      <InputWrapper
+                        required
+                        class="col-6"
+                        label="Last Name"
+                        prop="last_name"
+                      >
+                        <el-input
+                          type="text"
+                          v-model="patientInfoData.last_name"
+                          placeholder="Enter Last Name"
+                        />
+                      </InputWrapper>
 
-                          <!--begin::Input-->
-                          <el-form-item prop="first_name">
-                            <el-input
-                              type="text"
-                              v-model="patientInfoData.first_name"
-                              placeholder="Enter First Name"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Last Name
-                          </label>
-                          <!--end::Label-->
+                      <InputWrapper
+                        required
+                        class="col-6"
+                        label="Date of Birth"
+                        prop="date_of_birth"
+                      >
+                        <el-date-picker
+                          editable
+                          class="w-100"
+                          format="DD-MM-YYYY"
+                          v-model="patientInfoData.date_of_birth"
+                          placeholder=""
+                        />
+                      </InputWrapper>
+                      <InputWrapper
+                        required
+                        class="col-6"
+                        label="Contact Number"
+                        prop="contact_number"
+                      >
+                        <el-input
+                          type="text"
+                          v-mask="'0#-####-####'"
+                          v-model="patientInfoData.contact_number"
+                          placeholder="Enter Contact Number"
+                        />
+                      </InputWrapper>
 
-                          <!--begin::Input-->
-                          <el-form-item prop="last_name">
-                            <el-input
-                              type="text"
-                              v-model="patientInfoData.last_name"
-                              placeholder="Enter Last Name"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Date of Birth
-                          </label>
-                          <!--end::Label-->
+                      <InputWrapper label="Address" prop="address">
+                        <GMapAutocomplete
+                          :value="patientInfoData.address"
+                          ref="addressRef"
+                          placeholder="Enter the Address"
+                          @place_changed="handleAddressChange"
+                          :options="{
+                            componentRestrictions: {
+                              country: 'au',
+                            },
+                          }"
+                        >
+                        </GMapAutocomplete>
+                      </InputWrapper>
 
-                          <!--begin::Input-->
-                          <el-form-item prop="date_of_birth">
-                            <el-date-picker
-                              editable
-                              class="w-100"
-                              v-model="patientInfoData.date_of_birth"
-                              placeholder=""
-                              format="DD-MM-YYYY"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Input group-->
-                          <div class="fv-row mb-7">
-                            <!--begin::Label-->
-                            <label class="required fs-6 fw-bold mb-2">
-                              Contact Number
-                            </label>
-                            <!--end::Label-->
+                      <InputWrapper class="col-6" label="Email" prop="email">
+                        <el-input
+                          type="text"
+                          v-model="patientInfoData.email"
+                          placeholder="Enter Email"
+                        />
+                      </InputWrapper>
 
-                            <!--begin::Input-->
-                            <el-form-item prop="contact_number">
-                              <el-input
-                                type="text"
-                                v-mask="'0#-####-####'"
-                                v-model="patientInfoData.contact_number"
-                                placeholder="Enter Contact Number"
-                              />
-                            </el-form-item>
-                            <!--end::Input-->
-                          </div>
-                          <!--end::Input group-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="fv-row">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2"> Address </label>
-                          <!--end::Label-->
+                      <InputWrapper
+                        class="col-6"
+                        label="Confirm Method"
+                        prop="appointment_confirm_method"
+                      >
+                        <el-select
+                          class="w-100"
+                          v-model="patientInfoData.appointment_confirm_method"
+                          placeholder="Confirm Method"
+                        >
+                          <el-option value="sms" label="SMS" />
+                          <el-option value="email" label="Email" />
+                        </el-select>
+                      </InputWrapper>
 
-                          <!--begin::Input-->
-                          <el-form-item prop="address">
-                            <GMapAutocomplete
-                              :value="patientInfoData.address"
-                              ref="addressRef"
-                              placeholder="Enter the Address"
-                              @place_changed="handleAddressChange"
-                              :options="{
-                                componentRestrictions: {
-                                  country: 'au',
-                                },
-                              }"
-                            >
-                            </GMapAutocomplete>
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Label-->
-                        <label class="fs-6 fw-bold mb-2"> Email </label>
-                        <!--end::Label-->
+                      <InputWrapper
+                        class="col-6"
+                        label="Allergies"
+                        prop="allergies"
+                      >
+                        <el-input
+                          type="textarea"
+                          v-model="patientInfoData.allergies"
+                          placeholder="Enter Allergies"
+                        />
+                      </InputWrapper>
 
-                        <!--begin::Input-->
-                        <el-form-item prop="email">
-                          <el-input
-                            type="text"
-                            v-model="patientInfoData.email"
-                            placeholder="Enter Email"
-                          />
-                        </el-form-item>
-                        <!--end::Input-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2">
-                            Appointment Confirm Method
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="appointment_confirm_method">
-                            <el-select
-                              class="w-100"
-                              v-model="
-                                patientInfoData.appointment_confirm_method
-                              "
-                              placeholder="Appointment Confirm Method"
-                            >
-                              <el-option value="sms" label="SMS" />
-                              <el-option value="email" label="Email" />
-                            </el-select>
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2"> Allergies </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="allergies">
-                            <el-input
-                              type="textarea"
-                              v-model="patientInfoData.allergies"
-                              placeholder="Enter Allergies"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <div class="col-sm-6">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2">
-                            Clinical Alerts
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="clinical_alerts">
-                            <el-input
-                              type="textarea"
-                              v-model="patientInfoData.clinical_alerts"
-                              placeholder="Enter Clinical Alerts"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
+                      <InputWrapper
+                        class="col-6"
+                        label="Clinical Alerts"
+                        prop="clinical_alerts"
+                      >
+                        <el-input
+                          type="textarea"
+                          v-model="patientInfoData.clinical_alerts"
+                          placeholder="Enter Clinical Alerts"
+                        />
+                      </InputWrapper>
                     </div>
                     <div class="d-flex justify-content-between">
                       <button
@@ -463,529 +378,265 @@
                   >
                     <div class="row">
                       <div class="row">
-                        <div class="col-sm-6">
-                          <!--begin::Input group-->
-                          <div class="fv-row mb-7">
-                            <!--begin::Label-->
-                            <label class="fs-6 fw-bold mb-2">
-                              Appointment Price
-                            </label>
-                            <!--end::Label-->
+                        <InputWrapper
+                          class="col-6"
+                          label="Appointment Price"
+                          prop="procedure_price"
+                        >
+                          <el-input
+                            type="text"
+                            v-model.number="billingInfoData.procedure_price"
+                            disabled
+                          />
+                        </InputWrapper>
+                        <InputWrapper
+                          class="col-6"
+                          label="Charge Type"
+                          prop="charge_type"
+                        >
+                          <el-select
+                            class="w-100"
+                            v-model="billingInfoData.charge_type"
+                            placeholder="Select Charge Type"
+                          >
+                            <el-option
+                              v-for="type in chargeTypes"
+                              :key="type.value"
+                              :value="type.value"
+                              :label="type.label"
+                            />
+                          </el-select>
+                        </InputWrapper>
 
+                        <el-divider />
+
+                        <InputWrapper
+                          class="col-6"
+                          label="Medicare Number"
+                          prop="medicare_number"
+                        >
+                          <el-input
+                            type="text"
+                            v-model="billingInfoData.medicare_number"
+                            placeholder="Enter Medicare Number"
+                          />
+                        </InputWrapper>
+                        <InputWrapper
+                          class="col-6"
+                          label="Medicare Reference Number"
+                          prop="medicare_reference_number"
+                        >
+                          <el-input
+                            type="text"
+                            v-model="billingInfoData.medicare_reference_number"
+                            placeholder=""
+                          />
+                        </InputWrapper>
+                        <InputWrapper
+                          class="col-6"
+                          label="Medicare Expiry Date"
+                          prop="medicare_expiry_date"
+                        >
+                          <el-date-picker
+                            editable
+                            class="w-100"
+                            v-model="billingInfoData.medicare_expiry_date"
+                            format="MM-YYYY"
+                            placeholder="Enter Expiry Date"
+                          />
+                        </InputWrapper>
+                        <el-divider />
+
+                        <div
+                          class="row"
+                          v-if="
+                            billingInfoData.charge_type ===
+                              'private-health-excess' ||
+                            billingInfoData.charge_type ===
+                              'private-health-excess-0'
+                          "
+                        >
+                          <InputWrapper
+                            class="col-6"
+                            label="Health Fund"
+                            prop="health_fund_id"
+                          >
+                            <el-select
+                              class="w-100"
+                              v-model="billingInfoData.health_fund_id"
+                            >
+                              <el-option
+                                v-for="item in healthFundsList"
+                                :value="item.id"
+                                :label="item.code + '-' + item.name"
+                                :key="item.id"
+                              />
+                            </el-select>
+                          </InputWrapper>
+                          <InputWrapper
+                            class="col-6"
+                            label="Health Fund Membership Number"
+                            prop="health_fund_membership_number"
+                          >
+                            <el-input
+                              type="text"
+                              v-model="
+                                billingInfoData.health_fund_membership_number
+                              "
+                              placeholder="12345678"
+                            />
+                          </InputWrapper>
+                          <InputWrapper
+                            class="col-6"
+                            label="Health Fund Reference Number"
+                            prop="health_fund_reference_number"
+                          >
+                            <el-input
+                              type="text"
+                              v-model="
+                                billingInfoData.health_fund_reference_number
+                              "
+                              placeholder="00"
+                            />
+                          </InputWrapper>
+
+                          <InputWrapper
+                            class="col-6"
+                            label="Health Fund Expiry Date"
+                            prop="health_fund_expiry_date"
+                          >
+                            <el-date-picker
+                              editable
+                              class="w-100"
+                              v-model="billingInfoData.health_fund_expiry_date"
+                              format="MM-YYYY"
+                            />
+                          </InputWrapper>
+
+                          <InputWrapper
+                            v-if="
+                              billingInfoData.charge_type ===
+                              'private-health-excess'
+                            "
+                            class="col-6"
+                            label="Fund Excess"
+                            prop="fund_excess"
+                          >
+                            <el-input
+                              type="text"
+                              v-model.number="billingInfoData.fund_excess"
+                            />
+                          </InputWrapper>
+                        </div>
+
+                        <InputWrapper
+                          v-if="billingInfoData.charge_type === 'pension-card'"
+                          class="col-6"
+                          label="Pension Card Number"
+                          prop="pension_card_number"
+                        >
+                          <el-input
+                            class="w-100"
+                            v-model="billingInfoData.pension_card_number"
+                          />
+                        </InputWrapper>
+
+                        <InputWrapper
+                          v-if="
+                            billingInfoData.charge_type === 'healthcare-card'
+                          "
+                          class="col-6"
+                          label="Healthcare Card Number"
+                          prop="healthcare_card_number"
+                        >
+                          <el-input
+                            class="w-100"
+                            v-model="billingInfoData.healthcare_card_number"
+                          />
+                        </InputWrapper>
+                        <InputWrapper
+                          v-if="
+                            billingInfoData.charge_type === 'healthcare-card' ||
+                            billingInfoData.charge_type === 'pension-card'
+                          "
+                          class="col-6"
+                          label="Expiry Date"
+                          prop="expiry_date"
+                        >
+                          <el-input
+                            class="w-100"
+                            v-model="billingInfoData.healthcare_card_number"
+                          />
+                        </InputWrapper>
+
+                        <div
+                          class="row"
+                          v-if="
+                            billingInfoData.charge_type === 'department-veteran'
+                          "
+                        >
+                          <InputWrapper
+                            class="col-6"
+                            label="DVA Number"
+                            prop="dva_number"
+                          >
+                            <el-input
+                              class="w-100"
+                              v-model="billingInfoData.dva_number"
+                            />
+                          </InputWrapper>
+                          <InputWrapper
+                            class="col-6"
+                            label="DVA Type"
+                            prop="dva_expiry_date"
+                          >
+                            <el-date-picker
+                              editable
+                              class="w-100"
+                              format="MM-YYYY"
+                              v-model="billingInfoData.dva_expiry_date"
+                            />
+                          </InputWrapper>
+                          <InputWrapper
+                            class="col-6"
+                            label="DVA Expiry Date"
+                            prop="dva_type"
+                          >
+                            <el-select
+                              class="w-100"
+                              v-model="billingInfoData.dva_type"
+                            >
+                              <el-option value="white" label="White" />
+                              <el-option value="gold" label="Gold" />
+                              <el-option value="orange" label="Orange" />
+                            </el-select>
+                          </InputWrapper>
+                        </div>
+                        <div
+                          class="col-sm-6 d-flex align-items-center justify-content-center"
+                        >
+                          <!--begin::Input group-->
+                          <div class="fv-row">
                             <!--begin::Input-->
-                            <el-form-item prop="procedure_price">
-                              <el-input
-                                type="text"
-                                v-model.number="billingInfoData.procedure_price"
-                                disabled
+                            <el-form-item
+                              class="m-0"
+                              prop="add_other_account_holder"
+                            >
+                              <el-checkbox
+                                type="checkbox"
+                                v-model="
+                                  billingInfoData.add_other_account_holder
+                                "
+                                label="Add other account holder"
                               />
                             </el-form-item>
                             <!--end::Input-->
                           </div>
                           <!--end::Input group-->
                         </div>
-                        <div class="col-sm-6">
-                          <!--begin::Input group-->
-                          <div class="fv-row mb-7">
-                            <!--begin::Label-->
-                            <label class="required fs-6 fw-bold mb-2">
-                              Charge Type
-                            </label>
-                            <!--end::Label-->
-
-                            <!--begin::Input-->
-                            <el-form-item prop="charge_type">
-                              <el-select
-                                class="w-100"
-                                v-model="billingInfoData.charge_type"
-                                placeholder="Select Charge Type"
-                              >
-                                <el-option
-                                  v-for="type in chargeTypes"
-                                  :key="type.value"
-                                  :value="type.value"
-                                  :label="type.label"
-                                />
-                              </el-select>
-                            </el-form-item>
-                            <!--end::Input-->
-                          </div>
-                          <!--end::Input group-->
-                        </div>
                       </div>
-                      <el-divider />
-                      <div class="py-0">
-                        <!--begin::Header-->
-                        <div class="py-5 d-flex flex-stack flex-wrap">
-                          <!--begin::Toggle-->
-                          <div
-                            class="d-flex justify-content-between w-100 align-items-center collapsible rotate"
-                            data-bs-toggle="collapse"
-                            href="#patient_billing_details"
-                            role="button"
-                            aria-expanded="false"
-                            aria-controls="patient_billing_details"
-                          >
-                            <!--begin::Summary-->
-                            <div class="me-3">
-                              <div class="d-flex align-items-center">
-                                <div class="text-gray-800 fw-bolder">
-                                  Billing Details
-                                </div>
-                              </div>
-                            </div>
-                            <!--end::Summary-->
-                            <!--begin::Arrow-->
-                            <div class="me-3 rotate-90">
-                              <span class="svg-icon svg-icon-3">
-                                <inline-svg
-                                  src="media/icons/duotune/arrows/arr071.svg"
-                                />
-                              </span>
-                            </div>
-                            <!--end::Arrow-->
-                          </div>
+                      <!--end::Body-->
 
-                          <!--end::Toggle-->
-                        </div>
-                        <!--end::Header-->
-                        <!--begin::Body-->
-                        <div
-                          id="patient_billing_details"
-                          class="fs-6 ps-10 collapse hide"
-                          data-bs-parent="#patient_billing_details"
-                        >
-                          <div class="row">
-                            <div class="col-sm-6">
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Medicare Number
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="medicare_number">
-                                  <el-input
-                                    type="text"
-                                    v-model="billingInfoData.medicare_number"
-                                    placeholder="Enter Medicare Number"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div class="col-sm-6">
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Medicare Reference Number
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="medicare_reference_number">
-                                  <el-input
-                                    type="text"
-                                    v-model="
-                                      billingInfoData.medicare_reference_number
-                                    "
-                                    placeholder=""
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div class="col-sm-6">
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Medicare Expiry Date
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="medicare_expiry_date">
-                                  <el-date-picker
-                                    editable
-                                    class="w-100"
-                                    v-model="
-                                      billingInfoData.medicare_expiry_date
-                                    "
-                                    format="MM-YYYY"
-                                    placeholder="Enter Expiry Date"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6"
-                              v-if="
-                                billingInfoData.charge_type ===
-                                  'private-health-excess' ||
-                                billingInfoData.charge_type ===
-                                  'private-health-excess-0' ||
-                                billingInfoData.charge_type ===
-                                  'private-health-pension'
-                              "
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Health Fund
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="health_fund_id">
-                                  <el-select
-                                    class="w-100"
-                                    v-model="billingInfoData.health_fund_id"
-                                  >
-                                    <el-option
-                                      v-for="item in healthFundsList"
-                                      :value="item.id"
-                                      :label="item.code + '-' + item.name"
-                                      :key="item.id"
-                                    />
-                                  </el-select>
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6"
-                              v-if="
-                                billingInfoData.charge_type ===
-                                  'private-health-excess' ||
-                                billingInfoData.charge_type ===
-                                  'private-health-excess-0' ||
-                                billingInfoData.charge_type ===
-                                  'private-health-pension'
-                              "
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Health Fund Membership Number
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item
-                                  prop="health_fund_membership_number"
-                                >
-                                  <el-input
-                                    type="text"
-                                    v-model="
-                                      billingInfoData.health_fund_membership_number
-                                    "
-                                    placeholder="12345678"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6"
-                              v-if="
-                                billingInfoData.charge_type ===
-                                  'private-health-excess' ||
-                                billingInfoData.charge_type ===
-                                  'private-health-excess-0' ||
-                                billingInfoData.charge_type ===
-                                  'private-health-pension'
-                              "
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Health Fund Reference Number
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item
-                                  prop="health_fund_reference_number"
-                                >
-                                  <el-input
-                                    type="text"
-                                    v-model="
-                                      billingInfoData.health_fund_reference_number
-                                    "
-                                    placeholder="00"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6"
-                              v-if="
-                                billingInfoData.charge_type ===
-                                  'private-health-excess' ||
-                                billingInfoData.charge_type ===
-                                  'private-health-excess-0' ||
-                                billingInfoData.charge_type ===
-                                  'private-health-pension'
-                              "
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Health Fund Expiry Date
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="health_fund_expiry_date">
-                                  <el-date-picker
-                                    editable
-                                    class="w-100"
-                                    v-model="
-                                      billingInfoData.health_fund_expiry_date
-                                    "
-                                    format="MM-YYYY"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6"
-                              v-if="
-                                billingInfoData.charge_type ===
-                                'private-health-excess'
-                              "
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Fund Excess
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="fund_excess">
-                                  <el-input
-                                    type="text"
-                                    v-model.number="billingInfoData.fund_excess"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6"
-                              v-if="
-                                billingInfoData.charge_type === 'pension-card'
-                              "
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Pension Card Number
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="pension_card_number">
-                                  <el-input
-                                    class="w-100"
-                                    v-model="
-                                      billingInfoData.pension_card_number
-                                    "
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6"
-                              v-if="
-                                billingInfoData.charge_type ===
-                                'healthcare-card'
-                              "
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Healthcare Card Number
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="healthcare_card_number">
-                                  <el-input
-                                    class="w-100"
-                                    v-model="
-                                      billingInfoData.healthcare_card_number
-                                    "
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6"
-                              v-if="
-                                billingInfoData.charge_type ===
-                                  'healthcare-card' ||
-                                billingInfoData.charge_type === 'pension-card'
-                              "
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Pension Date Expiry Date
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="expiry_date">
-                                  <el-date-picker
-                                    editable
-                                    class="w-100"
-                                    format="MM-YYYY"
-                                    v-model="billingInfoData.expiry_date"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6"
-                              v-if="
-                                billingInfoData.charge_type ===
-                                'department-veteran'
-                              "
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  DVA Number
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="dva_number">
-                                  <el-input
-                                    class="w-100"
-                                    v-model="billingInfoData.dva_number"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6"
-                              v-if="
-                                billingInfoData.charge_type ===
-                                'department-veteran'
-                              "
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  DVA Expiry Date
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="dva_expiry_date">
-                                  <el-date-picker
-                                    editable
-                                    class="w-100"
-                                    format="MM-YYYY"
-                                    v-model="billingInfoData.dva_expiry_date"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6"
-                              v-if="
-                                billingInfoData.charge_type ===
-                                'department-veteran'
-                              "
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  DVA Type
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="dva_type">
-                                  <el-select
-                                    class="w-100"
-                                    v-model="billingInfoData.dva_type"
-                                  >
-                                    <el-option value="white" label="White" />
-                                    <el-option value="gold" label="Gold" />
-                                    <el-option value="orange" label="Orange" />
-                                  </el-select>
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div
-                              class="col-sm-6 d-flex align-items-center justify-content-center"
-                            >
-                              <!--begin::Input group-->
-                              <div class="fv-row">
-                                <!--begin::Input-->
-                                <el-form-item
-                                  class="m-0"
-                                  prop="add_other_account_holder"
-                                >
-                                  <el-checkbox
-                                    type="checkbox"
-                                    v-model="
-                                      billingInfoData.add_other_account_holder
-                                    "
-                                    label="Add other account holder"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                          </div>
-                        </div>
-                        <!--end::Body-->
-                      </div>
                       <el-divider />
                     </div>
                     <div class="d-flex justify-content-between">
@@ -1102,114 +753,73 @@
                         </div>
                         <div class="row">
                           <template v-if="otherInfoData.no_referral">
-                            <div class="col-sm-6">
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  No Referral Reason
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="no_referral_reason">
-                                  <el-input
-                                    type="text"
-                                    v-model="otherInfoData.no_referral_reason"
-                                    placeholder="Please Enter Reason"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
+                            <InputWrapper
+                              class="col-6"
+                              label="No Referral Reason"
+                              prop="no_referral_reason"
+                            >
+                              <el-input
+                                type="text"
+                                v-model="otherInfoData.no_referral_reason"
+                                placeholder="Please Enter Reason"
+                              />
+                            </InputWrapper>
                           </template>
                           <template v-else>
-                            <div class="col-sm-6">
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Referring Doctor
-                                </label>
-                                <!--end::Label-->
+                            <InputWrapper
+                              class="col-6"
+                              label="Referring Doctor"
+                              prop="referring_doctor_id"
+                            >
+                              <el-autocomplete
+                                class="w-100"
+                                v-model="otherInfoData.referring_doctor_name"
+                                value-key="full_name"
+                                :fetch-suggestions="searchReferralDoctor"
+                                placeholder="Please input"
+                                :trigger-on-focus="false"
+                                @select="handleSelectReferringDoctor"
+                              >
+                                <template #default="{ item }">
+                                  <div class="name">
+                                    {{ item.title }}
+                                    {{ item.first_name }}
+                                    {{ item.last_name }}
+                                  </div>
+                                  <div class="address">
+                                    {{ item.address }}
+                                  </div>
+                                </template>
+                              </el-autocomplete>
+                            </InputWrapper>
+                            <InputWrapper
+                              class="col-6"
+                              label="Referral Duration"
+                              prop="referral_duration"
+                            >
+                              <el-select
+                                class="w-100"
+                                v-model="otherInfoData.referral_duration"
+                                placeholder="Enter Referral Duration"
+                              >
+                                <el-option value="0" label="Indefinite" />
+                                <el-option value="3" label="3 Months" />
+                                <el-option value="12" label="12 Months" />
+                              </el-select>
+                            </InputWrapper>
 
-                                <!--begin::Input-->
-                                <el-form-item prop="referring_doctor_id">
-                                  <el-autocomplete
-                                    class="w-100"
-                                    v-model="
-                                      otherInfoData.referring_doctor_name
-                                    "
-                                    value-key="full_name"
-                                    :fetch-suggestions="searchReferralDoctor"
-                                    placeholder="Please input"
-                                    :trigger-on-focus="false"
-                                    @select="handleSelectReferringDoctor"
-                                  >
-                                    <template #default="{ item }">
-                                      <div class="name">
-                                        {{ item.title }}
-                                        {{ item.first_name }}
-                                        {{ item.last_name }}
-                                      </div>
-                                      <div class="address">
-                                        {{ item.address }}
-                                      </div>
-                                    </template>
-                                  </el-autocomplete>
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div class="col-sm-6">
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Referral Duration
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="referral_duration">
-                                  <el-select
-                                    class="w-100"
-                                    v-model="otherInfoData.referral_duration"
-                                    placeholder="Enter Referral Duration"
-                                  >
-                                    <el-option value="0" label="Indefinite" />
-                                    <el-option value="3" label="3 Months" />
-                                    <el-option value="12" label="12 Months" />
-                                  </el-select>
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
-                            <div class="col-sm-6">
-                              <!--begin::Input group-->
-                              <div class="fv-row mb-7">
-                                <!--begin::Label-->
-                                <label class="fs-6 fw-bold mb-2">
-                                  Referral Date
-                                </label>
-                                <!--end::Label-->
-
-                                <!--begin::Input-->
-                                <el-form-item prop="referral_date">
-                                  <el-date-picker
-                                    editable
-                                    class="w-100"
-                                    format="DD-MM-YYYY"
-                                    v-model="otherInfoData.referral_date"
-                                  />
-                                </el-form-item>
-                                <!--end::Input-->
-                              </div>
-                              <!--end::Input group-->
-                            </div>
+                            <InputWrapper
+                              class="col-6"
+                              label="Referral Duration"
+                              prop="referral_date"
+                            >
+                              <el-date-picker
+                                editable
+                                class="w-100"
+                                format="DD-MM-YYYY"
+                                v-model="otherInfoData.referral_date"
+                              />
+                            </InputWrapper>
                           </template>
                         </div>
                       </div>
