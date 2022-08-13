@@ -177,7 +177,6 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [Actions.APT.LISTBYID](id) {
-    console.log(id);
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("patients/appointments/" + id)

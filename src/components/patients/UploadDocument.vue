@@ -215,7 +215,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import {
+  defineComponent,
+  ref,
+  computed,
+  onMounted,
+  watch,
+  watchEffect,
+} from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
@@ -308,8 +315,20 @@ export default defineComponent({
       });
     };
 
-    watch(patientId, () => {
-      store.dispatch(Actions.APT.LISTBYID, patientId.value);
+    watchEffect(() => {
+      if (patientId.value)
+        store.dispatch(Actions.APT.LISTBYID, patientId.value);
+      if (aptList.value && aptList.value.futureAppointments) {
+        aptList.value.futureAppointments.forEach((item) => {
+          if (
+            moment(item.date).format("DD-MM-YYYY") ===
+            moment(new Date()).format("DD-MM-YYYY")
+          ) {
+            formData.value.appointment_id = item.id;
+            formData.value.specialist_id = item.specialist_id;
+          }
+        });
+      }
     });
 
     onMounted(() => {
