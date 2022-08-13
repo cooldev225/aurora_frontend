@@ -94,20 +94,33 @@
       </div>
       <div class="col-md-8 d-flex flex-column">
         <div class="d-flex flex-row justify-content-end align-items-end">
-          <IconButton
-            iconSRC="media/icons/duotune/general/gen060.svg"
-            label="Print"
+          <button
+            :data-kt-indicator="printLoading ? 'on' : null"
+            class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
             v-print="printObj"
-          />
+            type="submit"
+          >
+            <span v-if="!printLoading" class="indicator-label">
+              <span class="svg-icon svg-icon-1">
+                <inline-svg src="media/icons/duotune/general/gen060.svg" />
+              </span>
+              Print
+            </span>
+            <span v-if="printLoading" class="indicator-progress pb-1">
+              <span
+                class="spinner-border spinner-border-sm svg-icon svg-icon-1"
+              ></span>
+              Processing
+            </span>
+          </button>
           <IconButton
             iconSRC="media/icons/duotune/communication/com011.svg"
             label="Email"
             @click="handleSendEmail"
           />
         </div>
-        <div class="h-100 scroll border">
+        <div class="h-100 scroll border" id="documentField">
           <img
-            id="documentField"
             v-if="selectedDocument"
             :src="selectedDocument.file_path"
             alt="document"
@@ -148,21 +161,21 @@ export default defineComponent({
     const selectedDocument = ref<any>(null);
     const documentType = ref(null);
     const pdfSrc = ref(null);
+    const printLoading = ref<boolean>(false);
     const printObj = ref({
-      url: "",
       id: "documentField",
-      preview: true,
-      previewTitle: "Print Document",
       extraCss:
         "https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.compat.css, https://cdn.bootcdn.net/ajax/libs/hover.css/2.3.1/css/hover-min.css",
       extraHead: '<meta http-equiv="Content-Language" content="en-us"/>',
-      beforeOpenCallback(vue) {
+      beforeOpenCallback() {
+        printLoading.value = true;
         console.log("Before");
       },
-      openCallback(vue) {
+      openCallback() {
+        printLoading.value = false;
         console.log("Open");
       },
-      closeCallback(vue) {
+      closeCallback() {
         console.log("Close");
       },
     });
@@ -187,7 +200,8 @@ export default defineComponent({
 
     watch(selectedDocument, () => {
       pdfSrc.value = selectedDocument.value;
-      printObj.value.url = selectedDocument.value["file_path"];
+      // printObj.value.url = selectedDocument.value["file_path"];
+      console.log(printObj.value);
     });
 
     const handleSendEmail = () => {
@@ -202,6 +216,7 @@ export default defineComponent({
       documentType,
       moment,
       printObj,
+      printLoading,
       handleSendEmail,
     };
   },
