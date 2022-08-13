@@ -1,6 +1,6 @@
 <template>
   <!--begin::Stepper-->
-  <div class="mx-auto w-100 w-lg-75">
+  <div class="mx-auto w-100">
     <!--begin::Content-->
     <div class="d-flex flex-row-fluid flex-center bg-white rounded">
       <!--begin::Form-->
@@ -13,12 +13,7 @@
             </h2>
           </div>
 
-          <el-form
-            class="w-100 w-xl-700px w-xxl-800px"
-            :rules="rules"
-            :model="formData"
-            ref="formRef"
-          >
+          <el-form class="w-100" :rules="rules" :model="formData" ref="formRef">
             <div class="row">
               <InputWrapper class="col-6" label="First Name" prop="first_name">
                 <el-input
@@ -91,7 +86,7 @@
               </div>
 
               <div class="row">
-                <InputWrapper class="col-6" label="Type" prop="type">
+                <InputWrapper class="col-4" label="Type" prop="type">
                   <el-select class="w-100" v-model="formData.type" filterable>
                     <el-option
                       v-for="item in employeeTypes"
@@ -101,7 +96,7 @@
                     />
                   </el-select>
                 </InputWrapper>
-                <InputWrapper class="col-6" label="Role" prop="role">
+                <InputWrapper class="col-4" label="Role" prop="role">
                   <el-select v-model="formData.role_id" class="w-100">
                     <el-option
                       v-for="item in employeeRoles"
@@ -112,56 +107,119 @@
                   </el-select>
                 </InputWrapper>
 
-                <div class="col-md-4 mb-3" v-for="week in weekList" :key="week">
-                  <div class="card border border-primary border-dashed">
-                    <div
-                      class="card-header border-bottom-dashed border-primary"
-                    >
-                      <div class="card-title">
-                        <el-checkbox
-                          class="text-capitalize"
-                          v-model="formData.work_hours[week].available"
-                          :label="week"
-                          size="large"
-                        />
-                      </div>
-                    </div>
-                    <div class="p-3">
-                      <InputWrapper label="Time Slot" :prop="week + '-time'">
-                        <div class="demo-time-range">
-                          <el-time-select
-                            v-model="formData.work_hours[week].time_slot[0]"
-                            :max-time="formData.work_hours[week].time_slot[1]"
-                            class="mr-4"
-                            placeholder="Start time"
-                            start="07:00"
-                            step="00:15"
-                            end="18:30"
-                          />
-                          <el-time-select
-                            v-model="formData.work_hours[week].time_slot[1]"
-                            :min-time="formData.work_hours[week].time_slot[0]"
-                            placeholder="End time"
-                            start="07:00"
-                            step="00:15"
-                            end="18:30"
+                <InputWrapper
+                  v-show="formData.role_id == formInfo.specialist_role_id"
+                  class="col-4"
+                  label="Specialist Title"
+                  prop="specialist_title_id"
+                >
+                  <el-select
+                    v-model="formData.specialist_title_id"
+                    class="w-100"
+                  >
+                    <el-option
+                      v-for="item in specialistTitleList"
+                      :value="item.id"
+                      :label="item.name"
+                      :key="item.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+
+                <InputWrapper
+                  v-show="formData.role_id == formInfo.specialist_role_id"
+                  class="col-4"
+                  label="Specialist Type"
+                  prop="specialist_type_id"
+                >
+                  <el-select
+                    v-model="formData.specialist_type_id"
+                    class="w-100"
+                  >
+                    <el-option
+                      v-for="item in specialistTypeList"
+                      :value="item.id"
+                      :label="item.name"
+                      :key="item.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+
+                <InputWrapper
+                  v-show="formData.role_id == formInfo.specialist_role_id"
+                  class="col-4"
+                  label="Anaesthetist"
+                  prop="anesthetist_id"
+                >
+                  <el-select v-model="formData.anesthetist_id" class="w-100">
+                    <el-option
+                      v-for="item in anesthetistList"
+                      :value="item.id"
+                      :label="item.first_name + ' ' + item.last_name"
+                      :key="item.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+
+                <div class="d-flex flex-wrap gap-5">
+                  <div class="w-300px" v-for="week in weekList" :key="week">
+                    <div class="card border border-primary border-dashed">
+                      <div
+                        class="card-header border-bottom-dashed border-primary"
+                      >
+                        <div class="card-title">
+                          <el-checkbox
+                            class="text-capitalize"
+                            v-model="formData.work_hours[week].available"
+                            :label="week"
+                            size="large"
                           />
                         </div>
-                      </InputWrapper>
+                      </div>
+                      <div class="p-3">
+                        <InputWrapper label="Time Slot" :prop="week + '-time'">
+                          <div class="d-flex">
+                            <el-time-select
+                              v-model="formData.work_hours[week].time_slot[0]"
+                              :max-time="formData.work_hours[week].time_slot[1]"
+                              class="w-50 pe-2"
+                              placeholder="Start time"
+                              start="07:00"
+                              step="00:15"
+                              end="18:30"
+                              format="HH:mm"
+                            />
+                            <el-time-select
+                              v-model="formData.work_hours[week].time_slot[1]"
+                              :min-time="formData.work_hours[week].time_slot[0]"
+                              class="w-50 ps-2"
+                              placeholder="End time"
+                              start="07:00"
+                              step="00:15"
+                              end="18:30"
+                              format="HH:mm"
+                            />
+                          </div>
+                        </InputWrapper>
 
-                      <InputWrapper label="Location" :prop="week + '-location'">
-                        <el-select
-                          v-model="formData.work_hours[week].locations.id"
-                          type="text"
+                        <InputWrapper
+                          label="Location"
+                          :prop="week + '-location'"
                         >
-                          <el-option
-                            v-for="item in clinicsList"
-                            :value="item.id"
-                            :label="item.name"
-                            :key="item.id"
-                          />
-                        </el-select>
-                      </InputWrapper>
+                          <el-select
+                            class="w-100"
+                            v-model="formData.work_hours[week].locations.id"
+                            type="text"
+                          >
+                            <el-option
+                              v-for="item in clinicsList"
+                              :value="item.id"
+                              :label="item.name"
+                              :key="item.id"
+                            />
+                          </el-select>
+                        </InputWrapper>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -238,8 +296,12 @@ export default defineComponent({
       submitAction: Actions.EMPLOYEE.CREATE,
       submitButtonName: "Create",
       submittedText: "New Employee Created",
+      specialist_role_id: 0,
     });
     const employeeRoles = ref([]);
+    const anesthetistList = ref([]);
+    const specialistTitleList = computed(() => store.getters.specTitleList);
+    const specialistTypeList = computed(() => store.getters.specTypeList);
 
     const weekList = ref([
       "monday",
@@ -261,10 +323,13 @@ export default defineComponent({
       address: "",
       role_id: "",
       type: "full-time",
+      anesthetist_id: "",
+      specialist_title_id: "",
+      specialist_type_id: "",
       work_hours: {
         monday: {
           available: false,
-          time_slot: ["09:00:00", "17:00:00"],
+          time_slot: ["09:00", "17:00"],
           locations: {
             id: "",
             name: "",
@@ -272,7 +337,7 @@ export default defineComponent({
         },
         tuesday: {
           available: false,
-          time_slot: ["09:00:00", "17:00:00"],
+          time_slot: ["09:00", "17:00"],
           locations: {
             id: "",
             name: "",
@@ -280,7 +345,7 @@ export default defineComponent({
         },
         wednesday: {
           available: false,
-          time_slot: ["09:00:00", "17:00:00"],
+          time_slot: ["09:00", "17:00"],
           locations: {
             id: "",
             name: "",
@@ -288,7 +353,7 @@ export default defineComponent({
         },
         thursday: {
           available: false,
-          time_slot: ["09:00:00", "17:00:00"],
+          time_slot: ["09:00", "17:00"],
           locations: {
             id: "",
             name: "",
@@ -296,7 +361,7 @@ export default defineComponent({
         },
         friday: {
           available: false,
-          time_slot: ["09:00:00", "17:00:00"],
+          time_slot: ["09:00", "17:00"],
           locations: {
             id: "",
             name: "",
@@ -304,7 +369,7 @@ export default defineComponent({
         },
         saturday: {
           available: false,
-          time_slot: ["09:00:00", "17:00:00"],
+          time_slot: ["09:00", "17:00"],
           locations: {
             id: "",
             name: "",
@@ -312,7 +377,7 @@ export default defineComponent({
         },
         sunday: {
           available: false,
-          time_slot: ["09:00:00", "17:00:00"],
+          time_slot: ["09:00", "17:00"],
           locations: {
             id: "",
             name: "",
@@ -376,9 +441,22 @@ export default defineComponent({
             employeeRoles.value.forEach((item) => {
               if (item["slug"] == "specialist") {
                 formData.value.role_id = item["id"];
+                formInfo.specialist_role_id = item["id"];
               }
             });
           }
+
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+    };
+
+    const initAnesthetistList = () => {
+      ApiService.get("anesthetists")
+        .then(({ data }) => {
+          anesthetistList.value = data.data;
 
           return data.data;
         })
@@ -413,6 +491,10 @@ export default defineComponent({
       }
 
       initEmployeeRoles();
+      initAnesthetistList();
+
+      store.dispatch(Actions.SPECIALIST.TITLE.LIST);
+      store.dispatch(Actions.SPECIALIST.TYPE.LIST);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
@@ -465,6 +547,9 @@ export default defineComponent({
       clinicsList,
       employeeTypes,
       employeeRoles,
+      anesthetistList,
+      specialistTitleList,
+      specialistTypeList,
     };
   },
 });

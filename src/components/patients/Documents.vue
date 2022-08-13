@@ -156,13 +156,13 @@ export default defineComponent({
       extraCss:
         "https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.compat.css, https://cdn.bootcdn.net/ajax/libs/hover.css/2.3.1/css/hover-min.css",
       extraHead: '<meta http-equiv="Content-Language" content="en-us"/>',
-      beforeOpenCallback() {
+      beforeOpenCallback(vue) {
         console.log("Before");
       },
-      openCallback() {
+      openCallback(vue) {
         console.log("Open");
       },
-      closeCallback() {
+      closeCallback(vue) {
         console.log("Close");
       },
     });

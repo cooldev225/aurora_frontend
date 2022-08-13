@@ -202,7 +202,6 @@
                       <el-form-item prop="collecting_person_phone">
                         <el-input
                           type="text"
-                          v-mask="'0#-####-####'"
                           v-model="aptData.collecting_person_phone"
                           placeholder="Enter Phone Number"
                         />
@@ -291,7 +290,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 import { mask } from "vue-the-mask";
-// import { validatePhone } from "@/helpers/helpers.js";
+import { validatePhone } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "create-apt-modal",
