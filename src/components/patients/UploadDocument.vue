@@ -109,7 +109,11 @@
                   >
                     <el-option
                       v-for="item in aptList.futureAppointments"
-                      :label="item.date"
+                      :label="
+                        moment(item.date).format('DD-MM-YYYY') +
+                        ' ' +
+                        item.appointment_type.name
+                      "
                       :value="item.id"
                       :key="item.id"
                     />
@@ -216,6 +220,7 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import moment from "moment";
 
 export default defineComponent({
   name: "create-letter-template-modal",
@@ -331,6 +336,7 @@ export default defineComponent({
       uploadDocumentRef,
       specialistList,
       aptList,
+      moment,
       submit,
       handleChange,
       handleRemove,
