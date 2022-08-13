@@ -1529,51 +1529,20 @@
                       <!--end::Referral Information-->
                       <!--start::Appointment History-->
                       <div class="card-info">
-                        <div class="mb-6 d-flex justify-content-between">
-                          <span class="fs-3 fw-bold text-muted"
-                            >Appointment History</span
-                          >
-                        </div>
-                        <div class="row">
-                          <div class="row">
-                            <table class="table">
-                              <thead>
-                                <tr>
-                                  <th>Date / Time</th>
-                                  <th>Appointment Type</th>
-                                  <th>Specialist</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <template
-                                  v-for="(item, index) in patientAptData"
-                                  :key="index"
-                                >
-                                  <tr class="center-row">
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.date }} {{ item.start_time }}
-                                      </span>
-                                    </th>
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.appointment_type_name }}
-                                      </span>
-                                    </th>
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.specialist_name }}
-                                      </span>
-                                    </th>
-                                  </tr>
-                                </template>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
+                        <span class="fs-3 fw-bold text-muted"
+                          >Appointment History</span
+                        >
+
+                        <AppointmentHistory
+                          :pastAppointments="patientAptData.pastAppointments"
+                          :futureAppointments="
+                            patientAptData.futureAppointments
+                          "
+                        />
                       </div>
-                      <!--end::Appointment History-->
                     </div>
+                    <!--end::Appointment History-->
+
                     <div class="d-flex justify-content-between">
                       <button
                         type="button"
@@ -1644,6 +1613,7 @@ import { useRouter } from "vue-router";
 
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
+import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
 
 export default defineComponent({
   name: "create-apt-modal",
@@ -1652,6 +1622,7 @@ export default defineComponent({
   },
   components: {
     Datatable,
+    AppointmentHistory,
   },
   setup() {
     const store = useStore();
