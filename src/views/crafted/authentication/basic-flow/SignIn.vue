@@ -10,19 +10,7 @@
     >
       <!--begin::Heading-->
       <div class="text-center mb-10">
-        <!--begin::Title-->
         <img alt="Logo" src="aurora-logo.png" class="h-75px logo" />
-        <!--end::Title-->
-
-        <!--begin::Link-->
-        <!-- <div class="text-gray-400 fw-bold fs-4">
-          New Here?
-
-          <router-link to="/sign-up" class="link-primary fw-bolder">
-            Create an Account
-          </router-link>
-        </div> -->
-        <!--end::Link-->
       </div>
       <!--begin::Heading-->
 
@@ -39,12 +27,6 @@
           name="username"
           autocomplete="off"
         />
-        <!--end::Input-->
-        <div class="fv-plugins-message-container">
-          <div class="fv-help-block">
-            <ErrorMessage name="username" />
-          </div>
-        </div>
       </div>
       <!--end::Input group-->
 
@@ -67,12 +49,6 @@
           name="password"
           autocomplete="off"
         />
-        <!--end::Input-->
-        <div class="fv-plugins-message-container">
-          <div class="fv-help-block">
-            <ErrorMessage name="password" />
-          </div>
-        </div>
       </div>
       <!--end::Input group-->
 
@@ -104,7 +80,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
-import { ErrorMessage, Field, Form } from "vee-validate";
+import { Field, Form } from "vee-validate";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -116,7 +92,6 @@ export default defineComponent({
   components: {
     Field,
     Form,
-    ErrorMessage,
   },
   setup() {
     const store = useStore();
