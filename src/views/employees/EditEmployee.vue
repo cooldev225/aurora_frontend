@@ -108,8 +108,8 @@
                 </InputWrapper>
 
                 <InputWrapper
-                  v-if="formData.role_id == formInfo.specialist_role_id"
-                  class="col-2"
+                  v-show="formData.role_id == formInfo.specialist_role_id"
+                  class="col-4"
                   label="Specialist Title"
                   prop="specialist_title_id"
                 >
@@ -127,7 +127,7 @@
                 </InputWrapper>
 
                 <InputWrapper
-                  v-if="formData.role_id == formInfo.specialist_role_id"
+                  v-show="formData.role_id == formInfo.specialist_role_id"
                   class="col-4"
                   label="Specialist Type"
                   prop="specialist_type_id"
@@ -146,7 +146,7 @@
                 </InputWrapper>
 
                 <InputWrapper
-                  v-if="formData.role_id == formInfo.specialist_role_id"
+                  v-show="formData.role_id == formInfo.specialist_role_id"
                   class="col-4"
                   label="Anaesthetist"
                   prop="anesthetist_id"
