@@ -407,7 +407,7 @@
                             <el-form-item prop="contact_number">
                               <el-input
                                 type="text"
-                                v-maska="'+61 0#-####-####'"
+                                v-mask="'0#-####-####'"
                                 v-model="patientInfoData.contact_number"
                                 placeholder="Enter Contact Number"
                               />
@@ -1332,48 +1332,16 @@
                       <!--end::Referral Information-->
                       <!--start::Appointment History-->
                       <div class="card-info">
-                        <div class="mb-6 d-flex justify-content-between">
-                          <span class="fs-3 fw-bold text-muted"
-                            >Appointment History</span
-                          >
-                        </div>
-                        <div class="row">
-                          <div class="row">
-                            <table class="table">
-                              <thead>
-                                <tr>
-                                  <th>Date / Time</th>
-                                  <th>Appointment Type</th>
-                                  <th>Specialist</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <template
-                                  v-for="(item, index) in patientAptData"
-                                  :key="index"
-                                >
-                                  <tr class="center-row">
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.date }} {{ item.start_time }}
-                                      </span>
-                                    </th>
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.appointment_type_name }}
-                                      </span>
-                                    </th>
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.specialist_name }}
-                                      </span>
-                                    </th>
-                                  </tr>
-                                </template>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
+                        <span class="fs-3 fw-bold text-muted mb-4"
+                          >Appointment History</span
+                        >
+
+                        <AppointmentHistory
+                          :pastAppointments="patientAptData.pastAppointments"
+                          :futureAppointments="
+                            patientAptData.futureAppointments
+                          "
+                        />
                       </div>
                       <!--end::Appointment History-->
                     </div>
@@ -1438,15 +1406,16 @@ import moment from "moment";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
-
-import { maska } from "maska";
+import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
+import { mask } from "vue-the-mask";
+import { validatePhone } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "create-apt-modal",
   directives: {
-    maska,
+    mask,
   },
-  components: {},
+  components: { AppointmentHistory },
   setup() {
     const store = useStore();
     const formRef_1 = ref(null);
@@ -1555,6 +1524,7 @@ export default defineComponent({
           message: "Contact Number cannot be blank.",
           trigger: "blur",
         },
+        { validator: validatePhone, trigger: "blur" },
       ],
       charge_type: [
         {

@@ -88,13 +88,6 @@
                       />
                       PATHOLOGY REPORT
                     </el-option>
-                    <el-option value="ALL" label="ALL DOCUMENT TYPE">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/general/gen054.svg"
-                      />
-                      ALL DOCUMENT TYPE
-                    </el-option>
                   </el-select>
                 </el-form-item>
                 <!--end::Input-->
@@ -115,8 +108,8 @@
                     placeholder="Select Appointment"
                   >
                     <el-option
-                      v-for="item in aptList.future"
-                      :label="item.name"
+                      v-for="item in aptList.futureAppointments"
+                      :label="item.date"
                       :value="item.id"
                       :key="item.id"
                     />
@@ -218,7 +211,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted } from "vue";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
@@ -230,13 +223,14 @@ export default defineComponent({
   props: {
     patientId: { type: String, required: true },
   },
-  setup() {
+  setup(props) {
     const store = useStore();
     const formRef = ref(null);
     const uploadDocumentRef = ref(null);
     const loading = ref(false);
     const specialistList = computed(() => store.getters.getSpecialistList);
-    const aptList = computed(() => store.getters.getAptList);
+    const aptList = computed(() => store.getters.getAptListById);
+    const patientId = computed(() => props.patientId);
     const uploadDisabled = ref(false);
     const upload = ref(null);
     const Data = new FormData();
@@ -309,8 +303,11 @@ export default defineComponent({
       });
     };
 
+    watch(patientId, () => {
+      store.dispatch(Actions.APT.LISTBYID, patientId.value);
+    });
+
     onMounted(() => {
-      store.dispatch(Actions.APT.LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
     });
 

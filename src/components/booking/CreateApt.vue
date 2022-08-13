@@ -620,7 +620,7 @@
                             <el-form-item prop="contact_number">
                               <el-input
                                 type="text"
-                                v-maska="'+61 0#-####-####'"
+                                v-mask="'0#-####-####'"
                                 v-model="patientInfoData.contact_number"
                                 placeholder="Enter Contact Number"
                               />
@@ -1529,51 +1529,20 @@
                       <!--end::Referral Information-->
                       <!--start::Appointment History-->
                       <div class="card-info">
-                        <div class="mb-6 d-flex justify-content-between">
-                          <span class="fs-3 fw-bold text-muted"
-                            >Appointment History</span
-                          >
-                        </div>
-                        <div class="row">
-                          <div class="row">
-                            <table class="table">
-                              <thead>
-                                <tr>
-                                  <th>Date / Time</th>
-                                  <th>Appointment Type</th>
-                                  <th>Specialist</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <template
-                                  v-for="(item, index) in patientAptData"
-                                  :key="index"
-                                >
-                                  <tr class="center-row">
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.date }} {{ item.start_time }}
-                                      </span>
-                                    </th>
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.appointment_type_name }}
-                                      </span>
-                                    </th>
-                                    <th>
-                                      <span class="fs-5 d-block">
-                                        {{ item.specialist_name }}
-                                      </span>
-                                    </th>
-                                  </tr>
-                                </template>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
+                        <span class="fs-3 fw-bold text-muted"
+                          >Appointment History</span
+                        >
+
+                        <AppointmentHistory
+                          :pastAppointments="patientAptData.pastAppointments"
+                          :futureAppointments="
+                            patientAptData.futureAppointments
+                          "
+                        />
                       </div>
-                      <!--end::Appointment History-->
                     </div>
+                    <!--end::Appointment History-->
+
                     <div class="d-flex justify-content-between">
                       <button
                         type="button"
@@ -1642,15 +1611,18 @@ import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { useRouter } from "vue-router";
 
-import { maska } from "maska";
+import { mask } from "vue-the-mask";
+import { validatePhone } from "@/helpers/helpers.js";
+import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
 
 export default defineComponent({
   name: "create-apt-modal",
   directives: {
-    maska,
+    mask,
   },
   components: {
     Datatable,
+    AppointmentHistory,
   },
   setup() {
     const store = useStore();
@@ -1776,6 +1748,7 @@ export default defineComponent({
           message: "Mobile Number cannot be blank.",
           trigger: "blur",
         },
+        { validator: validatePhone, trigger: "blur" },
       ],
       charge_type: [
         {
@@ -2278,6 +2251,7 @@ export default defineComponent({
       store.dispatch(Actions.PATIENTS.APPOINTMENTS, item.id);
       store.dispatch(Actions.PATIENTS.VIEW, item.id);
       patientInfoData.value = item;
+      aptInfoData.value.patient_id = item.id;
 
       for (let key in billingInfoData.value) {
         if (key === "charge_type" || key === "procedure_price") {

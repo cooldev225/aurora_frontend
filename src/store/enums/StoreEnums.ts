@@ -177,6 +177,7 @@ const Actions = {
 
   APT: {
     LIST: "listApt",
+    LISTBYID: "listAptById",
     CREATE: "createApt",
     DELETE: "deleteApt",
     UPDATE: "updateApt",
@@ -355,6 +356,7 @@ const Mutations = {
 
   SET_APT: {
     LIST: "setApt",
+    LISTBYID: "setAptById",
     SELECT: "setSelectApt",
     SELECT_SPECIALIST: "setSelectedSpecialist",
     TYPES: {
