@@ -492,6 +492,7 @@ export default defineComponent({
 
       initEmployeeRoles();
       initAnesthetistList();
+
       store.dispatch(Actions.SPECIALIST.TITLE.LIST);
       store.dispatch(Actions.SPECIALIST.TYPE.LIST);
       store.dispatch(Actions.CLINICS.LIST);

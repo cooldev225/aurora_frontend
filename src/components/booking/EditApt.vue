@@ -1573,7 +1573,6 @@ import moment from "moment";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
-import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 
@@ -1582,7 +1581,6 @@ export default defineComponent({
   directives: {
     mask,
   },
-  components: { AppointmentHistory },
   setup() {
     const store = useStore();
     const formRef_1 = ref(null);

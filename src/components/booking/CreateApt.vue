@@ -1783,7 +1783,6 @@ import { useRouter } from "vue-router";
 
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
-import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
 
 export default defineComponent({
   name: "create-apt-modal",
@@ -1792,7 +1791,6 @@ export default defineComponent({
   },
   components: {
     Datatable,
-    AppointmentHistory,
   },
   setup() {
     const store = useStore();
