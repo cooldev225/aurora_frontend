@@ -92,7 +92,7 @@
 
         <template v-slot:cell-appointment_type="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
-            {{ item.appointment_type }}
+            {{ item.appointment_type.name }}
           </span>
         </template>
 
