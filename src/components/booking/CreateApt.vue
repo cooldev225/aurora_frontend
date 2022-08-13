@@ -79,46 +79,35 @@
                 <div
                   class="p-4 mb-4 card border border-dashed border-primary d-flex flex-column gap-2"
                 >
-                  <label class="fs-5 text-primary"
-                    >Appointment Type:
-                    <span class="text-black fs-5">{{
-                      _appointment_name
-                    }}</span></label
-                  >
-                  <label class="fs-5 text-primary"
-                    >Specialist:
-                    <span class="text-black fs-5">{{
-                      _specialist_name
-                    }}</span></label
-                  >
-                  <label class="fs-5 text-primary"
-                    >Clinic Name:
-                    <span class="text-black fs-5">{{
-                      aptInfoData.clinic_name
-                    }}</span></label
-                  >
-                  <label class="fs-5 text-primary"
-                    >Time:
-                    <span class="text-black fs-5"
-                      >{{ _start_time }} - {{ aptInfoData.time_slot[1] }}</span
-                    >
+                  <InfoSection heading="Appointment Type">{{
+                    _appointment_name
+                  }}</InfoSection>
+
+                  <InfoSection heading="Specialist">{{
+                    _specialist_name
+                  }}</InfoSection>
+
+                  <InfoSection heading="Clinic">{{
+                    aptInfoData.clinic_name
+                  }}</InfoSection>
+
+                  <InfoSection heading="Time">
+                    {{ _start_time }}
+                    - {{ aptInfoData.time_slot[1] }}
                     <span
                       v-if="aptInfoData.arrival_time"
                       class="text-black fs-5"
                     >
                       (Arrive: {{ aptInfoData.arrival_time }})</span
-                    ></label
+                    ></InfoSection
                   >
-                  <label class="fs-5 text-primary"
-                    >Date:
-                    <span class="text-black fs-5">{{ aptInfoData.date }}</span>
-                  </label>
-                  <label class="fs-5 text-primary"
-                    >Patient:
-                    <span class="text-black fs-5"
-                      >{{ patientInfoData.first_name }}
-                      {{ patientInfoData.last_name }}</span
-                    ></label
+                  <InfoSection heading="Date">{{
+                    aptInfoData.date
+                  }}</InfoSection>
+
+                  <InfoSection heading="Patient"
+                    >{{ patientInfoData.first_name }}
+                    {{ patientInfoData.last_name }}</InfoSection
                   >
                 </div>
                 <!--end::Appointment Overview-->
@@ -1555,6 +1544,7 @@ import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
 import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
+import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 
 export default defineComponent({
   name: "create-apt-modal",
@@ -1565,6 +1555,7 @@ export default defineComponent({
     Datatable,
     AppointmentHistory,
     StepperNavItem,
+    InfoSection,
   },
   setup() {
     const store = useStore();
