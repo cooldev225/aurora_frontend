@@ -48,93 +48,33 @@
             >
               <!--begin::Nav-->
               <div class="stepper-nav ps-lg-10">
-                <!--begin::Step 1-->
-                <div class="stepper-item current" data-kt-stepper-element="nav">
-                  <!--begin::Line-->
-                  <div class="stepper-line w-40px"></div>
-                  <!--end::Line-->
+                <StepperNavItem
+                  dataStepperElement="nav"
+                  stepperNumber="1"
+                  stepperTitle="Appointment"
+                  stepperDesc="Setup Appointment Info"
+                />
 
-                  <!--begin::Icon-->
-                  <div class="stepper-icon w-40px h-40px">
-                    <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">1</span>
-                  </div>
-                  <!--end::Icon-->
+                <StepperNavItem
+                  dataStepperElement="nav"
+                  stepperNumber="2"
+                  stepperTitle="Patient Info"
+                  stepperDesc="Edit Patient Details"
+                />
 
-                  <!--begin::Label-->
-                  <div class="stepper-label">
-                    <h3 class="stepper-title">Appointment</h3>
+                <StepperNavItem
+                  dataStepperElement="nav"
+                  stepperNumber="3"
+                  stepperTitle="Patient Billing"
+                  stepperDesc="Edit Patient Billing Details"
+                />
 
-                    <div class="stepper-desc">Setup Appointment Info</div>
-                  </div>
-                  <!--end::Label-->
-                </div>
-                <!--end::Step 1-->
-
-                <!--begin::Step 2-->
-                <div class="stepper-item" data-kt-stepper-element="nav">
-                  <!--begin::Line-->
-                  <div class="stepper-line w-40px"></div>
-                  <!--end::Line-->
-
-                  <!--begin::Icon-->
-                  <div class="stepper-icon w-40px h-40px">
-                    <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">2</span>
-                  </div>
-                  <!--begin::Icon-->
-
-                  <!--begin::Label-->
-                  <div class="stepper-label">
-                    <h3 class="stepper-title">Patient Info</h3>
-
-                    <div class="stepper-desc">Setup Personal Details</div>
-                  </div>
-                  <!--begin::Label-->
-                </div>
-                <!--end::Step 2-->
-
-                <!--begin::Step 3-->
-                <div class="stepper-item" data-kt-stepper-element="nav">
-                  <!--begin::Line-->
-                  <div class="stepper-line w-40px"></div>
-                  <!--end::Line-->
-
-                  <!--begin::Icon-->
-                  <div class="stepper-icon w-40px h-40px">
-                    <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">3</span>
-                  </div>
-                  <!--end::Icon-->
-
-                  <!--begin::Label-->
-                  <div class="stepper-label">
-                    <h3 class="stepper-title">Patient Billing</h3>
-
-                    <div class="stepper-desc">Select Billing Details</div>
-                  </div>
-                  <!--end::Label-->
-                </div>
-                <!--end::Step 3 -->
-
-                <!--begin::Step 4 -->
-                <div class="stepper-item" data-kt-stepper-element="nav">
-                  <!--begin::Icon-->
-                  <div class="stepper-icon w-40px h-40px">
-                    <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">4</span>
-                  </div>
-                  <!--end::Icon-->
-
-                  <!--begin::Label-->
-                  <div class="stepper-label">
-                    <h3 class="stepper-title">Other Info</h3>
-
-                    <div class="stepper-desc">Setup Other Details</div>
-                  </div>
-                  <!--end::Label-->
-                </div>
-                <!--end::Step 4-->
+                <StepperNavItem
+                  dataStepperElement="nav"
+                  stepperNumber="4"
+                  stepperTitle="Other Info"
+                  stepperDesc="Referral information and Appointment history"
+                />
                 <!--begin::Appointment Overview-->
                 <div
                   class="p-4 mb-4 card border border-dashed border-primary d-flex flex-column gap-2"
@@ -1614,6 +1554,7 @@ import { useRouter } from "vue-router";
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
+import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
 
 export default defineComponent({
   name: "create-apt-modal",
@@ -1623,6 +1564,7 @@ export default defineComponent({
   components: {
     Datatable,
     AppointmentHistory,
+    StepperNavItem,
   },
   setup() {
     const store = useStore();

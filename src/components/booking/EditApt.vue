@@ -44,113 +44,42 @@
           >
             <!--begin::Aside-->
             <div
-              class="d-flex justify-content-center justify-content-xl-start flex-row-auto w-100 w-xl-350px"
+              class="cursor-pointer d-flex justify-content-center justify-content-xl-start flex-row-auto w-100 w-xl-350px"
             >
               <!--begin::Nav-->
               <div class="stepper-nav ps-lg-10">
-                <!--begin::Step 1-->
-                <div
-                  class="stepper-item current cursor-pointer"
-                  data-kt-stepper-element="nav"
+                <StepperNavItem
                   @click="gotoPage(1)"
-                >
-                  <!--begin::Line-->
-                  <div class="stepper-line w-40px"></div>
-                  <!--end::Line-->
+                  dataStepperElement="nav"
+                  stepperNumber="1"
+                  stepperTitle="Appointment"
+                  stepperDesc="Setup Appointment Info"
+                />
 
-                  <!--begin::Icon-->
-                  <div class="stepper-icon w-40px h-40px">
-                    <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">1</span>
-                  </div>
-                  <!--end::Icon-->
-
-                  <!--begin::Label-->
-                  <div class="stepper-label">
-                    <h3 class="stepper-title">Appointment</h3>
-
-                    <div class="stepper-desc">Setup Appointment Info</div>
-                  </div>
-                  <!--end::Label-->
-                </div>
-                <!--end::Step 1-->
-
-                <!--begin::Step 2-->
-                <div
-                  class="stepper-item cursor-pointer"
-                  data-kt-stepper-element="nav"
+                <StepperNavItem
                   @click="gotoPage(2)"
-                >
-                  <!--begin::Line-->
-                  <div class="stepper-line w-40px"></div>
-                  <!--end::Line-->
+                  dataStepperElement="nav"
+                  stepperNumber="2"
+                  stepperTitle="Patient Info"
+                  stepperDesc="Edit Patient Details"
+                />
 
-                  <!--begin::Icon-->
-                  <div class="stepper-icon w-40px h-40px">
-                    <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">2</span>
-                  </div>
-                  <!--begin::Icon-->
-
-                  <!--begin::Label-->
-                  <div class="stepper-label">
-                    <h3 class="stepper-title">Patient Info</h3>
-
-                    <div class="stepper-desc">Setup Personal Details</div>
-                  </div>
-                  <!--begin::Label-->
-                </div>
-                <!--end::Step 3-->
-
-                <!--begin::Step 4-->
-                <div
-                  class="stepper-item cursor-pointer"
-                  data-kt-stepper-element="nav"
+                <StepperNavItem
                   @click="gotoPage(3)"
-                >
-                  <!--begin::Line-->
-                  <div class="stepper-line w-40px"></div>
-                  <!--end::Line-->
+                  dataStepperElement="nav"
+                  stepperNumber="3"
+                  stepperTitle="Patient Billing"
+                  stepperDesc="Edit Patient Billing Details"
+                />
 
-                  <!--begin::Icon-->
-                  <div class="stepper-icon w-40px h-40px">
-                    <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">3</span>
-                  </div>
-                  <!--end::Icon-->
-
-                  <!--begin::Label-->
-                  <div class="stepper-label">
-                    <h3 class="stepper-title">Patient Billing</h3>
-
-                    <div class="stepper-desc">Select Billing Details</div>
-                  </div>
-                  <!--end::Label-->
-                </div>
-                <!--end::Step 4 -->
-
-                <!--begin::Step 5 -->
-                <div
-                  class="stepper-item cursor-pointer"
-                  data-kt-stepper-element="nav"
+                <StepperNavItem
                   @click="gotoPage(4)"
-                >
-                  <!--begin::Icon-->
-                  <div class="stepper-icon w-40px h-40px">
-                    <i class="stepper-check fas fa-check"></i>
-                    <span class="stepper-number">4</span>
-                  </div>
-                  <!--end::Icon-->
+                  dataStepperElement="nav"
+                  stepperNumber="4"
+                  stepperTitle="Other Info"
+                  stepperDesc="Referral information and Appointment history"
+                />
 
-                  <!--begin::Label-->
-                  <div class="stepper-label">
-                    <h3 class="stepper-title">Other Info</h3>
-
-                    <div class="stepper-desc">Setup Other Details</div>
-                  </div>
-                  <!--end::Label-->
-                </div>
-                <!--end::Step 5-->
                 <!--begin::Appointment Overview-->
                 <div
                   class="p-4 mb-4 card border border-dashed border-primary d-flex flex-column gap-2"
@@ -1407,6 +1336,7 @@ import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
+import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 
@@ -1415,7 +1345,7 @@ export default defineComponent({
   directives: {
     mask,
   },
-  components: { AppointmentHistory },
+  components: { AppointmentHistory, StepperNavItem },
   setup() {
     const store = useStore();
     const formRef_1 = ref(null);
@@ -1613,7 +1543,6 @@ export default defineComponent({
     const patientAptData = computed(() => store.getters.getPatientAppointments);
 
     watch(aptData, () => {
-      console.log(aptData.value);
       for (let key in aptInfoData.value)
         aptInfoData.value[key] = aptData.value[key];
       aptInfoData.value.time_slot = [];
