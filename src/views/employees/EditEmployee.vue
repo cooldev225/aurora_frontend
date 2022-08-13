@@ -86,7 +86,7 @@
               </div>
 
               <div class="row">
-                <InputWrapper class="col-6" label="Type" prop="type">
+                <InputWrapper class="col-4" label="Type" prop="type">
                   <el-select class="w-100" v-model="formData.type" filterable>
                     <el-option
                       v-for="item in employeeTypes"
@@ -96,12 +96,66 @@
                     />
                   </el-select>
                 </InputWrapper>
-                <InputWrapper class="col-6" label="Role" prop="role">
+                <InputWrapper class="col-4" label="Role" prop="role">
                   <el-select v-model="formData.role_id" class="w-100">
                     <el-option
                       v-for="item in employeeRoles"
                       :value="item.id"
                       :label="item.name"
+                      :key="item.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+
+                <InputWrapper
+                  v-if="formData.role_id == formInfo.specialist_role_id"
+                  class="col-2"
+                  label="Specialist Title"
+                  prop="specialist_title_id"
+                >
+                  <el-select
+                    v-model="formData.specialist_title_id"
+                    class="w-100"
+                  >
+                    <el-option
+                      v-for="item in specialistTitleList"
+                      :value="item.id"
+                      :label="item.name"
+                      :key="item.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+
+                <InputWrapper
+                  v-if="formData.role_id == formInfo.specialist_role_id"
+                  class="col-4"
+                  label="Specialist Type"
+                  prop="specialist_type_id"
+                >
+                  <el-select
+                    v-model="formData.specialist_type_id"
+                    class="w-100"
+                  >
+                    <el-option
+                      v-for="item in specialistTypeList"
+                      :value="item.id"
+                      :label="item.name"
+                      :key="item.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+
+                <InputWrapper
+                  v-if="formData.role_id == formInfo.specialist_role_id"
+                  class="col-4"
+                  label="Anaesthetist"
+                  prop="anesthetist_id"
+                >
+                  <el-select v-model="formData.anesthetist_id" class="w-100">
+                    <el-option
+                      v-for="item in anesthetistList"
+                      :value="item.id"
+                      :label="item.first_name + ' ' + item.last_name"
                       :key="item.id"
                     />
                   </el-select>
@@ -242,8 +296,12 @@ export default defineComponent({
       submitAction: Actions.EMPLOYEE.CREATE,
       submitButtonName: "Create",
       submittedText: "New Employee Created",
+      specialist_role_id: 0,
     });
     const employeeRoles = ref([]);
+    const anesthetistList = ref([]);
+    const specialistTitleList = computed(() => store.getters.specTitleList);
+    const specialistTypeList = computed(() => store.getters.specTypeList);
 
     const weekList = ref([
       "monday",
@@ -265,6 +323,9 @@ export default defineComponent({
       address: "",
       role_id: "",
       type: "full-time",
+      anesthetist_id: "",
+      specialist_title_id: "",
+      specialist_type_id: "",
       work_hours: {
         monday: {
           available: false,
@@ -380,9 +441,22 @@ export default defineComponent({
             employeeRoles.value.forEach((item) => {
               if (item["slug"] == "specialist") {
                 formData.value.role_id = item["id"];
+                formInfo.specialist_role_id = item["id"];
               }
             });
           }
+
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+    };
+
+    const initAnesthetistList = () => {
+      ApiService.get("anesthetists")
+        .then(({ data }) => {
+          anesthetistList.value = data.data;
 
           return data.data;
         })
@@ -417,6 +491,9 @@ export default defineComponent({
       }
 
       initEmployeeRoles();
+      initAnesthetistList();
+      store.dispatch(Actions.SPECIALIST.TITLE.LIST);
+      store.dispatch(Actions.SPECIALIST.TYPE.LIST);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
@@ -469,6 +546,9 @@ export default defineComponent({
       clinicsList,
       employeeTypes,
       employeeRoles,
+      anesthetistList,
+      specialistTitleList,
+      specialistTypeList,
     };
   },
 });
