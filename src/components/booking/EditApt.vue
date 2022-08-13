@@ -124,114 +124,81 @@
 
             <!--begin::Content-->
             <div class="flex-row-fluid py-lg-5 px-lg-15">
-              <!--begin::Step 1-->
               <div class="current" data-kt-stepper-element="content">
-                <div class="w-100">
-                  <el-form
-                    class="w-100"
-                    :rules="rules"
-                    :model="aptInfoData"
-                    ref="formRef_1"
-                    @submit.prevent="handleStep_1"
-                  >
-                    <div class="row scroll h-500px">
-                      <div class="card-info">
-                        <div class="row">
-                          <!--begin::Input group-->
-                          <div class="fv-row mb-7">
-                            <!--begin::Label-->
-                            <label class="required fs-6 fw-bold mb-2">
-                              Appointment Type
-                            </label>
-                            <!--end::Label-->
-
-                            <!--begin::Input-->
-                            <el-form-item prop="appointment_type_id">
-                              <el-select class="w-100" v-model="_appointment">
-                                <el-option
-                                  v-for="item in aptTypeList"
-                                  :value="item.id"
-                                  :label="item.name"
-                                  :key="item.id"
-                                />
-                              </el-select>
-
-                              <div class="fv-row" v-if="overlapping_cnt >= 2">
-                                <!--begin::Label-->
-                                <label class="fs-7 fw-bold">
-                                  WARNING: this appointment will overlap with an
-                                  upcoming appointment
-                                </label>
-                                <!--end::Label-->
-                              </div>
-                            </el-form-item>
-                            <!--end::Input-->
-                          </div>
-                          <!--begin::Input group-->
-                          <div class="fv-row mb-7">
-                            <!--begin::Label-->
-                            <label class="fs-6 fw-bold mb-2"> Room </label>
-                            <!--end::Label-->
-                            <!--begin::Input-->
-                            <el-form-item prop="room_id">
-                              <el-select
-                                class="w-100"
-                                v-model.number="aptInfoData.room_id"
-                              >
-                                <el-option
-                                  v-for="item in rooms"
-                                  :value="item.id"
-                                  :label="item.name"
-                                  :key="item.id"
-                                />
-                              </el-select>
-                            </el-form-item>
-                            <!--end::Input-->
-                          </div>
-                          <!--begin::Input group-->
-                          <div class="fv-row mb-7">
-                            <!--begin::Label-->
-                            <label class="fs-6 fw-bold mb-2"> Note </label>
-                            <!--end::Label-->
-
-                            <!--begin::Input-->
-                            <el-form-item prop="note">
-                              <el-input
-                                type="textarea"
-                                v-model="aptInfoData.note"
-                                placeholder="Enter appointment notes"
-                              />
-                            </el-form-item>
-                            <!--end::Input-->
-                          </div>
-                          <!--end::Input group-->
-                        </div>
+                <el-form
+                  class="w-100"
+                  :rules="rules"
+                  :model="aptInfoData"
+                  ref="formRef_1"
+                  @submit.prevent="handleStep_1"
+                >
+                  <div class="scroll h-500px">
+                    <InputWrapper
+                      label="Appointment Type"
+                      prop="appointment_type_id"
+                    >
+                      <el-select class="w-100" v-model="_appointment">
+                        <el-option
+                          v-for="item in aptTypeList"
+                          :value="item.id"
+                          :label="item.name"
+                          :key="item.id"
+                        />
+                      </el-select>
+                      <div class="fv-row" v-if="overlapping_cnt >= 1">
+                        <!--begin::Label-->
+                        <label class="fs-7 fw-bold">
+                          WARNING: this appointment will overlap with an
+                          upcoming appointment
+                        </label>
+                        <!--end::Label-->
                       </div>
-                    </div>
-                    <div class="d-flex justify-content-end">
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-light-primary me-3"
-                        @click="handleSave"
+                    </InputWrapper>
+
+                    <InputWrapper label="Room" prop="room_id">
+                      <el-select
+                        class="w-100"
+                        v-model.number="aptInfoData.room_id"
                       >
-                        Save
-                      </button>
-                      <button
-                        type="submit"
-                        class="btn btn-lg btn-primary align-self-end"
-                      >
-                        Continue
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
-                        </span>
-                      </button>
-                    </div>
-                  </el-form>
-                </div>
+                        <el-option
+                          v-for="item in rooms"
+                          :value="item.id"
+                          :label="item.name"
+                          :key="item.id"
+                        />
+                      </el-select>
+                    </InputWrapper>
+
+                    <InputWrapper label="Note" prop="note">
+                      <el-input
+                        type="textarea"
+                        v-model="aptInfoData.note"
+                        placeholder="Enter appointment notes"
+                      />
+                    </InputWrapper>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <button
+                      type="button"
+                      class="btn btn-lg btn-light-primary me-3"
+                      @click="handleSave"
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="submit"
+                      class="btn btn-lg btn-primary align-self-end"
+                    >
+                      Continue
+                      <span class="svg-icon svg-icon-4 ms-1 me-0">
+                        <inline-svg
+                          src="media/icons/duotune/arrows/arr064.svg"
+                        />
+                      </span>
+                    </button>
+                  </div>
+                </el-form>
               </div>
-              <!--end::Step 1-->
 
               <!--begin::Step 3-->
               <div data-kt-stepper-element="content">
@@ -1328,13 +1295,14 @@ import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
+import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 export default defineComponent({
   name: "create-apt-modal",
   directives: {
     mask,
   },
-  components: { AppointmentHistory, StepperNavItem, InfoSection },
+  components: { AppointmentHistory, StepperNavItem, InfoSection, InputWrapper },
   setup() {
     const store = useStore();
     const formRef_1 = ref(null);

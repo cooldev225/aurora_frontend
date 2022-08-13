@@ -121,184 +121,154 @@
             <div class="flex-row-fluid py-lg-5 px-lg-15">
               <!--begin::Step 1-->
               <div class="current" data-kt-stepper-element="content">
-                <div class="w-100">
-                  <el-form
-                    class="w-100"
-                    :rules="rules"
-                    :model="aptInfoData"
-                    ref="formRef_1"
-                    @submit.prevent=""
-                  >
-                    <div class="row scroll h-520px">
-                      <div class="card-info">
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="required fs-6 fw-bold mb-2">
-                            Appointment Type
-                          </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="appointment_type_id">
-                            <el-select class="w-100" v-model="_appointment">
-                              <el-option
-                                v-for="item in aptTypeList"
-                                :value="item.id"
-                                :label="item.name"
-                                :key="item.id"
-                              />
-                            </el-select>
-
-                            <div class="fv-row" v-if="overlapping_cnt >= 1">
-                              <!--begin::Label-->
-                              <label class="fs-7 fw-bold">
-                                WARNING: this appointment will overlap with an
-                                upcoming appointment
-                              </label>
-                              <!--end::Label-->
-                            </div>
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2"> Room </label>
-                          <!--end::Label-->
-                          <!--begin::Input-->
-                          <el-form-item prop="room_id">
-                            <el-select
-                              class="w-100"
-                              v-model.number="aptInfoData.room_id"
-                            >
-                              <el-option
-                                v-for="item in rooms"
-                                :value="item.id"
-                                :label="item.name"
-                                :key="item.id"
-                              />
-                            </el-select>
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--begin::Input group-->
-                        <div class="fv-row mb-7">
-                          <!--begin::Label-->
-                          <label class="fs-6 fw-bold mb-2"> Note </label>
-                          <!--end::Label-->
-
-                          <!--begin::Input-->
-                          <el-form-item prop="note">
-                            <el-input
-                              type="textarea"
-                              v-model="aptInfoData.note"
-                              placeholder="Enter appointment notes"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-                      </div>
-                      <el-divider />
-                      <div class="card-info">
-                        <div class="d-flex flex-row gap-3">
-                          <!--begin::Col-->
-                          <div class="fv-row">
-                            <!--begin::Option-->
-                            <input
-                              type="radio"
-                              class="btn-check"
-                              name="patientType"
-                              value="new"
-                              checked="checked"
-                              id="create-new-patient"
-                              v-model="patientStatus"
-                            />
-                            <label
-                              class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-10"
-                              for="create-new-patient"
-                            >
-                              <span class="svg-icon svg-icon-3x me-5">
-                                <inline-svg
-                                  src="media/icons/duotune/communication/com005.svg"
-                                />
-                              </span>
-
-                              <!--begin::Info-->
-                              <span class="d-block fw-bold text-start">
-                                <span
-                                  class="text-dark fw-bolder d-block fs-4 mb-2"
-                                >
-                                  New Patient
-                                </span>
-                                <span class="text-gray-400 fw-bold fs-6"
-                                  >Create New Patient</span
-                                >
-                              </span>
-                              <!--end::Info-->
-                            </label>
-                            <!--end::Option-->
-                          </div>
-                          <!--end::Col-->
-
-                          <!--begin::Col-->
-                          <div class="fv-row">
-                            <!--begin::Option-->
-                            <input
-                              type="radio"
-                              class="btn-check"
-                              name="patientType"
-                              value="exist"
-                              id="select-existing-patient"
-                              v-model="patientStatus"
-                            />
-                            <label
-                              class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center"
-                              for="select-existing-patient"
-                            >
-                              <span class="svg-icon svg-icon-3x me-5">
-                                <inline-svg
-                                  src="media/icons/duotune/finance/fin006.svg"
-                                />
-                              </span>
-
-                              <!--begin::Info-->
-                              <span class="d-block fw-bold text-start">
-                                <span
-                                  class="text-dark fw-bolder d-block fs-4 mb-2"
-                                  >Existing Patient</span
-                                >
-                                <span class="text-gray-400 fw-bold fs-6"
-                                  >Import Existing Patient</span
-                                >
-                              </span>
-                              <!--end::Info-->
-                            </label>
-                            <!--end::Option-->
-                          </div>
-                          <!--end::Col-->
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="d-flex justify-content-between flex-row-reverse"
+                <el-form
+                  class="w-100"
+                  :rules="rules"
+                  :model="aptInfoData"
+                  ref="formRef_1"
+                  @submit.prevent=""
+                >
+                  <div class="row scroll h-520px">
+                    <InputWrapper
+                      label="Appointment Type"
+                      prop="appointment_type_id"
                     >
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-primary align-self-end"
-                        @click="handleStep_1"
+                      <el-select class="w-100" v-model="_appointment">
+                        <el-option
+                          v-for="item in aptTypeList"
+                          :value="item.id"
+                          :label="item.name"
+                          :key="item.id"
+                        />
+                      </el-select>
+                      <div class="fv-row" v-if="overlapping_cnt >= 1">
+                        <!--begin::Label-->
+                        <label class="fs-7 fw-bold">
+                          WARNING: this appointment will overlap with an
+                          upcoming appointment
+                        </label>
+                        <!--end::Label-->
+                      </div>
+                    </InputWrapper>
+
+                    <InputWrapper label="Room" prop="room_id">
+                      <el-select
+                        class="w-100"
+                        v-model.number="aptInfoData.room_id"
                       >
-                        Continue
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
+                        <el-option
+                          v-for="item in rooms"
+                          :value="item.id"
+                          :label="item.name"
+                          :key="item.id"
+                        />
+                      </el-select>
+                    </InputWrapper>
+
+                    <InputWrapper label="Note" prop="note">
+                      <el-input
+                        type="textarea"
+                        v-model="aptInfoData.note"
+                        placeholder="Enter appointment notes"
+                      />
+                    </InputWrapper>
+
+                    <el-divider />
+                    <div class="card-info">
+                      <div class="d-flex flex-row gap-3">
+                        <!--begin::Col-->
+                        <div class="fv-row">
+                          <!--begin::Option-->
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="patientType"
+                            value="new"
+                            checked="checked"
+                            id="create-new-patient"
+                            v-model="patientStatus"
                           />
-                        </span>
-                      </button>
+                          <label
+                            class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-10"
+                            for="create-new-patient"
+                          >
+                            <span class="svg-icon svg-icon-3x me-5">
+                              <inline-svg
+                                src="media/icons/duotune/communication/com005.svg"
+                              />
+                            </span>
+
+                            <!--begin::Info-->
+                            <span class="d-block fw-bold text-start">
+                              <span
+                                class="text-dark fw-bolder d-block fs-4 mb-2"
+                              >
+                                New Patient
+                              </span>
+                              <span class="text-gray-400 fw-bold fs-6"
+                                >Create New Patient</span
+                              >
+                            </span>
+                            <!--end::Info-->
+                          </label>
+                          <!--end::Option-->
+                        </div>
+                        <!--end::Col-->
+
+                        <!--begin::Col-->
+                        <div class="fv-row">
+                          <!--begin::Option-->
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="patientType"
+                            value="exist"
+                            id="select-existing-patient"
+                            v-model="patientStatus"
+                          />
+                          <label
+                            class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center"
+                            for="select-existing-patient"
+                          >
+                            <span class="svg-icon svg-icon-3x me-5">
+                              <inline-svg
+                                src="media/icons/duotune/finance/fin006.svg"
+                              />
+                            </span>
+
+                            <!--begin::Info-->
+                            <span class="d-block fw-bold text-start">
+                              <span
+                                class="text-dark fw-bolder d-block fs-4 mb-2"
+                                >Existing Patient</span
+                              >
+                              <span class="text-gray-400 fw-bold fs-6"
+                                >Import Existing Patient</span
+                              >
+                            </span>
+                            <!--end::Info-->
+                          </label>
+                          <!--end::Option-->
+                        </div>
+                        <!--end::Col-->
+                      </div>
                     </div>
-                  </el-form>
-                </div>
+                  </div>
+                  <div class="d-flex justify-content-between flex-row-reverse">
+                    <button
+                      type="button"
+                      class="btn btn-lg btn-primary align-self-end"
+                      @click="handleStep_1"
+                    >
+                      Continue
+                      <span class="svg-icon svg-icon-4 ms-1 me-0">
+                        <inline-svg
+                          src="media/icons/duotune/arrows/arr064.svg"
+                        />
+                      </span>
+                    </button>
+                  </div>
+                </el-form>
               </div>
               <!--end::Step 1-->
 
@@ -312,58 +282,29 @@
                     @submit.prevent=""
                   >
                     <div class="d-flex flex-column">
-                      <div class="row g-8">
-                        <div class="col-lg-6">
-                          <label class="fs-6 form-label fw-bolder text-dark"
-                            >First Name</label
-                          >
-                          <el-form-item prop="filter_first_name">
-                            <el-input
-                              type="text"
-                              v-model="filterPatient.first_name"
-                              placeholder="First Name"
-                            />
-                          </el-form-item>
-                        </div>
-                        <div class="col-lg-6">
-                          <label class="fs-6 form-label fw-bolder text-dark"
-                            >Last Name</label
-                          >
-                          <el-form-item prop="filter_last_name">
-                            <el-input
-                              type="text"
-                              v-model="filterPatient.last_name"
-                              placeholder="Last Name"
-                            />
-                          </el-form-item>
-                        </div>
-                        <div class="col-lg-6">
-                          <label class="fs-6 form-label fw-bolder text-dark"
-                            >Date of Birth</label
-                          >
-                          <el-form-item prop="filter_date">
-                            <el-date-picker
-                              editable
-                              class="w-100"
-                              v-model="filterPatient.date_of_birth"
-                              format="DD-MM-YYYY"
-                              placeholder="01-01-1990"
-                            />
-                          </el-form-item>
-                        </div>
-                        <div class="col-lg-6">
-                          <label class="fs-6 form-label fw-bolder text-dark"
-                            >UR Number</label
-                          >
-                          <el-form-item prop="filter_ur_number">
-                            <el-input
-                              type="text"
-                              v-model="filterPatient.ur_number"
-                              placeholder="UR Number"
-                            />
-                          </el-form-item>
-                        </div>
-                      </div>
+                      <InputWrapper label="First Name" prop="filter_first_name">
+                        <el-input
+                          type="text"
+                          v-model="filterPatient.first_name"
+                          placeholder="First Name"
+                        />
+                      </InputWrapper>
+                      <InputWrapper label="Last Name" prop="filter_last_name">
+                        <el-input
+                          type="text"
+                          v-model="filterPatient.last_name"
+                          placeholder="Last Name"
+                        />
+                      </InputWrapper>
+                      <InputWrapper label="Date of Birth" prop="filter_date">
+                        <el-date-picker
+                          editable
+                          class="w-100"
+                          v-model="filterPatient.date_of_birth"
+                          format="DD-MM-YYYY"
+                          placeholder="01-01-1990"
+                        />
+                      </InputWrapper>
 
                       <div class="d-flex justify-content-between my-auto">
                         <button
@@ -1545,6 +1486,7 @@ import { validatePhone } from "@/helpers/helpers.js";
 import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
 import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
+import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 export default defineComponent({
   name: "create-apt-modal",
@@ -1556,6 +1498,7 @@ export default defineComponent({
     AppointmentHistory,
     StepperNavItem,
     InfoSection,
+    InputWrapper,
   },
   setup() {
     const store = useStore();
