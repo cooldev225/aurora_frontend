@@ -50,11 +50,11 @@
               data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
               data-kt-scroll-offset="300px"
             >
-              <div class="fv-row">
+              <!-- <div class="fv-row">
                 <pdf src="http://localhost:8000/temp.pdf" :page="1">
                   <template v-slot:loading> loading content here... </template>
                 </pdf>
-              </div>
+              </div> -->
 
               <!--begin::Input group-->
               <div class="fv-row">
@@ -146,13 +146,13 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
-import pdf from "pdfvuer";
-import "pdfjs-dist/build/pdf.worker.entry"; // not needed since v1.9.1
+// import pdf from "pdfvuer";
+// import "pdfjs-dist/build/pdf.worker.entry"; // not needed since v1.9.1
 
 export default defineComponent({
   name: "view-pre-admission-form-modal",
   components: {
-    pdf,
+    // pdf,
   },
   setup() {
     const store = useStore();
