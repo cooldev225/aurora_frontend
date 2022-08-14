@@ -104,12 +104,19 @@
 
         <template v-slot:cell-actions="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
-            {{ item.action }}
+            <button
+              @click="handleFormModal(item)"
+              class="btn btn-active-color-primary btn-primary"
+            >
+              View Pre Admission Form
+            </button>
           </span>
         </template>
       </Datatable>
     </div>
   </div>
+
+  <PreAdmissionFormModal></PreAdmissionFormModal>
 </template>
 
 <script>
@@ -117,13 +124,16 @@ import { defineComponent, onMounted, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Actions } from "@/store/enums/StoreEnums";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { Modal } from "bootstrap";
+import PreAdmissionFormModal from "@/components/anesthetist/PreAdmissionForm.vue";
 
 export default defineComponent({
   name: "patients-list",
 
   components: {
     Datatable,
+    PreAdmissionFormModal,
   },
 
   setup() {
@@ -168,13 +178,21 @@ export default defineComponent({
     ]);
     const patientData = ref([]);
     const tableData = ref([]);
-    const list = computed(() => store.getters.procedureApprovalsList);
+    const list = computed(() => store.getters.getProcedureApprovalList);
     const loading = ref(true);
     const filterFirstName = ref("");
     const filterLastName = ref("");
     const tableKey = ref(0);
 
     const renderTable = () => tableKey.value++;
+
+    const handleFormModal = (item) => {
+      store.commit(Mutations.SET_PROCEDURE_APPROVAL.DATA, item);
+      const modal = new Modal(
+        document.getElementById("modal_view_pre_admission")
+      );
+      modal.show();
+    };
 
     const searchPatient = () => {
       tableData.value = patientData.value.filter((data) => {
@@ -215,12 +233,13 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Dashboard", ["Anesthetist"]);
-      store.dispatch(Actions.PROCEDURE_APPROVALS.LIST);
+      store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
     });
 
     return {
       tableHeader,
       tableData,
+      handleFormModal,
       filterFirstName,
       filterLastName,
       tableKey,
