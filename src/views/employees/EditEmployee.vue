@@ -114,7 +114,7 @@
                   prop="specialist_title_id"
                 >
                   <el-select
-                    v-model="formData.specialist_title_id"
+                    v-model="formData.specialist.specialist_title_id"
                     class="w-100"
                   >
                     <el-option
@@ -133,7 +133,7 @@
                   prop="specialist_type_id"
                 >
                   <el-select
-                    v-model="formData.specialist_type_id"
+                    v-model="formData.specialist.specialist_type_id"
                     class="w-100"
                   >
                     <el-option
@@ -151,7 +151,10 @@
                   label="Anaesthetist"
                   prop="anesthetist_id"
                 >
-                  <el-select v-model="formData.anesthetist_id" class="w-100">
+                  <el-select
+                    v-model="formData.specialist.anesthetist_id"
+                    class="w-100"
+                  >
                     <el-option
                       v-for="item in anesthetistList"
                       :value="item.id"
@@ -323,9 +326,11 @@ export default defineComponent({
       address: "",
       role_id: "",
       type: "full-time",
-      anesthetist_id: "",
-      specialist_title_id: "",
-      specialist_type_id: "",
+      specialist: {
+        anesthetist_id: "",
+        specialist_title_id: "",
+        specialist_type_id: "",
+      },
       work_hours: {
         monday: {
           available: false,
