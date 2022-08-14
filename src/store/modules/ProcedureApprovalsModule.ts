@@ -50,8 +50,7 @@ export default class ProcedureApprovalsModule
   [Actions.PROCEDURE_APPROVAL.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      console.log(data.data);
-      ApiService.get("1/procedure-approvals")
+      ApiService.get("procedure-approvals")
         .then(({ data }) => {
           this.context.commit(Mutations.SET_PROCEDURE_APPROVAL.LIST, data.data);
           return data.data;
