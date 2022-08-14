@@ -120,7 +120,7 @@
                   v-show="formData.role_id == formInfo.specialist_role_id"
                   class="col-4"
                   label="Specialist Title"
-                  prop="specialist_title_id"
+                  prop="specialist.specialist_title_id"
                 >
                   <el-select
                     v-model="formData.specialist.specialist_title_id"
@@ -139,7 +139,7 @@
                   v-show="formData.role_id == formInfo.specialist_role_id"
                   class="col-4"
                   label="Specialist Type"
-                  prop="specialist_type_id"
+                  prop="specialist.specialist_type_id"
                 >
                   <el-select
                     v-model="formData.specialist.specialist_type_id"
@@ -158,7 +158,7 @@
                   v-show="formData.role_id == formInfo.specialist_role_id"
                   class="col-4"
                   label="Anaesthetist"
-                  prop="anesthetist_id"
+                  prop="specialist.anesthetist_id"
                 >
                   <el-select
                     v-model="formData.specialist.anesthetist_id"
@@ -440,27 +440,29 @@ export default defineComponent({
 
     const specialistRules = ref({
       ...commonRoles,
-      anesthetist_id: [
-        {
-          required: true,
-          message: "Anaesthetist cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      specialist_title_id: [
-        {
-          required: true,
-          message: "Title cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      specialist_type_id: [
-        {
-          required: true,
-          message: "Specialist Type cannot be blank.",
-          trigger: "change",
-        },
-      ],
+      specialist: {
+        anesthetist_id: [
+          {
+            required: true,
+            message: "Anaesthetist cannot be blank.",
+            trigger: "change",
+          },
+        ],
+        specialist_title_id: [
+          {
+            required: true,
+            message: "Title cannot be blank.",
+            trigger: "change",
+          },
+        ],
+        specialist_type_id: [
+          {
+            required: true,
+            message: "Specialist Type cannot be blank.",
+            trigger: "change",
+          },
+        ],
+      },
     });
 
     const currentStepIndex = ref(0);
