@@ -350,24 +350,14 @@ export default defineComponent({
         .dispatch(Actions.APT.CHECK_IN, aptData.value)
         .then(() => {
           store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
-          Swal.fire({
-            text: "Successfully Checked In!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          }).then(() => {
-            hideModal(checkInAptModalRef.value);
-            if (is_move === true) {
-              router.push({ name: "make-payment-pay" });
-              store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
-              DrawerComponent?.getInstance("booking-drawer")?.hide();
-            } else {
-              DrawerComponent?.getInstance("booking-drawer")?.hide();
-            }
-          });
+          hideModal(checkInAptModalRef.value);
+          if (is_move === true) {
+            router.push({ name: "make-payment-pay" });
+            store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
+            DrawerComponent?.getInstance("booking-drawer")?.hide();
+          } else {
+            DrawerComponent?.getInstance("booking-drawer")?.hide();
+          }
         })
         .catch(({ response }) => {
           console.log(response.data.error);
