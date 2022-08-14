@@ -13,7 +13,16 @@
             </h2>
           </div>
 
-          <el-form class="w-100" :rules="rules" :model="formData" ref="formRef">
+          <el-form
+            class="w-100"
+            :rules="
+              formData.role_id == formInfo.specialist_role_id
+                ? specialistRules
+                : rules
+            "
+            :model="formData"
+            ref="formRef"
+          >
             <div class="row">
               <InputWrapper class="col-6" label="First Name" prop="first_name">
                 <el-input
@@ -111,10 +120,10 @@
                   v-show="formData.role_id == formInfo.specialist_role_id"
                   class="col-4"
                   label="Specialist Title"
-                  prop="specialist_title_id"
+                  prop="specialist.specialist_title_id"
                 >
                   <el-select
-                    v-model="formData.specialist_title_id"
+                    v-model="formData.specialist.specialist_title_id"
                     class="w-100"
                   >
                     <el-option
@@ -130,10 +139,10 @@
                   v-show="formData.role_id == formInfo.specialist_role_id"
                   class="col-4"
                   label="Specialist Type"
-                  prop="specialist_type_id"
+                  prop="specialist.specialist_type_id"
                 >
                   <el-select
-                    v-model="formData.specialist_type_id"
+                    v-model="formData.specialist.specialist_type_id"
                     class="w-100"
                   >
                     <el-option
@@ -149,9 +158,12 @@
                   v-show="formData.role_id == formInfo.specialist_role_id"
                   class="col-4"
                   label="Anaesthetist"
-                  prop="anesthetist_id"
+                  prop="specialist.anesthetist_id"
                 >
-                  <el-select v-model="formData.anesthetist_id" class="w-100">
+                  <el-select
+                    v-model="formData.specialist.anesthetist_id"
+                    class="w-100"
+                  >
                     <el-option
                       v-for="item in anesthetistList"
                       :value="item.id"
@@ -323,9 +335,11 @@ export default defineComponent({
       address: "",
       role_id: "",
       type: "full-time",
-      anesthetist_id: "",
-      specialist_title_id: "",
-      specialist_type_id: "",
+      specialist: {
+        anesthetist_id: "",
+        specialist_title_id: "",
+        specialist_type_id: "",
+      },
       work_hours: {
         monday: {
           available: false,
@@ -386,7 +400,7 @@ export default defineComponent({
       },
     });
 
-    const rules = ref({
+    const commonRoles = {
       first_name: [
         {
           required: true,
@@ -420,13 +434,35 @@ export default defineComponent({
           trigger: ["blur", "change"],
         },
       ],
-      mobile_number: [
-        {
-          required: true,
-          message: "Mobile Number cannot be blank.",
-          trigger: "change",
-        },
-      ],
+    };
+
+    const rules = ref(commonRoles);
+
+    const specialistRules = ref({
+      ...commonRoles,
+      specialist: {
+        anesthetist_id: [
+          {
+            required: true,
+            message: "Anaesthetist cannot be blank.",
+            trigger: "change",
+          },
+        ],
+        specialist_title_id: [
+          {
+            required: true,
+            message: "Title cannot be blank.",
+            trigger: "change",
+          },
+        ],
+        specialist_type_id: [
+          {
+            required: true,
+            message: "Specialist Type cannot be blank.",
+            trigger: "change",
+          },
+        ],
+      },
     });
 
     const currentStepIndex = ref(0);
@@ -470,9 +506,17 @@ export default defineComponent({
 
       employeeList.value.forEach((item) => {
         if (item.id == id) {
-          formData.value = item;
+          Object.assign(formData.value, item);
 
           formData.value.work_hours = JSON.parse(item.work_hours);
+
+          if (item.specialist == undefined) {
+            formData.value.specialist = {
+              anesthetist_id: "",
+              specialist_title_id: "",
+              specialist_type_id: "",
+            };
+          }
         }
       });
 
@@ -539,6 +583,7 @@ export default defineComponent({
       formData,
       formInfo,
       rules,
+      specialistRules,
       submit,
       weekList,
       formRef,
