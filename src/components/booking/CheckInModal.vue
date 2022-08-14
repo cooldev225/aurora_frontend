@@ -222,6 +222,7 @@
                       <el-form-item prop="collecting_person_alternate_contact">
                         <el-input
                           type="text"
+                          v-mask="'0#-####-####'"
                           v-model="aptData.collecting_person_alternate_contact"
                           placeholder="Enter Phone Number"
                         />
@@ -288,8 +289,14 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
+import { mask } from "vue-the-mask";
+import { validatePhone } from "@/helpers/helpers.js";
+
 export default defineComponent({
   name: "create-apt-modal",
+  directives: {
+    mask,
+  },
   components: {},
   setup() {
     const store = useStore();
@@ -343,24 +350,14 @@ export default defineComponent({
         .dispatch(Actions.APT.CHECK_IN, aptData.value)
         .then(() => {
           store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
-          Swal.fire({
-            text: "Successfully Checked In!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          }).then(() => {
-            hideModal(checkInAptModalRef.value);
-            if (is_move === true) {
-              router.push({ name: "make-payment-pay" });
-              store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
-              DrawerComponent?.getInstance("booking-drawer")?.hide();
-            } else {
-              DrawerComponent?.getInstance("booking-drawer")?.hide();
-            }
-          });
+          hideModal(checkInAptModalRef.value);
+          if (is_move === true) {
+            router.push({ name: "make-payment-pay" });
+            store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
+            DrawerComponent?.getInstance("booking-drawer")?.hide();
+          } else {
+            DrawerComponent?.getInstance("booking-drawer")?.hide();
+          }
         })
         .catch(({ response }) => {
           console.log(response.data.error);

@@ -11,7 +11,7 @@
     <span :class="'svg-icon svg-icon-2hx svg-icon-' + color">
       <inline-svg :src="iconPath" />
     </span>
-    <h5 class="mx-2 my-auto">{{ text }}</h5>
+    <h5 class="mx-2 my-auto fw-light">{{ text }}</h5>
   </div>
 </template>
 <script lang="ts">

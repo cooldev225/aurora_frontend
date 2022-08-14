@@ -57,11 +57,12 @@
                 required
                 :class="colString"
                 label="Reception number"
-                prop="email"
+                prop="phone_number"
               >
                 <el-input
-                  v-model="formData.phone_number"
                   type="text"
+                  v-mask="'0#-####-####'"
+                  v-model="formData.phone_number"
                   placeholder="Phone Number"
                 />
               </InputWrapper>
@@ -72,8 +73,9 @@
                 prop="fax_number"
               >
                 <el-input
-                  v-model="formData.fax_number"
                   type="text"
+                  v-mask="'0#-####-####'"
+                  v-model="formData.fax_number"
                   placeholder="Fax Number"
                 />
               </InputWrapper>
@@ -167,8 +169,15 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 import { countryList, timeZoneList } from "@/core/data/country";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
+
+import { mask } from "vue-the-mask";
+import { validatePhone } from "@/helpers/helpers.js";
+
 export default defineComponent({
   name: "create-clinic",
+  directives: {
+    mask,
+  },
   components: { InputWrapper },
   data: function () {
     return {
@@ -218,6 +227,7 @@ export default defineComponent({
           message: "Phone Number cannot be blank.",
           trigger: "change",
         },
+        { validator: validatePhone, trigger: "blur" },
       ],
       hospital_provider_number: [
         {

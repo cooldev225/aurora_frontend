@@ -1,10 +1,7 @@
 <template>
   <div
     class="d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed"
-    :style="{
-      background:
-        'url(media/bg/login-bg.jpg) no-repeat center center / cover !important',
-    }"
+    style="background: radial-gradient(#3e79a0, #41ada9)"
   >
     <!--begin::Content-->
     <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">

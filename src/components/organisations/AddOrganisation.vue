@@ -1,13 +1,6 @@
 <template>
   <!--begin::Stepper-->
   <div class="card">
-    <div class="card-header">
-      <div class="card-title">
-        <!--begin::Search-->
-        <span>Create Organisation</span>
-        <!--end::Search-->
-      </div>
-    </div>
     <div class="card-body">
       <el-form
         @submit.prevent="submit()"
@@ -150,7 +143,8 @@
 
                   <el-form-item prop="mobile_number">
                     <el-input
-                      type="tel"
+                      type="text"
+                      v-mask="'0#-####-####'"
                       v-model="formData.mobile_number"
                       placeholder=""
                     />
@@ -308,9 +302,15 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 
+import { mask } from "vue-the-mask";
+import { validatePhone } from "@/helpers/helpers.js";
+
 export default defineComponent({
   name: "add-org",
   components: {},
+  directives: {
+    mask,
+  },
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -387,6 +387,14 @@ export default defineComponent({
           message: "Username cannot be blank.",
           trigger: "change",
         },
+      ],
+      mobile_number: [
+        {
+          required: true,
+          message: "Mobile Number cannot be blank.",
+          trigger: "change",
+        },
+        { validator: validatePhone, trigger: "blur" },
       ],
       email: [
         {

@@ -390,7 +390,7 @@ class DrawerComponent {
     DrawerComponent.handleDismiss()
   }
 
-  public static reinitialization = () => {
+  public static reInitialization = () => {
     DrawerComponent.createInstances('[data-kt-drawer="true"]')
     DrawerComponent.hideAll()
     DrawerComponent.updateAll()

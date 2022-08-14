@@ -57,7 +57,7 @@
             :name="item.created_at"
             :value="item"
             :id="item.id"
-            v-model="document"
+            v-model="selectedDocument"
           />
           <label
             class="btn btn-outline btn-outline-dashed btn-outline-default p-3 d-flex align-items-center mb-5"
@@ -94,21 +94,42 @@
       </div>
       <div class="col-md-8 d-flex flex-column">
         <div class="d-flex flex-row justify-content-end align-items-end">
-          <IconButton
-            iconSRC="media/icons/duotune/general/gen060.svg"
-            label="Print"
-          />
+          <button
+            :data-kt-indicator="printLoading ? 'on' : null"
+            class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
+            v-print="printObj"
+            type="submit"
+          >
+            <span v-if="!printLoading" class="indicator-label">
+              <span class="svg-icon svg-icon-1">
+                <inline-svg src="media/icons/duotune/general/gen060.svg" />
+              </span>
+              Print
+            </span>
+            <span v-if="printLoading" class="indicator-progress pb-1">
+              <span
+                class="spinner-border spinner-border-sm svg-icon svg-icon-1"
+              ></span>
+              Processing
+            </span>
+          </button>
           <IconButton
             iconSRC="media/icons/duotune/communication/com011.svg"
             label="Email"
+            @click="handleSendEmail"
           />
         </div>
-        <div class="h-100 scroll border">
-          <img v-if="document" :src="document.file_path" alt="document" />
+        <div class="h-100 scroll border" id="documentField">
+          <img
+            v-if="selectedDocument"
+            :src="selectedDocument.file_path"
+            alt="document"
+          />
         </div>
       </div>
     </div>
   </div>
+  <SendDocumentViaEmail></SendDocumentViaEmail>
   <!--end::details View-->
 </template>
 
@@ -119,6 +140,8 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import moment from "moment";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
+import SendDocumentViaEmail from "./SendDocumentViaEmail.vue";
+import { Modal } from "bootstrap";
 // import { VuePdf, createLoadingTask } from "vue3-pdfjs/esm";
 // import { VuePdfPropsType } from "vue3-pdfjs/components/vue-pdf/vue-pdf-props";
 // import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
@@ -127,6 +150,7 @@ export default defineComponent({
   name: "patient-documents",
   components: {
     IconButton,
+    SendDocumentViaEmail,
   },
   setup() {
     const store = useStore();
@@ -134,10 +158,27 @@ export default defineComponent({
     const selectedPatient = computed(() => store.getters.selectedPatient);
     const documentList = ref(null);
     const _documentList = computed(() => store.getters.getPatientDocumentList);
-    const document = ref(null);
+    const selectedDocument = ref<any>(null);
     const documentType = ref(null);
     const pdfSrc = ref(null);
-
+    const printLoading = ref<boolean>(false);
+    const printObj = ref({
+      id: "documentField",
+      extraCss:
+        "https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.compat.css, https://cdn.bootcdn.net/ajax/libs/hover.css/2.3.1/css/hover-min.css",
+      extraHead: '<meta http-equiv="Content-Language" content="en-us"/>',
+      beforeOpenCallback() {
+        printLoading.value = true;
+        console.log("Before");
+      },
+      openCallback() {
+        printLoading.value = false;
+        console.log("Open");
+      },
+      closeCallback() {
+        console.log("Close");
+      },
+    });
     onMounted(() => {
       store.dispatch(Actions.PATIENTS.DOCUMENT.LIST, selectedPatient.value.id);
       setCurrentPageBreadcrumbs("Documents", ["Patients"]);
@@ -157,16 +198,26 @@ export default defineComponent({
       }
     });
 
-    watch(document, () => {
-      pdfSrc.value = document.value;
+    watch(selectedDocument, () => {
+      pdfSrc.value = selectedDocument.value;
+      // printObj.value.url = selectedDocument.value["file_path"];
+      console.log(printObj.value);
     });
+
+    const handleSendEmail = () => {
+      const modal = new Modal(document.getElementById("modal_send_email"));
+      modal.show();
+    };
 
     return {
       formData,
       documentList,
-      document,
+      selectedDocument,
       documentType,
       moment,
+      printObj,
+      printLoading,
+      handleSendEmail,
     };
   },
 });

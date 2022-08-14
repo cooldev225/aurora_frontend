@@ -11,7 +11,7 @@
 
 // interface IDialerQueries {
 //   componentName: string;
-//   instanseQuery: string;
+//   instanceQuery: string;
 //   attrQuery: string;
 //   incQuery: string;
 //   decQuery: string;
@@ -27,7 +27,7 @@
 
 // const defaultDialerQueires: IDialerQueries = {
 //   componentName: "dialer",
-//   instanseQuery: '[data-kt-dialer="true"]',
+//   instanceQuery: '[data-kt-dialer="true"]',
 //   attrQuery: "data-kt-dialer-",
 //   incQuery: '[data-kt-dialer-control="increase"]',
 //   decQuery: '[data-kt-dialer-control="decrease"]',
@@ -218,7 +218,7 @@
 //   };
 
 //   public static createInstances = (
-//     selector: string = defaultDialerQueires.instanseQuery,
+//     selector: string = defaultDialerQueires.instanceQuery,
 //     options: IDialerOptions = defaultDialerOptions,
 //     queries: IDialerQueries = defaultDialerQueires
 //   ) => {
@@ -232,8 +232,8 @@
 //     });
 //   };
 
-//   public static createInsance = (
-//     selector: string = defaultDialerQueires.instanseQuery,
+//   public static createInstance = (
+//     selector: string = defaultDialerQueires.instanceQuery,
 //     options: IDialerOptions = defaultDialerOptions,
 //     queries: IDialerQueries = defaultDialerQueires
 //   ): DialerComponent | undefined => {
@@ -250,13 +250,13 @@
 //   };
 
 //   public static bootstrap = (
-//     selector: string = defaultDialerQueires.instanseQuery
+//     selector: string = defaultDialerQueires.instanceQuery
 //   ) => {
 //     DialerComponent.createInstances(selector);
 //   };
 
-//   public static reinitialization = (
-//     selector: string = defaultDialerQueires.instanseQuery
+//   public static reInitialization = (
+//     selector: string = defaultDialerQueires.instanceQuery
 //   ) => {
 //     DialerComponent.createInstances(selector);
 //   };

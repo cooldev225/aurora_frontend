@@ -1,24 +1,24 @@
 <template>
   <div
     class="modal fade"
-    id="modal_collecting_person"
+    id="modal_send_email"
     tabindex="-1"
     aria-hidden="true"
-    ref="collectingPersonModalRef"
+    ref="sendEmailModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_collecting_person_header">
+        <div class="modal-header" id="kt_modal_send_email_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Update Collecting Person</h2>
+          <h2 class="fw-bolder">Send via Email</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
           <div
-            id="kt_modal_collecting_person_close"
+            id="kt_modal_send_email_close"
             data-bs-dismiss="modal"
             class="btn btn-icon btn-sm btn-active-icon-primary"
           >
@@ -30,77 +30,49 @@
         </div>
         <!--end::Modal header-->
         <!--begin::Form-->
-        <el-form
-          @submit.prevent="submit()"
-          :model="formData"
-          :rules="rules"
-          ref="formRef"
-        >
+        <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
           <!--begin::Modal body-->
           <div class="modal-body py-10 px-lg-17">
             <!--begin::Scroll-->
             <div
               class="scroll-y me-n7 pe-7"
-              id="kt_modal_collecting_person_scroll"
+              id="kt_modal_send_email_scroll"
               data-kt-scroll="true"
               data-kt-scroll-activate="{default: false, lg: true}"
               data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#kt_modal_collecting_person_header"
-              data-kt-scroll-wrappers="#kt_modal_collecting_person_scroll"
+              data-kt-scroll-dependencies="#kt_modal_send_email_header"
+              data-kt-scroll-wrappers="#kt_modal_send_email_scroll"
               data-kt-scroll-offset="300px"
             >
               <!--begin::Input group-->
               <div class="fv-row mb-7">
                 <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Name</label>
+                <label class="required fs-6 fw-bold mb-2">To</label>
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="collecting_person_name">
-                  <el-input
-                    v-model="formData.collecting_person_name"
-                    type="text"
-                    placeholder="Enter Name"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Phone</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="collecting_person_phone">
-                  <el-input
-                    type="text"
-                    v-mask="'0#-####-####'"
-                    v-model="formData.collecting_person_phone"
-                    placeholder="Enter Phone"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2"
-                  >Alternate Contact</label
-                >
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="collecting_person_alternate_contact">
-                  <el-input
-                    v-model="formData.collecting_person_alternate_contact"
-                    type="text"
-                    placeholder="Enter Alternate Contact"
-                  />
+                <el-form-item prop="email">
+                  <el-select
+                    class="mt-10 w-100"
+                    placeholder="To:"
+                    v-model="formData.to_user_ids"
+                    filterable
+                    multiple
+                  >
+                    <el-option
+                      v-for="item in sendableUsers"
+                      :value="item.id"
+                      :label="
+                        item.first_name +
+                        ' ' +
+                        item.last_name +
+                        ' <' +
+                        item.username +
+                        '>'
+                      "
+                      :key="item.id"
+                    />
+                  </el-select>
                 </el-form-item>
                 <!--end::Input-->
               </div>
@@ -116,7 +88,7 @@
             <button
               type="reset"
               data-bs-dismiss="modal"
-              id="kt_modal_collecting_person_cancel"
+              id="kt_modal_send_email_cancel"
               class="btn btn-light me-3"
             >
               Cancel
@@ -129,7 +101,7 @@
               class="btn btn-lg btn-primary"
               type="submit"
             >
-              <span v-if="!loading" class="indicator-label"> Update </span>
+              <span v-if="!loading" class="indicator-label"> Send </span>
               <span v-if="loading" class="indicator-progress">
                 Please wait...
                 <span
@@ -148,57 +120,49 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, watch } from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
-import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
-
 export default defineComponent({
-  name: "update-collecting-person-modal",
-  directives: {
-    mask,
-  },
+  name: "create-letter-template-modal",
   components: {},
-  props: {
-    selectedApt: { type: Object, required: true },
-  },
-  setup(props) {
+  props: {},
+  setup() {
     const store = useStore();
     const formRef = ref(null);
-    const collectingPersonModalRef = ref(null);
+    const sendEmailModalRef = ref(null);
     const loading = ref(false);
-    const aptData = computed(() => props.selectedApt);
+    const letter_template = ref("");
+    // const patientId = computed(() => props.patientId);
+    // const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const sendableUsers = computed(() => store.getters.getUserList);
 
     const formData = ref({
-      collecting_person_name: "",
-      collecting_person_phone: "",
-      collecting_person_alternate_contact: "",
+      email: [],
     });
 
     const rules = ref({
-      collecting_person_name: [
+      letter_template: [
         {
           required: true,
-          message: "Name cannot be blank",
+          message: "This field cannot be blank",
           trigger: "change",
         },
       ],
-      collecting_person_phone: [
+      referral_doctor: [
         {
           required: true,
-          message: "Phone cannnot be blank",
-          trigger: "change",
+          message: "This field cannot be blank",
+          trigger: "blur",
         },
-        { validator: validatePhone, trigger: "blur" },
       ],
-      collecting_person_alternate_contact: [
+      title: [
         {
           required: true,
-          message: "Alternate contact cannot be blank",
+          message: "This field cannot be blank",
           trigger: "change",
         },
       ],
@@ -213,14 +177,13 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.APT.UPDATE, {
-              id: aptData.value.id,
+            .dispatch(Actions.LETTER.CREATE, {
               ...formData.value,
             })
             .then(() => {
               loading.value = false;
               Swal.fire({
-                text: "Successfully Updated!",
+                text: "Successfully Created!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -228,8 +191,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
-                hideModal(collectingPersonModalRef.value);
+                hideModal(sendEmailModalRef.value);
               });
             })
             .catch(({ response }) => {
@@ -243,17 +205,20 @@ export default defineComponent({
       });
     };
 
-    watch(aptData, () => {
-      for (let key in formData.value) formData.value[key] = aptData.value[key];
+    onMounted(() => {
+      store.dispatch(Actions.USER_LIST);
+      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
     });
 
     return {
       formData,
       rules,
-      submit,
       formRef,
       loading,
-      collectingPersonModalRef,
+      sendableUsers,
+      sendEmailModalRef,
+      letter_template,
+      submit,
     };
   },
 });

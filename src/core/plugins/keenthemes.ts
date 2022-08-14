@@ -26,19 +26,19 @@ const initializeComponents = () => {
  */
 const reinitializeComponents = () => {
   setTimeout(() => {
-    ToggleComponent.reinitialization();
+    ToggleComponent.reInitialization();
     StickyComponent.reInitialization();
-    MenuComponent.reinitialization();
+    MenuComponent.reInitialization();
     reinitializeScrollComponent().then(() => {
       ScrollComponent.updateAll();
     });
-    DrawerComponent.reinitialization();
-    SwapperComponent.reinitialization();
+    DrawerComponent.reInitialization();
+    SwapperComponent.reInitialization();
   }, 0);
 };
 
 const reinitializeScrollComponent = async () => {
-  await ScrollComponent.reinitialization();
+  await ScrollComponent.reInitialization();
 };
 
 export {
