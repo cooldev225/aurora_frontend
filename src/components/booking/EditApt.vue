@@ -809,7 +809,7 @@
 
                             <InputWrapper
                               class="col-6"
-                              label="Referral Duration"
+                              label="Referral Date"
                               prop="referral_date"
                             >
                               <el-date-picker
@@ -1038,14 +1038,12 @@ export default defineComponent({
       ],
       fund_excess: [
         {
-          type: "number",
           message: "Fund excess must be a number",
         },
       ],
       medicare_number: [
         {
           required: false,
-          type: "number",
           message: "Medicare number must be a number",
           trigger: "blur",
         },
@@ -1053,7 +1051,6 @@ export default defineComponent({
       medicare_reference_number: [
         {
           required: false,
-          type: "number",
           message: "Medicare reference number must be a number",
           trigger: "blur",
         },

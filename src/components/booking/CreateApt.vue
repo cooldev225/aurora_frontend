@@ -171,6 +171,17 @@
                         placeholder="Enter appointment notes"
                       />
                     </InputWrapper>
+                    <el-form-item class="px-6">
+                      <el-checkbox
+                        type="checkbox"
+                        v-model="aptInfoData.send_forms"
+                        :label="
+                          appointmentType === 'procedure'
+                            ? 'Send Pre-admission form with appointment confirmation?'
+                            : 'Send Patient form with appointment confirmation?'
+                        "
+                      />
+                    </el-form-item>
 
                     <el-divider />
                     <div class="card-info">
@@ -987,7 +998,7 @@
 
                             <InputWrapper
                               class="col-6"
-                              label="Referral Duration"
+                              label="Referral Date"
                               prop="referral_date"
                             >
                               <el-date-picker
@@ -1117,9 +1128,9 @@ export default defineComponent({
     const router = useRouter();
 
     const aptInfoData = ref({
-      reference_number: 22100349,
       clinic_name: "",
       clinic_id: "",
+      send_forms: true,
       date: new Date(),
       arrival_time: "",
       time_slot: ["2022-06-20T09:00", "2022-06-20T17:00"],
@@ -1302,6 +1313,7 @@ export default defineComponent({
     const clinic = ref([]);
     const rooms = ref([]);
     const _appointment = ref("");
+    const appointmentType = ref("");
     const _specialist = ref("");
     const _start_time = ref("");
     const _end_time = ref("");
@@ -1377,6 +1389,7 @@ export default defineComponent({
         apt_type.value = "";
       } else {
         _appointment_name.value = _selected.name;
+        appointmentType.value = _selected.type;
         _appointment_time.value = Number(
           appointment_length[_selected.appointment_time] *
             appointment_time.value
@@ -1809,6 +1822,7 @@ export default defineComponent({
       _start_time,
       _end_time,
       _appointment_name,
+      appointmentType,
       _specialist_name,
       submit,
       formRef_1,
