@@ -56,6 +56,44 @@
                 </pdf>
               </div> -->
 
+              <div class="fv-row row cener-row">
+                <div class="col-6 mt-2">
+                  <label class="fs-6 fw-bold">Patient Name: </label>
+                  <span class="text-black fw-bold"
+                    >{{ preAdmissionData.first_name }}
+                    {{ preAdmissionData.last_name }}</span
+                  >
+                </div>
+                <div class="col-6 text-end">
+                  <el-upload
+                    action="#"
+                    ref="upload"
+                    :limit="1"
+                    :on-change="handleUploadChange"
+                    :on-remove="handleUploadRemove"
+                    :auto-upload="false"
+                    accept="pdf/*"
+                  >
+                    <template #trigger>
+                      <el-button class="btn btn-sm btn-info" type="primary">
+                        <span class="indicator-label">
+                          Upload New Pre Admission
+                        </span>
+                      </el-button>
+                    </template>
+
+                    <el-button
+                      v-if="!uploadDisabled"
+                      class="btn btn-sm btn-info ms-3"
+                      type="success"
+                      @click="handleUploadSubmit"
+                    >
+                      <span class="indicator-label">Upload</span>
+                    </el-button>
+                  </el-upload>
+                </div>
+              </div>
+
               <!--begin::Input group-->
               <div class="fv-row">
                 <!--begin::Label-->
@@ -159,6 +197,8 @@ export default defineComponent({
     const formRef = ref(null);
     const viewPreAdmissionModalRef = ref(null);
     const loading = ref(false);
+    const uploadDisabled = ref(true);
+    const uploadData = new FormData();
 
     const preAdmissionData = ref({
       notes: "",
@@ -173,6 +213,44 @@ export default defineComponent({
         },
       ],
     });
+
+    const handleUploadSubmit = () => {
+      uploadData.append(
+        "appointment_id",
+        preAdmissionData.value.appointment_id
+      );
+
+      store
+        .dispatch(Actions.PROCEDURE_APPROVAL.UPLOAD, uploadData)
+        .then(() => {
+          loading.value = false;
+          store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
+          Swal.fire({
+            text: "Successfully Uploaded!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "OK",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          }).then(() => {
+            hideModal(viewPreAdmissionModalRef.value);
+          });
+        })
+        .catch(({ response }) => {
+          loading.value = false;
+          console.log(response.data.error);
+        });
+    };
+
+    const handleUploadChange = (file) => {
+      uploadDisabled.value = false;
+      uploadData.append("file", file.raw);
+    };
+
+    const handleUploadRemove = () => {
+      uploadDisabled.value = true;
+    };
 
     const handleApproved = () => {
       if (!formRef.value) {
@@ -230,7 +308,6 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          debugger;
           store
             .dispatch(Actions.PROCEDURE_APPROVAL.UPDATE, updateData)
             .then(() => {
@@ -311,9 +388,13 @@ export default defineComponent({
       formRef,
       loading,
       viewPreAdmissionModalRef,
+      handleUploadSubmit,
+      handleUploadChange,
+      handleUploadRemove,
       handleApproved,
       handleNotApproved,
       handleRequiresConsult,
+      uploadDisabled,
       // VuePdf,
     };
   },
