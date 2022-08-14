@@ -145,16 +145,15 @@
                           :key="item.id"
                         />
                       </el-select>
-                      <div class="fv-row" v-if="overlapping_cnt >= 1">
-                        <!--begin::Label-->
-                        <label class="fs-7 fw-bold">
-                          WARNING: this appointment will overlap with an
-                          upcoming appointment
-                        </label>
-                        <!--end::Label-->
-                      </div>
                     </InputWrapper>
-
+                    <div class="px-6" v-if="overlapping_cnt >= 1">
+                      <AlertBadge
+                        text="This appointment will overlap with an
+                          upcoming appointment"
+                        color="warning"
+                        iconPath="media/icons/duotune/arrows/arr015.svg"
+                      />
+                    </div>
                     <InputWrapper label="Room" prop="room_id">
                       <el-select
                         class="w-100"
@@ -906,13 +905,20 @@ import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
+import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 
 export default defineComponent({
   name: "create-apt-modal",
   directives: {
     mask,
   },
-  components: { AppointmentHistory, StepperNavItem, InfoSection, InputWrapper },
+  components: {
+    AppointmentHistory,
+    StepperNavItem,
+    InfoSection,
+    InputWrapper,
+    AlertBadge,
+  },
   setup() {
     const store = useStore();
     const formRef_1 = ref(null);
