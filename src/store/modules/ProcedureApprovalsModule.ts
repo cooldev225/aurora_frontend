@@ -50,7 +50,8 @@ export default class ProcedureApprovalsModule
   [Actions.PROCEDURE_APPROVAL.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("procedure-approvals")
+      console.log(data.data);
+      ApiService.get("1/procedure-approvals")
         .then(({ data }) => {
           this.context.commit(Mutations.SET_PROCEDURE_APPROVAL.LIST, data.data);
           return data.data;
@@ -68,8 +69,8 @@ export default class ProcedureApprovalsModule
   [Actions.PROCEDURE_APPROVAL.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      debugger;
-      ApiService.post("procedure-approvals/update_status", item)
+      console.log(item);
+      ApiService.put(item.appointment_id + "/procedure-approvals", item)
         .then(({ data }) => {
           return data.data;
         })
@@ -86,7 +87,7 @@ export default class ProcedureApprovalsModule
   [Actions.PROCEDURE_APPROVAL.UPLOAD](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("procedure-approvals/upload", item)
+      ApiService.post(item.appointment_id + "/pre-admission/upload", item)
         .then(({ data }) => {
           return data.data;
         })
