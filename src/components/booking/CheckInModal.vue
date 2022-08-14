@@ -286,11 +286,10 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { hideModal } from "@/core/helpers/dom";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
+// import { validatePhone } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "create-apt-modal",

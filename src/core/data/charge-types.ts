@@ -14,7 +14,7 @@ export const chargeTypes: Array<IChargeTypes> = [
   },
   {
     value: "private-health-excess-0",
-    label: "Private Health Insureance with $0 excess",
+    label: "Private Health Insurance with $0 excess",
   },
   {
     value: "private-health-pension",
@@ -35,7 +35,7 @@ export const chargeTypes: Array<IChargeTypes> = [
   { value: "work-cover", label: "Work Cover" },
   {
     value: "transport-accident",
-    label: "Transport Accident Commision",
+    label: "Transport Accident Commission",
   },
 ];
 
