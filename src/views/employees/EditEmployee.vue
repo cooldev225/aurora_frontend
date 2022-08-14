@@ -13,7 +13,16 @@
             </h2>
           </div>
 
-          <el-form class="w-100" :rules="rules" :model="formData" ref="formRef">
+          <el-form
+            class="w-100"
+            :rules="
+              formData.role_id == formInfo.specialist_role_id
+                ? specialistRules
+                : rules
+            "
+            :model="formData"
+            ref="formRef"
+          >
             <div class="row">
               <InputWrapper class="col-6" label="First Name" prop="first_name">
                 <el-input
@@ -391,7 +400,7 @@ export default defineComponent({
       },
     });
 
-    const rules = ref({
+    const commonRoles = {
       first_name: [
         {
           required: true,
@@ -425,10 +434,30 @@ export default defineComponent({
           trigger: ["blur", "change"],
         },
       ],
-      mobile_number: [
+    };
+
+    const rules = ref(commonRoles);
+
+    const specialistRules = ref({
+      ...commonRoles,
+      anesthetist_id: [
         {
           required: true,
-          message: "Mobile Number cannot be blank.",
+          message: "Anaesthetist cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      specialist_title_id: [
+        {
+          required: true,
+          message: "Title cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      specialist_type_id: [
+        {
+          required: true,
+          message: "Specialist Type cannot be blank.",
           trigger: "change",
         },
       ],
@@ -475,9 +504,17 @@ export default defineComponent({
 
       employeeList.value.forEach((item) => {
         if (item.id == id) {
-          formData.value = item;
+          Object.assign(formData.value, item);
 
           formData.value.work_hours = JSON.parse(item.work_hours);
+
+          if (item.specialist == undefined) {
+            formData.value.specialist = {
+              anesthetist_id: "",
+              specialist_title_id: "",
+              specialist_type_id: "",
+            };
+          }
         }
       });
 
@@ -544,6 +581,7 @@ export default defineComponent({
       formData,
       formInfo,
       rules,
+      specialistRules,
       submit,
       weekList,
       formRef,
