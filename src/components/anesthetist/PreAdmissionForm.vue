@@ -258,7 +258,7 @@ export default defineComponent({
       }
 
       const updateData = {
-        appointment_id: preAdmissionData.value.appointment_id,
+        appointment_id: preAdmissionData.value.id,
         notes: preAdmissionData.value.notes,
         procedure_approval_status: "APPROVED",
       };
@@ -300,7 +300,7 @@ export default defineComponent({
       }
 
       const updateData = {
-        appointment_id: preAdmissionData.value.appointment_id,
+        appointment_id: preAdmissionData.value.id,
         notes: preAdmissionData.value.notes,
         procedure_approval_status: "NOT_APPROVED",
       };
