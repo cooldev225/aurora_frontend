@@ -4,7 +4,54 @@
       <div class="card border border-dashed border-primary w-100">
         <div class="card-body">
           <div class="card-info">
-            <el-form class="w-100" ref="formRef_1">
+            <div class="card-toolbar mb-4 me-4 d-flex flex-row-reverse">
+              <!--begin::Toolbar-->
+              <div
+                class="d-flex justify-content-end"
+                data-kt-subscription-table-toolbar="base"
+              >
+                <!--begin::Switch-->
+                <label
+                  class="form-check form-switch form-check-custom form-check-solid"
+                >
+                  <!--begin::Label-->
+                  <span
+                    class="form-check-label fw-bold text-muted"
+                    for="chkShowType"
+                  >
+                    Show Unassed Only
+                  </span>
+                  <!--end::Label-->
+
+                  <!--begin::Input-->
+                  <input
+                    class="form-check-input ms-3"
+                    name="show_type"
+                    type="checkbox"
+                    value="1"
+                    id="chkShowType"
+                    checked="checked"
+                    v-model="showAll"
+                    @change="searchPatient"
+                  />
+                  <!--end::Input-->
+
+                  <!--begin::Label-->
+                  <span
+                    class="form-check-label fw-bold text-muted"
+                    for="chkShowType"
+                  >
+                    Show All
+                  </span>
+                  <!--end::Label-->
+                </label>
+                <!--end::Switch-->
+              </div>
+              <!--end::Toolbar-->
+            </div>
+            <!--end::Card toolbar-->
+
+            <el-form class="w-100 flex-row" ref="formRef_1">
               <!--begin::Row-->
               <div class="row g-8">
                 <!--begin::Col-->
@@ -40,14 +87,14 @@
                     class="d-flex align-items-center justify-content-end mt-5"
                   >
                     <button
-                      type="submit"
+                      type="button"
                       class="btn btn-primary me-5 w-50"
                       @click="searchPatient"
                     >
                       SEARCH
                     </button>
                     <button
-                      type="submit"
+                      type="button"
                       class="btn btn-light-primary w-50"
                       @click="clearFilters"
                     >
@@ -74,7 +121,7 @@
       >
         <template v-slot:cell-patient_name="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
-            {{ item.first_name }} {{ item.last_name }}
+            {{ item.patient_name.full }}
           </span>
         </template>
 
@@ -129,7 +176,7 @@ import { Modal } from "bootstrap";
 import PreAdmissionFormModal from "@/components/anesthetist/PreAdmissionForm.vue";
 
 export default defineComponent({
-  name: "patients-list",
+  name: "procedure-approvals-list",
 
   components: {
     Datatable,
@@ -176,13 +223,16 @@ export default defineComponent({
         searchable: true,
       },
     ]);
-    const patientData = ref([]);
+    const procedureApprovalsData = ref([]);
     const tableData = ref([]);
-    const list = computed(() => store.getters.getProcedureApprovalList);
+    const procedureApprovalsList = computed(
+      () => store.getters.getProcedureApprovalList
+    );
     const loading = ref(true);
     const filterFirstName = ref("");
     const filterLastName = ref("");
     const tableKey = ref(0);
+    const showAll = ref(false);
 
     const renderTable = () => tableKey.value++;
 
@@ -195,22 +245,26 @@ export default defineComponent({
     };
 
     const searchPatient = () => {
-      tableData.value = patientData.value.filter((data) => {
+      tableData.value = procedureApprovalsData.value.filter((data) => {
         let result = true;
         if (filterFirstName.value.trim()) {
           result =
             result &&
-            data.first_name
+            data.patient_name.first
               .toLowerCase()
               .indexOf(filterFirstName.value.toLowerCase()) !== -1;
         }
         if (filterLastName.value.trim()) {
           result =
             result &&
-            data.last_name
+            data.patient_name.last
               .toLowerCase()
               .indexOf(filterLastName.value.toLowerCase()) !== -1;
         }
+        if (!showAll.value) {
+          result = result && data.procedure_approval_status === "NOT_ACCESSED";
+        }
+
         return result;
       });
       renderTable();
@@ -219,15 +273,13 @@ export default defineComponent({
     const clearFilters = () => {
       filterFirstName.value = "";
       filterLastName.value = "";
-      tableData.value = patientData.value;
-      renderTable();
+      searchPatient();
       return false;
     };
 
-    watch(list, () => {
-      patientData.value = list.value;
-      tableData.value = patientData.value;
-      renderTable();
+    watch(procedureApprovalsList, () => {
+      procedureApprovalsData.value = procedureApprovalsList.value;
+      searchPatient();
     });
 
     onMounted(() => {
@@ -245,6 +297,7 @@ export default defineComponent({
       tableKey,
       searchPatient,
       clearFilters,
+      showAll,
     };
   },
 });
