@@ -121,7 +121,7 @@
       >
         <template v-slot:cell-patient_name="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
-            {{ item.patient_name }}
+            {{ item.patient_name.full }}
           </span>
         </template>
 
@@ -250,14 +250,14 @@ export default defineComponent({
         if (filterFirstName.value.trim()) {
           result =
             result &&
-            data.first_name
+            data.patient_name.first
               .toLowerCase()
               .indexOf(filterFirstName.value.toLowerCase()) !== -1;
         }
         if (filterLastName.value.trim()) {
           result =
             result &&
-            data.last_name
+            data.patient_name.last
               .toLowerCase()
               .indexOf(filterLastName.value.toLowerCase()) !== -1;
         }
