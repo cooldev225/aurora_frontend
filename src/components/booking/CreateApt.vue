@@ -52,39 +52,39 @@
                   dataStepperElement="nav"
                   stepperNumber="1"
                   stepperTitle="Appointment"
-                  stepperDesc="Setup Appointment Info"
+                  stepperDescription="Setup Appointment Info"
                 />
 
                 <StepperNavItem
                   dataStepperElement="nav"
                   stepperNumber="2"
                   stepperTitle="Patient Info"
-                  stepperDesc="Edit Patient Details"
+                  stepperDescription="Edit Patient Details"
                 />
 
                 <StepperNavItem
                   dataStepperElement="nav"
                   stepperNumber="3"
                   stepperTitle="Patient Billing"
-                  stepperDesc="Edit Patient Billing Details"
+                  stepperDescription="Edit Patient Billing Details"
                 />
 
                 <StepperNavItem
                   dataStepperElement="nav"
                   stepperNumber="4"
                   stepperTitle="Other Info"
-                  stepperDesc="Referral information and Appointment history"
+                  stepperDescription="Referral information and Appointment history"
                 />
                 <!--begin::Appointment Overview-->
                 <div
                   class="p-4 mb-4 card border border-dashed border-primary d-flex flex-column gap-2"
                 >
                   <InfoSection heading="Appointment Type">{{
-                    _appointment_name
+                    appointment_name
                   }}</InfoSection>
 
                   <InfoSection heading="Specialist">{{
-                    _specialist_name
+                    specialist_name
                   }}</InfoSection>
 
                   <InfoSection heading="Clinic">{{
@@ -92,7 +92,7 @@
                   }}</InfoSection>
 
                   <InfoSection heading="Time">
-                    {{ _start_time }}
+                    {{ start_time }}
                     - {{ aptInfoData.time_slot[1] }}
                     <span
                       v-if="aptInfoData.arrival_time"
@@ -133,7 +133,10 @@
                       label="Appointment Type"
                       prop="appointment_type_id"
                     >
-                      <el-select class="w-100" v-model="_appointment">
+                      <el-select
+                        class="w-100"
+                        v-model="cur_appointment_type_id"
+                      >
                         <el-option
                           v-for="item in aptTypeList"
                           :value="item.id"
@@ -1312,15 +1315,15 @@ export default defineComponent({
     const anesthetist = ref([]);
     const clinic = ref([]);
     const rooms = ref([]);
-    const _appointment = ref("");
+    const cur_appointment_type_id = ref("");
     const appointmentType = ref("");
     const _specialist = ref("");
-    const _start_time = ref("");
-    const _end_time = ref("");
-    const _appointment_name = ref("");
-    const _specialist_name = ref("");
+    const start_time = ref("");
+    const end_time = ref("");
+    const appointment_name = ref("");
+    const specialist_name = ref("");
     const _appointment_time = ref(30);
-    const _arrival_time = ref(30);
+    const arrival_time = ref(30);
 
     const addressRef = ref(null);
 
@@ -1373,41 +1376,41 @@ export default defineComponent({
       return moment(date).format("DD-MM-YYYY").toString();
     };
 
-    watch(_appointment, () => {
-      aptInfoData.value.appointment_type_id = _appointment.value;
+    watch(cur_appointment_type_id, () => {
+      aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
       const _selected = aptTypeList.value.filter(
-        (aptType) => aptType.id === _appointment.value
+        (aptType) => aptType.id === cur_appointment_type_id.value
       )[0];
 
       if (typeof _selected === "undefined") {
-        _appointment_name.value = "";
+        appointment_name.value = "";
         _appointment_time.value = Number(appointment_time.value);
-        _arrival_time.value = 30;
+        arrival_time.value = 30;
 
         aptInfoData.value.clinical_code = "";
         aptInfoData.value.mbs_code = "";
         apt_type.value = "";
       } else {
-        _appointment_name.value = _selected.name;
+        appointment_name.value = _selected.name;
         appointmentType.value = _selected.type;
         _appointment_time.value = Number(
           appointment_length[_selected.appointment_time] *
             appointment_time.value
         );
-        _arrival_time.value = Number(_selected.arrival_time);
+        arrival_time.value = Number(_selected.arrival_time);
 
         aptInfoData.value.clinical_code = _selected.clinical_code;
         aptInfoData.value.mbs_code = _selected.mbs_code;
         apt_type.value = _selected.type;
       }
 
-      _end_time.value = moment(_start_time.value, "HH:mm")
+      end_time.value = moment(start_time.value, "HH:mm")
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      aptInfoData.value.time_slot[1] = _end_time.value;
-      aptInfoData.value.arrival_time = moment(_start_time.value, "HH:mm")
-        .subtract(_arrival_time.value, "minutes")
+      aptInfoData.value.time_slot[1] = end_time.value;
+      aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
+        .subtract(arrival_time.value, "minutes")
         .format("HH:mm")
         .toString();
 
@@ -1422,13 +1425,13 @@ export default defineComponent({
       for (let i in specialist.appointments) {
         let _apt_temp = specialist.appointments[i];
         if (
-          (timeStr2Number(_start_time.value) <=
+          (timeStr2Number(start_time.value) <=
             timeStr2Number(_apt_temp.start_time) &&
             timeStr2Number(_apt_temp.start_time) <
-              timeStr2Number(_end_time.value)) ||
+              timeStr2Number(end_time.value)) ||
           (timeStr2Number(_apt_temp.start_time) <=
-            timeStr2Number(_start_time.value) &&
-            timeStr2Number(_start_time.value) <
+            timeStr2Number(start_time.value) &&
+            timeStr2Number(start_time.value) <
               timeStr2Number(_apt_temp.end_time))
         ) {
           cnt++;
@@ -1442,22 +1445,22 @@ export default defineComponent({
       const _selected = ava_specialist.value.filter(
         (item) => item.id === _specialist.value
       )[0];
-      _specialist_name.value = _selected.name;
+      specialist_name.value = _selected.name;
       anesthetist.value = _selected.anesthetist;
       aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
     });
 
-    watch(_start_time, () => {
-      aptInfoData.value.time_slot[0] = _start_time.value;
-      aptInfoData.value.arrival_time = moment(_start_time.value, "HH:mm")
-        .subtract(_arrival_time.value, "minutes")
+    watch(start_time, () => {
+      aptInfoData.value.time_slot[0] = start_time.value;
+      aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
+        .subtract(arrival_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      _end_time.value = moment(_start_time.value, "HH:mm")
+      end_time.value = moment(start_time.value, "HH:mm")
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      aptInfoData.value.time_slot[1] = _end_time.value;
+      aptInfoData.value.time_slot[1] = end_time.value;
     });
 
     watch(patientStatus, () => {
@@ -1495,11 +1498,11 @@ export default defineComponent({
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
       if (bookingData.time_slot) {
-        _start_time.value = moment(bookingData.time_slot[0]).format("HH:mm");
-        _end_time.value = moment(bookingData.time_slot[1]).format("HH:mm");
+        start_time.value = moment(bookingData.time_slot[0]).format("HH:mm");
+        end_time.value = moment(bookingData.time_slot[1]).format("HH:mm");
       }
       aptInfoData.value.date = bookingData.date;
-      if (_appointment.value == "") {
+      if (cur_appointment_type_id.value == "") {
         overlapping_cnt.value = bookingData.overlapping_cnt;
       }
       if (bookingData.selected_specialist) {
@@ -1529,9 +1532,9 @@ export default defineComponent({
         }
       }
 
-      if (_appointment.value && billingInfoData.value.charge_type) {
+      if (cur_appointment_type_id.value && billingInfoData.value.charge_type) {
         const filteredApt = aptTypeList.value.filter(
-          (item) => item.id === _appointment.value
+          (item) => item.id === cur_appointment_type_id.value
         )[0];
         billingInfoData.value.procedure_price = getProcedurePrice(
           filteredApt,
@@ -1626,7 +1629,7 @@ export default defineComponent({
       filterPatient.date_of_birth = "";
       filterPatient.ur_number = "";
 
-      _appointment.value = "";
+      cur_appointment_type_id.value = "";
       patientStatus.value = "new";
       patientStep.value = 1;
       patientTableData.value = patientList.value;
@@ -1817,13 +1820,13 @@ export default defineComponent({
       aptTypeList,
       anesthetist,
       apt_type,
-      _appointment,
+      cur_appointment_type_id,
       _specialist,
-      _start_time,
-      _end_time,
-      _appointment_name,
+      start_time,
+      end_time,
+      appointment_name,
       appointmentType,
-      _specialist_name,
+      specialist_name,
       submit,
       formRef_1,
       formRef_2,

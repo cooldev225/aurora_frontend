@@ -10,20 +10,20 @@
           style="position: relative; left: 0px"
         ></th>
         <th class="cell-35px border-0"></th>
-        <template v-if="_tableData">
+        <template v-if="tableData">
           <th
-            :colspan="_tableData.length * 4 - 1"
+            :colspan="tableData.length * 4 - 1"
             class="text-xl-left border-0 fw-bold fs-4"
           >
             {{ tableTitle }}
           </th>
         </template>
       </tr>
-      <template v-if="_tableData">
+      <template v-if="tableData">
         <tr class="bg-light-warning doctor-row text-center text-primary">
           <th class="cell-120px" style="position: relative; left: 0px"></th>
           <th class="cell-35px"></th>
-          <template v-for="(item, index) in _tableData" :key="index">
+          <template v-for="(item, index) in tableData" :key="index">
             <th
               :colspan="index === 0 ? 3 : 4"
               class="fw-bolder"
@@ -37,7 +37,7 @@
       </template>
     </thead>
   </table>
-  <template v-if="_tableData">
+  <template v-if="tableData">
     <div
       style="
         /* max-height: 400px; */
@@ -195,9 +195,9 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const _temp_specialists = computed(() => store.getters.getFilteredData);
-    const _tableData = ref({});
+    const tableData = ref({});
     const tableTitle = computed(() => props.Title);
-    const _ava_specialists = computed(() => props.ava_SPTData);
+    const ava_specialists = computed(() => props.ava_SPTData);
     const _apt_date = computed(() => props.date);
     const organisation = computed(() => store.getters.orgList);
 
@@ -216,15 +216,15 @@ export default defineComponent({
       store.dispatch(Actions.ORG.LIST);
     });
 
-    watch(_tableData, () => {
+    watch(tableData, () => {
       let _val = "07:00";
       let _appointment = {};
       aptTimeList.value = [];
       while (timeStr2Number(_val) < timeStr2Number("18:00")) {
         _appointment[_val.toString()] = [];
-        if (_tableData.value) {
-          for (let i in _tableData.value) {
-            let specialist = _tableData.value[i];
+        if (tableData.value) {
+          for (let i in tableData.value) {
+            let specialist = tableData.value[i];
             let _temp = [];
             while (_temp.length < 2) {
               let temp = { specialist: specialist, time_length: 4 };
@@ -244,9 +244,9 @@ export default defineComponent({
           .toString();
       }
       for (let key in _appointment) {
-        if (_tableData.value) {
-          for (let i in _tableData.value) {
-            let specialist = _tableData.value[i];
+        if (tableData.value) {
+          for (let i in tableData.value) {
+            let specialist = tableData.value[i];
             for (let j in specialist.appointments) {
               let _apt = specialist.appointments[j];
               if (timeStr2Number(_apt.start_time) === timeStr2Number(key)) {
@@ -322,7 +322,7 @@ export default defineComponent({
         }
       }
       for (let key in _appointment) {
-        for (let i in _tableData.value) {
+        for (let i in tableData.value) {
           if (
             _appointment[key][i].appointment[0].time_length === 4 &&
             _appointment[key][i].appointment[1].time_length === 4
@@ -338,7 +338,7 @@ export default defineComponent({
       if (organisation.value.appointment_length)
         appointment_length.value = organisation.value.appointment_length;
       if (_temp_specialists.value) {
-        _tableData.value =
+        tableData.value =
           _temp_specialists.value[Object.keys(_temp_specialists.value)[0]];
       }
 
@@ -365,7 +365,7 @@ export default defineComponent({
       const item = {
         time_slot: [_date + "T" + startTime, _date + "T" + endTime],
         date: _date,
-        ava_specialist: _ava_specialists,
+        ava_specialist: ava_specialists,
         selected_specialist: specialist,
         overlapping_cnt: cnt,
       };
@@ -401,7 +401,7 @@ export default defineComponent({
 
     return {
       format,
-      _tableData,
+      tableData,
       tableTitle,
       handleAddApt,
       handleEdit,
