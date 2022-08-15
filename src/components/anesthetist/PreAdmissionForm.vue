@@ -215,13 +215,12 @@ export default defineComponent({
     });
 
     const handleUploadSubmit = () => {
-      uploadData.append(
-        "appointment_id",
-        preAdmissionData.value.appointment_id
-      );
-
+      const appendedUploadData = {
+        uploadData: uploadData,
+        appointment_id: preAdmissionData.value.id,
+      };
       store
-        .dispatch(Actions.PROCEDURE_APPROVAL.UPLOAD, uploadData)
+        .dispatch(Actions.PROCEDURE_APPROVAL.UPLOAD, appendedUploadData)
         .then(() => {
           loading.value = false;
           store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
@@ -342,7 +341,7 @@ export default defineComponent({
       }
 
       const updateData = {
-        appointment_id: preAdmissionData.value.appointment_id,
+        appointment_id: preAdmissionData.value.id,
         notes: preAdmissionData.value.notes,
         procedure_approval_status: "CONSULT_REQUIRED",
       };
