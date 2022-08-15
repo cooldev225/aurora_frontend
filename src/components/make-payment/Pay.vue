@@ -10,20 +10,14 @@
       <div class="card-body pt-3 pb-5">
         <div class="row">
           <InfoSection :heading="'Name'"
-            >{{
-              billingData.patient.first_name +
-              " " +
-              billingData.patient.last_name
-            }}
+            >{{ billingData.appointment.patient_name.full }}
           </InfoSection>
-          <InfoSection :heading="'Address'"
-            >{{ billingData.patient.address }}
-          </InfoSection>
+
           <InfoSection :heading="'Contact Number'"
-            >{{ billingData.patient.contact_number }}
+            >{{ billingData.appointment.patient_details.contact_number }}
           </InfoSection>
           <InfoSection :heading="'Date of Birth'"
-            >{{ billingData.patient.date_of_birth }}
+            >{{ billingData.appointment.patient_details.date_of_birth }}
           </InfoSection>
         </div>
       </div>
@@ -39,18 +33,13 @@
       <div class="card-body pt-3 pb-5">
         <div class="row">
           <InfoSection :heading="'Date'"
-            >{{ billingData.appointment.date }}
+            >{{ billingData.appointment.aus_formatted_date }}
           </InfoSection>
           <InfoSection :heading="'Time'"
-            >{{ billingData.appointment.start_time }}
+            >{{ billingData.appointment.formatted_appointment_time }}
           </InfoSection>
           <InfoSection :heading="'Specialist'"
-            >{{
-              "Dr " +
-              billingData.specialist.first_name +
-              " " +
-              billingData.specialist.last_name
-            }}
+            >{{ billingData.appointment.specialist_name }}
           </InfoSection>
         </div>
       </div>
@@ -75,7 +64,7 @@
               <el-form-item prop="charge_type">
                 <el-select
                   class="w-100"
-                  v-model="billingData.patient.charge_type"
+                  v-model="billingData.charge_type"
                   placeholder="Select Charge Type"
                 >
                   <el-option
@@ -102,9 +91,10 @@
     </div>
     <div class="card-body pt-0">
       <div class="row">
-        <label class="text-muted fs-6 fw-bold mb-2 d-block">{{
-          billingData.appointment.type + ": " + billingData.appointment.name
-        }}</label>
+        <label class="text-muted fs-6 fw-bold mb-2 d-block">
+          {{ billingData.appointment.appointment_type.type }}
+          : {{ billingData.appointment.appointment_type.name }}</label
+        >
         <!--begin::Input-->
         <el-form class="d-flex align-items-center">
           <el-form-item prop="procedure_price" class="mb-0">
@@ -127,12 +117,14 @@
         </el-form>
         <!--end::Input-->
         <label class="text-muted fs-6 fw-bold mt-2 d-block"
-          >Total Payable Amount: ${{
+          >Total Payable Amount: $
+          {{
             getProcedurePrice(
               billingData.payment,
-              billingData.patient.charge_type
+              billingData.appointment.charge_type
             )
           }}
+
           <br />
           Amount Paid: ${{ billingData.payment.paid_amount }}
           <br />
@@ -151,8 +143,7 @@
                 <span v-if="payment.payment_type == 'EFTPOS'">
                   paid via eftpos
                 </span>
-                ({{ payment.confirmed_user.first_name }}
-                {{ payment.confirmed_user.last_name }},
+                ({{ payment.confirmed_user_name }}
                 {{ payment.created_at }}) </span
               ><br />
             </li>
@@ -161,7 +152,7 @@
             Outstanding: ${{
               getProcedurePrice(
                 billingData.payment,
-                billingData.patient.charge_type
+                billingData.appointment.charge_type
               ) - billingData.payment.paid_amount
             }}</span
           >
@@ -258,11 +249,9 @@ export default defineComponent({
     const billingData = ref({
       appointment: {
         id: 0,
-      },
-      payment: {},
-      patient: {
         charge_type: "",
       },
+      payment: {},
     });
     const list = computed(() => store.getters.paymentSelected);
     const total_amount = ref(0);
@@ -308,7 +297,7 @@ export default defineComponent({
       if (billingData.value.payment) {
         total_amount.value = getProcedurePrice(
           billingData.value.payment,
-          billingData.value.patient.charge_type
+          billingData.value.appointment.charge_type
         );
       }
     });
