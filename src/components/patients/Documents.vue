@@ -8,40 +8,61 @@
           placeholder="Select Document Type"
           v-model="documentType"
         >
-          <el-option value="LETTER" label="LETTER">
-            <inline-svg
-              class="me-5"
-              src="media/icons/duotune/general/gen005.svg"
-            />
-            LETTER
-          </el-option>
-          <el-option value="REPORT" label="REPORT">
-            <inline-svg
-              class="me-5"
-              src="media/icons/duotune/general/gen016.svg"
-            />
-            REPORT
-          </el-option>
-          <el-option value="CLINICAL_NOTE" label="CLINICAL NOTE">
-            <inline-svg
-              class="me-5"
-              src="media/icons/duotune/files/fil003.svg"
-            />
-            CLINICAL NOTE
-          </el-option>
-          <el-option label="PATHOLOGY REPORT" value="PATHOLOGY_REPORT">
-            <inline-svg
-              class="me-5"
-              src="media/icons/duotune/files/fil004.svg"
-            />
-            PATHOLOGY REPORT
-          </el-option>
           <el-option value="ALL" label="ALL DOCUMENT TYPE">
             <inline-svg
               class="me-5"
               src="media/icons/duotune/general/gen054.svg"
             />
             ALL DOCUMENT TYPE
+          </el-option>
+          <el-option value="letter" label="LETTER">
+            <inline-svg
+              class="me-5"
+              src="media/icons/duotune/general/gen005.svg"
+            />
+            LETTER
+          </el-option>
+          <el-option value="report" label="REPORT">
+            <inline-svg
+              class="me-5"
+              src="media/icons/duotune/general/gen016.svg"
+            />
+            REPORT
+          </el-option>
+          <el-option value="clinical-note" label="CLINICAL NOTE">
+            <inline-svg
+              class="me-5"
+              src="media/icons/duotune/files/fil003.svg"
+            />
+            CLINICAL NOTE
+          </el-option>
+          <el-option label="PATHOLOGY REPORT" value="pathology-report">
+            <inline-svg
+              class="me-5"
+              src="media/icons/duotune/files/fil004.svg"
+            />
+            PATHOLOGY REPORT
+          </el-option>
+          <el-option label="AUDIO" value="audio">
+            <inline-svg
+              class="me-5"
+              src="media/icons/duotune/files/fil004.svg"
+            />
+            AUDIO
+          </el-option>
+          <el-option label="USB CAPTURE" value="usb-capture">
+            <inline-svg
+              class="me-5"
+              src="media/icons/duotune/files/fil004.svg"
+            />
+            USB CAPTURE
+          </el-option>
+          <el-option label="OTHER" value="other">
+            <inline-svg
+              class="me-5"
+              src="media/icons/duotune/files/fil004.svg"
+            />
+            OTHER
           </el-option>
         </el-select>
         <div
