@@ -69,7 +69,7 @@
           </button>
 
           <button
-            @click="handleDelete(item.id)"
+            @click="handleDelete(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
           >
             <span class="svg-icon svg-icon-3">
@@ -145,24 +145,60 @@ export default defineComponent({
       modal.show();
     };
 
-    const handleDelete = (id) => {
-      store
-        .dispatch(Actions.ORG_MANAGER.DELETE, id)
-        .then(() => {
-          store.dispatch(Actions.ORG_MANAGER.LIST);
-          Swal.fire({
-            text: "Successfully Deleted!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          });
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
+    const deleteAfterConfirmation = (item) => {
+      const html =
+        '<p class="fs-2">Please type <b>' +
+        item.first_name +
+        "</b> to confirm</p><br/>";
+
+      Swal.fire({
+        input: "text",
+        inputAttributes: {
+          autocapitalize: "off",
+          placeholder: "First Name",
+        },
+        html: html,
+        icon: "info",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Delete",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async (data) => {
+          if (data.toLowerCase() == item.first_name.toLowerCase()) {
+            return "success";
+          }
+
+          return false;
+        },
+      }).then((result) => {
+        if (result.value == "success") {
+          store
+            .dispatch(Actions.ORG_MANAGER.DELETE, item.id)
+            .then(() => {
+              Swal.fire({
+                text: "Successfully Deleted!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                store.dispatch(Actions.ORG_MANAGER.LIST);
+              });
+            })
+            .catch(({ response }) => {
+              console.log(response.data.error);
+            });
+        }
+      });
+    };
+
+    const handleDelete = (item) => {
+      deleteAfterConfirmation(item);
     };
 
     onMounted(() => {
