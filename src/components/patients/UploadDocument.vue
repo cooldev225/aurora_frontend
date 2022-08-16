@@ -219,7 +219,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, watchEffect } from "vue";
+import {
+  defineComponent,
+  ref,
+  computed,
+  onMounted,
+  watchEffect,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
