@@ -86,7 +86,7 @@
           {{ item.date }}
         </template>
         <template v-slot:cell-patient_name="{ row: item }">
-          {{ item.patient_name }}
+          {{ item.patient_name.full }}
         </template>
         <template v-slot:cell-attendance_status="{ row: item }">
           <span
@@ -204,7 +204,6 @@ export default defineComponent({
       paymentData.value = list.value;
       tableData.value = paymentData.value;
       renderTable();
-      console.log(paymentData.value);
     });
 
     onMounted(() => {

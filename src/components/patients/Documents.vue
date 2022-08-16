@@ -163,7 +163,7 @@ export default defineComponent({
     const selectedPatient = computed(() => store.getters.selectedPatient);
     const documentList = ref(null);
     const _documentList = computed(() => store.getters.getPatientDocumentList);
-    const selectedDocument = ref();
+    const selectedDocument = ref(null);
     const documentType = ref(null);
     const pdfSrc = ref(null);
     const printLoading = ref(false);
@@ -174,14 +174,9 @@ export default defineComponent({
       extraHead: '<meta http-equiv="Content-Language" content="en-us"/>',
       beforeOpenCallback() {
         printLoading.value = true;
-        console.log("Before");
       },
       openCallback() {
         printLoading.value = false;
-        console.log("Open");
-      },
-      closeCallback() {
-        console.log("Close");
       },
     });
     onMounted(() => {
@@ -206,7 +201,6 @@ export default defineComponent({
     watch(selectedDocument, () => {
       pdfSrc.value = selectedDocument.value;
       // printObj.value.url = selectedDocument.value["file_path"];
-      console.log(printObj.value);
     });
 
     const handleSendEmail = () => {

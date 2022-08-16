@@ -44,28 +44,28 @@
         <div>
           <!--begin::Approval Status Badges-->
 
-          <BookingStatusBadge
+          <AlertBadge
             v-if="displayData.procedure_approval_status === 'NOT_APPROVED'"
             :text="'This procedure has not been approved'"
             :color="'danger'"
             :iconPath="'media/icons/duotune/arrows/arr015.svg'"
           />
 
-          <BookingStatusBadge
+          <AlertBadge
             v-if="displayData.procedure_approval_status === 'NOT_ACCESSED'"
             :text="'This procedure has not yet been accessed'"
             :color="'warning'"
             :iconPath="'media/icons/duotune/arrows/arr015.svg'"
           />
 
-          <BookingStatusBadge
+          <AlertBadge
             v-if="displayData.procedure_approval_status === 'APPROVED'"
             :text="'This procedure has been approved'"
             :color="'success'"
             :iconPath="'media/icons/duotune/arrows/arr016.svg'"
           />
 
-          <BookingStatusBadge
+          <AlertBadge
             v-if="displayData.procedure_approval_status === 'CONSULT_REQUIRED'"
             :text="'This procedure requires a consult prior'"
             :color="'danger'"
@@ -203,7 +203,7 @@ import EditModal from "@/components/booking/EditApt.vue";
 import CheckInModal from "@/components/booking/CheckInModal.vue";
 import { Modal } from "bootstrap";
 import BookingDrawerButton from "@/components/presets/BookingDrawer/BookingDrawerButton.vue";
-import BookingStatusBadge from "@/components/presets/BookingDrawer/BookingStatusBadge.vue";
+import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 
 export default defineComponent({
@@ -212,7 +212,7 @@ export default defineComponent({
     EditModal,
     CheckInModal,
     BookingDrawerButton,
-    BookingStatusBadge,
+    AlertBadge,
     InfoSection,
   },
   setup() {
@@ -284,11 +284,6 @@ export default defineComponent({
               DrawerComponent?.getInstance("booking-drawer")?.hide();
             });
         },
-      }).then((result) => {
-        console.log(result);
-        if (result.value) {
-          console.log("");
-        }
       });
     };
 

@@ -101,7 +101,6 @@ export default defineComponent({
         tableData.value = cancellation_Apts;
         loading.value = false;
       });
-      console.log(tableData.value);
     });
 
     watchEffect(() => {

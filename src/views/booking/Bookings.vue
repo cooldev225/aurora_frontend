@@ -6,7 +6,7 @@
       class="position-absolute zindex-sticky mt-10 d-flex flex-column m-2"
     >
       <span
-        v-for="item in _aptTypelist"
+        v-for="item in aptTypelist"
         :value="item.id"
         :label="item.name"
         :key="item.id"
@@ -67,8 +67,8 @@
             <div class="col mb-2">
               <VueCtkDateTimePicker
                 :format="format"
-                v-model="_date_search.date"
-                inline="false"
+                v-model="date_search.date"
+                inline
                 color="#3E7BA0"
                 noKeyboard
                 onlyDate
@@ -130,11 +130,11 @@
                 >
                   <div class="d-flex flex-column">
                     <el-checkbox-group
-                      v-model="_specialists_search.specialist_ids"
+                      v-model="specialists_search.specialist_ids"
                       class="d-flex flex-column"
                     >
                       <template
-                        v-for="(item, index) in _ava_specialists"
+                        v-for="(item, index) in ava_specialists"
                         :key="index"
                       >
                         <el-checkbox
@@ -167,10 +167,10 @@
                     <el-select
                       class="w-100"
                       placeholder="Select Appointment Type"
-                      v-model="_search_next_apts.appointment_type_id"
+                      v-model="search_next_apts.appointment_type_id"
                     >
                       <el-option
-                        v-for="item in _aptTypelist"
+                        v-for="item in aptTypelist"
                         :value="item.id"
                         :label="item.name"
                         :key="item.id"
@@ -181,11 +181,11 @@
                       <el-select
                         class="w-50 p-2"
                         placeholder="Select Clinic"
-                        v-model="_search_next_apts.clinic_id"
+                        v-model="search_next_apts.clinic_id"
                       >
                         <el-option value="" label="Any Clinic" />
                         <el-option
-                          v-for="item in _clinic_list"
+                          v-for="item in clinic_list"
                           :value="item.id"
                           :label="item.name"
                           :key="item.id"
@@ -194,12 +194,12 @@
                       <el-select
                         class="w-50 p-2"
                         placeholder="Select Specialist"
-                        v-model="_search_next_apts.specialist_id"
+                        v-model="search_next_apts.specialist_id"
                         filterable
                       >
                         <el-option value="" label="Any Specialist" />
                         <el-option
-                          v-for="item in _allSpecialists"
+                          v-for="item in allSpecialists"
                           :value="item.id"
                           :label="item.name"
                           :key="item.id"
@@ -211,10 +211,10 @@
                       <el-select
                         class="w-50 p-2"
                         placeholder="Select Appointment Time Requirement"
-                        v-model="_search_next_apts.time_requirement"
+                        v-model="search_next_apts.time_requirement"
                       >
                         <el-option
-                          v-for="item in _aptTimeRequireList"
+                          v-for="item in aptTimeRequireList"
                           :value="item.id"
                           :label="item.title"
                           :key="item.id"
@@ -223,10 +223,10 @@
                       <el-select
                         class="w-50 p-2"
                         placeholder="Select Time frame"
-                        v-model="_search_next_apts.x_weeks"
+                        v-model="search_next_apts.x_weeks"
                       >
                         <el-option
-                          v-for="(item, index) in _x_weeks"
+                          v-for="(item, index) in x_weeks_list"
                           :value="index"
                           :label="item"
                           :key="item.id"
@@ -251,7 +251,7 @@
       <div class="card-body">
         <div class="scroll" :class="{ 'h-500px': !toggleLayout }">
           <div class="d-flex flex-column">
-            <template v-for="(item, key) in _specialists" :key="key">
+            <template v-for="(item, key) in specialists" :key="key">
               <AptTable
                 :ava_SPTData="item"
                 :date="moment(key.toString()).format('MM-DD-YYYY')"
@@ -267,13 +267,13 @@
 
   <CreateModal></CreateModal>
   <AppointmentListPopup
-    :available-slots-by-date="_available_slots_by_date"
-    :all-specialists="_allSpecialists"
-    :search-next-apts="_search_next_apts"
-    :apt-type-list="_aptTypelist"
-    :clinic-list="_clinic_list"
-    :apt-time-require-list="_aptTimeRequireList"
-    :x-weeks="_x_weeks"
+    :available-slots-by-date="available_slots_by_date"
+    :all-specialists="allSpecialists"
+    :search-next-apts="search_next_apts"
+    :apt-type-list="aptTypelist"
+    :clinic-list="clinic_list"
+    :apt-time-require-list="aptTimeRequireList"
+    :x-weeks="x_weeks_list"
   />
   <!-- <EditModal></EditModal> -->
 </template>
@@ -316,13 +316,13 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const format = ref("YYYY-MM-DD");
-    const _date_search = reactive({
+    const date_search = reactive({
       date: new Date(),
     });
-    const _specialists_search = reactive({
+    const specialists_search = reactive({
       specialist_ids: [],
     });
-    const _search_next_apts = reactive({
+    const search_next_apts = reactive({
       appointment_type_id: "",
       specialist_id: "",
       time_requirement: "",
@@ -330,7 +330,7 @@ export default defineComponent({
       clinic_id: "",
     });
     const tableTitle = ref("");
-    const _x_weeks = ref({
+    const x_weeks_list = ref({
       0: "This week",
       1: "Next Week",
       2: "In 2 weeks",
@@ -341,33 +341,33 @@ export default defineComponent({
       24: "In 6 months",
     });
 
-    const _ava_specialists = computed(() => store.getters.getAvailableSPTData);
-    const _specialists = computed(() => store.getters.getFilteredData);
-    const _available_slots_by_date = computed(
+    const ava_specialists = computed(() => store.getters.getAvailableSPTData);
+    const specialists = computed(() => store.getters.getFilteredData);
+    const available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
     );
-    const _aptTypelist = computed(() => store.getters.getAptTypesList);
-    const _allSpecialists = computed(() => store.getters.getSpecialistList);
-    const _aptTimeRequireList = computed(
+    const aptTypelist = computed(() => store.getters.getAptTypesList);
+    const allSpecialists = computed(() => store.getters.getSpecialistList);
+    const aptTimeRequireList = computed(
       () => store.getters.getAptTimeRequireList
     );
-    const _clinic_list = computed(() => store.getters.clinicsList);
+    const clinic_list = computed(() => store.getters.clinicsList);
 
     onMounted(() => {
       store.dispatch(Actions.BOOKING.SEARCH.DATE, {
-        ..._date_search,
-        ..._specialists_search,
+        ...date_search,
+        ...specialists_search,
       });
       store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-        ..._date_search,
-        ..._specialists_search,
+        ...date_search,
+        ...specialists_search,
       });
       setCurrentPageBreadcrumbs("Dashboard", ["Bookings"]);
       store.dispatch(Actions.APT.TYPES.LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
-      tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
+      tableTitle.value = moment(date_search.date).format("dddd, MMMM Do YYYY");
     });
 
     const timeStr2Number = (time) => {
@@ -376,7 +376,7 @@ export default defineComponent({
 
     const handleSearch = async () => {
       await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
-        ..._search_next_apts,
+        ...search_next_apts,
       });
 
       const modal = new Modal(
@@ -387,102 +387,98 @@ export default defineComponent({
     };
 
     const handleReset = () => {
-      _specialists_search.specialist_ids = [];
-      _date_search.date = new Date();
+      specialists_search.specialist_ids = [];
+      date_search.date = new Date();
 
-      _search_next_apts.appointment_type_id = "";
-      _search_next_apts.x_weeks = "";
-      _search_next_apts.clinic_id = "";
-      _search_next_apts.specialist_id = "";
-      _search_next_apts.time_requirement = "";
+      search_next_apts.appointment_type_id = "";
+      search_next_apts.x_weeks = "";
+      search_next_apts.clinic_id = "";
+      search_next_apts.specialist_id = "";
+      search_next_apts.time_requirement = "";
     };
 
-    watch(_date_search, () => {
+    watch(date_search, () => {
       store.dispatch(Actions.BOOKING.SEARCH.DATE, {
-        ..._date_search,
+        ...date_search,
         specialists: [],
       });
-      // _specialists_search.specialist_ids = [];
-      tableTitle.value = moment(_date_search.date).format("dddd, MMMM Do YYYY");
+      // specialists_search.specialist_ids = [];
+      tableTitle.value = moment(date_search.date).format("dddd, MMMM Do YYYY");
     });
 
-    watch(_ava_specialists, () => {
+    watch(ava_specialists, () => {
       let temp = [];
-      _ava_specialists.value.forEach((item) => {
-        _specialists_search.specialist_ids.forEach((selected) => {
+      ava_specialists.value.forEach((item) => {
+        specialists_search.specialist_ids.forEach((selected) => {
           if (item.id === selected) temp.push(item);
         });
       });
-      if (temp.length === 0) temp = _ava_specialists.value;
+      if (temp.length === 0) temp = ava_specialists.value;
       const data = ref({});
-      const data_key = moment(_date_search.date)
-        .format("YYYY-MM-DD")
-        .toString();
+      const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
       data.value[data_key] = temp;
       store.commit(Mutations.SET_BOOKING.SEARCH.SPECIALISTS, data.value);
     });
 
-    watch(_specialists_search, () => {
+    watch(specialists_search, () => {
       let temp = [];
-      _ava_specialists.value.forEach((item) => {
-        _specialists_search.specialist_ids.forEach((selected) => {
+      ava_specialists.value.forEach((item) => {
+        specialists_search.specialist_ids.forEach((selected) => {
           if (item.id === selected) temp.push(item);
         });
       });
-      if (_specialists_search.specialist_ids.length === 0)
-        temp = _ava_specialists.value;
+      if (specialists_search.specialist_ids.length === 0)
+        temp = ava_specialists.value;
       const data = ref({});
-      const data_key = moment(_date_search.date)
-        .format("YYYY-MM-DD")
-        .toString();
+      const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
       data.value[data_key] = temp;
       store.commit(Mutations.SET_BOOKING.SEARCH.SPECIALISTS, data.value);
       // store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
       // store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-      //   ..._date_search,
-      //   ..._specialists_search,
+      //   ...date_search,
+      //   ...specialists_search,
       // });
     });
 
     const changeDate = (mode) => {
       switch (mode) {
         case 0:
-          _date_search.date = new Date();
+          date_search.date = new Date();
           break;
         case 1:
-          _date_search.date = moment(_date_search.date).add(1, "weeks");
+          date_search.date = moment(date_search.date).add(1, "weeks");
           break;
         case 2:
-          _date_search.date = moment(_date_search.date).add(2, "weeks");
+          date_search.date = moment(date_search.date).add(2, "weeks");
           break;
         case 3:
-          _date_search.date = moment(_date_search.date).add(1, "months");
+          date_search.date = moment(date_search.date).add(1, "months");
           break;
         case 4:
-          _date_search.date = moment(_date_search.date).add(3, "months");
+          date_search.date = moment(date_search.date).add(3, "months");
           break;
         case 5:
-          _date_search.date = moment(_date_search.date).add(6, "months");
+          date_search.date = moment(date_search.date).add(6, "months");
           break;
         case 6:
-          _date_search.date = moment(_date_search.date).add(1, "years");
+          date_search.date = moment(date_search.date).add(1, "years");
           break;
       }
     };
 
     return {
       format,
-      _date_search,
-      _specialists_search,
-      _ava_specialists,
-      _specialists,
-      _available_slots_by_date,
-      _aptTypelist,
-      _allSpecialists,
-      _aptTimeRequireList,
-      _search_next_apts,
-      _x_weeks,
-      _clinic_list,
+      date_search,
+      specialists_search,
+      ava_specialists,
+      specialists,
+      available_slots_by_date,
+      aptTypelist,
+      allSpecialists,
+      aptTimeRequireList,
+      search_next_apts,
+      x_weeks_list,
+      clinic_list,
       tableTitle,
       aptTimeList,
       moment,

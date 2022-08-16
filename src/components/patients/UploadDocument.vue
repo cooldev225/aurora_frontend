@@ -31,9 +31,7 @@
         <!--end::Modal header-->
         <!--begin::Form-->
         <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
-          <!--begin::Modal body-->
           <div class="modal-body py-10 px-lg-17">
-            <!--begin::Scroll-->
             <div
               class="scroll-y me-n7 pe-7"
               id="kt_modal_upload_document_scroll"
@@ -44,14 +42,22 @@
               data-kt-scroll-wrappers="#kt_modal_upload_document_scroll"
               data-kt-scroll-offset="300px"
             >
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Document Type</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="document_type">
+              <div class="row">
+                <InputWrapper
+                  class="col-6"
+                  label="Document Title"
+                  prop="document_title"
+                >
+                  <el-input
+                    type="text"
+                    v-model.number="formData.document_title"
+                  />
+                </InputWrapper>
+                <InputWrapper
+                  class="col-6"
+                  label="Document Type"
+                  prop="document_type"
+                >
                   <el-select
                     class="w-100 mb-5"
                     placeholder="Select Document Type"
@@ -110,19 +116,12 @@
                       OTHER
                     </el-option>
                   </el-select>
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Appointment</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="appointment">
+                </InputWrapper>
+                <InputWrapper
+                  class="col-6"
+                  label="Appointment"
+                  prop="appointment"
+                >
                   <el-select
                     v-model="formData.appointment_id"
                     class="w-100"
@@ -164,19 +163,8 @@
                       :key="item.id"
                     />
                   </el-select>
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Upload File</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item label="Add File">
+                </InputWrapper>
+                <InputWrapper label="Upload File" prop="specialist">
                   <el-upload
                     action="#"
                     ref="upload"
@@ -187,45 +175,40 @@
                     :auto-upload="false"
                     accept="*/*"
                   >
-                    <i class="fa fa-plus"></i>
-                  </el-upload>
-                </el-form-item>
-                <!--end::Input-->
+                    <i class="fa fa-plus"></i> </el-upload
+                ></InputWrapper>
               </div>
-              <!--end::Input group-->
             </div>
-            <!--end::Scroll-->
-          </div>
-          <!--end::Modal body-->
 
-          <!--begin::Modal footer-->
-          <div class="modal-footer flex-center">
-            <!--begin::Button-->
-            <button
-              type="reset"
-              data-bs-dismiss="modal"
-              id="kt_modal_upload_document_cancel"
-              class="btn btn-light me-3"
-            >
-              Cancel
-            </button>
-            <!--end::Button-->
+            <!--begin::Modal footer-->
+            <div class="modal-footer flex-center">
+              <!--begin::Button-->
+              <button
+                type="reset"
+                data-bs-dismiss="modal"
+                id="kt_modal_upload_document_cancel"
+                class="btn btn-light me-3"
+              >
+                Cancel
+              </button>
+              <!--end::Button-->
 
-            <!--begin::Button-->
-            <button
-              :data-kt-indicator="loading ? 'on' : null"
-              class="btn btn-lg btn-primary"
-              type="submit"
-            >
-              <span v-if="!loading" class="indicator-label"> Save </span>
-              <span v-if="loading" class="indicator-progress">
-                Please wait...
-                <span
-                  class="spinner-border spinner-border-sm align-middle ms-2"
-                ></span>
-              </span>
-            </button>
-            <!--end::Button-->
+              <!--begin::Button-->
+              <button
+                :data-kt-indicator="loading ? 'on' : null"
+                class="btn btn-lg btn-primary"
+                type="submit"
+              >
+                <span v-if="!loading" class="indicator-label"> Save </span>
+                <span v-if="loading" class="indicator-progress">
+                  Please wait...
+                  <span
+                    class="spinner-border spinner-border-sm align-middle ms-2"
+                  ></span>
+                </span>
+              </button>
+              <!--end::Button-->
+            </div>
           </div>
           <!--end::Modal footer-->
         </el-form>
@@ -236,23 +219,17 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  ref,
-  computed,
-  onMounted,
-  watch,
-  watchEffect,
-} from "vue";
+import { defineComponent, ref, computed, onMounted, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
+import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 export default defineComponent({
   name: "create-letter-template-modal",
-  components: {},
+  components: { InputWrapper },
   props: {
     patientId: { type: String, required: true },
   },
@@ -269,6 +246,7 @@ export default defineComponent({
     const Data = new FormData();
 
     const formData = ref({
+      document_title: "",
       patient_id: patientId.value,
       document_type: "",
       appointment_id: "",
@@ -310,15 +288,21 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
+
+          const appendedData = {
+            formData: Data,
+            patient_id: patientId.value,
+          };
+
           store
-            .dispatch(Actions.PATIENTS.DOCUMENT.CREATE, Data)
+            .dispatch(Actions.PATIENTS.DOCUMENT.CREATE, appendedData)
             .then(() => {
               loading.value = false;
               Swal.fire({
-                text: "Successfully Created!",
+                text: "Successfully Uploaded!",
                 icon: "success",
                 buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
+                confirmButtonText: "Ok",
                 customClass: {
                   confirmButton: "btn btn-primary",
                 },
@@ -386,6 +370,7 @@ export default defineComponent({
       submit,
       handleChange,
       handleRemove,
+      uploadDisabled,
     };
   },
 });

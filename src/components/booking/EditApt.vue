@@ -53,7 +53,7 @@
                   dataStepperElement="nav"
                   stepperNumber="1"
                   stepperTitle="Appointment"
-                  stepperDesc="Setup Appointment Info"
+                  stepperDescription="Setup Appointment Info"
                 />
 
                 <StepperNavItem
@@ -61,7 +61,7 @@
                   dataStepperElement="nav"
                   stepperNumber="2"
                   stepperTitle="Patient Info"
-                  stepperDesc="Edit Patient Details"
+                  stepperDescription="Edit Patient Details"
                 />
 
                 <StepperNavItem
@@ -69,7 +69,7 @@
                   dataStepperElement="nav"
                   stepperNumber="3"
                   stepperTitle="Patient Billing"
-                  stepperDesc="Edit Patient Billing Details"
+                  stepperDescription="Edit Patient Billing Details"
                 />
 
                 <StepperNavItem
@@ -77,7 +77,7 @@
                   dataStepperElement="nav"
                   stepperNumber="4"
                   stepperTitle="Other Info"
-                  stepperDesc="Referral information and Appointment history"
+                  stepperDescription="Referral information and Appointment history"
                 />
 
                 <!--begin::Appointment Overview-->
@@ -85,11 +85,11 @@
                   class="p-4 mb-4 card border border-dashed border-primary d-flex flex-column gap-2"
                 >
                   <InfoSection heading="Appointment Type">{{
-                    _appointment_name
+                    appointment_name
                   }}</InfoSection>
 
                   <InfoSection heading="Specialist">{{
-                    _specialist_name
+                    specialist_name
                   }}</InfoSection>
 
                   <InfoSection heading="Clinic">{{
@@ -97,7 +97,7 @@
                   }}</InfoSection>
 
                   <InfoSection heading="Time">
-                    {{ _start_time }}
+                    {{ start_time }}
                     - {{ aptInfoData.time_slot[1] }}
                     <span
                       v-if="aptInfoData.arrival_time"
@@ -137,7 +137,10 @@
                       label="Appointment Type"
                       prop="appointment_type_id"
                     >
-                      <el-select class="w-100" v-model="_appointment">
+                      <el-select
+                        class="w-100"
+                        v-model="cur_appointment_type_id"
+                      >
                         <el-option
                           v-for="item in aptTypeList"
                           :value="item.id"
@@ -145,16 +148,15 @@
                           :key="item.id"
                         />
                       </el-select>
-                      <div class="fv-row" v-if="overlapping_cnt >= 1">
-                        <!--begin::Label-->
-                        <label class="fs-7 fw-bold">
-                          WARNING: this appointment will overlap with an
-                          upcoming appointment
-                        </label>
-                        <!--end::Label-->
-                      </div>
                     </InputWrapper>
-
+                    <div class="px-6" v-if="overlapping_cnt > 1">
+                      <AlertBadge
+                        text="This appointment will overlap with an
+                          upcoming appointment"
+                        color="warning"
+                        iconPath="media/icons/duotune/arrows/arr015.svg"
+                      />
+                    </div>
                     <InputWrapper label="Room" prop="room_id">
                       <el-select
                         class="w-100"
@@ -810,7 +812,7 @@
 
                             <InputWrapper
                               class="col-6"
-                              label="Referral Duration"
+                              label="Referral Date"
                               prop="referral_date"
                             >
                               <el-date-picker
@@ -906,13 +908,20 @@ import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
+import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 
 export default defineComponent({
   name: "create-apt-modal",
   directives: {
     mask,
   },
-  components: { AppointmentHistory, StepperNavItem, InfoSection, InputWrapper },
+  components: {
+    AppointmentHistory,
+    StepperNavItem,
+    InfoSection,
+    InputWrapper,
+    AlertBadge,
+  },
   setup() {
     const store = useStore();
     const formRef_1 = ref(null);
@@ -1032,14 +1041,12 @@ export default defineComponent({
       ],
       fund_excess: [
         {
-          type: "number",
           message: "Fund excess must be a number",
         },
       ],
       medicare_number: [
         {
           required: false,
-          type: "number",
           message: "Medicare number must be a number",
           trigger: "blur",
         },
@@ -1047,7 +1054,6 @@ export default defineComponent({
       medicare_reference_number: [
         {
           required: false,
-          type: "number",
           message: "Medicare reference number must be a number",
           trigger: "blur",
         },
@@ -1088,14 +1094,14 @@ export default defineComponent({
     const anesthetist = ref([]);
     const clinic = ref([]);
     const rooms = ref([]);
-    const _appointment = ref("");
-    const _specialist = ref("");
-    const _start_time = ref("");
-    const _end_time = ref("");
-    const _appointment_name = ref("");
-    const _specialist_name = ref("");
+    const cur_appointment_type_id = ref("");
+    const cur_specialist_id = ref("");
+    const start_time = ref("");
+    const end_time = ref("");
+    const appointment_name = ref("");
+    const specialist_name = ref("");
     const _appointment_time = ref(30);
-    const _arrival_time = ref(30);
+    const arrival_time = ref(30);
     const overlapping_cnt = ref(0);
 
     const addressRef = ref(null);
@@ -1115,7 +1121,7 @@ export default defineComponent({
       aptInfoData.value.time_slot = [];
       aptInfoData.value.time_slot.push(aptData.value.start_time);
       aptInfoData.value.time_slot.push(aptData.value.end_time);
-      _appointment.value = aptData.value.appointment_type_id;
+      cur_appointment_type_id.value = aptData.value.appointment_type_id;
       for (let key in patientInfoData.value)
         patientInfoData.value[key] = aptData.value[key];
       for (let key in billingInfoData.value)
@@ -1124,25 +1130,25 @@ export default defineComponent({
         otherInfoData.value[key] = aptData.value[key];
     });
 
-    watch(_appointment, () => {
-      aptInfoData.value.appointment_type_id = _appointment.value;
+    watch(cur_appointment_type_id, () => {
+      aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
       const _selected = aptTypeList.value.filter(
-        (aptType) => aptType.id === _appointment.value
+        (aptType) => aptType.id === cur_appointment_type_id.value
       )[0];
-      _appointment_name.value = _selected.name;
+      appointment_name.value = _selected.name;
       _appointment_time.value = Number(
         appointment_length[_selected.appointment_time] * appointment_time.value
       );
 
-      _start_time.value = aptInfoData.value.time_slot[0];
-      _end_time.value = moment(_start_time.value, "HH:mm")
+      start_time.value = aptInfoData.value.time_slot[0];
+      end_time.value = moment(start_time.value, "HH:mm")
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      aptInfoData.value.time_slot[1] = _end_time.value;
-      _arrival_time.value = Number(_selected.arrival_time);
-      aptInfoData.value.arrival_time = moment(_start_time.value, "HH:mm")
-        .subtract(_arrival_time.value, "minutes")
+      aptInfoData.value.time_slot[1] = end_time.value;
+      arrival_time.value = Number(_selected.arrival_time);
+      aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
+        .subtract(arrival_time.value, "minutes")
         .format("HH:mm")
         .toString();
 
@@ -1171,45 +1177,47 @@ export default defineComponent({
       const specialist = store.getters.getSelectedSpecialist;
 
       let cnt = 0;
-      for (let i in specialist.appointments) {
-        let _apt_temp = specialist.appointments[i];
-        if (
-          (timeStr2Number(_start_time.value) <=
-            timeStr2Number(_apt_temp.start_time) &&
-            timeStr2Number(_apt_temp.start_time) <
-              timeStr2Number(_end_time.value)) ||
-          (timeStr2Number(_apt_temp.start_time) <=
-            timeStr2Number(_start_time.value) &&
-            timeStr2Number(_start_time.value) <
-              timeStr2Number(_apt_temp.end_time))
-        ) {
-          cnt++;
+      if (specialist) {
+        for (let i in specialist.appointments) {
+          let _apt_temp = specialist.appointments[i];
+          if (
+            (timeStr2Number(start_time.value) <=
+              timeStr2Number(_apt_temp.start_time) &&
+              timeStr2Number(_apt_temp.start_time) <
+                timeStr2Number(end_time.value)) ||
+            (timeStr2Number(_apt_temp.start_time) <=
+              timeStr2Number(start_time.value) &&
+              timeStr2Number(start_time.value) <
+                timeStr2Number(_apt_temp.end_time))
+          ) {
+            cnt++;
+          }
         }
       }
       overlapping_cnt.value = cnt;
     });
 
-    watch(_specialist, () => {
-      aptInfoData.value.specialist_id = _specialist.value;
+    watch(cur_specialist_id, () => {
+      aptInfoData.value.specialist_id = cur_specialist_id.value;
       const _selected = ava_specialist.value.filter(
-        (item) => item.id === _specialist.value
+        (item) => item.id === cur_specialist_id.value
       )[0];
-      _specialist_name.value = _selected.name;
+      specialist_name.value = _selected.name;
       anesthetist.value = _selected.anesthetist;
       aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
     });
 
-    watch(_start_time, () => {
-      aptInfoData.value.time_slot[0] = _start_time.value;
-      aptInfoData.value.arrival_time = moment(_start_time.value, "HH:mm")
-        .subtract(_arrival_time.value, "minutes")
+    watch(start_time, () => {
+      aptInfoData.value.time_slot[0] = start_time.value;
+      aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
+        .subtract(arrival_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      _end_time.value = moment(_start_time.value, "HH:mm")
+      end_time.value = moment(start_time.value, "HH:mm")
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      aptInfoData.value.time_slot[1] = _end_time.value;
+      aptInfoData.value.time_slot[1] = end_time.value;
     });
 
     const handleAneQuestions = () => {
@@ -1236,9 +1244,9 @@ export default defineComponent({
       if (organisation.value.appointment_length)
         appointment_time.value = organisation.value.appointment_length;
 
-      if (_appointment.value && billingInfoData.value.charge_type) {
+      if (cur_appointment_type_id.value && billingInfoData.value.charge_type) {
         const filteredApt = aptTypeList.value.filter(
-          (item) => item.id === _appointment.value
+          (item) => item.id === cur_appointment_type_id.value
         )[0];
         billingInfoData.value.procedure_price = getProcedurePrice(
           filteredApt,
@@ -1465,12 +1473,12 @@ export default defineComponent({
       aptTypeList,
       anesthetist,
       apt_type,
-      _appointment,
-      _specialist,
-      _start_time,
-      _end_time,
-      _appointment_name,
-      _specialist_name,
+      cur_appointment_type_id,
+      cur_specialist_id,
+      start_time,
+      end_time,
+      appointment_name,
+      specialist_name,
       submit,
       formRef_1,
       formRef_2,

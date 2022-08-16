@@ -243,8 +243,11 @@ const Actions = {
     CREATE: "createMakePayment",
   },
 
-  PROCEDURE_APPROVALS: {
-    LIST: "listProcedureApprovals",
+  PROCEDURE_APPROVAL: {
+    LIST: "listProcedureApproval",
+    GET: "getProcedureApproval",
+    UPDATE: "updateProcedureApproval",
+    UPLOAD: "uploadProcedureApproval",
   },
 };
 
@@ -422,8 +425,9 @@ const Mutations = {
     SELECT: "setSelectNtfTemplates",
   },
 
-  SET_PROCEDURE_APPROVALS: {
+  SET_PROCEDURE_APPROVAL: {
     LIST: "setProcedureApprovalsList",
+    DATA: "setProcedureApproval",
   },
 
   // SET_EMPLOYEE_ROLES: {
