@@ -109,6 +109,7 @@ const Actions = {
     DOCUMENT: {
       LIST: "listPatientsDocuments",
       CREATE: "createPatientsDocument",
+      SEND_VIA_EMAIL: "sendPatientsDocumentViaEmail",
     },
   },
 

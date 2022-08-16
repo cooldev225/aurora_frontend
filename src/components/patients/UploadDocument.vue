@@ -57,21 +57,21 @@
                     placeholder="Select Document Type"
                     v-model="formData.document_type"
                   >
-                    <el-option value="LETTER" label="LETTER">
+                    <el-option value="letter" label="LETTER">
                       <inline-svg
                         class="me-5"
                         src="media/icons/duotune/general/gen005.svg"
                       />
                       LETTER
                     </el-option>
-                    <el-option value="REPORT" label="REPORT">
+                    <el-option value="report" label="REPORT">
                       <inline-svg
                         class="me-5"
                         src="media/icons/duotune/general/gen016.svg"
                       />
                       REPORT
                     </el-option>
-                    <el-option value="CLINICAL_NOTE" label="CLINICAL NOTE">
+                    <el-option value="clinical-note" label="CLINICAL NOTE">
                       <inline-svg
                         class="me-5"
                         src="media/icons/duotune/files/fil003.svg"
@@ -80,13 +80,34 @@
                     </el-option>
                     <el-option
                       label="PATHOLOGY REPORT"
-                      value="PATHOLOGY_REPORT"
+                      value="pathology-report"
                     >
                       <inline-svg
                         class="me-5"
                         src="media/icons/duotune/files/fil004.svg"
                       />
                       PATHOLOGY REPORT
+                    </el-option>
+                    <el-option label="AUDIO" value="audio">
+                      <inline-svg
+                        class="me-5"
+                        src="media/icons/duotune/files/fil004.svg"
+                      />
+                      AUDIO
+                    </el-option>
+                    <el-option label="USB CAPTURE" value="usb-capture">
+                      <inline-svg
+                        class="me-5"
+                        src="media/icons/duotune/files/fil004.svg"
+                      />
+                      USB CAPTURE
+                    </el-option>
+                    <el-option label="OTHER" value="other">
+                      <inline-svg
+                        class="me-5"
+                        src="media/icons/duotune/files/fil004.svg"
+                      />
+                      OTHER
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -248,6 +269,7 @@ export default defineComponent({
     const Data = new FormData();
 
     const formData = ref({
+      patient_id: patientId.value,
       document_type: "",
       appointment_id: "",
       specialist_id: "",
@@ -315,9 +337,12 @@ export default defineComponent({
       });
     };
 
+    watch(patientId, () => {
+      formData.value.patient_id = patientId.value;
+      store.dispatch(Actions.APT.LISTBYID, patientId.value);
+    });
+
     watchEffect(() => {
-      if (patientId.value)
-        store.dispatch(Actions.APT.LISTBYID, patientId.value);
       if (aptList.value && aptList.value.futureAppointments) {
         aptList.value.futureAppointments.forEach((item) => {
           if (
@@ -336,6 +361,7 @@ export default defineComponent({
     });
 
     const handleChange = (file, fileList) => {
+      debugger;
       upload.value.clearFiles();
       uploadDisabled.value = false;
       Data.append("file", file.raw);
@@ -350,6 +376,7 @@ export default defineComponent({
     return {
       formData,
       rules,
+      upload,
       formRef,
       loading,
       uploadDocumentRef,

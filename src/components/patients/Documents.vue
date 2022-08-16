@@ -94,30 +94,32 @@
       </div>
       <div class="col-md-8 d-flex flex-column">
         <div class="d-flex flex-row justify-content-end align-items-end">
-          <button
-            :data-kt-indicator="printLoading ? 'on' : null"
-            class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
-            v-print="printObj"
-            type="submit"
-          >
-            <span v-if="!printLoading" class="indicator-label">
-              <span class="svg-icon svg-icon-1">
-                <inline-svg src="media/icons/duotune/general/gen060.svg" />
+          <template v-if="selectedDocument">
+            <button
+              :data-kt-indicator="printLoading ? 'on' : null"
+              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
+              v-print="printObj"
+              type="submit"
+            >
+              <span v-if="!printLoading" class="indicator-label">
+                <span class="svg-icon svg-icon-1">
+                  <inline-svg src="media/icons/duotune/general/gen060.svg" />
+                </span>
+                Print
               </span>
-              Print
-            </span>
-            <span v-if="printLoading" class="indicator-progress pb-1">
-              <span
-                class="spinner-border spinner-border-sm svg-icon svg-icon-1"
-              ></span>
-              Processing
-            </span>
-          </button>
-          <IconButton
-            iconSRC="media/icons/duotune/communication/com011.svg"
-            label="Email"
-            @click="handleSendEmail"
-          />
+              <span v-if="printLoading" class="indicator-progress pb-1">
+                <span
+                  class="spinner-border spinner-border-sm svg-icon svg-icon-1"
+                ></span>
+                Processing
+              </span>
+            </button>
+            <IconButton
+              iconSRC="media/icons/duotune/communication/com011.svg"
+              label="Email"
+              @click="handleSendEmail"
+            />
+          </template>
         </div>
         <div class="h-100 scroll border" id="documentField">
           <img
@@ -129,11 +131,14 @@
       </div>
     </div>
   </div>
-  <SendDocumentViaEmail></SendDocumentViaEmail>
+  <SendDocumentViaEmail
+    v-if="selectedDocument"
+    :document="selectedDocument"
+  ></SendDocumentViaEmail>
   <!--end::details View-->
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, ref, watch, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
@@ -158,10 +163,10 @@ export default defineComponent({
     const selectedPatient = computed(() => store.getters.selectedPatient);
     const documentList = ref(null);
     const _documentList = computed(() => store.getters.getPatientDocumentList);
-    const selectedDocument = ref<any>(null);
+    const selectedDocument = ref();
     const documentType = ref(null);
     const pdfSrc = ref(null);
-    const printLoading = ref<boolean>(false);
+    const printLoading = ref(false);
     const printObj = ref({
       id: "documentField",
       extraCss:

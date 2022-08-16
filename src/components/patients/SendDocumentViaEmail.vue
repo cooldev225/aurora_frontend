@@ -46,28 +46,24 @@
             >
               <!--begin::Input group-->
               <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">To</label>
-                <!--end::Label-->
-
                 <!--begin::Input-->
                 <el-form-item prop="email">
                   <el-select
                     class="mt-10 w-100"
-                    placeholder="To:"
+                    placeholder="Enter the emails"
                     v-model="formData.to_user_ids"
                     filterable
                     multiple
                   >
                     <el-option
-                      v-for="item in sendableUsers"
+                      v-for="item in referralDoctors"
                       :value="item.id"
                       :label="
                         item.first_name +
                         ' ' +
                         item.last_name +
                         ' <' +
-                        item.username +
+                        item.email +
                         '>'
                       "
                       :key="item.id"
@@ -129,19 +125,23 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 export default defineComponent({
   name: "create-letter-template-modal",
   components: {},
-  props: {},
-  setup() {
+  props: {
+    document: { type: String, required: true },
+  },
+  setup(props) {
     const store = useStore();
     const formRef = ref(null);
     const sendEmailModalRef = ref(null);
     const loading = ref(false);
     const letter_template = ref("");
+    const documentId = computed(() => props.document.id);
     // const patientId = computed(() => props.patientId);
-    // const referralDoctors = computed(() => store.getters.getReferralDoctorList);
-    const sendableUsers = computed(() => store.getters.getUserList);
+    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    // const sendableUsers = computed(() => store.getters.getUserList);
 
     const formData = ref({
-      email: [],
+      document_id: documentId,
+      to_user_ids: [],
     });
 
     const rules = ref({
@@ -177,13 +177,11 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.LETTER.CREATE, {
-              ...formData.value,
-            })
+            .dispatch(Actions.PATIENTS.DOCUMENT.SEND_VIA_EMAIL, formData.value)
             .then(() => {
               loading.value = false;
               Swal.fire({
-                text: "Successfully Created!",
+                text: "Successfully Sent!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -194,9 +192,8 @@ export default defineComponent({
                 hideModal(sendEmailModalRef.value);
               });
             })
-            .catch(({ response }) => {
+            .catch(() => {
               loading.value = false;
-              console.log(response.data.error);
             });
           formRef.value.resetFields();
         } else {
@@ -215,7 +212,8 @@ export default defineComponent({
       rules,
       formRef,
       loading,
-      sendableUsers,
+      // sendableUsers,
+      referralDoctors,
       sendEmailModalRef,
       letter_template,
       submit,
