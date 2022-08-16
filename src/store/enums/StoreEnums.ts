@@ -110,6 +110,9 @@ const Actions = {
       LIST: "listPatientsDocuments",
       CREATE: "createPatientsDocument",
       SEND_VIA_EMAIL: "sendPatientsDocumentViaEmail",
+      AUDIO: {
+        CREATE: "createPatientsDocumentAudio",
+      },
     },
   },
 

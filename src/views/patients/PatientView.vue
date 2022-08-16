@@ -55,7 +55,7 @@
                 <IconButton
                   v-if="userRole == 'specialist'"
                   iconSRC="media/icons/duotune/arrows/arr009.svg"
-                  @click="handleReport"
+                  @click="handleAudio"
                   label="Audio"
                 />
                 <!--END SPECIALIST ONLY ACTIONS-->
@@ -155,6 +155,7 @@
   <RecallReminderModal></RecallReminderModal>
   <ReportModal></ReportModal>
   <LetterModal :patientId="formData.id"></LetterModal>
+  <CreateAudioModal :patientId="formData.id"></CreateAudioModal>
   <UploadDocument :patientId="formData.id"></UploadDocument>
   <router-view></router-view>
 </template>
@@ -167,6 +168,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import RecallReminderModal from "@/components/patients/RecallReminderModal.vue";
 import ReportModal from "@/components/patients/ReportTemplateModal.vue";
 import LetterModal from "@/components/patients/LetterModal.vue";
+import CreateAudioModal from "@/components/patients/CreateAudioModal.vue";
 import UploadDocument from "@/components/patients/UploadDocument.vue";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
@@ -178,6 +180,7 @@ export default defineComponent({
     RecallReminderModal,
     ReportModal,
     LetterModal,
+    CreateAudioModal,
     UploadDocument,
     IconText,
     IconButton,
@@ -209,6 +212,11 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleAudio = () => {
+      const modal = new Modal(document.getElementById("modal_create_audio"));
+      modal.show();
+    };
+
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
     });
@@ -223,6 +231,7 @@ export default defineComponent({
       handleRecallReminder,
       handleReport,
       handleLetter,
+      handleAudio,
       handleUploadDocument,
     };
   },

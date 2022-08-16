@@ -1,24 +1,24 @@
 <template>
   <div
     class="modal fade"
-    id="modal_upload_document"
+    id="modal_create_audio"
     tabindex="-1"
     aria-hidden="true"
-    ref="uploadDocumentRef"
+    ref="createAudioModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_upload_document_header">
+        <div class="modal-header" id="kt_modal_create_audio_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Upload Document</h2>
+          <h2 class="fw-bolder">Create Audio</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
           <div
-            id="kt_modal_upload_document_close"
+            id="kt_modal_create_audio_close"
             data-bs-dismiss="modal"
             class="btn btn-icon btn-sm btn-active-icon-primary"
           >
@@ -34,110 +34,20 @@
           <div class="modal-body py-10 px-lg-17">
             <div
               class="scroll-y me-n7 pe-7"
-              id="kt_modal_upload_document_scroll"
+              id="kt_modal_create_audio_scroll"
               data-kt-scroll="true"
               data-kt-scroll-activate="{default: false, lg: true}"
               data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#kt_modal_upload_document_header"
-              data-kt-scroll-wrappers="#kt_modal_upload_document_scroll"
+              data-kt-scroll-dependencies="#kt_modal_create_audio_header"
+              data-kt-scroll-wrappers="#kt_modal_create_audio_scroll"
               data-kt-scroll-offset="300px"
             >
-              <div class="row">
-                <InputWrapper
-                  class="col-6"
-                  label="Document Title"
-                  prop="document_title"
-                >
+              <div class="fv-row">
+                <InputWrapper label="Document Title" prop="document_title">
                   <el-input
                     type="text"
                     v-model.number="formData.document_title"
                   />
-                </InputWrapper>
-                <InputWrapper
-                  class="col-6"
-                  label="Document Type"
-                  prop="document_type"
-                >
-                  <el-select
-                    class="w-100 mb-5"
-                    placeholder="Select Document Type"
-                    v-model="formData.document_type"
-                  >
-                    <el-option value="letter" label="LETTER">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/general/gen005.svg"
-                      />
-                      LETTER
-                    </el-option>
-                    <el-option value="report" label="REPORT">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/general/gen016.svg"
-                      />
-                      REPORT
-                    </el-option>
-                    <el-option value="clinical-note" label="CLINICAL NOTE">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/files/fil003.svg"
-                      />
-                      CLINICAL NOTE
-                    </el-option>
-                    <el-option
-                      label="PATHOLOGY REPORT"
-                      value="pathology-report"
-                    >
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/files/fil004.svg"
-                      />
-                      PATHOLOGY REPORT
-                    </el-option>
-                    <el-option label="AUDIO" value="audio">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/files/fil004.svg"
-                      />
-                      AUDIO
-                    </el-option>
-                    <el-option label="USB CAPTURE" value="usb-capture">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/files/fil004.svg"
-                      />
-                      USB CAPTURE
-                    </el-option>
-                    <el-option label="OTHER" value="other">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/files/fil004.svg"
-                      />
-                      OTHER
-                    </el-option>
-                  </el-select>
-                </InputWrapper>
-                <InputWrapper
-                  class="col-6"
-                  label="Appointment"
-                  prop="appointment"
-                >
-                  <el-select
-                    v-model="formData.appointment_id"
-                    class="w-100"
-                    placeholder="Select Appointment"
-                  >
-                    <el-option
-                      v-for="item in aptList.futureAppointments"
-                      :label="
-                        moment(item.date).format('DD-MM-YYYY') +
-                        ' ' +
-                        item.appointment_type.name
-                      "
-                      :value="item.id"
-                      :key="item.id"
-                    />
-                  </el-select>
                 </InputWrapper>
                 <!--end::Input-->
               </div>
@@ -146,25 +56,7 @@
               <!--begin::Input group-->
               <div class="fv-row mb-7">
                 <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Specialist</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="specialist">
-                  <el-select
-                    v-model="formData.specialist_id"
-                    class="w-100"
-                    placeholder="Select Specialist"
-                  >
-                    <el-option
-                      v-for="item in specialistList"
-                      :label="item.name"
-                      :value="item.id"
-                      :key="item.id"
-                    />
-                  </el-select>
-                </el-form-item>
-                <InputWrapper label="Upload File" prop="specialist">
+                <InputWrapper label="Upload File" prop="file">
                   <el-upload
                     action="#"
                     ref="upload"
@@ -175,8 +67,9 @@
                     :auto-upload="false"
                     accept="*/*"
                   >
-                    <i class="fa fa-plus"></i> </el-upload
-                ></InputWrapper>
+                    <i class="fa fa-plus"></i>
+                  </el-upload>
+                </InputWrapper>
               </div>
             </div>
 
@@ -186,7 +79,7 @@
               <button
                 type="reset"
                 data-bs-dismiss="modal"
-                id="kt_modal_upload_document_cancel"
+                id="kt_modal_create_audio_cancel"
                 class="btn btn-light me-3"
               >
                 Cancel
@@ -199,7 +92,7 @@
                 class="btn btn-lg btn-primary"
                 type="submit"
               >
-                <span v-if="!loading" class="indicator-label"> Save </span>
+                <span v-if="!loading" class="indicator-label"> Create </span>
                 <span v-if="loading" class="indicator-progress">
                   Please wait...
                   <span
@@ -243,7 +136,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const formRef = ref(null);
-    const uploadDocumentRef = ref(null);
+    const createAudioModalRef = ref(null);
     const loading = ref(false);
     const specialistList = computed(() => store.getters.getSpecialistList);
     const aptList = computed(() => store.getters.getAptListById);
@@ -254,10 +147,6 @@ export default defineComponent({
 
     const formData = ref({
       document_title: "",
-      patient_id: patientId.value,
-      document_type: "",
-      appointment_id: "",
-      specialist_id: "",
     });
 
     const rules = ref({
@@ -296,17 +185,12 @@ export default defineComponent({
             Data.append(key, formData.value[key]);
           });
 
-          // const appendedData = {
-          //   formData: Data,
-          //   patient_id: patientId.value,
-          // };
-
           store
-            .dispatch(Actions.PATIENTS.DOCUMENT.CREATE, Data)
+            .dispatch(Actions.PATIENTS.DOCUMENT.AUDIO.CREATE, Data)
             .then(() => {
               loading.value = false;
               Swal.fire({
-                text: "Successfully Uploaded!",
+                text: "Successfully Created!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok",
@@ -314,7 +198,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(uploadDocumentRef.value);
+                hideModal(createAudioModalRef.value);
               });
             })
             .catch(({ response }) => {
@@ -370,7 +254,7 @@ export default defineComponent({
       upload,
       formRef,
       loading,
-      uploadDocumentRef,
+      createAudioModalRef,
       specialistList,
       aptList,
       moment,
