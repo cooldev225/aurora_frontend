@@ -138,7 +138,7 @@
                       :key="item.id"
                     />
                   </el-select>
-                </el-form-item>
+                </InputWrapper>
                 <!--end::Input-->
               </div>
               <!--end::Input group-->
@@ -163,7 +163,7 @@
                       :key="item.id"
                     />
                   </el-select>
-                </InputWrapper>
+                </el-form-item>
                 <InputWrapper label="Upload File" prop="specialist">
                   <el-upload
                     action="#"
