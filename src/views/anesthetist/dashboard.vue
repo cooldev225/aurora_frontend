@@ -163,7 +163,7 @@
     </div>
   </div>
 
-  <PreAdmissionFormModal></PreAdmissionFormModal>
+  <PreAdmissionFormModal isEditable="true" />
 </template>
 
 <script>
@@ -285,7 +285,9 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Dashboard", ["Anesthetist"]);
-      store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
+      store.dispatch(Actions.PROCEDURE_APPROVAL.LIST).then(() => {
+        loading.value = false;
+      });
     });
 
     return {
@@ -298,6 +300,7 @@ export default defineComponent({
       searchPatient,
       clearFilters,
       showAll,
+      loading,
     };
   },
 });

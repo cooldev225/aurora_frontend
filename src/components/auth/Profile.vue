@@ -320,7 +320,6 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = profileData.value;
-      console.log(formData.value);
     });
 
     onMounted(() => {
@@ -342,6 +341,7 @@ export default defineComponent({
       handleChange,
       handlePreview,
       handleRemove,
+      uploadDisabled,
     };
   },
 });

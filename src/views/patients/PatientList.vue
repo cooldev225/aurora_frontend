@@ -256,7 +256,9 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Patients", []);
-      store.dispatch(Actions.PATIENTS.LIST);
+      store.dispatch(Actions.PATIENTS.LIST).then(() => {
+        loading.value = false;
+      });
     });
 
     return {
@@ -271,6 +273,7 @@ export default defineComponent({
       handleBadge,
       searchPatient,
       clearFilters,
+      loading,
     };
   },
 });

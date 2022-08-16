@@ -498,6 +498,7 @@ export default defineComponent({
       handlePreview,
       dialogVisible,
       dialogImageUrl,
+      uploadDisabled,
     };
   },
 });

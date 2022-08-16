@@ -194,8 +194,6 @@ export default defineComponent({
                 customClass: {
                   confirmButton: "btn btn-primary",
                 },
-              }).then(() => {
-                console.log("Updated");
               });
             })
             .catch(({ response }) => {

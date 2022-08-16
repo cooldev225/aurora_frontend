@@ -346,7 +346,14 @@ export default defineComponent({
       });
     });
 
-    return { tableHeader, tableData, handleEdit, filterAndSort, handleDelete };
+    return {
+      tableHeader,
+      tableData,
+      handleEdit,
+      filterAndSort,
+      handleDelete,
+      loading,
+    };
   },
 });
 </script>

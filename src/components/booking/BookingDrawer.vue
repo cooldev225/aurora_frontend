@@ -284,11 +284,6 @@ export default defineComponent({
               DrawerComponent?.getInstance("booking-drawer")?.hide();
             });
         },
-      }).then((result) => {
-        console.log(result);
-        if (result.value) {
-          console.log("");
-        }
       });
     };
 

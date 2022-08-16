@@ -64,7 +64,6 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
 
   @Action
   [Actions.APT.TYPES.CREATE](item) {
-    console.log(item);
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("appointment-types", item)
