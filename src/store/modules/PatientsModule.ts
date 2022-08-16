@@ -14,12 +14,20 @@ export interface PatientsInfo {
   patientDocumentList: IPatient;
 }
 
+export interface PatientAppointmentsData {
+  pastAppointments: Array<IApt>;
+  futureAppointments: Array<IApt>;
+}
+
 @Module
 export default class PatientsModule extends VuexModule implements PatientsInfo {
   patientsData = [] as Array<IPatient>;
   patientsSelectData = {} as IPatient;
   patientDocumentList = {} as IPatient;
-  patientAppointmentsData = [] as Array<IApt>;
+  patientAppointmentsData = {
+    pastAppointments: [],
+    futureAppointments: [],
+  } as PatientAppointmentsData;
   /**
    * Get current Patients List
    * @returns Patients
@@ -44,7 +52,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
     return this.patientsSelectData;
   }
 
-  get getPatientAppointments(): Array<IApt> {
+  get getPatientAppointments(): PatientAppointmentsData {
     return this.patientAppointmentsData;
   }
 
