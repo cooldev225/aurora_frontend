@@ -260,8 +260,16 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
+
+          const appendedData = {
+            formData: Data,
+            patient_id: patientId.value,
+          };
+
+          console.log(appendedData);
+
           store
-            .dispatch(Actions.PATIENTS.DOCUMENT.CREATE, Data)
+            .dispatch(Actions.PATIENTS.DOCUMENT.CREATE, appendedData)
             .then(() => {
               loading.value = false;
               Swal.fire({

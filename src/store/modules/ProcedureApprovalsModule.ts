@@ -86,7 +86,6 @@ export default class ProcedureApprovalsModule
   [Actions.PROCEDURE_APPROVAL.UPLOAD](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      console.log(item);
       ApiService.post(
         item.appointment_id + "/pre-admission/upload",
         item.uploadData
