@@ -50,12 +50,6 @@
               data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
               data-kt-scroll-offset="300px"
             >
-              <!-- <div class="fv-row">
-                <pdf src="http://localhost:8000/temp.pdf" :page="1">
-                  <template v-slot:loading> loading content here... </template>
-                </pdf>
-              </div> -->
-
               <div class="fv-row row cener-row">
                 <div class="col-6 mt-2">
                   <label class="fs-6 fw-bold">Patient Name: </label>
@@ -94,8 +88,14 @@
                 </div>
               </div>
 
+              <!-- <div class="fv-row" style="height: 500px">
+                <pdf src="./temp.pdf" :page="1" style="height: 100%">
+                  <template v-slot:loading> loading content here... </template>
+                </pdf>
+              </div> -->
+
               <!--begin::Input group-->
-              <div class="fv-row">
+              <div v-if="isEditable === 'true'" class="fv-row">
                 <!--begin::Label-->
                 <label class="required fs-6 fw-bold">Notes</label>
                 <!--end::Label-->
@@ -119,55 +119,57 @@
           <!--begin::Modal footer-->
           <div class="modal-footer flex-center">
             <!--begin::Button-->
-            <button
-              :data-kt-indicator="loading ? 'on' : null"
-              class="btn btn-md btn-primary"
-              type="button"
-              @click="handleApproved"
-            >
-              <span v-if="!loading" class="indicator-label"> Approved </span>
-              <span v-if="loading" class="indicator-progress">
-                Please wait...
-                <span
-                  class="spinner-border spinner-border-sm align-middle ms-2"
-                ></span>
-              </span>
-            </button>
+            <div v-if="isEditable === 'true'">
+              <button
+                :data-kt-indicator="loading ? 'on' : null"
+                class="btn btn-md btn-primary me-4"
+                type="button"
+                @click="handleApproved"
+              >
+                <span v-if="!loading" class="indicator-label"> Approved </span>
+                <span v-if="loading" class="indicator-progress">
+                  Please wait...
+                  <span
+                    class="spinner-border spinner-border-sm align-middle ms-2"
+                  ></span>
+                </span>
+              </button>
 
-            <button
-              :data-kt-indicator="loading ? 'on' : null"
-              class="btn btn-md btn-danger"
-              type="button"
-              @click="handleNotApproved"
-            >
-              <span v-if="!loading" class="indicator-label">
-                Not Approved
-              </span>
-              <span v-if="loading" class="indicator-progress">
-                Please wait...
-                <span
-                  class="spinner-border spinner-border-sm align-middle ms-2"
-                ></span>
-              </span>
-            </button>
+              <button
+                :data-kt-indicator="loading ? 'on' : null"
+                class="btn btn-md btn-danger me-4"
+                type="button"
+                @click="handleNotApproved"
+              >
+                <span v-if="!loading" class="indicator-label">
+                  Not Approved
+                </span>
+                <span v-if="loading" class="indicator-progress">
+                  Please wait...
+                  <span
+                    class="spinner-border spinner-border-sm align-middle ms-2"
+                  ></span>
+                </span>
+              </button>
 
-            <button
-              :data-kt-indicator="loading ? 'on' : null"
-              class="btn btn-md btn-success"
-              type="button"
-              @click="handleRequiresConsult"
-            >
-              <span v-if="!loading" class="indicator-label">
-                Requires Consult
-              </span>
-              <span v-if="loading" class="indicator-progress">
-                Please wait...
-                <span
-                  class="spinner-border spinner-border-sm align-middle ms-2"
-                ></span>
-              </span>
-            </button>
-            <!--end::Button-->
+              <button
+                :data-kt-indicator="loading ? 'on' : null"
+                class="btn btn-md btn-success"
+                type="button"
+                @click="handleRequiresConsult"
+              >
+                <span v-if="!loading" class="indicator-label">
+                  Requires Consult
+                </span>
+                <span v-if="loading" class="indicator-progress">
+                  Please wait...
+                  <span
+                    class="spinner-border spinner-border-sm align-middle ms-2"
+                  ></span>
+                </span>
+              </button>
+              <!--end::Button-->
+            </div>
           </div>
           <!--end::Modal footer-->
         </el-form>
@@ -184,13 +186,15 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
-// import pdf from "pdfvuer";
-// import "pdfjs-dist/build/pdf.worker.entry"; // not needed since v1.9.1
+// import pdf from "vue3-pdf";
 
 export default defineComponent({
   name: "view-pre-admission-form-modal",
   components: {
     // pdf,
+  },
+  props: {
+    isEditable: { type: String, required: true },
   },
   setup() {
     const store = useStore();
@@ -257,7 +261,7 @@ export default defineComponent({
       }
 
       const updateData = {
-        appointment_id: preAdmissionData.value.id,
+        appointment_id: preAdmissionData.value.appointment_id,
         notes: preAdmissionData.value.notes,
         procedure_approval_status: "APPROVED",
       };
@@ -299,7 +303,7 @@ export default defineComponent({
       }
 
       const updateData = {
-        appointment_id: preAdmissionData.value.id,
+        appointment_id: preAdmissionData.value.appointment_id,
         notes: preAdmissionData.value.notes,
         procedure_approval_status: "NOT_APPROVED",
       };
@@ -341,7 +345,7 @@ export default defineComponent({
       }
 
       const updateData = {
-        appointment_id: preAdmissionData.value.id,
+        appointment_id: preAdmissionData.value.appointment_id,
         notes: preAdmissionData.value.notes,
         procedure_approval_status: "CONSULT_REQUIRED",
       };
@@ -394,6 +398,7 @@ export default defineComponent({
       handleNotApproved,
       handleRequiresConsult,
       uploadDisabled,
+      // pdf,
       // VuePdf,
     };
   },

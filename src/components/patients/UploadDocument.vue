@@ -266,8 +266,6 @@ export default defineComponent({
             patient_id: patientId.value,
           };
 
-          console.log(appendedData);
-
           store
             .dispatch(Actions.PATIENTS.DOCUMENT.CREATE, appendedData)
             .then(() => {
@@ -339,6 +337,7 @@ export default defineComponent({
       submit,
       handleChange,
       handleRemove,
+      uploadDisabled,
     };
   },
 });
