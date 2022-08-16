@@ -286,7 +286,6 @@ export default defineComponent({
       if (!formRef.value) {
         return;
       }
-      console.log("submit");
 
       formRef.value.validate((valid) => {
         if (valid) {

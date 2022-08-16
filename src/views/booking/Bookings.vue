@@ -68,7 +68,7 @@
               <VueCtkDateTimePicker
                 :format="format"
                 v-model="date_search.date"
-                inline="false"
+                inline
                 color="#3E7BA0"
                 noKeyboard
                 onlyDate

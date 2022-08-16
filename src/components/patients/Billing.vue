@@ -341,15 +341,12 @@ export default defineComponent({
             customClass: {
               confirmButton: "btn btn-primary",
             },
-          }).then(() => {
-            console.log("Updated");
           });
         })
         .catch(({ response }) => {
           loading.value = false;
           console.log(response.data.error);
         });
-      console.log(formRef.value);
     };
 
     watchEffect(() => {

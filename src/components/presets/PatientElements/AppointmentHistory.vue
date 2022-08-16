@@ -28,8 +28,8 @@
 <script lang="ts">
 export default {
   props: {
-    pastAppointments: { type: Object, required: true },
-    futureAppointments: { type: Object, required: true },
+    pastAppointments: { type: Array, required: true },
+    futureAppointments: { type: Array, required: true },
   },
 };
 </script>

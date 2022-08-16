@@ -206,8 +206,6 @@ export default defineComponent({
     watchEffect(() => {
       templateData.value = templateList.value;
       patientData.value = patientList.value;
-      console.log(templateData.value);
-      console.log(patientData.value);
     });
 
     onMounted(() => {

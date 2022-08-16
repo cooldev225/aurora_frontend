@@ -151,7 +151,6 @@ export default defineComponent({
       loading.value = true;
       formData.value.patient_id = patientData.value.id;
       formData.value.organization_id = patientData.value.organization_id;
-      console.log(formData.value);
       store
         .dispatch(Actions.PATIENTS_RECALL.CREATE, formData.value)
         .then(() => {

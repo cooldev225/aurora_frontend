@@ -149,7 +149,7 @@
                         />
                       </el-select>
                     </InputWrapper>
-                    <div class="px-6" v-if="overlapping_cnt >= 1">
+                    <div class="px-6" v-if="overlapping_cnt > 1">
                       <AlertBadge
                         text="This appointment will overlap with an
                           upcoming appointment"
@@ -1095,7 +1095,7 @@ export default defineComponent({
     const clinic = ref([]);
     const rooms = ref([]);
     const cur_appointment_type_id = ref("");
-    const _specialist = ref("");
+    const cur_specialist_id = ref("");
     const start_time = ref("");
     const end_time = ref("");
     const appointment_name = ref("");
@@ -1177,28 +1177,30 @@ export default defineComponent({
       const specialist = store.getters.getSelectedSpecialist;
 
       let cnt = 0;
-      for (let i in specialist.appointments) {
-        let _apt_temp = specialist.appointments[i];
-        if (
-          (timeStr2Number(start_time.value) <=
-            timeStr2Number(_apt_temp.start_time) &&
-            timeStr2Number(_apt_temp.start_time) <
-              timeStr2Number(end_time.value)) ||
-          (timeStr2Number(_apt_temp.start_time) <=
-            timeStr2Number(start_time.value) &&
-            timeStr2Number(start_time.value) <
-              timeStr2Number(_apt_temp.end_time))
-        ) {
-          cnt++;
+      if (specialist) {
+        for (let i in specialist.appointments) {
+          let _apt_temp = specialist.appointments[i];
+          if (
+            (timeStr2Number(start_time.value) <=
+              timeStr2Number(_apt_temp.start_time) &&
+              timeStr2Number(_apt_temp.start_time) <
+                timeStr2Number(end_time.value)) ||
+            (timeStr2Number(_apt_temp.start_time) <=
+              timeStr2Number(start_time.value) &&
+              timeStr2Number(start_time.value) <
+                timeStr2Number(_apt_temp.end_time))
+          ) {
+            cnt++;
+          }
         }
       }
       overlapping_cnt.value = cnt;
     });
 
-    watch(_specialist, () => {
-      aptInfoData.value.specialist_id = _specialist.value;
+    watch(cur_specialist_id, () => {
+      aptInfoData.value.specialist_id = cur_specialist_id.value;
       const _selected = ava_specialist.value.filter(
-        (item) => item.id === _specialist.value
+        (item) => item.id === cur_specialist_id.value
       )[0];
       specialist_name.value = _selected.name;
       anesthetist.value = _selected.anesthetist;
@@ -1472,7 +1474,7 @@ export default defineComponent({
       anesthetist,
       apt_type,
       cur_appointment_type_id,
-      _specialist,
+      cur_specialist_id,
       start_time,
       end_time,
       appointment_name,

@@ -106,17 +106,16 @@
                               >Choose File</el-button
                             >
                           </el-upload>
-                          <el-button
+                          <button
                             v-show="
                               aptData.referral_file !== null &&
                               aptData.referral_file !== ''
                             "
-                            type="button"
                             class="btn btn-success"
                             @click="handleClickReferralFile"
                           >
                             View
-                          </el-button>
+                          </button>
                         </el-space>
                       </el-form-item>
                       <!--end::Input-->
@@ -304,6 +303,7 @@ export default defineComponent({
     const referralDoctors = computed(() => store.getters.getReferralDoctorList);
     const checkInAptModalRef = ref(null);
     const router = useRouter();
+    const loading = ref(false);
 
     const handleSelect = (item) => {
       aptData.value.referring_doctor_id = item.id;
@@ -345,11 +345,14 @@ export default defineComponent({
     };
 
     const handleCheckIn = async (is_move = false) => {
+      loading.value = true;
       await store
         .dispatch(Actions.APT.CHECK_IN, aptData.value)
         .then(() => {
           store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
           hideModal(checkInAptModalRef.value);
+          loading.value = false;
+
           if (is_move === true) {
             router.push({ name: "make-payment-pay" });
             store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
@@ -374,6 +377,7 @@ export default defineComponent({
       searchReferralDoctor,
       handleSelect,
       checkInAptModalRef,
+      loading,
     };
   },
 });

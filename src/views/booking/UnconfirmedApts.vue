@@ -104,8 +104,6 @@ export default defineComponent({
         tableData.value = unConfirmed_Apts;
         loading.value = false;
       });
-
-      console.log(tableData.value);
     });
 
     watchEffect(() => {

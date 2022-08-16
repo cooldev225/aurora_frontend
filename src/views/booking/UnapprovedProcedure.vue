@@ -90,7 +90,6 @@ export default defineComponent({
         tableData.value = unapproved_pro;
         loading.value = false;
       });
-      console.log(tableData.value);
     });
 
     watchEffect(() => {

@@ -476,7 +476,6 @@ export default defineComponent({
     const inputRef = ref<HTMLInputElement | null>(null);
 
     const searching = (e) => {
-      console.log(e.target.value);
       if (e.target.value.length > 1) {
         if (e.target.value.length > 5) {
           load("empty");

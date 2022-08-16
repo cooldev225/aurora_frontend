@@ -80,7 +80,6 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Patient Notifications", ["Settings"]);
       store.dispatch(Actions.NTF_TEMPLATES.LIST);
       tableData.value = ntfTemplates;
-      console.log(ntfTemplates);
     });
 
     watchEffect(() => {
