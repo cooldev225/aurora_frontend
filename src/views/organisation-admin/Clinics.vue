@@ -99,7 +99,6 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "clinics-main",
