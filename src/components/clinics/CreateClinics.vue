@@ -252,8 +252,8 @@ export default defineComponent({
           trigger: "change",
         },
         {
-          min: 8,
-          message: "Provider Number must be at least 8 characters",
+          min: 6,
+          message: "Provider Number must be at least 6 characters",
           trigger: "blur",
         },
       ],
