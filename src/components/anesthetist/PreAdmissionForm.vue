@@ -52,11 +52,12 @@
             >
               <div class="fv-row row cener-row">
                 <div class="col-6 mt-2">
-                  <label class="fs-6 fw-bold">Patient Name: </label>
-                  <span class="text-black fw-bold"
-                    >{{ preAdmissionData.first_name }}
-                    {{ preAdmissionData.last_name }}</span
-                  >
+                  <label class="fs-6 fw-bold">Patient Name : </label>
+                  <span
+                    class="text-black fw-bold"
+                    v-if="preAdmissionData.patient_name"
+                    >&nbsp;{{ preAdmissionData.patient_name.full }}
+                  </span>
                 </div>
                 <div class="col-6 text-end">
                   <el-upload
@@ -88,11 +89,9 @@
                 </div>
               </div>
 
-              <!-- <div class="fv-row" style="height: 500px">
-                <pdf src="./temp.pdf" :page="1" style="height: 100%">
-                  <template v-slot:loading> loading content here... </template>
-                </pdf>
-              </div> -->
+              <div class="fv-row my-4 pdf_viewer_wrapper">
+                <div id="divPDFViewer" class="pdf_viewer"></div>
+              </div>
 
               <!--begin::Input group-->
               <div v-if="isEditable === 'true'" class="fv-row">
@@ -179,24 +178,31 @@
   </div>
 </template>
 
+<style lang="scss">
+.pdf_viewer_wrapper {
+  height: 300px;
+  > .pdf_viewer {
+    height: 100%;
+  }
+}
+</style>
+
 <script>
-import { defineComponent, watchEffect, ref } from "vue";
+import { defineComponent, watchEffect, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
-// import pdf from "vue3-pdf";
+import pdf from "pdfobject";
 
 export default defineComponent({
   name: "view-pre-admission-form-modal",
-  components: {
-    // pdf,
-  },
+  components: {},
   props: {
     isEditable: { type: String, required: true },
   },
-  setup() {
+  setup(props) {
     const store = useStore();
     const formRef = ref(null);
     const viewPreAdmissionModalRef = ref(null);
@@ -227,7 +233,9 @@ export default defineComponent({
         .dispatch(Actions.PROCEDURE_APPROVAL.UPLOAD, appendedUploadData)
         .then(() => {
           loading.value = false;
-          store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
+          if (props.isEditable === "true") {
+            store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
+          }
           Swal.fire({
             text: "Successfully Uploaded!",
             icon: "success",
@@ -385,6 +393,15 @@ export default defineComponent({
       preAdmissionData.value = store.getters.getProcedureApproval;
     });
 
+    watch(preAdmissionData, () => {
+      if (preAdmissionData.value.pre_admission_form_url) {
+        pdf.embed(
+          preAdmissionData.value.pre_admission_form_url,
+          "#divPDFViewer"
+        );
+      }
+    });
+
     return {
       preAdmissionData,
       rules,
@@ -398,8 +415,6 @@ export default defineComponent({
       handleNotApproved,
       handleRequiresConsult,
       uploadDisabled,
-      // pdf,
-      // VuePdf,
     };
   },
 });
