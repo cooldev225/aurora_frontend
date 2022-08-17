@@ -388,6 +388,7 @@
               </div>
               <el-input
                 type="textarea"
+                v-if="patientData.pre_admission_consent"
                 v-model="patientData.pre_admission_consent.text"
                 rows="15"
                 readonly

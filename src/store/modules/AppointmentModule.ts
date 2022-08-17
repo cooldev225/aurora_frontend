@@ -396,69 +396,52 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [Actions.APT.PRE_ADMISSION.ORG](id) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.get("appointment_pre_admissions/show/" + id)
-        .then(({ data }) => {
-          this.context.commit(Mutations.SET_APT.PRE_ADMISSION.ORG, data.data);
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
+    ApiService.get("appointment_pre_admissions/show/" + id)
+      .then(({ data }) => {
+        this.context.commit(Mutations.SET_APT.PRE_ADMISSION.ORG, data.data);
+        return data.data;
+      })
+      .catch(({ response }) => {
+        console.log(response.data.error);
+        // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+      });
   }
 
   @Action
   [Actions.APT.PRE_ADMISSION.STORE](data) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.post(
-        "appointment_pre_admissions/store/" + data.get("apt_id").toString(),
-        data
-      )
-        .then(({ data }) => {
-          return data.message;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
+    ApiService.post(
+      "appointment_pre_admissions/store/" + data.get("apt_id").toString(),
+      data
+    )
+      .then(({ data }) => {
+        return data.message;
+      })
+      .catch(({ response }) => {
+        console.log(response.data.error);
+        // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+      });
   }
 
   @Action
   [Actions.APT.PRE_ADMISSION.VALIDATE](data) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.post("appointment_pre_admissions/validate/" + data.apt_id, {
-        last_name: data.last_name,
-        date_of_birth: moment(data.date_of_birth)
-          .format("YYYY-MM-DD")
-          .toString(),
+    ApiService.post("appointment_pre_admissions/validate/" + data.apt_id, {
+      last_name: data.last_name,
+      date_of_birth: moment(data.date_of_birth).format("YYYY-MM-DD").toString(),
+    })
+      .then(({ data }) => {
+        this.context.commit(
+          Mutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
+          data.message
+        );
+        this.context.commit(
+          Mutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
+          data.data
+        );
+        return data.message;
       })
-        .then(({ data }) => {
-          this.context.commit(
-            Mutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
-            data.message
-          );
-          this.context.commit(
-            Mutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
-            data.data
-          );
-          return data.message;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
+      .catch(({ response }) => {
+        console.log(response.data.error);
+        // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+      });
   }
 }
