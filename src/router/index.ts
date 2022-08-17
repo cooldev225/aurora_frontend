@@ -68,13 +68,13 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/clinics/create",
-        name: "createClinics",
+        name: "clinic-create",
         component: () => import("@/components/clinics/CreateClinics.vue"),
       },
       {
-        path: "/clinics/edit",
-        name: "editClinics",
-        component: () => import("@/components/clinics/EditClinics.vue"),
+        path: "/clinics/edit/:id",
+        name: "clinic-edit",
+        component: () => import("@/components/clinics/CreateClinics.vue"),
       },
       {
         path: "/settings/health-fund",
