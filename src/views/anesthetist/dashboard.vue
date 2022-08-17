@@ -150,7 +150,10 @@
         </template>
 
         <template v-slot:cell-actions="{ row: item }">
-          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
+          <span
+            v-if="item.pre_admission_form_url !== null"
+            class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+          >
             <button
               @click="handleFormModal(item)"
               class="btn btn-active-color-primary btn-primary"
@@ -158,6 +161,7 @@
               View Pre Admission Form
             </button>
           </span>
+          <span v-else> No Pre Admission Form </span>
         </template>
       </Datatable>
     </div>
