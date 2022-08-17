@@ -78,7 +78,7 @@
           </button>
 
           <button
-            @click="handleDelete(item.id)"
+            @click="handleDelete(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
           >
             <span class="svg-icon svg-icon-3">
@@ -94,6 +94,7 @@
 <script>
 import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -136,32 +137,68 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
+    const router = useRouter();
     const clinicsList = computed(() => store.getters.clinicsList);
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_CLINICS.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_edit_clinics"));
-      modal.show();
+      router.push({ name: "clinic-edit", params: { id: item.id } });
     };
 
-    const handleDelete = (id) => {
-      store
-        .dispatch(Actions.CLINICS.DELETE, id)
-        .then(() => {
-          store.dispatch(Actions.CLINICS.LIST);
-          Swal.fire({
-            text: "Successfully Deleted!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          });
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
+    const deleteAfterConfirmation = (item) => {
+      const html =
+        '<p class="fs-2">Please type <b>' +
+        item.name +
+        "</b> to confirm</p><br/>";
+
+      Swal.fire({
+        input: "text",
+        inputAttributes: {
+          autocapitalize: "off",
+          placeholder: "Clinic Name",
+        },
+        html: html,
+        icon: "info",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Delete",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async (data) => {
+          if (data.toLowerCase() == item.name.toLowerCase()) {
+            return "success";
+          }
+
+          return false;
+        },
+      }).then((result) => {
+        if (result.value == "success") {
+          store
+            .dispatch(Actions.CLINICS.DELETE, item.id)
+            .then(() => {
+              Swal.fire({
+                text: "Successfully Deleted!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                store.dispatch(Actions.CLINICS.LIST);
+              });
+            })
+            .catch(({ response }) => {
+              console.log(response.data.error);
+            });
+        }
+      });
+    };
+
+    const handleDelete = (item) => {
+      deleteAfterConfirmation(item);
     };
 
     onMounted(() => {

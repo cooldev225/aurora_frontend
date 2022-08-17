@@ -51,10 +51,13 @@
             <div v-if="item.confirmation_status === 'CANCELED'">
               Reason: {{ item.cancel_reason }}
             </div>
-            <span>{{ item.date }} {{ item.start_time }}</span>
-            <span>@ {{ item.clinic_name }}</span>
+            <span
+              >{{ item.aus_formatted_date }}
+              {{ item.formatted_appointment_time }}</span
+            >
+            <span>@ {{ item.clinic_details.name }}</span>
 
-            <span>{{ item.appointment_type_name }}</span>
+            <span>{{ item.appointment_type.name }}</span>
             <span> {{ item.specialist_name }}</span>
           </div>
         </template>
