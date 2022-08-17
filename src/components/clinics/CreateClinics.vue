@@ -145,7 +145,9 @@
               data-kt-stepper-action="submit"
               @click="submit()"
             >
-              <span class="indicator-label"> Create Clinic </span>
+              <span class="indicator-label">
+                {{ formInfo.submitButtonName }}
+              </span>
               <span class="indicator-progress">
                 Please wait...
                 <span
@@ -161,12 +163,19 @@
   </div>
 </template>
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  reactive,
+  watch,
+  computed,
+} from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { countryList, timeZoneList } from "@/core/data/country";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
@@ -187,8 +196,15 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
     const formRef = ref(null);
-
+    const formInfo = reactive({
+      isCreate: true,
+      title: "Create Clinic",
+      submitAction: Actions.CLINICS.CREATE,
+      submitButtonName: "Create",
+      submittedText: "New Clinic Created",
+    });
     const loading = ref(false);
     const formData = ref({
       name: "",
@@ -236,8 +252,8 @@ export default defineComponent({
           trigger: "change",
         },
         {
-          min: 8,
-          message: "Provider Number must be at least 8 characters",
+          min: 6,
+          message: "Provider Number must be at least 6 characters",
           trigger: "blur",
         },
       ],
@@ -257,10 +273,7 @@ export default defineComponent({
     const Data = new FormData();
     const dialogImageUrl = ref("");
     const dialogVisible = ref(false);
-
-    onMounted(() => {
-      setCurrentPageBreadcrumbs("Create Clinic", ["Clinics"]);
-    });
+    const clinicsList = computed(() => store.getters.clinicsList);
 
     const handleChange = (file, fileList) => {
       upload.value.clearFiles();
@@ -294,12 +307,12 @@ export default defineComponent({
             Data.append(key, formData.value[key]);
           });
           store
-            .dispatch(Actions.CLINICS.CREATE, Data)
+            .dispatch(formInfo.submitAction, Data)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.CLINICS.LIST);
               Swal.fire({
-                text: "Successfully Created!",
+                text: formInfo.submittedText,
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -320,8 +333,34 @@ export default defineComponent({
       });
     };
 
+    watch(clinicsList, () => {
+      const id = route.params.id;
+
+      clinicsList.value.forEach((item) => {
+        if (item.id == id) {
+          Object.assign(formData.value, item);
+        }
+      });
+
+      setCurrentPageBreadcrumbs(formInfo.title, ["Clinic"]);
+    });
+
+    onMounted(() => {
+      const id = route.params.id;
+
+      if (id != undefined) {
+        formInfo.title = "Edit Clinic";
+        formInfo.isCreate = false;
+        formInfo.submitButtonName = "Update";
+        formInfo.submittedText = "Clinic Updated";
+      }
+
+      store.dispatch(Actions.CLINICS.LIST);
+    });
+
     return {
       formData,
+      formInfo,
       rules,
       submit,
       formRef,

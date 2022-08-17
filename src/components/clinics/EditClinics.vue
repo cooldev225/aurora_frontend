@@ -528,6 +528,7 @@
                 </div>
                 <!--end::Input group-->
               </div>
+
               <div class="row mb-7">
                 <div class="col-md-6">
                   <!--begin::Input group-->
@@ -536,19 +537,19 @@
                     <label class="fs-6 fw-bold mb-2">Default Start Time</label>
                     <!--end::Label-->
 
-                    <!--begin::Input-->
-                    <el-form-item prop="default_start_time">
-                      <el-time-picker
-                        v-model="formData.default_start_time"
-                        format="HH:mm"
-                        class="w-100"
-                        placeholder="Default Start Time"
-                      />
-                    </el-form-item>
-                    <!--end::Input-->
+                    <el-time-select
+                      v-model="formData.default_start_time"
+                      :max-time="formData.default_end_time"
+                      class="w-50 ps-2"
+                      placeholder="Default Start time"
+                      start="07:00"
+                      step="00:15"
+                      end="18:30"
+                      format="HH:mm"
+                    />
                   </div>
-                  <!--end::Input group-->
                 </div>
+
                 <div class="col-md-6">
                   <!--begin::Input group-->
                   <div class="fv-row mb-7">
@@ -556,20 +557,20 @@
                     <label class="fs-6 fw-bold mb-2">Default End Time</label>
                     <!--end::Label-->
 
-                    <!--begin::Input-->
-                    <el-form-item prop="default_end_time">
-                      <el-time-picker
-                        v-model="formData.default_end_time"
-                        class="w-100"
-                        format="HH:mm"
-                        placeholder="Default End Time"
-                      />
-                    </el-form-item>
-                    <!--end::Input-->
+                    <el-time-select
+                      v-model="formData.default_end_time"
+                      :min-time="formData.default_start_time"
+                      class="w-50 ps-2"
+                      placeholder="Default End time"
+                      start="07:00"
+                      step="00:15"
+                      end="18:30"
+                      format="HH:mm"
+                    />
                   </div>
-                  <!--end::Input group-->
                 </div>
               </div>
+
               <div class="row">
                 <!--begin::Input group-->
                 <div class="fv-row mb-7">
@@ -859,12 +860,12 @@
   <!--end::Stepper-->
 </template>
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
 
@@ -874,6 +875,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
     const formRef_1 = ref(null);
     const formRef_2 = ref(null);
     const formRef_3 = ref(null);
@@ -940,8 +942,8 @@ export default defineComponent({
           trigger: "change",
         },
         {
-          min: 8,
-          message: "Provider Number must be at least 8 characters",
+          min: 6,
+          message: "Provider Number must be at least 6 characters",
           trigger: "blur",
         },
       ],
@@ -1010,13 +1012,26 @@ export default defineComponent({
     const Data = new FormData();
     const dialogImageUrl = ref("");
     const dialogVisible = ref(false);
+    const clinicsList = computed(() => store.getters.clinicsList);
+
+    watch(clinicsList, () => {
+      const id = route.params.id;
+
+      clinicsList.value.forEach((item) => {
+        if (item.id == id) {
+          Object.assign(formData.value, item);
+        }
+      });
+    });
 
     onMounted(() => {
       _stepperObj.value = StepperComponent.createInstance(
         createClinicsRef.value
       );
 
-      setCurrentPageBreadcrumbs("Create Clinics", ["Clinics"]);
+      setCurrentPageBreadcrumbs("Edit Clinics", ["Clinics"]);
+
+      store.dispatch(Actions.CLINICS.LIST);
     });
 
     const handleChange = (file, fileList) => {
@@ -1124,7 +1139,7 @@ export default defineComponent({
               loading.value = false;
               store.dispatch(Actions.CLINICS.LIST);
               Swal.fire({
-                text: "Successfully Created!",
+                text: "Successfully Updated!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -1132,7 +1147,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                router.push({ name: "employees" });
+                router.push({ name: "clinics" });
               });
             })
             .catch(({ response }) => {
