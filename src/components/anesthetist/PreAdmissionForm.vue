@@ -202,7 +202,7 @@ export default defineComponent({
   props: {
     isEditable: { type: String, required: true },
   },
-  setup(props) {
+  setup() {
     const store = useStore();
     const formRef = ref(null);
     const viewPreAdmissionModalRef = ref(null);
