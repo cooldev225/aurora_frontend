@@ -62,7 +62,7 @@
                 <div class="col-6 text-end">
                   <el-upload
                     action="#"
-                    ref="upload"
+                    ref="uploadRef"
                     :limit="1"
                     :on-change="handleUploadChange"
                     :on-remove="handleUploadRemove"
@@ -207,6 +207,7 @@ export default defineComponent({
     const formRef = ref(null);
     const viewPreAdmissionModalRef = ref(null);
     const loading = ref(false);
+    const uploadRef = ref(null);
     const uploadDisabled = ref(true);
     const uploadData = new FormData();
 
@@ -233,9 +234,6 @@ export default defineComponent({
         .dispatch(Actions.PROCEDURE_APPROVAL.UPLOAD, appendedUploadData)
         .then(() => {
           loading.value = false;
-          if (props.isEditable === "true") {
-            store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
-          }
           Swal.fire({
             text: "Successfully Uploaded!",
             icon: "success",
@@ -245,6 +243,9 @@ export default defineComponent({
               confirmButton: "btn btn-primary",
             },
           }).then(() => {
+            uploadRef.value.clearFiles("ready");
+            uploadDisabled.value = true;
+            store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
             hideModal(viewPreAdmissionModalRef.value);
           });
         })
@@ -408,6 +409,7 @@ export default defineComponent({
       formRef,
       loading,
       viewPreAdmissionModalRef,
+      uploadRef,
       handleUploadSubmit,
       handleUploadChange,
       handleUploadRemove,
