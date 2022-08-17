@@ -236,7 +236,6 @@ export default defineComponent({
     });
 
     const handleChange = (file, fileList) => {
-      debugger;
       upload.value.clearFiles();
       uploadDisabled.value = false;
       Data.append("file", file.raw);
