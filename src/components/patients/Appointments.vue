@@ -258,6 +258,7 @@ export default defineComponent({
       } else {
         tableData.value = formData.value;
       }
+      renderTable();
     });
 
     onMounted(() => {
