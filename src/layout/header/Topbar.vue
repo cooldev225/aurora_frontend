@@ -23,7 +23,11 @@
         data-kt-menu-flip="bottom"
       >
         <img
-          :src="profileData.photo"
+          :src="
+            profileData.photo == undefined
+              ? 'media/avatars/blank.png'
+              : profileData.photo
+          "
           :alt="profileData.first_name + ' ' + profileData.last_name"
         />
       </div>
@@ -46,7 +50,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import KTUserMenu from "@/layout/header/partials/UserMenu.vue";

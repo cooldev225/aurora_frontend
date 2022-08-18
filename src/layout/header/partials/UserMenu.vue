@@ -9,7 +9,14 @@
       <div class="menu-content d-flex align-items-center px-3">
         <!--begin::Avatar-->
         <div class="symbol symbol-50px me-5">
-          <img alt="Logo" :src="profileData.photo" />
+          <img
+            alt="Logo"
+            :src="
+              profileData.photo == undefined
+                ? 'media/avatars/blank.png'
+                : profileData.photo
+            "
+          />
         </div>
         <!--end::Avatar-->
 
