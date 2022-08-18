@@ -97,21 +97,21 @@
                     <el-option label="AUDIO" value="audio">
                       <inline-svg
                         class="me-5"
-                        src="media/icons/duotune/files/fil004.svg"
+                        src="media/icons/duotune/general/gen015.svg"
                       />
                       AUDIO
                     </el-option>
                     <el-option label="USB CAPTURE" value="usb-capture">
                       <inline-svg
                         class="me-5"
-                        src="media/icons/duotune/files/fil004.svg"
+                        src="media/icons/duotune/electronics/elc007.svg"
                       />
                       USB CAPTURE
                     </el-option>
                     <el-option label="OTHER" value="other">
                       <inline-svg
                         class="me-5"
-                        src="media/icons/duotune/files/fil004.svg"
+                        src="media/icons/duotune/general/gen025.svg"
                       />
                       OTHER
                     </el-option>

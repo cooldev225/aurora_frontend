@@ -1,7 +1,7 @@
 <template>
   <!--begin::details View-->
   <div class="card mb-5 mb-xl-10" id="patient_view_documents">
-    <div class="row h-450px p-5">
+    <div class="row p-5">
       <div class="col-md-4">
         <el-select
           class="w-100 mb-5"
@@ -15,52 +15,52 @@
             />
             ALL DOCUMENT TYPE
           </el-option>
-          <el-option value="letter" label="LETTER">
+          <el-option value="LETTER" label="LETTER">
             <inline-svg
               class="me-5"
               src="media/icons/duotune/general/gen005.svg"
             />
             LETTER
           </el-option>
-          <el-option value="report" label="REPORT">
+          <el-option value="REPORT" label="REPORT">
             <inline-svg
               class="me-5"
               src="media/icons/duotune/general/gen016.svg"
             />
             REPORT
           </el-option>
-          <el-option value="clinical-note" label="CLINICAL NOTE">
+          <el-option value="CLINICAL_NOTE" label="CLINICAL NOTE">
             <inline-svg
               class="me-5"
               src="media/icons/duotune/files/fil003.svg"
             />
             CLINICAL NOTE
           </el-option>
-          <el-option label="PATHOLOGY REPORT" value="pathology-report">
+          <el-option label="PATHOLOGY REPORT" value="PATHOLOGY_REPORT">
             <inline-svg
               class="me-5"
               src="media/icons/duotune/files/fil004.svg"
             />
             PATHOLOGY REPORT
           </el-option>
-          <el-option label="AUDIO" value="audio">
+          <el-option label="AUDIO" value="AUDIO">
             <inline-svg
               class="me-5"
-              src="media/icons/duotune/files/fil004.svg"
+              src="media/icons/duotune/general/gen015.svg"
             />
             AUDIO
           </el-option>
-          <el-option label="USB CAPTURE" value="usb-capture">
+          <el-option label="USB CAPTURE" value="USB_CAPTURE">
             <inline-svg
               class="me-5"
-              src="media/icons/duotune/files/fil004.svg"
+              src="media/icons/duotune/electronics/elc007.svg"
             />
             USB CAPTURE
           </el-option>
-          <el-option label="OTHER" value="other">
+          <el-option label="OTHER" value="OTHER">
             <inline-svg
               class="me-5"
-              src="media/icons/duotune/files/fil004.svg"
+              src="media/icons/duotune/general/gen025.svg"
             />
             OTHER
           </el-option>
@@ -71,46 +71,63 @@
         >
           No Document Exist
         </div>
-        <div v-for="(item, idx) in documentList" :key="item.id">
-          <input
-            type="radio"
-            class="btn-check"
-            :name="item.created_at"
-            :value="item"
-            :id="item.id"
-            v-model="selectedDocument"
-          />
-          <label
-            class="btn btn-outline btn-outline-dashed btn-outline-default p-3 d-flex align-items-center mb-5"
-            :for="item.id"
-          >
-            <span class="svg-icon svg-icon-3x me-5">
-              <inline-svg
-                v-if="item.document_type === 'LETTER'"
-                src="media/icons/duotune/general/gen005.svg"
-              />
-              <inline-svg
-                v-else-if="item.document_type === 'REPORT'"
-                src="media/icons/duotune/general/gen016.svg"
-              />
-              <inline-svg
-                v-else-if="item.document_type === 'CLINICAL_NOTE'"
-                src="media/icons/duotune/files/fil003.svg"
-              />
-              <inline-svg v-else src="media/icons/duotune/files/fil004.svg" />
-            </span>
-
-            <!--begin::Info-->
-            <span class="d-block fw-bold text-start">
-              <span class="text-dark fw-bolder d-block fs-4 mb-1">
-                DOCUMENT - {{ idx + 1 }}
+        <div class="d-flex flex-column h-450px scroll">
+          <div v-for="item in documentList" :key="item.id">
+            <input
+              type="radio"
+              class="btn-check"
+              :name="item.created_at"
+              :value="item"
+              :id="item.id"
+              v-model="selectedDocument"
+            />
+            <label
+              class="btn btn-outline btn-outline-dashed btn-outline-default p-3 d-flex align-items-center mb-5"
+              :for="item.id"
+            >
+              <span class="svg-icon svg-icon-3x me-5">
+                <inline-svg
+                  v-if="item.document_type === 'LETTER'"
+                  src="media/icons/duotune/general/gen005.svg"
+                />
+                <inline-svg
+                  v-else-if="item.document_type === 'REPORT'"
+                  src="media/icons/duotune/general/gen016.svg"
+                />
+                <inline-svg
+                  v-else-if="item.document_type === 'CLINICAL_NOTE'"
+                  src="media/icons/duotune/files/fil003.svg"
+                />
+                <inline-svg
+                  v-else-if="item.document_type === 'PATHOLOGY_REPORT'"
+                  src="media/icons/duotune/files/fil004.svg"
+                />
+                <inline-svg
+                  v-else-if="item.document_type === 'AUDIO'"
+                  src="media/icons/duotune/general/gen015.svg"
+                />
+                <inline-svg
+                  v-else-if="item.document_type === 'USB_CAPTURE'"
+                  src="media/icons/duotune/electronics/elc007.svg"
+                />
+                <inline-svg
+                  v-else
+                  src="media/icons/duotune/general/gen025.svg"
+                />
               </span>
-              <span class="text-gray-400 fw-bold fs-6">{{
-                moment(item.created_at).format("DD-MM-YYYY HH:mm A")
-              }}</span>
-            </span>
-            <!--end::Info-->
-          </label>
+
+              <!--begin::Info-->
+              <span class="d-block fw-bold text-start">
+                <span class="text-dark fw-bolder d-block fs-4 mb-1">
+                  {{ item.document_name }}
+                </span>
+                <span class="text-gray-400 fw-bold fs-6">{{
+                  moment(item.created_at).format("DD-MM-YYYY HH:mm A")
+                }}</span>
+              </span>
+              <!--end::Info-->
+            </label>
+          </div>
         </div>
       </div>
       <div class="col-md-8 d-flex flex-column">
@@ -142,12 +159,11 @@
             />
           </template>
         </div>
-        <div class="h-100 scroll border" id="documentField">
-          <img
-            v-if="selectedDocument"
-            :src="selectedDocument.file_path"
-            alt="document"
-          />
+        <div class="h-450px border" id="documentField">
+          <img v-if="false" :src="selectedDocument.file_path" alt="document" />
+          <div class="fv-row my-4 pdf_viewer_wrapper">
+            <div id="divPDFViewer" class="pdf_viewer"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -159,6 +175,15 @@
   <!--end::details View-->
 </template>
 
+<style lang="scss">
+.pdf_viewer_wrapper {
+  height: 100%;
+  > .pdf_viewer {
+    height: 100%;
+  }
+}
+</style>
+
 <script>
 import { defineComponent, ref, watch, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -168,9 +193,7 @@ import moment from "moment";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import SendDocumentViaEmail from "./SendDocumentViaEmail.vue";
 import { Modal } from "bootstrap";
-// import { VuePdf, createLoadingTask } from "vue3-pdfjs/esm";
-// import { VuePdfPropsType } from "vue3-pdfjs/components/vue-pdf/vue-pdf-props";
-// import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
+import pdf from "pdfobject";
 
 export default defineComponent({
   name: "patient-documents",
@@ -185,7 +208,7 @@ export default defineComponent({
     const documentList = ref(null);
     const _documentList = computed(() => store.getters.getPatientDocumentList);
     const selectedDocument = ref(null);
-    const documentType = ref(null);
+    const documentType = ref("ALL");
     const pdfSrc = ref(null);
     const printLoading = ref(false);
     const printObj = ref({
@@ -220,7 +243,14 @@ export default defineComponent({
     });
 
     watch(selectedDocument, () => {
-      pdfSrc.value = selectedDocument.value;
+      if (selectedDocument.value.file_path) {
+        pdf.embed(selectedDocument.value.file_path, "#divPDFViewer");
+        // pdf.embed(
+        //   "https://pspdfkit.com/downloads/pspdfkit-web-demo.pdf",
+        //   "#divPDFViewer"
+        // );
+      }
+      // pdfSrc.value = selectedDocument.value;
       // printObj.value.url = selectedDocument.value["file_path"];
     });
 
