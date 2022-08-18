@@ -131,12 +131,6 @@
           </span>
         </template>
 
-        <template v-slot:cell-specialist_name="{ row: item }">
-          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
-            {{ item.specialist_name }}
-          </span>
-        </template>
-
         <template v-slot:cell-appointment_type="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
             {{ item.appointment_type.name }}
@@ -199,12 +193,6 @@ export default defineComponent({
       {
         name: "Date/Time",
         key: "date_time",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Specialist Name",
-        key: "specialist_name",
         sortable: true,
         searchable: true,
       },

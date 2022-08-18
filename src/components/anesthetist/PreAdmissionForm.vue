@@ -69,7 +69,7 @@
                     :auto-upload="false"
                     accept="pdf/*"
                   >
-                    <template #trigger>
+                    <template v-if="userRole != 'anesthetist'" #trigger>
                       <el-button class="btn btn-sm btn-info" type="primary">
                         <span class="indicator-label">
                           Upload New Pre Admission
@@ -123,7 +123,7 @@
                 :data-kt-indicator="loading ? 'on' : null"
                 class="btn btn-md btn-primary me-4"
                 type="button"
-                @click="handleApproved"
+                @click="handleProcedureApproval('APPROVED')"
               >
                 <span v-if="!loading" class="indicator-label"> Approved </span>
                 <span v-if="loading" class="indicator-progress">
@@ -138,7 +138,7 @@
                 :data-kt-indicator="loading ? 'on' : null"
                 class="btn btn-md btn-danger me-4"
                 type="button"
-                @click="handleNotApproved"
+                @click="handleProcedureApproval('NOT_APPROVED')"
               >
                 <span v-if="!loading" class="indicator-label">
                   Not Approved
@@ -155,7 +155,7 @@
                 :data-kt-indicator="loading ? 'on' : null"
                 class="btn btn-md btn-success"
                 type="button"
-                @click="handleRequiresConsult"
+                @click="handleProcedureApproval('CONSULT_REQUIRED')"
               >
                 <span v-if="!loading" class="indicator-label">
                   Requires Consult
@@ -188,12 +188,12 @@
 </style>
 
 <script>
-import { defineComponent, watchEffect, ref, watch } from "vue";
+import { defineComponent, watchEffect, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
-
+import store from "@/store";
 import pdf from "pdfobject";
 
 export default defineComponent({
@@ -201,6 +201,11 @@ export default defineComponent({
   components: {},
   props: {
     isEditable: { type: String, required: true },
+  },
+  data: function () {
+    return {
+      userRole: computed(() => store.getters.userRole),
+    };
   },
   setup(props) {
     const store = useStore();
@@ -218,7 +223,7 @@ export default defineComponent({
     const rules = ref({
       notes: [
         {
-          required: true,
+          required: false,
           message: "Notes cannot be blank",
           trigger: "change",
         },
@@ -272,99 +277,15 @@ export default defineComponent({
       uploadDisabled.value = true;
     };
 
-    const handleApproved = () => {
+    const handleProcedureApproval = (status) => {
       if (!formRef.value) {
         return;
       }
 
       const updateData = {
-        appointment_id: preAdmissionData.value.appointment_id,
+        appointment_id: preAdmissionData.value.id,
         notes: preAdmissionData.value.notes,
-        procedure_approval_status: "APPROVED",
-      };
-
-      formRef.value.validate((valid) => {
-        if (valid) {
-          loading.value = true;
-          store
-            .dispatch(Actions.PROCEDURE_APPROVAL.UPDATE, updateData)
-            .then(() => {
-              loading.value = false;
-              store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
-              Swal.fire({
-                text: "Successfully Updated!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "OK",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                hideModal(viewPreAdmissionModalRef.value);
-              });
-            })
-            .catch(({ response }) => {
-              loading.value = false;
-              console.log(response.data.error);
-            });
-          formRef.value.resetFields();
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
-        }
-      });
-    };
-
-    const handleNotApproved = () => {
-      if (!formRef.value) {
-        return;
-      }
-
-      const updateData = {
-        appointment_id: preAdmissionData.value.appointment_id,
-        notes: preAdmissionData.value.notes,
-        procedure_approval_status: "NOT_APPROVED",
-      };
-
-      formRef.value.validate((valid) => {
-        if (valid) {
-          loading.value = true;
-          store
-            .dispatch(Actions.PROCEDURE_APPROVAL.UPDATE, updateData)
-            .then(() => {
-              loading.value = false;
-              store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
-              Swal.fire({
-                text: "Successfully Updated!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "OK",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                hideModal(viewPreAdmissionModalRef.value);
-              });
-            })
-            .catch(({ response }) => {
-              loading.value = false;
-              console.log(response.data.error);
-            });
-          formRef.value.resetFields();
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
-        }
-      });
-    };
-
-    const handleRequiresConsult = () => {
-      if (!formRef.value) {
-        return;
-      }
-
-      const updateData = {
-        appointment_id: preAdmissionData.value.appointment_id,
-        notes: preAdmissionData.value.notes,
-        procedure_approval_status: "CONSULT_REQUIRED",
+        procedure_approval_status: status,
       };
 
       formRef.value.validate((valid) => {
@@ -421,9 +342,7 @@ export default defineComponent({
       handleUploadSubmit,
       handleUploadChange,
       handleUploadRemove,
-      handleApproved,
-      handleNotApproved,
-      handleRequiresConsult,
+      handleProcedureApproval,
       uploadDisabled,
     };
   },
