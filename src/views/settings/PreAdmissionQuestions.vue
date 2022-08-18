@@ -1,6 +1,7 @@
 <template>
   <!--begin::Form-->
   <el-form
+    v-show="isLoaded"
     @submit.prevent="submit()"
     :model="formData"
     :rules="rules"
@@ -51,7 +52,7 @@
           <span
             @click="handleDeleteQuestion(questionIndex)"
             class="cursor-pointer text-nowrap text-danger text-right"
-            >- Delete Section</span
+            >- Delete Question</span
           >
         </div>
       </div>
@@ -96,6 +97,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const formRef = ref(null);
+    const isLoaded = ref(false);
     const formData = ref({
       id: 0,
       title: "",
@@ -113,16 +115,16 @@ export default defineComponent({
     });
 
     const handleAddQuestion = () => {
-      let new_section = {};
+      let new_question = {};
 
-      new_section.text = "";
-      new_section.answer_format = "TEXT";
+      new_question.text = "";
+      new_question.answer_format = "TEXT";
 
-      formData.value.sections.push(new_section);
+      formData.value.questions.push(new_question);
     };
 
     const handleDeleteQuestion = (questionIndex) => {
-      formData.value.sections.splice(questionIndex, 1);
+      formData.value.questions.splice(questionIndex, 1);
     };
 
     const submit = () => {
@@ -157,6 +159,7 @@ export default defineComponent({
       ApiService.get("pre-admission-sections")
         .then(({ data }) => {
           formData.value = data.data;
+          isLoaded.value = true;
 
           return data.data;
         })
@@ -176,6 +179,7 @@ export default defineComponent({
       formData,
       submit,
       formRef,
+      isLoaded,
       handleAddQuestion,
       handleDeleteQuestion,
     };
