@@ -230,6 +230,8 @@ export default defineComponent({
       ],
     });
 
+    const selectedPatient = computed(() => store.getters.selectedPatient);
+
     const handleUploadSubmit = () => {
       const appendedUploadData = {
         uploadData: uploadData,
@@ -259,7 +261,7 @@ export default defineComponent({
                 preAdmissionData.value.patient_id
               );
             }
-            hideModal(viewPreAdmissionModalRef.value);
+            // hideModal(viewPreAdmissionModalRef.value);
           });
         })
         .catch(({ response }) => {
@@ -325,10 +327,22 @@ export default defineComponent({
 
     watch(preAdmissionData, () => {
       if (preAdmissionData.value.pre_admission_form_url) {
+        document.getElementById("divPDFViewer").innerHTML = "";
         pdf.embed(
           preAdmissionData.value.pre_admission_form_url,
           "#divPDFViewer"
         );
+      }
+    });
+
+    watch(selectedPatient, () => {
+      const appointments = selectedPatient.value.appointments;
+      const selectedAppointment = appointments.find(
+        (element) => element.id === preAdmissionData.value.id
+      );
+
+      if (selectedAppointment !== null) {
+        preAdmissionData.value = selectedAppointment;
       }
     });
 
