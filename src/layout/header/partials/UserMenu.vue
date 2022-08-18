@@ -9,16 +9,20 @@
       <div class="menu-content d-flex align-items-center px-3">
         <!--begin::Avatar-->
         <div class="symbol symbol-50px me-5">
-          <img alt="Logo" src="media/avatars/300-1.jpg" />
+          <img alt="Logo" :src="profileData.photo" />
         </div>
         <!--end::Avatar-->
 
         <!--begin::Username-->
         <div class="d-flex flex-column">
-          <div class="fw-bolder d-flex align-items-center fs-5">Max Smith</div>
-          <span class="fw-bold text-muted text-hover-primary fs-7"
-            >max@kt.com</span
+          <div class="fw-bolder d-flex align-items-center fs-5">
+            {{ profileData.first_name + " " + profileData.last_name }}
+          </div>
+          <span
+            class="text-break pe-1 fw-bold text-muted text-hover-primary fs-7"
           >
+            {{ profileData.email }}
+          </span>
         </div>
         <!--end::Username-->
       </div>
@@ -54,6 +58,9 @@ import { Actions } from "@/store/enums/StoreEnums";
 export default defineComponent({
   name: "kt-user-menu",
   components: {},
+  props: {
+    profileData: Object,
+  },
   setup() {
     const router = useRouter();
     const i18n = useI18n();
@@ -105,7 +112,7 @@ export default defineComponent({
       return i18n.locale.value === lang;
     };
 
-    const currentLangugeLocale = computed(() => {
+    const currentLanguageLocale = computed(() => {
       return countries[i18n.locale.value];
     });
 
@@ -114,7 +121,7 @@ export default defineComponent({
       signOut,
       setLang,
       currentLanguage,
-      currentLangugeLocale,
+      currentLanguageLocale,
       countries,
     };
   },

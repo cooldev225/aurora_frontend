@@ -8,6 +8,7 @@ export interface IProfile {
   first_name: string;
   last_name: string;
   email: string;
+  photo: string;
 }
 
 export interface ProfileInfo {
@@ -15,12 +16,12 @@ export interface ProfileInfo {
 }
 
 @Module
-export default class AptTypesModule extends VuexModule implements ProfileInfo {
+export default class ProfileModule extends VuexModule implements ProfileInfo {
   profileSelectedData = {} as IProfile;
 
   /**
    * Get current user object
-   * @returns SelectedaptTypesData
+   * @returns profileSelectedData
    */
   get getProfileSelected(): IProfile {
     return this.profileSelectedData;
