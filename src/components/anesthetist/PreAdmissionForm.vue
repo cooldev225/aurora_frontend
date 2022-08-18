@@ -202,7 +202,7 @@ export default defineComponent({
   props: {
     isEditable: { type: String, required: true },
   },
-  setup() {
+  setup(props) {
     const store = useStore();
     const formRef = ref(null);
     const viewPreAdmissionModalRef = ref(null);
@@ -245,7 +245,15 @@ export default defineComponent({
           }).then(() => {
             uploadRef.value.clearFiles("ready");
             uploadDisabled.value = true;
-            store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
+
+            if (props.isEditable === "true") {
+              store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
+            } else {
+              store.dispatch(
+                Actions.PATIENTS.VIEW,
+                preAdmissionData.value.patient_id
+              );
+            }
             hideModal(viewPreAdmissionModalRef.value);
           });
         })
