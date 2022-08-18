@@ -42,8 +42,8 @@
             class="w-100"
             placeholder="Select Answer Format"
           >
-            <el-option value="text" label="Text" />
-            <el-option value="boolean" label="Boolean" />
+            <el-option value="TEXT" label="Text" />
+            <el-option value="BOOLEAN" label="Boolean" />
           </el-select>
         </el-form-item>
 
@@ -71,11 +71,7 @@
       </router-link>
 
       <!--begin::Button-->
-      <button
-        :data-kt-indicator="loading ? 'on' : null"
-        class="btn btn-lg btn-primary"
-        type="submit"
-      >
+      <button class="btn btn-lg btn-primary" type="submit">
         <span class="indicator-label"> Save </span>
       </button>
       <!--end::Button-->
@@ -120,7 +116,7 @@ export default defineComponent({
       let new_section = {};
 
       new_section.text = "";
-      new_section.answer_format = "text";
+      new_section.answer_format = "TEXT";
 
       formData.value.sections.push(new_section);
     };
