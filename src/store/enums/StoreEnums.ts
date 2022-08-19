@@ -219,6 +219,9 @@ const Actions = {
       VALIDATE: "validateAptPreAdmission",
       STORE: "createAptPreAdmission",
     },
+    USER_APT: {
+      LIST: "userAptList",
+    },
   },
 
   REFERRAL_DOCTOR: {
@@ -392,6 +395,10 @@ const Mutations = {
         DATA: "setValidateAptPreAdmission",
         MSG: "setValidateAptPreAdmissionMsg",
       },
+    },
+    USER_APT: {
+      LIST: "setUserAptList",
+      SELECT: "setSelectUserApt",
     },
   },
 
