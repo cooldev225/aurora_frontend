@@ -19,6 +19,7 @@ export interface AptInfo {
   aptPreAdmissionValidateMsg: string;
   selectedSpecialistData;
   aptDataById: Array<IApt>;
+  userAptList: Array<IApt>;
 }
 
 @Module
@@ -34,6 +35,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   aptPreAdmissionValidateMsg = "" as string;
   selectedSpecialistData = null;
   aptDataById = [] as Array<IApt>;
+  userAptList = [] as Array<IApt>;
   /**
    * Get current user object
    * @returns AdminList
@@ -120,6 +122,14 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
     return this.aptPreAdmissionValidateMsg;
   }
 
+  /**
+   * Get current user apt list
+   * @returns SelectedaptData
+   */
+  get getUserAptList(): Array<IApt> {
+    return this.userAptList;
+  }
+
   @Mutation
   [Mutations.SET_APT.LIST](aptData) {
     this.aptData = aptData;
@@ -173,6 +183,11 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   @Mutation
   [Mutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG](data) {
     this.aptPreAdmissionValidateMsg = data;
+  }
+
+  @Mutation
+  [Mutations.SET_APT.USER_APT.LIST](data) {
+    this.userAptList = data;
   }
 
   @Action
@@ -443,5 +458,23 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
         console.log(response.data.error);
         // this.context.commit(Mutations.SET_ERROR, response.data.errors);
       });
+  }
+
+  @Action
+  [Actions.APT.USER_APT.LIST]() {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.get("user-appointments")
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_APT.USER_APT.LIST, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
   }
 }
