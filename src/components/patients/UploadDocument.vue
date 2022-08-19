@@ -46,11 +46,11 @@
                 <InputWrapper
                   class="col-6"
                   label="Document Title"
-                  prop="document_title"
+                  prop="document_name"
                 >
                   <el-input
                     type="text"
-                    v-model.number="formData.document_title"
+                    v-model.number="formData.document_name"
                   />
                 </InputWrapper>
                 <InputWrapper
@@ -170,6 +170,7 @@
                     ref="upload"
                     :class="{ disabled: uploadDisabled }"
                     :limit="1"
+                    :file-list="fileList"
                     :on-change="handleChange"
                     :on-remove="handleRemove"
                     :auto-upload="false"
@@ -250,10 +251,11 @@ export default defineComponent({
     const patientId = computed(() => props.patientId);
     const uploadDisabled = ref(false);
     const upload = ref(null);
-    const Data = new FormData();
+    let Data = new FormData();
+    const fileList = ref([]);
 
     const formData = ref({
-      document_title: "",
+      document_name: "",
       patient_id: patientId.value,
       document_type: "",
       appointment_id: "",
@@ -261,6 +263,13 @@ export default defineComponent({
     });
 
     const rules = ref({
+      document_name: [
+        {
+          required: true,
+          message: "This field cannot be blank",
+          trigger: "change",
+        },
+      ],
       document_type: [
         {
           required: true,
@@ -322,6 +331,8 @@ export default defineComponent({
               console.log(response.data.error);
             });
           formRef.value.resetFields();
+          upload.value.clearFiles();
+          fileList.value = [];
         } else {
           // this.context.commit(Mutations.PURGE_AUTH);
         }
@@ -352,6 +363,7 @@ export default defineComponent({
     });
 
     const handleChange = (file, fileList) => {
+      Data = new FormData();
       upload.value.clearFiles();
       uploadDisabled.value = false;
       Data.append("file", file.raw);
@@ -377,6 +389,7 @@ export default defineComponent({
       handleChange,
       handleRemove,
       uploadDisabled,
+      fileList,
     };
   },
 });
