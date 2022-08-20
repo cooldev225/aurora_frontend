@@ -20,6 +20,7 @@ export interface AptInfo {
   selectedSpecialistData;
   aptDataById: Array<IApt>;
   userAptList: Array<IApt>;
+  aptUserSelectedData: IApt;
 }
 
 @Module
@@ -36,6 +37,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   selectedSpecialistData = null;
   aptDataById = [] as Array<IApt>;
   userAptList = [] as Array<IApt>;
+  aptUserSelectedData = {} as IApt;
   /**
    * Get current user object
    * @returns AdminList
@@ -130,6 +132,14 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
     return this.userAptList;
   }
 
+  /**
+   * Get current selected appointment
+   * @returns SelectedaptData
+   */
+  get getAptUserSelected(): IApt {
+    return this.aptUserSelectedData;
+  }
+
   @Mutation
   [Mutations.SET_APT.LIST](aptData) {
     this.aptData = aptData;
@@ -188,6 +198,11 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   @Mutation
   [Mutations.SET_APT.USER_APT.LIST](data) {
     this.userAptList = data;
+  }
+
+  @Mutation
+  [Mutations.SET_APT.USER_APT.SELECT](data) {
+    this.aptUserSelectedData = data;
   }
 
   @Action
