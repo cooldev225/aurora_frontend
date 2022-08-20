@@ -209,7 +209,6 @@ export default defineComponent({
     const _documentList = computed(() => store.getters.getPatientDocumentList);
     const selectedDocument = ref(null);
     const documentType = ref("ALL");
-    const pdfSrc = ref(null);
     const printLoading = ref(false);
     const printObj = ref({
       id: "documentField",

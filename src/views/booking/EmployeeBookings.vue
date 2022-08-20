@@ -11,7 +11,13 @@
         :options="calendarOptions"
       >
         <template v-slot:eventContent="arg">
-          {{ arg.event.title }}
+          <div v-if="arg.event.extendedProps.attendance_status == 'CHECKED_IN'">
+            <span class="badge badge-success"> CHECKED IN </span>
+            <br />
+          </div>
+          {{ arg.event.title }}<br />
+          {{ arg.event.extendedProps.start_time }} -
+          {{ arg.event.extendedProps.end_time }}
         </template>
       </FullCalendar>
       <!--end::Calendar-->
@@ -19,13 +25,17 @@
     <!--end::Card body-->
   </div>
   <!--end::Card-->
+
+  <AppointmentDrawer />
 </template>
 
 <script>
 import { defineComponent, onMounted, computed, ref, watch } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
+import AppointmentDrawer from "@/components/specialist/AppointmentDrawer.vue";
 
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -33,11 +43,13 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import { TODAY } from "@/core/data/events";
+import moment from "moment";
 
 export default defineComponent({
   name: "employee-bookings-dashboard",
   components: {
     FullCalendar,
+    AppointmentDrawer,
   },
   setup() {
     const store = useStore();
@@ -47,13 +59,19 @@ export default defineComponent({
 
     let appointments = [];
 
-    const handleDateClick = () => {
-      return false;
-    };
+    const handleEventClick = (e) => {
+      const appointment_id = e.event.extendedProps.appointment_id;
+      const aptSelected = userAptList.value.find(
+        ({ id }) => id === appointment_id
+      );
 
-    const handleEventClick = () => {
-      // console.log(event);
-      console.log(this);
+      if (aptSelected) {
+        store.commit(Mutations.SET_APT.USER_APT.SELECT, aptSelected);
+      }
+
+      DrawerComponent?.getInstance("appointment-drawer")?.toggle();
+      // DrawerComponent?.getInstance("booking-drawer")?.toggle();
+      console.log();
     };
 
     const calendarOptions = {
@@ -67,7 +85,7 @@ export default defineComponent({
       initialDate: TODAY,
       navLinks: true, // can click day/week names to navigate views
       selectable: true,
-      selectMirror: true,
+      selectMirror: false,
 
       views: {
         timeGridWeek: { buttonText: "week" },
@@ -77,7 +95,6 @@ export default defineComponent({
       editable: false,
       dayMaxEvents: false, // allow "more" link when too many events
       events: appointments,
-      dateClick: handleDateClick,
       eventClick: handleEventClick,
     };
 
@@ -86,14 +103,25 @@ export default defineComponent({
       for (let i = 0; i < userAptList.value.length; i++) {
         const appointment = userAptList.value[i];
         const title = appointment.patient_name.full;
-        const start_time = appointment.date + "T" + appointment.start_time;
-        const end_time = appointment.date + "T" + appointment.end_time;
+        const start_date_time = appointment.date + "T" + appointment.start_time;
+        const end_date_time = appointment.date + "T" + appointment.end_time;
+
+        const start_time = moment(appointment.start_time, "h:mm A")
+          .format("h:mm A")
+          .toString();
+        const end_time = moment(appointment.end_time, "h:mm A")
+          .format("h:mm A")
+          .toString();
 
         appointments.push({
+          appointment_id: appointment.id,
           title: title,
-          start: start_time,
-          end: end_time,
+          start: start_date_time,
+          end: end_date_time,
+          start_time: start_time,
+          end_time: end_time,
           className: "fc-event-success",
+          attendance_status: appointment.attendance_status,
         });
       }
 
@@ -108,7 +136,6 @@ export default defineComponent({
 
     return {
       calendarOptions,
-      handleDateClick,
       handleEventClick,
       refCalendar,
       calendarKey,
@@ -116,3 +143,13 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+.fc-timegrid-slot {
+  height: 70px !important;
+}
+
+.fc-timegrid-event {
+  cursor: pointer;
+}
+</style>

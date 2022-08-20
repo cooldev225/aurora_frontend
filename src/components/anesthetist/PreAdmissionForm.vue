@@ -326,7 +326,10 @@ export default defineComponent({
     });
 
     watch(preAdmissionData, () => {
-      if (preAdmissionData.value.pre_admission_form_url) {
+      if (
+        preAdmissionData.value !== undefined &&
+        preAdmissionData.value.pre_admission_form_url
+      ) {
         document.getElementById("divPDFViewer").innerHTML = "";
         pdf.embed(
           preAdmissionData.value.pre_admission_form_url,
