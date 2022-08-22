@@ -275,7 +275,6 @@
     :apt-time-require-list="aptTimeRequireList"
     :x-weeks="x_weeks_list"
   />
-  <!-- <EditModal></EditModal> -->
 </template>
 <script>
 import {
@@ -303,7 +302,6 @@ export default defineComponent({
   components: {
     VueCtkDateTimePicker,
     CreateModal,
-    // EditModal,
     AptTable,
     AppointmentListPopup,
   },

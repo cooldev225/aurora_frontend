@@ -314,20 +314,30 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      console.log(aptData.value);
-      displayData.clinic_name = aptData.value.clinic_name;
-      displayData.start_time = aptData.value.start_time;
-      displayData.start_time = aptData.value.start_time;
-      displayData.end_time = aptData.value.end_time;
+      if (aptData.value.first_name != null) {
+        displayData.patient_name =
+          aptData.value.first_name + " " + aptData.value.last_name;
+        displayData.clinic_name = aptData.value.clinic_name;
+        displayData.allergies = aptData.value.allergies;
+        displayData.appointment_type_name = aptData.value.appointment_type_name;
+        displayData.patient_number = aptData.value.contact_number;
+      } else {
+        displayData.clinic_name = aptData.value.clinic_details?.name;
+        displayData.appointment_type_name =
+          aptData.value.appointment_type?.name;
+        displayData.specialist_name = aptData.value.specialist_name;
+
+        displayData.allergies = aptData.value.patient_details?.allergies;
+        displayData.patient_name = aptData.value.patient_name?.full;
+        displayData.patient_number =
+          aptData.value.patient_details?.contact_number;
+      }
+
+      displayData.start_time = aptData.value.formatted_appointment_time;
       displayData.arrival_time = aptData.value.arrival_time;
-      displayData.appointment_type_name = aptData.value.appointment_type_name;
+
       displayData.specialist_name = aptData.value.specialist_name;
       displayData.notes = aptData.value.note;
-
-      displayData.allergies = aptData.value.allergies;
-      displayData.patient_name =
-        aptData.value.first_name + " " + aptData.value.last_name;
-      displayData.patient_number = aptData.value.contact_number;
 
       displayData.procedure_approval_status =
         aptData.value.procedure_approval_status;
