@@ -100,7 +100,12 @@
                   <template v-else-if="item_2.time_length === 0"></template>
                   <template v-else>
                     <td
-                      @click="handleEdit(item_1.specialist, item_2.appointment)"
+                      @click="
+                        handleShowBookingDrawer(
+                          item_1.specialist,
+                          item_2.appointment
+                        )
+                      "
                       :rowspan="item_2.time_length"
                       :style="{
                         'min-width': '220px',
@@ -393,7 +398,7 @@ export default defineComponent({
       }
     };
 
-    const handleEdit = (specialist, item) => {
+    const handleShowBookingDrawer = (specialist, item) => {
       store.commit(Mutations.SET_APT.SELECT, item);
       DrawerComponent?.getInstance("booking-drawer")?.toggle();
       store.commit(Mutations.SET_APT.SELECT_SPECIALIST, specialist);
@@ -404,7 +409,7 @@ export default defineComponent({
       tableData,
       tableTitle,
       handleAddApt,
-      handleEdit,
+      handleShowBookingDrawer,
       timeStr2Number,
       aptTimeList,
       appointment,

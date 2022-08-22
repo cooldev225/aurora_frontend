@@ -44,11 +44,7 @@
               data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
               data-kt-scroll-offset="300px"
             >
-              <InputWrapper
-                :class="colString"
-                label="Time Frame"
-                prop="time_frame"
-              >
+              <InputWrapper label="Time Frame" prop="time_frame">
                 <el-select
                   class="w-100"
                   v-model="formData.time_frame"

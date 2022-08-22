@@ -131,7 +131,7 @@ export default defineComponent({
   name: "create-letter-template-modal",
   components: { InputWrapper },
   props: {
-    patientId: { type: String, required: true },
+    patientId: { required: true },
   },
   setup(props) {
     const store = useStore();

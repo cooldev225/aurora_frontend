@@ -35,7 +35,7 @@ export default class ReferralDoctorModule
   [Actions.REFERRAL_DOCTOR.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("referring-doctors/list")
+      ApiService.get("referring-doctors")
         .then(({ data }) => {
           this.context.commit(Mutations.SET_REFERRAL_DOCTOR.LIST, data.data);
           return data.data;

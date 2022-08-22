@@ -186,7 +186,7 @@ export default defineComponent({
     ckeditor: CKEditor.component,
   },
   props: {
-    patientId: { type: String, required: true },
+    patientId: { required: true },
   },
   setup(props) {
     const store = useStore();

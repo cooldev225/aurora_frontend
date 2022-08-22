@@ -222,7 +222,6 @@ export default defineComponent({
     const searchVal = computed(() => store.getters.getSearchVariable);
 
     const displayData = reactive({
-      reference_number: "",
       clinic_name: "",
       start_time: "",
       end_time: "",
@@ -315,7 +314,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      displayData.reference_number = aptData.value.reference_number;
+      console.log(aptData.value);
       displayData.clinic_name = aptData.value.clinic_name;
       displayData.start_time = aptData.value.start_time;
       displayData.start_time = aptData.value.start_time;

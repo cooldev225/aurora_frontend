@@ -134,7 +134,6 @@ export default defineComponent({
 
     watchEffect(() => {
       reportTemplatesData.value = list.value;
-      console.log(reportTemplatesData.value);
     });
 
     const submit = () => {

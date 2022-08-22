@@ -13,7 +13,7 @@
             <span
               class="my-auto text-gray-800 text-hover-primary fs-2 fw-bolder me-1"
             >
-              {{ formData.first_name }} {{ formData.last_name }}
+              {{ patientData.first_name }} {{ patientData.last_name }}
             </span>
 
             <!--begin::Actions-->
@@ -70,19 +70,19 @@
       <!--begin::Info-->
       <div class="d-flex flex-wrap fw-bold fs-6 mb-4 pe-2">
         <IconText iconSRC="media/icons/duotune/communication/com011.svg">
-          {{ formData.email }}
+          {{ patientData.email }}
         </IconText>
 
         <IconText iconSRC="media/icons/duotune/general/gen018.svg">
-          {{ formData.address }}
+          {{ patientData.address }}
         </IconText>
 
         <IconText iconSRC="media/icons/duotune/files/fil002.svg">
-          {{ formData.date_of_birth }}
+          {{ patientData.date_of_birth }}
         </IconText>
 
         <IconText iconSRC="media/icons/duotune/electronics/elc002.svg">
-          {{ formData.contact_number }}
+          {{ patientData.contact_number }}
         </IconText>
       </div>
       <!--end::Info-->
@@ -154,9 +154,9 @@
   <!--end::Navbar-->
   <RecallReminderModal></RecallReminderModal>
   <ReportModal></ReportModal>
-  <LetterModal :patientId="formData.id"></LetterModal>
-  <CreateAudioModal :patientId="formData.id"></CreateAudioModal>
-  <UploadDocument :patientId="formData.id"></UploadDocument>
+  <LetterModal :patientId="patientData.id"></LetterModal>
+  <CreateAudioModal :patientId="patientData.id"></CreateAudioModal>
+  <UploadDocument :patientId="patientData.id"></UploadDocument>
   <router-view></router-view>
 </template>
 
@@ -193,7 +193,15 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    const formData = ref({});
+    const patientData = ref({
+      id: "",
+      first_name: "",
+      last_name: "",
+      address: "",
+      email: "",
+      date_of_birth: "",
+      contact_number: "",
+    });
     const handleRecallReminder = () => {
       const modal = new Modal(
         document.getElementById("modal_patient_recall_reminder")
@@ -218,7 +226,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      formData.value = store.getters.selectedPatient;
+      patientData.value = store.getters.selectedPatient;
     });
 
     const handleUploadDocument = () => {
@@ -227,7 +235,7 @@ export default defineComponent({
     };
 
     return {
-      formData,
+      patientData,
       handleRecallReminder,
       handleReport,
       handleLetter,

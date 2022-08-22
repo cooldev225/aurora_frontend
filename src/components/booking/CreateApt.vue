@@ -1178,8 +1178,6 @@ export default defineComponent({
     const otherInfoData = ref({
       anesthetic_questions: false,
       anesthetic_answers: [],
-      procedure_questions: false,
-      procedure_answers: [],
       referring_doctor_name: "",
       referring_doctor_id: "",
       referral_duration: "",
@@ -1416,7 +1414,6 @@ export default defineComponent({
 
       if (apt_type.value === "Consultation") {
         otherInfoData.value.anesthetic_questions = false;
-        otherInfoData.value.procedure_questions = false;
       }
 
       const specialist = store.getters.getSelectedSpecialist;
@@ -1551,7 +1548,6 @@ export default defineComponent({
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
-      store.dispatch(Actions.PROCEDURE_QUES.ACTIVE_LIST);
       store.dispatch(Actions.APT.TYPES.LIST);
       store.dispatch(Actions.ORG.LIST);
       store.dispatch(Actions.PATIENTS.LIST);

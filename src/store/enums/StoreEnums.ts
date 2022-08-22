@@ -143,14 +143,6 @@ const Actions = {
     UPDATE: "updateNtfyTemplates",
   },
 
-  PROCEDURE_QUES: {
-    LIST: "listProcedureQues",
-    CREATE: "createProcedureQues",
-    DELETE: "deleteProcedureQues",
-    UPDATE: "updateProcedureQues",
-    ACTIVE_LIST: "listActiveProcedureQues",
-  },
-
   REPORT_TEMPLATES: {
     LIST: "listReportTemplate",
     CREATE: "createReportTemplate",
@@ -356,12 +348,6 @@ const Mutations = {
     LIST: "setAnesQuesList",
     SELECT: "setSelectAnesQuesSelect",
     ACTIVE_LIST: "setAnesQuesActiveList",
-  },
-
-  SET_PROCEDURE_QUES: {
-    LIST: "setProQuesList",
-    SELECT: "setSelectProQuesSelect",
-    ACTIVE_LIST: "setProQuesActiveList",
   },
 
   SET_APT: {
