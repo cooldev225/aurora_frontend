@@ -13,9 +13,13 @@
         >
           <div class="container py-6">
             <div class="row justify-content-md-center">
-              <InputWrapper :class="colString" label="Clinic Name" prop="name">
+              <InputWrapper
+                required
+                :class="colString"
+                label="Clinic Name"
+                prop="name"
+              >
                 <el-input
-                  required
                   v-model="formData.name"
                   type="text"
                   placeholder="Clinic Name"
@@ -36,7 +40,8 @@
               </InputWrapper>
 
               <InputWrapper
-                required:class="colString"
+                required
+                :class="colString"
                 label="Address"
                 prop="address"
               >
@@ -100,7 +105,6 @@
               </InputWrapper>
 
               <InputWrapper
-                required
                 :class="colString"
                 label="VAED number"
                 prop="VAED_number"
@@ -112,12 +116,7 @@
                 />
               </InputWrapper>
 
-              <InputWrapper
-                required
-                :class="colString"
-                label="LSPN id"
-                prop="lspn_id"
-              >
+              <InputWrapper :class="colString" label="LSPN id" prop="lspn_id">
                 <el-input
                   v-model="formData.lspn_id"
                   type="text"
@@ -126,7 +125,6 @@
               </InputWrapper>
 
               <InputWrapper
-                required
                 :class="colString"
                 label="Specimen Collection Point"
                 prop="specimen_collection_point_number"
@@ -138,6 +136,39 @@
                 />
               </InputWrapper>
             </div>
+            <el-divider />
+            <InputWrapper
+              :class="colString"
+              label="Document Header"
+              prop="document_header"
+            >
+              <el-upload
+                action="#"
+                ref="upload"
+                list-type="picture-card"
+                :limit="1"
+                :auto-upload="false"
+                accept="image/*"
+              >
+                <i class="fa fa-plus"></i>
+              </el-upload>
+            </InputWrapper>
+            <InputWrapper
+              :class="colString"
+              label="Document Footer"
+              prop="document_footer"
+            >
+              <el-upload
+                action="#"
+                ref="upload"
+                list-type="picture-card"
+                :limit="1"
+                :auto-upload="false"
+                accept="image/*"
+              >
+                <i class="fa fa-plus"></i>
+              </el-upload>
+            </InputWrapper>
             <el-divider />
             <button
               type="button"
@@ -190,7 +221,7 @@ export default defineComponent({
   components: { InputWrapper },
   data: function () {
     return {
-      colString: "col-12 col-sm-6 col-lg-4 ",
+      colString: "col-12 col-sm-6  ",
     };
   },
   setup() {
@@ -247,7 +278,6 @@ export default defineComponent({
       ],
       hospital_provider_number: [
         {
-          required: true,
           message: "Provider Number cannot be blank",
           trigger: "change",
         },

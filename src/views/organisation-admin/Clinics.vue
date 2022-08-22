@@ -2,21 +2,7 @@
   <div class="card w-75 m-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
-      <div class="card-title">
-        <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
-          <span class="svg-icon svg-icon-1 position-absolute ms-6">
-            <inline-svg src="media/icons/duotune/general/gen021.svg" />
-          </span>
-          <input
-            type="text"
-            data-kt-subscription-table-filter="search"
-            class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Clinic"
-          />
-        </div>
-        <!--end::Search-->
-      </div>
+      <div class="card-title"></div>
       <!--begin::Card title-->
 
       <!--begin::Card toolbar-->
@@ -52,22 +38,10 @@
         <template v-slot:cell-email="{ row: item }">
           {{ item.email }}
         </template>
-        <template v-slot:cell-city="{ row: item }">
-          {{ item.city }}
-        </template>
-        <template v-slot:cell-state="{ row: item }">
-          {{ item.state }}
+        <template v-slot:cell-number="{ row: item }">
+          {{ item.phone_number }}
         </template>
         <template v-slot:cell-action="{ row: item }">
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen019.svg" />
-            </span>
-          </a>
-
           <button
             @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
@@ -121,13 +95,8 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "City",
-        key: "city",
-        sortable: true,
-      },
-      {
-        name: "State",
-        key: "state",
+        name: "Contact Number",
+        key: "number",
         sortable: true,
       },
       {
@@ -148,7 +117,7 @@ export default defineComponent({
       const html =
         '<p class="fs-2">Please type <b>' +
         item.name +
-        "</b> to confirm</p><br/>";
+        "</b> to confirm deletion</p><br/>";
 
       Swal.fire({
         input: "text",
@@ -162,7 +131,7 @@ export default defineComponent({
         cancelButtonText: "Cancel",
         confirmButtonText: "Delete",
         customClass: {
-          confirmButton: "btn btn-primary",
+          confirmButton: "btn btn-danger",
           cancelButton: "btn btn-light-primary",
         },
         preConfirm: async (data) => {
