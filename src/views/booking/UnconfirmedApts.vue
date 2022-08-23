@@ -1,19 +1,5 @@
 <template>
   <div class="card mx-auto mb-3">
-    <!--end::Alert-->
-    <div class="card-header border-0 pt-6">
-      <!--begin::Card title-->
-      <div class="card-title">Unconfirmed Appointments</div>
-
-      <!--begin::Card title-->
-
-      <!--begin::Card toolbar-->
-      <div class="card-toolbar">
-        <!--begin::Toolbar-->
-        <!--end::Toolbar-->
-      </div>
-      <!--end::Card toolbar-->
-    </div>
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
@@ -26,22 +12,22 @@
           {{ item.date }} {{ item.time }}
         </template>
         <template v-slot:cell-patient="{ row: item }">
-          {{ item.patient_first_name }} {{ item.patient_last_name }} ({{
-            item.contact_number
+          {{ item.patient_name.full }} ({{
+            item.patient_details.contact_number
           }})
         </template>
         <template v-slot:cell-specialist="{ row: item }">
           {{ item.specialist_name }}
         </template>
         <template v-slot:cell-appointment="{ row: item }">
-          {{ item.appointment_type_name }}
+          {{ item.appointment_type.name }}
         </template>
-        <template v-slot:cell-action="{ row: item }">
-          <button
-            @click="removeFromWaitlist(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            Remove From Waitlist
+        <template v-slot:cell-cancel_reason="{ row: item }">
+          {{ item.confirmation_status_reason }}
+        </template>
+        <template v-slot:cell-actions="">
+          <button class="btn btn-bg-light btn-active-color-primary btn-sm me-1">
+            CONFIRM
           </button>
         </template>
       </Datatable>

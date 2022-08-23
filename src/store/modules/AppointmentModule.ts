@@ -245,7 +245,9 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   [Actions.APT.UNCONFIRMED.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("appointments", { params: { status: "unconfirmed" } })
+      ApiService.query("appointments/confirmation-status", {
+        params: { confirmation_status: "PENDING", appointment_range: "FUTURE" },
+      })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_APT.UNCONFIRMED.LIST, data.data);
           return data.data;
@@ -263,9 +265,9 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   [Actions.APT.CANCELLATION.CREATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("appointments/cancel", data.id, {
-        missed: data.missed,
-        reason: data.reason,
+      ApiService.update("appointments/confirmation-status", data.id, {
+        confirmation_status: data.missed ? "MISSED" : "CANCELED",
+        confirmation_status_reason: data.reason,
       })
         .then(({ data }) => {
           return data.data;
@@ -283,7 +285,9 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   [Actions.APT.CANCELLATION.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("appointments", { params: { status: "cancellation" } })
+      ApiService.query("appointments/confirmation-status", {
+        params: { confirmation_status: "CANCELED", appointment_range: "ALL" },
+      })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_APT.CANCELLATION.LIST, data.data);
           return data.data;
