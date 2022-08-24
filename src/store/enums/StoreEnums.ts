@@ -171,6 +171,12 @@ const Actions = {
     UPDATE: "updateAptTimeRequirement",
   },
 
+  APPOINTMENT: {
+    REFERRAL: {
+      UPDATE: "updateAppointmentReferral", // 'appointments/referral/{appointment}'
+    },
+  },
+
   APT: {
     LIST: "listApt",
     LISTBYID: "listAptById",

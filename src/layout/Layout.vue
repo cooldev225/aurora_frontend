@@ -50,18 +50,13 @@ import { defineComponent, computed, onMounted, watch, nextTick } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import KTAside from "@/layout/aside/Aside.vue";
-// import KTHeader from "@/layout/header/Header.vue";
 import KTFooter from "@/layout/footer/Footer.vue";
 import HtmlClass from "@/core/services/LayoutService";
 import KTToolbar from "@/layout/toolbar/Toolbar.vue";
 import KTScrollTop from "@/layout/extras/ScrollTop.vue";
-import KTUserMenu from "@/layout/header/partials/ActivityDrawer.vue";
 import KTLoader from "@/components/Loader.vue";
 import KTCreateApp from "@/components/modals/wizards/CreateAppModal.vue";
 import KTInviteFriendsModal from "@/components/modals/general/InviteFriendsModal.vue";
-import KTDemosDrawer from "@/layout/extras/DemosDrawer.vue";
-import KTHelpDrawer from "@/layout/extras/HelpDrawer.vue";
-import KTDrawerMessenger from "@/layout/extras/MessengerDrawer.vue";
 import BookingDrawer from "@/components/booking/BookingDrawer.vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { MenuComponent } from "@/assets/ts/components";
@@ -82,16 +77,11 @@ export default defineComponent({
   name: "master-layout",
   components: {
     KTAside,
-    // KTHeader,
     KTFooter,
     KTToolbar,
     KTScrollTop,
     KTCreateApp,
     KTInviteFriendsModal,
-    KTUserMenu,
-    KTDemosDrawer,
-    KTHelpDrawer,
-    KTDrawerMessenger,
     KTLoader,
     BookingDrawer,
   },

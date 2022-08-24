@@ -61,13 +61,23 @@
             <span> {{ item.specialist_name }}</span>
           </div>
         </template>
-        <template v-slot:cell-referral="">
-          <div class="d-flex flex-column">
-            <span>referral_date</span>
-            <span>referral_duration</span>
-            <span>referral_expiry date</span>
+        <template v-slot:cell-referral="{ row: item }">
+          <div v-if="item.referral" class="d-flex flex-column">
+            <div v-if="!item.is_no_referral" class="d-flex flex-column">
+              <span>{{ item.referral.referring_doctor_name }}</span>
+              <span>{{ item.referral.referral_date }}</span>
+              <span>{{ item.referral.referral_duration }} months</span>
+            </div>
+            <div v-else-if="item.is_no_referral" class="d-flex flex-column">
+              <span> NO REFERRAL </span>
+              <span>{{ item.referral.no_referral_reason }}</span>
+            </div>
           </div>
-          <button class="btn btn-bg-light btn-active-color-primary btn-sm mt-2">
+          <div v-else class="d-flex flex-column">No referral information</div>
+          <button
+            class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
+            @click="handleReferral(item)"
+          >
             Update Referral
           </button>
         </template>
@@ -132,6 +142,9 @@
     <!--end::Card body-->
   </div>
   <CollectingPersonModal :selectedApt="selectedApt"></CollectingPersonModal>
+  <AppointmentReferralModal
+    :selectedApt="selectedApt"
+  ></AppointmentReferralModal>
   <!--end::details View-->
 
   <PreAdmissionFormModal isEditable="false" />
@@ -151,7 +164,8 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import moment from "moment";
-import CollectingPersonModal from "./CollectingPerson.vue";
+import CollectingPersonModal from "./modals/CollectingPersonModal.vue";
+import AppointmentReferralModal from "./modals/AppointmentReferralModal.vue";
 import { Modal } from "bootstrap";
 import PreAdmissionFormModal from "@/components/anesthetist/PreAdmissionForm.vue";
 import { Mutations } from "@/store/enums/StoreEnums";
@@ -161,6 +175,7 @@ export default defineComponent({
   components: {
     Datatable,
     CollectingPersonModal,
+    AppointmentReferralModal,
     PreAdmissionFormModal,
   },
   setup() {
@@ -226,6 +241,17 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleReferral = (item) => {
+      selectedApt.value = {
+        patient_id: list.value.id,
+        ...item,
+      };
+      const modal = new Modal(
+        document.getElementById("modal_appointment_referral")
+      );
+      modal.show();
+    };
+
     const generateID = (id) => {
       let prefix = "";
       let i = 0;
@@ -275,6 +301,7 @@ export default defineComponent({
       generateID,
       handlePay,
       handlePreAdmission,
+      handleReferral,
       handleCollectingPerson,
       handleView,
     };
