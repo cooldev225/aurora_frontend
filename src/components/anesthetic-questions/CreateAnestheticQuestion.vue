@@ -50,49 +50,15 @@
               data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
               data-kt-scroll-offset="300px"
             >
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Question</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="question">
-                  <el-input
-                    v-model="formData.question"
-                    type="text"
-                    placeholder="Question"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Status</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="status">
-                  <el-select
-                    v-model="formData.status"
-                    class="w-100"
-                    placeholder="Select Status"
-                  >
-                    <el-option value="enabled" label="Enabled" />
-                    <el-option value="disabled" label="Disabled" />
-                  </el-select>
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
+              <InputWrapper prop="question">
+                <el-input
+                  v-model="formData.question"
+                  type="text"
+                  placeholder="Question"
+                />
+              </InputWrapper>
             </div>
-            <!--end::Scroll-->
           </div>
-          <!--end::Modal body-->
-
           <!--begin::Modal footer-->
           <div class="modal-footer flex-center">
             <!--begin::Button-->
@@ -136,10 +102,11 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
+import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 export default defineComponent({
   name: "add-anesthetic-question-modal",
-  components: {},
+  components: { InputWrapper },
   setup() {
     const store = useStore();
     const formRef = ref(null);
@@ -148,7 +115,6 @@ export default defineComponent({
 
     const formData = ref({
       question: "",
-      status: "Enabled",
     });
 
     const rules = ref({

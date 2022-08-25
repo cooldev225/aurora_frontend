@@ -8,9 +8,9 @@
           </span>
           <div class="d-flex flex-column">
             <span
-              >These settings will appear when an appointment that requires an
+              >These questions will appear when an appointment that requires an
               anesthetists is booked. Should a patient answer yes to any of the
-              question - the employee creating the booking will be alearted to
+              question - the employee creating the booking will be alerted to
               book a consult</span
             >
           </div>
