@@ -47,28 +47,11 @@ export default class PatientsRecallModule
   }
 
   @Action
-  [Actions.PATIENTS_RECALL.LIST]() {
+  [Actions.PATIENTS.RECALL.CREATE](data) {
+    console.log(data);
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("patient-recalls")
-        .then(({ data }) => {
-          this.context.commit(Mutations.SET_PATIENT.LIST, data.data);
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
-  [Actions.PATIENTS_RECALL.CREATE](data) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.post("patient-recalls", data)
+      ApiService.post("patients/recalls/", data)
         .then(({ data }) => {
           return data.data;
         })
@@ -82,29 +65,11 @@ export default class PatientsRecallModule
   }
 
   @Action
-  [Actions.PATIENTS_RECALL.UPDATE](data) {
+  [Actions.PATIENTS.RECALL.UPDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("patient-recalls", data.id, data)
+      ApiService.update("patients/recalls/", data.id, data)
         .then(({ data }) => {
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
-  [Actions.PATIENTS_RECALL.VIEW](id) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.get("patient-recalls/" + id)
-        .then(({ data }) => {
-          this.context.commit(Mutations.SET_PATIENT.SELECT, data.data);
           return data.data;
         })
         .catch(({ response }) => {

@@ -165,7 +165,7 @@ import { defineComponent, ref, watchEffect, computed } from "vue";
 import { useStore } from "vuex";
 import { Modal } from "bootstrap";
 import { Actions } from "@/store/enums/StoreEnums";
-import RecallReminderModal from "@/components/patients/RecallReminderModal.vue";
+import RecallReminderModal from "@/components/patients/modals/RecallReminderModal.vue";
 import ReportModal from "@/components/patients/ReportTemplateModal.vue";
 import LetterModal from "@/components/patients/LetterModal.vue";
 import CreateAudioModal from "@/components/patients/CreateAudioModal.vue";

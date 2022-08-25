@@ -59,7 +59,7 @@
                 </el-select>
               </InputWrapper>
 
-              <InputWrapper label="Reason" prop="reason">
+              <InputWrapper required label="Reason" prop="reason">
                 <el-input
                   v-model="formData.reason"
                   class="w-100"
@@ -130,7 +130,6 @@ export default defineComponent({
 
     const formData = ref({
       patient_id: 0,
-      organization_id: 0,
       time_frame: 1,
       reason: "",
     });
@@ -146,14 +145,12 @@ export default defineComponent({
       }
       loading.value = true;
       formData.value.patient_id = patientData.value.id;
-      formData.value.organization_id = patientData.value.organization_id;
       store
-        .dispatch(Actions.PATIENTS_RECALL.CREATE, formData.value)
+        .dispatch(Actions.PATIENTS.RECALL.CREATE, formData.value)
         .then(() => {
           loading.value = false;
-          store.dispatch(Actions.PATIENTS_RECALL.LIST);
           Swal.fire({
-            text: "Successfully Created!",
+            text: "Recall Created",
             icon: "success",
             buttonsStyling: false,
             confirmButtonText: "Ok, got it!",

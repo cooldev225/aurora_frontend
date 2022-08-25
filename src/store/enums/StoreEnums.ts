@@ -114,13 +114,12 @@ const Actions = {
         CREATE: "createPatientsDocumentAudio",
       },
     },
-  },
-
-  PATIENTS_RECALL: {
-    LIST: "listPatientsRecall",
-    CREATE: "createPatientsRecall",
-    UPDATE: "updatePatientsRecall",
-    VIEW: "viewPatientsRecall",
+    RECALL: {
+      LIST: "listPatientsRecall",
+      CREATE: "createPatientsRecall",
+      UPDATE: "updatePatientsRecall",
+      VIEW: "viewPatientsRecall",
+    },
   },
 
   EMPLOYEE: {
