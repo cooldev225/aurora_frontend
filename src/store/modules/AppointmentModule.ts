@@ -459,7 +459,15 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   @Action
   [Actions.APPOINTMENT.REFERRAL.UPDATE](data) {
     console.log(data);
-    ApiService.put("appointments/referral/" + data.appointment_id, data)
+    ApiService.post(
+      "appointments/referral/" + data.appointment_id,
+      data.submitData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    )
       .then(({ data }) => {
         return data.message;
       })
