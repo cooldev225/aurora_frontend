@@ -238,10 +238,25 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
+
+          let submitData = new FormData();
+
+          submitData.append("file", formData.value.file);
+          submitData.append(
+            "referring_doctor_id",
+            formData.value.referring_doctor_id
+          );
+          submitData.append("referral_date", formData.value.referral_date);
+          submitData.append(
+            "referral_duration",
+            formData.value.referral_duration
+          );
+
           store
             .dispatch(Actions.APPOINTMENT.REFERRAL.UPDATE, {
               appointment_id: appointmentData.value.id,
-              ...formData.value,
+              // ...formData.value,
+              submitData: submitData,
             })
             .then(() => {
               loading.value = false;
