@@ -105,7 +105,10 @@
         <template v-slot:cell-contact_number="{ row: item }">
           {{ item.contact_number }}
         </template>
-        <template v-slot:cell-upcoming="{ row: item }">
+        <template
+          v-if="userRole != 'specialist'"
+          v-slot:cell-upcoming="{ row: item }"
+        >
           <span
             v-for="upcoming_appointment in item.all_upcoming_appointments"
             :key="upcoming_appointment.id"
@@ -147,12 +150,19 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import moment from "moment";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
+import store from "@/store";
 
 export default defineComponent({
   name: "patients-list",
 
   components: {
     Datatable,
+  },
+
+  data: function () {
+    return {
+      userRole: computed(() => store.getters.userRole),
+    };
   },
 
   setup() {

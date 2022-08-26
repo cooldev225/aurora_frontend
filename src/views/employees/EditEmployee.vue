@@ -119,44 +119,6 @@
                 <InputWrapper
                   v-show="formData.role_id == formInfo.specialist_role_id"
                   class="col-4"
-                  label="Specialist Title"
-                  prop="specialist.specialist_title_id"
-                >
-                  <el-select
-                    v-model="formData.specialist.specialist_title_id"
-                    class="w-100"
-                  >
-                    <el-option
-                      v-for="item in specialistTitleList"
-                      :value="item.id"
-                      :label="item.name"
-                      :key="item.id"
-                    />
-                  </el-select>
-                </InputWrapper>
-
-                <InputWrapper
-                  v-show="formData.role_id == formInfo.specialist_role_id"
-                  class="col-4"
-                  label="Specialist Type"
-                  prop="specialist.specialist_type_id"
-                >
-                  <el-select
-                    v-model="formData.specialist.specialist_type_id"
-                    class="w-100"
-                  >
-                    <el-option
-                      v-for="item in specialistTypeList"
-                      :value="item.id"
-                      :label="item.name"
-                      :key="item.id"
-                    />
-                  </el-select>
-                </InputWrapper>
-
-                <InputWrapper
-                  v-show="formData.role_id == formInfo.specialist_role_id"
-                  class="col-4"
                   label="Anaesthetist"
                   prop="specialist.anesthetist_id"
                 >
@@ -312,8 +274,6 @@ export default defineComponent({
     });
     const employeeRoles = ref([]);
     const anesthetistList = ref([]);
-    const specialistTitleList = computed(() => store.getters.specTitleList);
-    const specialistTypeList = computed(() => store.getters.specTypeList);
 
     const weekList = ref([
       "monday",
@@ -337,8 +297,6 @@ export default defineComponent({
       type: "full-time",
       specialist: {
         anesthetist_id: "",
-        specialist_title_id: "",
-        specialist_type_id: "",
       },
       work_hours: {
         monday: {
@@ -448,20 +406,6 @@ export default defineComponent({
             trigger: "change",
           },
         ],
-        specialist_title_id: [
-          {
-            required: true,
-            message: "Title cannot be blank.",
-            trigger: "change",
-          },
-        ],
-        specialist_type_id: [
-          {
-            required: true,
-            message: "Specialist Type cannot be blank.",
-            trigger: "change",
-          },
-        ],
       },
     });
 
@@ -513,8 +457,6 @@ export default defineComponent({
           if (item.specialist == undefined) {
             formData.value.specialist = {
               anesthetist_id: "",
-              specialist_title_id: "",
-              specialist_type_id: "",
             };
           }
         }
@@ -537,8 +479,6 @@ export default defineComponent({
       initEmployeeRoles();
       initAnesthetistList();
 
-      store.dispatch(Actions.SPECIALIST.TITLE.LIST);
-      store.dispatch(Actions.SPECIALIST.TYPE.LIST);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
@@ -593,8 +533,6 @@ export default defineComponent({
       employeeTypes,
       employeeRoles,
       anesthetistList,
-      specialistTitleList,
-      specialistTypeList,
     };
   },
 });

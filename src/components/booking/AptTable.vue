@@ -30,7 +30,10 @@
               :style="index === 0 ? 'min-width: 441px' : 'min-width: 476px'"
             >
               <span class="fs-5 d-block">{{ item.name }}</span>
-              <span class="fs-8">{{ item.work_hours.locations.name }}</span>
+              <span class="fs-8">{{
+                clinic_list.find((x) => x, id === item.work_hours.locations)
+                  .name
+              }}</span>
             </th>
           </template>
         </tr>
@@ -205,6 +208,8 @@ export default defineComponent({
     const ava_specialists = computed(() => props.ava_SPTData);
     const _apt_date = computed(() => props.date);
     const organisation = computed(() => store.getters.orgList);
+
+    const clinic_list = computed(() => store.getters.clinicsList);
 
     const format = ref("YYYY-MM-DD");
     const aptTimeList = ref([]);
@@ -413,6 +418,7 @@ export default defineComponent({
       timeStr2Number,
       aptTimeList,
       appointment,
+      clinic_list,
     };
   },
 });

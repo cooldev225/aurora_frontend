@@ -278,6 +278,14 @@ const routes: Array<RouteRecordRaw> = [
         name: "anesthetist-dashboard",
         component: () => import("@/views/anesthetist/dashboard.vue"),
       },
+
+      ////////////////////////////////////////////////////////////////////////
+      // Human Resource Management
+      {
+        path: "/human-resource-management",
+        name: "human-resource-management",
+        component: () => import("@/views/HRM/dashboard.vue"),
+      },
     ],
   },
   {

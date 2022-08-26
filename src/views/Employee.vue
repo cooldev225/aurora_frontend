@@ -48,10 +48,10 @@
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-first_name="{ row: item }">
-          {{ item.first_name }}
+          {{ item.title }} {{ item.first_name }} {{ item.last_name }}
         </template>
-        <template v-slot:cell-last_name="{ row: item }">
-          {{ item.last_name }}
+        <template v-slot:cell-role="{ row: item }">
+          {{ item.role }}
         </template>
         <template v-slot:cell-username="{ row: item }">
           {{ item.username }}
@@ -115,20 +115,20 @@ export default defineComponent({
     const router = useRouter();
     const tableHeader = ref([
       {
-        name: "First Name",
+        name: "Name",
         key: "first_name",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Last Name",
-        key: "last_name",
         sortable: true,
         searchable: true,
       },
       {
         name: "Username",
         key: "username",
+        sortable: true,
+        searchable: true,
+      },
+      {
+        name: "Role",
+        key: "role",
         sortable: true,
         searchable: true,
       },
@@ -235,6 +235,7 @@ export default defineComponent({
       store.dispatch(Actions.ORG.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST).then(() => {
         tableData.value = list;
+        console.log(tableData.value);
         loading.value = false;
       });
     });
