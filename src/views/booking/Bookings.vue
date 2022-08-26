@@ -353,13 +353,13 @@ export default defineComponent({
       ],
     });
 
-    var search_next_apts = {
+    var search_next_apts = reactive({
       appointment_type_id: "",
       specialist_id: "",
       time_requirement: 0,
       x_weeks: "0",
       clinic_id: "",
-    };
+    });
 
     const specialists_search = reactive({
       specialist_ids: [],
@@ -423,14 +423,18 @@ export default defineComponent({
       console.log(searchAppointmentFormRef.value);
       searchAppointmentFormRef.value.validate(async (valid) => {
         if (valid) {
-          search_next_apts = {
-            appointment_type_id:
-              searchAppointmentForm.value.appointment_type_id,
-            specialist_id: searchAppointmentForm.value.specialist_id,
-            time_requirement: searchAppointmentForm.value.time_requirement,
-            x_weeks: searchAppointmentForm.value.x_weeks,
-            clinic_id: searchAppointmentForm.value.clinic_id,
-          };
+          console.log(
+            "searchAppointmentForm.value",
+            searchAppointmentForm.value.appointment_type_id
+          );
+          search_next_apts.appointment_type_id =
+            searchAppointmentForm.value.appointment_type_id;
+          search_next_apts.specialist_id =
+            searchAppointmentForm.value.specialist_id;
+          search_next_apts.time_requirement =
+            searchAppointmentForm.value.time_requirement;
+          search_next_apts.x_weeks = searchAppointmentForm.value.x_weeks;
+          search_next_apts.clinic_id = searchAppointmentForm.value.clinic_id;
 
           await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
             ...search_next_apts,
