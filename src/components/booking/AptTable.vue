@@ -31,8 +31,9 @@
             >
               <span class="fs-5 d-block">{{ item.name }}</span>
               <span class="fs-8">{{
-                clinic_list.find((x) => x, id === item.work_hours.locations)
-                  .name
+                clinic_list.filter(
+                  (x) => x.id === item.work_hours.locations.id
+                )[0].name
               }}</span>
             </th>
           </template>
