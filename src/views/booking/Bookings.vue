@@ -454,10 +454,10 @@ export default defineComponent({
       date_search.date = new Date();
 
       searchAppointmentForm.value.appointment_type_id = "";
-      searchAppointmentForm.value.x_weeks = "";
+      searchAppointmentForm.value.x_weeks = "0";
       searchAppointmentForm.value.clinic_id = "";
       searchAppointmentForm.value.specialist_id = "";
-      searchAppointmentForm.value.time_requirement = "";
+      searchAppointmentForm.value.time_requirement = 0;
     };
 
     watch(date_search, () => {
