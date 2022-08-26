@@ -33,7 +33,7 @@
               <span class="fs-8">{{
                 clinic_list.filter(
                   (x) => x.id === item.work_hours.locations.id
-                )[0].name
+                )[0]?.name
               }}</span>
             </th>
           </template>
