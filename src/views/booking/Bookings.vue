@@ -169,18 +169,20 @@
                       :model="searchAppointmentForm"
                       :rules="searchAppointmentRules"
                     >
-                      <el-select
-                        class="w-100"
-                        placeholder="Select Appointment Type"
-                        v-model="searchAppointmentForm.appointment_type_id"
-                      >
-                        <el-option
-                          v-for="item in aptTypelist"
-                          :value="item.id"
-                          :label="item.name"
-                          :key="item.id"
-                        />
-                      </el-select>
+                      <el-form-item prop="appointment_type_id">
+                        <el-select
+                          class="w-100"
+                          placeholder="Select Appointment Type"
+                          v-model="searchAppointmentForm.appointment_type_id"
+                        >
+                          <el-option
+                            v-for="item in aptTypelist"
+                            :value="item.id"
+                            :label="item.name"
+                            :key="item.id"
+                          />
+                        </el-select>
+                      </el-form-item>
                       <el-divider />
                       <div>
                         <el-select
@@ -218,6 +220,7 @@
                           placeholder="Select Appointment Time Requirement"
                           v-model="searchAppointmentForm.time_requirement"
                         >
+                          <el-option :value="0" label="Any time" :key="0" />
                           <el-option
                             v-for="item in aptTimeRequireList"
                             :value="item.id"
@@ -333,19 +336,18 @@ export default defineComponent({
     };
 
     const searchAppointmentForm = ref({
-      appointment_type_id: null,
+      appointment_type_id: "",
       specialist_id: "",
-      time_requirement: "",
-      x_weeks: "",
+      time_requirement: 0,
+      x_weeks: "0",
       clinic_id: "",
     });
     const searchAppointmentFormRef = ref(null);
     const searchAppointmentRules = ref({
       appointment_type_id: [
         {
-          // required: true,
+          required: true,
           validator: validateAppointmentTypeId,
-          // message: "Referring doctor cannot be blank",
           trigger: "blur",
         },
       ],
@@ -354,13 +356,7 @@ export default defineComponent({
     const specialists_search = reactive({
       specialist_ids: [],
     });
-    const search_next_apts = reactive({
-      appointment_type_id: "",
-      specialist_id: "",
-      time_requirement: "",
-      x_weeks: "",
-      clinic_id: "",
-    });
+
     const tableTitle = ref("");
     const x_weeks_list = ref({
       0: "This week",
@@ -371,6 +367,14 @@ export default defineComponent({
       8: "In 2 months",
       12: "In 3 months",
       24: "In 6 months",
+    });
+
+    const search_next_apts = reactive({
+      appointment_type_id: searchAppointmentForm.value.appointment_type_id,
+      specialist_id: searchAppointmentForm.value.specialist_id,
+      time_requirement: searchAppointmentForm.value.time_requirement,
+      x_weeks: searchAppointmentForm.value.x_weeks,
+      clinic_id: searchAppointmentForm.value.clinic_id,
     });
 
     const ava_specialists = computed(() => store.getters.getAvailableSPTData);
@@ -407,31 +411,40 @@ export default defineComponent({
     };
 
     const handleSearch = async () => {
-      searchAppointmentFormRef.value.validate((valid) => {
+      console.log(searchAppointmentForm);
+      console.log(searchAppointmentFormRef.value);
+      searchAppointmentFormRef.value.validate(async (valid) => {
         if (valid) {
-          console.log("");
+          const search_next_apts = reactive({
+            appointment_type_id:
+              searchAppointmentForm.value.appointment_type_id,
+            specialist_id: searchAppointmentForm.value.specialist_id,
+            time_requirement: searchAppointmentForm.value.time_requirement,
+            x_weeks: searchAppointmentForm.value.x_weeks,
+            clinic_id: searchAppointmentForm.value.clinic_id,
+          });
+          await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+            ...search_next_apts,
+          });
+
+          const modal = new Modal(
+            document.getElementById("modal_available_time_slot_popup")
+          );
+
+          modal.show();
         }
       });
-      // await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
-      //   ...search_next_apts,
-      // });
-
-      // const modal = new Modal(
-      //   document.getElementById("modal_available_time_slot_popup")
-      // );
-
-      // modal.show();
     };
 
     const handleReset = () => {
       specialists_search.specialist_ids = [];
       date_search.date = new Date();
 
-      search_next_apts.appointment_type_id = "";
-      search_next_apts.x_weeks = "";
-      search_next_apts.clinic_id = "";
-      search_next_apts.specialist_id = "";
-      search_next_apts.time_requirement = "";
+      searchAppointmentForm.value.appointment_type_id = "";
+      searchAppointmentForm.value.x_weeks = "";
+      searchAppointmentForm.value.clinic_id = "";
+      searchAppointmentForm.value.specialist_id = "";
+      searchAppointmentForm.value.time_requirement = "";
     };
 
     watch(date_search, () => {
