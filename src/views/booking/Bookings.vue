@@ -164,81 +164,87 @@
                 </div>
                 <div class="card-body card-scroll h-350px">
                   <div class="card-info">
-                    <el-select
-                      class="w-100"
-                      placeholder="Select Appointment Type"
-                      v-model="search_next_apts.appointment_type_id"
+                    <el-form
+                      ref="searchAppointmentFormRef"
+                      :model="searchAppointmentForm"
+                      :rules="searchAppointmentRules"
                     >
-                      <el-option
-                        v-for="item in aptTypelist"
-                        :value="item.id"
-                        :label="item.name"
-                        :key="item.id"
-                      />
-                    </el-select>
-                    <el-divider />
-                    <div>
                       <el-select
-                        class="w-50 p-2"
-                        placeholder="Select Clinic"
-                        v-model="search_next_apts.clinic_id"
+                        class="w-100"
+                        placeholder="Select Appointment Type"
+                        v-model="searchAppointmentForm.appointment_type_id"
                       >
-                        <el-option value="" label="Any Clinic" />
                         <el-option
-                          v-for="item in clinic_list"
+                          v-for="item in aptTypelist"
                           :value="item.id"
                           :label="item.name"
                           :key="item.id"
                         />
                       </el-select>
-                      <el-select
-                        class="w-50 p-2"
-                        placeholder="Select Specialist"
-                        v-model="search_next_apts.specialist_id"
-                        filterable
+                      <el-divider />
+                      <div>
+                        <el-select
+                          class="w-50 p-2"
+                          placeholder="Select Clinic"
+                          v-model="searchAppointmentForm.clinic_id"
+                        >
+                          <el-option value="" label="Any Clinic" />
+                          <el-option
+                            v-for="item in clinic_list"
+                            :value="item.id"
+                            :label="item.name"
+                            :key="item.id"
+                          />
+                        </el-select>
+                        <el-select
+                          class="w-50 p-2"
+                          placeholder="Select Specialist"
+                          v-model="searchAppointmentForm.specialist_id"
+                          filterable
+                        >
+                          <el-option value="" label="Any Specialist" />
+                          <el-option
+                            v-for="item in allSpecialists"
+                            :value="item.id"
+                            :label="item.name"
+                            :key="item.id"
+                          />
+                        </el-select>
+                      </div>
+                      <el-divider />
+                      <div>
+                        <el-select
+                          class="w-50 p-2"
+                          placeholder="Select Appointment Time Requirement"
+                          v-model="searchAppointmentForm.time_requirement"
+                        >
+                          <el-option
+                            v-for="item in aptTimeRequireList"
+                            :value="item.id"
+                            :label="item.title"
+                            :key="item.id"
+                          />
+                        </el-select>
+                        <el-select
+                          class="w-50 p-2"
+                          placeholder="Select Time frame"
+                          v-model="searchAppointmentForm.x_weeks"
+                        >
+                          <el-option
+                            v-for="(item, index) in x_weeks_list"
+                            :value="index"
+                            :label="item"
+                            :key="item.id"
+                          />
+                        </el-select>
+                      </div>
+                      <button
+                        class="btn btn-primary mt-3 w-100"
+                        @click="handleSearch"
                       >
-                        <el-option value="" label="Any Specialist" />
-                        <el-option
-                          v-for="item in allSpecialists"
-                          :value="item.id"
-                          :label="item.name"
-                          :key="item.id"
-                        />
-                      </el-select>
-                    </div>
-                    <el-divider />
-                    <div>
-                      <el-select
-                        class="w-50 p-2"
-                        placeholder="Select Appointment Time Requirement"
-                        v-model="search_next_apts.time_requirement"
-                      >
-                        <el-option
-                          v-for="item in aptTimeRequireList"
-                          :value="item.id"
-                          :label="item.title"
-                          :key="item.id"
-                        />
-                      </el-select>
-                      <el-select
-                        class="w-50 p-2"
-                        placeholder="Select Time frame"
-                        v-model="search_next_apts.x_weeks"
-                      >
-                        <el-option
-                          v-for="(item, index) in x_weeks_list"
-                          :value="index"
-                          :label="item"
-                          :key="item.id"
-                        />
-                      </el-select>
-                    </div>
-                    <button
-                      class="btn btn-primary mt-3 w-100"
-                      @click="handleSearch"
-                    >
-                      SEARCH
-                    </button>
+                        SEARCH
+                      </button>
+                    </el-form>
                   </div>
                 </div>
               </div>
@@ -317,6 +323,34 @@ export default defineComponent({
     const date_search = reactive({
       date: new Date(),
     });
+
+    const validateAppointmentTypeId = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Please select appointment type"));
+      } else {
+        callback();
+      }
+    };
+
+    const searchAppointmentForm = ref({
+      appointment_type_id: null,
+      specialist_id: "",
+      time_requirement: "",
+      x_weeks: "",
+      clinic_id: "",
+    });
+    const searchAppointmentFormRef = ref(null);
+    const searchAppointmentRules = ref({
+      appointment_type_id: [
+        {
+          // required: true,
+          validator: validateAppointmentTypeId,
+          // message: "Referring doctor cannot be blank",
+          trigger: "blur",
+        },
+      ],
+    });
+
     const specialists_search = reactive({
       specialist_ids: [],
     });
@@ -373,15 +407,20 @@ export default defineComponent({
     };
 
     const handleSearch = async () => {
-      await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
-        ...search_next_apts,
+      searchAppointmentFormRef.value.validate((valid) => {
+        if (valid) {
+          console.log("");
+        }
       });
+      // await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+      //   ...search_next_apts,
+      // });
 
-      const modal = new Modal(
-        document.getElementById("modal_available_time_slot_popup")
-      );
+      // const modal = new Modal(
+      //   document.getElementById("modal_available_time_slot_popup")
+      // );
 
-      modal.show();
+      // modal.show();
     };
 
     const handleReset = () => {
@@ -474,6 +513,9 @@ export default defineComponent({
       aptTypelist,
       allSpecialists,
       aptTimeRequireList,
+      searchAppointmentFormRef,
+      searchAppointmentForm,
+      searchAppointmentRules,
       search_next_apts,
       x_weeks_list,
       clinic_list,
