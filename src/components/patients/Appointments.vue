@@ -135,6 +135,16 @@
               </span>
               Pre-Admission Form
             </a>
+            <a
+              v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
+              @click="handlePreAdmissionTest(item)"
+              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
+            >
+              <span class="svg-icon svg-icon-1">
+                <inline-svg src="media/icons/duotune/general/gen004.svg" />
+              </span>
+              Pre-Admission Test
+            </a>
           </div>
         </template>
       </Datatable>
@@ -169,7 +179,7 @@ import AppointmentReferralModal from "./modals/AppointmentReferralModal.vue";
 import { Modal } from "bootstrap";
 import PreAdmissionFormModal from "@/components/anesthetist/PreAdmissionForm.vue";
 import { Mutations } from "@/store/enums/StoreEnums";
-
+import md5 from "js-md5";
 export default defineComponent({
   name: "patient-appointments",
   components: {
@@ -221,6 +231,15 @@ export default defineComponent({
         document.getElementById("modal_view_pre_admission")
       );
       modal.show();
+    };
+
+    const handlePreAdmissionTest = (item) => {
+      router.push({
+        path:
+          "/appointment_pre_admissions/show/" +
+          md5(item.id.toString()) +
+          "/form_1",
+      });
     };
 
     const handleView = () => {
@@ -301,6 +320,7 @@ export default defineComponent({
       generateID,
       handlePay,
       handlePreAdmission,
+      handlePreAdmissionTest,
       handleReferral,
       handleCollectingPerson,
       handleView,
