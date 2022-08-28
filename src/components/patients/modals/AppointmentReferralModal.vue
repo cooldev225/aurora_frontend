@@ -224,13 +224,20 @@ export default defineComponent({
     });
 
     watch(appointmentData, () => {
-      console.log(appointmentData.value);
       if (appointmentData.value.referral?.referral_file) {
-        document.getElementById("divPDFViewer").innerHTML = "";
-        pdf.embed(
-          appointmentData.value.referral?.referral_file,
-          "#divPDFViewer"
-        );
+        store
+          .dispatch(Actions.APPOINTMENT.REFERRAL.VIEW, {
+            path: appointmentData.value.referral.referral_file,
+          })
+          .then((data) => {
+            const blob = new Blob([data], { type: "application/pdf" });
+            const objectUrl = URL.createObjectURL(blob);
+            document.getElementById("divPDFViewer").innerHTML = "";
+            pdf.embed(objectUrl, "#divPDFViewer");
+          })
+          .catch(() => {
+            console.log("pdf error");
+          });
       }
     });
 

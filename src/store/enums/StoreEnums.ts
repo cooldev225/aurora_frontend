@@ -173,6 +173,7 @@ const Actions = {
   APPOINTMENT: {
     REFERRAL: {
       UPDATE: "updateAppointmentReferral", // 'appointments/referral/{appointment}'
+      VIEW: "viewAppointmentReferral", // 'appointments/referral/file'
     },
   },
 
