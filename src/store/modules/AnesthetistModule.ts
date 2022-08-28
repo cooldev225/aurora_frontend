@@ -83,9 +83,7 @@ export default class AnesthetistModule
   [Actions.ANESTHETIST_QUES.ACTIVE_LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("anesthetic-questions", {
-        params: { status: "enabled" },
-      })
+      ApiService.get("anesthetic-questions")
         .then(({ data }) => {
           this.context.commit(
             Mutations.SET_ANESTHETIST_QUES.ACTIVE_LIST,
