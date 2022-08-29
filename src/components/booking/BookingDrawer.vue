@@ -84,9 +84,7 @@
             }}</InfoSection>
 
             <InfoSection :heading="'Time'">
-              {{ displayData.start_time }} -
-              {{ displayData.end_time }} (Arrival:
-              {{ displayData.arrival_time }})
+              {{ displayData.time }}
             </InfoSection>
 
             <InfoSection :heading="'Type'">{{
@@ -223,8 +221,7 @@ export default defineComponent({
 
     const displayData = reactive({
       clinic_name: "",
-      start_time: "",
-      end_time: "",
+      time: "",
       arrival_time: "",
       appointment_type_name: "",
       specialist_name: "",
@@ -321,6 +318,10 @@ export default defineComponent({
         displayData.allergies = aptData.value.allergies;
         displayData.appointment_type_name = aptData.value.appointment_type_name;
         displayData.patient_number = aptData.value.contact_number;
+        displayData.time =
+          aptData.value.start_time.slice(0, -3) +
+          " - " +
+          aptData.value.end_time.slice(0, -3);
       } else {
         displayData.clinic_name = aptData.value.clinic_details?.name;
         displayData.appointment_type_name =
@@ -331,10 +332,9 @@ export default defineComponent({
         displayData.patient_name = aptData.value.patient_name?.full;
         displayData.patient_number =
           aptData.value.patient_details?.contact_number;
+        displayData.time = aptData.value.formatted_appointment_time;
+        displayData.arrival_time = aptData.value.arrival_time;
       }
-
-      displayData.start_time = aptData.value.formatted_appointment_time;
-      displayData.arrival_time = aptData.value.arrival_time;
 
       displayData.specialist_name = aptData.value.specialist_name;
       displayData.notes = aptData.value.note;
