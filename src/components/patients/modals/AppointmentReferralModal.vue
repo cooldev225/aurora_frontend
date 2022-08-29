@@ -194,7 +194,7 @@ export default defineComponent({
 
     const formData = ref({
       referring_doctor_name: "",
-      referring_doctor_id: "",
+      referring_doctor_id: "2",
       referral_date: "",
       referral_duration: "",
       file: "",
@@ -225,7 +225,6 @@ export default defineComponent({
     });
 
     watch(appointmentData, () => {
-      console.log("-----------", appointmentData.value);
       if (appointmentData.value.referral?.referral_file) {
         store
           .dispatch(Actions.APPOINTMENT.REFERRAL.VIEW, {
@@ -241,11 +240,14 @@ export default defineComponent({
             console.log("pdf error");
           });
       }
-      debugger;
       formData.value.referring_doctor_id =
         appointmentData.value.referral.referring_doctor_id;
       formData.value.referring_doctor_name =
         appointmentData.value.referral.referring_doctor_name;
+      formData.value.referral_duration =
+        appointmentData.value.referral.referral_duration;
+      formData.value.referral_date =
+        appointmentData.value.referral.referral_date;
     });
 
     const submit = () => {
@@ -343,8 +345,8 @@ export default defineComponent({
     };
 
     watch(appointmentData, () => {
-      for (let key in formData.value)
-        formData.value[key] = appointmentData.value[key];
+      // for (let key in formData.value)
+      //   formData.value[key] = appointmentData.value[key];
     });
 
     return {
