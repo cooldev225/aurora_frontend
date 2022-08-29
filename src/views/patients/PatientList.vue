@@ -43,8 +43,8 @@
                     <el-date-picker
                       class="w-100"
                       v-model="filterBirth"
-                      format="DD-MM-YYYY"
-                      placeholder="1990-01-01"
+                      format="DD/MM/YYYY"
+                      placeholder="01/01/1990"
                     />
                   </el-form-item>
 
@@ -99,7 +99,7 @@
         </template>
         <template v-slot:cell-dob="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
-            {{ item.date_of_birth }}
+            {{ new Date(item.date_of_birth).toLocaleDateString("en-AU") }}
           </span>
         </template>
         <template v-slot:cell-contact_number="{ row: item }">
@@ -230,7 +230,7 @@ export default defineComponent({
         }
         if (filterBirth.value) {
           let searchDate = moment(filterBirth.value)
-            .format("DD-MM-YYYY")
+            .format("YYYY-MM-DD")
             .toString();
           result = result && data.date_of_birth === searchDate;
         }

@@ -78,7 +78,7 @@
         </IconText>
 
         <IconText iconSRC="media/icons/duotune/files/fil002.svg">
-          {{ patientData.date_of_birth }}
+          {{ new Date(patientData.date_of_birth).toLocaleDateString("en-AU") }}
         </IconText>
 
         <IconText iconSRC="media/icons/duotune/electronics/elc002.svg">

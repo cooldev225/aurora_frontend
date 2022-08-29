@@ -101,9 +101,9 @@
                       (Arrive: {{ aptInfoData.arrival_time }})</span
                     ></InfoSection
                   >
-                  <InfoSection heading="Date">{{
-                    aptInfoData.date
-                  }}</InfoSection>
+                  <InfoSection heading="Date">
+                    {{ new Date(aptInfoData.date).toLocaleDateString("en-AU") }}
+                  </InfoSection>
 
                   <InfoSection heading="Patient"
                     >{{ patientInfoData.first_name }}
