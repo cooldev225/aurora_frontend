@@ -115,6 +115,7 @@
             :class="`badge ${
               upcoming_appointment.id ? '' : 'badge-light-success'
             }`"
+            style="color: #000000"
             :style="`width: fit-content; background-color: ${
               upcoming_appointment.id
                 ? upcoming_appointment.appointment_type.color
