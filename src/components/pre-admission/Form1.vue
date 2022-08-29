@@ -27,8 +27,8 @@
           <el-date-picker
             class="w-100"
             v-model="formData.date_of_birth"
-            format="YYYY-MM-DD"
-            placeholder="1990-01-01"
+            format="DD/MM/YYYY"
+            placeholder="01-01-1990"
           />
         </el-form-item>
         <el-form-item prop="last_name">
