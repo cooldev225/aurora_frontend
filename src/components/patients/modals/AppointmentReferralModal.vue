@@ -124,10 +124,11 @@
           <div class="modal-footer flex-center">
             <!--begin::Cancel Button-->
             <button
-              type="reset"
+              type="button"
               data-bs-dismiss="modal"
               id="kt_modal_collecting_person_cancel"
               class="btn btn-light me-3"
+              @click="resetForm"
             >
               Cancel
             </button>
@@ -178,6 +179,7 @@ export default defineComponent({
     selectedApt: { type: Object, required: true },
   },
   setup(props) {
+    debugger;
     const store = useStore();
     const formRef = ref(null);
     const referralModalRef = ref(null);
@@ -248,6 +250,7 @@ export default defineComponent({
         appointmentData.value.referral.referral_duration;
       formData.value.referral_date =
         appointmentData.value.referral.referral_date;
+      uploadRef.value.clearFiles(); // = null;
     });
 
     const submit = () => {
@@ -349,6 +352,23 @@ export default defineComponent({
       //   formData.value[key] = appointmentData.value[key];
     });
 
+    const resetForm = () => {
+      debugger;
+      formData.value.referring_doctor_name = "";
+      formData.value.referring_doctor_id = "2";
+      formData.value.referral_date = "";
+      formData.value.referral_duration = "";
+      // formData.value.file = "";
+      // uploadDisabled.value = true;
+      // uploadRef.value = null;
+      // this.$refs.uploadRef.$refs.clearFiles();
+      // eslint-disable-next-line vue/no-ref-as-operand
+      // this.$refs.uploadRef.clearFiles();
+      // uploadRef.value.clearFiles();
+      // // eslint-disable-next-line vue/no-ref-as-operand
+      // uploadRef.value.handleRemove();
+      // // uploadRef.value.file = null;
+    };
     return {
       handleUploadChange,
       handleUploadRemove,
@@ -360,7 +380,14 @@ export default defineComponent({
       formRef,
       loading,
       referralModalRef,
+      resetForm,
     };
+  },
+  mounted() {
+    console.log("-0-------------");
+  },
+  unMounted() {
+    console.log("-1-------------");
   },
 });
 </script>
