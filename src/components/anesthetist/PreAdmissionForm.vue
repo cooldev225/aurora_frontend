@@ -53,10 +53,8 @@
               <div class="fv-row row cener-row">
                 <div class="col-6 mt-2">
                   <label class="fs-6 fw-bold">Patient Name : </label>
-                  <span
-                    class="text-black fw-bold"
-                    v-if="preAdmissionData.patient_name"
-                    >&nbsp;{{ preAdmissionData.patient_name.full }}
+                  <span class="text-black fw-bold"
+                    >&nbsp;{{ preAdmissionData?.patient_name?.full }}
                   </span>
                 </div>
                 <div class="col-6 text-end">

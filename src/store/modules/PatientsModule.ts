@@ -151,7 +151,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   [Actions.PATIENTS.DOCUMENT.LIST](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("patient-documents", { params: { patient_id: id } })
+      ApiService.get("patients/documents/" + id)
         .then(({ data }) => {
           this.context.commit(Mutations.SET_PATIENT.DOCUMENT.LIST, data.data);
           return data.data;
