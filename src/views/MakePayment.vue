@@ -195,11 +195,6 @@ export default defineComponent({
       store.dispatch(Actions.MAKE_PAYMENT.VIEW, item.id);
     };
 
-    const handleView = (item) => {
-      router.push({ name: "make-payment-view" });
-      store.dispatch(Actions.MAKE_PAYMENT.VIEW, item.id);
-    };
-
     watch(list, () => {
       paymentData.value = list.value;
       tableData.value = paymentData.value;
@@ -220,7 +215,6 @@ export default defineComponent({
       currentClinic,
       showAll,
       handlePay,
-      handleView,
       handleSwitch,
       handleClinic,
     };

@@ -111,7 +111,7 @@
         <template v-slot:cell-report="{ row: item }">
           <div class="d-flex flex-column">
             <a
-              @click="handlePay"
+              @click="handlePay(item)"
               class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
             >
               <span class="svg-icon svg-icon-1">
@@ -178,7 +178,7 @@ import CollectingPersonModal from "./modals/CollectingPersonModal.vue";
 import AppointmentReferralModal from "./modals/AppointmentReferralModal.vue";
 import { Modal } from "bootstrap";
 import PreAdmissionFormModal from "@/components/anesthetist/PreAdmissionForm.vue";
-import { Mutations } from "@/store/enums/StoreEnums";
+import { Mutations, Actions } from "@/store/enums/StoreEnums";
 import md5 from "js-md5";
 export default defineComponent({
   name: "patient-appointments",
@@ -221,8 +221,9 @@ export default defineComponent({
 
     const renderTable = () => tableKey.value++;
 
-    const handlePay = () => {
+    const handlePay = (item) => {
       router.push({ name: "make-payment-pay" });
+      store.dispatch(Actions.MAKE_PAYMENT.VIEW, item.id);
     };
 
     const handlePreAdmission = (item) => {
