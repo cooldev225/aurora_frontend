@@ -141,7 +141,7 @@
                           size="large"
                           :label="item.id"
                           :checked="true"
-                          >{{ item.name }}</el-checkbox
+                          >Dr. {{ item.name }}</el-checkbox
                         >
                       </template>
                     </el-checkbox-group>

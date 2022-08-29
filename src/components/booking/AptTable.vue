@@ -29,7 +29,7 @@
               class="fw-bolder"
               :style="index === 0 ? 'min-width: 441px' : 'min-width: 476px'"
             >
-              <span class="fs-5 d-block">{{ item.name }}</span>
+              <span class="fs-5 d-block">Dr. {{ item.name }}</span>
               <span class="fs-8">{{
                 clinic_list.filter(
                   (x) => x.id === item.work_hours.locations.id
