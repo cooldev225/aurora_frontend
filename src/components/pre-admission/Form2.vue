@@ -609,7 +609,10 @@ export default defineComponent({
             Data.append(key, formData.value[key]);
           });
           Data.append("apt_id", apt_id.value);
-          Data.append("pre_admission_answers", formattedAnswer());
+          Data.append(
+            "pre_admission_answers",
+            JSON.stringify(formattedAnswer())
+          );
           await store.dispatch(Actions.APT.PRE_ADMISSION.STORE, Data);
           loading.value = false;
           router.push({
