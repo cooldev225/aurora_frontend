@@ -90,11 +90,6 @@ export default defineComponent({
         return;
       }
 
-      router.push({
-        path: "/dashbaord",
-      });
-
-      /*
       if (JwtService.getToken()) {
         ApiService.setHeader();
         ApiService.post(
@@ -127,7 +122,7 @@ export default defineComponent({
           });
       } else {
         store.commit(Mutations.PURGE_AUTH);
-      }*/
+      }
     };
 
     onMounted(() => {
