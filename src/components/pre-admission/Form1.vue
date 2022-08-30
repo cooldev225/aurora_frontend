@@ -102,23 +102,24 @@ export default defineComponent({
           }
         )
           .then(({ data }) => {
-            if (data.message === "Appointment Pre Admission") {
-              store.commit(
-                Mutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
-                data.data
-              );
-              router.push({
-                path:
-                  "/appointment_pre_admissions/show/" +
-                  apt_id.value +
-                  "/form_2",
-              });
-            } else {
-              console.log(data.message);
-            }
+            store.commit(
+              Mutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
+              data.data
+            );
+            router.push({
+              path:
+                "/appointment_pre_admissions/show/" + apt_id.value + "/form_2",
+            });
           })
           .catch(({ response }) => {
-            console.log(response);
+            if (response.status === 403) {
+              store.commit(
+                Mutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
+                response.data.message
+              );
+            } else {
+              console.error(response);
+            }
           });
       } else {
         store.commit(Mutations.PURGE_AUTH);
