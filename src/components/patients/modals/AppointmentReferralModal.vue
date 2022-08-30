@@ -128,6 +128,7 @@
               data-bs-dismiss="modal"
               id="kt_modal_collecting_person_cancel"
               class="btn btn-light me-3"
+              :click="clearModal"
             >
               Cancel
             </button>
@@ -276,6 +277,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
+                document.getElementById("divPDFViewer").innerHTML = "";
                 hideModal(referralModalRef.value);
               });
             })
@@ -335,12 +337,17 @@ export default defineComponent({
       uploadDisabled.value = true;
     };
 
+    const clearModal = () => {
+      //document.getElementById("divPDFViewer").innerHTML = "";
+    };
+
     watch(appointmentData, () => {
       for (let key in formData.value)
         formData.value[key] = appointmentData.value[key];
     });
 
     return {
+      clearModal,
       handleUploadChange,
       handleUploadRemove,
       handleReferringDoctorSelect,
