@@ -157,7 +157,7 @@
   ></AppointmentReferralModal>
   <!--end::details View-->
 
-  <PreAdmissionFormModal isEditable="false" />
+  <ProcedureApprovalModal isEditable="false" />
 </template>
 
 <script lang="ts">
@@ -177,7 +177,7 @@ import moment from "moment";
 import CollectingPersonModal from "./modals/CollectingPersonModal.vue";
 import AppointmentReferralModal from "./modals/AppointmentReferralModal.vue";
 import { Modal } from "bootstrap";
-import PreAdmissionFormModal from "@/components/anesthetist/PreAdmissionForm.vue";
+import ProcedureApprovalModal from "@/components/anesthetist/ProcedureApprovalModal.vue";
 import { Mutations, Actions } from "@/store/enums/StoreEnums";
 import md5 from "js-md5";
 export default defineComponent({
@@ -186,7 +186,7 @@ export default defineComponent({
     Datatable,
     CollectingPersonModal,
     AppointmentReferralModal,
-    PreAdmissionFormModal,
+    ProcedureApprovalModal,
   },
   setup() {
     const store = useStore();

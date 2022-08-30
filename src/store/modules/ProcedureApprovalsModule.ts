@@ -68,7 +68,10 @@ export default class ProcedureApprovalsModule
   [Actions.PROCEDURE_APPROVAL.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.put(item.appointment_id + "/procedure-approvals", item)
+      ApiService.put(
+        "appointment/procedure-approvals/" + item.appointment_id,
+        item
+      )
         .then(({ data }) => {
           return data.data;
         })

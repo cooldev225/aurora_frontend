@@ -8,13 +8,15 @@
     data-bs-backdrop="static"
   >
     <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-650px">
+    <div class="modal-dialog modal-dialog-centered mw-850px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_add_customer_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">View Pre Admission Form</h2>
+          <h2 class="fw-bolder">
+            Procedure Assessment: {{ preAdmissionData?.patient_name?.full }}
+          </h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -30,7 +32,7 @@
           <!--end::Close-->
         </div>
         <!--end::Modal header-->
-        <!--begin::Form-->
+
         <el-form
           @submit.prevent="submit()"
           :model="preAdmissionData"
@@ -50,13 +52,26 @@
               data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
               data-kt-scroll-offset="300px"
             >
-              <div class="fv-row row cener-row">
-                <div class="col-6 mt-2">
-                  <label class="fs-6 fw-bold">Patient Name : </label>
-                  <span class="text-black fw-bold"
-                    >&nbsp;{{ preAdmissionData?.patient_name?.full }}
-                  </span>
-                </div>
+              <div class="fv-row row center-row">
+                <InfoSection heading="Procedure">
+                  {{ preAdmissionData?.appointment_type?.name }}
+                </InfoSection>
+                <InfoSection heading="Date of Birth">
+                  {{ preAdmissionData?.patient?.date_of_birth }}
+                </InfoSection>
+                <InfoSection heading="Address">
+                  {{ preAdmissionData?.patient?.address }}
+                </InfoSection>
+                <InfoSection heading="Contact Number">
+                  {{ preAdmissionData?.patient?.contact_number }}
+                </InfoSection>
+                <InfoSection heading="Height">
+                  {{ preAdmissionData?.patient?.height }}
+                </InfoSection>
+                <InfoSection heading="Weight">
+                  {{ preAdmissionData?.patient?.weight }}
+                </InfoSection>
+
                 <div class="col-6 text-end">
                   <el-upload
                     action="#"
@@ -93,11 +108,6 @@
 
               <!--begin::Input group-->
               <div v-if="isEditable === 'true'" class="fv-row">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold">Notes</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
                 <el-form-item prop="notes">
                   <el-input
                     type="textarea"
@@ -119,11 +129,28 @@
             <div v-if="isEditable === 'true'">
               <button
                 :data-kt-indicator="loading ? 'on' : null"
+                class="btn btn-md btn-warning me-4"
+                type="button"
+                @click="handleProcedureApproval('NOT_ASSESSED')"
+              >
+                <span v-if="!loading" class="indicator-label">
+                  UNASSESSED
+                </span>
+                <span v-if="loading" class="indicator-progress">
+                  Please wait...
+                  <span
+                    class="spinner-border spinner-border-sm align-middle ms-2"
+                  ></span>
+                </span>
+              </button>
+
+              <button
+                :data-kt-indicator="loading ? 'on' : null"
                 class="btn btn-md btn-primary me-4"
                 type="button"
                 @click="handleProcedureApproval('APPROVED')"
               >
-                <span v-if="!loading" class="indicator-label"> Approved </span>
+                <span v-if="!loading" class="indicator-label"> APPROVED </span>
                 <span v-if="loading" class="indicator-progress">
                   Please wait...
                   <span
@@ -139,7 +166,7 @@
                 @click="handleProcedureApproval('NOT_APPROVED')"
               >
                 <span v-if="!loading" class="indicator-label">
-                  Not Approved
+                  NOT APPROVED
                 </span>
                 <span v-if="loading" class="indicator-progress">
                   Please wait...
@@ -156,7 +183,7 @@
                 @click="handleProcedureApproval('CONSULT_REQUIRED')"
               >
                 <span v-if="!loading" class="indicator-label">
-                  Requires Consult
+                  REQUIRES CONSULT
                 </span>
                 <span v-if="loading" class="indicator-progress">
                   Please wait...
@@ -193,10 +220,11 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import store from "@/store";
 import pdf from "pdfobject";
+import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 
 export default defineComponent({
   name: "view-pre-admission-form-modal",
-  components: {},
+  components: { InfoSection },
   props: {
     isEditable: { type: String, required: true },
   },
@@ -324,6 +352,7 @@ export default defineComponent({
     });
 
     watch(preAdmissionData, () => {
+      console.log(preAdmissionData);
       if (
         preAdmissionData.value !== undefined &&
         preAdmissionData.value.pre_admission_form_url
