@@ -14,7 +14,8 @@
       />
 
       <InputWrapper label="Date of Birth" prop="date_of_birth">
-        <el-date-picker
+        <el-input
+          type="date"
           class="w-100"
           v-model="formData.date_of_birth"
           format="DD/MM/YYYY"
@@ -77,7 +78,7 @@ export default defineComponent({
       last_name: [
         {
           required: true,
-          message: "Last Name cannnot be blank",
+          message: "Last Name cannot be blank",
           trigger: "change",
         },
       ],
