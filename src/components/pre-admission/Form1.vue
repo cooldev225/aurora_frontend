@@ -86,7 +86,12 @@ export default defineComponent({
     const apt_id = ref("");
 
     const submit = async () => {
-      if (!formRef.value) {
+      router.push({
+        path: "/dashboard",
+      });
+      /*
+     
+     if (!formRef.value) {
         return;
       }
 
@@ -123,6 +128,7 @@ export default defineComponent({
       } else {
         store.commit(Mutations.PURGE_AUTH);
       }
+      */
     };
 
     onMounted(() => {
