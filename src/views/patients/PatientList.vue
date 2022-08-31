@@ -54,7 +54,7 @@
                     <button
                       type="submit"
                       class="btn btn-primary me-5 w-50"
-                      @click="searchPatient"
+                      @click.prevent="searchPatient"
                     >
                       SEARCH
                     </button>

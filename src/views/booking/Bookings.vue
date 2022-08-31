@@ -243,7 +243,7 @@
                       </div>
                       <button
                         class="btn btn-primary mt-3 w-100"
-                        @click="handleSearch"
+                        @click.prevent="handleSearch"
                       >
                         SEARCH
                       </button>
