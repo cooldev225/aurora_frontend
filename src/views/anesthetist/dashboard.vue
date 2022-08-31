@@ -146,10 +146,11 @@
 
         <template v-slot:cell-actions="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
-            <span class="mx-3" v-if="item.pre_admission_form_url == null">
+            <span class="mx-3" v-if="!item.is_pre_admission_form_complete">
               No Form Submitted</span
             >
             <button
+              v-else
               @click="handleFormModal(item)"
               class="btn btn-active-color-primary btn-primary"
             >

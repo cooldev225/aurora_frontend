@@ -102,7 +102,7 @@
                 </div>
               </div>
 
-              <div class="fv-row my-4 pdf_viewer_wrapper">
+              <div class="fv-row m-6 pdf_viewer_wrapper">
                 <div id="divPDFViewer" class="pdf_viewer"></div>
               </div>
 
@@ -352,16 +352,22 @@ export default defineComponent({
     });
 
     watch(preAdmissionData, () => {
-      console.log(preAdmissionData);
-      if (
-        preAdmissionData.value !== undefined &&
-        preAdmissionData.value.pre_admission_form_url
-      ) {
-        document.getElementById("divPDFViewer").innerHTML = "";
-        pdf.embed(
-          preAdmissionData.value.pre_admission_form_url,
-          "#divPDFViewer"
-        );
+      if (preAdmissionData.value.pre_admission.pre_admission_file) {
+        store
+          .dispatch(Actions.APPOINTMENT.PRE_ADMISSION.VIEW, {
+            path: preAdmissionData.value.pre_admission.pre_admission_file,
+          })
+          .then((data) => {
+            const blob = new Blob([data], { type: "application/pdf" });
+            const objectUrl = URL.createObjectURL(blob);
+            document.getElementById("divPDFViewer").innerHTML = "";
+            pdf.embed(objectUrl, "#divPDFViewer", {
+              pdfOpenParams: { pagemode: "none" },
+            });
+          })
+          .catch(() => {
+            console.log("pdf error");
+          });
       }
     });
 

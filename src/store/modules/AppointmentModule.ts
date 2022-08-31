@@ -443,6 +443,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [Actions.APT.PRE_ADMISSION.STORE](data) {
+    console.log(data.get("pre_admission_answers"));
     ApiService.post(
       "appointments/pre-admissions/store/" + data.get("apt_id").toString(),
       data
@@ -478,11 +479,32 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [Actions.APPOINTMENT.REFERRAL.VIEW](data) {
-    console.log(data);
     return ApiService.post(
-      "appointments/referral/file",
+      "file",
       {
         path: data.path,
+        type: "REFERRAL",
+      },
+      {
+        responseType: "blob",
+      }
+    )
+      .then(({ data }) => {
+        return data;
+      })
+      .catch(({ response }) => {
+        console.log(response.data.error);
+      });
+  }
+
+  @Action
+  [Actions.APPOINTMENT.PRE_ADMISSION.VIEW](data) {
+    console.log(data);
+    return ApiService.post(
+      "file",
+      {
+        path: data.path,
+        type: "PRE_ADMISSION",
       },
       {
         responseType: "blob",
