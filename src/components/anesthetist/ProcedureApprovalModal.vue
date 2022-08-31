@@ -225,14 +225,6 @@ import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 export default defineComponent({
   name: "view-pre-admission-form-modal",
   components: { InfoSection },
-  props: {
-    isEditable: { type: String, required: true },
-  },
-  data: function () {
-    return {
-      userRole: computed(() => store.getters.userRole),
-    };
-  },
   setup(props) {
     const store = useStore();
     const formRef = ref(null);
