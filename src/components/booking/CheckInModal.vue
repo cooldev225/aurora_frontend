@@ -356,9 +356,9 @@ export default defineComponent({
           if (is_move === true) {
             router.push({ name: "make-payment-pay" });
             store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
-            DrawerComponent?.getInstance("booking-drawer")?.hide();
+            DrawerComponent?.getInstance("appointment-drawer")?.hide();
           } else {
-            DrawerComponent?.getInstance("booking-drawer")?.hide();
+            DrawerComponent?.getInstance("appointment-drawer")?.hide();
           }
         })
         .catch(({ response }) => {

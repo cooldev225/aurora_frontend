@@ -119,10 +119,7 @@ export default class BooingModule extends VuexModule implements BookingInfo {
       ApiService.setHeader();
       ApiService.query("work-hours", { params: payload })
         .then(({ data }) => {
-          this.context.commit(
-            Mutations.SET_BOOKING.SEARCH.DATE,
-            data.data[Object.keys(data.data)[0]]
-          );
+          this.context.commit(Mutations.SET_BOOKING.SEARCH.DATE, data.data);
         })
         .catch(({ response }) => {
           console.log(response.data.error);

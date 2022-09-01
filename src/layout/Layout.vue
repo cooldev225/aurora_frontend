@@ -42,7 +42,7 @@
   <KTInviteFriendsModal />
   <KTDemosDrawer />
   <KTHelpDrawer />
-  <BookingDrawer />
+  <AppointmentDrawer />
 </template>
 
 <script lang="ts">
@@ -57,7 +57,7 @@ import KTScrollTop from "@/layout/extras/ScrollTop.vue";
 import KTLoader from "@/components/Loader.vue";
 import KTCreateApp from "@/components/modals/wizards/CreateAppModal.vue";
 import KTInviteFriendsModal from "@/components/modals/general/InviteFriendsModal.vue";
-import BookingDrawer from "@/components/booking/BookingDrawer.vue";
+import AppointmentDrawer from "@/components/booking/AppointmentDrawer.vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { MenuComponent } from "@/assets/ts/components";
 import { removeModalBackdrop } from "@/core/helpers/dom";
@@ -83,7 +83,7 @@ export default defineComponent({
     KTCreateApp,
     KTInviteFriendsModal,
     KTLoader,
-    BookingDrawer,
+    AppointmentDrawer,
   },
   setup() {
     const store = useStore();

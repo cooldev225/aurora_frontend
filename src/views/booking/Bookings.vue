@@ -134,14 +134,15 @@
                       class="d-flex flex-column"
                     >
                       <template
-                        v-for="(item, index) in ava_specialists"
+                        v-for="(specialist, index) in ava_specialists"
                         :key="index"
                       >
                         <el-checkbox
                           size="large"
-                          :label="item.id"
+                          :label="specialist.id"
                           :checked="true"
-                          >Dr. {{ item.name }}</el-checkbox
+                          >Dr. {{ specialist.first_name }}
+                          {{ specialist.last_name }}</el-checkbox
                         >
                       </template>
                     </el-checkbox-group>
@@ -260,14 +261,9 @@
       <div class="card-body">
         <div class="scroll" :class="{ 'h-500px': !toggleLayout }">
           <div class="d-flex flex-column">
-            <template v-for="(item, key) in specialists" :key="key">
-              <AptTable
-                :ava_SPTData="item"
-                :date="moment(key.toString()).format('MM-DD-YYYY')"
-                :SPTData="item"
-                :Title="moment(key.toString()).format('dddd, MMMM Do YYYY')"
-              />
-            </template>
+            <AppointmentTable
+              :date="moment(date_search.date.toString()).format('MM-DD-YYYY')"
+            />
           </div>
         </div>
       </div>
@@ -297,7 +293,7 @@ import {
 import { useStore } from "vuex";
 import AppointmentListPopup from "@/components/booking/AppointmentListPopup.vue";
 import CreateModal from "@/components/booking/CreateApt.vue";
-import AptTable from "@/components/booking/AptTable.vue";
+import AppointmentTable from "@/components/booking/AppointmentTable.vue";
 import VueCtkDateTimePicker from "vue-ctk-date-time-picker";
 import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
 import moment from "moment";
@@ -311,7 +307,7 @@ export default defineComponent({
   components: {
     VueCtkDateTimePicker,
     CreateModal,
-    AptTable,
+    AppointmentTable,
     AppointmentListPopup,
   },
   data: function () {
@@ -387,6 +383,7 @@ export default defineComponent({
 
     const ava_specialists = computed(() => store.getters.getAvailableSPTData);
     const specialists = computed(() => store.getters.getFilteredData);
+
     const available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
     );
@@ -419,14 +416,8 @@ export default defineComponent({
     };
 
     const handleSearch = async () => {
-      console.log(searchAppointmentForm);
-      console.log(searchAppointmentFormRef.value);
       searchAppointmentFormRef.value.validate(async (valid) => {
         if (valid) {
-          console.log(
-            "searchAppointmentForm.value",
-            searchAppointmentForm.value.appointment_type_id
-          );
           search_next_apts.appointment_type_id =
             searchAppointmentForm.value.appointment_type_id;
           search_next_apts.specialist_id =
@@ -471,6 +462,8 @@ export default defineComponent({
 
     watch(ava_specialists, () => {
       let temp = [];
+      /*
+      
       ava_specialists.value.forEach((item) => {
         specialists_search.specialist_ids.forEach((selected) => {
           if (item.id === selected) temp.push(item);
@@ -481,6 +474,7 @@ export default defineComponent({
       const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
       data.value[data_key] = temp;
       store.commit(Mutations.SET_BOOKING.SEARCH.SPECIALISTS, data.value);
+      */
     });
 
     watch(specialists_search, () => {
@@ -556,30 +550,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-.cell-35px {
-  width: 35px;
-  min-width: 35px;
-  max-width: 35px;
-}
-
-.cell-120px {
-  width: 120px;
-  min-width: 120px;
-  max-width: 120px;
-}
-
-.booking-table-body td,
-.booking-table-body th {
-  border: 0.5px dashed gray;
-}
-
-.booking-table-header tr:first-child th:first-child {
-  border-radius: 10px 0 0 0;
-}
-
-.booking-table-header tr:first-child th:last-child {
-  border-radius: 0 10px 0 0;
-}
-</style>

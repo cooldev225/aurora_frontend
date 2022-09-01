@@ -1441,13 +1441,13 @@ export default defineComponent({
     });
 
     watch(cur_specialist_id, () => {
-      aptInfoData.value.specialist_id = cur_specialist_id.value;
-      const _selected = ava_specialist.value.filter(
-        (item) => item.id === cur_specialist_id.value
-      )[0];
-      specialist_name.value = _selected.name;
-      anesthetist.value = _selected.anesthetist;
-      aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
+      //   aptInfoData.value.specialist_id = cur_specialist_id.value;
+      //  const _selected = ava_specialist.value.filter(
+      //    (item) => item.id === cur_specialist_id.value
+      //  )[0];
+      //specialist_name.value = _selected.name;
+      //  anesthetist.value = _selected.anesthetist;
+      //  aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
     });
 
     watch(start_time, () => {
@@ -1510,12 +1510,12 @@ export default defineComponent({
         if (bookingData.selected_specialist.anesthetist) {
           anesthetist.value = bookingData.selected_specialist.anesthetist;
         }
-        if (bookingData.selected_specialist.work_hours.locations) {
-          clinic.value = bookingData.selected_specialist.work_hours.locations;
-          aptInfoData.value.clinic_name =
-            bookingData.selected_specialist.work_hours.locations.name;
-          aptInfoData.value.clinic_id =
-            bookingData.selected_specialist.work_hours.locations.id;
+
+        if (bookingData.selected_specialist) {
+          clinic.value =
+            bookingData.selected_specialist.hrm_user_base_schedules[0].clinic;
+          aptInfoData.value.clinic_name = clinic.value.name;
+          aptInfoData.value.clinic_id = clinic.value.id;
           if (JwtService.getToken()) {
             ApiService.setHeader();
             ApiService.get("clinics/" + clinic.value.id + "/rooms")
