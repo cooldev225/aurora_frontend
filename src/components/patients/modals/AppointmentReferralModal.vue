@@ -105,10 +105,11 @@
                   action="#"
                   ref="uploadRef"
                   class="mr-20"
-                  :limit="1"
+                  :limit="2"
                   :auto-upload="false"
                   :on-change="handleUploadChange"
                   :on-remove="handleUploadRemove"
+                  v-model:file-list="formData.file"
                 >
                   <el-button type="primary" class="btn btn-primary"
                     >Upload Referral
@@ -179,7 +180,6 @@ export default defineComponent({
     selectedApt: { type: Object, required: true },
   },
   setup(props) {
-    debugger;
     const store = useStore();
     const formRef = ref(null);
     const referralModalRef = ref(null);
@@ -187,7 +187,6 @@ export default defineComponent({
 
     const uploadRef = ref(null);
     const uploadDisabled = ref(true);
-    const uploadData = new FormData();
 
     const appointmentData = computed(() => props.selectedApt);
     const referringDoctors = computed(
@@ -199,7 +198,7 @@ export default defineComponent({
       referring_doctor_id: "2",
       referral_date: "",
       referral_duration: "",
-      file: "",
+      file: [],
     });
 
     const rules = ref({
@@ -228,6 +227,7 @@ export default defineComponent({
 
     watch(appointmentData, () => {
       if (appointmentData.value.referral?.referral_file) {
+        console.log(appointmentData.value.referral?.referral_file);
         store
           .dispatch(Actions.APPOINTMENT.REFERRAL.VIEW, {
             path: appointmentData.value.referral.referral_file,
@@ -250,7 +250,13 @@ export default defineComponent({
         appointmentData.value.referral.referral_duration;
       formData.value.referral_date =
         appointmentData.value.referral.referral_date;
-      uploadRef.value.clearFiles(); // = null;
+      if (
+        !appointmentData.value.referral?.referral_file ||
+        !appointmentData.value.referral?.referral_file?.length
+      ) {
+        formData.value.file = [];
+        document.getElementById("divPDFViewer").innerHTML = "";
+      }
     });
 
     const submit = () => {
@@ -260,7 +266,7 @@ export default defineComponent({
 
           let submitData = new FormData();
 
-          submitData.append("file", formData.value.file);
+          submitData.append("file", formData.value.file[0]?.raw);
           submitData.append(
             "referring_doctor_id",
             formData.value.referring_doctor_id
@@ -340,35 +346,19 @@ export default defineComponent({
 
     const handleUploadChange = (file) => {
       uploadDisabled.value = false;
-      formData.value.file = file.raw;
+      formData.value.file = [file];
+      if (formData.value.file?.length) {
+        const blob = new Blob([file.raw], { type: "application/pdf" });
+        const url = window.URL.createObjectURL(blob);
+        document.getElementById("divPDFViewer").innerHTML = "";
+        pdf.embed(url, "#divPDFViewer");
+      }
     };
 
     const handleUploadRemove = () => {
       uploadDisabled.value = true;
     };
 
-    watch(appointmentData, () => {
-      // for (let key in formData.value)
-      //   formData.value[key] = appointmentData.value[key];
-    });
-
-    const resetForm = () => {
-      debugger;
-      formData.value.referring_doctor_name = "";
-      formData.value.referring_doctor_id = "2";
-      formData.value.referral_date = "";
-      formData.value.referral_duration = "";
-      // formData.value.file = "";
-      // uploadDisabled.value = true;
-      // uploadRef.value = null;
-      // this.$refs.uploadRef.$refs.clearFiles();
-      // eslint-disable-next-line vue/no-ref-as-operand
-      // this.$refs.uploadRef.clearFiles();
-      // uploadRef.value.clearFiles();
-      // // eslint-disable-next-line vue/no-ref-as-operand
-      // uploadRef.value.handleRemove();
-      // // uploadRef.value.file = null;
-    };
     return {
       handleUploadChange,
       handleUploadRemove,
@@ -380,7 +370,6 @@ export default defineComponent({
       formRef,
       loading,
       referralModalRef,
-      resetForm,
     };
   },
   mounted() {
