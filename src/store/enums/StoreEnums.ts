@@ -172,8 +172,11 @@ const Actions = {
 
   APPOINTMENT: {
     REFERRAL: {
-      UPDATE: "updateAppointmentReferral", // 'appointments/referral/{appointment}'
-      VIEW: "viewAppointmentReferral", // 'appointments/referral/file'
+      UPDATE: "updateAppointmentReferral", // (put)'appointments/referral/{appointment}'
+      VIEW: "viewAppointmentReferral", // (post)'appointments/referral/file'
+    },
+    PRE_ADMISSION: {
+      VIEW: "viewPreAdmissionForm", // (post)'appointment/procedure-approvals/pdf/{appointment}'
     },
   },
 

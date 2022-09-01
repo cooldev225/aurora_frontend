@@ -129,7 +129,6 @@
               data-bs-dismiss="modal"
               id="kt_modal_collecting_person_cancel"
               class="btn btn-light me-3"
-              @click="resetForm"
             >
               Cancel
             </button>
@@ -294,6 +293,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
+                document.getElementById("divPDFViewer").innerHTML = "";
                 hideModal(referralModalRef.value);
               });
             })

@@ -1,7 +1,7 @@
 <template>
   <div class="card w-100 h-100 px-20">
     <el-form
-      @submit.prevent="generatePDF()"
+      @submit.prevent="submit()"
       :model="formData"
       :rules="rules"
       ref="formRef"
@@ -355,7 +355,10 @@
                       v-if="question.answer_format === 'TEXT'"
                       v-model="
                         pre_admission_answers[
-                          section.id.toString() + question.id.toString()
+                          's' +
+                            section.id.toString() +
+                            '/q' +
+                            question.id.toString()
                         ]
                       "
                     />
@@ -363,7 +366,10 @@
                       v-if="question.answer_format === 'BOOLEAN'"
                       v-model="
                         pre_admission_answers[
-                          section.id.toString() + question.id.toString()
+                          's' +
+                            section.id.toString() +
+                            '/q' +
+                            question.id.toString()
                         ]
                       "
                     >
@@ -563,8 +569,37 @@ export default defineComponent({
       ],
     });
 
+    const formattedAnswer = () => {
+      const res = [];
+      patientData.value.pre_admission_sections.forEach((section) => {
+        const sec = {
+          id: section.id,
+          organization_id: section.organization_id,
+          section_title: section.title,
+          section_questions: [],
+        };
+        section.questions.forEach((question) => {
+          const _question =
+            pre_admission_answers.value[
+              "s" + section.id.toString() + "/q" + question.id.toString()
+            ];
+          const que = {
+            id: question.id,
+            pre_admission_section_id: question.pre_admission_section_id,
+            question_text: question.text,
+            question_answer: _question,
+          };
+          sec.section_questions.push(que);
+        });
+        res.push(sec);
+      });
+      return res;
+    };
+
     const submit = () => {
+      loading.value = true;
       if (!formRef.value) {
+        loading.value = false;
         return;
       }
 
@@ -574,6 +609,10 @@ export default defineComponent({
             Data.append(key, formData.value[key]);
           });
           Data.append("apt_id", apt_id.value);
+          Data.append(
+            "pre_admission_answers",
+            JSON.stringify(formattedAnswer())
+          );
           await store.dispatch(Actions.APT.PRE_ADMISSION.STORE, Data);
           loading.value = false;
           router.push({
@@ -581,6 +620,7 @@ export default defineComponent({
               "/appointment_pre_admissions/show/" + apt_id.value + "/form_3",
           });
         } else {
+          loading.value = false;
           console.log("validation error");
         }
       });
@@ -612,7 +652,8 @@ export default defineComponent({
 
     const generatePDF = () => {
       loading.value = true;
-      html2Pdf.value.generatePdf();
+      submit();
+      // html2Pdf.value.generatePdf();
     };
 
     const onProgress = (event) => {
@@ -620,16 +661,17 @@ export default defineComponent({
     };
 
     const beforeDownload = ({ html2pdf, options, pdfContent }) => {
-      html2pdf()
-        .set(options)
-        .from(pdfContent)
-        .toPdf()
-        .get("pdf")
-        .output("datauristring")
-        .then((pdfAsString) => {
-          Data.append("pdf", pdfAsString);
-          submit();
-        });
+      submit();
+      // html2pdf()
+      //   .set(options)
+      //   .from(pdfContent)
+      //   .toPdf()
+      //   .get("pdf")
+      //   .output("datauristring")
+      //   .then((pdfAsString) => {
+      //     Data.append("pdf", pdfAsString);
+      //     submit();
+      //   });
     };
 
     return {

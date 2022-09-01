@@ -430,7 +430,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [Actions.APT.PRE_ADMISSION.ORG](id) {
-    ApiService.get("appointment_pre_admissions/show/" + id)
+    ApiService.get("appointments/pre-admissions/show/" + id)
       .then(({ data }) => {
         this.context.commit(Mutations.SET_APT.PRE_ADMISSION.ORG, data.data);
         return data.data;
@@ -443,8 +443,9 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [Actions.APT.PRE_ADMISSION.STORE](data) {
+    console.log(data.get("pre_admission_answers"));
     ApiService.post(
-      "appointment_pre_admissions/store/" + data.get("apt_id").toString(),
+      "appointments/pre-admissions/store/" + data.get("apt_id").toString(),
       data
     )
       .then(({ data }) => {
@@ -478,11 +479,32 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [Actions.APPOINTMENT.REFERRAL.VIEW](data) {
-    console.log(data);
     return ApiService.post(
-      "appointments/referral/file",
+      "file",
       {
         path: data.path,
+        type: "REFERRAL",
+      },
+      {
+        responseType: "blob",
+      }
+    )
+      .then(({ data }) => {
+        return data;
+      })
+      .catch(({ response }) => {
+        console.log(response.data.error);
+      });
+  }
+
+  @Action
+  [Actions.APPOINTMENT.PRE_ADMISSION.VIEW](data) {
+    console.log(data);
+    return ApiService.post(
+      "file",
+      {
+        path: data.path,
+        type: "PRE_ADMISSION",
       },
       {
         responseType: "blob",
@@ -498,7 +520,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [Actions.APT.PRE_ADMISSION.VALIDATE](data) {
-    ApiService.post("appointment_pre_admissions/validate/" + data.apt_id, {
+    ApiService.post("appointments/pre-admissions/validate/" + data.apt_id, {
       last_name: data.last_name,
       date_of_birth: moment(data.date_of_birth).format("YYYY-MM-DD").toString(),
     })
@@ -511,6 +533,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
           Mutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
           data.data
         );
+        console.log(data);
         return data.message;
       })
       .catch(({ response }) => {

@@ -19,7 +19,7 @@
                     class="form-check-label fw-bold text-muted"
                     for="chkShowType"
                   >
-                    Show Unassed Only
+                    Show Unassessed Only
                   </span>
                   <!--end::Label-->
 
@@ -112,6 +112,7 @@
     </div>
     <div class="card-body pt-0">
       <Datatable
+        emptyTableText="No pre-admission forms require assessment"
         :table-header="tableHeader"
         :table-data="tableData"
         :rows-per-page="5"
@@ -144,24 +145,24 @@
         </template>
 
         <template v-slot:cell-actions="{ row: item }">
-          <span
-            v-if="item.pre_admission_form_url !== null"
-            class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
-          >
+          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
+            <span class="mx-3" v-if="!item.is_pre_admission_form_complete">
+              No Form Submitted</span
+            >
             <button
+              v-else
               @click="handleFormModal(item)"
               class="btn btn-active-color-primary btn-primary"
             >
-              View Pre Admission Form
+              View
             </button>
           </span>
-          <span v-else> No Pre Admission Form </span>
         </template>
       </Datatable>
     </div>
   </div>
 
-  <PreAdmissionFormModal isEditable="true" />
+  <ProcedureApprovalModal isEditable="true" />
 </template>
 
 <script>
@@ -171,14 +172,14 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
-import PreAdmissionFormModal from "@/components/anesthetist/PreAdmissionForm.vue";
+import ProcedureApprovalModal from "@/components/anesthetist/ProcedureApprovalModal.vue";
 
 export default defineComponent({
   name: "procedure-approvals-list",
 
   components: {
     Datatable,
-    PreAdmissionFormModal,
+    ProcedureApprovalModal,
   },
 
   setup() {
@@ -224,7 +225,7 @@ export default defineComponent({
     const filterFirstName = ref("");
     const filterLastName = ref("");
     const tableKey = ref(0);
-    const showAll = ref(false);
+    const showAll = ref(true);
 
     const renderTable = () => tableKey.value++;
 

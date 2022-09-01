@@ -157,7 +157,7 @@
   ></AppointmentReferralModal>
   <!--end::details View-->
 
-  <PreAdmissionFormModal isEditable="false" />
+  <ProcedureApprovalModal isEditable="false" />
 </template>
 
 <script lang="ts">
@@ -176,8 +176,8 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import moment from "moment";
 import CollectingPersonModal from "./modals/CollectingPersonModal.vue";
 import AppointmentReferralModal from "./modals/AppointmentReferralModal.vue";
+import ProcedureApprovalModal from "./modals/ProcedureApprovalModal.vue";
 import { Modal } from "bootstrap";
-import PreAdmissionFormModal from "@/components/anesthetist/PreAdmissionForm.vue";
 import { Mutations, Actions } from "@/store/enums/StoreEnums";
 import md5 from "js-md5";
 export default defineComponent({
@@ -186,7 +186,7 @@ export default defineComponent({
     Datatable,
     CollectingPersonModal,
     AppointmentReferralModal,
-    PreAdmissionFormModal,
+    ProcedureApprovalModal,
   },
   setup() {
     const store = useStore();
@@ -227,7 +227,10 @@ export default defineComponent({
     };
 
     const handlePreAdmission = (item) => {
-      store.commit(Mutations.SET_PROCEDURE_APPROVAL.DATA, item);
+      selectedApt.value = {
+        patient_id: list.value.id,
+        ...item,
+      };
       const modal = new Modal(
         document.getElementById("modal_view_pre_admission")
       );

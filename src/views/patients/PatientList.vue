@@ -54,7 +54,7 @@
                     <button
                       type="submit"
                       class="btn btn-primary me-5 w-50"
-                      @click="searchPatient"
+                      @click.prevent="searchPatient"
                     >
                       SEARCH
                     </button>
@@ -110,7 +110,7 @@
           v-slot:cell-upcoming="{ row: item }"
         >
           <span
-            v-for="upcoming_appointment in item.all_upcoming_appointments"
+            v-for="upcoming_appointment in item.upcoming_appointments"
             :key="upcoming_appointment.id"
             :class="`badge ${
               upcoming_appointment.id ? '' : 'badge-light-success'
@@ -263,6 +263,7 @@ export default defineComponent({
     watch(list, () => {
       patientData.value = list.value;
       tableData.value = patientData.value;
+      console.log(tableData.value[0]);
       renderTable();
     });
 
