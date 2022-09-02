@@ -13,7 +13,7 @@
         class="mb-6 w-100 px-6 text-center"
       />
 
-      <InputWrapper label="Date of Birth" prop="date_of_birth">
+      <InputWrapper label="Date of Birth" prop="date_of_birth" required>
         <el-input
           type="date"
           class="w-100"
@@ -23,7 +23,7 @@
         />
       </InputWrapper>
 
-      <InputWrapper label="Last Name" prop="last_name">
+      <InputWrapper label="Last Name" prop="last_name" required>
         <el-input
           type="text"
           v-model="formData.last_name"
@@ -46,6 +46,7 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import moment from "moment";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
@@ -89,41 +90,24 @@ export default defineComponent({
       if (!formRef.value) {
         return;
       }
-
-      if (JwtService.getToken()) {
-        ApiService.setHeader();
-        ApiService.post(
-          "appointments/pre-admissions/validate/" + apt_id.value,
-          {
-            last_name: formData.value.last_name,
-            date_of_birth: moment(formData.value.date_of_birth)
-              .format("YYYY-MM-DD")
-              .toString(),
-          }
-        )
-          .then(({ data }) => {
-            store.commit(
-              Mutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
-              data.data
-            );
-            router.push({
-              path:
-                "/appointment_pre_admissions/show/" + apt_id.value + "/form_2",
+      formRef.value.validate((valid) => {
+        if (valid) {
+          store
+            .dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
+              id: apt_id.value,
+              last_name: formData.value.last_name,
+              date_of_birth: formData.value.date_of_birth,
+            })
+            .then(() => {
+              console.log("success");
+            })
+            .catch(({ response }) => {
+              formData.value.last_name = "";
+              formData.value.date_of_birth = "";
+              console.log(response);
             });
-          })
-          .catch(({ response }) => {
-            if (response.status === 403) {
-              store.commit(
-                Mutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
-                response.data.message
-              );
-            } else {
-              console.error(response);
-            }
-          });
-      } else {
-        store.commit(Mutations.PURGE_AUTH);
-      }
+        }
+      });
     };
 
     onMounted(() => {

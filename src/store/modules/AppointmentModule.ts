@@ -3,6 +3,8 @@ import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 import moment from "moment";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import router from "@/router";
 export interface IApt {
   id: number;
 }
@@ -520,26 +522,52 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [Actions.APT.PRE_ADMISSION.VALIDATE](data) {
-    ApiService.post("appointments/pre-admissions/validate/" + data.apt_id, {
-      last_name: data.last_name,
-      date_of_birth: moment(data.date_of_birth).format("YYYY-MM-DD").toString(),
-    })
-      .then(({ data }) => {
-        this.context.commit(
-          Mutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
-          data.message
-        );
-        this.context.commit(
-          Mutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
-          data.data
-        );
-        console.log(data);
-        return data.message;
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("appointments/pre-admissions/validate/" + data.id, {
+        last_name: data.last_name,
+        date_of_birth: moment(data.date_of_birth)
+          .format("YYYY-MM-DD")
+          .toString(),
       })
-      .catch(({ response }) => {
-        console.log(response.data.error);
-        // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-      });
+        .then(({ data }) => {
+          this.context.commit(
+            Mutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
+            data.message
+          );
+          this.context.commit(
+            Mutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
+            data.data
+          );
+          router.push({
+            path: "/appointment_pre_admissions/show/" + data.id + "/form_2",
+          });
+          return data.message;
+        })
+        .catch(({ response }) => {
+          if (response.status === 403) {
+            Swal.fire({
+              text: response.data.message,
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "Ok",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+            }).then(() => {
+              this.context.commit(
+                Mutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
+                response.data.message
+              );
+            });
+            //this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          } else {
+            console.error(response);
+          }
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
   }
 
   @Action
