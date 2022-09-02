@@ -127,7 +127,6 @@ import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Actions } from "@/store/enums/StoreEnums";
-import PaymentList from "@/store/dummy/Payments";
 
 export default defineComponent({
   name: "make-payment-main",
@@ -170,26 +169,6 @@ export default defineComponent({
 
     const renderTable = () => tableKey.value++;
 
-    const handleSwitch = () => {
-      if (!showAll.value) {
-        paymentData.value = PaymentList.filter(
-          (data) => data.outstanding_balance > 0
-        );
-      } else {
-        paymentData.value = PaymentList;
-      }
-    };
-
-    const handleClinic = () => {
-      if (currentClinic.value === 0) {
-        paymentData.value = PaymentList;
-      } else {
-        paymentData.value = PaymentList.filter(
-          (data) => data.clinic_id === currentClinic.value
-        );
-      }
-    };
-
     const handlePay = (item) => {
       router.push({ name: "make-payment-pay" });
       store.dispatch(Actions.MAKE_PAYMENT.VIEW, item.id);
@@ -215,8 +194,6 @@ export default defineComponent({
       currentClinic,
       showAll,
       handlePay,
-      handleSwitch,
-      handleClinic,
     };
   },
 });

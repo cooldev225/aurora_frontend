@@ -207,10 +207,10 @@
                         >
                           <el-option value="" label="Any Specialist" />
                           <el-option
-                            v-for="item in allSpecialists"
-                            :value="item.id"
-                            :label="item.name"
-                            :key="item.id"
+                            v-for="specialist in allSpecialists"
+                            :value="specialist.id"
+                            :label="specialist.full_name"
+                            :key="specialist.id"
                           />
                         </el-select>
                       </div>
