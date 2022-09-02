@@ -87,16 +87,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/settings/BirthCode.vue"),
       },
       {
-        path: "/settings/specialist-type",
-        name: "speicalistType",
-        component: () => import("@/views/settings/SpecialistType.vue"),
-      },
-      {
-        path: "/settings/specialist-title",
-        name: "specialistTitle",
-        component: () => import("@/views/settings/SpecialistTitle.vue"),
-      },
-      {
         path: "/settings",
         name: "org-admin-settings",
         component: () => import("@/views/settings/OrgAdminSettings.vue"),
