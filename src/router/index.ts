@@ -208,7 +208,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/booking/dashboard",
         name: "booking-dashboard",
-        component: () => import("@/views/booking/Bookings.vue"),
+        component: () => import("@/views/booking/Appointments.vue"),
       },
       {
         path: "/booking/unconfirmed-apts",
