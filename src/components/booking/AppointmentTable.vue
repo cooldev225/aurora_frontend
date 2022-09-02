@@ -232,7 +232,7 @@ export default defineComponent({
   background-color: #3e7ba0;
 }
 
-tbody > tr:hover {
+.appointment-table-body > tr:hoverr {
   background: rgb(87, 105, 139);
 }
 
