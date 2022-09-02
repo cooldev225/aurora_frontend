@@ -1,5 +1,4 @@
 <template>
-  <!--START: APPOINTMENT TABLE HEADER-->
   <table>
     <thead>
       <tr>
@@ -37,6 +36,7 @@
           :key="specialist.id"
         >
           <CreateAppointmentTableData
+            v-if="specialist"
             :specialist="specialist"
             :date="_apt_date"
             :startTime="appointmentTimeslot"
@@ -112,9 +112,9 @@ export default defineComponent({
     });
 
     const generateAppointmentTimes = () => {
-      let start_time = "03:00";
+      let start_time = "07:00";
       let time_increment = start_time;
-      let end_time = "20:00";
+      let end_time = "18:00";
       let appointment_time_list: string[] = [];
 
       while (timeStr2Number(time_increment) < timeStr2Number(end_time)) {
