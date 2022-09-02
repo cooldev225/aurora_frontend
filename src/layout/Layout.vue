@@ -55,7 +55,7 @@ import HtmlClass from "@/core/services/LayoutService";
 import KTToolbar from "@/layout/toolbar/Toolbar.vue";
 import KTScrollTop from "@/layout/extras/ScrollTop.vue";
 import KTLoader from "@/components/Loader.vue";
-import BookingDrawer from "@/components/booking/BookingDrawer.vue";
+import AppointmentDrawer from "@/components/booking/AppointmentDrawer.vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { MenuComponent } from "@/assets/ts/components";
 import { removeModalBackdrop } from "@/core/helpers/dom";
