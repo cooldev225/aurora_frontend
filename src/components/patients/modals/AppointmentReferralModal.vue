@@ -4,7 +4,7 @@
     id="modal_appointment_referral"
     tabindex="-1"
     aria-hidden="true"
-    ref="appointmentReferralModalRef"
+    ref="referralModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -164,6 +164,7 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import { ElMessage } from "element-plus";
 
 import { mask } from "vue-the-mask";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
@@ -184,8 +185,8 @@ export default defineComponent({
     const referralModalRef = ref(null);
     const loading = ref(false);
 
-    const uploadRef = ref(null);
     const uploadDisabled = ref(true);
+    const pdfType = "application/pdf";
 
     const appointmentData = computed(() => props.selectedApt);
     const referringDoctors = computed(
@@ -226,7 +227,6 @@ export default defineComponent({
 
     watch(appointmentData, () => {
       if (appointmentData.value.referral?.referral_file) {
-        console.log(appointmentData.value.referral?.referral_file);
         store
           .dispatch(Actions.APPOINTMENT.REFERRAL.VIEW, {
             path: appointmentData.value.referral.referral_file,
@@ -236,6 +236,14 @@ export default defineComponent({
             const objectUrl = URL.createObjectURL(blob);
             document.getElementById("divPDFViewer").innerHTML = "";
             pdf.embed(objectUrl, "#divPDFViewer");
+            let file = {
+              name: appointmentData.value.referral?.referral_file,
+              raw: data,
+              size: data.size,
+              status: "ready",
+              uid: new Date(),
+            };
+            formData.value.file = [file];
           })
           .catch(() => {
             console.log("pdf error");
@@ -254,12 +262,21 @@ export default defineComponent({
         !appointmentData.value.referral?.referral_file?.length
       ) {
         formData.value.file = [];
-        document.getElementById("divPDFViewer").innerHTML = "";
+        document.getElementById("divPDFViewer").innerHTML =
+          "No referral uploaded";
       }
     });
 
     const submit = () => {
       formRef.value.validate((valid) => {
+        if (
+          !formData.value.file?.length ||
+          formData.value.file[0] === null ||
+          formData.value.file[0] === undefined
+        ) {
+          ElMessage.error("Please upload referral");
+          valid = false;
+        }
         if (valid) {
           loading.value = true;
 
@@ -279,7 +296,6 @@ export default defineComponent({
           store
             .dispatch(Actions.APPOINTMENT.REFERRAL.UPDATE, {
               appointment_id: appointmentData.value.id,
-              // ...formData.value,
               submitData: submitData,
             })
             .then(() => {
@@ -293,7 +309,8 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                document.getElementById("divPDFViewer").innerHTML = "";
+                document.getElementById("divPDFViewer").innerHTML =
+                  "No referral uploaded";
                 hideModal(referralModalRef.value);
               });
             })
@@ -345,10 +362,16 @@ export default defineComponent({
     };
 
     const handleUploadChange = (file) => {
+      if (file.raw?.type?.toString().toLowerCase() !== pdfType) {
+        formData.value.file = [];
+        document.getElementById("divPDFViewer").innerHTML =
+          "Referral must be PDF format!";
+        return;
+      }
       uploadDisabled.value = false;
       formData.value.file = [file];
       if (formData.value.file?.length) {
-        const blob = new Blob([file.raw], { type: "application/pdf" });
+        const blob = new Blob([file.raw], { type: pdfType });
         const url = window.URL.createObjectURL(blob);
         document.getElementById("divPDFViewer").innerHTML = "";
         pdf.embed(url, "#divPDFViewer");
