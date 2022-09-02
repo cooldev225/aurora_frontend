@@ -42,7 +42,7 @@
   <KTInviteFriendsModal />
   <KTDemosDrawer />
   <KTHelpDrawer />
-  <BookingDrawer />
+  <AppointmentDrawer />
 </template>
 
 <script lang="ts">
@@ -79,7 +79,7 @@ export default defineComponent({
     KTToolbar,
     KTScrollTop,
     KTLoader,
-    BookingDrawer,
+    AppointmentDrawer,
   },
   setup() {
     const store = useStore();

@@ -1,20 +1,19 @@
 <template>
   <!--begin::Appointment Drawer drawer-->
   <div
-    id="booking-drawer"
+    id="appointment-drawer"
     class="bg-white"
     data-kt-drawer="true"
-    data-kt-drawer-name="booking"
+    data-kt-drawer-name="appointment-drawer"
     data-kt-drawer-activate="true"
     data-kt-drawer-overlay="true"
     data-kt-drawer-width="{default:'300px', 'md': '500px'}"
     data-kt-drawer-direction="end"
-    data-kt-drawer-toggle="#booking_edit_toggle"
     data-kt-drawer-close="#booing_edit_close"
   >
-    <div class="card w-100" id="booking-drawer">
+    <div class="card w-100" id="appointment-drawer">
       <!--begin::Card header-->
-      <div class="card-header pe-5" id="booking-drawer_header">
+      <div class="card-header pe-5" id="appointment-drawer_header">
         <!--begin::Title-->
         <div class="card-title">
           <!--begin::User-->
@@ -234,7 +233,7 @@ export default defineComponent({
 
     const handleView = () => {
       store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
-      DrawerComponent?.getInstance("booking-drawer")?.hide();
+      DrawerComponent?.getInstance("appointment-drawer")?.hide();
       router.push({ name: "patients-view-administration" });
     };
 
@@ -243,7 +242,7 @@ export default defineComponent({
       store.commit(Mutations.SET_APT.SELECT, aptData.value);
       const modal = new Modal(document.getElementById("modal_edit_apt"));
       modal.show();
-      DrawerComponent?.getInstance("booking-drawer")?.hide();
+      DrawerComponent?.getInstance("appointment-drawer")?.hide();
     };
 
     const handleCancel = () => {
@@ -277,7 +276,7 @@ export default defineComponent({
             })
             .then(() => {
               store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
-              DrawerComponent?.getInstance("booking-drawer")?.hide();
+              DrawerComponent?.getInstance("appointment-drawer")?.hide();
             });
         },
       });
@@ -302,7 +301,7 @@ export default defineComponent({
               confirmButton: "btn btn-primary",
             },
           }).then(() => {
-            DrawerComponent?.getInstance("booking-drawer")?.hide();
+            DrawerComponent?.getInstance("appointment-drawer")?.hide();
           });
         })
         .catch(({ response }) => {

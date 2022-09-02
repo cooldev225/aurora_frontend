@@ -83,20 +83,6 @@ const Actions = {
     CREATE: "createSpecialists",
     DELETE: "deleteSpecialists",
     UPDATE: "updateSpecialists",
-
-    TYPE: {
-      LIST: "listSpecialistType",
-      CREATE: "createSpecialistType",
-      DELETE: "deleteSpecialistType",
-      UPDATE: "updateSpecialistType",
-    },
-
-    TITLE: {
-      LIST: "listSpecialistTitle",
-      CREATE: "createSpecialistTitle",
-      DELETE: "deleteSpecialistTitle",
-      UPDATE: "updateSpecialistTitle",
-    },
   },
 
   PATIENTS: {
@@ -277,16 +263,6 @@ const Mutations = {
   SET_SPECIALIST: {
     LIST: "setSpecialists",
     SELECT: "setSelectSpecialists",
-
-    TYPE: {
-      LIST: "setSpecialistTypeList",
-      SELECT: "setSelectSpecialistType",
-    },
-
-    TITLE: {
-      LIST: "setSpecialistTitleList",
-      SELECT: "setSelectSpecialistTitle",
-    },
   },
 
   SET_ADMIN: {

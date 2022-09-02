@@ -49,7 +49,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/employees",
         name: "employees",
-        component: () => import("@/views/Employee.vue"),
+        component: () => import("@/views/employees/Employee.vue"),
       },
       {
         path: "/employees/create",
@@ -85,16 +85,6 @@ const routes: Array<RouteRecordRaw> = [
         path: "/settings/birthCode",
         name: "birthCode",
         component: () => import("@/views/settings/BirthCode.vue"),
-      },
-      {
-        path: "/settings/specialist-type",
-        name: "speicalistType",
-        component: () => import("@/views/settings/SpecialistType.vue"),
-      },
-      {
-        path: "/settings/specialist-title",
-        name: "specialistTitle",
-        component: () => import("@/views/settings/SpecialistTitle.vue"),
       },
       {
         path: "/settings",
@@ -191,34 +181,34 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/mailbox",
         name: "mailbox",
-        component: () => import("@/views/apps/email/index.vue"),
+        component: () => import("@/views/mail/index.vue"),
         children: [
           {
             path: "list",
             name: "mailbox-list",
-            component: () => import("@/views/apps/email/List.vue"),
+            component: () => import("@/views/mail/List.vue"),
           },
           {
             path: "compose",
             name: "mailbox-compose",
-            component: () => import("@/views/apps/email/Compose.vue"),
+            component: () => import("@/views/mail/Compose.vue"),
           },
           {
             path: "view/:id",
             name: "mailbox-view",
-            component: () => import("@/views/apps/email/View.vue"),
+            component: () => import("@/views/mail/View.vue"),
           },
           {
             path: "edit/:id",
             name: "mailbox-edit",
-            component: () => import("@/views/apps/email/Edit.vue"),
+            component: () => import("@/views/mail/Edit.vue"),
           },
         ],
       },
       {
         path: "/booking/dashboard",
         name: "booking-dashboard",
-        component: () => import("@/views/booking/Bookings.vue"),
+        component: () => import("@/views/booking/Appointments.vue"),
       },
       {
         path: "/booking/unconfirmed-apts",
@@ -295,20 +285,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/sign-in",
         name: "sign-in",
-        component: () =>
-          import("@/views/crafted/authentication/basic-flow/SignIn.vue"),
-      },
-      {
-        path: "/sign-up",
-        name: "sign-up",
-        component: () =>
-          import("@/views/crafted/authentication/basic-flow/SignUp.vue"),
-      },
-      {
-        path: "/password-reset",
-        name: "password-reset",
-        component: () =>
-          import("@/views/crafted/authentication/basic-flow/PasswordReset.vue"),
+        component: () => import("@/views/SignIn.vue"),
       },
     ],
   },
@@ -335,21 +312,15 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/multi-step-sign-up",
-    name: "multi-step-sign-up",
-    component: () =>
-      import("@/views/crafted/authentication/MultiStepSignUp.vue"),
-  },
-  {
     // the 404 route, when none of the above matches
     path: "/404",
     name: "404",
-    component: () => import("@/views/crafted/authentication/Error404.vue"),
+    component: () => import("@/views/Error404.vue"),
   },
   {
     path: "/500",
     name: "500",
-    component: () => import("@/views/crafted/authentication/Error500.vue"),
+    component: () => import("@/views/Error500.vue"),
   },
   {
     path: "/:pathMatch(.*)*",
