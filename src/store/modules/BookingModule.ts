@@ -117,7 +117,7 @@ export default class BooingModule extends VuexModule implements BookingInfo {
     this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("work-hours", { params: payload })
+      ApiService.query("appointments/specialists", { params: payload })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_BOOKING.SEARCH.DATE, data.data);
         })
@@ -133,7 +133,7 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   [Actions.BOOKING.SEARCH.NEXT_APT](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("available-slots", { params: payload })
+      ApiService.query("available-timeslots", { params: payload })
         .then(({ data }) => {
           this.context.commit(
             Mutations.SET_BOOKING.SEARCH.NEXT_APTS,
@@ -153,7 +153,7 @@ export default class BooingModule extends VuexModule implements BookingInfo {
     this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("work-hours", { params: payload })
+      ApiService.query("appointments/specialists", { params: payload })
         .then(({ data }) => {
           this.context.commit(
             Mutations.SET_BOOKING.SEARCH.SPECIALISTS,
