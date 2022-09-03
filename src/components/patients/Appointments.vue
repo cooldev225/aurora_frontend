@@ -157,7 +157,7 @@
   ></AppointmentReferralModal>
   <!--end::details View-->
 
-  <ProcedureApprovalModal isEditable="false" />
+  <ProcedureApprovalModal isEditable="false" :selectedApt="selectedApt" />
 </template>
 
 <script lang="ts">
