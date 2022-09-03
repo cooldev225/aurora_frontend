@@ -4,7 +4,7 @@
     id="modal_appointment_referral"
     tabindex="-1"
     aria-hidden="true"
-    ref="appointmentReferralModalRef"
+    ref="referralModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -105,10 +105,11 @@
                   action="#"
                   ref="uploadRef"
                   class="mr-20"
-                  :limit="1"
+                  :limit="2"
                   :auto-upload="false"
                   :on-change="handleUploadChange"
                   :on-remove="handleUploadRemove"
+                  v-model:file-list="formData.file"
                 >
                   <el-button type="primary" class="btn btn-primary"
                     >Upload Referral
@@ -124,11 +125,10 @@
           <div class="modal-footer flex-center">
             <!--begin::Cancel Button-->
             <button
-              type="reset"
+              type="button"
               data-bs-dismiss="modal"
               id="kt_modal_collecting_person_cancel"
               class="btn btn-light me-3"
-              :click="clearModal"
             >
               Cancel
             </button>
@@ -164,6 +164,7 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import { ElMessage } from "element-plus";
 
 import { mask } from "vue-the-mask";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
@@ -184,9 +185,8 @@ export default defineComponent({
     const referralModalRef = ref(null);
     const loading = ref(false);
 
-    const uploadRef = ref(null);
     const uploadDisabled = ref(true);
-    const uploadData = new FormData();
+    const pdfType = "application/pdf";
 
     const appointmentData = computed(() => props.selectedApt);
     const referringDoctors = computed(
@@ -194,10 +194,11 @@ export default defineComponent({
     );
 
     const formData = ref({
-      referring_doctor_id: "",
+      referring_doctor_name: "",
+      referring_doctor_id: "2",
       referral_date: "",
       referral_duration: "",
-      file: "",
+      file: [],
     });
 
     const rules = ref({
@@ -235,21 +236,53 @@ export default defineComponent({
             const objectUrl = URL.createObjectURL(blob);
             document.getElementById("divPDFViewer").innerHTML = "";
             pdf.embed(objectUrl, "#divPDFViewer");
+            let file = {
+              name: appointmentData.value.referral?.referral_file,
+              raw: data,
+              size: data.size,
+              status: "ready",
+              uid: new Date(),
+            };
+            formData.value.file = [file];
           })
           .catch(() => {
             console.log("pdf error");
           });
       }
+      formData.value.referring_doctor_id =
+        appointmentData.value.referral.referring_doctor_id;
+      formData.value.referring_doctor_name =
+        appointmentData.value.referral.referring_doctor_name;
+      formData.value.referral_duration =
+        appointmentData.value.referral.referral_duration;
+      formData.value.referral_date =
+        appointmentData.value.referral.referral_date;
+      if (
+        !appointmentData.value.referral?.referral_file ||
+        !appointmentData.value.referral?.referral_file?.length
+      ) {
+        formData.value.file = [];
+        document.getElementById("divPDFViewer").innerHTML =
+          "No referral uploaded";
+      }
     });
 
     const submit = () => {
       formRef.value.validate((valid) => {
+        if (
+          !formData.value.file?.length ||
+          formData.value.file[0] === null ||
+          formData.value.file[0] === undefined
+        ) {
+          ElMessage.error("Please upload referral");
+          valid = false;
+        }
         if (valid) {
           loading.value = true;
 
           let submitData = new FormData();
 
-          submitData.append("file", formData.value.file);
+          submitData.append("file", formData.value.file[0]?.raw);
           submitData.append(
             "referring_doctor_id",
             formData.value.referring_doctor_id
@@ -263,7 +296,6 @@ export default defineComponent({
           store
             .dispatch(Actions.APPOINTMENT.REFERRAL.UPDATE, {
               appointment_id: appointmentData.value.id,
-              // ...formData.value,
               submitData: submitData,
             })
             .then(() => {
@@ -277,7 +309,8 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                document.getElementById("divPDFViewer").innerHTML = "";
+                document.getElementById("divPDFViewer").innerHTML =
+                  "No referral uploaded";
                 hideModal(referralModalRef.value);
               });
             })
@@ -329,25 +362,27 @@ export default defineComponent({
     };
 
     const handleUploadChange = (file) => {
+      if (file.raw?.type?.toString().toLowerCase() !== pdfType) {
+        formData.value.file = [];
+        document.getElementById("divPDFViewer").innerHTML =
+          "Referral must be PDF format!";
+        return;
+      }
       uploadDisabled.value = false;
-      formData.value.file = file.raw;
+      formData.value.file = [file];
+      if (formData.value.file?.length) {
+        const blob = new Blob([file.raw], { type: pdfType });
+        const url = window.URL.createObjectURL(blob);
+        document.getElementById("divPDFViewer").innerHTML = "";
+        pdf.embed(url, "#divPDFViewer");
+      }
     };
 
     const handleUploadRemove = () => {
       uploadDisabled.value = true;
     };
 
-    const clearModal = () => {
-      //document.getElementById("divPDFViewer").innerHTML = "";
-    };
-
-    watch(appointmentData, () => {
-      for (let key in formData.value)
-        formData.value[key] = appointmentData.value[key];
-    });
-
     return {
-      clearModal,
       handleUploadChange,
       handleUploadRemove,
       handleReferringDoctorSelect,
@@ -359,6 +394,12 @@ export default defineComponent({
       loading,
       referralModalRef,
     };
+  },
+  mounted() {
+    console.log("-0-------------");
+  },
+  unMounted() {
+    console.log("-1-------------");
   },
 });
 </script>

@@ -28,3 +28,13 @@
         border-radius: $modal-content-border-radius !important;
     }
 }
+
+//Customize
+.modal {
+    .pdf_viewer {
+        display: flex;
+        background: #3e7ba014;
+        align-items: center;
+        justify-content: center;
+    }
+}
