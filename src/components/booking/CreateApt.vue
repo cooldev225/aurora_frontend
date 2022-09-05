@@ -1315,7 +1315,7 @@ export default defineComponent({
     const rooms = ref([]);
     const cur_appointment_type_id = ref("");
     const appointmentType = ref("");
-    const cur_specialist_id = ref("");
+    const cur_specialist = ref("");
     const start_time = ref("");
     const end_time = ref("");
     const appointment_name = ref("");
@@ -1441,14 +1441,11 @@ export default defineComponent({
       overlapping_cnt.value = cnt;
     });
 
-    watch(cur_specialist_id, () => {
-      //   aptInfoData.value.specialist_id = cur_specialist_id.value;
-      //  const _selected = ava_specialist.value.filter(
-      //    (item) => item.id === cur_specialist_id.value
-      //  )[0];
-      //specialist_name.value = _selected.name;
-      //  anesthetist.value = _selected.anesthetist;
-      //  aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
+    watch(cur_specialist, () => {
+      aptInfoData.value.specialist_id = cur_specialist.value.id;
+      specialist_name.value = cur_specialist.value.full_name;
+      //anesthetist.value = _selected.anesthetist;
+      //aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
     });
 
     watch(start_time, () => {
@@ -1516,7 +1513,7 @@ export default defineComponent({
         overlapping_cnt.value = bookingData.overlapping_cnt;
       }
       if (bookingData.selected_specialist) {
-        cur_specialist_id.value = bookingData.selected_specialist.id;
+        cur_specialist.value = bookingData.selected_specialist;
         if (bookingData.selected_specialist.anesthetist) {
           anesthetist.value = bookingData.selected_specialist.anesthetist;
         }
@@ -1830,7 +1827,7 @@ export default defineComponent({
       anesthetist,
       apt_type,
       cur_appointment_type_id,
-      cur_specialist_id,
+      cur_specialist,
       start_time,
       end_time,
       appointment_name,
