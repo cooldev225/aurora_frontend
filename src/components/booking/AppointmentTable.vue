@@ -20,7 +20,7 @@
           v-for="specialist in filteredSpecialists"
           :key="specialist.id"
         >
-          <th style="height: 60px"></th>
+          <th style="height: 60px; width: 40px"></th>
           <th class="text-center text-primary py-3">
             {{
               filteredSpecialists.length > 0
@@ -77,7 +77,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watchEffect } from "vue";
+import {
+  defineComponent,
+  ref,
+  computed,
+  onMounted,
+  watchEffect,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
@@ -132,6 +139,13 @@ export default defineComponent({
       }
       return appointment_time_list;
     };
+
+    watch(filteredSpecialists, () => {
+      console.log([
+        "filteredSpecialists length",
+        filteredSpecialists.value.length,
+      ]);
+    });
 
     watchEffect(() => {
       if (
