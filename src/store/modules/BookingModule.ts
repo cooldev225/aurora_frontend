@@ -113,23 +113,6 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   }
 
   @Action
-  [Actions.BOOKING.SEARCH.DATE](payload) {
-    this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.query("appointments/specialists", { params: payload })
-        .then(({ data }) => {
-          this.context.commit(Mutations.SET_BOOKING.SEARCH.DATE, data.data);
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
   [Actions.BOOKING.SEARCH.NEXT_APT](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
@@ -159,8 +142,23 @@ export default class BooingModule extends VuexModule implements BookingInfo {
             Mutations.SET_BOOKING.SEARCH.SPECIALISTS,
             data.data
           );
-          console.log("STRAIT OUTA API");
-          console.log(data.data);
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.BOOKING.SEARCH.DATE](payload) {
+    this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.query("appointments/specialists", { params: payload })
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_BOOKING.SEARCH.DATE, data.data);
         })
         .catch(({ response }) => {
           console.log(response.data.error);
