@@ -128,7 +128,7 @@
                     placeholder="Select Appointment"
                   >
                     <el-option
-                      v-for="item in aptList.futureAppointments"
+                      v-for="item in aptList.pastAppointments"
                       :label="
                         moment(item.date).format('DD-MM-YYYY') +
                         ' ' +
@@ -139,18 +139,11 @@
                     />
                   </el-select>
                 </InputWrapper>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Specialist</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="specialist">
+                <InputWrapper
+                  class="col-6"
+                  label="Specialist"
+                  prop="specialist"
+                >
                   <el-select
                     v-model="formData.specialist_id"
                     class="w-100"
@@ -158,59 +151,60 @@
                   >
                     <el-option
                       v-for="item in specialistList"
-                      :label="item.name"
+                      :label="item.full_name"
                       :value="item.id"
                       :key="item.id"
                     />
                   </el-select>
-                </el-form-item>
-                <InputWrapper label="Upload File" prop="specialist">
-                  <el-upload
-                    action="#"
-                    ref="upload"
-                    :class="{ disabled: uploadDisabled }"
-                    :limit="1"
-                    :file-list="fileList"
-                    :on-change="handleChange"
-                    :on-remove="handleRemove"
-                    :auto-upload="false"
-                    accept="*/*"
-                  >
-                    <i class="fa fa-plus"></i> </el-upload
-                ></InputWrapper>
+                </InputWrapper>
               </div>
-            </div>
-
-            <!--begin::Modal footer-->
-            <div class="modal-footer flex-center">
-              <!--begin::Button-->
-              <button
-                type="reset"
-                data-bs-dismiss="modal"
-                id="kt_modal_upload_document_cancel"
-                class="btn btn-light me-3"
-              >
-                Cancel
-              </button>
-              <!--end::Button-->
-
-              <!--begin::Button-->
-              <button
-                :data-kt-indicator="loading ? 'on' : null"
-                class="btn btn-lg btn-primary"
-                type="submit"
-              >
-                <span v-if="!loading" class="indicator-label"> Save </span>
-                <span v-if="loading" class="indicator-progress">
-                  Please wait...
-                  <span
-                    class="spinner-border spinner-border-sm align-middle ms-2"
-                  ></span>
-                </span>
-              </button>
-              <!--end::Button-->
+              <InputWrapper label="Upload File" prop="specialist">
+                <el-upload
+                  action="#"
+                  ref="upload"
+                  :class="{ disabled: uploadDisabled }"
+                  :limit="1"
+                  :file-list="fileList"
+                  :on-change="handleChange"
+                  :on-remove="handleRemove"
+                  :auto-upload="false"
+                  accept="*/*"
+                >
+                  <i class="fa fa-plus"></i> </el-upload
+              ></InputWrapper>
             </div>
           </div>
+
+          <!--begin::Modal footer-->
+          <div class="modal-footer flex-center">
+            <!--begin::Button-->
+            <button
+              type="reset"
+              data-bs-dismiss="modal"
+              id="kt_modal_upload_document_cancel"
+              class="btn btn-light me-3"
+            >
+              Cancel
+            </button>
+            <!--end::Button-->
+
+            <!--begin::Button-->
+            <button
+              :data-kt-indicator="loading ? 'on' : null"
+              class="btn btn-lg btn-primary"
+              type="submit"
+            >
+              <span v-if="!loading" class="indicator-label"> Save </span>
+              <span v-if="loading" class="indicator-progress">
+                Please wait...
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
+            </button>
+            <!--end::Button-->
+          </div>
+
           <!--end::Modal footer-->
         </el-form>
         <!--end::Form-->
@@ -255,39 +249,39 @@ export default defineComponent({
     const fileList = ref([]);
 
     const formData = ref({
-      document_name: "",
       patient_id: patientId.value,
+      specialist_id: "",
       document_type: "",
       appointment_id: "",
-      specialist_id: "",
+      document_name: "",
     });
 
     const rules = ref({
       document_name: [
         {
           required: true,
-          message: "This field cannot be blank",
+          message: "Document name cannot be blank",
           trigger: "change",
         },
       ],
       document_type: [
         {
           required: true,
-          message: "This field cannot be blank",
+          message: "Document type cannot be blank",
           trigger: "change",
         },
       ],
       appointment_id: [
         {
           required: true,
-          message: "This field cannot be blank",
+          message: "Appointment cannot be blank",
           trigger: "blur",
         },
       ],
       specialist_id: [
         {
           required: true,
-          message: "This field cannot be blank",
+          message: "Specialists cannot be blank",
           trigger: "change",
         },
       ],
@@ -304,12 +298,6 @@ export default defineComponent({
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
-
-          // const appendedData = {
-          //   formData: Data,
-          //   patient_id: patientId.value,
-          // };
-
           store
             .dispatch(Actions.PATIENTS.DOCUMENT.CREATE, Data)
             .then(() => {
