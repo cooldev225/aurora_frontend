@@ -1,10 +1,15 @@
-<template>
-  <table v-if="filteredSpecialists.length > 0">
+<template ref="appointmentTableRef">
+  <table
+    id="appointment_filteredspecialists_table"
+    v-if="filteredSpecialists.length !== 0"
+  >
     <thead>
       <tr>
         <th
           class="appointment-table-header text-center text-white py-3"
-          :colSpan="1 + filteredSpecialists.length * 2"
+          :colSpan="
+            filteredSpecialists.length ? 1 + filteredSpecialists.length * 2 : 3
+          "
         >
           {{ tableTitle }}
         </th>
@@ -15,10 +20,19 @@
           v-for="specialist in filteredSpecialists"
           :key="specialist.id"
         >
-          <th></th>
+          <th style="height: 60px"></th>
           <th class="text-center text-primary py-3">
-            Dr. {{ specialist.full_name }} <br />
-            {{ specialist.hrm_user_base_schedules[0].clinic_name }}
+            {{
+              filteredSpecialists.length > 0
+                ? "Dr. " + specialist.full_name
+                : ""
+            }}
+            <br />
+            {{
+              specialist.hrm_user_base_schedules
+                ? specialist.hrm_user_base_schedules[0].clinic_name
+                : ""
+            }}
           </th>
         </template>
       </tr>
@@ -91,8 +105,6 @@ export default defineComponent({
 
     const filteredSpecialists = computed(() => store.getters.getFilteredData);
     const appointmentTimesList = ref();
-    console.log("APPOINTMENTS");
-    console.log(filteredSpecialists.value);
     //  The length of each time slot i.e 30 min = 7:00 - 7:30
     const timeslot_length = ref(30);
 
@@ -150,7 +162,11 @@ export default defineComponent({
 
     const getAppointmentAtTime = (specialist, time) => {
       let appointmentsAtTime;
-      if (specialist != null) {
+      if (
+        specialist != null &&
+        specialist.appointments &&
+        specialist.appointments !== undefined
+      ) {
         appointmentsAtTime = specialist.appointments.find(
           (x) => x.start_time === time + ":00"
         );
@@ -166,7 +182,7 @@ export default defineComponent({
         .subtract(timeslot_length.value, "minutes")
         .format("HH:mm")
         .toString();
-      let appointmentsOneBeforeSlot = appointments.find(
+      let appointmentsOneBeforeSlot = appointments?.find(
         (x) => x.start_time === timeSlotBefore + ":00"
       );
 
@@ -174,7 +190,7 @@ export default defineComponent({
         .subtract(timeslot_length.value * 2, "minutes")
         .format("HH:mm")
         .toString();
-      let appointmentsTwoBeforeSlot = appointments.find(
+      let appointmentsTwoBeforeSlot = appointments?.find(
         (x) => x.start_time === timeSlotDoubleBefore + ":00"
       );
 
@@ -209,27 +225,6 @@ export default defineComponent({
 });
 </script>
 
-<style>
-.appointment-table-body td {
-  border: 0.5px dashed gray;
-}
-
-.appointment-table-header tr:first-child th:first-child {
-  border-radius: 10px 0 0 0;
-}
-
-.appointment-table-header {
-  border-radius: 10px 10px 0 0;
-  background-color: #3e7ba0;
-}
-
-.appointment-table-body > tr:hover {
-  background: rgb(87, 105, 139);
-}
-
-thead {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-}
+<style lang="scss">
+@import "../../assets/sass/components/booking/appointmentTable.scss";
 </style>

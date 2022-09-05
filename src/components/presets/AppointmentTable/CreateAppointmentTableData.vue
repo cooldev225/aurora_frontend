@@ -56,6 +56,7 @@ export default {
     };
 
     const specialistAvailable = () => {
+      if (!props.specialist.hrm_user_base_schedules) return false;
       let startTime = timeStr2Number(
         props.specialist.hrm_user_base_schedules[0].start_time
       );
