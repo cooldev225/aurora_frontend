@@ -374,6 +374,7 @@ export default defineComponent({
     });
 
     const ava_specialists = computed(() => store.getters.getAvailableSPTData);
+    console.log(ava_specialists.value);
     const specialists = computed(() => store.getters.getFilteredData);
 
     const available_slots_by_date = computed(

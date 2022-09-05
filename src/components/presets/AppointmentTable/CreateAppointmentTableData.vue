@@ -31,7 +31,6 @@ export default {
       let restriction =
         props.specialist.hrm_user_base_schedules[0]
           .appointment_type_restriction;
-      console.log(restriction);
       if (restriction == "PROCEDURES") return "text-danger";
       if (restriction == "CONSULTATION") return "text-primary";
       if (restriction == "NONE") return "text-success";

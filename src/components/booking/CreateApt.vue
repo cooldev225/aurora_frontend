@@ -1493,8 +1493,7 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      if (organisation.value.appointment_length)
-        appointment_time.value = organisation.value.appointment_length;
+      appointment_time.value = 30; // Create api for this
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
       if (bookingData.time_slot) {

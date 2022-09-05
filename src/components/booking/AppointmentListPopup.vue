@@ -149,11 +149,14 @@ export default defineComponent({
     });
 
     const specialist_name = computed(() => {
-      const specialist = props.allSpecialists.find(
-        ({ id }) => id === props.searchNextApts.specialist_id
-      );
+      if (props.allSpecialists.length > 0) {
+        const specialist = props.allSpecialists.find(
+          ({ id }) => id === props.searchNextApts.specialist_id
+        );
 
-      return specialist == undefined ? "Any" : specialist.name;
+        return specialist == undefined ? "Any" : specialist.name;
+      }
+      return null;
     });
 
     const time_requirement = computed(() => {
