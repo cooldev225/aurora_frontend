@@ -318,7 +318,7 @@ export default defineComponent({
       displayData.clinic_name = aptData.value.clinic_details?.name;
       displayData.appointment_type_name = aptData.value.appointment_type?.name;
       displayData.specialist_name = aptData.value.specialist_name;
-      displayData.allergies = aptData.value.patient_details?.allergies;
+      displayData.allergies = aptData.value.patient?.allergies;
       displayData.patient_name = aptData.value.patient_name?.full;
       displayData.patient_number =
         aptData.value.patient_details?.contact_number;

@@ -167,12 +167,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
 
   @Action
   [Actions.PATIENTS.DOCUMENT.CREATE](data) {
+    console.log(data.get("document_type"));
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post(
-        data.get("patient_id") + "/" + data.get("document_type") + "/upload",
-        data
-      )
+      ApiService.post("patients/documents/" + data.get("patient_id"), data)
         .then(({ data }) => {
           this.context.dispatch(
             Actions.PATIENTS.DOCUMENT.LIST,

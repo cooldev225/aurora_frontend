@@ -465,9 +465,14 @@ export default defineComponent({
       });
       if (temp.length === 0) temp = ava_specialists.value;
       const data = ref({});
-      const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
-      data.value[data_key] = temp;
+      //const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
+      data.value = temp; //[data_key]
       store.commit(Mutations.SET_BOOKING.SEARCH.SPECIALISTS, data.value);
+      store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+        ...date_search,
+        ...specialists_search,
+      });
+      console.log(["ava_specialists watch", data.value]);
     });
 
     watch(specialists_search, () => {
@@ -480,14 +485,15 @@ export default defineComponent({
       if (specialists_search.specialist_ids.length === 0)
         temp = ava_specialists.value;
       const data = ref({});
-      const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
-      data.value[data_key] = temp;
+      //const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
+      data.value = temp; //[data_key]
       store.commit(Mutations.SET_BOOKING.SEARCH.SPECIALISTS, data.value);
       // store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
-      store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-        ...date_search,
-        ...specialists_search,
-      });
+      // store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+      //   ...date_search,
+      //   ...specialists_search,
+      // });
+      console.log(["specialists_search watch", data.value]);
     });
 
     const changeDate = (mode) => {
