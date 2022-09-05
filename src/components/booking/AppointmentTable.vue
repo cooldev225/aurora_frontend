@@ -17,7 +17,7 @@
         >
           <th></th>
           <th class="text-center text-primary py-3">
-            Dr. {{ specialist.first_name }} {{ specialist.last_name }} <br />
+            Dr. {{ specialist.full_name }} <br />
             {{ specialist.hrm_user_base_schedules[0].clinic_name }}
           </th>
         </template>
@@ -43,24 +43,17 @@
           />
 
           <AppointmentTableData
-            v-if="
-              getAppointmentAtTime(specialist.employee, appointmentTimeslot)
-            "
-            :appointment="
-              getAppointmentAtTime(specialist.employee, appointmentTimeslot)
-            "
+            v-if="getAppointmentAtTime(specialist, appointmentTimeslot)"
+            :appointment="getAppointmentAtTime(specialist, appointmentTimeslot)"
             @click="
               handleShowAppointmentDrawer(
-                getAppointmentAtTime(specialist.employee, appointmentTimeslot)
+                getAppointmentAtTime(specialist, appointmentTimeslot)
               )
             "
           />
           <td
             v-else-if="
-              !specialistHasAppointmentInSlot(
-                specialist.employee,
-                appointmentTimeslot
-              )
+              !specialistHasAppointmentInSlot(specialist, appointmentTimeslot)
             "
             style="background: #f1f1f1"
           ></td>
@@ -98,7 +91,8 @@ export default defineComponent({
 
     const filteredSpecialists = computed(() => store.getters.getFilteredData);
     const appointmentTimesList = ref();
-    console.log(filteredSpecialists);
+    console.log("APPOINTMENTS");
+    console.log(filteredSpecialists.value);
     //  The length of each time slot i.e 30 min = 7:00 - 7:30
     const timeslot_length = ref(30);
 
@@ -154,11 +148,10 @@ export default defineComponent({
       DrawerComponent?.getInstance("appointment-drawer")?.toggle();
     };
 
-    const getAppointmentAtTime = (employee, time) => {
+    const getAppointmentAtTime = (specialist, time) => {
       let appointmentsAtTime;
-      if (employee?.specialist != null) {
-        let appointments = employee.specialist.appointments;
-        appointmentsAtTime = appointments.find(
+      if (specialist != null) {
+        appointmentsAtTime = specialist.appointments.find(
           (x) => x.start_time === time + ":00"
         );
       }
@@ -166,36 +159,34 @@ export default defineComponent({
       return appointmentsAtTime;
     };
 
-    const specialistHasAppointmentInSlot = (employee, time) => {
-      if (employee?.specialist != null) {
-        let appointments = employee.specialist.appointments;
+    const specialistHasAppointmentInSlot = (specialist, time) => {
+      let appointments = specialist.appointments;
 
-        let timeSlotBefore = moment(time, "HH:mm")
-          .subtract(timeslot_length.value, "minutes")
-          .format("HH:mm")
-          .toString();
-        let appointmentsOneBeforeSlot = appointments.find(
-          (x) => x.start_time === timeSlotBefore + ":00"
-        );
+      let timeSlotBefore = moment(time, "HH:mm")
+        .subtract(timeslot_length.value, "minutes")
+        .format("HH:mm")
+        .toString();
+      let appointmentsOneBeforeSlot = appointments.find(
+        (x) => x.start_time === timeSlotBefore + ":00"
+      );
 
-        let timeSlotDoubleBefore = moment(time, "HH:mm")
-          .subtract(timeslot_length.value * 2, "minutes")
-          .format("HH:mm")
-          .toString();
-        let appointmentsTwoBeforeSlot = appointments.find(
-          (x) => x.start_time === timeSlotDoubleBefore + ":00"
-        );
+      let timeSlotDoubleBefore = moment(time, "HH:mm")
+        .subtract(timeslot_length.value * 2, "minutes")
+        .format("HH:mm")
+        .toString();
+      let appointmentsTwoBeforeSlot = appointments.find(
+        (x) => x.start_time === timeSlotDoubleBefore + ":00"
+      );
 
-        if (
-          appointmentsTwoBeforeSlot?.appointment_type
-            .appointment_length_as_number === 3 ||
-          appointmentsOneBeforeSlot?.appointment_type
-            .appointment_length_as_number === 2 ||
-          appointmentsOneBeforeSlot?.appointment_type
-            .appointment_length_as_number === 3
-        ) {
-          return true;
-        }
+      if (
+        appointmentsTwoBeforeSlot?.appointment_type
+          .appointment_length_as_number === 3 ||
+        appointmentsOneBeforeSlot?.appointment_type
+          .appointment_length_as_number === 2 ||
+        appointmentsOneBeforeSlot?.appointment_type
+          .appointment_length_as_number === 3
+      ) {
+        return true;
       }
 
       return false;

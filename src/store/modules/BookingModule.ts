@@ -159,6 +159,8 @@ export default class BooingModule extends VuexModule implements BookingInfo {
             Mutations.SET_BOOKING.SEARCH.SPECIALISTS,
             data.data
           );
+          console.log("STRAIT OUTA API");
+          console.log(data.data);
         })
         .catch(({ response }) => {
           console.log(response.data.error);

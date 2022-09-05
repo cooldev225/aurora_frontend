@@ -1238,8 +1238,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      if (organisation.value.appointment_length)
-        appointment_time.value = organisation.value.appointment_length;
+      appointment_time.value = 30; // create api
 
       if (cur_appointment_type_id.value && billingInfoData.value.charge_type) {
         const filteredApt = aptTypeList.value.filter(
