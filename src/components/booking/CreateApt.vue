@@ -138,7 +138,7 @@
                         v-model="cur_appointment_type_id"
                       >
                         <el-option
-                          v-for="item in aptTypeList"
+                          v-for="item in aptTypeListWithRestriction"
                           :value="item.id"
                           :label="item.name"
                           :key="item.id"
@@ -1299,7 +1299,7 @@ export default defineComponent({
       triple: 3,
     });
     const appointment_time = ref(30);
-
+    console.log(aptInfoData.value);
     const _stepperObj = ref(null);
     const createAptRef = ref(null);
     const createAptModalRef = ref(null);
@@ -1365,6 +1365,7 @@ export default defineComponent({
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
     const aptTypeList = computed(() => store.getters.getAptTypesList);
+    const aptTypeListWithRestriction = ref();
     const searchVal = computed(() => store.getters.getSearchVariable);
     const organisation = computed(() => store.getters.orgList);
     const patientList = computed(() => store.getters.patientsList);
@@ -1496,6 +1497,16 @@ export default defineComponent({
       appointment_time.value = 30; // Create api for this
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
+
+      let specialistRestriction = bookingData.restriction;
+      if (specialistRestriction == "NONE") {
+        aptTypeListWithRestriction.value = aptTypeList.value;
+      } else {
+        aptTypeListWithRestriction.value = aptTypeList.value.filter(
+          (item) => item.type === specialistRestriction
+        );
+      }
+
       if (bookingData.time_slot) {
         start_time.value = moment(bookingData.time_slot[0]).format("HH:mm");
         end_time.value = moment(bookingData.time_slot[1]).format("HH:mm");
@@ -1815,7 +1826,7 @@ export default defineComponent({
       proQuestions,
       aneAnswers,
       proAnswers,
-      aptTypeList,
+      aptTypeListWithRestriction,
       anesthetist,
       apt_type,
       cur_appointment_type_id,

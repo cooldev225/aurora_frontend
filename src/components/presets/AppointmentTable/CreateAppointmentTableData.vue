@@ -31,7 +31,7 @@ export default {
       let restriction =
         props.specialist.hrm_user_base_schedules[0]
           .appointment_type_restriction;
-      if (restriction == "PROCEDURES") return "text-danger";
+      if (restriction == "PROCEDURE") return "text-danger";
       if (restriction == "CONSULTATION") return "text-primary";
       if (restriction == "NONE") return "text-success";
     };
@@ -43,6 +43,9 @@ export default {
         time_slot: [date + "T" + props.startTime],
         date: date,
         selected_specialist: props.specialist,
+        restriction:
+          props.specialist.hrm_user_base_schedules[0]
+            .appointment_type_restriction,
       };
 
       store.commit(Mutations.SET_BOOKING.SELECT, item);
