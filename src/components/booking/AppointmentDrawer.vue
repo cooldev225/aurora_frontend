@@ -270,7 +270,7 @@ export default defineComponent({
 
           await store
             .dispatch(Actions.APT.CANCELLATION.CREATE, {
-              id: aptData.value.appointment_id,
+              id: aptData.value.id,
               missed: missed,
               reason: data,
             })
