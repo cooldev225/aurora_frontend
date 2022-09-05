@@ -100,6 +100,10 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   @Mutation
   [Mutations.SET_BOOKING.SEARCH.SPECIALISTS](data: IBookingData) {
     this.filteredData = data;
+    console.log([
+      "Mutations.SET_BOOKING.SEARCH.SPECIALISTS",
+      this.filteredData,
+    ]);
   }
 
   @Mutation
