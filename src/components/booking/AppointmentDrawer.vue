@@ -276,6 +276,11 @@ export default defineComponent({
             })
             .then(() => {
               store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
+              store.dispatch(
+                Actions.BOOKING.SEARCH.SPECIALISTS,
+                searchVal.value
+              );
+
               DrawerComponent?.getInstance("appointment-drawer")?.hide();
             });
         },

@@ -374,7 +374,6 @@ export default defineComponent({
     });
 
     const ava_specialists = computed(() => store.getters.getAvailableSPTData);
-    console.log(ava_specialists.value);
     const specialists = computed(() => store.getters.getFilteredData);
 
     const available_slots_by_date = computed(
@@ -396,12 +395,13 @@ export default defineComponent({
         ...date_search,
         ...specialists_search,
       });
-      setCurrentPageBreadcrumbs("Dashboard", ["Bookings"]);
+
       store.dispatch(Actions.APT.TYPES.LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
-      tableTitle.value = moment(date_search.date).format("dddd, MMMM Do YYYY");
+
+      setCurrentPageBreadcrumbs("Dashboard", ["Bookings"]);
     });
 
     const timeStr2Number = (time) => {
@@ -449,14 +449,15 @@ export default defineComponent({
         ...date_search,
         specialists: [],
       });
-      // specialists_search.specialist_ids = [];
-      tableTitle.value = moment(date_search.date).format("dddd, MMMM Do YYYY");
+      store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+        ...date_search,
+        ...specialists_search,
+      });
     });
 
     watch(ava_specialists, () => {
       let temp = [];
-      /*
-      
+
       ava_specialists.value.forEach((item) => {
         specialists_search.specialist_ids.forEach((selected) => {
           if (item.id === selected) temp.push(item);
@@ -467,7 +468,6 @@ export default defineComponent({
       const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
       data.value[data_key] = temp;
       store.commit(Mutations.SET_BOOKING.SEARCH.SPECIALISTS, data.value);
-      */
     });
 
     watch(specialists_search, () => {
@@ -484,10 +484,10 @@ export default defineComponent({
       data.value[data_key] = temp;
       store.commit(Mutations.SET_BOOKING.SEARCH.SPECIALISTS, data.value);
       // store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
-      // store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-      //   ...date_search,
-      //   ...specialists_search,
-      // });
+      store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+        ...date_search,
+        ...specialists_search,
+      });
     });
 
     const changeDate = (mode) => {

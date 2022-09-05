@@ -75,6 +75,7 @@ export default defineComponent({
   components: { CreateAppointmentTableData, AppointmentTableData },
   props: {
     date: { type: String, required: true },
+    selectedSpecialists: { type: Array, required: true },
   },
   setup(props) {
     const store = useStore();
@@ -197,7 +198,7 @@ export default defineComponent({
       tableTitle,
       specialistHasAppointmentInSlot,
       handleShowAppointmentDrawer,
-      getAppointmentAtTime: getAppointmentAtTime,
+      getAppointmentAtTime,
       isDuringWorkHours,
       appointmentTimesList,
       filteredSpecialists,
