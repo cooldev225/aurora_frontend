@@ -119,7 +119,7 @@
         <!--begin::Appointment Actions-->
         <div class="d-flex flex-column gap-3 mt-5">
           <!--Check In Button-->
-          <BookingDrawerButton
+          <LargeIconButton
             v-if="aptData.attendance_status === 'NOT_PRESENT'"
             @click="handleCheckIn"
             :heading="'Check In'"
@@ -129,7 +129,7 @@
           />
 
           <!--Check Out Button-->
-          <BookingDrawerButton
+          <LargeIconButton
             v-if="aptData.attendance_status === 'CHECKED_IN'"
             @click="handleCheckOut"
             :heading="'Check Out'"
@@ -139,7 +139,7 @@
           />
 
           <!--Checked Out Label-->
-          <BookingDrawerButton
+          <LargeIconButton
             v-if="aptData.attendance_status === 'CHECKED_OUT'"
             :heading="'Checked Out'"
             :subheading="'Appointment'"
@@ -148,7 +148,7 @@
           />
 
           <!--View Patient-->
-          <BookingDrawerButton
+          <LargeIconButton
             @click="handleView"
             :heading="'View'"
             :subheading="'Patient'"
@@ -157,7 +157,7 @@
           />
 
           <!--Edit Appointment-->
-          <BookingDrawerButton
+          <LargeIconButton
             @click="handleEdit"
             :heading="'Edit'"
             :subheading="'Appointment'"
@@ -165,7 +165,7 @@
             :color="'success'"
           />
           <!--Move Appointment-->
-          <BookingDrawerButton
+          <LargeIconButton
             :heading="'Move'"
             :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr035.svg'"
@@ -173,7 +173,7 @@
           />
 
           <!--Cancel Appointment Button-->
-          <BookingDrawerButton
+          <LargeIconButton
             @click="handleCancel"
             :heading="'Cancel'"
             :subheading="'Appointment'"
@@ -199,7 +199,7 @@ import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import EditModal from "@/components/booking/EditApt.vue";
 import CheckInModal from "@/components/booking/CheckInModal.vue";
 import { Modal } from "bootstrap";
-import BookingDrawerButton from "@/components/presets/BookingDrawer/BookingDrawerButton.vue";
+import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 
@@ -208,7 +208,7 @@ export default defineComponent({
   components: {
     EditModal,
     CheckInModal,
-    BookingDrawerButton,
+    LargeIconButton,
     AlertBadge,
     InfoSection,
   },

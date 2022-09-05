@@ -1,216 +1,175 @@
 <template>
-  <div
-    class="modal fade"
-    id="modal_upload_document"
-    tabindex="-1"
-    aria-hidden="true"
-    ref="uploadDocumentRef"
+  <ModalWrapper
+    title="Upload Document"
+    modalId="upload_document"
+    :modalRef="uploadDocumentRef"
   >
-    <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-650px">
-      <!--begin::Modal content-->
-      <div class="modal-content">
-        <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_upload_document_header">
-          <!--begin::Modal title-->
-          <h2 class="fw-bolder">Upload Document</h2>
-          <!--end::Modal title-->
-
-          <!--begin::Close-->
-          <div
-            id="kt_modal_upload_document_close"
-            data-bs-dismiss="modal"
-            class="btn btn-icon btn-sm btn-active-icon-primary"
-          >
-            <span class="svg-icon svg-icon-1">
-              <inline-svg src="media/icons/duotune/arrows/arr061.svg" />
-            </span>
-          </div>
-          <!--end::Close-->
-        </div>
-        <!--end::Modal header-->
-        <!--begin::Form-->
-        <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
-          <div class="modal-body py-10 px-lg-17">
-            <div
-              class="scroll-y me-n7 pe-7"
-              id="kt_modal_upload_document_scroll"
-              data-kt-scroll="true"
-              data-kt-scroll-activate="{default: false, lg: true}"
-              data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#kt_modal_upload_document_header"
-              data-kt-scroll-wrappers="#kt_modal_upload_document_scroll"
-              data-kt-scroll-offset="300px"
+    <!--begin::Form-->
+    <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
+      <div class="modal-body py-10 px-lg-17">
+        <div
+          class="scroll-y me-n7 pe-7"
+          id="kt_modal_upload_document_scroll"
+          data-kt-scroll="true"
+          data-kt-scroll-activate="{default: false, lg: true}"
+          data-kt-scroll-max-height="auto"
+          data-kt-scroll-dependencies="#kt_modal_upload_document_header"
+          data-kt-scroll-wrappers="#kt_modal_upload_document_scroll"
+          data-kt-scroll-offset="300px"
+        >
+          <div class="row">
+            <InputWrapper
+              class="col-6"
+              label="Document Title"
+              prop="document_name"
             >
-              <div class="row">
-                <InputWrapper
-                  class="col-6"
-                  label="Document Title"
-                  prop="document_name"
-                >
-                  <el-input
-                    type="text"
-                    v-model.number="formData.document_name"
+              <el-input type="text" v-model.number="formData.document_name" />
+            </InputWrapper>
+            <InputWrapper
+              class="col-6"
+              label="Document Type"
+              prop="document_type"
+            >
+              <el-select
+                class="w-100 mb-5"
+                placeholder="Select Document Type"
+                v-model="formData.document_type"
+              >
+                <el-option value="letter" label="LETTER">
+                  <inline-svg
+                    class="me-5"
+                    src="media/icons/duotune/general/gen005.svg"
                   />
-                </InputWrapper>
-                <InputWrapper
-                  class="col-6"
-                  label="Document Type"
-                  prop="document_type"
-                >
-                  <el-select
-                    class="w-100 mb-5"
-                    placeholder="Select Document Type"
-                    v-model="formData.document_type"
-                  >
-                    <el-option value="letter" label="LETTER">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/general/gen005.svg"
-                      />
-                      LETTER
-                    </el-option>
-                    <el-option value="report" label="REPORT">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/general/gen016.svg"
-                      />
-                      REPORT
-                    </el-option>
-                    <el-option value="clinical-note" label="CLINICAL NOTE">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/files/fil003.svg"
-                      />
-                      CLINICAL NOTE
-                    </el-option>
-                    <el-option
-                      label="PATHOLOGY REPORT"
-                      value="pathology-report"
-                    >
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/files/fil004.svg"
-                      />
-                      PATHOLOGY REPORT
-                    </el-option>
-                    <el-option label="AUDIO" value="audio">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/general/gen015.svg"
-                      />
-                      AUDIO
-                    </el-option>
-                    <el-option label="USB CAPTURE" value="usb-capture">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/electronics/elc007.svg"
-                      />
-                      USB CAPTURE
-                    </el-option>
-                    <el-option label="OTHER" value="other">
-                      <inline-svg
-                        class="me-5"
-                        src="media/icons/duotune/general/gen025.svg"
-                      />
-                      OTHER
-                    </el-option>
-                  </el-select>
-                </InputWrapper>
-                <InputWrapper
-                  class="col-6"
-                  label="Appointment"
-                  prop="appointment"
-                >
-                  <el-select
-                    v-model="formData.appointment_id"
-                    class="w-100"
-                    placeholder="Select Appointment"
-                  >
-                    <el-option
-                      v-for="item in aptList.pastAppointments"
-                      :label="
-                        moment(item.date).format('DD-MM-YYYY') +
-                        ' ' +
-                        item.appointment_type.name
-                      "
-                      :value="item.id"
-                      :key="item.id"
-                    />
-                  </el-select>
-                </InputWrapper>
-                <InputWrapper
-                  class="col-6"
-                  label="Specialist"
-                  prop="specialist"
-                >
-                  <el-select
-                    v-model="formData.specialist_id"
-                    class="w-100"
-                    placeholder="Select Specialist"
-                  >
-                    <el-option
-                      v-for="item in specialistList"
-                      :label="item.full_name"
-                      :value="item.id"
-                      :key="item.id"
-                    />
-                  </el-select>
-                </InputWrapper>
-              </div>
-              <InputWrapper label="Upload File" prop="specialist">
-                <el-upload
-                  action="#"
-                  ref="upload"
-                  :class="{ disabled: uploadDisabled }"
-                  :limit="1"
-                  :file-list="fileList"
-                  :on-change="handleChange"
-                  :on-remove="handleRemove"
-                  :auto-upload="false"
-                  accept="*/*"
-                >
-                  <i class="fa fa-plus"></i> </el-upload
-              ></InputWrapper>
-            </div>
+                  LETTER
+                </el-option>
+                <el-option value="report" label="REPORT">
+                  <inline-svg
+                    class="me-5"
+                    src="media/icons/duotune/general/gen016.svg"
+                  />
+                  REPORT
+                </el-option>
+                <el-option value="clinical-note" label="CLINICAL NOTE">
+                  <inline-svg
+                    class="me-5"
+                    src="media/icons/duotune/files/fil003.svg"
+                  />
+                  CLINICAL NOTE
+                </el-option>
+                <el-option label="PATHOLOGY REPORT" value="pathology-report">
+                  <inline-svg
+                    class="me-5"
+                    src="media/icons/duotune/files/fil004.svg"
+                  />
+                  PATHOLOGY REPORT
+                </el-option>
+                <el-option label="AUDIO" value="audio">
+                  <inline-svg
+                    class="me-5"
+                    src="media/icons/duotune/general/gen015.svg"
+                  />
+                  AUDIO
+                </el-option>
+                <el-option label="USB CAPTURE" value="usb-capture">
+                  <inline-svg
+                    class="me-5"
+                    src="media/icons/duotune/electronics/elc007.svg"
+                  />
+                  USB CAPTURE
+                </el-option>
+                <el-option label="OTHER" value="other">
+                  <inline-svg
+                    class="me-5"
+                    src="media/icons/duotune/general/gen025.svg"
+                  />
+                  OTHER
+                </el-option>
+              </el-select>
+            </InputWrapper>
+            <InputWrapper class="col-6" label="Appointment" prop="appointment">
+              <el-select
+                v-model="formData.appointment_id"
+                class="w-100"
+                placeholder="Select Appointment"
+              >
+                <el-option
+                  v-for="item in aptList.pastAppointments"
+                  :label="
+                    moment(item.date).format('DD-MM-YYYY') +
+                    ' ' +
+                    item.appointment_type.name
+                  "
+                  :value="item.id"
+                  :key="item.id"
+                />
+              </el-select>
+            </InputWrapper>
+            <InputWrapper class="col-6" label="Specialist" prop="specialist">
+              <el-select
+                v-model="formData.specialist_id"
+                class="w-100"
+                placeholder="Select Specialist"
+              >
+                <el-option
+                  v-for="item in specialistList"
+                  :label="item.full_name"
+                  :value="item.id"
+                  :key="item.id"
+                />
+              </el-select>
+            </InputWrapper>
           </div>
-
-          <!--begin::Modal footer-->
-          <div class="modal-footer flex-center">
-            <!--begin::Button-->
-            <button
-              type="reset"
-              data-bs-dismiss="modal"
-              id="kt_modal_upload_document_cancel"
-              class="btn btn-light me-3"
+          <InputWrapper label="Upload File" prop="specialist">
+            <el-upload
+              action="#"
+              ref="upload"
+              :class="{ disabled: uploadDisabled }"
+              :limit="1"
+              :file-list="fileList"
+              :on-change="handleChange"
+              :on-remove="handleRemove"
+              :auto-upload="false"
+              accept="*/*"
             >
-              Cancel
-            </button>
-            <!--end::Button-->
-
-            <!--begin::Button-->
-            <button
-              :data-kt-indicator="loading ? 'on' : null"
-              class="btn btn-lg btn-primary"
-              type="submit"
-            >
-              <span v-if="!loading" class="indicator-label"> Save </span>
-              <span v-if="loading" class="indicator-progress">
-                Please wait...
-                <span
-                  class="spinner-border spinner-border-sm align-middle ms-2"
-                ></span>
-              </span>
-            </button>
-            <!--end::Button-->
-          </div>
-
-          <!--end::Modal footer-->
-        </el-form>
-        <!--end::Form-->
+              <i class="fa fa-plus"></i> </el-upload
+          ></InputWrapper>
+        </div>
       </div>
-    </div>
-  </div>
+
+      <!--begin::Modal footer-->
+      <div class="modal-footer flex-center">
+        <!--begin::Button-->
+        <button
+          type="reset"
+          data-bs-dismiss="modal"
+          id="kt_modal_upload_document_cancel"
+          class="btn btn-light me-3"
+        >
+          Cancel
+        </button>
+        <!--end::Button-->
+
+        <!--begin::Button-->
+        <button
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-primary"
+          type="submit"
+        >
+          <span v-if="!loading" class="indicator-label"> Save </span>
+          <span v-if="loading" class="indicator-progress">
+            Please wait...
+            <span
+              class="spinner-border spinner-border-sm align-middle ms-2"
+            ></span>
+          </span>
+        </button>
+        <!--end::Button-->
+      </div>
+
+      <!--end::Modal footer-->
+    </el-form>
+    <!--end::Form-->
+  </ModalWrapper>
 </template>
 
 <script>
@@ -228,10 +187,11 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
+import ModalWrapper from "@/components/presets/GeneralElements/ModalWrapper.vue";
 
 export default defineComponent({
   name: "create-letter-template-modal",
-  components: { InputWrapper },
+  components: { InputWrapper, ModalWrapper },
   props: {
     patientId: { type: String, required: true },
   },

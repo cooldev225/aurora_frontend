@@ -89,8 +89,8 @@ import { useStore } from "vuex";
 import moment from "moment";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
-import CreateAppointmentTableData from "@/components/presets/AppointmentTable/CreateAppointmentTableData.vue";
-import AppointmentTableData from "@/components/presets/AppointmentTable/AppointmentTableData.vue";
+import CreateAppointmentTableData from "@/components/booking/partials/CreateAppointmentTableData.vue";
+import AppointmentTableData from "@/components/booking/partials/AppointmentTableData.vue";
 
 export default defineComponent({
   components: { CreateAppointmentTableData, AppointmentTableData },

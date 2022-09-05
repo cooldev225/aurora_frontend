@@ -122,7 +122,7 @@
         <!--begin::Appointment Actions-->
         <div class="d-flex flex-column gap-3 mt-5">
           <!--View Patient-->
-          <BookingDrawerButton
+          <LargeIconButton
             @click="handleView"
             :heading="'View'"
             :subheading="'Patient'"
@@ -141,14 +141,14 @@ import { defineComponent, reactive, computed, watchEffect } from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import BookingDrawerButton from "@/components/presets/BookingDrawer/BookingDrawerButton.vue";
+import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 
 export default defineComponent({
   name: "appointment-drawer",
   components: {
-    BookingDrawerButton,
+    LargeIconButton,
     AlertBadge,
     InfoSection,
   },
