@@ -1,5 +1,5 @@
 <template>
-  <table>
+  <table v-if="filteredSpecialists.length > 0">
     <thead>
       <tr>
         <th
@@ -41,7 +41,6 @@
             :date="_apt_date"
             :startTime="appointmentTimeslot"
           />
-
           <AppointmentTableData
             v-if="getAppointmentAtTime(specialist, appointmentTimeslot)"
             :appointment="getAppointmentAtTime(specialist, appointmentTimeslot)"
@@ -222,7 +221,6 @@ export default defineComponent({
   border-radius: 10px 10px 0 0;
   background-color: #3e7ba0;
 }
-
 
 .appointment-table-body > tr:hover {
   background: rgb(87, 105, 139);
