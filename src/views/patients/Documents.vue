@@ -99,6 +99,7 @@ import { defineComponent, ref, watch, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import SendDocumentViaEmailModal from "./documents/SendDocumentViaEmailModal.vue";
 import { Modal } from "bootstrap";
@@ -136,7 +137,10 @@ export default defineComponent({
       },
     });
     onMounted(() => {
-      store.dispatch(Actions.PATIENTS.DOCUMENT.LIST, selectedPatient.value.id);
+      store.dispatch(
+        PatientActions.PATIENTS.DOCUMENT.LIST,
+        selectedPatient.value.id
+      );
       setCurrentPageBreadcrumbs("Documents", ["Patients"]);
     });
 

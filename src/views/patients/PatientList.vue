@@ -148,7 +148,8 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { Mutations } from "@/store/enums/StoreEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import moment from "moment";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import store from "@/store";
@@ -248,7 +249,7 @@ export default defineComponent({
     };
 
     const handleView = (item) => {
-      store.dispatch(Actions.PATIENTS.VIEW, item.id);
+      store.dispatch(PatientActions.PATIENTS.VIEW, item.id);
       router.push({
         name: "patients-view-appointments",
         params: { id: item.id },
@@ -273,7 +274,7 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Patients", []);
-      store.dispatch(Actions.PATIENTS.LIST).then(() => {
+      store.dispatch(PatientActions.PATIENTS.LIST).then(() => {
         loading.value = false;
       });
     });

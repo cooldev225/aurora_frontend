@@ -1,6 +1,10 @@
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import {
+  PatientActions,
+  PatientMutations,
+} from "@/store/enums/StorePatientEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
 export interface IPatientsRecall {
@@ -37,17 +41,17 @@ export default class PatientsRecallModule
   }
 
   @Mutation
-  [Mutations.SET_PATIENT_RECALL.LIST](patientsRecallData) {
+  [PatientMutations.SET_PATIENT_RECALL.LIST](patientsRecallData) {
     this.patientsRecallData = patientsRecallData;
   }
 
   @Mutation
-  [Mutations.SET_PATIENT_RECALL.SELECT](data) {
+  [PatientMutations.SET_PATIENT_RECALL.SELECT](data) {
     this.patientsRecallSelectData = data;
   }
 
   @Action
-  [Actions.PATIENTS.RECALL.CREATE](data) {
+  [PatientActions.PATIENTS.RECALL.CREATE](data) {
     console.log(data);
     if (JwtService.getToken()) {
       ApiService.setHeader();
@@ -65,7 +69,7 @@ export default class PatientsRecallModule
   }
 
   @Action
-  [Actions.PATIENTS.RECALL.UPDATE](data) {
+  [PatientActions.PATIENTS.RECALL.UPDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("patients/recalls/", data.id, data)

@@ -1089,6 +1089,7 @@ import {
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { Actions } from "@/store/enums/StoreEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
 import ApiService from "@/core/services/ApiService";
@@ -1557,7 +1558,7 @@ export default defineComponent({
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(Actions.APT.TYPES.LIST);
       store.dispatch(Actions.ORG.LIST);
-      store.dispatch(Actions.PATIENTS.LIST);
+      store.dispatch(PatientActions.PATIENTS.LIST);
       store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
     });
 

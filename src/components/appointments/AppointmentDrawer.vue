@@ -192,6 +192,7 @@
 <script lang="ts">
 import { defineComponent, reactive, computed, watchEffect } from "vue";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
@@ -232,7 +233,7 @@ export default defineComponent({
     });
 
     const handleView = () => {
-      store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
+      store.dispatch(PatientActions.PATIENTS.VIEW, aptData.value.patient_id);
       DrawerComponent?.getInstance("appointment-drawer")?.hide();
       router.push({
         name: "patients-view-administration",
@@ -241,7 +242,10 @@ export default defineComponent({
     };
 
     const handleEdit = () => {
-      store.dispatch(Actions.PATIENTS.APPOINTMENTS, aptData.value.patient_id);
+      store.dispatch(
+        PatientActions.PATIENTS.APPOINTMENTS,
+        aptData.value.patient_id
+      );
       store.commit(Mutations.SET_APT.SELECT, aptData.value);
       const modal = new Modal(document.getElementById("modal_edit_apt"));
       modal.show();

@@ -138,7 +138,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, computed, watchEffect } from "vue";
-import { Actions } from "@/store/enums/StoreEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
@@ -172,7 +172,7 @@ export default defineComponent({
     });
 
     const handleView = () => {
-      store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
+      store.dispatch(PatientActions.PATIENTS.VIEW, aptData.value.patient_id);
       router.push({
         name: "patients-view-appointments",
         params: { id: aptData.value.patient_id },

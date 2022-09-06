@@ -1,6 +1,10 @@
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import {
+  PatientActions,
+  PatientMutations,
+} from "@/store/enums/StorePatientEnums";
+import { Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 import { IApt } from "./AppointmentModule";
 
@@ -57,32 +61,32 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Mutation
-  [Mutations.SET_PATIENT.LIST](patientsData) {
+  [PatientMutations.SET_PATIENT.LIST](patientsData) {
     this.patientsData = patientsData;
   }
 
   @Mutation
-  [Mutations.SET_PATIENT.DOCUMENT.LIST](documentList) {
+  [PatientMutations.SET_PATIENT.DOCUMENT.LIST](documentList) {
     this.patientDocumentList = documentList;
   }
 
   @Mutation
-  [Mutations.SET_PATIENT.SELECT](data) {
+  [PatientMutations.SET_PATIENT.SELECT](data) {
     this.patientsSelectData = data;
   }
 
   @Mutation
-  [Mutations.SET_PATIENT.APPOINTMENTS](data) {
+  [PatientMutations.SET_PATIENT.APPOINTMENTS](data) {
     this.patientAppointmentsData = data;
   }
 
   @Action
-  [Actions.PATIENTS.LIST]() {
+  [PatientActions.PATIENTS.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("patients")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_PATIENT.LIST, data.data);
+          this.context.commit(PatientMutations.SET_PATIENT.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -95,7 +99,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [Actions.PATIENTS.UPDATE](data) {
+  [PatientActions.PATIENTS.UPDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("patients", data.id, data)
@@ -112,12 +116,12 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [Actions.PATIENTS.VIEW](id) {
+  [PatientActions.PATIENTS.VIEW](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("patients/" + id)
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_PATIENT.SELECT, data.data);
+          this.context.commit(PatientMutations.SET_PATIENT.SELECT, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -130,12 +134,15 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [Actions.PATIENTS.APPOINTMENTS](id) {
+  [PatientActions.PATIENTS.APPOINTMENTS](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("patients/appointments/" + id)
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_PATIENT.APPOINTMENTS, data.data);
+          this.context.commit(
+            PatientMutations.SET_PATIENT.APPOINTMENTS,
+            data.data
+          );
           return data.data;
         })
         .catch(({ response }) => {
@@ -148,17 +155,20 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [Actions.PATIENTS.DOCUMENT.LIST](id) {
+  [PatientActions.PATIENTS.DOCUMENT.LIST](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("patients/documents/" + id)
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_PATIENT.DOCUMENT.LIST, data.data);
+          this.context.commit(
+            PatientMutations.SET_PATIENT.DOCUMENT.LIST,
+            data.data
+          );
           return data.data;
         })
         .catch(({ response }) => {
           console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          // this.context.commit(PatientMutations.SET_ERROR, response.data.errors);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -166,14 +176,14 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [Actions.PATIENTS.DOCUMENT.CREATE](data) {
+  [PatientActions.PATIENTS.DOCUMENT.CREATE](data) {
     console.log(data.get("document_type"));
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("patients/documents/" + data.get("patient_id"), data)
         .then(({ data }) => {
           this.context.dispatch(
-            Actions.PATIENTS.DOCUMENT.LIST,
+            PatientActions.PATIENTS.DOCUMENT.LIST,
             data.get("patient_id")
           );
           return data.data;
@@ -188,13 +198,13 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [Actions.PATIENTS.DOCUMENT.SEND_VIA_EMAIL](data) {
+  [PatientActions.PATIENTS.DOCUMENT.SEND_VIA_EMAIL](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("patient-documents/send-via-email", data)
         .then(({ data }) => {
           this.context.dispatch(
-            Actions.PATIENTS.DOCUMENT.LIST,
+            PatientActions.PATIENTS.DOCUMENT.LIST,
             data.get("patient_id")
           );
           return data.data;

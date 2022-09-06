@@ -158,6 +158,7 @@
 import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
@@ -194,10 +195,10 @@ export default defineComponent({
       }
 
       store
-        .dispatch(Actions.PATIENTS.UPDATE, formData.value)
+        .dispatch(PatientActions.PATIENTS.UPDATE, formData.value)
         .then(() => {
           loading.value = false;
-          store.dispatch(Actions.PATIENTS.LIST);
+          store.dispatch(PatientActions.PATIENTS.LIST);
           Swal.fire({
             text: "Successfully Updated!",
             icon: "success",

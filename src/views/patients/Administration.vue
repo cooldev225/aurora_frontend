@@ -185,7 +185,7 @@
 import { defineComponent, ref, watchEffect, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import maritalStatus from "@/core/data/marital-status";
 import titles from "@/core/data/titles";
@@ -301,10 +301,10 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.PATIENTS.UPDATE, formData.value)
+            .dispatch(PatientActions.PATIENTS.UPDATE, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.PATIENTS.LIST);
+              store.dispatch(PatientActions.PATIENTS.LIST);
               Swal.fire({
                 text: "Successfully Updated!",
                 icon: "success",
