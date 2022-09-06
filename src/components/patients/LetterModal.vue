@@ -1,174 +1,79 @@
 <template>
-  <div
-    class="modal fade"
-    id="modal_letter"
-    tabindex="-1"
-    aria-hidden="true"
-    ref="letterModalRef"
+  <ModalWrapper
+    title="Create Letter"
+    modalId="letter"
+    modalRef="letterModalRef"
   >
-    <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-650px">
-      <!--begin::Modal content-->
-      <div class="modal-content">
-        <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_letter_header">
-          <!--begin::Modal title-->
-          <h2 class="fw-bolder">Create Letter</h2>
-          <!--end::Modal title-->
+    <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
+      <div
+        class="scroll-y me-n7 pe-7"
+        id="kt_modal_letter_scroll"
+        data-kt-scroll="true"
+        data-kt-scroll-activate="{default: false, lg: true}"
+        data-kt-scroll-max-height="auto"
+        data-kt-scroll-dependencies="#kt_modal_letter_header"
+        data-kt-scroll-wrappers="#kt_modal_letter_scroll"
+        data-kt-scroll-offset="300px"
+      >
+        <InputWrapper label="Letter Template" prop="letter_template">
+          <el-select v-model="letter_template" fit-input-width class="w-100">
+            <el-option
+              v-for="item in letterTemplates"
+              :key="item.id"
+              :label="item.heading"
+              :value="item.id"
+            />
+          </el-select>
+        </InputWrapper>
 
-          <!--begin::Close-->
-          <div
-            id="kt_modal_letter_close"
-            data-bs-dismiss="modal"
-            class="btn btn-icon btn-sm btn-active-icon-primary"
+        <InputWrapper label="Referral Doctor" prop="referral_doctor">
+          <el-autocomplete
+            class="w-100"
+            v-model="formData.referring_doctor_name"
+            value-key="full_name"
+            :fetch-suggestions="searchReferralDoctor"
+            placeholder="Enter Doctor Name"
+            :trigger-on-focus="false"
+            @select="handleSelect"
           >
-            <span class="svg-icon svg-icon-1">
-              <inline-svg src="media/icons/duotune/arrows/arr061.svg" />
-            </span>
-          </div>
-          <!--end::Close-->
-        </div>
-        <!--end::Modal header-->
-        <!--begin::Form-->
-        <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
-          <!--begin::Modal body-->
-          <div class="modal-body py-10 px-lg-17">
-            <!--begin::Scroll-->
-            <div
-              class="scroll-y me-n7 pe-7"
-              id="kt_modal_letter_scroll"
-              data-kt-scroll="true"
-              data-kt-scroll-activate="{default: false, lg: true}"
-              data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#kt_modal_letter_header"
-              data-kt-scroll-wrappers="#kt_modal_letter_scroll"
-              data-kt-scroll-offset="300px"
-            >
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2"
-                  >Letter Template</label
-                >
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="letter_template">
-                  <el-select
-                    v-model="letter_template"
-                    fit-input-width
-                    class="w-100"
-                  >
-                    <el-option
-                      v-for="item in letterTemplates"
-                      :key="item.id"
-                      :label="item.heading"
-                      :value="item.id"
-                    />
-                  </el-select>
-                </el-form-item>
-                <!--end::Input-->
+            <template #default="{ item }">
+              <div class="name">
+                {{ item.title }}
+                {{ item.first_name }} {{ item.last_name }}
               </div>
-              <!--end::Input group-->
+              <div class="address">{{ item.address }}</div>
+            </template>
+          </el-autocomplete>
+        </InputWrapper>
 
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="fs-6 fw-bold mb-2">Referral Doctor</label>
-                <!--end::Label-->
-                <!--begin::Input-->
-                <el-form-item prop="referral_doctor">
-                  <el-autocomplete
-                    class="w-100"
-                    v-model="formData.referring_doctor_name"
-                    value-key="full_name"
-                    :fetch-suggestions="searchReferralDoctor"
-                    placeholder="Enter Doctor Name"
-                    :trigger-on-focus="false"
-                    @select="handleSelect"
-                  >
-                    <template #default="{ item }">
-                      <div class="name">
-                        {{ item.title }}
-                        {{ item.first_name }} {{ item.last_name }}
-                      </div>
-                      <div class="address">{{ item.address }}</div>
-                    </template>
-                  </el-autocomplete>
-                </el-form-item>
-                <!--end::Input-->
-              </div>
+        <InputWrapper label="Title" prop="title">
+          <el-input
+            v-model="formData.title"
+            type="text"
+            placeholder="Enter title"
+          />
+        </InputWrapper>
 
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Title</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="title">
-                  <el-input
-                    v-model="formData.title"
-                    type="text"
-                    placeholder="Enter Name"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Body</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="body">
-                  <ckeditor :editor="ClassicEditor" v-model="formData.body" />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-            </div>
-            <!--end::Scroll-->
-          </div>
-          <!--end::Modal body-->
-
-          <!--begin::Modal footer-->
-          <div class="modal-footer flex-center">
-            <!--begin::Button-->
-            <button
-              type="reset"
-              data-bs-dismiss="modal"
-              id="kt_modal_letter_cancel"
-              class="btn btn-light me-3"
-            >
-              Cancel
-            </button>
-            <!--end::Button-->
-
-            <!--begin::Button-->
-            <button
-              :data-kt-indicator="loading ? 'on' : null"
-              class="btn btn-lg btn-primary"
-              type="submit"
-            >
-              <span v-if="!loading" class="indicator-label"> Create </span>
-              <span v-if="loading" class="indicator-progress">
-                Please wait...
-                <span
-                  class="spinner-border spinner-border-sm align-middle ms-2"
-                ></span>
-              </span>
-            </button>
-            <!--end::Button-->
-          </div>
-          <!--end::Modal footer-->
-        </el-form>
-        <!--end::Form-->
+        <InputWrapper label="Body" prop="body">
+          <ckeditor :editor="ClassicEditor" v-model="formData.body" />
+        </InputWrapper>
       </div>
-    </div>
-  </div>
+
+      <button
+        :data-kt-indicator="loading ? 'on' : null"
+        class="btn btn-lg btn-primary m-6"
+        type="submit"
+      >
+        <span v-if="!loading" class="indicator-label"> Create </span>
+        <span v-if="loading" class="indicator-progress">
+          Please wait...
+          <span
+            class="spinner-border spinner-border-sm align-middle ms-2"
+          ></span>
+        </span>
+      </button>
+    </el-form>
+  </ModalWrapper>
 </template>
 
 <script>
