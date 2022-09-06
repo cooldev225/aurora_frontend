@@ -1,29 +1,18 @@
 <template>
-  <!--begin::details View-->
-  <div class="card mb-5 mb-xl-10" id="patient_view_appointments_current">
-    <!--begin::Card header-->
-    <div class="card-header cursor-pointer">
-      <!--begin::Card title-->
-      <div class="card-title m-0">
-        <h3 class="fw-bolder m-0">Appointment List</h3>
-      </div>
-      <span class="my-auto">
-        <label class="form-check my-auto form-check-custom form-check-solid">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            v-model="showFutureApt"
-          />
-          <span class="form-check-label user-select-none">
-            Show Future Appointments
-          </span>
-        </label></span
-      >
-      <!--end::Card title-->
-    </div>
-    <!--begin::Card header-->
-    <!--begin::Card body-->
-    <div class="card-body pt-0">
+  <CardSection heading="Appointment List">
+    <template #header-actions>
+      <label class="form-check my-auto form-check-custom form-check-solid">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          v-model="showFutureApt"
+        />
+        <span class="form-check-label user-select-none">
+          Show Future Appointments
+        </span>
+      </label>
+    </template>
+    <template #default>
       <Datatable
         v-if="tableData"
         :table-header="tableHeader"
@@ -151,9 +140,9 @@
           </div>
         </template>
       </Datatable>
-    </div>
-    <!--end::Card body-->
-  </div>
+    </template>
+  </CardSection>
+
   <CollectingPersonModal :selectedApt="selectedApt"></CollectingPersonModal>
   <AppointmentReferralModal
     :selectedApt="selectedApt"
@@ -183,6 +172,7 @@ import ProcedureApprovalModal from "./modals/ProcedureApprovalModal.vue";
 import { Modal } from "bootstrap";
 import { Mutations, Actions } from "@/store/enums/StoreEnums";
 import md5 from "js-md5";
+import CardSection from "../presets/GeneralElements/CardSection.vue";
 export default defineComponent({
   name: "patient-appointments",
   components: {
@@ -190,6 +180,7 @@ export default defineComponent({
     CollectingPersonModal,
     AppointmentReferralModal,
     ProcedureApprovalModal,
+    CardSection,
   },
   setup() {
     const store = useStore();

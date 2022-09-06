@@ -163,12 +163,9 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
-import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
-import ModalWrapper from "@/components/presets/GeneralElements/ModalWrapper.vue";
 
 export default defineComponent({
   name: "create-letter-template-modal",
-  components: { InputWrapper, ModalWrapper },
   props: {
     patientId: { type: String, required: true },
   },

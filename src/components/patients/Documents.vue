@@ -1,10 +1,9 @@
 <template>
-  <!--begin::details View-->
-  <div class="card mb-5 mb-xl-10" id="patient_view_documents">
-    <div class="row p-5">
+  <CardSection>
+    <div class="row">
       <div class="col-md-4">
         <el-select
-          class="w-100 mb-5"
+          class="w-100 mb-6"
           placeholder="Select Document Type"
           v-model="documentType"
         >
@@ -13,63 +12,20 @@
               class="me-5"
               src="media/icons/duotune/general/gen054.svg"
             />
-            ALL DOCUMENT TYPE
+            ALL DOCUMENT TYPES
           </el-option>
-          <el-option value="LETTER" label="LETTER">
-            <inline-svg
-              class="me-5"
-              src="media/icons/duotune/general/gen005.svg"
-            />
-            LETTER
-          </el-option>
-          <el-option value="REPORT" label="REPORT">
-            <inline-svg
-              class="me-5"
-              src="media/icons/duotune/general/gen016.svg"
-            />
-            REPORT
-          </el-option>
-          <el-option value="CLINICAL_NOTE" label="CLINICAL NOTE">
-            <inline-svg
-              class="me-5"
-              src="media/icons/duotune/files/fil003.svg"
-            />
-            CLINICAL NOTE
-          </el-option>
-          <el-option label="PATHOLOGY REPORT" value="PATHOLOGY_REPORT">
-            <inline-svg
-              class="me-5"
-              src="media/icons/duotune/files/fil004.svg"
-            />
-            PATHOLOGY REPORT
-          </el-option>
-          <el-option label="AUDIO" value="AUDIO">
-            <inline-svg
-              class="me-5"
-              src="media/icons/duotune/general/gen015.svg"
-            />
-            AUDIO
-          </el-option>
-          <el-option label="USB CAPTURE" value="USB_CAPTURE">
-            <inline-svg
-              class="me-5"
-              src="media/icons/duotune/electronics/elc007.svg"
-            />
-            USB CAPTURE
-          </el-option>
-          <el-option label="OTHER" value="OTHER">
-            <inline-svg
-              class="me-5"
-              src="media/icons/duotune/general/gen025.svg"
-            />
-            OTHER
-          </el-option>
+          <template v-for="type in patientDocumentTypes" :key="type.value">
+            <el-option :value="type.value" :label="type.label">
+              <inline-svg class="me-5" :src="type.icon" />
+              {{ type.label }}
+            </el-option>
+          </template>
         </el-select>
         <div
           v-if="documentList?.length === 0"
-          class="d-flex justify-content-center align-items-center p-5 fs-3"
+          class="d-flex justify-content-center align-items-center fs-3"
         >
-          No Document Exist
+          No Documents Exist
         </div>
         <div class="d-flex flex-column h-450px scroll">
           <div v-for="item in documentList" :key="item.id">
@@ -81,52 +37,7 @@
               :id="item.id"
               v-model="selectedDocument"
             />
-            <label
-              class="btn btn-outline btn-outline-dashed btn-outline-default p-3 d-flex align-items-center mb-5"
-              :for="item.id"
-            >
-              <span class="svg-icon svg-icon-3x me-5">
-                <inline-svg
-                  v-if="item.document_type === 'LETTER'"
-                  src="media/icons/duotune/general/gen005.svg"
-                />
-                <inline-svg
-                  v-else-if="item.document_type === 'REPORT'"
-                  src="media/icons/duotune/general/gen016.svg"
-                />
-                <inline-svg
-                  v-else-if="item.document_type === 'CLINICAL_NOTE'"
-                  src="media/icons/duotune/files/fil003.svg"
-                />
-                <inline-svg
-                  v-else-if="item.document_type === 'PATHOLOGY_REPORT'"
-                  src="media/icons/duotune/files/fil004.svg"
-                />
-                <inline-svg
-                  v-else-if="item.document_type === 'AUDIO'"
-                  src="media/icons/duotune/general/gen015.svg"
-                />
-                <inline-svg
-                  v-else-if="item.document_type === 'USB_CAPTURE'"
-                  src="media/icons/duotune/electronics/elc007.svg"
-                />
-                <inline-svg
-                  v-else
-                  src="media/icons/duotune/general/gen025.svg"
-                />
-              </span>
-
-              <!--begin::Info-->
-              <span class="d-block fw-bold text-start">
-                <span class="text-dark fw-bolder d-block fs-4 mb-1">
-                  {{ item.document_name }}
-                </span>
-                <span class="text-gray-400 fw-bold fs-6">{{
-                  moment(item.created_at).format("DD-MM-YYYY HH:mm A")
-                }}</span>
-              </span>
-              <!--end::Info-->
-            </label>
+            <DocumentLabel :document="item" />
           </div>
         </div>
       </div>
@@ -167,12 +78,11 @@
         </div>
       </div>
     </div>
-  </div>
+  </CardSection>
   <SendDocumentViaEmail
     v-if="selectedDocument"
     :document="selectedDocument"
   ></SendDocumentViaEmail>
-  <!--end::details View-->
 </template>
 
 <style lang="scss">
@@ -189,26 +99,29 @@ import { defineComponent, ref, watch, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
-import moment from "moment";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import SendDocumentViaEmail from "./SendDocumentViaEmail.vue";
 import { Modal } from "bootstrap";
 import pdf from "pdfobject";
+import patientDocumentTypes from "@/core/data/patient-document-types";
+import DocumentLabel from "@/components/patients/documents/DocumentLabel.vue";
 
 export default defineComponent({
   name: "patient-documents",
   components: {
     IconButton,
     SendDocumentViaEmail,
+    DocumentLabel,
   },
   setup() {
     const store = useStore();
     const formData = ref({});
     const selectedPatient = computed(() => store.getters.selectedPatient);
-    const documentList = ref(null);
     const _documentList = computed(() => store.getters.getPatientDocumentList);
+    const documentList = ref(null);
     const selectedDocument = ref(null);
     const documentType = ref("ALL");
+    const appointments = ref();
     const printLoading = ref(false);
     const printObj = ref({
       id: "documentField",
@@ -263,10 +176,11 @@ export default defineComponent({
       documentList,
       selectedDocument,
       documentType,
-      moment,
       printObj,
       printLoading,
       handleSendEmail,
+      patientDocumentTypes,
+      DocumentLabel,
     };
   },
 });
