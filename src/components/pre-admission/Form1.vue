@@ -14,7 +14,7 @@
       />
 
       <InputWrapper label="Date of Birth" prop="date_of_birth" required>
-        <el-input
+        <el-date-picker
           type="date"
           class="w-100"
           v-model="formData.date_of_birth"

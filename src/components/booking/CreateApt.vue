@@ -1493,7 +1493,7 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      if (organisation.value.appointment_length)
+      if (organisation.value?.appointment_length)
         appointment_time.value = organisation.value.appointment_length;
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
