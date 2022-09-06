@@ -177,9 +177,6 @@ export default defineComponent({
         name: "patients-view-appointments",
         params: { id: aptData.value.patient_id },
       });
-      // store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
-      // DrawerComponent?.getInstance("appointment-drawer")?.hide();
-      // router.push({ name: "patients-view-administration" });
     };
 
     watchEffect(() => {
