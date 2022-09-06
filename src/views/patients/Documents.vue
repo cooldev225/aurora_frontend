@@ -104,7 +104,7 @@ import SendDocumentViaEmail from "./SendDocumentViaEmail.vue";
 import { Modal } from "bootstrap";
 import pdf from "pdfobject";
 import patientDocumentTypes from "@/core/data/patient-document-types";
-import DocumentLabel from "@/components/patients/documents/DocumentLabel.vue";
+import DocumentLabel from "@/views/patients/documents/DocumentLabel.vue";
 
 export default defineComponent({
   name: "patient-documents",

@@ -172,7 +172,6 @@ import ProcedureApprovalModal from "./modals/ProcedureApprovalModal.vue";
 import { Modal } from "bootstrap";
 import { Mutations, Actions } from "@/store/enums/StoreEnums";
 import md5 from "js-md5";
-import CardSection from "../presets/GeneralElements/CardSection.vue";
 export default defineComponent({
   name: "patient-appointments",
   components: {
@@ -180,7 +179,6 @@ export default defineComponent({
     CollectingPersonModal,
     AppointmentReferralModal,
     ProcedureApprovalModal,
-    CardSection,
   },
   setup() {
     const store = useStore();

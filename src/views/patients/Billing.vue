@@ -160,12 +160,10 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
-import HeadingText from "../presets/GeneralElements/HeadingText.vue";
 
 export default defineComponent({
   name: "patient-billing",
-  components: { InputWrapper, HeadingText },
+  components: {},
   data: function () {
     return {
       colString: "col-12 col-sm-6 ",

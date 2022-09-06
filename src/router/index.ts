@@ -157,27 +157,27 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "appointments",
             name: "patients-view-appointments",
-            component: () => import("@/components/patients/Appointments.vue"),
+            component: () => import("@/views/patients/Appointments.vue"),
           },
           {
             path: "billing",
             name: "patients-view-billing",
-            component: () => import("@/components/patients/Billing.vue"),
+            component: () => import("@/views/patients/Billing.vue"),
           },
           {
             path: "administration",
             name: "patients-view-administration",
-            component: () => import("@/components/patients/Administration.vue"),
+            component: () => import("@/views/patients/Administration.vue"),
           },
           {
             path: "documents",
             name: "patients-view-documents",
-            component: () => import("@/components/patients/Documents.vue"),
+            component: () => import("@/views/patients/Documents.vue"),
           },
           {
             path: "clinical",
             name: "patients-view-clinical",
-            component: () => import("@/components/patients/Clinical.vue"),
+            component: () => import("@/views/patients/Clinical.vue"),
           },
         ],
       },
