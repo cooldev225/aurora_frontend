@@ -19,6 +19,7 @@ import print from "vue3-print-nb";
 // import VuePdf from "vue3-pdfjs";
 
 import HeadingText from "./components/presets/GeneralElements/HeadingText.vue";
+import CardSection from "./components/presets/GeneralElements/CardSection.vue";
 
 import "@/core/plugins/prismjs";
 import "bootstrap";
@@ -42,7 +43,7 @@ initApexCharts(app);
 initInlineSvg(app);
 initVeeValidate();
 
-app.component("HeadingText", HeadingText);
+app.component("HeadingText", HeadingText).component("CardSection", CardSection);
 
 app.use(i18n);
 

@@ -1,10 +1,9 @@
 <template>
-  <!--begin::details View-->
-  <div class="card mb-5 mb-xl-10" id="patient_view_documents">
-    <div class="row p-5">
+  <CardSection>
+    <div class="row">
       <div class="col-md-4">
         <el-select
-          class="w-100 mb-5"
+          class="w-100 mb-6"
           placeholder="Select Document Type"
           v-model="documentType"
         >
@@ -24,7 +23,7 @@
         </el-select>
         <div
           v-if="documentList?.length === 0"
-          class="d-flex justify-content-center align-items-center p-5 fs-3"
+          class="d-flex justify-content-center align-items-center fs-3"
         >
           No Documents Exist
         </div>
@@ -79,12 +78,11 @@
         </div>
       </div>
     </div>
-  </div>
+  </CardSection>
   <SendDocumentViaEmail
     v-if="selectedDocument"
     :document="selectedDocument"
   ></SendDocumentViaEmail>
-  <!--end::details View-->
 </template>
 
 <style lang="scss">
