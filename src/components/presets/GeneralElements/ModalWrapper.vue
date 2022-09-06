@@ -20,7 +20,9 @@
             </span>
           </div>
         </div>
-        <slot></slot>
+        <div class="modal-body">
+          <slot></slot>
+        </div>
       </div>
     </div>
   </div>
