@@ -41,14 +41,10 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watch } from "vue";
+import { defineComponent, onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import moment from "moment";
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
+import { Actions } from "@/store/enums/StoreEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 export default defineComponent({
@@ -60,9 +56,7 @@ export default defineComponent({
     const loading = ref(true);
     const formRef = ref(null);
     const orgData = computed(() => store.getters.getAptPreAdmissionOrg);
-    const validateMsg = computed(
-      () => store.getters.getAptPreAdmissionValidateMsg
-    );
+
     const formData = ref({
       date_of_birth: "",
       last_name: "",

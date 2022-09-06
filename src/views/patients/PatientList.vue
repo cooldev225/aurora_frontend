@@ -249,7 +249,10 @@ export default defineComponent({
 
     const handleView = (item) => {
       store.dispatch(Actions.PATIENTS.VIEW, item.id);
-      router.push({ name: "patients-view-appointments" });
+      router.push({
+        name: "patients-view-appointments",
+        params: { id: item.id },
+      });
     };
 
     const handleBadge = (upcoming_appointment) => {

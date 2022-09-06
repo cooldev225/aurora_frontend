@@ -661,6 +661,7 @@ export default defineComponent({
       console.log(`Processed: ${event} / 100`);
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const beforeDownload = ({ html2pdf, options, pdfContent }) => {
       submit();
       // html2pdf()

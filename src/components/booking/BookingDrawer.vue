@@ -235,7 +235,10 @@ export default defineComponent({
     const handleView = () => {
       store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
       DrawerComponent?.getInstance("booking-drawer")?.hide();
-      router.push({ name: "patients-view-administration" });
+      router.push({
+        name: "patients-view-administration",
+        params: { id: aptData.value.patient_id },
+      });
     };
 
     const handleEdit = () => {

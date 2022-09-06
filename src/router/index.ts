@@ -152,7 +152,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/patients/PatientList.vue"),
       },
       {
-        path: "/patients/view",
+        path: "/patients/:id",
         name: "patients-view",
         component: () => import("@/views/patients/PatientView.vue"),
         children: [
