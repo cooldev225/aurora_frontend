@@ -64,12 +64,9 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import timeFrames from "@/core/data/time-frames";
-import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
-import ModalWrapper from "@/components/presets/GeneralElements/ModalWrapper.vue";
 
 export default defineComponent({
   name: "patient-recall-reminder-modal",
-  components: { InputWrapper, ModalWrapper },
   setup() {
     const store = useStore();
     const formRef = ref(null);

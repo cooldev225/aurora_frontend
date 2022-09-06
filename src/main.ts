@@ -20,6 +20,8 @@ import print from "vue3-print-nb";
 
 import HeadingText from "./components/presets/GeneralElements/HeadingText.vue";
 import CardSection from "./components/presets/GeneralElements/CardSection.vue";
+import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
+import ModalWrapper from "@/components/presets/GeneralElements/ModalWrapper.vue";
 
 import "@/core/plugins/prismjs";
 import "bootstrap";
@@ -43,7 +45,11 @@ initApexCharts(app);
 initInlineSvg(app);
 initVeeValidate();
 
-app.component("HeadingText", HeadingText).component("CardSection", CardSection);
+app
+  .component("HeadingText", HeadingText)
+  .component("CardSection", CardSection)
+  .component("InputWrapper", InputWrapper)
+  .component("ModalWrapper", ModalWrapper);
 
 app.use(i18n);
 

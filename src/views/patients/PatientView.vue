@@ -22,6 +22,7 @@
                 <IconButton
                   v-if="userRole != 'specialist'"
                   label="Print Label"
+                  @click="handlePrintLabel"
                 />
                 <IconButton
                   v-if="userRole != 'specialist'"
@@ -157,6 +158,7 @@
   <LetterModal :patientId="patientData.id"></LetterModal>
   <CreateAudioModal :patientId="patientData.id"></CreateAudioModal>
   <UploadDocumentModal :patientId="patientData.id"></UploadDocumentModal>
+  <PrintLabelModal :patient="patientData"></PrintLabelModal>
   <router-view></router-view>
 </template>
 
@@ -170,6 +172,7 @@ import ReportModal from "@/components/patients/ReportTemplateModal.vue";
 import LetterModal from "@/components/patients/LetterModal.vue";
 import CreateAudioModal from "@/components/patients/CreateAudioModal.vue";
 import UploadDocumentModal from "@/components/patients/modals/UploadDocumentModal.vue";
+import PrintLabelModal from "@/components/patients/modals/PrintLabelsModal.vue";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import store from "@/store";
@@ -182,6 +185,7 @@ export default defineComponent({
     LetterModal,
     CreateAudioModal,
     UploadDocumentModal,
+    PrintLabelModal,
     IconText,
     IconButton,
   },
@@ -202,10 +206,16 @@ export default defineComponent({
       date_of_birth: "",
       contact_number: "",
     });
+
     const handleRecallReminder = () => {
       const modal = new Modal(
         document.getElementById("modal_patient_recall_reminder")
       );
+      modal.show();
+    };
+
+    const handlePrintLabel = () => {
+      const modal = new Modal(document.getElementById("modal_print_label"));
       modal.show();
     };
 
@@ -241,6 +251,7 @@ export default defineComponent({
       handleLetter,
       handleAudio,
       handleUploadDocument,
+      handlePrintLabel,
     };
   },
 });
