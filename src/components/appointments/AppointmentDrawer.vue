@@ -4,12 +4,11 @@
     id="appointment-drawer"
     class="bg-white"
     data-kt-drawer="true"
-    data-kt-drawer-name="appointment"
+    data-kt-drawer-name="appointment-drawer"
     data-kt-drawer-activate="true"
     data-kt-drawer-overlay="true"
     data-kt-drawer-width="{default:'300px', 'md': '500px'}"
     data-kt-drawer-direction="end"
-    data-kt-drawer-toggle="#booking_edit_toggle"
     data-kt-drawer-close="#booing_edit_close"
   >
     <div class="card w-100" id="appointment-drawer">
@@ -84,9 +83,7 @@
             }}</InfoSection>
 
             <InfoSection :heading="'Time'">
-              {{ displayData.start_time }} -
-              {{ displayData.end_time }} (Arrival:
-              {{ displayData.arrival_time }})
+              {{ displayData.time }}
             </InfoSection>
 
             <InfoSection :heading="'Type'">{{
@@ -121,6 +118,35 @@
         <!--end::Appointment Info-->
         <!--begin::Appointment Actions-->
         <div class="d-flex flex-column gap-3 mt-5">
+          <!--Check In Button-->
+          <LargeIconButton
+            v-if="aptData.attendance_status === 'NOT_PRESENT'"
+            @click="handleCheckIn"
+            :heading="'Check In'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/arrows/arr024.svg'"
+            :color="'primary'"
+          />
+
+          <!--Check Out Button-->
+          <LargeIconButton
+            v-if="aptData.attendance_status === 'CHECKED_IN'"
+            @click="handleCheckOut"
+            :heading="'Check Out'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/arrows/arr021.svg'"
+            :color="'primary'"
+          />
+
+          <!--Checked Out Label-->
+          <LargeIconButton
+            v-if="aptData.attendance_status === 'CHECKED_OUT'"
+            :heading="'Checked Out'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/arrows/arr021.svg'"
+            :color="'grey'"
+          />
+
           <!--View Patient-->
           <LargeIconButton
             @click="handleView"
@@ -129,25 +155,59 @@
             :iconPath="'media/icons/duotune/medicine/med001.svg'"
             :color="'primary'"
           />
+
+          <!--Edit Appointment-->
+          <LargeIconButton
+            @click="handleEdit"
+            :heading="'Edit'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/general/gen055.svg'"
+            :color="'success'"
+          />
+          <!--Move Appointment-->
+          <LargeIconButton
+            :heading="'Move'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/arrows/arr035.svg'"
+            :color="'success'"
+          />
+
+          <!--Cancel Appointment Button-->
+          <LargeIconButton
+            @click="handleCancel"
+            :heading="'Cancel'"
+            :subheading="'Appointment'"
+            :iconPath="'media/icons/duotune/arrows/arr011.svg'"
+            :color="'danger'"
+          />
         </div>
         <!--end::Appointment Actions-->
       </div>
     </div>
   </div>
+  <EditModal></EditModal>
+  <CheckInModal></CheckInModal>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, computed, watchEffect } from "vue";
-import { Actions } from "@/store/enums/StoreEnums";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
+import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
+import EditModal from "@/components/appointments/EditApt.vue";
+import CheckInModal from "@/components/appointments/CheckInModal.vue";
+import { Modal } from "bootstrap";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 
 export default defineComponent({
-  name: "appointment-drawer",
+  name: "booing-drawer",
   components: {
+    EditModal,
+    CheckInModal,
     LargeIconButton,
     AlertBadge,
     InfoSection,
@@ -155,12 +215,12 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
-    const aptData = computed(() => store.getters.getAptUserSelected);
+    const aptData = computed(() => store.getters.getAptSelected);
+    const searchVal = computed(() => store.getters.getSearchVariable);
 
     const displayData = reactive({
       clinic_name: "",
-      start_time: "",
-      end_time: "",
+      time: "",
       arrival_time: "",
       appointment_type_name: "",
       specialist_name: "",
@@ -173,29 +233,99 @@ export default defineComponent({
 
     const handleView = () => {
       store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
-      router.push({
-        name: "patients-view-appointments",
-        params: { id: aptData.value.patient_id },
+      DrawerComponent?.getInstance("appointment-drawer")?.hide();
+      router.push({ name: "patients-view-administration" });
+    };
+
+    const handleEdit = () => {
+      store.dispatch(Actions.PATIENTS.APPOINTMENTS, aptData.value.patient_id);
+      store.commit(Mutations.SET_APT.SELECT, aptData.value);
+      const modal = new Modal(document.getElementById("modal_edit_apt"));
+      modal.show();
+      DrawerComponent?.getInstance("appointment-drawer")?.hide();
+    };
+
+    const handleCancel = () => {
+      const html =
+        "<h3>Are you sure you want to cancel?</h3><br/>" +
+        '<h4><input type="checkbox" id="chkMissed"> ' +
+        '<label for="chkMissed">Mark as Missed</label></h4>';
+      Swal.fire({
+        input: "text",
+        inputAttributes: {
+          autocapitalize: "off",
+          placeholder: "Enter the Reason",
+        },
+        html: html,
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async (data) => {
+          var missed = Swal.getPopup().querySelector("#chkMissed").checked;
+
+          await store
+            .dispatch(Actions.APT.CANCELLATION.CREATE, {
+              id: aptData.value.id,
+              missed: missed,
+              reason: data,
+            })
+            .then(() => {
+              store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
+              store.dispatch(
+                Actions.BOOKING.SEARCH.SPECIALISTS,
+                searchVal.value
+              );
+
+              DrawerComponent?.getInstance("appointment-drawer")?.hide();
+            });
+        },
       });
-      // store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
-      // DrawerComponent?.getInstance("appointment-drawer")?.hide();
-      // router.push({ name: "patients-view-administration" });
+    };
+
+    const handleCheckIn = () => {
+      const modal = new Modal(document.getElementById("modal_check_in_apt"));
+      modal.show();
+    };
+
+    const handleCheckOut = async () => {
+      await store
+        .dispatch(Actions.APT.CHECK_OUT, aptData.value)
+        .then(() => {
+          store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
+          Swal.fire({
+            text: "Successfully Checked Out!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          }).then(() => {
+            DrawerComponent?.getInstance("appointment-drawer")?.hide();
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
     };
 
     watchEffect(() => {
       displayData.clinic_name = aptData.value.clinic_details?.name;
-      displayData.start_time = aptData.value.start_time;
-      displayData.end_time = aptData.value.end_time;
-      displayData.arrival_time = aptData.value.arrival_time;
       displayData.appointment_type_name = aptData.value.appointment_type?.name;
       displayData.specialist_name = aptData.value.specialist_name;
-      displayData.notes = aptData.value.note;
-
-      displayData.allergies = aptData.value.patient_details?.allergies;
+      displayData.allergies = aptData.value.patient?.allergies;
       displayData.patient_name = aptData.value.patient_name?.full;
       displayData.patient_number =
         aptData.value.patient_details?.contact_number;
-
+      displayData.time = aptData.value.formatted_appointment_time;
+      displayData.arrival_time = aptData.value.arrival_time;
+      displayData.specialist_name = aptData.value.specialist_name;
+      displayData.notes = aptData.value.note;
       displayData.procedure_approval_status =
         aptData.value.procedure_approval_status;
     });
@@ -203,7 +333,11 @@ export default defineComponent({
     return {
       displayData,
       aptData,
+      handleEdit,
       handleView,
+      handleCancel,
+      handleCheckIn,
+      handleCheckOut,
     };
   },
 });

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const Actions = {
   // action types
   ADD_BODY_CLASSNAME: "addBodyClassName",
@@ -83,20 +84,6 @@ const Actions = {
     CREATE: "createSpecialists",
     DELETE: "deleteSpecialists",
     UPDATE: "updateSpecialists",
-
-    TYPE: {
-      LIST: "listSpecialistType",
-      CREATE: "createSpecialistType",
-      DELETE: "deleteSpecialistType",
-      UPDATE: "updateSpecialistType",
-    },
-
-    TITLE: {
-      LIST: "listSpecialistTitle",
-      CREATE: "createSpecialistTitle",
-      DELETE: "deleteSpecialistTitle",
-      UPDATE: "updateSpecialistTitle",
-    },
   },
 
   PATIENTS: {
@@ -172,11 +159,11 @@ const Actions = {
 
   APPOINTMENT: {
     REFERRAL: {
-      UPDATE: "updateAppointmentReferral", // (put)'appointments/referral/{appointment}'
-      VIEW: "viewAppointmentReferral", // (post)'appointments/referral/file'
+      UPDATE:   "updateAppointmentReferral", // (put)   'appointments/referral/{appointment}'
+      VIEW:     "viewAppointmentReferral",   // (post)  'appointments/referral/file'
     },
     PRE_ADMISSION: {
-      VIEW: "viewPreAdmissionForm", // (post)'appointment/procedure-approvals/pdf/{appointment}'
+      VIEW:     "viewPreAdmissionForm",      // (post)  'appointment/procedure-approvals/pdf/{appointment}'
     },
   },
 
@@ -226,7 +213,7 @@ const Actions = {
   },
 
   REFERRAL_DOCTOR: {
-    LIST: "searchReferralDoctor",
+    LIST: "searchReferralDoctor", // (get) 'referring-doctors'
   },
 
   LETTER_TEMPLATE: {
@@ -237,12 +224,6 @@ const Actions = {
     CREATE: "createLetter",
   },
 
-  // EMPLOYEE_ROLE: {
-  //   LIST: "listEmployeeRoles",
-  //   CREATE: "createEmployeeRoles",
-  //   DELETE: "deleteEmployeeRoles",
-  //   UPDATE: "updateEmployeeRoles",
-  // },
 
   MAKE_PAYMENT: {
     LIST: "listMakePayment",
@@ -277,16 +258,6 @@ const Mutations = {
   SET_SPECIALIST: {
     LIST: "setSpecialists",
     SELECT: "setSelectSpecialists",
-
-    TYPE: {
-      LIST: "setSpecialistTypeList",
-      SELECT: "setSelectSpecialistType",
-    },
-
-    TITLE: {
-      LIST: "setSpecialistTitleList",
-      SELECT: "setSelectSpecialistTitle",
-    },
   },
 
   SET_ADMIN: {

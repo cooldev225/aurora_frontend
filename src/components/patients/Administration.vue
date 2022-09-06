@@ -352,8 +352,6 @@ export default defineComponent({
               loading.value = false;
               console.log(response.data.error);
             });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };

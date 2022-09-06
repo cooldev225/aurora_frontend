@@ -47,7 +47,7 @@ export default class EmployeeModule extends VuexModule implements EmployeeInfo {
   [Actions.EMPLOYEE.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("employees")
+      ApiService.get("users")
         .then(({ data }) => {
           this.context.commit(Mutations.SET_EMPLOYEE.LIST, data.data);
           return data.data;
@@ -65,7 +65,7 @@ export default class EmployeeModule extends VuexModule implements EmployeeInfo {
   [Actions.EMPLOYEE.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("employees", payload)
+      ApiService.post("users", payload)
         .then(({ data }) => {
           return data.data;
         })
@@ -81,7 +81,7 @@ export default class EmployeeModule extends VuexModule implements EmployeeInfo {
   [Actions.EMPLOYEE.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("employees", item.id, item)
+      ApiService.update("users", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
@@ -98,7 +98,7 @@ export default class EmployeeModule extends VuexModule implements EmployeeInfo {
   [Actions.EMPLOYEE.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.delete("employees/" + id)
+      ApiService.delete("users/" + id)
         .then(({ data }) => {
           return data.data;
         })

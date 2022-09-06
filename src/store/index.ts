@@ -11,8 +11,6 @@ import OrganisationModule from "@/store/modules/OrganisationModule";
 import OrgManagerModule from "@/store/modules/OrgManagerModule";
 import OrgAdminModule from "@/store/modules/OrgAdminModule";
 import ClinicsModule from "@/store/modules/ClinicsModule";
-import SpecialistTypeModule from "@/store/modules/SpecialistTypeModule";
-import SpecialistTitleModule from "@/store/modules/SpecialistTitleModule";
 import HealthFundModule from "@/store/modules/HealthFundModule";
 import BirthCodeModule from "@/store/modules/BirthCodeModule";
 import PatientsModule from "@/store/modules/PatientsModule";
@@ -43,8 +41,6 @@ const store = createStore({
     ConfigModule,
     AdminModule,
     UserModule,
-    SpecialistTypeModule,
-    SpecialistTitleModule,
     OrganisationModule,
     OrgManagerModule,
     OrgAdminModule,

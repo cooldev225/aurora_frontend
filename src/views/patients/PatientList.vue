@@ -257,7 +257,7 @@ export default defineComponent({
 
     const handleBadge = (upcoming_appointment) => {
       store.commit(Mutations.SET_APT.SELECT, upcoming_appointment);
-      DrawerComponent?.getInstance("booking-drawer")?.setBookingDrawerShown(
+      DrawerComponent?.getInstance("appointment-drawer")?.setBookingDrawerShown(
         true
       );
       router.push({ name: "booking-dashboard" });

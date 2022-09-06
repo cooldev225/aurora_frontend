@@ -156,7 +156,7 @@
   <ReportModal></ReportModal>
   <LetterModal :patientId="patientData.id"></LetterModal>
   <CreateAudioModal :patientId="patientData.id"></CreateAudioModal>
-  <UploadDocument :patientId="patientData.id"></UploadDocument>
+  <UploadDocumentModal :patientId="patientData.id"></UploadDocumentModal>
   <router-view></router-view>
 </template>
 
@@ -169,7 +169,7 @@ import RecallReminderModal from "@/components/patients/modals/RecallReminderModa
 import ReportModal from "@/components/patients/ReportTemplateModal.vue";
 import LetterModal from "@/components/patients/LetterModal.vue";
 import CreateAudioModal from "@/components/patients/CreateAudioModal.vue";
-import UploadDocument from "@/components/patients/UploadDocument.vue";
+import UploadDocumentModal from "@/components/patients/modals/UploadDocumentModal.vue";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import store from "@/store";
@@ -181,7 +181,7 @@ export default defineComponent({
     ReportModal,
     LetterModal,
     CreateAudioModal,
-    UploadDocument,
+    UploadDocumentModal,
     IconText,
     IconButton,
   },

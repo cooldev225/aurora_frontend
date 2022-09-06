@@ -100,6 +100,10 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   @Mutation
   [Mutations.SET_BOOKING.SEARCH.SPECIALISTS](data: IBookingData) {
     this.filteredData = data;
+    console.log([
+      "Mutations.SET_BOOKING.SEARCH.SPECIALISTS",
+      this.filteredData,
+    ]);
   }
 
   @Mutation
@@ -113,30 +117,10 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   }
 
   @Action
-  [Actions.BOOKING.SEARCH.DATE](payload) {
-    this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.query("work-hours", { params: payload })
-        .then(({ data }) => {
-          this.context.commit(
-            Mutations.SET_BOOKING.SEARCH.DATE,
-            data.data[Object.keys(data.data)[0]]
-          );
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
   [Actions.BOOKING.SEARCH.NEXT_APT](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("available-slots", { params: payload })
+      ApiService.query("available-timeslots", { params: payload })
         .then(({ data }) => {
           this.context.commit(
             Mutations.SET_BOOKING.SEARCH.NEXT_APTS,
@@ -156,12 +140,29 @@ export default class BooingModule extends VuexModule implements BookingInfo {
     this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("work-hours", { params: payload })
+      ApiService.query("appointments/specialists", { params: payload })
         .then(({ data }) => {
           this.context.commit(
             Mutations.SET_BOOKING.SEARCH.SPECIALISTS,
             data.data
           );
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.BOOKING.SEARCH.DATE](payload) {
+    this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.query("appointments/specialists", { params: payload })
+        .then(({ data }) => {
+          this.context.commit(Mutations.SET_BOOKING.SEARCH.DATE, data.data);
         })
         .catch(({ response }) => {
           console.log(response.data.error);

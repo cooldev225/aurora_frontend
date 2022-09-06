@@ -62,7 +62,10 @@
           </div>
         </template>
         <template v-slot:cell-referral="{ row: item }">
-          <div v-if="item.referral" class="d-flex flex-column">
+          <div
+            v-if="item.referral.referring_doctor_name"
+            class="d-flex flex-column"
+          >
             <div v-if="!item.is_no_referral" class="d-flex flex-column">
               <span>{{ item.referral.referring_doctor_name }}</span>
               <span>{{ item.referral.referral_date }}</span>
@@ -157,7 +160,7 @@
   ></AppointmentReferralModal>
   <!--end::details View-->
 
-  <ProcedureApprovalModal isEditable="false" />
+  <ProcedureApprovalModal isEditable="false" :selectedApt="selectedApt" />
 </template>
 
 <script lang="ts">

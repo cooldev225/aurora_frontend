@@ -71,28 +71,28 @@ const OrgAdminMenu = [
 const OrgManagerMenu = [
   {
     heading: "Booking",
-    route: "/booking",
+    route: "/appointments",
     svgIcon: "media/icons/duotune/general/gen014.svg",
     pages: [
       {
         heading: "Dashboard",
-        route: "/booking/dashboard",
+        route: "/appointments/dashboard",
       },
       {
         heading: "Unconfirmed Appointments",
-        route: "/booking/unconfirmed-apts",
+        route: "/appointments/unconfirmed-apts",
       },
       {
         heading: "Unapproved Procedures",
-        route: "/booking/unapproved-procedures",
+        route: "/appointments/unapproved-procedures",
       },
       {
         heading: "Waitlisted Appointments",
-        route: "/booking/waitlisted-apts",
+        route: "/appointments/waitlisted-apts",
       },
       {
         heading: "Cancellation List",
-        route: "/booking/cancellation-list",
+        route: "/appointments/cancellation-list",
       },
     ],
   },
