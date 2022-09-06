@@ -50,8 +50,8 @@
         <template v-slot:cell-first_name="{ row: item }">
           {{ item.title }} {{ item.first_name }} {{ item.last_name }}
         </template>
-        <template v-slot:cell-role="{ row: item }">
-          {{ item.role }}
+        <template v-slot:cell-role_name="{ row: item }">
+          {{ item.role_name }}
         </template>
         <template v-slot:cell-username="{ row: item }">
           {{ item.username }}
@@ -128,7 +128,7 @@ export default defineComponent({
       },
       {
         name: "Role",
-        key: "role",
+        key: "role_name",
         sortable: true,
         searchable: true,
       },
@@ -145,11 +145,11 @@ export default defineComponent({
     ]);
     const tableData = ref([]);
     const list = computed(() => store.getters.employeeList);
-    const orgList = computed(() => store.getters.orgList);
+    const organization = computed(() => store.getters.organization);
     const loading = ref(true);
 
     const handleCreate = () => {
-      if (orgList.value[0].is_max_users) {
+      if (organization.value[0].is_max_users) {
         const html =
           "<h3>You have reached your max allowed users.</h3><p>Please buy new user licenses to add more.</p><br/>";
 

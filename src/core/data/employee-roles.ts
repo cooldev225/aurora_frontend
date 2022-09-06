@@ -1,10 +1,11 @@
-export const employeeRoles = [
-  { value: "receptionist", label: "Receptionist" },
-  { value: "specialist", label: "Specialist" },
-  { value: "pathologist", label: "Pathologist" },
-  { value: "scientist", label: "Scientist" },
-  { value: "typist", label: "Typist" },
-  { value: "anesthetist", label: "Anesthetist" },
+export const weekdays = [
+  { value: "3", label: "Organization Manager" },
+  { value: "4", label: "Receptionist" },
+  { value: "5", label: "Specialist" },
+  { value: "6", label: "Pathologist" },
+  { value: "7", label: "Scientist" },
+  { value: "8", label: "Typist" },
+  { value: "9", label: "Anesthetist" },
 ];
 
-export default employeeRoles;
+export default weekdays;

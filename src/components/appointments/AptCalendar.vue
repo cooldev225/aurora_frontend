@@ -22,8 +22,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
-import events from "@/core/data/events";
-import { TODAY } from "@/core/data/events";
 
 export default defineComponent({
   name: "appointments-calendar",
@@ -47,7 +45,6 @@ export default defineComponent({
         right: "timeGridWeek,timeGridDay",
       },
       initialView: "timeGridWeek",
-      initialDate: TODAY,
       navLinks: true, // can click day/week names to navigate views
       selectable: true,
       selectMirror: true,
@@ -59,7 +56,6 @@ export default defineComponent({
 
       editable: false,
       dayMaxEvents: false, // allow "more" link when too many events
-      events: events,
       dateClick: handleDateClick,
       eventClick: handleEventClick,
     };
