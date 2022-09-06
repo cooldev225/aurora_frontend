@@ -521,12 +521,12 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Action
-  [Actions.APT.PRE_ADMISSION.VALIDATE](data) {
+  [Actions.APT.PRE_ADMISSION.VALIDATE](params) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("appointments/pre-admissions/validate/" + data.id, {
-        last_name: data.last_name,
-        date_of_birth: moment(data.date_of_birth)
+      ApiService.post("appointments/pre-admissions/validate/" + params.id, {
+        last_name: params.last_name,
+        date_of_birth: moment(params.date_of_birth)
           .format("YYYY-MM-DD")
           .toString(),
       })
@@ -540,7 +540,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
             data.data
           );
           router.push({
-            path: "/appointment_pre_admissions/show/" + data.id + "/form_2",
+            path: "/appointment_pre_admissions/show/" + params.id + "/form_2",
           });
           return data.message;
         })

@@ -94,7 +94,7 @@
           <!--begin::Nav item-->
           <li class="nav-item">
             <router-link
-              to="/patients/view/documents"
+              :to="'/patients/' + patientData.id + '/documents'"
               class="nav-link text-active-primary me-6"
               active-class="active"
             >
@@ -106,7 +106,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              to="/patients/view/appointments"
+              :to="'/patients/' + patientData.id + '/appointments'"
               active-class="active"
             >
               Appointments
@@ -117,7 +117,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              to="/patients/view/billing"
+              :to="'/patients/' + patientData.id + '/billing'"
               active-class="active"
             >
               Billing
@@ -128,7 +128,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              to="/patients/view/clinical"
+              :to="'/patients/' + patientData.id + '/clinical'"
               active-class="active"
             >
               Clinical Information
@@ -139,7 +139,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              to="/patients/view/administration"
+              :to="'/patients/' + patientData.id + '/administration'"
               active-class="active"
             >
               Demographic
