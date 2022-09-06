@@ -79,10 +79,10 @@
       </div>
     </div>
   </CardSection>
-  <SendDocumentViaEmail
+  <SendDocumentViaEmailModal
     v-if="selectedDocument"
     :document="selectedDocument"
-  ></SendDocumentViaEmail>
+  ></SendDocumentViaEmailModal>
 </template>
 
 <style lang="scss">
@@ -100,7 +100,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
-import SendDocumentViaEmail from "./SendDocumentViaEmail.vue";
+import SendDocumentViaEmailModal from "./documents/SendDocumentViaEmailModal.vue";
 import { Modal } from "bootstrap";
 import pdf from "pdfobject";
 import patientDocumentTypes from "@/core/data/patient-document-types";
@@ -110,7 +110,7 @@ export default defineComponent({
   name: "patient-documents",
   components: {
     IconButton,
-    SendDocumentViaEmail,
+    SendDocumentViaEmailModal,
     DocumentLabel,
   },
   setup() {
