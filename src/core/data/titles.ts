@@ -1,4 +1,5 @@
 export const titles = [
+  { value: "dr", label: "Dr" },
   { value: "mr", label: "Mr" },
   { value: "mrs", label: "Mrs" },
   { value: "ms", label: "Ms" },

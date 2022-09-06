@@ -18,6 +18,8 @@ import VueGoogleMaps from "@fawmi/vue-google-maps";
 import print from "vue3-print-nb";
 // import VuePdf from "vue3-pdfjs";
 
+import HeadingText from "./components/presets/GeneralElements/HeadingText.vue";
+
 import "@/core/plugins/prismjs";
 import "bootstrap";
 
@@ -39,6 +41,8 @@ ApiService.init(app);
 initApexCharts(app);
 initInlineSvg(app);
 initVeeValidate();
+
+app.component("HeadingText", HeadingText);
 
 app.use(i18n);
 

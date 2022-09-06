@@ -70,6 +70,7 @@ import {
   themeLightLogo,
   themeDarkLogo,
 } from "@/core/helpers/config";
+import AppVue from "@/App.vue";
 
 export default defineComponent({
   name: "master-layout",

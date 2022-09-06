@@ -42,7 +42,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
-import { TODAY } from "@/core/data/events";
 import moment from "moment";
 
 export default defineComponent({
@@ -82,7 +81,6 @@ export default defineComponent({
         right: "timeGridWeek,timeGridDay",
       },
       initialView: "timeGridWeek",
-      initialDate: TODAY,
       navLinks: true, // can click day/week names to navigate views
       selectable: true,
       selectMirror: false,
