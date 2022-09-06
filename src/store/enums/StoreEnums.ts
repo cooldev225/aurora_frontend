@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const Actions = {
   // action types
   ADD_BODY_CLASSNAME: "addBodyClassName",
@@ -158,11 +159,11 @@ const Actions = {
 
   APPOINTMENT: {
     REFERRAL: {
-      UPDATE: "updateAppointmentReferral", // (put)'appointments/referral/{appointment}'
-      VIEW: "viewAppointmentReferral", // (post)'appointments/referral/file'
+      UPDATE:   "updateAppointmentReferral", // (put)   'appointments/referral/{appointment}'
+      VIEW:     "viewAppointmentReferral",   // (post)  'appointments/referral/file'
     },
     PRE_ADMISSION: {
-      VIEW: "viewPreAdmissionForm", // (post)'appointment/procedure-approvals/pdf/{appointment}'
+      VIEW:     "viewPreAdmissionForm",      // (post)  'appointment/procedure-approvals/pdf/{appointment}'
     },
   },
 
@@ -212,7 +213,7 @@ const Actions = {
   },
 
   REFERRAL_DOCTOR: {
-    LIST: "searchReferralDoctor",
+    LIST: "searchReferralDoctor", // (get) 'referring-doctors'
   },
 
   LETTER_TEMPLATE: {
@@ -223,12 +224,6 @@ const Actions = {
     CREATE: "createLetter",
   },
 
-  // EMPLOYEE_ROLE: {
-  //   LIST: "listEmployeeRoles",
-  //   CREATE: "createEmployeeRoles",
-  //   DELETE: "deleteEmployeeRoles",
-  //   UPDATE: "updateEmployeeRoles",
-  // },
 
   MAKE_PAYMENT: {
     LIST: "listMakePayment",
