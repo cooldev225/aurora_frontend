@@ -1,45 +1,64 @@
 <template>
   <div class="card w-75 mx-auto">
-    <div class="card-header row border-0 p-6">
+    <div class="card-header border-0 pt-6">
+      <!--begin::Card title-->
       <div class="card-title col">
-        <div class="alert alert-primary d-flex m-auto align-items-center p-2">
+        <div class="alert alert-primary d-flex align-items-center p-2">
           <span class="svg-icon svg-icon-2hx svg-icon-primary me-2">
             <inline-svg src="media/icons/duotune/general/gen007.svg" />
           </span>
           <div class="d-flex flex-column">
             <span
-              >These questions will appear when an appointment that requires an
-              anesthetists is booked. Should a patient answer yes to any of the
-              question - the employee creating the booking will be alerted to
-              book a consult</span
+              >These settings are used by the next available search form on the
+              booking dashboard.</span
             >
           </div>
         </div>
       </div>
-      <!--begin::Add button-->
+      <!--end::Card title-->
+
+      <!--begin::Card toolbar-->
       <div class="card-toolbar col-12 col-sm-2">
-        <button
-          type="button"
-          class="btn btn-light-primary ms-auto"
-          data-bs-toggle="modal"
-          data-bs-target="#modal_add_anesthetic_question"
+        <!--begin::Toolbar-->
+        <div
+          class="d-flex justify-content-end ms-auto"
+          data-kt-subscription-table-toolbar="base"
         >
-          <span class="svg-icon svg-icon-2">
-            <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
-          </span>
-          Add
-        </button>
+          <!--begin::Add subscription-->
+          <button
+            type="button"
+            class="btn btn-light-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modal_add_time_requirements"
+          >
+            <span class="svg-icon svg-icon-2">
+              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
+            </span>
+            Add
+          </button>
+          <!--end::Add subscription-->
+        </div>
+        <!--end::Toolbar-->
       </div>
-      <!--end::Add button-->
+      <!--end::Card toolbar-->
     </div>
     <div class="card-body pt-0">
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :rows-per-page="20"
+        :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-question="{ row: item }">
+        <template v-slot:cell-title="{ row: item }">
+          {{ item.title }}
+        </template>
+        <template v-slot:cell-type="{ row: item }">
+          {{ item.type }}
+        </template>
+        <template v-slot:cell-base_time="{ row: item }">
+          {{ item.base_time }}
+        </template>
+        <template v-slot:cell-action="{ row: item }">
           <button
             @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
@@ -51,15 +70,13 @@
 
           <button
             @click="handleDelete(item.id)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
           >
             <span class="svg-icon svg-icon-3">
               <inline-svg src="media/icons/duotune/general/gen027.svg" />
             </span>
           </button>
-          {{ item.question }}
         </template>
-        <template v-slot:cell-action=""> </template>
       </Datatable>
     </div>
   </div>
@@ -72,14 +89,15 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateModal from "@/components/anesthetic-questions/CreateAnestheticQuestion.vue";
-import EditModal from "@/components/anesthetic-questions/EditAnestheticQuestion.vue";
+import CreateModal from "@/views/settings/time-requirements/CreateTimeRequirements.vue";
+import EditModal from "@/views/settings/time-requirements/EditTimeRequirements.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import moment from "moment";
 
 export default defineComponent({
-  name: "anesthetic-questions",
+  name: "apt-time-requirements",
 
   components: {
     Datatable,
@@ -91,33 +109,45 @@ export default defineComponent({
     const store = useStore();
     const tableHeader = ref([
       {
-        name: "Question",
-        key: "question",
+        name: "Title",
+        key: "title",
         sortable: true,
       },
       {
-        name: "",
+        name: "Type",
+        key: "type",
+        sortable: true,
+      },
+      {
+        name: "Time",
+        key: "base_time",
+        sortable: true,
+      },
+      {
+        name: "Action",
         key: "action",
       },
     ]);
     const tableData = ref([]);
-    const anestheticQuestions = computed(
-      () => store.getters.getAneQuestionList
+    const aptTimeRequireList = computed(
+      () => store.getters.getAptTimeRequireList
     );
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_ANESTHETIST_QUES.SELECT, item);
+      item.base_time =
+        moment(new Date()).format("YYYY-MM-DD") + "T" + item.base_time;
+      store.commit(Mutations.SET_APT_TIME_REQUIREMENT.SELECT, item);
       const modal = new Modal(
-        document.getElementById("modal_edit_anesthetic_question")
+        document.getElementById("modal_edit_time_requirements")
       );
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.ANESTHETIST_QUES.DELETE, id)
+        .dispatch(Actions.APT_TIME_REQUIREMENT.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.ANESTHETIST_QUES.LIST);
+          store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -134,13 +164,13 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Anesthetic Questions", ["Settings"]);
-      store.dispatch(Actions.ANESTHETIST_QUES.LIST);
-      tableData.value = anestheticQuestions;
+      setCurrentPageBreadcrumbs("Appointment Time Requirements", ["Settings"]);
+      store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
+      tableData.value = aptTimeRequireList;
     });
 
     watchEffect(() => {
-      tableData.value = anestheticQuestions;
+      tableData.value = aptTimeRequireList;
     });
 
     return { tableHeader, tableData, handleEdit, handleDelete };

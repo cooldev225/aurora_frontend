@@ -79,12 +79,12 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/settings/health-fund",
         name: "healthFund",
-        component: () => import("@/views/settings/HealthFund.vue"),
+        component: () => import("@/views/settings/health-fund/HealthFund.vue"),
       },
       {
         path: "/settings/birthCode",
         name: "birthCode",
-        component: () => import("@/views/settings/BirthCode.vue"),
+        component: () => import("@/views/settings/birth-code/BirthCode.vue"),
       },
       {
         path: "/settings",
@@ -109,12 +109,16 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/settings/time-requirements",
         name: "timeRequirements",
-        component: () => import("@/views/settings/AptTimeRequirement.vue"),
+        component: () =>
+          import("@/views/settings/time-requirements/AptTimeRequirement.vue"),
       },
       {
         path: "/settings/anesthetic-questions",
         name: "anesthetic-questions",
-        component: () => import("@/views/settings/AnestheticQuestions.vue"),
+        component: () =>
+          import(
+            "@/views/settings/anesthetic-questions/AnestheticQuestions.vue"
+          ),
       },
       {
         path: "/settings/pre-admission-questions",
@@ -129,12 +133,16 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/settings/notification-templates",
         name: "notificationTemplates",
-        component: () => import("@/views/settings/NotificationTemplates.vue"),
+        component: () =>
+          import(
+            "@/views/settings/notification-templates/NotificationTemplates.vue"
+          ),
       },
       {
         path: "/settings/report-templates",
         name: "reportTemplates",
-        component: () => import("@/views/settings/ReportTemplates.vue"),
+        component: () =>
+          import("@/views/settings/report-templates/ReportTemplates.vue"),
       },
       {
         path: "/patients",
