@@ -291,9 +291,9 @@ import {
   computed,
 } from "vue";
 import { useStore } from "vuex";
-import AppointmentListPopup from "@/components/booking/AppointmentListPopup.vue";
-import CreateModal from "@/components/booking/CreateApt.vue";
-import AppointmentTable from "@/components/booking/AppointmentTable.vue";
+import AppointmentListPopup from "@/components/appointments/AppointmentListPopup.vue";
+import CreateModal from "@/components/appointments/CreateApt.vue";
+import AppointmentTable from "@/components/appointments/AppointmentTable.vue";
 import VueCtkDateTimePicker from "vue-ctk-date-time-picker";
 import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
 import moment from "moment";

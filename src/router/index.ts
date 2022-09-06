@@ -208,27 +208,27 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/booking/dashboard",
         name: "booking-dashboard",
-        component: () => import("@/views/booking/Appointments.vue"),
+        component: () => import("@/views/appointments/Appointments.vue"),
       },
       {
         path: "/booking/unconfirmed-apts",
         name: "unconfirmed-apts",
-        component: () => import("@/views/booking/UnconfirmedApts.vue"),
+        component: () => import("@/views/appointments/UnconfirmedApts.vue"),
       },
       {
         path: "/booking/unapproved-procedures",
         name: "unapproved-procedures",
-        component: () => import("@/views/booking/UnapprovedProcedure.vue"),
+        component: () => import("@/views/appointments/UnapprovedProcedure.vue"),
       },
       {
         path: "/booking/waitlisted-apts",
         name: "waitlisted-apts",
-        component: () => import("@/views/booking/WaitlistedApts.vue"),
+        component: () => import("@/views/appointments/WaitlistedApts.vue"),
       },
       {
         path: "/booking/cancellation-list",
         name: "cancellation-list",
-        component: () => import("@/views/booking/CancellationList.vue"),
+        component: () => import("@/views/appointments/CancellationList.vue"),
       },
       {
         path: "/billing/make-payment",
@@ -258,7 +258,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/employee-booking-dashboard",
         name: "employee-booking-dashboard",
-        component: () => import("@/views/booking/EmployeeBookings.vue"),
+        component: () => import("@/views/appointments/EmployeeBookings.vue"),
       },
 
       ////////////////////////////////////////////////////////////////////////
