@@ -111,7 +111,10 @@
               </span>
               Payment
             </a>
-            <a class="btn btn-sm btn-light btn-icon-primary me-2 mb-2">
+            <a
+              @click="handlePrintHospitalCertificate(item)"
+              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
+            >
               <span class="svg-icon svg-icon-1">
                 <inline-svg src="media/icons/duotune/files/fil017.svg" />
               </span>
@@ -267,6 +270,12 @@ export default defineComponent({
       modal.show();
     };
 
+    const handlePrintHospitalCertificate = (item) => {
+      router.push({
+        name: "appointment-print-hospital-certificate-view",
+      });
+    };
+
     const generateID = (id) => {
       let prefix = "";
       let i = 0;
@@ -319,6 +328,7 @@ export default defineComponent({
       handlePreAdmissionTest,
       handleReferral,
       handleCollectingPerson,
+      handlePrintHospitalCertificate,
       handleView,
     };
   },
