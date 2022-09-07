@@ -1,117 +1,45 @@
 <template>
-  <div
-    class="modal fade"
-    id="modal_view_pre_admission"
-    tabindex="-1"
-    aria-hidden="true"
-    ref="viewPreAdmissionModalRef"
-    data-bs-backdrop="static"
+  <ModalWrapper
+    :title="'Pre-Admission Form: ' + appointmentData?.patient_name?.full"
+    modalId="view_pre_admission"
+    modalRef="viewPreAdmissionModalRef"
   >
-    <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-850px">
-      <!--begin::Modal content-->
-      <div class="modal-content">
-        <!--begin::Form-->
-        <el-form :model="preAdmissionData" ref="formRef">
-          <!--begin::Modal header-->
-          <div class="modal-header" id="kt_modal_add_customer_header">
-            <!--begin::Modal title-->
-            <h2 class="fw-bolder">
-              Procedure Assessment: {{ appointmentData?.patient_name?.full }}
-            </h2>
-            <!--end::Modal title-->
-            <template v-if="appointmentData?.userRole != 'anesthetist'">
-              <div class="modal-body py-2 px-lg-5">
-                <!--begin::Scroll-->
-                <div
-                  class="scroll-y me-n7 pe-7"
-                  id="kt_modal_add_customer_scroll"
-                  data-kt-scroll="true"
-                  data-kt-scroll-activate="{default: false, lg: true}"
-                  data-kt-scroll-max-height="auto"
-                  data-kt-scroll-dependencies="#kt_modal_add_customer_header"
-                  data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
-                  data-kt-scroll-offset="300px"
-                >
-                  <div class="fv-row row center-row">
-                    <div class="col-6 text-end">
-                      <el-upload
-                        action="#"
-                        ref="uploadRef"
-                        :limit="2"
-                        :on-change="handleUploadChange"
-                        :on-remove="handleUploadRemove"
-                        v-model:file-list="preAdmissionData.file"
-                        :auto-upload="false"
-                        accept="pdf/*"
-                      >
-                        <el-button class="btn btn-sm btn-info" type="primary">
-                          <span class="indicator-label">
-                            Upload New Pre Admission
-                          </span>
-                        </el-button>
-                      </el-upload>
-                    </div>
-                  </div>
-                </div>
-                <!--end::Scroll-->
-              </div>
-            </template>
-            <!--begin::Close-->
-            <div
-              id="kt_modal_add_customer_close"
-              data-bs-dismiss="modal"
-              class="btn btn-icon btn-sm btn-active-icon-primary"
-            >
-              <span class="svg-icon svg-icon-1">
-                <inline-svg src="media/icons/duotune/arrows/arr061.svg" />
-              </span>
-            </div>
-            <!--end::Close-->
-          </div>
-          <!--end::Modal header-->
-          <!--begin::Modal body-->
-          <div class="fv-row m-6 pdf_viewer_wrapper">
-            <div id="preAdmissiondivPDFViewer" class="pdf_viewer">
-              No Pre-Admission uploaded
-            </div>
-          </div>
-          <!--end::Modal body-->
-          <!--begin::Modal footer-->
-          <div class="modal-footer flex-center">
-            <!--begin::Cancel Button-->
-            <button
-              type="reset"
-              data-bs-dismiss="modal"
-              id="kt_modal_collecting_person_cancel"
-              class="btn btn-light me-3"
-            >
-              Cancel
-            </button>
-            <!--end::Button-->
-
-            <!--begin::Submit Button-->
-            <el-button
-              v-if="!uploadDisabled"
-              class="btn btn-sm btn-info ms-3"
-              type="submit"
-              @click="submit"
-            >
-              <span class="indicator-label">Upload</span>
-            </el-button>
-            <!--end::Button-->
-          </div>
-          <!--end::Modal footer-->
-        </el-form>
-        <!--end::Form-->
+    <div class="fv-row m-6 pdf_viewer_wrapper">
+      <div id="preAdmissiondivPDFViewer" class="pdf_viewer">
+        No Pre-Admission uploaded
       </div>
     </div>
-  </div>
+    <el-form :model="preAdmissionData" ref="formRef">
+      <el-upload
+        action="#"
+        ref="uploadRef"
+        :limit="2"
+        :on-change="handleUploadChange"
+        :on-remove="handleUploadRemove"
+        v-model:file-list="preAdmissionData.file"
+        :auto-upload="false"
+        accept="pdf/*"
+      >
+        <el-button class="btn btn-sm btn-info" type="primary">
+          <span class="indicator-label"> Upload New Pre Admission </span>
+        </el-button>
+      </el-upload>
+
+      <el-button
+        v-if="!uploadDisabled"
+        class="btn btn-sm btn-info ms-3"
+        type="submit"
+        @click="submit"
+      >
+        <span class="indicator-label">Upload</span>
+      </el-button>
+    </el-form>
+  </ModalWrapper>
 </template>
 
 <style lang="scss">
 .pdf_viewer_wrapper {
-  height: 300px;
+  height: 600px;
   > .pdf_viewer {
     height: 100%;
   }
