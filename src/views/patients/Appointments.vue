@@ -166,15 +166,17 @@ import {
 } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import moment from "moment";
 import CollectingPersonModal from "./modals/CollectingPersonModal.vue";
 import AppointmentReferralModal from "./modals/AppointmentReferralModal.vue";
 import ProcedureApprovalModal from "./modals/ProcedureApprovalModal.vue";
 import { Modal } from "bootstrap";
-import { Mutations, Actions } from "@/store/enums/StoreEnums";
+import { Actions } from "@/store/enums/StoreEnums";
 import md5 from "js-md5";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
+import tableHeader from "element-plus/es/components/table/src/table-header";
 export default defineComponent({
   name: "patient-appointments",
   components: {
@@ -186,6 +188,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
     const list = computed(() => store.getters.selectedPatient);
     const formData = ref();
     const tableHeader = ref([
@@ -313,6 +316,8 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Appointments", ["Patients"]);
+      const id = route.params.id;
+      store.dispatch(PatientActions.PATIENTS.VIEW, id);
     });
 
     return {

@@ -98,7 +98,7 @@
 import { defineComponent, ref, watch, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
+import { useRoute } from "vue-router";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import SendDocumentViaEmailModal from "./documents/SendDocumentViaEmailModal.vue";
@@ -116,6 +116,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const route = useRoute();
     const formData = ref({});
     const selectedPatient = computed(() => store.getters.selectedPatient);
     const _documentList = computed(() => store.getters.getPatientDocumentList);
@@ -137,6 +138,16 @@ export default defineComponent({
       },
     });
     onMounted(() => {
+      const id = route.params.id;
+      store.dispatch(PatientActions.PATIENTS.VIEW, id);
+      store.dispatch(
+        PatientActions.PATIENTS.DOCUMENT.LIST,
+        selectedPatient.value.id
+      );
+      setCurrentPageBreadcrumbs("Documents", ["Patients"]);
+    });
+
+    watch(selectedPatient, () => {
       store.dispatch(
         PatientActions.PATIENTS.DOCUMENT.LIST,
         selectedPatient.value.id

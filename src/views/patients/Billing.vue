@@ -155,7 +155,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
+import {
+  defineComponent,
+  ref,
+  watchEffect,
+  onMounted,
+  computed,
+  watch,
+} from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
