@@ -20,6 +20,10 @@ const PatientActions = {
       UPDATE: "updatePatientsRecall",
       VIEW: "viewPatientsRecall",
     },
+    BILLING: {
+      VALIDATE_MEDICARE: "validatePatientsBillingMedicare",
+      UPDATE: "updatePatientsBilling",
+    },
   },
 };
 

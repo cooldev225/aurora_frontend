@@ -1,6 +1,11 @@
 <template>
   <CardSection>
-    <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
+    <el-form
+      @submit.prevent="validateMedicare()"
+      :model="formData"
+      :rules="rulesMedicare"
+      ref="formRefMedicare"
+    >
       <HeadingText text="Medicare Details" />
       <div class="row justify-content-md-center">
         <InputWrapper
@@ -37,11 +42,18 @@
           />
         </InputWrapper>
         <span class="m-auto" :class="colString"
-          ><button class="btn btn-light-warning m-3">Validate Medicare</button
+          ><button class="btn btn-light-warning m-3" type="submit">
+            Validate Medicare</button
           >Last validated on: xx/xxx/xxxx</span
         >
       </div>
-
+    </el-form>
+    <el-form
+      @submit.prevent="submit()"
+      :model="formData"
+      :rules="rules"
+      ref="formRef"
+    >
       <el-divider />
       <HeadingText text="Concession" />
 
@@ -154,7 +166,7 @@
   </CardSection>
 </template>
 
-<script lang="ts">
+<script>
 import {
   defineComponent,
   ref,
@@ -165,6 +177,7 @@ import {
 } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
+import { useRoute } from "vue-router";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -179,6 +192,8 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const route = useRoute();
+    const formRefMedicare = ref(null);
     const formRef = ref(null);
     const formData = ref({
       medicare_number: "",
@@ -192,50 +207,153 @@ export default defineComponent({
       health_fund_membership_number: "",
       health_fund_reference_number: "",
       health_fund_expiry_date: "",
+      patient_id: route.params.id,
+    });
+    const rulesMedicare = ref({
+      medicare_number: [
+        {
+          required: true,
+          message: "Medicare Number cannot be blank",
+          trigger: "change",
+        },
+      ],
+      medicare_reference_number: [
+        {
+          required: true,
+          message: "Medicare Reference Number cannot be blank",
+          trigger: "change",
+        },
+      ],
+      medicare_expiry_date: [
+        {
+          required: true,
+          message: "Medicare Expiry Date cannot be blank",
+          trigger: "change",
+        },
+      ],
+    });
+    const rules = ref({
+      pension_number: [
+        {
+          required: true,
+          message: "Pension Card Number cannot be blank",
+          trigger: "change",
+        },
+      ],
+      pension_expiry_date: [
+        {
+          required: true,
+          message: "Pension Card Expiry Date cannot be blank",
+          trigger: "change",
+        },
+      ],
+      healthcare_card_number: [
+        {
+          required: true,
+          message: "Healthcare Card Number cannot be blank",
+          trigger: "change",
+        },
+      ],
+      healthcare_card_expiry_date: [
+        {
+          required: true,
+          message: "Healthcare Card Expiry Date cannot be blank",
+          trigger: "change",
+        },
+      ],
+      health_fund_id: [
+        {
+          required: true,
+          message: "Health Fund cannot be blank",
+          trigger: "change",
+        },
+      ],
+      health_fund_membership_number: [
+        {
+          required: true,
+          message: "Health Fund Membership Number cannot be blank",
+          trigger: "change",
+        },
+      ],
+      health_fund_reference_number: [
+        {
+          required: true,
+          message: "Health Fund Reference Number cannot be blank",
+          trigger: "change",
+        },
+      ],
+      health_fund_expiry_date: [
+        {
+          required: true,
+          message: "Health Fund Expiry Date cannot be blank",
+          trigger: "change",
+        },
+      ],
     });
     const healthFundsList = computed(() => store.getters.healthFundsList);
+    const selectedPatient = computed(() => store.getters.selectedPatient);
     const loading = ref(false);
 
-    const submit = () => {
-      if (!formRef.value) {
+    const validateMedicare = () => {
+      if (!formRefMedicare.value) {
         return;
       }
-
-      store
-        .dispatch(PatientActions.PATIENTS.UPDATE, formData.value)
-        .then(() => {
-          loading.value = false;
-          store.dispatch(PatientActions.PATIENTS.LIST);
-          Swal.fire({
-            text: "Successfully Updated!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
+      formRefMedicare.value.validate((valid) => {
+        if (valid) {
+          store
+            .dispatch(PatientActions.PATIENTS.VALIDATE_MEDICARE, formData.value)
+            .then(() => {
+              loading.value = false;
+            })
+            .catch(({ response }) => {
+              loading.value = false;
+              console.log(response.data.error);
+            });
+        }
+      });
+    };
+    const submit = () => {
+      if (!formRef.value || !formRefMedicare.value) {
+        return;
+      }
+      formRefMedicare.value.validate((valid) => {
+        if (valid) {
+          formRef.value.validate((valid) => {
+            if (valid) {
+              store
+                .dispatch(
+                  PatientActions.PATIENTS.BILLING.UPDATE,
+                  formData.value
+                )
+                .then(() => {
+                  loading.value = false;
+                })
+                .catch(({ response }) => {
+                  loading.value = false;
+                  console.log(response.data.error);
+                });
+            }
           });
-        })
-        .catch(({ response }) => {
-          loading.value = false;
-          console.log(response.data.error);
-        });
+        }
+      });
     };
 
-    watchEffect(() => {
-      formData.value = store.getters.selectedPatient;
-    });
-
     onMounted(() => {
+      const id = route.params.id;
+      store.dispatch(PatientActions.PATIENTS.VIEW, id);
       setCurrentPageBreadcrumbs("Billing", ["Patients"]);
       store.dispatch(Actions.HEALTH_FUND.LIST);
     });
 
     return {
       formRef,
+      formRefMedicare,
       formData,
       healthFundsList,
+      validateMedicare,
       submit,
+      rules,
+      rulesMedicare,
     };
   },
 });

@@ -7,6 +7,7 @@ import {
 import { Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 import { IApt } from "./AppointmentModule";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export interface IPatient {
   id: string;
@@ -208,6 +209,80 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
             data.get("patient_id")
           );
           return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [PatientActions.PATIENTS.BILLING.UPDATE](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("patient-billing/update", data)
+        .then(({ data }) => {
+          if (data.status) {
+            Swal.fire({
+              text: "Successful Updated!",
+              icon: "success",
+              buttonsStyling: false,
+              confirmButtonText: "Ok, got it!",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+            });
+          } else {
+            Swal.fire({
+              text: data.message,
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "Ok",
+              customClass: {
+                confirmButton: "btn btn-secondary",
+              },
+            });
+          }
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [PatientActions.PATIENTS.BILLING.VALIDATE_MEDICARE](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("patient-billing/validate-medicare", data)
+        .then(({ data }) => {
+          if (data.status) {
+            Swal.fire({
+              text: "Medicare is Valid",
+              icon: "success",
+              buttonsStyling: false,
+              confirmButtonText: "Ok, got it!",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+            });
+          } else {
+            Swal.fire({
+              text: "Medicare is Invalid",
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "Ok",
+              customClass: {
+                confirmButton: "btn btn-secondary",
+              },
+            });
+          }
         })
         .catch(({ response }) => {
           console.log(response.data.error);
