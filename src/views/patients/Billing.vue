@@ -35,9 +35,9 @@
           label="Medicare Expiry Date"
           prop="medicare_expiry_date"
         >
-          <el-input
+          <el-date-picker
+            class="w-100"
             v-model="formData.medicare_expiry_date"
-            type="text"
             placeholder="Medicare Expiry Date"
           />
         </InputWrapper>
@@ -208,6 +208,14 @@ export default defineComponent({
       health_fund_reference_number: "",
       health_fund_expiry_date: "",
       patient_id: route.params.id,
+      //
+      concession_number: "",
+      concession_expiry_date: "2022-09-09",
+      account_holder_type: "",
+      account_holder_id: "",
+      fund_excess: "",
+      //
+      id: route.params.id,
     });
     const rulesMedicare = ref({
       medicare_number: [
@@ -301,7 +309,10 @@ export default defineComponent({
       formRefMedicare.value.validate((valid) => {
         if (valid) {
           store
-            .dispatch(PatientActions.PATIENTS.VALIDATE_MEDICARE, formData.value)
+            .dispatch(
+              PatientActions.PATIENTS.BILLING.VALIDATE_MEDICARE,
+              formData.value
+            )
             .then(() => {
               loading.value = false;
             })
@@ -320,6 +331,7 @@ export default defineComponent({
         if (valid) {
           formRef.value.validate((valid) => {
             if (valid) {
+              console.log(selectedPatient.value);
               store
                 .dispatch(
                   PatientActions.PATIENTS.BILLING.UPDATE,

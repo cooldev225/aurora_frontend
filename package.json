@@ -39,6 +39,7 @@
     "core-js": "^3.8.3",
     "deepmerge": "^4.2.2",
     "dropzone": "^5.9.3",
+    "dymojs": "^1.2.0",
     "element-plus": "^1.2.0-beta.4",
     "js-md5": "^0.7.3",
     "line-awesome": "^1.3.0",
