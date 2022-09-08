@@ -140,13 +140,6 @@ export default defineComponent({
       return appointment_time_list;
     };
 
-    watch(filteredSpecialists, () => {
-      console.log([
-        "filteredSpecialists length",
-        filteredSpecialists.value.length,
-      ]);
-    });
-
     watchEffect(() => {
       if (
         DrawerComponent?.getInstance(

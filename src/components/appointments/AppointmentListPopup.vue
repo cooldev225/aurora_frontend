@@ -1,122 +1,91 @@
 <template>
-  <!--begin::Modal - AppointmentList Popup -->
-  <div
-    class="modal fade"
-    id="modal_available_time_slot_popup"
-    ref="AppointmentListPopupModalRef"
-    tabindex="-1"
-    aria-hidden="true"
+  <ModalWrapper
+    title="Available Appointments"
+    modalId="available_time_slot_popup"
+    modalRef="AppointmentListPopupModalRef"
   >
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 96%">
-      <div class="modal-content">
-        <div class="modal-header d-flex flex-row">
-          <div class="my-auto">
-            <h2>Available Appointments</h2>
-            <div class="search-params d-flex flex-wrap gap-4">
-              <h4 class="text-nowrap" style="color: var(--el-color-info)">
-                Clinic:
-                <span class="text-primary">{{ clinic_name }}</span>
-              </h4>
-              <h4 class="text-nowrap" style="color: var(--el-color-info)">
-                Specialist:
-                <span class="text-primary">{{ specialist_name }}</span>
-              </h4>
-              <h4 class="text-nowrap" style="color: var(--el-color-info)">
-                Time Requirement:
-                <span class="text-primary">{{ time_requirement }}</span>
-              </h4>
-              <h4 class="text-nowrap" style="color: var(--el-color-info)">
-                Time Frame: <span class="text-primary">{{ time_frame }}</span>
-              </h4>
-              <h4 class="text-nowrap" style="color: var(--el-color-info)">
-                Appointment Type:
-                <span class="text-primary">{{ appointment_type }}</span>
-              </h4>
-            </div>
-          </div>
-          <div
-            class="btn btn-sm btn-icon btn-active-color-primary"
-            data-bs-dismiss="modal"
-          >
-            <span class="svg-icon svg-icon-1">
-              <inline-svg src="media/icons/duotune/arrows/arr061.svg" />
-            </span>
-          </div>
-        </div>
-        <!--begin::Modal body-->
-        <div class="scroll h-500px px-10">
-          <template v-if="availableSlotsByDate">
-            <div class="row justify-content-center">
-              <div
-                class="col"
-                v-for="(slot_list, apt_date) in availableSlotsByDate"
-                :key="apt_date"
-              >
-                <h3
-                  class="py-3 position-fixed border-bottom border-bottom-dashed border-bottom-primary"
-                  style="
-                    background: white;
-                    border-bottom: solid black 2px;
-                    padding-right: 50px;
-                  "
-                >
-                  {{ formattedSlotDate(apt_date) }}
-                </h3>
-                <div class="mt-20">
-                  <template
-                    v-for="(slot_item, idx_2) in slot_list.time_slot_list"
-                    :key="idx_2"
-                  >
-                    <div
-                      class="mt-3 justify-content-center align-items-center mw-250 text-wrap"
-                    >
-                      <span
-                        class="w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
-                        style="color: var(--el-color-primary)"
-                        data-kt-drawer-toggle="true"
-                        data-kt-drawer-target="#kt_drawer_chat"
-                        @click="
-                          handleAddApt(
-                            slot_item.specialist_ids,
-                            apt_date,
-                            slot_item.start_time,
-                            slot_item.end_time
-                          )
-                        "
-                      >
-                        {{ slot_item.start_time }}
-                      </span>
-                      <p
-                        class="mb-1 small"
-                        style="color: var(--el-text-color-secondary)"
-                        v-if="clinic_name == 'Any'"
-                      >
-                        {{
-                          clinicNameFromSlot(slot_item.specialist_ids, apt_date)
-                        }}
-                      </p>
-                      <p
-                        class="small"
-                        style="color: var(--el-color-warning)"
-                        v-if="specialist_name == 'Any'"
-                      >
-                        {{ specialistNameFromSlot(slot_item.specialist_ids) }}
-                      </p>
-                    </div>
-                  </template>
-                </div>
-              </div>
-            </div>
-          </template>
-          <p v-else>No Next available Appointments.</p>
-        </div>
-        <!--end::Modal body-->
-      </div>
-      <!--end::Modal content-->
+    <div class="search-params d-flex flex-wrap gap-4">
+      <h4 class="text-nowrap" style="color: var(--el-color-info)">
+        Clinic:
+        <span class="text-primary">{{ clinic_name }}</span>
+      </h4>
+      <h4 class="text-nowrap" style="color: var(--el-color-info)">
+        Specialist:
+        <span class="text-primary">{{ specialist_name }}</span>
+      </h4>
+      <h4 class="text-nowrap" style="color: var(--el-color-info)">
+        Time Requirement:
+        <span class="text-primary">{{ time_requirement }}</span>
+      </h4>
+      <h4 class="text-nowrap" style="color: var(--el-color-info)">
+        Time Frame: <span class="text-primary">{{ time_frame }}</span>
+      </h4>
+      <h4 class="text-nowrap" style="color: var(--el-color-info)">
+        Appointment Type:
+        <span class="text-primary">{{ appointment_type }}</span>
+      </h4>
     </div>
-    <!--end::Modal dialog-->
-  </div>
-  <!--end::Modal - Create App-->
+    <div class="scroll h-500px">
+      <template v-if="availableSlotsByDate">
+        <div class="row justify-content-center">
+          <div class="col" v-for="date in availableSlotsByDate" :key="date">
+            <h3
+              class="py-3 position-fixed border-bottom border-bottom-dashed border-bottom-primary"
+              style="
+                background: white;
+                border-bottom: solid black 2px;
+                padding-right: 50px;
+                text-align: center;
+              "
+            >
+              {{ date.day }} <br />{{ moment(date.date).format("DD/MM") }}
+            </h3>
+            <div class="mt-20">
+              <template
+                v-for="time_slot in date.available_timeslots"
+                :key="time_slot"
+              >
+                <div
+                  class="mt-3 justify-content-center align-items-center mw-250 text-wrap"
+                >
+                  <span
+                    class="w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
+                    style="color: var(--el-color-primary)"
+                    data-kt-drawer-toggle="true"
+                    data-kt-drawer-target="#kt_drawer_chat"
+                    @click="
+                      handleAddApt(
+                        time_slot.specialist_ids,
+                        date.date,
+                        time_slot.start_time
+                      )
+                    "
+                  >
+                    {{ time_slot.time }}
+                  </span>
+                  <p
+                    class="mb-1 small"
+                    style="color: var(--el-text-color-secondary)"
+                    v-if="clinic_name == 'Any'"
+                  >
+                    {{ time_slot.clinic_name }}
+                  </p>
+                  <p
+                    class="small"
+                    style="color: var(--el-color-warning)"
+                    v-if="specialist_name == 'Any'"
+                  >
+                    {{ time_slot.specialist_name }}
+                  </p>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </template>
+      <p v-else>No Next available Appointments.</p>
+    </div>
+  </ModalWrapper>
 </template>
 
 <script>
@@ -139,7 +108,6 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-
     const clinic_name = computed(() => {
       const clinic = props.clinicList.find(
         ({ id }) => id === props.searchNextApts.clinic_id
@@ -231,64 +199,14 @@ export default defineComponent({
       current_modal.hide();
     };
 
-    const specialistNameFromSlot = (specialist_ids) => {
-      if (specialist_ids == undefined) {
-        return "";
-      }
-
-      if (props.allSpecialists == undefined) {
-        return "";
-      }
-
-      const specialist_id = Object.values(specialist_ids)[0];
-
-      const selected_specialist = props.allSpecialists.find(
-        ({ id }) => id == specialist_id
-      );
-
-      return selected_specialist.name;
-    };
-
-    const formattedSlotDate = (date) => {
-      return moment(date).format("ddd, MMM Do").toString();
-    };
-
-    const clinicNameFromSlot = (specialist_ids, date) => {
-      if (specialist_ids == undefined) {
-        return "";
-      }
-
-      if (props.allSpecialists == undefined) {
-        return "";
-      }
-
-      const specialist_id = Object.values(specialist_ids)[0];
-
-      const selected_specialist = props.allSpecialists.find(
-        ({ id }) => id == specialist_id
-      );
-
-      let dayOfWeek = moment(date).format("dddd").toString();
-
-      dayOfWeek = dayOfWeek.toLowerCase();
-
-      let work_hours = JSON.parse(selected_specialist.work_hours);
-
-      work_hours = work_hours[dayOfWeek];
-
-      return work_hours.locations.name;
-    };
-
     return {
       handleAddApt,
-      formattedSlotDate,
-      clinicNameFromSlot,
-      specialistNameFromSlot,
       clinic_name,
       specialist_name,
       time_requirement,
       time_frame,
       appointment_type,
+      moment,
     };
   },
 });
