@@ -6,7 +6,7 @@
     aria-hidden="true"
     :ref="modalRef"
   >
-    <div class="modal-dialog modal-dialog-centered mw-650px">
+    <div class="modal-dialog modal-dialog-centered mw-850px">
       <div class="modal-content">
         <div
           class="modal-header d-flex flex-row"

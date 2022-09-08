@@ -156,6 +156,11 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/appointments/PrintHospitalCertificate.vue"),
       },
       {
+        path: "/label-test",
+        name: "appointment-print-hospital-certificate-view",
+        component: () => import("@/views/LabelTest.vue"),
+      },
+      {
         path: "/patients/:id",
         name: "patients-view",
         component: () => import("@/views/patients/PatientView.vue"),

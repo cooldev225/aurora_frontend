@@ -472,7 +472,6 @@ export default defineComponent({
         ...date_search,
         ...specialists_search,
       });
-      console.log(["ava_specialists watch", data.value]);
     });
 
     watch(specialists_search, () => {
@@ -493,7 +492,6 @@ export default defineComponent({
       //   ...date_search,
       //   ...specialists_search,
       // });
-      console.log(["specialists_search watch", data.value]);
     });
 
     const changeDate = (mode) => {
