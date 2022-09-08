@@ -223,7 +223,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   [PatientActions.PATIENTS.BILLING.UPDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("patient-billing/update", data)
+      ApiService.update("patients/billing", data.id, data)
         .then(({ data }) => {
           if (data.status) {
             Swal.fire({
@@ -260,7 +260,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   [PatientActions.PATIENTS.BILLING.VALIDATE_MEDICARE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("patient-billing/validate-medicare", data)
+      ApiService.post(
+        "patients/billing/" + data.patient_id + "/validate-medicare",
+        data
+      )
         .then(({ data }) => {
           if (data.status) {
             Swal.fire({

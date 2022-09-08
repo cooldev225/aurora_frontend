@@ -33,6 +33,7 @@ const Actions = {
     CREATE: "createOrg",
     DELETE: "deleteOrg",
     UPDATE: "updateOrg",
+    SELECT: "selectOrg",
   },
 
   ORG_MANAGER: {
