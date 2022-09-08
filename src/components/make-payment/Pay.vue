@@ -1,52 +1,31 @@
 <template>
   <!--begin::Card-->
-  <div class="row gx-5">
-    <div class="col-6 card mb-5 mb-xxl-8">
-      <div class="card-header border-0 pt-5">
-        <h3 class="card-title align-items-start flex-column">
-          <span class="card-label fw-bold fs-3 mb-1">Patient Details</span>
-        </h3>
-      </div>
-      <div class="card-body pt-3 pb-5">
-        <div class="row">
-          <InfoSection :heading="'Name'"
-            >{{ billingData.appointment.patient_name.full }}
-          </InfoSection>
+  <CardSection heading="Patient Details">
+    <InfoSection :heading="'Name'"
+      >{{ billingData.appointment.patient_name.full }}
+    </InfoSection>
 
-          <InfoSection :heading="'Contact Number'"
-            >{{ billingData.appointment.patient_details.contact_number }}
-          </InfoSection>
-          <InfoSection :heading="'Date of Birth'"
-            >{{ billingData.appointment.patient_details.date_of_birth }}
-          </InfoSection>
-        </div>
-      </div>
-    </div>
-    <!--end::Card-->
-    <!--begin::Card-->
-    <div class="col-6 card mb-5 mb-xxl-8">
-      <div class="card-header border-0 pt-5">
-        <h3 class="card-title align-items-start flex-column">
-          <span class="card-label fw-bold fs-3 mb-1">Appointment Details</span>
-        </h3>
-      </div>
-      <div class="card-body pt-3 pb-5">
-        <div class="row">
-          <InfoSection :heading="'Date'"
-            >{{ billingData.appointment.aus_formatted_date }}
-          </InfoSection>
-          <InfoSection :heading="'Time'"
-            >{{ billingData.appointment.formatted_appointment_time }}
-          </InfoSection>
-          <InfoSection :heading="'Specialist'"
-            >{{ billingData.appointment.specialist_name }}
-          </InfoSection>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--end::Card-->
-  <!--begin::Card-->
+    <InfoSection :heading="'Contact Number'"
+      >{{ billingData.appointment.patient_details.contact_number }}
+    </InfoSection>
+    <InfoSection :heading="'Date of Birth'"
+      >{{ billingData.appointment.patient_details.date_of_birth }}
+    </InfoSection>
+  </CardSection>
+
+  <CardSection heading="Appointment Details">
+    <InfoSection :heading="'Name'"
+      >{{ billingData.appointment.patient_name.full }}
+    </InfoSection>
+
+    <InfoSection :heading="'Contact Number'"
+      >{{ billingData.appointment.patient_details.contact_number }}
+    </InfoSection>
+    <InfoSection :heading="'Date of Birth'"
+      >{{ billingData.appointment.patient_details.date_of_birth }}
+    </InfoSection>
+  </CardSection>
+
   <div class="card mb-5 mb-xxl-8">
     <div class="card-header border-0 pt-5">
       <h3 class="card-title align-items-start flex-column">
@@ -92,8 +71,8 @@
     <div class="card-body pt-0">
       <div class="row">
         <label class="text-muted fs-6 fw-bold mb-2 d-block">
-          {{ billingData.appointment.appointment_type.type }}
-          : {{ billingData.appointment.appointment_type.name }}</label
+          {{ billingData.appointment?.appointment_type.type }}
+          : {{ billingData.appointment?.name }}</label
         >
         <!--begin::Input-->
         <el-form class="d-flex align-items-center">
@@ -239,10 +218,11 @@ import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
+import CardSection from "../presets/GeneralElements/CardSection.vue";
 
 export default defineComponent({
   name: "make-payment-pay",
-  components: { InfoSection },
+  components: { InfoSection, CardSection },
 
   setup() {
     const store = useStore();

@@ -67,6 +67,7 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
       ApiService.setHeader();
       ApiService.get("payments/" + id)
         .then(({ data }) => {
+          console.log(data.data);
           this.context.commit(Mutations.SET_MAKE_PAYMENT.SELECT, data.data);
           return data.data;
         })

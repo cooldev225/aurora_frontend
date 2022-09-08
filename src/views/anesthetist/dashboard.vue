@@ -271,6 +271,7 @@ export default defineComponent({
     };
 
     watch(procedureApprovalsList, () => {
+      console.log(procedureApprovalsList.value);
       procedureApprovalsData.value = procedureApprovalsList.value;
       searchPatient();
     });
