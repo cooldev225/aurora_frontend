@@ -1640,7 +1640,7 @@ export default defineComponent({
       patientStatus.value = "new";
       patientStep.value = 1;
       patientTableData.value = patientList.value;
-      store.dispatch(Actions.PATIENTS.LIST);
+      store.dispatch(PatientActions.PATIENTS.LIST);
     };
 
     const handleCancel = () => {
@@ -1753,8 +1753,8 @@ export default defineComponent({
     };
 
     const selectPatient = (item) => {
-      store.dispatch(Actions.PATIENTS.APPOINTMENTS, item.id);
-      store.dispatch(Actions.PATIENTS.VIEW, item.id);
+      store.dispatch(PatientActions.PATIENTS.APPOINTMENTS, item.id);
+      store.dispatch(PatientActions.PATIENTS.VIEW, item.id);
       patientInfoData.value = item;
       aptInfoData.value.patient_id = item.id;
 
