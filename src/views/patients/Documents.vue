@@ -42,37 +42,72 @@
         </div>
       </div>
       <div class="col-md-8 d-flex flex-column">
-        <div class="d-flex flex-row justify-content-end align-items-end">
-          <template v-if="selectedDocument">
-            <button
-              :data-kt-indicator="printLoading ? 'on' : null"
-              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
-              v-print="printObj"
-              type="submit"
+        <div class="d-flex justify-content-between">
+          <el-select
+            class="filter-appointment"
+            placeholder="Select Appointment"
+            v-model="selectedAppointnment"
+          >
+            <el-option value="ALL" label="ALL Appointments">
+              ALL Appointments
+            </el-option>
+            <template
+              v-for="appointment in selectedPatient.appointments"
+              :key="appointment.id"
             >
-              <span v-if="!printLoading" class="indicator-label">
-                <span class="svg-icon svg-icon-1">
-                  <inline-svg src="media/icons/duotune/general/gen060.svg" />
+              <el-option
+                :value="appointment.id"
+                :label="
+                  appointment.aus_formatted_date +
+                  ' ' +
+                  appointment.formatted_appointment_time +
+                  ' @ ' +
+                  appointment.clinic.name +
+                  ' , ' +
+                  appointment.specialist_name
+                "
+              >
+                {{ appointment.aus_formatted_date }}
+                {{ appointment.formatted_appointment_time }}
+                @
+                {{ appointment.clinic.name }}
+                ,
+                <span>{{ appointment.specialist_name }}</span>
+              </el-option>
+            </template>
+          </el-select>
+          <div>
+            <template v-if="selectedDocument">
+              <button
+                :data-kt-indicator="printLoading ? 'on' : null"
+                class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
+                v-print="printObj"
+                type="submit"
+              >
+                <span v-if="!printLoading" class="indicator-label">
+                  <span class="svg-icon svg-icon-1">
+                    <inline-svg src="media/icons/duotune/general/gen060.svg" />
+                  </span>
+                  Print
                 </span>
-                Print
-              </span>
-              <span v-if="printLoading" class="indicator-progress pb-1">
-                <span
-                  class="spinner-border spinner-border-sm svg-icon svg-icon-1"
-                ></span>
-                Processing
-              </span>
-            </button>
-            <IconButton
-              iconSRC="media/icons/duotune/communication/com011.svg"
-              label="Email"
-              @click="handleSendEmail"
-            />
-          </template>
+                <span v-if="printLoading" class="indicator-progress pb-1">
+                  <span
+                    class="spinner-border spinner-border-sm svg-icon svg-icon-1"
+                  ></span>
+                  Processing
+                </span>
+              </button>
+              <IconButton
+                iconSRC="media/icons/duotune/communication/com011.svg"
+                label="Email"
+                @click="handleSendEmail"
+              />
+            </template>
+          </div>
         </div>
-        <div class="h-450px border" id="documentField">
+        <div class="h-450px border my-4" id="documentField">
           <img v-if="false" :src="selectedDocument.file_path" alt="document" />
-          <div class="fv-row my-4 pdf_viewer_wrapper">
+          <div class="fv-row pdf_viewer_wrapper">
             <div id="divPDFViewer" class="pdf_viewer"></div>
           </div>
         </div>
@@ -90,7 +125,11 @@
   height: 100%;
   > .pdf_viewer {
     height: 100%;
+    overflow: auto;
   }
+}
+.filter-appointment {
+  width: calc(100% - 215px);
 }
 </style>
 
@@ -123,6 +162,7 @@ export default defineComponent({
     const documentList = ref(null);
     const selectedDocument = ref(null);
     const documentType = ref("ALL");
+    const selectedAppointnment = ref("ALL");
     const appointments = ref();
     const printLoading = ref(false);
     const printObj = ref({
@@ -144,6 +184,7 @@ export default defineComponent({
     });
 
     watch(selectedPatient, () => {
+      console.log(["selectedPatient=", selectedPatient]);
       store.dispatch(
         PatientActions.PATIENTS.DOCUMENT.LIST,
         selectedPatient.value.id
@@ -154,14 +195,21 @@ export default defineComponent({
       documentList.value = _documentList.value;
     });
 
-    watch(documentType, () => {
-      if (documentType.value === "ALL") {
-        documentList.value = _documentList.value;
-      } else {
-        documentList.value = _documentList.value.filter(
+    watch([documentType, selectedAppointnment], () => {
+      document.getElementById("divPDFViewer").innerHTML = "";
+      let temp = _documentList.value;
+      if (documentType.value !== "ALL") {
+        temp = _documentList.value.filter(
           (item) => item.document_type === documentType.value
         );
       }
+      console.log(["selected appointment = ", selectedAppointnment.value]);
+      if (selectedAppointnment.value !== "ALL") {
+        temp = temp.filter(
+          (item) => item.appointment_id === selectedAppointnment.value
+        );
+      }
+      documentList.value = temp;
     });
 
     watch(selectedDocument, () => {
@@ -196,6 +244,8 @@ export default defineComponent({
       handleSendEmail,
       patientDocumentTypes,
       DocumentLabel,
+      selectedPatient,
+      selectedAppointnment,
     };
   },
 });
