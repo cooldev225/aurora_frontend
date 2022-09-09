@@ -140,10 +140,6 @@ export default defineComponent({
     onMounted(() => {
       const id = route.params.id;
       store.dispatch(PatientActions.PATIENTS.VIEW, id);
-      store.dispatch(
-        PatientActions.PATIENTS.DOCUMENT.LIST,
-        selectedPatient.value.id
-      );
       setCurrentPageBreadcrumbs("Documents", ["Patients"]);
     });
 
@@ -152,7 +148,6 @@ export default defineComponent({
         PatientActions.PATIENTS.DOCUMENT.LIST,
         selectedPatient.value.id
       );
-      setCurrentPageBreadcrumbs("Documents", ["Patients"]);
     });
 
     watch(_documentList, () => {
@@ -170,15 +165,20 @@ export default defineComponent({
     });
 
     watch(selectedDocument, () => {
+      console.log(["selectedDocument=", selectedDocument]);
       if (selectedDocument.value.file_path) {
-        pdf.embed(selectedDocument.value.file_path, "#divPDFViewer");
-        // pdf.embed(
-        //   "https://pspdfkit.com/downloads/pspdfkit-web-demo.pdf",
-        //   "#divPDFViewer"
-        // );
+        if (selectedDocument.value.file_type === "PDF") {
+          document.getElementById("divPDFViewer").innerHTML = "";
+          let blob = new Blob([selectedDocument.value.file_path], {
+            type: "application/pdf",
+          });
+          let objectUrl = URL.createObjectURL(blob);
+          pdf.embed(objectUrl, "#divPDFViewer");
+        } else if (selectedDocument.value.file_type === "IMAGE") {
+          document.getElementById("divPDFViewer").innerHTML =
+            "<img src='" + selectedDocument.value.file_path + "' />";
+        }
       }
-      // pdfSrc.value = selectedDocument.value;
-      // printObj.value.url = selectedDocument.value["file_path"];
     });
 
     const handleSendEmail = () => {
