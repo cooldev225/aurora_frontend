@@ -214,19 +214,24 @@ export default defineComponent({
 
     watch(selectedDocument, () => {
       console.log(["selectedDocument=", selectedDocument]);
-      if (selectedDocument.value.file_path) {
-        if (selectedDocument.value.file_type === "PDF") {
-          document.getElementById("divPDFViewer").innerHTML = "";
-          let blob = new Blob([selectedDocument.value.file_path], {
-            type: "application/pdf",
-          });
-          let objectUrl = URL.createObjectURL(blob);
-          pdf.embed(objectUrl, "#divPDFViewer");
-        } else if (selectedDocument.value.file_type === "IMAGE") {
-          document.getElementById("divPDFViewer").innerHTML =
-            "<img src='" + selectedDocument.value.file_path + "' />";
-        }
-      }
+      store
+        .dispatch(PatientActions.PATIENTS.DOCUMENT.VIEW, {
+          path: selectedDocument.value.file_path,
+        })
+        .then((data) => {
+          if (selectedDocument.value.file_type === "PDF") {
+            document.getElementById("divPDFViewer").innerHTML = "";
+            let blob = new Blob([data], { type: "application/pdf" });
+            let objectUrl = URL.createObjectURL(blob);
+            pdf.embed(objectUrl, "#divPDFViewer");
+          } else if (selectedDocument.value.file_type === "IMAGE") {
+            document.getElementById("divPDFViewer").innerHTML =
+              "<img src='" + data + "' />";
+          }
+        })
+        .catch(() => {
+          console.log("pdf error");
+        });
     });
 
     const handleSendEmail = () => {

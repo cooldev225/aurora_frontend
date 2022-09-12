@@ -10,6 +10,7 @@ const PatientActions = {
       LIST: "listPatientsDocuments",
       CREATE: "createPatientsDocument",
       SEND_VIA_EMAIL: "sendPatientsDocumentViaEmail",
+      VIEW: "viewPatientDocument",
       AUDIO: {
         CREATE: "createPatientsDocumentAudio",
       },
