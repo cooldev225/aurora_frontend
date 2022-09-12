@@ -299,6 +299,10 @@ import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
 import moment from "moment";
 import { aptTimeList } from "@/core/data/apt-time";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "@/store/enums/StoreAppointmentEnums";
 import { Modal } from "bootstrap";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 
@@ -387,16 +391,16 @@ export default defineComponent({
     const clinic_list = computed(() => store.getters.clinicsList);
 
     onMounted(() => {
-      store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+      store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
         ...date_search,
         ...specialists_search,
       });
-      store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+      store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
         ...specialists_search,
       });
 
-      store.dispatch(Actions.APT.TYPES.LIST);
+      store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
@@ -420,7 +424,7 @@ export default defineComponent({
           search_next_apts.x_weeks = searchAppointmentForm.value.x_weeks;
           search_next_apts.clinic_id = searchAppointmentForm.value.clinic_id;
 
-          await store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+          await store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
             ...search_next_apts,
           });
 
@@ -445,11 +449,11 @@ export default defineComponent({
     };
 
     watch(date_search, () => {
-      store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+      store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
         ...date_search,
         specialists: [],
       });
-      store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+      store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
         ...specialists_search,
       });
@@ -467,8 +471,11 @@ export default defineComponent({
       const data = ref({});
       //const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
       data.value = temp; //[data_key]
-      store.commit(Mutations.SET_BOOKING.SEARCH.SPECIALISTS, data.value);
-      store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+      store.commit(
+        AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS,
+        data.value
+      );
+      store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
         ...specialists_search,
       });
@@ -486,7 +493,10 @@ export default defineComponent({
       const data = ref({});
       //const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
       data.value = temp; //[data_key]
-      store.commit(Mutations.SET_BOOKING.SEARCH.SPECIALISTS, data.value);
+      store.commit(
+        AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS,
+        data.value
+      );
       // store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
       // store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
       //   ...date_search,

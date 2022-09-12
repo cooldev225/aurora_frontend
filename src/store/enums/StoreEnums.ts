@@ -57,17 +57,7 @@ const Actions = {
     UPDATE: "updateClinics",
   },
 
-  BOOKING: {
-    LIST: "listBooking",
-    CREATE: "createBooking",
-    DELETE: "deleteBooking",
-    UPDATE: "updateBooking",
-    SEARCH: {
-      DATE: "searchBookingByDate",
-      SPECIALISTS: "searchBookingBySPT",
-      NEXT_APT: "searchNextApt",
-    },
-  },
+
 
   BIRTH_CODE: {
     LIST: "listBirthCode",
@@ -136,60 +126,6 @@ const Actions = {
     UPDATE: "updateAptTimeRequirement",
   },
 
-  APPOINTMENT: {
-    REFERRAL: {
-      UPDATE:   "updateAppointmentReferral", // (put)   'appointments/referral/{appointment}'
-      VIEW:     "viewAppointmentReferral",   // (post)  'appointments/referral/file'
-    },
-    PRE_ADMISSION: {
-      VIEW:     "viewPreAdmissionForm",      // (post)  'appointment/procedure-approvals/pdf/{appointment}'
-    },
-  },
-
-  APT: {
-    LIST: "listApt",
-    LISTBYID: "listAptById",
-    CREATE: "createApt",
-    DELETE: "deleteApt",
-    UPDATE: "updateApt",
-    TYPES: {
-      LIST: "listAptTypes",
-      CREATE: "createAptTypes",
-      UPDATE: "updateAptTypes",
-      DELETE: "deleteAptTypes",
-    },
-    UNCONFIRMED: {
-      LIST: "listUnconfirmedApt",
-      DELETE: "deleteUnconfirmedApt",
-      UPDATE: "updateUnconfirmedApt",
-    },
-    WAITLISTED: {
-      LIST: "listWaitlistedApt",
-      DELETE: "deleteWaitlistedApt",
-      UPDATE: "updateWaitlistedApt",
-    },
-    UNAPPROVED: {
-      LIST: "listUnapprovedApt",
-      DELETE: "deleteUnapprovedApt",
-      UPDATE: "updateUnapprovedApt",
-    },
-    CANCELLATION: {
-      CREATE: "createCancellationApt",
-      LIST: "listCancellationApt",
-      DELETE: "deleteCancellationApt",
-      UPDATE: "updateCancellationApt",
-    },
-    CHECK_IN: "checkInApt",
-    CHECK_OUT: "checkOutApt",
-    PRE_ADMISSION: {
-      ORG: "listAptPreAdmissionOrg",
-      VALIDATE: "validateAptPreAdmission",
-      STORE: "createAptPreAdmission",
-    },
-    USER_APT: {
-      LIST: "userAptList",
-    },
-  },
 
   REFERRAL_DOCTOR: {
     LIST: "searchReferralDoctor", // (get) 'referring-doctors'
@@ -210,12 +146,6 @@ const Actions = {
     CREATE: "createMakePayment",
   },
 
-  PROCEDURE_APPROVAL: {
-    LIST: "listProcedureApproval",
-    GET: "getProcedureApproval",
-    UPDATE: "updateProcedureApproval",
-    UPLOAD: "uploadProcedureApproval",
-  },
 };
 
 const Mutations = {
@@ -280,16 +210,6 @@ const Mutations = {
     SELECT: "setSelectEmployee",
   },
 
-  SET_BOOKING: {
-    LIST: "setBookingList",
-    SELECT: "setSelectBooking",
-    SEARCH: {
-      VARIABLE: "setSearchVariable",
-      DATE: "setFilteredBookingByDate",
-      SPECIALISTS: "setFilteredBookingBySPT",
-      NEXT_APTS: "setNextAptList",
-    },
-  },
 
   SET_ANESTHETIST_QUES: {
     LIST: "setAnesQuesList",
@@ -297,43 +217,7 @@ const Mutations = {
     ACTIVE_LIST: "setAnesQuesActiveList",
   },
 
-  SET_APT: {
-    LIST: "setApt",
-    LISTBYID: "setAptById",
-    SELECT: "setSelectApt",
-    SELECT_SPECIALIST: "setSelectedSpecialist",
-    TYPES: {
-      LIST: "setAptType",
-      SELECT: "setSelectAptType",
-    },
-    UNCONFIRMED: {
-      LIST: "setUnConfirmedApt",
-      SELECT: "setSelectUnconfirmedApt",
-    },
-    WAITLISTED: {
-      LIST: "setWaitlistedApt",
-      SELECT: "setSelectWaitlistedApt",
-    },
-    UNAPPROVED: {
-      LIST: "setUnapprovedApt",
-      SELECT: "setSelectUnapprovedApt",
-    },
-    CANCELLATION: {
-      LIST: "setCancellationApt",
-      SELECT: "setSelectCancellationApt",
-    },
-    PRE_ADMISSION: {
-      ORG: "setAptPreAdmissionOrg",
-      VALIDATE: {
-        DATA: "setValidateAptPreAdmission",
-        MSG: "setValidateAptPreAdmissionMsg",
-      },
-    },
-    USER_APT: {
-      LIST: "setUserAptList",
-      SELECT: "setSelectUserApt",
-    },
-  },
+
 
   SET_REFERRAL_DOCTOR: {
     LIST: "setReferralDoctor",
@@ -343,10 +227,6 @@ const Mutations = {
     LIST: "setLetterTemplate",
   },
 
-  SET_MAKE_PAYMENT: {
-    LIST: "setMakePayment",
-    SELECT: "setSelectMakePayment",
-  },
 
   SET_REPORT_TEMPLATES: {
     LIST: "setReportTemplates",
@@ -368,15 +248,11 @@ const Mutations = {
     SELECT: "setSelectNtfTemplates",
   },
 
-  SET_PROCEDURE_APPROVAL: {
-    LIST: "setProcedureApprovalsList",
-    DATA: "setProcedureApproval",
+  
+  SET_MAKE_PAYMENT: {
+    LIST: "setMakePayment",
+    SELECT: "setSelectMakePayment",
   },
-
-  // SET_EMPLOYEE_ROLES: {
-  //   LIST: "setEmployeeRolesList",
-  //   SELECT: "setSelectBooking",
-  // },
 };
 
 export { Actions, Mutations };

@@ -1,7 +1,11 @@
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "../enums/StoreAppointmentEnums";
 
 export interface IAptTypes {
   id: number;
@@ -35,22 +39,25 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
   }
 
   @Mutation
-  [Mutations.SET_APT.TYPES.LIST](aptTypesData) {
+  [AppointmentMutations.SET_APT.TYPES.LIST](aptTypesData) {
     this.aptTypesData = aptTypesData;
   }
 
   @Mutation
-  [Mutations.SET_APT.TYPES.SELECT](data) {
+  [AppointmentMutations.SET_APT.TYPES.SELECT](data) {
     this.aptTypesSelectData = data;
   }
 
   @Action
-  [Actions.APT.TYPES.LIST]() {
+  [AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("appointment-types")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_APT.TYPES.LIST, data.data);
+          this.context.commit(
+            AppointmentMutations.SET_APT.TYPES.LIST,
+            data.data
+          );
           return data.data;
         })
         .catch(({ response }) => {
@@ -63,7 +70,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
   }
 
   @Action
-  [Actions.APT.TYPES.CREATE](item) {
+  [AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("appointment-types", item)
@@ -79,7 +86,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
   }
 
   @Action
-  [Actions.APT.TYPES.UPDATE](item) {
+  [AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("appointment-types", item.id, item)
@@ -96,7 +103,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
   }
 
   @Action
-  [Actions.APT.TYPES.DELETE](id) {
+  [AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("appointment-types/" + id)

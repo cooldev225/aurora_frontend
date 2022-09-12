@@ -1,6 +1,10 @@
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { Mutations } from "@/store/enums/StoreEnums";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "@/store/enums/StoreAppointmentEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
 export interface IWorkhour {
@@ -82,44 +86,39 @@ export default class BooingModule extends VuexModule implements BookingInfo {
     return this.searchVal;
   }
 
-  // @Mutation
-  // [Mutations.SET_CLINICS.LIST](clinicsData) {
-  //   this.clinicsData = clinicsData;
-  // }
-
   @Mutation
-  [Mutations.SET_BOOKING.SELECT](data: IBookingData) {
+  [AppointmentMutations.SET_BOOKING.SELECT](data: IBookingData) {
     this.bookingData = data;
   }
 
   @Mutation
-  [Mutations.SET_BOOKING.SEARCH.DATE](data: IBookingData) {
+  [AppointmentMutations.SET_BOOKING.SEARCH.DATE](data: IBookingData) {
     this.availableSPT = data;
   }
 
   @Mutation
-  [Mutations.SET_BOOKING.SEARCH.SPECIALISTS](data: IBookingData) {
+  [AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS](data: IBookingData) {
     this.filteredData = data;
   }
 
   @Mutation
-  [Mutations.SET_BOOKING.SEARCH.NEXT_APTS](data: IBookingData) {
+  [AppointmentMutations.SET_BOOKING.SEARCH.NEXT_APTS](data: IBookingData) {
     this.availableAppointmentList = data;
   }
 
   @Mutation
-  [Mutations.SET_BOOKING.SEARCH.VARIABLE](data: ISearchVariable) {
+  [AppointmentMutations.SET_BOOKING.SEARCH.VARIABLE](data: ISearchVariable) {
     this.searchVal = data;
   }
 
   @Action
-  [Actions.BOOKING.SEARCH.NEXT_APT](payload) {
+  [AppointmentActions.BOOKING.SEARCH.NEXT_APT](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.query("available-timeslots", { params: payload })
         .then(({ data }) => {
           this.context.commit(
-            Mutations.SET_BOOKING.SEARCH.NEXT_APTS,
+            AppointmentMutations.SET_BOOKING.SEARCH.NEXT_APTS,
             data.data
           );
         })
@@ -132,14 +131,17 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   }
 
   @Action
-  [Actions.BOOKING.SEARCH.SPECIALISTS](payload) {
-    this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
+  [AppointmentActions.BOOKING.SEARCH.SPECIALISTS](payload) {
+    this.context.commit(
+      AppointmentMutations.SET_BOOKING.SEARCH.VARIABLE,
+      payload
+    );
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.query("appointments/specialists", { params: payload })
         .then(({ data }) => {
           this.context.commit(
-            Mutations.SET_BOOKING.SEARCH.SPECIALISTS,
+            AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS,
             data.data
           );
         })
@@ -152,13 +154,20 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   }
 
   @Action
-  [Actions.BOOKING.SEARCH.DATE](payload) {
-    this.context.commit(Mutations.SET_BOOKING.SEARCH.VARIABLE, payload);
+  [AppointmentActions.BOOKING.SEARCH.DATE](payload) {
+    this.context.commit(
+      AppointmentMutations.SET_BOOKING.SEARCH.VARIABLE,
+      payload
+    );
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.query("appointments/specialists", { params: payload })
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_BOOKING.SEARCH.DATE, data.data);
+          this.context.commit(
+            AppointmentMutations.SET_BOOKING.SEARCH.DATE,
+            data.data
+          );
+          console.log(data);
         })
         .catch(({ response }) => {
           console.log(response.data.error);

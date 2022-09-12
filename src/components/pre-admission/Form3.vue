@@ -28,7 +28,7 @@
 import { defineComponent, onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 
 export default defineComponent({
   name: "pre-admission-form3",
@@ -43,7 +43,7 @@ export default defineComponent({
 
     onMounted(() => {
       apt_id.value = router.currentRoute.value.params.id.toString();
-      store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
+      store.dispatch(AppointmentActions.APT.PRE_ADMISSION.ORG, apt_id.value);
     });
 
     return {

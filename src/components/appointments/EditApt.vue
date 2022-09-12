@@ -895,6 +895,8 @@ import {
 } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
 import { hideModal } from "@/core/helpers/dom";
@@ -1256,7 +1258,7 @@ export default defineComponent({
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
-      store.dispatch(Actions.APT.TYPES.LIST);
+      store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.ORG.LIST);
     });
 
@@ -1320,17 +1322,17 @@ export default defineComponent({
         })
         .then(() => {
           loading.value = false;
-          store.dispatch(Actions.APT.LIST);
+          store.dispatch(AppointmentActions.APT.LIST);
           hideModal(editAptModalRef.value);
           if (searchVal.value.date) {
-            store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+            store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
               ...searchVal.value,
             });
-            store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+            store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
               ...searchVal.value,
             });
           } else {
-            store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+            store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
               ...searchVal.value,
             });
           }
@@ -1349,7 +1351,7 @@ export default defineComponent({
       formRef_2.value.resetFields();
       formRef_3.value.resetFields();
       formRef_4.value.resetFields();
-      store.dispatch(Actions.PATIENTS.LIST);
+      store.dispatch(PatientActions.PATIENTS.LIST);
     };
 
     const handleCancel = () => {

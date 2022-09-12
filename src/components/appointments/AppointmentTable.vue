@@ -91,6 +91,7 @@ import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import CreateAppointmentTableData from "@/components/appointments/partials/CreateAppointmentTableData.vue";
 import AppointmentTableData from "@/components/appointments/partials/AppointmentTableData.vue";
+import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
 
 export default defineComponent({
   components: { CreateAppointmentTableData, AppointmentTableData },
@@ -163,7 +164,7 @@ export default defineComponent({
     };
 
     const handleShowAppointmentDrawer = (item) => {
-      store.commit(Mutations.SET_APT.SELECT, item);
+      store.commit(AppointmentMutations.SET_APT.SELECT, item);
       DrawerComponent?.getInstance("appointment-drawer")?.toggle();
     };
 

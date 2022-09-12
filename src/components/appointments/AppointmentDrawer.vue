@@ -191,7 +191,10 @@
 
 <script lang="ts">
 import { defineComponent, reactive, computed, watchEffect } from "vue";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "@/store/enums/StoreAppointmentEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -246,7 +249,7 @@ export default defineComponent({
         PatientActions.PATIENTS.APPOINTMENTS,
         aptData.value.patient_id
       );
-      store.commit(Mutations.SET_APT.SELECT, aptData.value);
+      store.commit(AppointmentMutations.SET_APT.SELECT, aptData.value);
       const modal = new Modal(document.getElementById("modal_edit_apt"));
       modal.show();
       DrawerComponent?.getInstance("appointment-drawer")?.hide();
@@ -276,15 +279,21 @@ export default defineComponent({
           var missed = Swal.getPopup().querySelector("#chkMissed").checked;
 
           await store
-            .dispatch(Actions.APT.CANCELLATION.CREATE, {
-              id: aptData.value.id,
-              missed: missed,
-              reason: data,
-            })
+            .dispatch(
+              AppointmentActions.APPOINTMENT.CONFIRMATION_STATUS.UPDATE,
+              {
+                id: aptData.value.id,
+                missed: missed,
+                reason: data,
+              }
+            )
             .then(() => {
-              store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
               store.dispatch(
-                Actions.BOOKING.SEARCH.SPECIALISTS,
+                AppointmentActions.BOOKING.SEARCH.DATE,
+                searchVal.value
+              );
+              store.dispatch(
+                AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
                 searchVal.value
               );
 
@@ -301,9 +310,12 @@ export default defineComponent({
 
     const handleCheckOut = async () => {
       await store
-        .dispatch(Actions.APT.CHECK_OUT, aptData.value)
+        .dispatch(AppointmentActions.APT.CHECK_OUT, aptData.value)
         .then(() => {
-          store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
+          store.dispatch(
+            AppointmentActions.BOOKING.SEARCH.DATE,
+            searchVal.value
+          );
           Swal.fire({
             text: "Successfully Checked Out!",
             icon: "success",

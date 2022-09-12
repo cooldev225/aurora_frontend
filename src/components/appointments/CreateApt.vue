@@ -1090,6 +1090,7 @@ import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
 import ApiService from "@/core/services/ApiService";
@@ -1556,7 +1557,7 @@ export default defineComponent({
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
-      store.dispatch(Actions.APT.TYPES.LIST);
+      store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.ORG.LIST);
       store.dispatch(PatientActions.PATIENTS.LIST);
       store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
@@ -1667,7 +1668,7 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.APT.CREATE, {
+            .dispatch(AppointmentActions.APT.CREATE, {
               ...aptInfoData.value,
               ...patientInfoData.value,
               ...billingInfoData.value,
@@ -1675,7 +1676,7 @@ export default defineComponent({
             })
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.APT.LIST);
+              store.dispatch(AppointmentActions.APT.LIST);
               handleCancel();
               Swal.fire({
                 text: "Successfully Created!",
@@ -1691,14 +1692,17 @@ export default defineComponent({
               }).then((result) => {
                 hideModal(createAptModalRef.value);
                 if (searchVal.value.date) {
-                  store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+                  store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
                     ...searchVal.value,
                   });
-                  store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-                    ...searchVal.value,
-                  });
+                  store.dispatch(
+                    AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
+                    {
+                      ...searchVal.value,
+                    }
+                  );
                 } else {
-                  store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+                  store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
                     ...searchVal.value,
                   });
                 }

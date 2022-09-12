@@ -124,7 +124,7 @@ export default defineComponent({
 
     watch(patientId, () => {
       formData.value.patient_id = patientId.value;
-      store.dispatch(Actions.APT.LISTBYID, patientId.value);
+      //  store.dispatch(Actions.APT.LISTBYID, patientId.value);
     });
 
     watchEffect(() => {

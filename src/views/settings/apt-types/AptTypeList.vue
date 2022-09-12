@@ -71,7 +71,7 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
@@ -110,9 +110,9 @@ export default defineComponent({
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.APT.TYPES.DELETE, id)
+        .dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.APT.TYPES.LIST);
+          store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -130,7 +130,7 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Appointment Types", ["Settings"]);
-      store.dispatch(Actions.APT.TYPES.LIST);
+      store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
     });
 
     watchEffect(() => {

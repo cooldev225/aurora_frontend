@@ -14,6 +14,7 @@ import { Modal } from "bootstrap";
 import { useStore } from "vuex";
 import moment from "moment";
 import { Mutations } from "@/store/enums/StoreEnums";
+import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
 export default {
   props: {
     date: { required: true },
@@ -48,8 +49,11 @@ export default {
             .appointment_type_restriction,
       };
 
-      store.commit(Mutations.SET_BOOKING.SELECT, item);
-      store.commit(Mutations.SET_APT.SELECT_SPECIALIST, props.specialist);
+      store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
+      store.commit(
+        AppointmentMutations.SET_APT.SELECT_SPECIALIST,
+        props.specialist
+      );
 
       const modal = new Modal(document.getElementById("modal_create_apt"));
       modal.show();

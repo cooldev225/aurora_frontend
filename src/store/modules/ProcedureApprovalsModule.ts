@@ -1,7 +1,11 @@
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "../enums/StoreAppointmentEnums";
 
 export interface IProcedureApproval {
   id: string;
@@ -37,22 +41,25 @@ export default class ProcedureApprovalsModule
   }
 
   @Mutation
-  [Mutations.SET_PROCEDURE_APPROVAL.LIST](procedureApprovalList) {
+  [AppointmentMutations.SET_PROCEDURE_APPROVAL.LIST](procedureApprovalList) {
     this.procedureApprovalList = procedureApprovalList;
   }
 
   @Mutation
-  [Mutations.SET_PROCEDURE_APPROVAL.DATA](procedureApproval) {
+  [AppointmentMutations.SET_PROCEDURE_APPROVAL.DATA](procedureApproval) {
     this.procedureApproval = procedureApproval;
   }
 
   @Action
-  [Actions.PROCEDURE_APPROVAL.LIST]() {
+  [AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("procedure-approvals")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_PROCEDURE_APPROVAL.LIST, data.data);
+          this.context.commit(
+            AppointmentMutations.SET_PROCEDURE_APPROVAL.LIST,
+            data.data
+          );
           return data.data;
         })
         .catch(({ response }) => {
@@ -65,7 +72,7 @@ export default class ProcedureApprovalsModule
   }
 
   @Action
-  [Actions.PROCEDURE_APPROVAL.UPDATE](item) {
+  [AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.put(
@@ -85,7 +92,7 @@ export default class ProcedureApprovalsModule
   }
 
   @Action
-  [Actions.PROCEDURE_APPROVAL.UPLOAD](item) {
+  [AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.UPLOAD](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.put(

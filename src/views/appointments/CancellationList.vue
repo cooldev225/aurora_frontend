@@ -35,7 +35,7 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 
 export default defineComponent({
   name: "cancellation-appointments",
@@ -83,10 +83,12 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Cancellation List", ["Booking"]);
-      store.dispatch(Actions.APT.CANCELLATION.LIST).then(() => {
-        tableData.value = cancellation_Apts;
-        loading.value = false;
-      });
+      store
+        .dispatch(AppointmentActions.APPOINTMENT.CONFIRMATION_STATUS.LIST)
+        .then(() => {
+          tableData.value = cancellation_Apts;
+          loading.value = false;
+        });
     });
 
     watchEffect(() => {

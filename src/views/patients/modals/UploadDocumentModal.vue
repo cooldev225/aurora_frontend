@@ -160,6 +160,7 @@ import {
 } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
@@ -263,7 +264,7 @@ export default defineComponent({
 
     watch(patientId, () => {
       formData.value.patient_id = patientId.value;
-      store.dispatch(Actions.APT.LISTBYID, patientId.value);
+      store.dispatch(AppointmentActions.APT.LISTBYID, patientId.value);
     });
 
     watchEffect(() => {
