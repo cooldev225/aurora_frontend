@@ -2,7 +2,7 @@
   <ModalWrapper
     title="Update Collecting Person"
     modalId="collecting_person"
-    modalRef="collectingPersonModalRef"
+    :modalRef="collectingPersonModalRef"
   >
     <el-form
       @submit.prevent="submit()"

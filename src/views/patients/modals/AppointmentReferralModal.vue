@@ -161,7 +161,7 @@
 <script>
 import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { ElMessage } from "element-plus";
@@ -228,7 +228,7 @@ export default defineComponent({
     watch(appointmentData, () => {
       if (appointmentData.value.referral?.referral_file) {
         store
-          .dispatch(Actions.APPOINTMENT.REFERRAL.VIEW, {
+          .dispatch(AppointmentActions.APPOINTMENT.REFERRAL.VIEW, {
             path: appointmentData.value.referral.referral_file,
           })
           .then((data) => {
@@ -294,7 +294,7 @@ export default defineComponent({
           );
 
           store
-            .dispatch(Actions.APPOINTMENT.REFERRAL.UPDATE, {
+            .dispatch(AppointmentActions.APPOINTMENT.REFERRAL.UPDATE, {
               appointment_id: appointmentData.value.id,
               submitData: submitData,
             })

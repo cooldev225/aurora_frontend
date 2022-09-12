@@ -52,6 +52,7 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import pdf from "pdfobject";
 import { mask } from "vue-the-mask";
 import { ElMessage } from "element-plus";
@@ -127,7 +128,7 @@ export default defineComponent({
       loading.value = true;
       uploadData.append("file", preAdmissionData.value.file[0]?.raw);
       store
-        .dispatch(Actions.PROCEDURE_APPROVAL.UPLOAD, {
+        .dispatch(AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.UPLOAD, {
           appointment_id: appointmentData.value.id,
           uploadData: uploadData,
         })
