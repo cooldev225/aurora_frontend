@@ -149,7 +149,9 @@ export default defineComponent({
     const loading = ref(true);
 
     const handleCreate = () => {
-      if (organization.value[0].is_max_users) {
+      router.push({ name: "employees-create" });
+      /*
+      if (organization.value.is_max_users) {
         const html =
           "<h3>You have reached your max allowed users.</h3><p>Please buy new user licenses to add more.</p><br/>";
 
@@ -165,6 +167,7 @@ export default defineComponent({
       } else {
         router.push({ name: "employees-create" });
       }
+      */
     };
 
     const handleEdit = (item) => {

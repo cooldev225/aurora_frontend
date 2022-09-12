@@ -40,18 +40,6 @@
               />
             </InputWrapper>
 
-            <InputWrapper
-              class="col-12 col-md-6"
-              label="Username"
-              prop="username"
-            >
-              <el-input
-                v-model="formData.username"
-                type="text"
-                placeholder="Username"
-              />
-            </InputWrapper>
-
             <InputWrapper class="col-12 col-md-6" label="Email" prop="email">
               <el-input
                 v-model="formData.email"
@@ -68,18 +56,6 @@
                 v-model="formData.mobile_number"
                 type="text"
                 placeholder="Contact Number"
-              />
-            </InputWrapper>
-            <InputWrapper
-              v-if="formInfo.isCreate"
-              class="col-12 col-md-6"
-              label="Password"
-              prop="password"
-            >
-              <el-input
-                v-model="formData.password"
-                type="password"
-                placeholder="Password"
               />
             </InputWrapper>
 
@@ -283,13 +259,6 @@ export default defineComponent({
         {
           required: true,
           message: "Last Name cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      username: [
-        {
-          required: true,
-          message: "Username cannot be blank.",
           trigger: "change",
         },
       ],
