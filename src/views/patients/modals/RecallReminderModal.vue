@@ -19,6 +19,24 @@
           />
         </el-select>
       </InputWrapper>
+      <InputWrapper label="Appointment" prop="appointment">
+        <el-select
+          v-model="formData.appointment_id"
+          class="w-100"
+          placeholder="Select Appointment"
+        >
+          <el-option
+            v-for="item in appointmentList.pastAppointments"
+            :label="
+              moment(item.date).format('DD-MM-YYYY') +
+              ' ' +
+              item.appointment_type.name
+            "
+            :value="item.id"
+            :key="item.id"
+          />
+        </el-select>
+      </InputWrapper>
 
       <InputWrapper required label="Reason" prop="reason">
         <el-input
@@ -29,7 +47,6 @@
           placeholder="Reason for recall"
         />
       </InputWrapper>
-
       <!--begin::Modal footer-->
       <div class="modal-footer flex-center">
         <!--begin::Button-->
@@ -58,13 +75,13 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref, watchEffect, computed } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import { Actions } from "@/store/enums/StoreEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import timeFrames from "@/core/data/time-frames";
-
+import moment from "moment";
 export default defineComponent({
   name: "patient-recall-reminder-modal",
   setup() {
@@ -72,9 +89,11 @@ export default defineComponent({
     const formRef = ref(null);
     const patientRecallReminderModal = ref(null);
     const loading = ref(false);
+    const appointmentList = computed(() => store.getters.getAptListById);
 
     const formData = ref({
       patient_id: 0,
+      appointment_id: 1,
       time_frame: 1,
       reason: "",
     });
@@ -91,7 +110,7 @@ export default defineComponent({
       loading.value = true;
       formData.value.patient_id = patientData.value.id;
       store
-        .dispatch(Actions.PATIENTS.RECALL.CREATE, formData.value)
+        .dispatch(PatientActions.PATIENTS.RECALL.CREATE, formData.value)
         .then(() => {
           loading.value = false;
           Swal.fire({
@@ -113,6 +132,19 @@ export default defineComponent({
       formRef.value.resetFields();
     };
 
+    watchEffect(() => {
+      if (appointmentList.value && appointmentList.value.pastAppointments) {
+        appointmentList.value.pastAppointments.forEach((item) => {
+          if (
+            moment(item.date).format("DD-MM-YYYY") ===
+            moment(new Date()).format("DD-MM-YYYY")
+          ) {
+            formData.value.appointment_id = item.id;
+          }
+        });
+      }
+    });
+
     return {
       formData,
       formRef,
@@ -120,6 +152,8 @@ export default defineComponent({
       patientRecallReminderModal,
       timeFrames,
       submit,
+      appointmentList,
+      moment,
     };
   },
 });

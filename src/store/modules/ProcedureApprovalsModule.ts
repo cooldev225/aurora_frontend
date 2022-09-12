@@ -96,7 +96,7 @@ export default class ProcedureApprovalsModule
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.put(
-        "/appointment/pre-admission/upload/" + item.appointment_id,
+        "/appointments/pre-admissions/upload/" + item.appointment_id,
         item.uploadData
       )
         .then(({ data }) => {

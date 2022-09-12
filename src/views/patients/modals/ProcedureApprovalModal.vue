@@ -51,8 +51,8 @@ import { defineComponent, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import { Actions } from "@/store/enums/StoreEnums";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import pdf from "pdfobject";
 import { mask } from "vue-the-mask";
 import { ElMessage } from "element-plus";
@@ -87,7 +87,7 @@ export default defineComponent({
     watch(appointmentData, () => {
       if (appointmentData.value.pre_admission?.pre_admission_file) {
         store
-          .dispatch(Actions.APPOINTMENT.PRE_ADMISSION.VIEW, {
+          .dispatch(AppointmentActions.APPOINTMENT.PRE_ADMISSION.VIEW, {
             path: appointmentData.value.pre_admission.pre_admission_file,
           })
           .then((data) => {
@@ -145,10 +145,12 @@ export default defineComponent({
           }).then(() => {
             uploadDisabled.value = true;
             if (props.isEditable === "true") {
-              store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
+              store.dispatch(
+                AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.LIST
+              );
             } else {
               store.dispatch(
-                Actions.PATIENTS.VIEW,
+                PatientActions.PATIENTS.VIEW,
                 appointmentData.value.patient_id
               );
             }
