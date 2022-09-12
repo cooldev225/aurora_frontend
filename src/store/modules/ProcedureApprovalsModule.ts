@@ -95,7 +95,7 @@ export default class ProcedureApprovalsModule
   [AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.UPLOAD](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.put(
+      ApiService.post(
         "/appointments/pre-admissions/upload/" + item.appointment_id,
         item.uploadData
       )
