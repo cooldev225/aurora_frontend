@@ -225,7 +225,7 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       {
-        path: "/booking/dashboard",
+        path: "/appointments/dashboard",
         name: "booking-dashboard",
         component: () => import("@/views/appointments/Appointments.vue"),
       },
