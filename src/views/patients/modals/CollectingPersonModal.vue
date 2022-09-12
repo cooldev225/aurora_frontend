@@ -57,7 +57,8 @@
 <script>
 import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
@@ -120,7 +121,7 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.APT.UPDATE, {
+            .dispatch(AppointmentActions.APPOINTMENT.COLLECTING_PERSON.UPDATE, {
               id: aptData.value.id,
               ...formData.value,
             })
@@ -135,7 +136,10 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                store.dispatch(Actions.PATIENTS.VIEW, aptData.value.patient_id);
+                store.dispatch(
+                  PatientActions.PATIENTS.VIEW,
+                  aptData.value.patient_id
+                );
                 hideModal(collectingPersonModalRef.value);
               });
             })

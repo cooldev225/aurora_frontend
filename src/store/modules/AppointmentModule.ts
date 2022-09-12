@@ -397,6 +397,23 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Action
+  [AppointmentActions.APPOINTMENT.COLLECTING_PERSON.UPDATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("appointments/collecting-person", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
   [AppointmentActions.APT.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();

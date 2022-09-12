@@ -35,6 +35,9 @@ const AppointmentActions = {
       LIST: "listCancellationApt",          //  (get) '/appointments/confirmation-status'
       UPDATE: "updateCancellationApt",      //  (put) '/appointments/confirmation-status/{appointment}'
     },
+    COLLECTING_PERSON:{
+      UPDATE: "updateCancellationApt",      //  (put) '/appointments/collecting-person/{appointment}'
+    }
   },
 
   APT: {
