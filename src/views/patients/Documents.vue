@@ -192,7 +192,7 @@ export default defineComponent({
     });
 
     watch(_documentList, () => {
-      documentList.value = _documentList.value;
+      documentList.value = _documentList.value.reverse();
     });
 
     watch([documentType, selectedAppointnment], () => {
