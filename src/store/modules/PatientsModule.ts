@@ -156,7 +156,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.DOCUMENT.LIST](id) {
+  [PatientActions.PATIENTS.DOCUMENTS.LIST](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("patients/documents/" + id)
@@ -177,20 +177,20 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.DOCUMENT.CREATE](data) {
+  [PatientActions.PATIENTS.DOCUMENTS.CREATE](data) {
     console.log(data.get("document_type"));
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("patients/documents/" + data.get("patient_id"), data)
         .then(({ data }) => {
           this.context.dispatch(
-            PatientActions.PATIENTS.DOCUMENT.LIST,
+            PatientActions.PATIENTS.DOCUMENTS.LIST,
             data.get("patient_id")
           );
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          console.log(response);
           // this.context.commit(Mutations.SET_ERROR, response.data.errors);
         });
     } else {
@@ -199,13 +199,13 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.DOCUMENT.SEND_VIA_EMAIL](data) {
+  [PatientActions.PATIENTS.DOCUMENTS.SEND_VIA_EMAIL](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("patient-documents/send-via-email", data)
         .then(({ data }) => {
           this.context.dispatch(
-            PatientActions.PATIENTS.DOCUMENT.LIST,
+            PatientActions.PATIENTS.DOCUMENTS.LIST,
             data.get("patient_id")
           );
           return data.data;
@@ -220,7 +220,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.DOCUMENT.VIEW](data) {
+  [PatientActions.PATIENTS.DOCUMENTS.VIEW](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       return ApiService.post(

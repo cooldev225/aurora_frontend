@@ -33,7 +33,10 @@
 import { defineComponent, onMounted, computed, ref, watch } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "@/store/enums/StoreAppointmentEnums";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import AppointmentDrawer from "@/components/specialist/AppointmentDrawer.vue";
 
@@ -65,7 +68,7 @@ export default defineComponent({
       );
 
       if (aptSelected) {
-        store.commit(Mutations.SET_APT.USER_APT.SELECT, aptSelected);
+        store.commit(AppointmentMutations.SET_APT.USER_APT.SELECT, aptSelected);
       }
 
       DrawerComponent?.getInstance("appointment-drawer")?.toggle();
@@ -129,7 +132,7 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("My Bookings", ["Booking Dashboard"]);
-      store.dispatch(Actions.APT.USER_APT.LIST);
+      store.dispatch(AppointmentActions.APT.USER_APT.LIST);
     });
 
     return {

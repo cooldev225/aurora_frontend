@@ -15,55 +15,12 @@
             placeholder="Select Document Type"
             v-model="formData.document_type"
           >
-            <el-option value="letter" label="LETTER">
-              <inline-svg
-                class="me-5"
-                src="media/icons/duotune/general/gen005.svg"
-              />
-              LETTER
-            </el-option>
-            <el-option value="report" label="REPORT">
-              <inline-svg
-                class="me-5"
-                src="media/icons/duotune/general/gen016.svg"
-              />
-              REPORT
-            </el-option>
-            <el-option value="clinical-note" label="CLINICAL NOTE">
-              <inline-svg
-                class="me-5"
-                src="media/icons/duotune/files/fil003.svg"
-              />
-              CLINICAL NOTE
-            </el-option>
-            <el-option label="PATHOLOGY REPORT" value="pathology-report">
-              <inline-svg
-                class="me-5"
-                src="media/icons/duotune/files/fil004.svg"
-              />
-              PATHOLOGY REPORT
-            </el-option>
-            <el-option label="AUDIO" value="audio">
-              <inline-svg
-                class="me-5"
-                src="media/icons/duotune/general/gen015.svg"
-              />
-              AUDIO
-            </el-option>
-            <el-option label="USB CAPTURE" value="usb-capture">
-              <inline-svg
-                class="me-5"
-                src="media/icons/duotune/electronics/elc007.svg"
-              />
-              USB CAPTURE
-            </el-option>
-            <el-option label="OTHER" value="other">
-              <inline-svg
-                class="me-5"
-                src="media/icons/duotune/general/gen025.svg"
-              />
-              OTHER
-            </el-option>
+            <template v-for="type in patientDocumentTypes" :key="type.value">
+              <el-option :value="type.value" :label="type.label">
+                <inline-svg class="me-5" :src="type.icon" />
+                {{ type.label }}
+              </el-option>
+            </template>
           </el-select>
         </InputWrapper>
         <InputWrapper class="col-6" label="Appointment" prop="appointment">
@@ -160,9 +117,11 @@ import {
 } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import patientDocumentTypes from "@/core/data/patient-document-types";
 import moment from "moment";
 
 export default defineComponent({
@@ -234,7 +193,7 @@ export default defineComponent({
             Data.append(key, formData.value[key]);
           });
           store
-            .dispatch(Actions.PATIENTS.DOCUMENT.CREATE, Data)
+            .dispatch(PatientActions.PATIENTS.DOCUMENTS.CREATE, Data)
             .then(() => {
               loading.value = false;
               Swal.fire({
@@ -309,6 +268,7 @@ export default defineComponent({
       aptList,
       moment,
       submit,
+      patientDocumentTypes,
       handleChange,
       handleRemove,
       uploadDisabled,

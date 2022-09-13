@@ -6,7 +6,7 @@ const PatientActions = {
     UPDATE: "updatePatients",
     VIEW: "viewPatient",
     APPOINTMENTS: "patientsAppointments",
-    DOCUMENT: {
+    DOCUMENTS: {
       LIST: "listPatientsDocuments",
       CREATE: "createPatientsDocument",
       SEND_VIA_EMAIL: "sendPatientsDocumentViaEmail",

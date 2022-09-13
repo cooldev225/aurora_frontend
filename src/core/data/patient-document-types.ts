@@ -11,12 +11,12 @@ export const patientDocumentTypes = [
   },
   {
     value: "CLINICAL_NOTE",
-    label: "CLINICAL_NOTE",
+    label: "CLINICAL NOTE",
     icon: "media/icons/duotune/files/fil003.svg",
   },
   {
     value: "PATHOLOGY_REPORT",
-    label: "PATHOLOGY_REPORT",
+    label: "PATHOLOGY REPORT",
     icon: "media/icons/duotune/files/fil004.svg",
   },
   {
@@ -26,7 +26,7 @@ export const patientDocumentTypes = [
   },
   {
     value: "USB_CAPTURE",
-    label: "USB_CAPTURE",
+    label: "USB CAPTURE",
     icon: "media/icons/duotune/electronics/elc007.svg",
   },
   {
