@@ -205,7 +205,7 @@ export default defineComponent({
       }
       console.log(["selected appointment = ", selectedAppointnment.value]);
       if (selectedAppointnment.value !== "ALL") {
-        temp = temp.filter(
+        temp = temp?.filter(
           (item) => item.appointment_id === selectedAppointnment.value
         );
       }
