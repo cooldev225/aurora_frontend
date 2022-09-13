@@ -66,6 +66,12 @@ const OrgAdminMenu = [
     svgIcon: "media/icons/duotune/coding/cod001.svg",
     fontIcon: "bi-gear",
   },
+  {
+    heading: "Organization",
+    route: "/Organization",
+    svgIcon: "media/icons/duotune/general/gen019.svg",
+    fontIcon: "bi-hospital",
+  },
 ];
 
 const OrgManagerMenu = [
