@@ -8,250 +8,62 @@
         :rules="rules"
         ref="formRef"
       >
-        <!--begin::Modal body-->
-        <div class="modal-body py-10 px-lg-17">
-          <!--begin::Scroll-->
-          <div class="scroll-y me-n7 pe-7 row">
-            <div class="card-info">
-              <div class="fs-3 fw-bold text-muted mb-6">
-                Organisation Information
-              </div>
-              <div
-                class="mt-2 alert alert-primary d-flex align-items-center justify-between p-5 mb-10"
-              >
-                <i class="bi bi-info-circle fs-2x me-5"></i>
-                <div class="d-flex flex-column">
-                  <span
-                    >An organisation is the client as a whole. It will conatain
-                    all the patients, clinics and employees.</span
-                  >
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <label class="required fs-6 fw-bold mb-2"
-                  >Organisation Name</label
-                >
+        <CardSection heading="Organisation Information">
+          <InputWrapper label="Organisation Name" prop="name">
+            <el-input
+              v-model="formData.name"
+              type="text"
+              placeholder="Organisation Name"
+            />
+          </InputWrapper>
 
-                <el-form-item prop="name">
-                  <el-input
-                    v-model="formData.name"
-                    type="text"
-                    placeholder="Organisation Name"
-                  />
-                </el-form-item>
-              </div>
-              <div class="row">
-                <!--begin::Input group-->
-                <div class="col-sm-4">
-                  <!--begin::Label-->
-                  <label class="fs-6 fw-bold mb-2">
-                    <span class="required">Max Clinics</span>
-                  </label>
-                  <!--end::Label-->
+          <InputWrapper label="Max Clinics" prop="max_clinics">
+            <el-input
+              type="number"
+              v-model="formData.max_clinics"
+              placeholder="Max Clinics"
+            />
+          </InputWrapper>
+          <InputWrapper label="Max Employees" prop="max_employees">
+            <el-input
+              type="number"
+              v-model="formData.max_employees"
+              placeholder="Max Employee"
+            />
+          </InputWrapper>
+        </CardSection>
 
-                  <!--begin::Input-->
-                  <el-form-item prop="max_clinics">
-                    <el-input
-                      type="number"
-                      v-model="formData.max_clinics"
-                      placeholder="Max Clinics"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-
-                <!--begin::Input group-->
-                <div class="col-sm-4">
-                  <!--begin::Label-->
-                  <label class="fs-6 fw-bold mb-2">
-                    <span class="required">Max Employees</span>
-                  </label>
-                  <!--end::Label-->
-
-                  <!--begin::Input-->
-                  <el-form-item prop="max_employees">
-                    <el-input
-                      type="number"
-                      v-model="formData.max_employees"
-                      placeholder="Max Employee"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <!--end::Input group-->
-              </div>
-            </div>
-            <div class="separator separator-dashed mb-8 mt-2"></div>
-            <div class="card-info">
-              <div class="fs-3 fw-bold text-muted mb-6">
-                Primary Contact Details
-              </div>
-              <div
-                class="mt-2 alert alert-primary d-flex align-items-center justify-between p-5 mb-10"
-              >
-                <i class="bi bi-info-circle fs-2x me-5"></i>
-                <div class="d-flex flex-column">
-                  <span
-                    >The contact details for the main point of contact for this
-                    organisation.</span
-                  >
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-4">
-                  <label class="required fs-6 fw-bold mb-2">First Name</label>
-
-                  <el-form-item prop="first_name">
-                    <el-input
-                      v-model="formData.first_name"
-                      type="text"
-                      placeholder="First Name"
-                    />
-                  </el-form-item>
-                </div>
-
-                <div class="col-sm-4">
-                  <label class="required fs-6 fw-bold mb-2">Last Name</label>
-
-                  <el-form-item prop="last_name">
-                    <el-input
-                      v-model="formData.last_name"
-                      type="text"
-                      placeholder="Last Name"
-                    />
-                  </el-form-item>
-                </div>
-                <div class="col-sm-4">
-                  <label class="fs-6 fw-bold mb-2">
-                    <span class="required">Email</span>
-                  </label>
-
-                  <el-form-item prop="email">
-                    <el-input
-                      type="email"
-                      v-model="formData.email"
-                      placeholder="admin@gmail.com"
-                    />
-                  </el-form-item>
-                </div>
-
-                <div class="col-sm-4">
-                  <label class="fs-6 fw-bold mb-2">
-                    <span class="required">Mobile Number</span>
-                  </label>
-
-                  <el-form-item prop="mobile_number">
-                    <el-input
-                      type="text"
-                      v-mask="'0#-####-####'"
-                      v-model="formData.mobile_number"
-                      placeholder=""
-                    />
-                  </el-form-item>
-                </div>
-              </div>
-            </div>
-            <div class="separator separator-dashed mb-8 mt-2"></div>
-            <div class="card-info">
-              <div class="fs-3 fw-bold text-muted mb-6">
-                Primary Contact Login
-              </div>
-              <div
-                class="mt-2 alert alert-primary d-flex align-items-center justify-between p-5 mb-10"
-              >
-                <i class="bi bi-info-circle fs-2x me-5"></i>
-                <div class="d-flex flex-column">
-                  <span
-                    >Creates a user account with the role of Organisation
-                    Admin.</span
-                  >
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-sm-4">
-                  <label class="required fs-6 fw-bold mb-2">Username</label>
-
-                  <el-form-item prop="username">
-                    <el-input
-                      v-model="formData.username"
-                      type="text"
-                      placeholder="Username"
-                    />
-                  </el-form-item>
-                </div>
-
-                <div class="col-sm-4">
-                  <label class="required fs-6 fw-bold mb-2">Password</label>
-
-                  <el-form-item prop="password">
-                    <el-input
-                      v-model="formData.password"
-                      type="password"
-                      placeholder="Password"
-                    />
-                  </el-form-item>
-                </div>
-
-                <div class="col-sm-4">
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Confirm Password</label
-                  >
-
-                  <el-form-item prop="password_confirmation">
-                    <el-input
-                      v-model="formData.password_confirmation"
-                      type="password"
-                      placeholder="Confirm Password"
-                    />
-                  </el-form-item>
-                </div>
-              </div>
-            </div>
-
-            <div class="separator separator-dashed mb-8 mt-2"></div>
-            <div class="card-info">
-              <div class="fs-3 fw-bold text-muted mb-6">Images</div>
-              <div
-                class="mt-2 alert alert-primary d-flex align-items-center justify-between p-5 mb-10"
-              >
-                <i class="bi bi-info-circle fs-2x me-5"></i>
-                <div class="d-flex flex-column">
-                  <span
-                    >While not required, Adding a logo for the organisation adds
-                    an element of customization to their experience.</span
-                  >
-                </div>
-              </div>
-              <div class="row">
-                <el-form-item label="Logo">
-                  <el-upload
-                    action="#"
-                    ref="upload"
-                    list-type="picture-card"
-                    :class="{ disabled: uploadDisabled }"
-                    :limit="1"
-                    :on-change="handleChange"
-                    :on-remove="handleRemove"
-                    :on-preview="handlePreview"
-                    :auto-upload="false"
-                    accept="image/*"
-                  >
-                    <i class="fa fa-plus"></i>
-                  </el-upload>
-
-                  <el-dialog v-model="dialogVisible">
-                    <img w-full :src="dialogImageUrl" alt="Preview Image" />
-                  </el-dialog>
-                </el-form-item>
-              </div>
-            </div>
-            <div class="separator separator-dashed mb-8 mt-2"></div>
-          </div>
-          <!--end::Scroll-->
-        </div>
-        <!--end::Modal body-->
+        <CardSection heading="Primary Contact Details">
+          <InputWrapper label="First Name" prop="first_name">
+            <el-input
+              v-model="formData.first_name"
+              type="text"
+              placeholder="First Name"
+            />
+          </InputWrapper>
+          <InputWrapper label="Last Name" prop="last_name">
+            <el-input
+              v-model="formData.last_name"
+              type="text"
+              placeholder="Last Name"
+            />
+          </InputWrapper>
+          <InputWrapper label="Email" prop="email">
+            <el-input
+              type="email"
+              v-model="formData.email"
+              placeholder="admin@gmail.com"
+            />
+          </InputWrapper>
+          <InputWrapper label="Mobile Number" prop="mobile_number">
+            <el-input
+              type="text"
+              v-mask="'0#-####-####'"
+              v-model="formData.mobile_number"
+              placeholder=""
+            />
+          </InputWrapper>
+        </CardSection>
 
         <!--begin::Modal footer-->
         <div class="modal-footer flex-center">
@@ -319,16 +131,12 @@ export default defineComponent({
     const formData = ref({
       first_name: "",
       last_name: "",
-      username: "",
       name: "",
       email: "",
       mobile_number: "",
-      password: "",
-      password_confirmation: "",
-      device_name: "",
-      otac: "",
-      key_expiry: "",
-      device_expiry: "",
+      start_time: "07:00",
+      end_time: "16:00",
+      appointment_length: "30",
       max_clinics: "",
       max_employees: "",
     });

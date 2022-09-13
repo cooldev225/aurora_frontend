@@ -1,5 +1,5 @@
 <template>
-  <div class="card p-6 mb-6">
+  <div class="card mb-6">
     <div v-if="heading" class="card-header cursor-pointer">
       <div class="card-title m-0">
         <HeadingText :text="heading" />
@@ -8,7 +8,7 @@
         <slot name="header-actions"></slot>
       </span>
     </div>
-    <div class="card-body pt-0">
+    <div class="card-body">
       <slot></slot>
     </div>
   </div>
