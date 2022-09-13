@@ -67,7 +67,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Mutation
-  [PatientMutations.SET_PATIENT.DOCUMENT.LIST](documentList) {
+  [PatientMutations.SET_PATIENT.DOCUMENTS.LIST](documentList) {
     this.patientDocumentList = documentList;
   }
 
@@ -162,7 +162,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       ApiService.get("patients/documents/" + id)
         .then(({ data }) => {
           this.context.commit(
-            PatientMutations.SET_PATIENT.DOCUMENT.LIST,
+            PatientMutations.SET_PATIENT.DOCUMENTS.LIST,
             data.data
           );
           return data.data;

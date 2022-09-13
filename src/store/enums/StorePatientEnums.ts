@@ -33,7 +33,7 @@ const PatientMutations = {
     LIST: "setPatientsList",
     SELECT: "setSelectPatient",
     APPOINTMENTS: "setPatientAppointments",
-    DOCUMENT: {
+    DOCUMENTS: {
       LIST: "setPatientDocumentList",
     },
   },
