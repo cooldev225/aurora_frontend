@@ -19,7 +19,7 @@
         {{ document.document_name }}
       </span>
       <span class="text-gray-400 fw-bold fs-6">{{
-        moment(document.created_at).format("DD-MM-YYYY HH:mm A")
+        moment(document.created_at).format("DD/MM/YYYY HH:mm A")
       }}</span>
     </span>
     <!--end::Info-->

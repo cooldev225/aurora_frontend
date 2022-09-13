@@ -61,17 +61,13 @@
                   appointment.aus_formatted_date +
                   ' ' +
                   appointment.formatted_appointment_time +
-                  ' @ ' +
-                  appointment.clinic.name +
                   ' , ' +
                   appointment.specialist_name
                 "
               >
                 {{ appointment.aus_formatted_date }}
                 {{ appointment.formatted_appointment_time }}
-                @
-                {{ appointment.clinic.name }}
-                ,
+                , {{ appointment.appointment_type_name }} ,
                 <span>{{ appointment.specialist_name }}</span>
               </el-option>
             </template>
