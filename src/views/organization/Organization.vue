@@ -168,12 +168,16 @@ export default defineComponent({
     const loading = ref(false);
     const formData = ref({
       document_letter_header: null,
+      document_letter_header_file: null,
       document_letter_footer: null,
+      document_letter_footer_file: null,
       logo: null,
+      logo_file: null,
     });
     const rules = ref({});
     const handleAvatarSuccess = (uploadFile, flag) => {
       formData.value[flag] = URL.createObjectURL(uploadFile.raw);
+      formData.value[flag + "_file"] = uploadFile;
     };
     const handleCancelButton = () => {
       formData.value = {
@@ -201,13 +205,13 @@ export default defineComponent({
           let submitData = new FormData();
           submitData.append(
             "document_letter_header",
-            formData.value.document_letter_header
+            formData.value.document_letter_header_file.raw
           );
           submitData.append(
             "document_letter_footer",
-            formData.value.document_letter_footer
+            formData.value.document_letter_footer_file.raw
           );
-          submitData.append("logo", formData.value.logo);
+          submitData.append("logo", formData.value.logo_file.raw);
           store
             .dispatch(Actions.ORG_ADMIN.UPLOAD_IMAGE, {
               submitData: submitData,
