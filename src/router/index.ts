@@ -146,7 +146,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/organization",
-        name: "Organization",
+        name: "organization",
         component: () => import("@/views/organization/Organization.vue"),
       },
       {
