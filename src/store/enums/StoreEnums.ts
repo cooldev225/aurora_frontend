@@ -49,6 +49,11 @@ const Actions = {
     DELETE: "deleteOrgAdmin",
     UPDATE: "updateOrgAdmin",
     UPLOAD_IMAGE: "uploadImage",
+    ORGANIZATION: {
+      SETTINGS: {
+        UPDATE: "updateOrganizationSettings"
+      } 
+    }
   },
 
   CLINICS: {
