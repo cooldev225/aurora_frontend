@@ -558,52 +558,48 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [AppointmentActions.APPOINTMENT.PRE_ADMISSION.VALIDATE](params) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.post("appointments/pre-admissions/validate/" + params.id, {
-        last_name: params.last_name,
-        date_of_birth: moment(params.date_of_birth)
-          .format("YYYY-MM-DD")
-          .toString(),
-      })
-        .then(({ data }) => {
-          this.context.commit(
-            AppointmentMutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
-            data.message
-          );
-          this.context.commit(
-            AppointmentMutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
-            data.data
-          );
-          router.push({
-            path: "/appointment_pre_admissions/show/" + params.id + "/form_2",
-          });
-          return data.message;
-        })
-        .catch(({ response }) => {
-          if (response.status === 403) {
-            Swal.fire({
-              text: response.data.message,
-              icon: "error",
-              buttonsStyling: false,
-              confirmButtonText: "Ok",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-            }).then(() => {
-              this.context.commit(
-                AppointmentMutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
-                response.data.message
-              );
-            });
-            //this.context.commit(Mutations.SET_ERROR, response.data.errors);
-          } else {
-            console.error(response);
-          }
+    ApiService.setHeader();
+    ApiService.post("appointments/pre-admissions/validate/" + params.id, {
+      last_name: params.last_name,
+      date_of_birth: moment(params.date_of_birth)
+        .format("YYYY-MM-DD")
+        .toString(),
+    })
+      .then(({ data }) => {
+        this.context.commit(
+          AppointmentMutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
+          data.message
+        );
+        this.context.commit(
+          AppointmentMutations.SET_APT.PRE_ADMISSION.VALIDATE.DATA,
+          data.data
+        );
+        router.push({
+          path: "/appointment_pre_admissions/show/" + params.id + "/form_2",
         });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
+        return data.message;
+      })
+      .catch(({ response }) => {
+        if (response.status === 403) {
+          Swal.fire({
+            text: response.data.message,
+            icon: "error",
+            buttonsStyling: false,
+            confirmButtonText: "Ok",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          }).then(() => {
+            this.context.commit(
+              AppointmentMutations.SET_APT.PRE_ADMISSION.VALIDATE.MSG,
+              response.data.message
+            );
+          });
+          //this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        } else {
+          console.error(response);
+        }
+      });
   }
 
   @Action
