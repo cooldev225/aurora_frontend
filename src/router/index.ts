@@ -145,6 +145,11 @@ const routes: Array<RouteRecordRaw> = [
           import("@/views/settings/report-templates/ReportTemplates.vue"),
       },
       {
+        path: "/organization",
+        name: "organization",
+        component: () => import("@/views/organization/Organization.vue"),
+      },
+      {
         path: "/patients",
         name: "patients",
         component: () => import("@/views/patients/PatientList.vue"),

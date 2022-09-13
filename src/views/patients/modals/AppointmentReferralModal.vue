@@ -161,7 +161,7 @@
 <script>
 import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
-import { AppointmentActions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { ElMessage } from "element-plus";
