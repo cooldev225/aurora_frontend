@@ -1,440 +1,306 @@
 <template>
-  <div class="card w-100 h-100 px-20">
-    <el-form
-      @submit.prevent="submit()"
-      :model="formData"
-      :rules="rules"
-      ref="formRef"
-    >
-      <vue3-html2pdf
-        :show-layout="false"
-        :float-layout="false"
-        :enable-download="false"
-        :preview-modal="false"
-        :paginate-elements-by-height="3000"
-        filename="template"
-        :pdf-quality="2"
-        :manual-pagination="false"
-        pdf-format="a2"
-        :pdf-margin="10"
-        pdf-orientation="portrait"
-        pdf-content-width="100%"
-        @progress="onProgress($event)"
-        @beforeDownload="beforeDownload($event)"
-        ref="html2Pdf"
-      >
-        <template v-slot:pdf-content>
-          <!--begin::details View-->
-          <!--begin::Card header-->
-          <div class="card-header border-0 p-5">
-            <div
-              class="m-auto border border-success border-3 d-flex align-items-center justify-content-center w-250px h-250px"
-              style="border-radius: 50%"
-            >
-              <img
-                :src="patientData.organization_logo"
-                alt="Logo"
-                class="w-100 h-100"
-                style="border-radius: 50%"
-              />
-            </div>
-          </div>
-          <!--end::Card header-->
-          <!--begin::Card body-->
-          <div class="card-body pt-0">
-            <!--begin::Option-->
-            <div class="py-0">
-              <!--begin::Header-->
-              <div class="py-5 d-flex flex-stack flex-wrap">
-                <!--begin::Summary-->
-                <div class="me-3">
-                  <div class="d-flex align-items-center">
-                    <div class="text-gray-800 fw-bolder">
-                      Appointment Information
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!--end::Header-->
-              <!--begin::Body-->
-              <div class="fs-6 ps-10">
-                <!--begin::Details-->
-                <div class="d-flex flex-wrap py-5">
-                  <!--begin::Col-->
-                  <div class="flex-equal me-5">
-                    <table class="table table-flush fw-bold gy-1">
-                      <tbody>
-                        <tr>
-                          <td class="text-muted min-w-125px w-125px w-md-150px">
-                            Specialist
-                          </td>
-                          <td class="text-gray-800">
-                            <template v-if="patientData.specialist_user">
-                              <label
-                                >{{ patientData.specialist_user.first_name }}
-                                {{
-                                  patientData.specialist_user.last_name
-                                }}</label
-                              >
-                            </template>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-muted min-w-125px w-125px w-md-150px">
-                            Appointment Type
-                          </td>
-                          <td class="text-gray-800 text-capitalize">
-                            <template v-if="patientData.appointment_type">
-                              <label
-                                >{{ patientData.appointment_type.name }}
-                              </label>
-                            </template>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-muted min-w-125px w-125px w-md-150px">
-                            Date and TIme
-                          </td>
-                          <td class="text-gray-800">
-                            <label>{{
-                              aptData.date + " " + aptData.start_time
-                            }}</label>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="text-muted min-w-125px w-125px w-md-150px">
-                            Clinic
-                          </td>
-                          <td class="text-gray-800">
-                            <template v-if="patientData.clinic">
-                              <label>{{ patientData.clinic.name }}</label>
-                            </template>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <!--end::Col-->
-                </div>
-                <!--end::Details-->
-              </div>
-              <!--end::Body-->
-            </div>
-            <!--end::Option-->
-            <div class="separator separator-dashed"></div>
-            <!--begin::Option-->
-            <div class="py-0">
-              <!--begin::Header-->
-              <div class="py-5 d-flex flex-stack flex-wrap">
-                <div class="me-3">
-                  <div class="d-flex align-items-center">
-                    <div class="text-gray-800 fw-bolder">Your Information</div>
-                  </div>
-                </div>
-              </div>
-              <div class="container py-6">
-                <div class="row justify-content-md-center">
-                  <InputWrapper :class="colString" label="Title" prop="title">
-                    <el-select
-                      class="w-100"
-                      v-model="formData.title"
-                      placeholder="Select Title"
-                    >
-                      <el-option
-                        v-for="item in titles"
-                        :key="item.value"
-                        :value="item.value"
-                        :label="item.label"
-                      />
-                    </el-select>
-                  </InputWrapper>
-
-                  <InputWrapper
-                    :class="colString"
-                    label="First Name"
-                    prop="first_name"
-                  >
-                    <el-input
-                      type="text"
-                      v-model="formData.first_name"
-                      placeholder="First Name"
-                    />
-                  </InputWrapper>
-
-                  <InputWrapper
-                    :class="colString"
-                    label="Last Name"
-                    prop="last_name"
-                  >
-                    <el-input
-                      type="text"
-                      v-model="formData.last_name"
-                      placeholder="Last Name"
-                    />
-                  </InputWrapper>
-
-                  <InputWrapper
-                    :class="colString"
-                    label="Date Of Birth"
-                    prop="date_of_birth"
-                  >
-                    <el-date-picker
-                      class="w-100"
-                      v-model="formData.date_of_birth"
-                      format="YYYY-MM-DD"
-                      placeholder="1990-01-01"
-                    />
-                  </InputWrapper>
-
-                  <InputWrapper
-                    :class="colString"
-                    label="Contact Number"
-                    prop="contact_number"
-                  >
-                    <el-input
-                      type="text"
-                      v-mask="'0#-####-####'"
-                      v-model="formData.contact_number"
-                      placeholder="Contact Number"
-                    />
-                  </InputWrapper>
-
-                  <InputWrapper :class="colString" label="Email" prop="email">
-                    <el-input
-                      type="email"
-                      v-model="formData.email"
-                      placeholder="Email"
-                    />
-                  </InputWrapper>
-
-                  <InputWrapper
-                    :class="colString"
-                    label="Address"
-                    prop="address"
-                  >
-                    <el-input
-                      type="text"
-                      v-model="formData.address"
-                      placeholder="Address"
-                    />
-                  </InputWrapper>
-
-                  <InputWrapper :class="colString" label="Gender" prop="gender">
-                    <el-select
-                      class="w-100"
-                      v-model="formData.gender"
-                      placeholder="Select Gender"
-                    >
-                      <el-option value="male" label="Male" />
-                      <el-option value="female" label="Female" />
-                      <el-option value="other" label="Other" />
-                      <el-option
-                        value="undisclosed"
-                        label="Not Stated / Inadequately Described"
-                      />
-                    </el-select>
-                  </InputWrapper>
-                  <InputWrapper
-                    :class="colString"
-                    label="Marital Status"
-                    prop="marital_status"
-                  >
-                    <el-select
-                      class="w-100"
-                      v-model="formData.marital_status"
-                      placeholder="Marital Status"
-                    >
-                      <el-option
-                        v-for="status in maritalStatus"
-                        :key="status.value"
-                        :value="status.value"
-                        :label="status.label"
-                      />
-                    </el-select>
-                  </InputWrapper>
-
-                  <InputWrapper
-                    :class="colString"
-                    label="Occupation"
-                    prop="occupation"
-                  >
-                    <el-input
-                      type="text"
-                      v-model="formData.occupation"
-                      placeholder="Occupation"
-                    />
-                  </InputWrapper>
-
-                  <InputWrapper
-                    :class="colString"
-                    label="Aboriginal or Torres Strait Islander?"
-                    prop="aborginality"
-                  >
-                    <el-select
-                      class="w-100"
-                      v-model="formData.aborginality"
-                      placeholder="Aborginality"
-                    >
-                      <el-option :value="0" label="No" />
-                      <el-option :value="1" label="Yes" />
-                    </el-select>
-                  </InputWrapper>
-                  <span :class="colString"></span>
-                </div>
-              </div>
-            </div>
-            <div class="separator separator-dashed"></div>
-            <div class="py-0">
-              <div class="me-3 mt-6">
-                <div class="d-flex align-items-center">
-                  <div class="text-gray-800 fw-bolder">Next Of Kin</div>
-                </div>
-              </div>
-              <div class="container py-6">
-                <div class="row justify-content-md-center">
-                  <InputWrapper :class="colString" label="Name" prop="kin_name">
-                    <el-input
-                      type="text"
-                      v-model="formData.kin_name"
-                      placeholder="Kin First Name"
-                    />
-                  </InputWrapper>
-                  <InputWrapper
-                    :class="colString"
-                    label="Phone Number"
-                    prop="kin_phone_number"
-                  >
-                    <el-input
-                      type="text"
-                      v-mask="'0#-####-####'"
-                      v-model="formData.kin_phone_number"
-                      placeholder="Kin Phone Number"
-                    />
-                  </InputWrapper>
-                  <InputWrapper
-                    :class="colString"
-                    label="Kin Relationship"
-                    prop="kin_relationship"
-                  >
-                    <el-input
-                      type="text"
-                      v-model="formData.kin_relationship"
-                      placeholder="Kin Relationship"
-                    />
-                  </InputWrapper>
-                  <span :class="colString"></span>
-                </div>
-              </div>
-            </div>
-            <!--end::Option-->
-            <div class="separator separator-dashed"></div>
-            <div
-              v-for="section in patientData.pre_admission_sections"
-              :key="section.id"
-              class="py-0"
-            >
-              <!--begin::Header-->
-              <div class="py-5 d-flex flex-stack flex-wrap">
-                <div class="me-3">
-                  <div class="d-flex align-items-center">
-                    <div class="text-gray-800 fw-bolder">
-                      {{ section.title }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!--end::Header-->
-              <!--begin::Body-->
-              <div class="fs-6 ps-10">
-                <template
-                  v-for="question in section.questions"
-                  :key="question.id"
+  <el-form
+    @submit.prevent="submit()"
+    :model="formData"
+    :rules="rules"
+    ref="formRef"
+    class="col-xl-6 mx-auto"
+  >
+    <CardSection class="text-center">
+      <img
+        :src="patientData.organization_logo"
+        alt="Organization Logo"
+        class="mw-300px mx-auto px-6"
+      />
+    </CardSection>
+    <CardSection heading="Appointment Information">
+      <table class="table table-flush fw-bold gy-1">
+        <tbody>
+          <tr>
+            <td class="text-muted min-w-125px w-125px w-md-150px">
+              Specialist
+            </td>
+            <td class="text-gray-800">
+              <template v-if="patientData.specialist_user">
+                <label
+                  >{{ patientData.specialist_user.first_name }}
+                  {{ patientData.specialist_user.last_name }}</label
                 >
-                  <InputWrapper :label="question.text">
-                    <el-input
-                      v-if="question.answer_format === 'TEXT'"
-                      v-model="
-                        pre_admission_answers[
-                          's' +
-                            section.id.toString() +
-                            '/q' +
-                            question.id.toString()
-                        ]
-                      "
-                    />
-                    <el-radio-group
-                      v-if="question.answer_format === 'BOOLEAN'"
-                      v-model="
-                        pre_admission_answers[
-                          's' +
-                            section.id.toString() +
-                            '/q' +
-                            question.id.toString()
-                        ]
-                      "
-                    >
-                      <el-radio label="Yes" size="large">Yes</el-radio>
-                      <el-radio label="No" size="large">No</el-radio>
-                    </el-radio-group>
-                  </InputWrapper>
-                </template>
-              </div>
-              <!--end::Body-->
-            </div>
+              </template>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-muted min-w-125px w-125px w-md-150px">
+              Appointment Type
+            </td>
+            <td class="text-gray-800 text-capitalize">
+              <template v-if="patientData.appointment_type">
+                <label>{{ patientData.appointment_type.name }} </label>
+              </template>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-muted min-w-125px w-125px w-md-150px">
+              Date and TIme
+            </td>
+            <td class="text-gray-800">
+              <label>{{ aptData.date + " " + aptData.start_time }}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-muted min-w-125px w-125px w-md-150px">Clinic</td>
+            <td class="text-gray-800">
+              <template v-if="patientData.clinic">
+                <label>{{ patientData.clinic.name }}</label>
+              </template>
+            </td>
+          </tr>
+        </tbody>
+      </table></CardSection
+    >
+    <CardSection heading="Your Information">
+      <div class="row justify-content-md-center">
+        <InputWrapper :class="colString" label="Title" prop="title">
+          <el-select
+            class="w-100"
+            v-model="formData.title"
+            placeholder="Select Title"
+          >
+            <el-option
+              v-for="item in titles"
+              :key="item.value"
+              :value="item.value"
+              :label="item.label"
+            />
+          </el-select>
+        </InputWrapper>
 
-            <div class="separator separator-dashed"></div>
-            <div class="py-0">
-              <!--begin::Header-->
-              <div class="py-5 d-flex flex-stack flex-wrap">
-                <div class="me-3">
-                  <div class="d-flex align-items-center">
-                    <div class="text-gray-800 fw-bolder">Consent</div>
-                  </div>
-                </div>
-              </div>
-              <el-input
-                type="textarea"
-                v-if="patientData.pre_admission_consent"
-                v-model="patientData.pre_admission_consent.text"
-                rows="15"
-                readonly
-              />
-              <el-checkbox
-                type="checkbox"
-                :label="
-                  'I, ' +
-                  formData.first_name +
-                  ' ' +
-                  formData.last_name +
-                  ', agree to the conditions stated above.'
-                "
-              />
-            </div>
-          </div>
-        </template>
-      </vue3-html2pdf>
-      <div class="d-flex justify-content-end mb-5 me-5 gap-5">
-        <button
-          :data-kt-indicator="loading ? 'on' : null"
-          class="btn btn-lg btn-primary"
-          type="submit"
+        <InputWrapper :class="colString" label="First Name" prop="first_name">
+          <el-input
+            type="text"
+            v-model="formData.first_name"
+            placeholder="First Name"
+          />
+        </InputWrapper>
+
+        <InputWrapper :class="colString" label="Last Name" prop="last_name">
+          <el-input
+            type="text"
+            v-model="formData.last_name"
+            placeholder="Last Name"
+          />
+        </InputWrapper>
+
+        <InputWrapper
+          :class="colString"
+          label="Date Of Birth"
+          prop="date_of_birth"
         >
-          <span v-if="!loading" class="indicator-label"> Confirm </span>
-          <span v-if="loading" class="indicator-progress">
-            Please wait...
-            <span
-              class="spinner-border spinner-border-sm align-middle ms-2"
-            ></span>
-          </span>
-        </button>
-        <button type="reset" class="btn btn-light-primary w-min-250px">
-          Cancel
-        </button>
+          <el-date-picker
+            class="w-100"
+            v-model="formData.date_of_birth"
+            format="YYYY-MM-DD"
+            placeholder="1990-01-01"
+          />
+        </InputWrapper>
+
+        <InputWrapper
+          :class="colString"
+          label="Contact Number"
+          prop="contact_number"
+        >
+          <el-input
+            type="text"
+            v-mask="'0#-####-####'"
+            v-model="formData.contact_number"
+            placeholder="Contact Number"
+          />
+        </InputWrapper>
+
+        <InputWrapper :class="colString" label="Email" prop="email">
+          <el-input type="email" v-model="formData.email" placeholder="Email" />
+        </InputWrapper>
+
+        <InputWrapper :class="colString" label="Address" prop="address">
+          <el-input
+            type="text"
+            v-model="formData.address"
+            placeholder="Address"
+          />
+        </InputWrapper>
+
+        <InputWrapper :class="colString" label="Gender" prop="gender">
+          <el-select
+            class="w-100"
+            v-model="formData.gender"
+            placeholder="Select Gender"
+          >
+            <el-option value="male" label="Male" />
+            <el-option value="female" label="Female" />
+            <el-option value="other" label="Other" />
+            <el-option
+              value="undisclosed"
+              label="Not Stated / Inadequately Described"
+            />
+          </el-select>
+        </InputWrapper>
+        <InputWrapper
+          :class="colString"
+          label="Marital Status"
+          prop="marital_status"
+        >
+          <el-select
+            class="w-100"
+            v-model="formData.marital_status"
+            placeholder="Marital Status"
+          >
+            <el-option
+              v-for="status in maritalStatus"
+              :key="status.value"
+              :value="status.value"
+              :label="status.label"
+            />
+          </el-select>
+        </InputWrapper>
+
+        <InputWrapper :class="colString" label="Occupation" prop="occupation">
+          <el-input
+            type="text"
+            v-model="formData.occupation"
+            placeholder="Occupation"
+          />
+        </InputWrapper>
+
+        <InputWrapper
+          :class="colString"
+          label="Aboriginal or Torres Strait Islander?"
+          prop="aborginality"
+        >
+          <el-select
+            class="w-100"
+            v-model="formData.aborginality"
+            placeholder="Aborginality"
+          >
+            <el-option :value="0" label="No" />
+            <el-option :value="1" label="Yes" />
+          </el-select>
+        </InputWrapper>
+        <span :class="colString"></span>
       </div>
-      <!--end::Card body-->
-      <!--end::details View-->
-    </el-form>
-  </div>
+    </CardSection>
+
+    <CardSection heading="Next Of Kin">
+      <div class="row justify-content-md-center">
+        <InputWrapper :class="colString" label="Name" prop="kin_name">
+          <el-input
+            type="text"
+            v-model="formData.kin_name"
+            placeholder="Kin First Name"
+          />
+        </InputWrapper>
+        <InputWrapper
+          :class="colString"
+          label="Phone Number"
+          prop="kin_phone_number"
+        >
+          <el-input
+            type="text"
+            v-mask="'0#-####-####'"
+            v-model="formData.kin_phone_number"
+            placeholder="Kin Phone Number"
+          />
+        </InputWrapper>
+        <InputWrapper
+          :class="colString"
+          label="Kin Relationship"
+          prop="kin_relationship"
+        >
+          <el-input
+            type="text"
+            v-model="formData.kin_relationship"
+            placeholder="Kin Relationship"
+          />
+        </InputWrapper>
+        <span :class="colString"></span>
+      </div>
+    </CardSection>
+    <CardSection heading="Billing Details"> </CardSection>
+    <div class="separator separator-dashed"></div>
+
+    <template
+      v-for="section in patientData.pre_admission_sections"
+      :key="section.id"
+    >
+      <CardSection :heading="section.title">
+        <template v-for="question in section.questions" :key="question.id">
+          <InputWrapper :label="question.text">
+            <el-input
+              v-if="question.answer_format === 'TEXT'"
+              v-model="
+                pre_admission_answers[
+                  's' + section.id.toString() + '/q' + question.id.toString()
+                ]
+              "
+            />
+            <el-radio-group
+              v-if="question.answer_format === 'BOOLEAN'"
+              v-model="
+                pre_admission_answers[
+                  's' + section.id.toString() + '/q' + question.id.toString()
+                ]
+              "
+            >
+              <el-radio label="Yes" size="large">Yes</el-radio>
+              <el-radio label="No" size="large">No</el-radio>
+            </el-radio-group>
+          </InputWrapper>
+        </template>
+      </CardSection>
+    </template>
+
+    <div class="separator separator-dashed"></div>
+
+    <CardSection heading="Consent">
+      <el-input
+        type="textarea"
+        v-if="patientData.pre_admission_consent"
+        v-model="patientData.pre_admission_consent.text"
+        rows="15"
+        readonly
+      />
+      <el-checkbox
+        type="checkbox"
+        :label="
+          'I, ' +
+          formData.first_name +
+          ' ' +
+          formData.last_name +
+          ', agree to the conditions stated above.'
+        "
+      />
+    </CardSection>
+
+    <div class="d-flex justify-content-end mb-5 me-5 gap-5">
+      <button
+        :data-kt-indicator="loading ? 'on' : null"
+        class="btn btn-lg btn-primary"
+        type="submit"
+      >
+        <span v-if="!loading" class="indicator-label"> Confirm </span>
+        <span v-if="loading" class="indicator-progress">
+          Please wait...
+          <span
+            class="spinner-border spinner-border-sm align-middle ms-2"
+          ></span>
+        </span>
+      </button>
+      <button type="reset" class="btn btn-light-primary w-min-250px">
+        Cancel
+      </button>
+    </div>
+    <!--end::Card body-->
+    <!--end::details View-->
+  </el-form>
 </template>
 
 <script>
@@ -445,7 +311,7 @@ import { useRouter } from "vue-router";
 import maritalStatus from "@/core/data/marital-status";
 import titles from "@/core/data/titles";
 import { Actions } from "@/store/enums/StoreEnums";
-import Vue3Html2pdf from "vue3-html2pdf";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 import { mask } from "vue-the-mask";
@@ -457,12 +323,11 @@ export default defineComponent({
     mask,
   },
   components: {
-    Vue3Html2pdf,
     InputWrapper,
   },
   data: function () {
     return {
-      colString: "col-12 col-sm-6 col-lg-4 ",
+      colString: "col-12 col-sm-6 col-xl-4",
     };
   },
   setup() {
@@ -614,7 +479,10 @@ export default defineComponent({
             "pre_admission_answers",
             JSON.stringify(formattedAnswer())
           );
-          await store.dispatch(Actions.APT.PRE_ADMISSION.STORE, Data);
+          await store.dispatch(
+            AppointmentActions.APPOINTMENT.PRE_ADMISSION.STORE,
+            Data
+          );
           loading.value = false;
           router.push({
             path:
@@ -637,7 +505,10 @@ export default defineComponent({
     onMounted(async () => {
       setCurrentPageBreadcrumbs("Administration", ["Patients"]);
       apt_id.value = router.currentRoute.value.params.id.toString();
-      await store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
+      await store.dispatch(
+        AppointmentActions.APPOINTMENT.PRE_ADMISSION.ORGANIZATION,
+        apt_id.value
+      );
     });
 
     watch(patientData, () => {
@@ -651,31 +522,6 @@ export default defineComponent({
       }
     });
 
-    const generatePDF = () => {
-      loading.value = true;
-      submit();
-      // html2Pdf.value.generatePdf();
-    };
-
-    const onProgress = (event) => {
-      console.log(`Processed: ${event} / 100`);
-    };
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const beforeDownload = ({ html2pdf, options, pdfContent }) => {
-      submit();
-      // html2pdf()
-      //   .set(options)
-      //   .from(pdfContent)
-      //   .toPdf()
-      //   .get("pdf")
-      //   .output("datauristring")
-      //   .then((pdfAsString) => {
-      //     Data.append("pdf", pdfAsString);
-      //     submit();
-      //   });
-    };
-
     return {
       aptData,
       formData,
@@ -688,9 +534,6 @@ export default defineComponent({
       loading,
       pre_admission_answers,
       submit,
-      onProgress,
-      generatePDF,
-      beforeDownload,
     };
   },
 });

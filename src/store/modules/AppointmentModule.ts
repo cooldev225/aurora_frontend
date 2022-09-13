@@ -464,7 +464,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Action
-  [AppointmentActions.APT.PRE_ADMISSION.ORG](id) {
+  [AppointmentActions.APPOINTMENT.PRE_ADMISSION.ORGANIZATION](id) {
     ApiService.get("appointments/pre-admissions/show/" + id)
       .then(({ data }) => {
         this.context.commit(
@@ -480,7 +480,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Action
-  [AppointmentActions.APT.PRE_ADMISSION.STORE](data) {
+  [AppointmentActions.APPOINTMENT.PRE_ADMISSION.STORE](data) {
     console.log(data.get("pre_admission_answers"));
     ApiService.post(
       "appointments/pre-admissions/store/" + data.get("apt_id").toString(),
@@ -557,7 +557,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Action
-  [AppointmentActions.APT.PRE_ADMISSION.VALIDATE](params) {
+  [AppointmentActions.APPOINTMENT.PRE_ADMISSION.VALIDATE](params) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("appointments/pre-admissions/validate/" + params.id, {

@@ -17,9 +17,6 @@ const AppointmentActions = {
       UPDATE:   "updateAppointmentReferral", // (put)    'appointments/referral/{appointment}'
       VIEW:     "viewAppointmentReferral",   // (post)   'appointments/referral/file'
     },
-    PRE_ADMISSION: {
-      VIEW:     "viewPreAdmissionForm",      // (post)   'appointment/procedure-approvals/pdf/{appointment}'
-    },
     APPOINTMENT_TYPES:{
       LIST:   "listAptTypes",               //  (get)    '/appointment-types'
       CREATE: "createAptTypes",             //  (post)   '/appointment-types'
@@ -37,7 +34,13 @@ const AppointmentActions = {
     },
     COLLECTING_PERSON:{
       UPDATE: "updateCancellationApt",      //  (put) '/appointments/collecting-person/{appointment}'
-    }
+    },
+    PRE_ADMISSION: {
+      VIEW:     "viewPreAdmissionForm",      // (post)   'appointment/procedure-approvals/pdf/{appointment}'
+      ORGANIZATION: "listAptPreAdmissionOrg",
+      VALIDATE:     "validateAptPreAdmission",
+      STORE:        "createAptPreAdmission",
+    },
   },
 
   APT: {
@@ -65,11 +68,7 @@ const AppointmentActions = {
     
     CHECK_IN: "checkInApt",
     CHECK_OUT: "checkOutApt",
-    PRE_ADMISSION: {
-      ORG: "listAptPreAdmissionOrg",
-      VALIDATE: "validateAptPreAdmission",
-      STORE: "createAptPreAdmission",
-    },
+    
     USER_APT: {
       LIST: "userAptList",
     },

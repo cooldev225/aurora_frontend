@@ -45,6 +45,7 @@ import { defineComponent, onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 export default defineComponent({
@@ -87,7 +88,7 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           store
-            .dispatch(Actions.APT.PRE_ADMISSION.VALIDATE, {
+            .dispatch(AppointmentActions.APPOINTMENT.PRE_ADMISSION.VALIDATE, {
               id: apt_id.value,
               last_name: formData.value.last_name,
               date_of_birth: formData.value.date_of_birth,
@@ -107,7 +108,10 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       apt_id.value = router.currentRoute.value.params.id.toString();
-      store.dispatch(Actions.APT.PRE_ADMISSION.ORG, apt_id.value);
+      store.dispatch(
+        AppointmentActions.APPOINTMENT.PRE_ADMISSION.ORGANIZATION,
+        apt_id.value
+      );
     });
 
     return {
