@@ -48,6 +48,7 @@ const Actions = {
     CREATE: "createOrgAdmin",
     DELETE: "deleteOrgAdmin",
     UPDATE: "updateOrgAdmin",
+    UPLOAD_IMAGE: "uploadImage",
   },
 
   CLINICS: {
@@ -182,6 +183,7 @@ const Mutations = {
   SET_ORG_MANAGER: {
     LIST: "setOrgManagerList",
     SELECT: "setSelectOrgManager",
+    ORGNIZATION: "settingOrganization"
   },
 
   SET_ORG_ADMIN: {
