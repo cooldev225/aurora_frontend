@@ -219,7 +219,7 @@ export default defineComponent({
             let blob = new Blob([data], { type: "application/pdf" });
             let objectUrl = URL.createObjectURL(blob);
             pdf.embed(objectUrl, "#divPDFViewer");
-          } else if (selectedDocument.value.file_type === "IMAGE") {
+          } else if (selectedDocument.value.file_type === "PNG") {
             document.getElementById("divPDFViewer").innerHTML =
               "<img src='" + data + "' />";
           }
