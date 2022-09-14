@@ -79,13 +79,17 @@ export default defineComponent({
     watchEffect(() => {
       reportTemplatesData.value = list.value;
       appointmentsData.value = patientData.value.appointments;
+      store.commit(
+        Mutations.SET_REPORT_APPOINTMENTS.LIST,
+        patientData.value.appointments
+      );
     });
 
     const submit = () => {
-      store.commit(
-        Mutations.SET_REPORT_TEMPLATES.SELECT,
-        reportTemplatesData.value[reportTemplate.value]
-      );
+      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, {
+        template: reportTemplatesData.value[reportTemplate.value],
+        appointment: appointmentsData.value[appointment.value],
+      });
 
       hideModal(reportModal.value);
       router.push({ name: "patients-report" });
