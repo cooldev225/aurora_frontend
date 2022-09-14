@@ -54,10 +54,6 @@ const OrgAdminMenu = [
         heading: "Administrators",
         route: "/organisationAdmins",
       },
-      {
-        heading: "Managers",
-        route: "/organisationManagers",
-      },
     ],
   },
   {

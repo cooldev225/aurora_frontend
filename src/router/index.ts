@@ -37,11 +37,6 @@ const routes: Array<RouteRecordRaw> = [
           import("@/components/organisations/EditOrganisation.vue"),
       },
       {
-        path: "/organisationManagers",
-        name: "organisationMangers",
-        component: () => import("@/views/organisation-admin/Managers.vue"),
-      },
-      {
         path: "/organisationAdmins",
         name: "organisationAdmins",
         component: () => import("@/views/organisation-admin/Admins.vue"),

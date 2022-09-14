@@ -8,7 +8,6 @@ import ConfigModule from "@/store/modules/ConfigModule";
 import AdminModule from "@/store/modules/AdminModule";
 import UserModule from "@/store/modules/UserModule";
 import OrganisationModule from "@/store/modules/OrganisationModule";
-import OrgManagerModule from "@/store/modules/OrgManagerModule";
 import OrgAdminModule from "@/store/modules/OrgAdminModule";
 import ClinicsModule from "@/store/modules/ClinicsModule";
 import HealthFundModule from "@/store/modules/HealthFundModule";
@@ -42,7 +41,6 @@ const store = createStore({
     AdminModule,
     UserModule,
     OrganisationModule,
-    OrgManagerModule,
     OrgAdminModule,
     ClinicsModule,
     HealthFundModule,
