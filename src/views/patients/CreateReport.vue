@@ -12,7 +12,12 @@
     <!--begin::Card header-->
     <!--begin::Card body-->
     <div class="card-body">
-      <el-form>
+      <el-form
+        @submit.prevent="submit()"
+        :model="formData"
+        :rules="rules"
+        ref="formRef"
+      >
         <div class="report-template-wrapper">
           <!--begin::Input group-->
           <div class="fv-row mb-10">
@@ -187,6 +192,7 @@ export default defineComponent({
   components: {},
   setup() {
     const store = useStore();
+    const formRef = ref(null);
     const templateList = computed(
       () => store.getters.getReportTemplateSelected
     );
@@ -210,11 +216,27 @@ export default defineComponent({
       section: {},
     });
 
+    const rules = ref({});
+    const loading = ref(false);
+    const submit = () => {
+      loading.value = true;
+      if (!formRef.value) {
+        loading.value = false;
+        return;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (formRef.value as any).validate(async (valid) => {
+        if (valid) {
+          console.log("valid", formData.value, templateData.value.sections);
+        }
+      });
+    };
+
     watchEffect(() => {
       templateData.value = templateList.value;
       patientData.value = patientList.value;
       appointmentData.value = appointment.value;
-      console.log("----------------", patientData, appointmentData);
     });
 
     onMounted(() => {
@@ -222,11 +244,14 @@ export default defineComponent({
     });
 
     return {
+      formRef,
+      rules,
       templateData,
       patientData,
       appointmentData,
       formData,
       moment,
+      submit,
     };
   },
 });
