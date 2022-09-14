@@ -114,11 +114,26 @@ export default class OrgAdminModule extends VuexModule implements OrgAdminInfo {
   [Actions.ORG_ADMIN.UPLOAD_IMAGE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("organization/image/upload", data.submitData, {
+      ApiService.post("organizations/admin/settings", data.submitData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+  @Action
+  [Actions.ORG_ADMIN.LOAD_ORGANIZATION_DATA]() {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.get("organizations/admin/settings")
         .then(({ data }) => {
           return data.data;
         })

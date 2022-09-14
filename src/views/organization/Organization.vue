@@ -238,8 +238,30 @@ export default defineComponent({
         }
       });
     };
+    const loadOrganizationData = () => {
+      store
+        .dispatch(Actions.ORG_ADMIN.LOAD_ORGANIZATION_DATA)
+        .then(({ data }) => {
+          loading.value = false;
+          Swal.fire({
+            text: "Successfully Updated organization",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          });
+          console.log("--------------", data);
+        })
+        .catch(({ response }) => {
+          loading.value = false;
+          console.log(response.data.error);
+        });
+    };
     onMounted(() => {
       setCurrentPageBreadcrumbs("Organization Settings", ["Settings"]);
+      loadOrganizationData();
     });
     return {
       formData,
