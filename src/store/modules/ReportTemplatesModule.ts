@@ -55,6 +55,10 @@ export default class ReportTemplateModule
     return this.reportTemplateSelectData;
   }
 
+  get getReportAppointmentSelected(): unknown {
+    return this.reportAppointmentSelectData;
+  }
+
   @Mutation
   [Mutations.SET_REPORT_APPOINTMENTS.LIST](data) {
     this.reportAppointmentsData = data;

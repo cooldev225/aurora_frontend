@@ -29,7 +29,7 @@
             <label class="col-md-6 fs-4 fw-bold mb-2">
               DATE:
               <span style="font-weight: 400">{{
-                moment(templateData.created_at).format("YYYY-MM-DD").toString()
+                moment(templateData.created_at).format("DD/MM/YYYY").toString()
               }}</span>
             </label>
           </div>
@@ -52,7 +52,9 @@
               <label class="col-md-6 fs-4 fw-bold mb-2">
                 DOB:
                 <span style="font-weight: 400">{{
-                  patientData.date_of_birth
+                  moment(patientData.date_of_birth)
+                    .format("DD/MM/YYYY")
+                    .toString()
                 }}</span>
               </label>
             </div>
@@ -77,8 +79,9 @@
             <div class="fv-row">
               <label class="col-md-6 fs-4 fw-bold mb-2">
                 REFERRING DOCTOR:
+                <!-- patientData.referring_doctor -->
                 <span style="font-weight: 400">{{
-                  patientData.referring_doctor
+                  appointmentData.referral.referring_doctor_name
                 }}</span>
               </label>
             </div>
@@ -188,6 +191,9 @@ export default defineComponent({
       () => store.getters.getReportTemplateSelected
     );
     const patientList = computed(() => store.getters.selectedPatient);
+    const appointment = computed(
+      () => store.getters.getReportAppointmentSelected
+    );
 
     const templateData = ref({
       id: "",
@@ -199,6 +205,7 @@ export default defineComponent({
     });
 
     const patientData = ref();
+    const appointmentData = ref();
     const formData = ref({
       section: {},
     });
@@ -206,6 +213,8 @@ export default defineComponent({
     watchEffect(() => {
       templateData.value = templateList.value;
       patientData.value = patientList.value;
+      appointmentData.value = appointment.value;
+      console.log("----------------", appointmentData);
     });
 
     onMounted(() => {
