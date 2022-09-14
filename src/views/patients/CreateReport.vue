@@ -91,7 +91,7 @@
               <label class="col-md-6 fs-4 fw-bold mb-2">
                 APPOINTMENT TYPES:
                 <span style="font-weight: 400">{{
-                  patientData.appointment_type_name
+                  appointmentData.referral.appointment_type_name
                 }}</span>
               </label>
             </div>
@@ -101,7 +101,7 @@
               <label class="col-md-6 fs-4 fw-bold mb-2">
                 SPECIALIST:
                 <span style="font-weight: 400">{{
-                  patientData.specialist_name
+                  appointmentData.specialist_name
                 }}</span>
               </label>
             </div>
@@ -111,7 +111,7 @@
               <label class="col-md-6 fs-4 fw-bold mb-2">
                 PROVIDER NUMBER:
                 <span style="font-weight: 400">{{
-                  patientData.provider_number
+                  appointmentData.clinic.hospital_provider_number
                 }}</span>
               </label>
             </div>
@@ -163,9 +163,9 @@
             </div>
           </div>
         </div>
-        <div class="d-flex ms-auto justify-content-end w-25">
-          <button type="submit" class="btn btn-primary w-25">Create</button>
-          <button type="reset" class="btn btn-light-primary w-25 ms-2">
+        <div class="d-flex ms-auto justify-content-end">
+          <button type="submit" class="btn btn-primary">Create</button>
+          <button type="reset" class="btn btn-light-primary ms-2">
             Cancel
           </button>
         </div>
@@ -214,7 +214,7 @@ export default defineComponent({
       templateData.value = templateList.value;
       patientData.value = patientList.value;
       appointmentData.value = appointment.value;
-      console.log("----------------", appointmentData);
+      console.log("----------------", patientData, appointmentData);
     });
 
     onMounted(() => {
@@ -224,6 +224,7 @@ export default defineComponent({
     return {
       templateData,
       patientData,
+      appointmentData,
       formData,
       moment,
     };
