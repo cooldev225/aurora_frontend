@@ -94,25 +94,6 @@
                 />
               </el-select>
             </InputWrapper>
-
-            <InputWrapper
-              v-show="formData.role_id == formInfo.specialist_role_id"
-              class="col-4"
-              label="Anaesthetist"
-              prop="specialist.anesthetist_id"
-            >
-              <el-select
-                v-model="formData.specialist.anesthetist_id"
-                class="w-100"
-              >
-                <el-option
-                  v-for="item in anesthetistList"
-                  :value="item.id"
-                  :label="item.first_name + ' ' + item.last_name"
-                  :key="item.id"
-                />
-              </el-select>
-            </InputWrapper>
           </div>
           <el-divider />
           <HeadingText text="Employee Hours" />
@@ -139,7 +120,7 @@
                 />
               </el-select>
             </InputWrapper>
-            <InputWrapper class="col-6" label="Time Slot">
+            <InputWrapper class="col-3" label="Time Slot">
               <div class="d-flex">
                 <el-time-select
                   class="w-50 pe-2"
@@ -158,6 +139,24 @@
                   format="HH:mm"
                 />
               </div>
+            </InputWrapper>
+            <InputWrapper
+              v-show="formData.role_id == formInfo.specialist_role_id"
+              class="col-3"
+              label="Anaesthetist"
+              prop="specialist.anesthetist_id"
+            >
+              <el-select
+                v-model="formData.specialist.anesthetist_id"
+                class="w-100"
+              >
+                <el-option
+                  v-for="item in anesthetistList"
+                  :value="item.id"
+                  :label="item.first_name + ' ' + item.last_name"
+                  :key="item.id"
+                />
+              </el-select>
             </InputWrapper>
           </div>
 
