@@ -50,6 +50,7 @@
             <InputWrapper
               class="col-12 col-md-6"
               label="Contact Number"
+              v-mask="'0#-####-####'"
               prop="mobile_number"
             >
               <el-input
