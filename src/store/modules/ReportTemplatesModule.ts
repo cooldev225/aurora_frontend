@@ -23,7 +23,9 @@ export interface IReportTemplate {
 
 export interface ReportTemplateInfo {
   reportTemplatesData: Array<IReportTemplate>;
+  reportAppointmentsData: Array<unknown>;
   reportTemplateSelectData: IReportTemplate;
+  reportAppointmentSelectData: unknown;
 }
 
 @Module
@@ -33,6 +35,9 @@ export default class ReportTemplateModule
 {
   reportTemplatesData = [] as Array<IReportTemplate>;
   reportTemplateSelectData = {} as IReportTemplate;
+
+  reportAppointmentsData = [] as Array<unknown>;
+  reportAppointmentSelectData = {} as unknown;
 
   /**
    * Get Report Template for current organization
@@ -51,13 +56,19 @@ export default class ReportTemplateModule
   }
 
   @Mutation
+  [Mutations.SET_REPORT_APPOINTMENTS.LIST](data) {
+    this.reportAppointmentsData = data;
+  }
+
+  @Mutation
   [Mutations.SET_REPORT_TEMPLATES.LIST](data) {
     this.reportTemplatesData = data;
   }
 
   @Mutation
   [Mutations.SET_REPORT_TEMPLATES.SELECT](data) {
-    this.reportTemplateSelectData = data;
+    this.reportTemplateSelectData = data.template;
+    this.reportAppointmentSelectData = data.appointment;
   }
 
   @Action

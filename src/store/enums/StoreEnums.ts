@@ -233,6 +233,11 @@ const Mutations = {
     SELECT: "setSelectReportTemplate",
   },
 
+  SET_REPORT_APPOINTMENTS: {
+    LIST: "setReportAppointments",
+    SELECT: "setSelectReportAppointment",
+  },
+
   SET_MAILS: {
     INBOX: "setInboxMails",
     SELECT: "setSelectedMail",
