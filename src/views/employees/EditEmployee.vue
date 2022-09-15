@@ -239,7 +239,7 @@ export default defineComponent({
       first_name: "",
       last_name: "",
       address: "",
-      role_id: "",
+      role_id: "4",
       type: "full-time",
       specialist: {
         anesthetist_id: "",
