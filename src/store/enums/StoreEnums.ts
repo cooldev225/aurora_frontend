@@ -149,6 +149,10 @@ const Actions = {
     CREATE: "createMakePayment",
   },
 
+  SPECIALIST_MESSAGES: {
+    LIST: "listSpecialistMessages",
+  },
+
 };
 
 const Mutations = {
@@ -261,6 +265,11 @@ const Mutations = {
   SET_MAKE_PAYMENT: {
     LIST: "setMakePayment",
     SELECT: "setSelectMakePayment",
+  },
+
+  SET_SPECIALIST_MESSAGES: {
+    LIST: "setSpecialistMessages",
+   
   },
 };
 

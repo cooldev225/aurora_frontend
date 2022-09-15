@@ -126,6 +126,7 @@ export default defineComponent({
         });
       }
 
+      console.log(userAptList.value);
       refCalendar.value.$props.options.events = appointments;
       calendarKey.value++;
     });
