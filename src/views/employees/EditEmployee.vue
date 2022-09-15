@@ -5,11 +5,10 @@
     <div class="d-flex flex-row-fluid flex-center bg-white rounded">
       <div class="w-100 py-20 px-9">
         <HeadingText text="Employee Details" />
-
         <el-form
           class="w-100"
           :rules="
-            formData.role_id == formInfo.specialist_role_id
+            formData.role_id === formInfo.specialist_role_id.toString()
               ? specialistRules
               : rules
           "
@@ -39,7 +38,6 @@
                 placeholder="Last Name"
               />
             </InputWrapper>
-
             <InputWrapper class="col-12 col-md-6" label="Email" prop="email">
               <el-input
                 v-model="formData.email"
@@ -50,8 +48,9 @@
             <InputWrapper
               class="col-12 col-md-6"
               label="Contact Number"
-              v-mask="'0#-####-####'"
+              :v-mask="'0#-####-####'"
               prop="mobile_number"
+              @input="acceptNumber"
             >
               <el-input
                 v-model="formData.mobile_number"
@@ -59,7 +58,6 @@
                 placeholder="Contact Number"
               />
             </InputWrapper>
-
             <InputWrapper
               class="col-12 col-md-6"
               label="Address"
@@ -142,7 +140,9 @@
               </div>
             </InputWrapper>
             <InputWrapper
-              v-show="formData.role_id == formInfo.specialist_role_id"
+              :v-show="
+                formData.role_id === formInfo.specialist_role_id.toString()
+              "
               class="col-3"
               label="Anaesthetist"
               prop="specialist.anesthetist_id"
@@ -160,7 +160,6 @@
               </el-select>
             </InputWrapper>
           </div>
-
           <div class="d-flex justify-content-end">
             <button
               type="button"
@@ -235,7 +234,7 @@ export default defineComponent({
     const formData = ref({
       username: "",
       email: "",
-      mobile_number: "",
+      mobile_number: "0",
       password: "",
       first_name: "",
       last_name: "",
@@ -291,6 +290,15 @@ export default defineComponent({
       },
     });
 
+    const acceptNumber = () => {
+      //0#-####-####
+      var v = formData.value.mobile_number;
+      var x = v.replace(/\D/g, "").match(/(\d{0,2})(\d{0,4})(\d{0,4})/);
+      if (x != undefined && x?.length > 3)
+        v = !x[2] ? x[1] : x[1] + "-" + x[2] + (x[3] ? "-" + x[3] : "");
+      formData.value.mobile_number = v;
+    };
+
     const currentStepIndex = ref(0);
 
     watch(employeeList, () => {
@@ -299,7 +307,6 @@ export default defineComponent({
 
     onMounted(() => {
       const id = route.params.id;
-
       if (id != undefined) {
         formInfo.title = "Edit";
         formInfo.isCreate = false;
@@ -362,6 +369,7 @@ export default defineComponent({
       employeeRoles,
       weekdays,
       anesthetistList,
+      acceptNumber,
     };
   },
 });
