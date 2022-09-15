@@ -23,7 +23,30 @@
             </template>
           </el-select>
         </InputWrapper>
-        <InputWrapper class="col-6" label="Appointment" prop="appointment">
+
+        <InputWrapper class="col-12 f-row row" label="Attach document to: ">
+          <input
+            type="radio"
+            id="appointment"
+            value="appointment"
+            v-model="attachmentType"
+          />
+          <label for="appointment">Appointment</label>
+
+          <input
+            type="radio"
+            id="specialist"
+            value="specialist"
+            v-model="attachmentType"
+          />
+          <label for="specialist">Specialist</label>
+        </InputWrapper>
+        <InputWrapper
+          v-if="attachmentType != 'specialist'"
+          class="col-6"
+          label="Appointment"
+          prop="appointment"
+        >
           <el-select
             v-model="formData.appointment_id"
             class="w-100"
@@ -46,6 +69,7 @@
             v-model="formData.specialist_id"
             class="w-100"
             placeholder="Select Specialist"
+            :disabled="attachmentType == 'appointment' ? true : false"
           >
             <el-option
               v-for="item in specialistList"
@@ -139,6 +163,7 @@ export default defineComponent({
     const patientId = computed(() => props.patientId);
     const uploadDisabled = ref(false);
     const upload = ref(null);
+    const attachmentType = ref("appointment");
     let Data = new FormData();
     const fileList = ref([]);
 
@@ -221,23 +246,18 @@ export default defineComponent({
       });
     };
 
+    watch(formData.value, () => {
+      if (formData.value.appointment_id) {
+        console.log(
+          aptList.value.pastAppointments.filter((x) => x.id === 1)[0]
+            .specialist_id
+        );
+      }
+    });
+
     watch(patientId, () => {
       formData.value.patient_id = patientId.value;
       store.dispatch(AppointmentActions.APT.LISTBYID, patientId.value);
-    });
-
-    watchEffect(() => {
-      if (aptList.value && aptList.value.futureAppointments) {
-        aptList.value.futureAppointments.forEach((item) => {
-          if (
-            moment(item.date).format("DD-MM-YYYY") ===
-            moment(new Date()).format("DD-MM-YYYY")
-          ) {
-            formData.value.appointment_id = item.id;
-            formData.value.specialist_id = item.specialist_id;
-          }
-        });
-      }
     });
 
     onMounted(() => {
@@ -273,6 +293,7 @@ export default defineComponent({
       handleRemove,
       uploadDisabled,
       fileList,
+      attachmentType,
     };
   },
 });

@@ -1,25 +1,24 @@
 <template>
-  <a>
-    <label
-      :class="
-        'btn btn-light-' +
-        color +
-        ' border border-' +
-        color +
-        ' shadow p-3 d-flex align-items-center'
-      "
-    >
-      <span class="svg-icon svg-icon-3x me-5">
-        <inline-svg :src="iconPath" />
-      </span>
+  <a
+    :class="
+      'justify-content-' +
+      justify +
+      ' btn btn-light-' +
+      color +
+      ' border border-' +
+      color +
+      ' shadow p-2 px-4 d-flex align-items-center'
+    "
+  >
+    <span :class="'svg-icon svg-icon-' + iconSize + 'x'">
+      <inline-svg :src="iconPath" />
+    </span>
 
-      <span class="d-block fw-bold text-start text-uppercase">
-        <span class="text-dark fw-bolder d-block fs-5">
-          {{ heading }}
-        </span>
-        <span class="text-gray-400 fw-bold fs-6"> {{ subheading }} </span>
+    <span class="d-block fw-bold text-start text-uppercase">
+      <span class="text-dark fw-bolder d-block fs-5">
+        {{ heading }}
       </span>
-    </label>
+    </span>
   </a>
 </template>
 <script lang="ts">
@@ -27,8 +26,9 @@ export default {
   props: {
     iconPath: { required: true, type: String },
     heading: { required: true, type: String },
-    subheading: { required: true, type: String },
     color: { default: "primary", type: String },
+    justify: { default: "center", type: String },
+    iconSize: { default: "2", type: String },
   },
 };
 </script>
