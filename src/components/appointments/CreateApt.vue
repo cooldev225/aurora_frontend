@@ -359,6 +359,7 @@
                       <Datatable
                         :table-header="patientTableHeader"
                         :table-data="patientTableData"
+                        :key="tableKey"
                         :rows-per-page="5"
                         :enable-items-per-page-dropdown="true"
                       >
@@ -1129,6 +1130,7 @@ export default defineComponent({
     const formRef_3 = ref(null);
     const formRef_4 = ref(null);
     const loading = ref(false);
+    const tableKey = ref(0);
     const referralDoctors = computed(() => store.getters.getReferralDoctorList);
     const router = useRouter();
 
@@ -1468,6 +1470,8 @@ export default defineComponent({
       else patientStep.value = 1;
     });
 
+    const renderTable = () => tableKey.value++;
+
     const handleAneQuestions = () => {
       let temp = [];
       for (let i in aneAnswers.value) {
@@ -1490,6 +1494,7 @@ export default defineComponent({
 
     watch(patientList, () => {
       patientTableData.value = patientList;
+      renderTable();
     });
 
     watchEffect(() => {
@@ -1559,7 +1564,6 @@ export default defineComponent({
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.ORG.LIST);
-      store.dispatch(PatientActions.PATIENTS.LIST);
       store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
     });
 
@@ -1641,7 +1645,6 @@ export default defineComponent({
       patientStatus.value = "new";
       patientStep.value = 1;
       patientTableData.value = patientList.value;
-      store.dispatch(PatientActions.PATIENTS.LIST);
     };
 
     const handleCancel = () => {
@@ -1725,34 +1728,8 @@ export default defineComponent({
     };
 
     const patientStep_1 = () => {
-      patientTableData.value = patientList.value.filter((data) => {
-        let result = true;
-        if (filterPatient.first_name) {
-          result =
-            result &&
-            data.first_name.toLowerCase() ===
-              filterPatient.first_name.toLowerCase();
-        }
-        if (filterPatient.last_name) {
-          result =
-            result &&
-            data.last_name.toLowerCase() ===
-              filterPatient.last_name.toLowerCase();
-        }
-        if (filterPatient.date_of_birth) {
-          let searchDate = moment(filterPatient.date_of_birth)
-            .format("YYYY-MM-DD")
-            .toString();
-          result = result && data.date_of_birth === searchDate;
-        }
-        if (filterPatient.ur_number) {
-          result =
-            result &&
-            data.ur_number.toLowerCase() ===
-              filterPatient.ur_number.toLowerCase();
-        }
-        return result;
-      });
+      patientTableData.value = [];
+      store.dispatch(PatientActions.PATIENTS.LIST, filterPatient);
       patientStep.value++;
     };
 
@@ -1875,6 +1852,7 @@ export default defineComponent({
       overlapping_cnt,
       searchReferralDoctor,
       handleSelectReferringDoctor,
+      tableKey,
     };
   },
 });

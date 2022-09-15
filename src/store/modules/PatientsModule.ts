@@ -82,10 +82,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.LIST]() {
+  [PatientActions.PATIENTS.LIST](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("patients")
+      ApiService.get("patients", "", data)
         .then(({ data }) => {
           this.context.commit(PatientMutations.SET_PATIENT.LIST, data.data);
           return data.data;
