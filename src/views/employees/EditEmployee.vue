@@ -97,68 +97,81 @@
           <el-divider />
           <HeadingText text="Employee Hours" />
           <div
-            class="card d-flex flex-row border border-dashed border-primary pt-3 m-3"
+            v-for="(hourSchedule, hourIndex) in formData.hourSchedules"
+            :key="hourIndex"
           >
-            <InputWrapper class="col-3" label="Day">
-              <el-select class="w-100" type="text">
-                <el-option
-                  v-for="weekday in weekdays"
-                  :value="weekday.value"
-                  :label="weekday.label"
-                  :key="weekday.value"
-                />
-              </el-select>
-            </InputWrapper>
-            <InputWrapper class="col-3" label="Location">
-              <el-select class="w-100" type="text">
-                <el-option
-                  v-for="clinic in clinicsList"
-                  :value="clinic.id"
-                  :label="clinic.name"
-                  :key="clinic.id"
-                />
-              </el-select>
-            </InputWrapper>
-            <InputWrapper class="col-3" label="Time Slot">
-              <div class="d-flex">
-                <el-time-select
-                  class="w-50 pe-2"
-                  placeholder="Start time"
-                  start="07:00"
-                  step="00:15"
-                  end="18:30"
-                  format="HH:mm"
-                />
-                <el-time-select
-                  class="w-50 ps-2"
-                  placeholder="End time"
-                  start="07:00"
-                  step="00:15"
-                  end="18:30"
-                  format="HH:mm"
-                />
-              </div>
-            </InputWrapper>
-            <InputWrapper
-              :v-show="
-                formData.role_id === formInfo.specialist_role_id.toString()
-              "
-              class="col-3"
-              label="Anaesthetist"
-              prop="specialist.anesthetist_id"
+            <div
+              class="card d-flex flex-row border border-dashed border-primary pt-3 m-3"
             >
-              <el-select
-                v-model="formData.specialist.anesthetist_id"
-                class="w-100"
+              <InputWrapper class="col-3" label="Day">
+                <el-select class="w-100" type="text" v-model="hourSchedule.day">
+                  <el-option
+                    v-for="weekday in weekdays"
+                    :value="weekday.value"
+                    :label="weekday.label"
+                    :key="weekday.value"
+                  />
+                </el-select>
+              </InputWrapper>
+              <InputWrapper class="col-3" label="Location">
+                <el-select
+                  class="w-100"
+                  type="text"
+                  v-model="hourSchedule.clinic_id"
+                >
+                  <el-option
+                    v-for="clinic in clinicsList"
+                    :value="clinic.id"
+                    :label="clinic.name"
+                    :key="clinic.id"
+                  />
+                </el-select>
+              </InputWrapper>
+              <InputWrapper class="col-3" label="Time Slot">
+                <div class="d-flex">
+                  <el-time-select
+                    class="w-50 pe-2"
+                    placeholder="Start time"
+                    start="07:00"
+                    step="00:15"
+                    end="18:30"
+                    format="HH:mm"
+                    v-model="hourSchedule.time_start"
+                  />
+                  <el-time-select
+                    class="w-50 ps-2"
+                    placeholder="End time"
+                    start="07:00"
+                    step="00:15"
+                    end="18:30"
+                    format="HH:mm"
+                    v-model="hourSchedule.time_end"
+                  />
+                </div>
+              </InputWrapper>
+              <InputWrapper
+                :v-show="
+                  formData.role_id === formInfo.specialist_role_id.toString()
+                "
+                class="col-3"
+                label="Anaesthetist"
+                prop="specialist.anesthetist_id"
               >
-                <el-option
-                  v-for="item in anesthetistList"
-                  :value="item.id"
-                  :label="item.first_name + ' ' + item.last_name"
-                  :key="item.id"
-                />
-              </el-select>
-            </InputWrapper>
+                <el-select class="w-100" v-model="hourSchedule.anaesthetist_id">
+                  <el-option
+                    v-for="item in anesthetistList"
+                    :value="item.id"
+                    :label="item.first_name + ' ' + item.last_name"
+                    :key="item.id"
+                  />
+                </el-select>
+              </InputWrapper>
+            </div>
+          </div>
+          <div
+            class="card d-flex flex-row border border-dashed border-primary cursor-pointer pt-3 m-3 add-schedual"
+          >
+            <span><span>+</span> Add Schedual</span>
           </div>
           <div class="d-flex justify-content-end">
             <button
@@ -189,6 +202,12 @@
     </div>
   </div>
 </template>
+<style lang="scss">
+.add-schedual {
+  font-size: 1.8rem;
+  color: #ff9527;
+}
+</style>
 <script lang="ts">
 import {
   defineComponent,
@@ -241,9 +260,18 @@ export default defineComponent({
       address: "",
       role_id: "4",
       type: "full-time",
-      specialist: {
-        anesthetist_id: "",
-      },
+      // specialist: {
+      //   anesthetist_id: "",
+      // },
+      hourSchedules: [
+        {
+          day: null,
+          clinic_id: null,
+          time_start: null,
+          time_end: null,
+          anaesthetist_id: null,
+        },
+      ],
     });
 
     const commonRoles = {
