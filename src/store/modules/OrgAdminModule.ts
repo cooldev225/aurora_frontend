@@ -152,7 +152,9 @@ export default class OrgAdminModule extends VuexModule implements OrgAdminInfo {
   [Actions.ORG_ADMIN.ORGANIZATION.PRE_ADMISSION_SECTION.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      return ApiService.post("pre-admission-sections", item)
+      return ApiService.post("pre-admission-sections", {
+        sections: item.sections,
+      })
         .then(({ data }) => {
           return data.data;
         })
