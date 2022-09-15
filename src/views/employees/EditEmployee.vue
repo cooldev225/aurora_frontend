@@ -100,76 +100,91 @@
             v-for="(hourSchedule, hourIndex) in formData.hourSchedules"
             :key="hourIndex"
           >
-            <div
-              class="card d-flex flex-row border border-dashed border-primary pt-3 m-3"
-            >
-              <InputWrapper class="col-3" label="Day">
-                <el-select class="w-100" type="text" v-model="hourSchedule.day">
-                  <el-option
-                    v-for="weekday in weekdays"
-                    :value="weekday.value"
-                    :label="weekday.label"
-                    :key="weekday.value"
-                  />
-                </el-select>
-              </InputWrapper>
-              <InputWrapper class="col-3" label="Location">
-                <el-select
-                  class="w-100"
-                  type="text"
-                  v-model="hourSchedule.clinic_id"
+            <div class="border border-dashed border-primary pt-3 m-3">
+              <div class="card d-flex flex-row">
+                <InputWrapper class="col-3" label="Day">
+                  <el-select
+                    class="w-100"
+                    type="text"
+                    v-model="hourSchedule.day"
+                  >
+                    <el-option
+                      v-for="weekday in weekdays"
+                      :value="weekday.value"
+                      :label="weekday.label"
+                      :key="weekday.value"
+                    />
+                  </el-select>
+                </InputWrapper>
+                <InputWrapper class="col-3" label="Location">
+                  <el-select
+                    class="w-100"
+                    type="text"
+                    v-model="hourSchedule.clinic_id"
+                  >
+                    <el-option
+                      v-for="clinic in clinicsList"
+                      :value="clinic.id"
+                      :label="clinic.name"
+                      :key="clinic.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+                <InputWrapper class="col-3" label="Time Slot">
+                  <div class="d-flex">
+                    <el-time-select
+                      class="w-50 pe-2"
+                      placeholder="Start time"
+                      start="07:00"
+                      step="00:15"
+                      end="18:30"
+                      format="HH:mm"
+                      v-model="hourSchedule.time_start"
+                    />
+                    <el-time-select
+                      class="w-50 ps-2"
+                      placeholder="End time"
+                      start="07:00"
+                      step="00:15"
+                      end="18:30"
+                      format="HH:mm"
+                      v-model="hourSchedule.time_end"
+                    />
+                  </div>
+                </InputWrapper>
+                <InputWrapper
+                  :v-show="
+                    formData.role_id === formInfo.specialist_role_id.toString()
+                  "
+                  class="col-3"
+                  label="Anaesthetist"
+                  prop="specialist.anesthetist_id"
                 >
-                  <el-option
-                    v-for="clinic in clinicsList"
-                    :value="clinic.id"
-                    :label="clinic.name"
-                    :key="clinic.id"
-                  />
-                </el-select>
-              </InputWrapper>
-              <InputWrapper class="col-3" label="Time Slot">
-                <div class="d-flex">
-                  <el-time-select
-                    class="w-50 pe-2"
-                    placeholder="Start time"
-                    start="07:00"
-                    step="00:15"
-                    end="18:30"
-                    format="HH:mm"
-                    v-model="hourSchedule.time_start"
-                  />
-                  <el-time-select
-                    class="w-50 ps-2"
-                    placeholder="End time"
-                    start="07:00"
-                    step="00:15"
-                    end="18:30"
-                    format="HH:mm"
-                    v-model="hourSchedule.time_end"
-                  />
-                </div>
-              </InputWrapper>
-              <InputWrapper
-                :v-show="
-                  formData.role_id === formInfo.specialist_role_id.toString()
-                "
-                class="col-3"
-                label="Anaesthetist"
-                prop="specialist.anesthetist_id"
-              >
-                <el-select class="w-100" v-model="hourSchedule.anaesthetist_id">
-                  <el-option
-                    v-for="item in anesthetistList"
-                    :value="item.id"
-                    :label="item.first_name + ' ' + item.last_name"
-                    :key="item.id"
-                  />
-                </el-select>
-              </InputWrapper>
+                  <el-select
+                    class="w-100"
+                    v-model="hourSchedule.anaesthetist_id"
+                  >
+                    <el-option
+                      v-for="item in anesthetistList"
+                      :value="item.id"
+                      :label="item.first_name + ' ' + item.last_name"
+                      :key="item.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+              </div>
+              <div class="d-flex flex-row-reverse">
+                <span
+                  class="cursor-pointer text-nowrap text-danger text-right delete-schedual"
+                  @click="deleteSchedualHandle(hourIndex)"
+                  >- Delete Schedual</span
+                >
+              </div>
             </div>
           </div>
           <div
             class="card d-flex flex-row border border-dashed border-primary cursor-pointer pt-3 m-3 add-schedual"
+            @click="addSchedualHandle()"
           >
             <span><span>+</span> Add Schedual</span>
           </div>
@@ -206,6 +221,14 @@
 .add-schedual {
   font-size: 1.8rem;
   color: #ff9527;
+  justify-content: center;
+  padding: 10px;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+}
+.delete-schedual {
+  margin-right: 20px;
+  margin-bottom: 10px;
 }
 </style>
 <script lang="ts">
@@ -250,6 +273,14 @@ export default defineComponent({
       specialist_role_id: 0,
     });
 
+    const empty_schedual = {
+      day: null,
+      clinic_id: null,
+      time_start: null,
+      time_end: null,
+      anaesthetist_id: null,
+    };
+
     const formData = ref({
       username: "",
       email: "",
@@ -260,9 +291,9 @@ export default defineComponent({
       address: "",
       role_id: "4",
       type: "full-time",
-      // specialist: {
-      //   anesthetist_id: "",
-      // },
+      specialist: {
+        anesthetist_id: "",
+      },
       hourSchedules: [
         {
           day: null,
@@ -325,6 +356,18 @@ export default defineComponent({
       if (x != undefined && x?.length > 3)
         v = !x[2] ? x[1] : x[1] + "-" + x[2] + (x[3] ? "-" + x[3] : "");
       formData.value.mobile_number = v;
+    };
+
+    const addSchedualHandle = () => {
+      formData.value.hourSchedules.push(empty_schedual);
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
+    };
+
+    const deleteSchedualHandle = (hourIndex) => {
+      formData.value.hourSchedules.splice(hourIndex, 1);
     };
 
     const currentStepIndex = ref(0);
@@ -398,6 +441,8 @@ export default defineComponent({
       weekdays,
       anesthetistList,
       acceptNumber,
+      addSchedualHandle,
+      deleteSchedualHandle,
     };
   },
 });
