@@ -45,7 +45,11 @@ const Actions = {
     ORGANIZATION: {
       SETTINGS: {
         UPDATE: "updateOrganizationSettings"
-      } 
+      },
+      PRE_ADMISSION_SECTION: {
+        LIST: "listPreAdmissionSections",
+        UPDATE: "updatePreAdmissionSections",
+      }
     }
   },
 
