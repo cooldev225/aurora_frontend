@@ -7,14 +7,13 @@
     ref="formRef"
   >
     <section>
-      <div
-        class="border border-5 border-muted mb-20 p-10"
+      <template
         v-for="(preAdmissionSection, sectionIndex) in formData.sections"
         :key="sectionIndex"
       >
-        <div class="fv-row col-12 mb-7">
-          <!--begin::Input-->
-          <el-form-item
+        <CardSection>
+          <InputWrapper
+            label="Section Title"
             :prop="'title-' + sectionIndex"
             :rules="[
               {
@@ -31,12 +30,14 @@
               autocomplete="off"
               placeholder="Pre Admission Section Title"
             />
-          </el-form-item>
-          <!--end::Input-->
-        </div>
-        <div class="questions-group-box">
-          <div
-            class="mb-2"
+          </InputWrapper>
+          <label
+            class="fs-6 fw-bold mb-2 px-6"
+            style="color: grey"
+            :class="{ required: required }"
+            >Section Questions</label
+          >
+          <template
             v-for="(
               preAdmissionQuestion, questionIndex
             ) in preAdmissionSection.questions"
@@ -44,7 +45,19 @@
           >
             <div class="d-flex">
               <el-form-item
-                class="w-100"
+                class="mb-2 px-6 flex items-center text-sm answer-format"
+                :prop="'answer-format-' + questionIndex"
+              >
+                <el-radio-group
+                  v-model="preAdmissionQuestion.answer_format"
+                  class="mx-2"
+                >
+                  <el-radio label="TEXT" size="large">Text</el-radio>
+                  <el-radio label="BOOLEAN" size="large">Yes/No</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item
+                class=""
                 :key="'question-' + questionIndex"
                 :prop="'question-' + questionIndex"
                 :rules="{
@@ -55,112 +68,68 @@
               >
                 <el-input
                   v-model="preAdmissionQuestion.text"
-                  class="w-100"
                   placeholder="Question Text"
                 />
               </el-form-item>
-
-              <el-form-item
-                class="mb-2 flex items-center text-sm answer-format"
-                :prop="'answer-format-' + questionIndex"
-              >
-                <el-radio-group
-                  v-model="preAdmissionQuestion.answer_format"
-                  class="ml-4"
-                >
-                  <el-radio label="TEXT" size="large">Text</el-radio>
-                  <el-radio label="BOOLEAN" size="large">Yes/No</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </div>
-            <div class="d-flex flex-row-reverse">
-              <span
+              <button
                 @click="handleDeleteQuestion(sectionIndex, questionIndex)"
-                class="cursor-pointer text-nowrap text-danger text-right"
-                >- Delete Question</span
+                class="btn btn-icon btn-bg-light btn-active-color-error btn-sm"
               >
+                <span class="svg-icon svg-icon-3">
+                  <inline-svg src="media/icons/duotune/general/gen027.svg" />
+                </span>
+              </button>
             </div>
+          </template>
+
+          <div class="d-flex justify-content-end flex-row">
+            <LargeIconButton
+              class="mx-3"
+              @click="handleAddQuestion(sectionIndex)"
+              :heading="'Add a question'"
+              :iconPath="'media/icons/duotune/arrows/arr009.svg'"
+            />
+            <LargeIconButton
+              @click="handleDeleteSection(sectionIndex)"
+              :heading="'Delete Entire Section'"
+              :iconPath="'media/icons/duotune/general/gen027.svg'"
+              :color="'danger'"
+            />
           </div>
-        </div>
-        <div
-          class="cursor-pointer text-center col-12 mt-10 add-question"
-          @click="handleAddQuestion(sectionIndex)"
-        >
-          <span><span>+</span> Add Question</span>
-        </div>
-        <div class="d-flex flex-row-reverse mt-5">
-          <span
-            @click="handleDeleteSection(sectionIndex)"
-            class="cursor-pointer text-nowrap text-danger text-right"
-            >- Delete Section</span
-          >
-        </div>
-      </div>
-      <div
-        class="cursor-pointer text-center col-12 mb-10 border border-5 border-muted add-section"
+        </CardSection>
+      </template>
+      <LargeIconButton
+        class="p-6 mb-6"
         @click="handleAddSection()"
-      >
-        <span><span>+</span> Add Section</span>
-      </div>
+        :heading="'Add Section'"
+        :iconPath="'media/icons/duotune/arrows/arr009.svg'"
+      />
     </section>
 
-    <!--begin::Modal footer-->
     <footer class="d-flex flex-row-reverse">
-      <router-link type="reset" to="/settings" class="btn btn-light me-3">
-        Cancel
-      </router-link>
-
-      <!--begin::Button-->
       <button class="btn btn-lg btn-primary" type="submit">
         <span class="indicator-label"> Save </span>
       </button>
-      <!--end::Button-->
+      <router-link type="reset" to="/settings" class="btn btn-light me-3">
+        Cancel
+      </router-link>
     </footer>
-    <!--end::Modal footer-->
   </el-form>
   <!--end::Form-->
 </template>
-<style lang="scss">
-.el-form-item.answer-format {
-  width: 240px;
-  .el-form-item__content {
-    display: flex;
-    justify-content: end;
-  }
-}
-.questions-group-box {
-  padding: 20px 20px;
-  border: #dcdfe6;
-  border-style: dashed;
-  border-width: 2px;
-}
-.add-question {
-  font-size: 1.8rem;
-  color: #bd5;
-  line-height: 50px;
-  border: #dcdfe6;
-  border-style: dashed;
-  border-width: 2px;
-}
-.add-section {
-  font-size: 2rem;
-  color: #bd5;
-  line-height: 70px;
-}
-</style>
 <script>
-import { defineComponent, onMounted, ref, reactive } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { useRouter } from "vue-router";
-import ApiService from "@/core/services/ApiService";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
+import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
 
 export default defineComponent({
   name: "pre-admission-questions",
 
-  components: {},
+  components: { LargeIconButton },
 
   setup() {
     const store = useStore();
@@ -247,7 +216,9 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Pre-Admission Section", ["Settings"]);
+      setCurrentPageBreadcrumbs("Procedure Approval Form Questions", [
+        "Settings",
+      ]);
       initFormData();
     });
 
@@ -260,6 +231,7 @@ export default defineComponent({
       handleDeleteQuestion,
       handleAddSection,
       handleDeleteSection,
+      LargeIconButton,
     };
   },
 });
