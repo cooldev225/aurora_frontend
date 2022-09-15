@@ -3,6 +3,8 @@
     title="Select Report Template"
     modalId="report"
     modalRef="reportModal"
+    class="modal fade"
+    aria-hidden="true"
   >
     <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
       <InputWrapper label="Report Template">
@@ -39,6 +41,7 @@
         :data-kt-indicator="loading ? 'on' : null"
         class="btn btn-lg btn-primary m-6"
         type="submit"
+        data-bs-dismiss="modal"
       >
         <span v-if="!loading" class="indicator-label"> Select </span>
         <span v-if="loading" class="indicator-progress">
@@ -75,7 +78,7 @@ export default defineComponent({
     const reportTemplatesData = ref([]);
     const appointmentsData = ref([]);
     const reportModal = ref(null);
-    console.log("patientDatapatientDatapatientDatapatientData", patientData);
+
     watchEffect(() => {
       reportTemplatesData.value = list.value;
       appointmentsData.value = patientData.value.appointments;
@@ -91,7 +94,7 @@ export default defineComponent({
         appointment: appointmentsData.value[appointment.value],
       });
 
-      hideModal(reportModal.value);
+      // hideModal(reportModal.value);
       router.push({ name: "patients-report" });
     };
 
