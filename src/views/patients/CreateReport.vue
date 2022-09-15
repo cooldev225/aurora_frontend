@@ -184,7 +184,10 @@
 <script lang="ts">
 import { defineComponent, watchEffect, ref, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import { StoreReportActions } from "@/store/enums/StoreReportEnums";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import moment from "moment";
 
 export default defineComponent({
@@ -192,6 +195,7 @@ export default defineComponent({
   components: {},
   setup() {
     const store = useStore();
+    const router = useRouter();
     const formRef = ref(null);
     const templateList = computed(
       () => store.getters.getReportTemplateSelected
@@ -228,7 +232,22 @@ export default defineComponent({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (formRef.value as any).validate(async (valid) => {
         if (valid) {
-          console.log("valid", formData.value, templateData.value.sections);
+          const reportData: unknown[] = [];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (templateData.value.sections as any).forEach((data) => {
+            reportData.push({
+              sectionId: data.id,
+              free_text_default: data.free_text_default,
+              value: formData.value.section["section" + data.id],
+            });
+          });
+          store.dispatch(StoreReportActions.REPORT.PATIENT, {
+            patientId: patientList.value.id,
+            reportData: reportData,
+          });
+          router.push({
+            path: "/patients/" + patientList.value.id + "/documents",
+          });
         }
       });
     };
