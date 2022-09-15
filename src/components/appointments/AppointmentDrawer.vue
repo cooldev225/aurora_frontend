@@ -123,9 +123,10 @@
             v-if="aptData.attendance_status === 'NOT_PRESENT'"
             @click="handleCheckIn"
             :heading="'Check In'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr024.svg'"
             :color="'primary'"
+            justify="start"
+            iconSize="3"
           />
 
           <!--Check Out Button-->
@@ -133,52 +134,58 @@
             v-if="aptData.attendance_status === 'CHECKED_IN'"
             @click="handleCheckOut"
             :heading="'Check Out'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr021.svg'"
             :color="'primary'"
+            justify="start"
+            iconSize="3"
           />
 
           <!--Checked Out Label-->
           <LargeIconButton
             v-if="aptData.attendance_status === 'CHECKED_OUT'"
             :heading="'Checked Out'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr021.svg'"
             :color="'grey'"
+            justify="start"
+            iconSize="3"
           />
 
           <!--View Patient-->
           <LargeIconButton
             @click="handleView"
             :heading="'View'"
-            :subheading="'Patient'"
             :iconPath="'media/icons/duotune/medicine/med001.svg'"
             :color="'primary'"
+            justify="start"
+            iconSize="3"
           />
 
           <!--Edit Appointment-->
           <LargeIconButton
             @click="handleEdit"
             :heading="'Edit'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/general/gen055.svg'"
             :color="'success'"
+            justify="start"
+            iconSize="3"
           />
           <!--Move Appointment-->
           <LargeIconButton
             :heading="'Move'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr035.svg'"
             :color="'success'"
+            justify="start"
+            iconSize="3"
           />
 
           <!--Cancel Appointment Button-->
           <LargeIconButton
             @click="handleCancel"
             :heading="'Cancel'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr011.svg'"
             :color="'danger'"
+            justify="start"
+            iconSize="3"
           />
         </div>
         <!--end::Appointment Actions-->

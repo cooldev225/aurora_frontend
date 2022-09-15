@@ -37,11 +37,6 @@ const routes: Array<RouteRecordRaw> = [
           import("@/components/organisations/EditOrganisation.vue"),
       },
       {
-        path: "/organisationManagers",
-        name: "organisationMangers",
-        component: () => import("@/views/organisation-admin/Managers.vue"),
-      },
-      {
         path: "/organisationAdmins",
         name: "organisationAdmins",
         component: () => import("@/views/organisation-admin/Admins.vue"),
@@ -74,7 +69,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/clinics/edit/:id",
         name: "clinic-edit",
-        component: () => import("@/components/clinics/EditClinics.vue"),
+        component: () => import("@/components/clinics/CreateClinics.vue"),
       },
       {
         path: "/settings/health-fund",

@@ -170,7 +170,10 @@ import { defineComponent, onMounted, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "@/store/enums/StoreAppointmentEnums";
 import { Modal } from "bootstrap";
 import ProcedureApprovalModal from "@/components/anesthetist/ProcedureApprovalModal.vue";
 
@@ -230,7 +233,7 @@ export default defineComponent({
     const renderTable = () => tableKey.value++;
 
     const handleFormModal = (item) => {
-      store.commit(Mutations.SET_PROCEDURE_APPROVAL.DATA, item);
+      store.commit(AppointmentMutations.SET_PROCEDURE_APPROVAL.DATA, item);
       const modal = new Modal(
         document.getElementById("modal_view_pre_admission")
       );
@@ -240,14 +243,14 @@ export default defineComponent({
     const searchPatient = () => {
       tableData.value = procedureApprovalsData.value.filter((data) => {
         let result = true;
-        if (filterFirstName.value.trim()) {
+        if (filterFirstName.value && filterFirstName.value.trim()) {
           result =
             result &&
             data.patient_name.first
               .toLowerCase()
               .indexOf(filterFirstName.value.toLowerCase()) !== -1;
         }
-        if (filterLastName.value.trim()) {
+        if (filterLastName.value && filterLastName.value.trim()) {
           result =
             result &&
             data.patient_name.last
@@ -255,7 +258,7 @@ export default defineComponent({
               .indexOf(filterLastName.value.toLowerCase()) !== -1;
         }
         if (!showAll.value) {
-          result = result && data.procedure_approval_status === "NOT_ACCESSED";
+          result = data.procedure_approval_status === "NOT_ACCESSED";
         }
 
         return result;
@@ -279,9 +282,11 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Dashboard", ["Anesthetist"]);
-      store.dispatch(Actions.PROCEDURE_APPROVAL.LIST).then(() => {
-        loading.value = false;
-      });
+      store
+        .dispatch(AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.LIST)
+        .then(() => {
+          loading.value = false;
+        });
     });
 
     return {

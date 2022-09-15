@@ -148,7 +148,7 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Mutations } from "@/store/enums/StoreEnums";
+import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import moment from "moment";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
@@ -257,7 +257,7 @@ export default defineComponent({
     };
 
     const handleBadge = (upcoming_appointment) => {
-      store.commit(Mutations.SET_APT.SELECT, upcoming_appointment);
+      store.commit(AppointmentMutations.SET_APT.SELECT, upcoming_appointment);
       DrawerComponent?.getInstance("appointment-drawer")?.setBookingDrawerShown(
         true
       );

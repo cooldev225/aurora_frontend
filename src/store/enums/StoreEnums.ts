@@ -36,13 +36,6 @@ const Actions = {
     SELECT: "selectOrg",
   },
 
-  ORG_MANAGER: {
-    LIST: "listOrgManager",
-    CREATE: "createOrgManager",
-    DELETE: "deleteOrgManager",
-    UPDATE: "updateOrgManager",
-  },
-
   ORG_ADMIN: {
     LIST: "listOrgAdmin",
     CREATE: "createOrgAdmin",
@@ -52,7 +45,11 @@ const Actions = {
     ORGANIZATION: {
       SETTINGS: {
         UPDATE: "updateOrganizationSettings"
-      } 
+      },
+      PRE_ADMISSION_SECTION: {
+        LIST: "listPreAdmissionSections",
+        UPDATE: "updatePreAdmissionSections",
+      }
     }
   },
 

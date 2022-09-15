@@ -46,7 +46,7 @@
           <el-select
             class="filter-appointment"
             placeholder="Select Appointment"
-            v-model="selectedAppointnment"
+            v-model="selectedAppointment"
           >
             <el-option value="ALL" label="ALL APPOINTMENTS">
               ALL Appointments
@@ -158,8 +158,7 @@ export default defineComponent({
     const documentList = ref(null);
     const selectedDocument = ref(null);
     const documentType = ref("ALL");
-    const selectedAppointnment = ref("ALL");
-    const appointments = ref();
+    const selectedAppointment = ref("ALL");
     const printLoading = ref(false);
     const printObj = ref({
       id: "documentField",
@@ -191,7 +190,7 @@ export default defineComponent({
       documentList.value = _documentList.value.reverse();
     });
 
-    watch([documentType, selectedAppointnment], () => {
+    watch([documentType, selectedAppointment], () => {
       document.getElementById("divPDFViewer").innerHTML = "";
       let temp = _documentList.value;
       if (documentType.value !== "ALL") {
@@ -199,10 +198,10 @@ export default defineComponent({
           (item) => item.document_type === documentType.value
         );
       }
-      console.log(["selected appointment = ", selectedAppointnment.value]);
-      if (selectedAppointnment.value !== "ALL") {
+      console.log(["selected appointment = ", selectedAppointment.value]);
+      if (selectedAppointment.value !== "ALL") {
         temp = temp?.filter(
-          (item) => item.appointment_id === selectedAppointnment.value
+          (item) => item.appointment_id === selectedAppointment.value
         );
       }
       documentList.value = temp;
@@ -219,7 +218,7 @@ export default defineComponent({
             let blob = new Blob([data], { type: "application/pdf" });
             let objectUrl = URL.createObjectURL(blob);
             pdf.embed(objectUrl, "#divPDFViewer");
-          } else if (selectedDocument.value.file_type === "IMAGE") {
+          } else if (selectedDocument.value.file_type === "PNG") {
             document.getElementById("divPDFViewer").innerHTML =
               "<img src='" + data + "' />";
           }
@@ -245,7 +244,7 @@ export default defineComponent({
       patientDocumentTypes,
       DocumentLabel,
       selectedPatient,
-      selectedAppointnment,
+      selectedAppointment,
     };
   },
 });

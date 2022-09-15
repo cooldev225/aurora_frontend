@@ -71,35 +71,6 @@
                 <InfoSection heading="Weight">
                   {{ preAdmissionData?.patient?.weight }}
                 </InfoSection>
-
-                <div class="col-6 text-end">
-                  <el-upload
-                    action="#"
-                    ref="uploadRef"
-                    :limit="1"
-                    :on-change="handleUploadChange"
-                    :on-remove="handleUploadRemove"
-                    :auto-upload="false"
-                    accept="pdf/*"
-                  >
-                    <template v-if="userRole != 'anesthetist'" #trigger>
-                      <el-button class="btn btn-sm btn-info" type="primary">
-                        <span class="indicator-label">
-                          Upload New Pre Admission
-                        </span>
-                      </el-button>
-                    </template>
-
-                    <el-button
-                      v-if="!uploadDisabled"
-                      class="btn btn-sm btn-info ms-3"
-                      type="success"
-                      @click="handleUploadSubmit"
-                    >
-                      <span class="indicator-label">Upload</span>
-                    </el-button>
-                  </el-upload>
-                </div>
               </div>
 
               <div class="fv-row m-6 pdf_viewer_wrapper">
@@ -126,74 +97,70 @@
           <!--begin::Modal footer-->
           <div class="modal-footer flex-center">
             <!--begin::Button-->
-            <div v-if="isEditable === 'true'">
-              <button
-                :data-kt-indicator="loading ? 'on' : null"
-                class="btn btn-md btn-warning me-4"
-                type="button"
-                @click="handleProcedureApproval('NOT_ASSESSED')"
-              >
-                <span v-if="!loading" class="indicator-label">
-                  UNASSESSED
-                </span>
-                <span v-if="loading" class="indicator-progress">
-                  Please wait...
-                  <span
-                    class="spinner-border spinner-border-sm align-middle ms-2"
-                  ></span>
-                </span>
-              </button>
+            <button
+              :data-kt-indicator="loading ? 'on' : null"
+              class="btn btn-md btn-warning me-4"
+              type="button"
+              @click="handleProcedureApproval('NOT_ASSESSED')"
+            >
+              <span v-if="!loading" class="indicator-label"> UNASSESSED </span>
+              <span v-if="loading" class="indicator-progress">
+                Please wait...
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
+            </button>
 
-              <button
-                :data-kt-indicator="loading ? 'on' : null"
-                class="btn btn-md btn-primary me-4"
-                type="button"
-                @click="handleProcedureApproval('APPROVED')"
-              >
-                <span v-if="!loading" class="indicator-label"> APPROVED </span>
-                <span v-if="loading" class="indicator-progress">
-                  Please wait...
-                  <span
-                    class="spinner-border spinner-border-sm align-middle ms-2"
-                  ></span>
-                </span>
-              </button>
+            <button
+              :data-kt-indicator="loading ? 'on' : null"
+              class="btn btn-md btn-primary me-4"
+              type="button"
+              @click="handleProcedureApproval('APPROVED')"
+            >
+              <span v-if="!loading" class="indicator-label"> APPROVED </span>
+              <span v-if="loading" class="indicator-progress">
+                Please wait...
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
+            </button>
 
-              <button
-                :data-kt-indicator="loading ? 'on' : null"
-                class="btn btn-md btn-danger me-4"
-                type="button"
-                @click="handleProcedureApproval('NOT_APPROVED')"
-              >
-                <span v-if="!loading" class="indicator-label">
-                  NOT APPROVED
-                </span>
-                <span v-if="loading" class="indicator-progress">
-                  Please wait...
-                  <span
-                    class="spinner-border spinner-border-sm align-middle ms-2"
-                  ></span>
-                </span>
-              </button>
+            <button
+              :data-kt-indicator="loading ? 'on' : null"
+              class="btn btn-md btn-danger me-4"
+              type="button"
+              @click="handleProcedureApproval('NOT_APPROVED')"
+            >
+              <span v-if="!loading" class="indicator-label">
+                NOT APPROVED
+              </span>
+              <span v-if="loading" class="indicator-progress">
+                Please wait...
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
+            </button>
 
-              <button
-                :data-kt-indicator="loading ? 'on' : null"
-                class="btn btn-md btn-success"
-                type="button"
-                @click="handleProcedureApproval('CONSULT_REQUIRED')"
-              >
-                <span v-if="!loading" class="indicator-label">
-                  REQUIRES CONSULT
-                </span>
-                <span v-if="loading" class="indicator-progress">
-                  Please wait...
-                  <span
-                    class="spinner-border spinner-border-sm align-middle ms-2"
-                  ></span>
-                </span>
-              </button>
-              <!--end::Button-->
-            </div>
+            <button
+              :data-kt-indicator="loading ? 'on' : null"
+              class="btn btn-md btn-success"
+              type="button"
+              @click="handleProcedureApproval('CONSULT_REQUIRED')"
+            >
+              <span v-if="!loading" class="indicator-label">
+                REQUIRES CONSULT
+              </span>
+              <span v-if="loading" class="indicator-progress">
+                Please wait...
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
+            </button>
+            <!--end::Button-->
           </div>
           <!--end::Modal footer-->
         </el-form>
@@ -218,6 +185,7 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import store from "@/store";
 import pdf from "pdfobject";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
@@ -250,53 +218,6 @@ export default defineComponent({
 
     const selectedPatient = computed(() => store.getters.selectedPatient);
 
-    const handleUploadSubmit = () => {
-      const appendedUploadData = {
-        uploadData: uploadData,
-        appointment_id: preAdmissionData.value.id,
-      };
-      store
-        .dispatch(Actions.PROCEDURE_APPROVAL.UPLOAD, appendedUploadData)
-        .then(() => {
-          loading.value = false;
-          Swal.fire({
-            text: "Successfully Uploaded!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "OK",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          }).then(() => {
-            uploadRef.value.clearFiles("ready");
-            uploadDisabled.value = true;
-
-            if (props.isEditable === "true") {
-              store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
-            } else {
-              store.dispatch(
-                Actions.PATIENTS.VIEW,
-                preAdmissionData.value.patient_id
-              );
-            }
-            // hideModal(viewPreAdmissionModalRef.value);
-          });
-        })
-        .catch(({ response }) => {
-          loading.value = false;
-          console.log(response.data.error);
-        });
-    };
-
-    const handleUploadChange = (file) => {
-      uploadDisabled.value = false;
-      uploadData.append("file", file.raw);
-    };
-
-    const handleUploadRemove = () => {
-      uploadDisabled.value = true;
-    };
-
     const handleProcedureApproval = (status) => {
       if (!formRef.value) {
         return;
@@ -312,10 +233,15 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.PROCEDURE_APPROVAL.UPDATE, updateData)
+            .dispatch(
+              AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.UPDATE,
+              updateData
+            )
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.PROCEDURE_APPROVAL.LIST);
+              store.dispatch(
+                AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.LIST
+              );
               Swal.fire({
                 text: "Successfully Updated!",
                 icon: "success",
@@ -346,7 +272,7 @@ export default defineComponent({
     watch(preAdmissionData, () => {
       if (preAdmissionData.value.pre_admission.pre_admission_file) {
         store
-          .dispatch(Actions.APPOINTMENT.PRE_ADMISSION.VIEW, {
+          .dispatch(AppointmentActions.APPOINTMENT.PRE_ADMISSION.VIEW, {
             path: preAdmissionData.value.pre_admission.pre_admission_file,
           })
           .then((data) => {
@@ -381,9 +307,6 @@ export default defineComponent({
       loading,
       viewPreAdmissionModalRef,
       uploadRef,
-      handleUploadSubmit,
-      handleUploadChange,
-      handleUploadRemove,
       handleProcedureApproval,
       uploadDisabled,
     };

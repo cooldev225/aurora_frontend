@@ -326,7 +326,6 @@ export default defineComponent({
       } else {
         filteredData.value = orgList.value;
       }
-
       tableData.value = filteredData;
     };
 
