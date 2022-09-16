@@ -1,6 +1,6 @@
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { Mutations } from "@/store/enums/StoreEnums";
 import {
   DocumentActions,
   DocumentMutations,
@@ -56,7 +56,6 @@ export default class DocumentModule extends VuexModule implements Documents {
   [DocumentActions.SHOW](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      console.log("Getting");
       return ApiService.post(
         "file",
         {

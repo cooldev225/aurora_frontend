@@ -1,9 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 
-/*
-TIP: To get started with clean router change path to @/router/clean.ts.
- */
 import router from "./router";
 import store from "./store";
 import ElementPlus from "element-plus";
@@ -34,7 +31,6 @@ app.use(store);
 app.use(router);
 app.use(ElementPlus);
 app.use(print);
-// app.use(VuePdf);
 app.use(VueGoogleMaps, {
   load: {
     key: "AIzaSyDCDe_kzdqziechOJ53yViPLc6hLQbhX1o",
