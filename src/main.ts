@@ -1,9 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 
-/*
-TIP: To get started with clean router change path to @/router/clean.ts.
- */
 import router from "./router";
 import store from "./store";
 import ElementPlus from "element-plus";
@@ -22,7 +19,9 @@ import HeadingText from "./components/presets/GeneralElements/HeadingText.vue";
 import CardSection from "./components/presets/GeneralElements/CardSection.vue";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import ModalWrapper from "@/components/presets/GeneralElements/ModalWrapper.vue";
-
+InfoSection;
+import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
+import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import "@/core/plugins/prismjs";
 import "bootstrap";
 
@@ -32,7 +31,6 @@ app.use(store);
 app.use(router);
 app.use(ElementPlus);
 app.use(print);
-// app.use(VuePdf);
 app.use(VueGoogleMaps, {
   load: {
     key: "AIzaSyDCDe_kzdqziechOJ53yViPLc6hLQbhX1o",
@@ -49,7 +47,9 @@ app
   .component("HeadingText", HeadingText)
   .component("CardSection", CardSection)
   .component("InputWrapper", InputWrapper)
-  .component("ModalWrapper", ModalWrapper);
+  .component("ModalWrapper", ModalWrapper)
+  .component("InfoSection", InfoSection)
+  .component("IconButton", IconButton);
 
 app.use(i18n);
 

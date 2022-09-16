@@ -262,6 +262,7 @@ const Mutations = {
     LIST: "setMakePayment",
     SELECT: "setSelectMakePayment",
   },
+
 };
 
 export { Actions, Mutations };
