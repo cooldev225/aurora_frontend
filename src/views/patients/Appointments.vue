@@ -221,7 +221,9 @@ export default defineComponent({
 
     const handlePay = (item) => {
       store.dispatch(Actions.MAKE_PAYMENT.VIEW, item.id).then(() => {
-        router.push({ name: "make-payment-pay" });
+        setTimeout(() => {
+          router.push({ name: "make-payment-pay" });
+        }, 100);
       });
     };
 
