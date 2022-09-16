@@ -23,37 +23,34 @@
           </template>
         </el-select>
         <!-- APPOINTMENT FILTER SELECT-->
-        <div
-          v-if="allowAppointmentFilter"
-          class="d-flex mb-6 justify-content-between"
+        <el-select
+          v-if="appointments"
+          class="filter-appointment w-100 pb-6"
+          placeholder="Select Appointment"
+          v-model="appointmentFilter"
         >
-          <el-select
-            class="filter-appointment"
-            placeholder="Select Appointment"
-            v-model="appointmentFilter"
-          >
-            <el-option value="ALL" label="ALL APPOINTMENTS">
-              ALL Appointments
+          <el-option value="ALL" label="ALL APPOINTMENTS">
+            ALL Appointments
+          </el-option>
+          <template v-for="appointment in appointments" :key="appointment.id">
+            <el-option
+              :value="appointment.id"
+              :label="
+                appointment.aus_formatted_date +
+                ' ' +
+                appointment.formatted_appointment_time +
+                ' , ' +
+                appointment.specialist_name
+              "
+            >
+              {{ appointment.aus_formatted_date }}
+              {{ appointment.formatted_appointment_time }}
+              , {{ appointment.appointment_type_name }} ,
+              <span>{{ appointment.specialist_name }}</span>
             </el-option>
-            <template v-for="appointment in appointments" :key="appointment.id">
-              <el-option
-                :value="appointment.id"
-                :label="
-                  appointment.aus_formatted_date +
-                  ' ' +
-                  appointment.formatted_appointment_time +
-                  ' , ' +
-                  appointment.specialist_name
-                "
-              >
-                {{ appointment.aus_formatted_date }}
-                {{ appointment.formatted_appointment_time }}
-                , {{ appointment.appointment_type_name }} ,
-                <span>{{ appointment.specialist_name }}</span>
-              </el-option>
-            </template>
-          </el-select>
-        </div>
+          </template>
+        </el-select>
+
         <div
           v-if="documentList?.length === 0"
           class="d-flex justify-content-center align-items-center fs-3"
@@ -75,11 +72,9 @@
         </div>
       </div>
       <div class="col-md-8 d-flex flex-column">
-        <div class="h-450px" id="documentField">
-          <div
-            class="d-flex p-6 flex-column"
-            v-if="showDocumentInformation && selectedDocument"
-          >
+        <div class="d-flex flex-row" v-if="selectedDocument">
+          <!-- DOCUMENT INFO -->
+          <div class="d-flex p-6 flex-column" v-if="showDocumentInformation">
             <InfoSection heading="Patient">{{
               selectedDocument.document_info.patient
             }}</InfoSection>
@@ -90,13 +85,33 @@
               selectedDocument.document_info.appointment
             }}</InfoSection>
           </div>
+          <!-- DOCUMENT ACTIONS -->
+          <div class="d-flex p-6 flex-column" v-if="showDocumentActions">
+            <IconButton
+              iconSRC="media/icons/duotune/files/fil005.svg"
+              label="Print"
+              @click="handlePrint"
+            />
+            <IconButton
+              iconSRC="media/icons/duotune/communication/com011.svg"
+              label="Email"
+              @click="handleSendEmail"
+            />
+          </div>
+          <!-- DOCUMENT VIEW DIV -->
+        </div>
+        <div class="h-450px" id="documentField">
           <div class="fv-row pdf_viewer_wrapper">
-            <div id="divPDFViewer" class="pdf_viewer"></div>
+            <div id="document-view" class="pdf_viewer"></div>
           </div>
         </div>
       </div>
     </div>
   </CardSection>
+  <SendDocumentViaEmailModal
+    v-if="selectedDocument"
+    :document="selectedDocument"
+  ></SendDocumentViaEmailModal>
 </template>
 <style lang="scss">
 .pdf_viewer_wrapper {
@@ -118,6 +133,8 @@ import pdf from "pdfobject";
 import patientDocumentTypes from "@/core/data/patient-document-types";
 import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import DocumentLabel from "@/views/patients/documents/DocumentLabel.vue";
+import SendDocumentViaEmailModal from "@/views/patients/documents/SendDocumentViaEmailModal.vue";
+import { Modal } from "bootstrap";
 const selectedDocument = ref(null);
 
 export default defineComponent({
@@ -126,7 +143,7 @@ export default defineComponent({
   components: { DocumentLabel },
   props: {
     showDocumentInformation: { default: true },
-    allowAppointmentFilter: { default: false },
+    showDocumentActions: { default: true },
     appointments: { required: false },
   },
   setup() {
@@ -135,10 +152,11 @@ export default defineComponent({
     const filteredDocuments = ref();
     const documentTypeFilter = ref("ALL");
     const appointmentFilter = ref("ALL");
+    const tempFile = ref();
 
     // Filters the documents by appointment and document type.
     watch([documentTypeFilter, appointmentFilter, documents], () => {
-      document.getElementById("divPDFViewer").innerHTML = "";
+      document.getElementById("document-view").innerHTML = "";
 
       let temp = documents.value;
       if (documentTypeFilter.value !== "ALL") {
@@ -162,13 +180,14 @@ export default defineComponent({
           path: selectedDocument.value.file_path,
         })
         .then((data) => {
+          tempFile.value = data;
           if (selectedDocument.value.file_type === "PDF") {
-            document.getElementById("divPDFViewer").innerHTML = "";
+            document.getElementById("document-view").innerHTML = "";
             let blob = new Blob([data], { type: "application/pdf" });
             let objectUrl = URL.createObjectURL(blob);
-            pdf.embed(objectUrl + "#toolbar=0", "#divPDFViewer");
+            pdf.embed(objectUrl + "#toolbar=0", "#document-view");
           } else if (selectedDocument.value.file_type === "PNG") {
-            document.getElementById("divPDFViewer").innerHTML =
+            document.getElementById("document-view").innerHTML =
               "<img src='" + data + "' />";
           }
         })
@@ -177,6 +196,30 @@ export default defineComponent({
         });
     });
 
+    const handleSendEmail = () => {
+      const modal = new Modal(document.getElementById("modal_send_email"));
+      modal.show();
+    };
+
+    const handlePrint = () => {
+      if (selectedDocument.value.file_type === "PDF") {
+        var blob = new Blob([tempFile.value], { type: "application/pdf" });
+        var blobURL = URL.createObjectURL(blob);
+
+        let iframe = document.createElement("iframe");
+        document.body.appendChild(iframe);
+
+        iframe.style.display = "none";
+        iframe.src = blobURL;
+        iframe.onload = function () {
+          setTimeout(function () {
+            iframe.focus();
+            iframe.contentWindow.print();
+          }, 1);
+        };
+      }
+    };
+
     return {
       patientDocumentTypes,
       DocumentLabel,
@@ -184,6 +227,9 @@ export default defineComponent({
       documentTypeFilter,
       appointmentFilter,
       selectedDocument,
+      handleSendEmail,
+      SendDocumentViaEmailModal,
+      handlePrint,
     };
   },
 });

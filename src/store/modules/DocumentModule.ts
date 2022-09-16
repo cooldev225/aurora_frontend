@@ -33,10 +33,14 @@ export default class DocumentModule extends VuexModule implements Documents {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.query("documents", {
-        params: { specialist_id: data.specialist_id },
+        params: {
+          specialist_id: data.specialist_id,
+          patient_id: data.patient_id,
+        },
       })
         .then(({ data }) => {
           this.context.commit(DocumentMutations.SET_LIST, data.data);
+          console.log(data.data);
           return data.data;
         })
         .catch(({ response }) => {

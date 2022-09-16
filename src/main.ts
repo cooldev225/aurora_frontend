@@ -24,6 +24,7 @@ import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import ModalWrapper from "@/components/presets/GeneralElements/ModalWrapper.vue";
 InfoSection;
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
+import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import "@/core/plugins/prismjs";
 import "bootstrap";
 
@@ -51,7 +52,8 @@ app
   .component("CardSection", CardSection)
   .component("InputWrapper", InputWrapper)
   .component("ModalWrapper", ModalWrapper)
-  .component("InfoSection", InfoSection);
+  .component("InfoSection", InfoSection)
+  .component("IconButton", IconButton);
 
 app.use(i18n);
 

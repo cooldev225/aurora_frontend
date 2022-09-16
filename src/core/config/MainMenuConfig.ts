@@ -272,7 +272,7 @@ const SpecialistMenu = [
   {
     heading: "Incoming",
     route: "/specialist/incoming-documents",
-    svgIcon: "media/icons/duotune/medicine/med001.svg",
+    svgIcon: "media/icons/duotune/general/gen016.svg",
     fontIcon: "bi-clipboard2-pulse",
   },
 ];

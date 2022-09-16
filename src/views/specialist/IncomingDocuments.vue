@@ -1,6 +1,6 @@
 <template>
   <CardSection>
-    <DocumentList :documents="documents" />
+    <DocumentList />
   </CardSection>
 </template>
 
@@ -13,7 +13,6 @@ import DocumentList from "@/views/specialist/DocumentList.vue";
 
 export default defineComponent({
   name: "specialist-incoming-documents",
-
   components: { DocumentList },
 
   setup() {
