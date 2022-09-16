@@ -1,24 +1,31 @@
-<!-- eslint-disable @typescript-eslint/no-unused-vars -->
-<template>SPECIALSIT DOCS</template>
+<template>
+  <CardSection>
+    <DocumentList :documents="documents" />
+  </CardSection>
+</template>
 
 <script>
-import { defineComponent, computed, onMounted } from "vue";
+import { defineComponent, computed, watch } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
+import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
+import DocumentList from "@/views/specialist/DocumentList.vue";
 
 export default defineComponent({
-  name: "admin-main",
+  name: "specialist-incoming-documents",
 
-  components: {},
+  components: { DocumentList },
 
   setup() {
     const store = useStore();
-    const documents = computed(() => store.getters.specialistMessagesList);
+    const userProfile = computed(() => store.getters.userProfile);
 
-    onMounted(() => {
+    // Set the document list to those of the currently logged in specialist
+    watch(userProfile, () => {
       setCurrentPageBreadcrumbs("Incoming Documents", []);
-      store.dispatch(Actions.SPECIALIST_MESSAGES.LIST);
+      store.dispatch(DocumentActions.LIST, {
+        specialist_id: userProfile.value.id,
+      });
     });
   },
 });

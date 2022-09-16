@@ -29,7 +29,7 @@ import ProfileModule from "@/store/modules/ProfileModule";
 import ReferralDoctorModule from "@/store/modules/ReferralDoctorModule";
 import ProcedureApprovalsModule from "@/store/modules/ProcedureApprovalsModule";
 import LetterModule from "@/store/modules/LetterModule";
-import SpecialistMessageModule from "@/store/modules/SpecialistMessageModule";
+import DocumentModule from "@/store/modules/DocumentModule";
 
 config.rawError = true;
 
@@ -63,7 +63,7 @@ const store = createStore({
     ReferralDoctorModule,
     ProcedureApprovalsModule,
     LetterModule,
-    SpecialistMessageModule,
+    DocumentModule,
   },
 });
 

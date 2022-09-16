@@ -22,7 +22,8 @@ import HeadingText from "./components/presets/GeneralElements/HeadingText.vue";
 import CardSection from "./components/presets/GeneralElements/CardSection.vue";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import ModalWrapper from "@/components/presets/GeneralElements/ModalWrapper.vue";
-
+InfoSection;
+import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import "@/core/plugins/prismjs";
 import "bootstrap";
 
@@ -49,7 +50,8 @@ app
   .component("HeadingText", HeadingText)
   .component("CardSection", CardSection)
   .component("InputWrapper", InputWrapper)
-  .component("ModalWrapper", ModalWrapper);
+  .component("ModalWrapper", ModalWrapper)
+  .component("InfoSection", InfoSection);
 
 app.use(i18n);
 
