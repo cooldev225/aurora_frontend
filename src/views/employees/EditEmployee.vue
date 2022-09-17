@@ -5,7 +5,13 @@
     <div class="d-flex flex-row-fluid flex-center bg-white rounded">
       <div class="w-100 py-20 px-9">
         <HeadingText text="Employee Details" />
-        <el-form class="w-100" :rules="rules" :model="formData" ref="formRef">
+        <el-form
+          class="w-100"
+          :rules="rules"
+          :prop="formData"
+          :model="formData"
+          ref="formRef"
+        >
           <div class="row">
             <InputWrapper
               class="col-12 col-md-6"
@@ -95,7 +101,11 @@
           >
             <div class="border border-dashed border-primary pt-3 m-3">
               <div class="card d-flex flex-row">
-                <InputWrapper class="col-3" label="Day">
+                <InputWrapper
+                  class="col-3"
+                  label="Day"
+                  :prop="'weekday-' + hourIndex"
+                >
                   <el-select
                     class="w-100"
                     type="text"
@@ -109,11 +119,16 @@
                     />
                   </el-select>
                 </InputWrapper>
-                <InputWrapper class="col-3" label="Location">
+                <InputWrapper
+                  class="col-3"
+                  label="Location"
+                  :prop="'location-' + hourIndex"
+                >
                   <el-select
                     class="w-100"
                     type="text"
                     v-model="hour_schedule.clinic_id"
+                    :prop="'location-' + hourIndex"
                   >
                     <el-option
                       v-for="clinic in clinicsList"
@@ -123,7 +138,11 @@
                     />
                   </el-select>
                 </InputWrapper>
-                <InputWrapper class="col-3" label="Time Slot">
+                <InputWrapper
+                  class="col-3"
+                  label="Time Slot"
+                  :prop="'timeslot-' + hourIndex"
+                >
                   <div class="d-flex">
                     <el-time-select
                       class="w-50 pe-2"
@@ -133,6 +152,7 @@
                       end="18:30"
                       format="HH:mm"
                       v-model="hour_schedule.start_time"
+                      :prop="'starttime-' + hourIndex"
                     />
                     <el-time-select
                       class="w-50 ps-2"
@@ -142,13 +162,19 @@
                       end="18:30"
                       format="HH:mm"
                       v-model="hour_schedule.end_time"
+                      :prop="'endtime-' + hourIndex"
                     />
                   </div>
                 </InputWrapper>
-                <InputWrapper class="col-3" label="Anesthetist">
+                <InputWrapper
+                  class="col-3"
+                  label="Anesthetist"
+                  :prop="'anesthetist-' + hourIndex"
+                >
                   <el-select
                     class="w-100"
                     v-model="hour_schedule.anesthetist_id"
+                    :prop="'anesthetist-' + hourIndex"
                   >
                     <el-option
                       v-for="item in anesthetistList"
@@ -256,15 +282,6 @@ export default defineComponent({
       specialist_role_id: 0,
     });
 
-    const empty_schedual = {
-      id: null,
-      week_day: null,
-      clinic_id: null,
-      start_time: null,
-      end_time: null,
-      anesthetist_id: null,
-    };
-
     const formData = ref({
       id: -1,
       username: "",
@@ -276,7 +293,16 @@ export default defineComponent({
       address: "",
       role_id: 4,
       type: "full-time",
-      hrm_user_base_schedules: [empty_schedual],
+      hrm_user_base_schedules: [
+        {
+          id: null,
+          week_day: null,
+          clinic_id: null,
+          start_time: null,
+          end_time: null,
+          anesthetist_id: null,
+        },
+      ],
     });
 
     const commonRoles = {
@@ -320,7 +346,14 @@ export default defineComponent({
     };
 
     const addSchedualHandle = () => {
-      formData.value.hrm_user_base_schedules.push(empty_schedual);
+      formData.value.hrm_user_base_schedules.push({
+        id: null,
+        week_day: null,
+        clinic_id: null,
+        start_time: null,
+        end_time: null,
+        anesthetist_id: null,
+      });
       window.scrollTo({
         top: document.body.scrollHeight,
         behavior: "smooth",
@@ -357,6 +390,13 @@ export default defineComponent({
       }
     });
 
+    watch(formData.value, () => {
+      console.log([
+        "hrm_user_base_schedules",
+        formData.value.hrm_user_base_schedules,
+      ]);
+    });
+
     onMounted(() => {
       let id = route.params.id;
       if (id != undefined) {
@@ -383,7 +423,7 @@ export default defineComponent({
             (schedule) =>
               schedule.week_day == null ||
               schedule.clinic_id == null ||
-              schedule.start_time ||
+              schedule.start_time == null ||
               schedule.end_time == null ||
               schedule.anesthetist_id == null
           );
