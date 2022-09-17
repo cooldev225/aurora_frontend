@@ -5,16 +5,7 @@
     <div class="d-flex flex-row-fluid flex-center bg-white rounded">
       <div class="w-100 py-20 px-9">
         <HeadingText text="Employee Details" />
-        <el-form
-          class="w-100"
-          :rules="
-            formData.role_id === formInfo.specialist_role_id.toString()
-              ? specialistRules
-              : rules
-          "
-          :model="formData"
-          ref="formRef"
-        >
+        <el-form class="w-100" :rules="rules" :model="formData" ref="formRef">
           <div class="row">
             <InputWrapper
               class="col-12 col-md-6"
@@ -97,7 +88,9 @@
           <el-divider />
           <HeadingText text="Employee Hours" />
           <div
-            v-for="(hourSchedule, hourIndex) in formData.hourSchedules"
+            v-for="(
+              hour_schedule, hourIndex
+            ) in formData.hrm_user_base_schedules"
             :key="hourIndex"
           >
             <div class="border border-dashed border-primary pt-3 m-3">
@@ -106,7 +99,7 @@
                   <el-select
                     class="w-100"
                     type="text"
-                    v-model="hourSchedule.day"
+                    v-model="hour_schedule.week_day"
                   >
                     <el-option
                       v-for="weekday in weekdays"
@@ -120,7 +113,7 @@
                   <el-select
                     class="w-100"
                     type="text"
-                    v-model="hourSchedule.clinic_id"
+                    v-model="hour_schedule.clinic_id"
                   >
                     <el-option
                       v-for="clinic in clinicsList"
@@ -139,7 +132,7 @@
                       step="00:15"
                       end="18:30"
                       format="HH:mm"
-                      v-model="hourSchedule.time_start"
+                      v-model="hour_schedule.start_time"
                     />
                     <el-time-select
                       class="w-50 ps-2"
@@ -148,21 +141,14 @@
                       step="00:15"
                       end="18:30"
                       format="HH:mm"
-                      v-model="hourSchedule.time_end"
+                      v-model="hour_schedule.end_time"
                     />
                   </div>
                 </InputWrapper>
-                <InputWrapper
-                  :v-show="
-                    formData.role_id === formInfo.specialist_role_id.toString()
-                  "
-                  class="col-3"
-                  label="Anaesthetist"
-                  prop="specialist.anesthetist_id"
-                >
+                <InputWrapper class="col-3" label="Anesthetist">
                   <el-select
                     class="w-100"
-                    v-model="hourSchedule.anaesthetist_id"
+                    v-model="hour_schedule.anesthetist_id"
                   >
                     <el-option
                       v-for="item in anesthetistList"
@@ -204,13 +190,9 @@
                 ></span>
               </span>
             </button>
-            <router-link
-              type="reset"
-              to="/employees"
-              class="btn btn-light me-3"
-            >
+            <RouterLink type="reset" to="/employees" class="btn btn-light me-3">
               Cancel
-            </router-link>
+            </RouterLink>
           </div>
         </el-form>
       </div>
@@ -249,6 +231,7 @@ import employeeTypes from "@/core/data/employee-types";
 import employeeRoles from "@/core/data/employee-roles";
 import weekdays from "@/core/data/weekdays";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
+import { ElMessage } from "element-plus";
 
 export default defineComponent({
   name: "create-employee",
@@ -274,14 +257,16 @@ export default defineComponent({
     });
 
     const empty_schedual = {
-      day: null,
+      id: null,
+      week_day: null,
       clinic_id: null,
-      time_start: null,
-      time_end: null,
-      anaesthetist_id: null,
+      start_time: null,
+      end_time: null,
+      anesthetist_id: null,
     };
 
     const formData = ref({
+      id: -1,
       username: "",
       email: "",
       mobile_number: "0",
@@ -289,20 +274,9 @@ export default defineComponent({
       first_name: "",
       last_name: "",
       address: "",
-      role_id: "4",
+      role_id: 4,
       type: "full-time",
-      specialist: {
-        anesthetist_id: "",
-      },
-      hourSchedules: [
-        {
-          day: null,
-          clinic_id: null,
-          time_start: null,
-          time_end: null,
-          anaesthetist_id: null,
-        },
-      ],
+      hrm_user_base_schedules: [empty_schedual],
     });
 
     const commonRoles = {
@@ -336,19 +310,6 @@ export default defineComponent({
 
     const rules = ref(commonRoles);
 
-    const specialistRules = ref({
-      ...commonRoles,
-      specialist: {
-        anesthetist_id: [
-          {
-            required: true,
-            message: "Anaesthetist cannot be blank.",
-            trigger: "change",
-          },
-        ],
-      },
-    });
-
     const acceptNumber = () => {
       //0#-####-####
       var v = formData.value.mobile_number;
@@ -359,7 +320,7 @@ export default defineComponent({
     };
 
     const addSchedualHandle = () => {
-      formData.value.hourSchedules.push(empty_schedual);
+      formData.value.hrm_user_base_schedules.push(empty_schedual);
       window.scrollTo({
         top: document.body.scrollHeight,
         behavior: "smooth",
@@ -367,27 +328,48 @@ export default defineComponent({
     };
 
     const deleteSchedualHandle = (hourIndex) => {
-      formData.value.hourSchedules.splice(hourIndex, 1);
+      formData.value.hrm_user_base_schedules.splice(hourIndex, 1);
     };
 
     const currentStepIndex = ref(0);
 
     watch(employeeList, () => {
-      setCurrentPageBreadcrumbs(formInfo.title, ["Employee"]);
+      const id = route.params.id;
+      console.log(["employeeList=", employeeList.value]);
+      if (id != undefined) {
+        let employees = employeeList.value.filter((e) => e.id == id);
+        if (employees && employees.length) {
+          let employee = employees[0];
+          formData.value.id = employee.id;
+          formData.value.username = employee.username;
+          formData.value.email = employee.email;
+          formData.value.mobile_number = employee.mobile_number;
+          formData.value.first_name = employee.first_name;
+          formData.value.last_name = employee.last_name;
+          formData.value.address = employee.address;
+          formData.value.role_id = employee.role_id;
+          formData.value.type = employee.type;
+          if (employee.hrm_user_base_schedules.length) {
+            formData.value.hrm_user_base_schedules =
+              employee.hrm_user_base_schedules;
+          }
+        }
+      }
     });
 
     onMounted(() => {
-      const id = route.params.id;
+      let id = route.params.id;
       if (id != undefined) {
         formInfo.title = "Edit";
         formInfo.isCreate = false;
         formInfo.submitAction = Actions.EMPLOYEE.UPDATE;
         formInfo.submitButtonName = "Update";
         formInfo.submittedText = "Employee Updated";
-      }
 
+        store.dispatch(Actions.EMPLOYEE.LIST);
+      }
+      setCurrentPageBreadcrumbs(formInfo.title, ["Employee"]);
       store.dispatch(Actions.CLINICS.LIST);
-      store.dispatch(Actions.EMPLOYEE.LIST);
     });
 
     const submit = () => {
@@ -397,11 +379,25 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
+          let null_schedules = formData.value.hrm_user_base_schedules.filter(
+            (schedule) =>
+              schedule.week_day == null ||
+              schedule.clinic_id == null ||
+              schedule.start_time ||
+              schedule.end_time == null ||
+              schedule.anesthetist_id == null
+          );
+          if (null_schedules.length) {
+            valid = false;
+            ElMessage.error("Please fill employee hours fields!");
+            return false;
+          }
           loading.value = true;
 
           store
             .dispatch(formInfo.submitAction, formData.value)
-            .then(() => {
+            .then((res) => {
+              console.log(["save response", res]);
               loading.value = false;
               store.dispatch(Actions.EMPLOYEE.LIST);
               Swal.fire({
@@ -430,7 +426,6 @@ export default defineComponent({
       formData,
       formInfo,
       rules,
-      specialistRules,
       submit,
       formRef,
       loading,
