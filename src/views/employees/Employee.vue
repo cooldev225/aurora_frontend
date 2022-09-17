@@ -158,7 +158,7 @@ export default defineComponent({
     const tableData = ref([]);
     const filteredData = ref([]);
     const list = computed(() => store.getters.employeeList);
-    const organization = computed(() => store.getters.organization);
+    //const organization = computed(() => store.getters.organization);
     const loading = ref(true);
 
     const handleCreate = () => {
