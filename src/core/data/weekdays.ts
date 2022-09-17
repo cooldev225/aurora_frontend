@@ -1,6 +1,6 @@
 export const weekdays = [
   { value: "MON", label: "Monday" },
-  { value: "TUS", label: "Tuesday" },
+  { value: "TUE", label: "Tuesday" },
   { value: "WED", label: "Wednesday" },
   { value: "THU", label: "Thursday" },
   { value: "FRI", label: "Friday" },
