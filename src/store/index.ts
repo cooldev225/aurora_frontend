@@ -32,7 +32,6 @@ import LetterModule from "@/store/modules/LetterModule";
 import DocumentModule from "@/store/modules/DocumentModule";
 import ReportModule from "@/store/modules/ReportModule";
 
-
 config.rawError = true;
 
 const store = createStore({
