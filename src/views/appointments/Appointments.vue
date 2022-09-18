@@ -289,6 +289,7 @@ import {
   reactive,
   onMounted,
   computed,
+  watchEffect,
 } from "vue";
 import { useStore } from "vuex";
 import AppointmentListPopup from "@/components/appointments/AppointmentListPopup.vue";
@@ -305,6 +306,7 @@ import {
 } from "@/store/enums/StoreAppointmentEnums";
 import { Modal } from "bootstrap";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -448,6 +450,17 @@ export default defineComponent({
       searchAppointmentForm.value.time_requirement = 0;
     };
 
+    watchEffect(() => {
+      if (
+        DrawerComponent?.getInstance(
+          "appointment-drawer"
+        )?.isBookingDrawerShown() === true
+      ) {
+        setTimeout(() => {
+          DrawerComponent?.getInstance("appointment-drawer")?.show();
+        }, 200);
+      }
+    });
     watch(date_search, () => {
       store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
         ...date_search,
