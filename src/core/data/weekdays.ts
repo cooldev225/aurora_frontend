@@ -1,6 +1,6 @@
-export const weekdays = [
+export const employeeRoles = [
   { value: "MON", label: "Monday" },
-  { value: "TUE", label: "Tuesday" },
+  { value: "TUS", label: "Tuesday" },
   { value: "WED", label: "Wednesday" },
   { value: "THU", label: "Thursday" },
   { value: "FRI", label: "Friday" },
@@ -8,4 +8,4 @@ export const weekdays = [
   { value: "SUN", label: "Sunday" },
 ];
 
-export default weekdays;
+export default employeeRoles;
