@@ -88,7 +88,7 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           store
-            .dispatch(AppointmentActions.APPOINTMENT.PRE_ADMISSION.VALIDATE, {
+            .dispatch(AppointmentActions.PRE_ADMISSION.VALIDATE, {
               id: apt_id.value,
               last_name: formData.value.last_name,
               date_of_birth: formData.value.date_of_birth,
@@ -109,7 +109,7 @@ export default defineComponent({
       loading.value = true;
       apt_id.value = router.currentRoute.value.params.id.toString();
       store.dispatch(
-        AppointmentActions.APPOINTMENT.PRE_ADMISSION.ORGANIZATION,
+        AppointmentActions.PRE_ADMISSION.ORGANIZATION,
         apt_id.value
       );
     });

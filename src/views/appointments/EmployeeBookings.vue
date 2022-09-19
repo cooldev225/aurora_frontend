@@ -55,10 +55,10 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const userAptList = computed(() => store.getters.getUserAptList);
+    const userAptList = computed(() => store.getters.getAptList);
     const refCalendar = ref(null);
     const calendarKey = ref(0);
-
+    const userProfile = computed(() => store.getters.userProfile);
     let appointments = [];
 
     const handleEventClick = (e) => {
@@ -72,7 +72,6 @@ export default defineComponent({
       }
 
       DrawerComponent?.getInstance("appointment-drawer")?.toggle();
-      // DrawerComponent?.getInstance("booking-drawer")?.toggle();
       console.log();
     };
 
@@ -98,6 +97,18 @@ export default defineComponent({
       events: appointments,
       eventClick: handleEventClick,
     };
+
+    watch(userProfile, () => {
+      let specialist_id =
+        userProfile.value.role_id === 5 ? userProfile.value.id : null;
+      let anesthetist_id =
+        userProfile.value.role_id === 9 ? userProfile.value.id : null;
+
+      store.dispatch(AppointmentActions.LIST, {
+        specialist_id: specialist_id,
+        anesthetist_id: anesthetist_id,
+      });
+    });
 
     watch(userAptList, () => {
       appointments = [];
@@ -126,14 +137,12 @@ export default defineComponent({
         });
       }
 
-      console.log(userAptList.value);
       refCalendar.value.$props.options.events = appointments;
       calendarKey.value++;
     });
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("My Bookings", ["Booking Dashboard"]);
-      store.dispatch(AppointmentActions.APT.USER_APT.LIST);
     });
 
     return {

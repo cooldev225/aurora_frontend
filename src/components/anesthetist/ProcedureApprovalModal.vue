@@ -200,7 +200,7 @@ export default defineComponent({
     const loading = ref(false);
     const uploadRef = ref(null);
     const uploadDisabled = ref(true);
-    const uploadData = new FormData();
+    const userProfile = computed(() => store.getters.userProfile);
 
     const preAdmissionData = ref({
       notes: "",
@@ -233,15 +233,12 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(
-              AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.UPDATE,
-              updateData
-            )
+            .dispatch(AppointmentActions.PROCEDURE_APPROVAL.UPDATE, updateData)
             .then(() => {
               loading.value = false;
-              store.dispatch(
-                AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.LIST
-              );
+              store.dispatch(AppointmentActions.LIST, {
+                anesthetist_id: userProfile.value.id,
+              });
               Swal.fire({
                 text: "Successfully Updated!",
                 icon: "success",
@@ -272,7 +269,7 @@ export default defineComponent({
     watch(preAdmissionData, () => {
       if (preAdmissionData.value.pre_admission.pre_admission_file) {
         store
-          .dispatch(AppointmentActions.APPOINTMENT.PRE_ADMISSION.VIEW, {
+          .dispatch(AppointmentActions.PRE_ADMISSION.VIEW, {
             path: preAdmissionData.value.pre_admission.pre_admission_file,
           })
           .then((data) => {

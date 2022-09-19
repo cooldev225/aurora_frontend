@@ -53,7 +53,7 @@
             placeholder="Select Appointment"
           >
             <el-option
-              v-for="item in aptList.pastAppointments"
+              v-for="item in aptList"
               :label="
                 moment(item.date).format('DD-MM-YYYY') +
                 ' ' +
@@ -159,7 +159,7 @@ export default defineComponent({
     const uploadDocumentRef = ref(null);
     const loading = ref(false);
     const specialistList = computed(() => store.getters.getSpecialistList);
-    const aptList = computed(() => store.getters.getAptListById);
+    const aptList = computed(() => store.getters.getAptList);
     const patientId = computed(() => props.patientId);
     const uploadDisabled = ref(false);
     const upload = ref(null);
@@ -257,7 +257,9 @@ export default defineComponent({
 
     watch(patientId, () => {
       formData.value.patient_id = patientId.value;
-      store.dispatch(AppointmentActions.APT.LISTBYID, patientId.value);
+      store.dispatch(AppointmentActions.LIST, {
+        patient_id: patientId.value,
+      });
     });
 
     onMounted(() => {

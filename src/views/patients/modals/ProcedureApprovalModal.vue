@@ -87,7 +87,7 @@ export default defineComponent({
     watch(appointmentData, () => {
       if (appointmentData.value.pre_admission?.pre_admission_file) {
         store
-          .dispatch(AppointmentActions.APPOINTMENT.PRE_ADMISSION.VIEW, {
+          .dispatch(AppointmentActions.PRE_ADMISSION.VIEW, {
             path: appointmentData.value.pre_admission.pre_admission_file,
           })
           .then((data) => {
@@ -128,7 +128,7 @@ export default defineComponent({
       loading.value = true;
       uploadData.append("file", preAdmissionData.value.file[0]?.raw);
       store
-        .dispatch(AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.UPLOAD, {
+        .dispatch(AppointmentActions.PROCEDURE_APPROVAL.UPLOAD, {
           appointment_id: appointmentData.value.id,
           uploadData: uploadData,
         })
@@ -145,9 +145,7 @@ export default defineComponent({
           }).then(() => {
             uploadDisabled.value = true;
             if (props.isEditable === "true") {
-              store.dispatch(
-                AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.LIST
-              );
+              store.dispatch(AppointmentActions.PROCEDURE_APPROVAL.LIST);
             } else {
               store.dispatch(
                 PatientActions.PATIENTS.VIEW,

@@ -402,7 +402,7 @@ export default defineComponent({
         ...specialists_search,
       });
 
-      store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
+      store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);

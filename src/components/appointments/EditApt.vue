@@ -1258,7 +1258,7 @@ export default defineComponent({
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
-      store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
+      store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.ORG.LIST);
     });
 

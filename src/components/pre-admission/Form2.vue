@@ -480,7 +480,7 @@ export default defineComponent({
             JSON.stringify(formattedAnswer())
           );
           await store.dispatch(
-            AppointmentActions.APPOINTMENT.PRE_ADMISSION.STORE,
+            AppointmentActions.PRE_ADMISSION.STORE,
             Data
           );
           loading.value = false;
@@ -506,7 +506,7 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Administration", ["Patients"]);
       apt_id.value = router.currentRoute.value.params.id.toString();
       await store.dispatch(
-        AppointmentActions.APPOINTMENT.PRE_ADMISSION.ORGANIZATION,
+        AppointmentActions.PRE_ADMISSION.ORGANIZATION,
         apt_id.value
       );
     });
