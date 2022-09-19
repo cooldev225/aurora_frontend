@@ -139,8 +139,8 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      if (appointmentList.value && appointmentList.value.pastAppointments) {
-        appointmentList.value.pastAppointments.forEach((item) => {
+      if (appointmentList.value) {
+        appointmentList.value.forEach((item) => {
           if (
             moment(item.date).format("DD-MM-YYYY") ===
             moment(new Date()).format("DD-MM-YYYY")

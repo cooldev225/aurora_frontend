@@ -247,7 +247,6 @@ export default defineComponent({
           renderTable();
         });
     };
-
     const clearFilters = () => {
       filter.first_name = "";
       filter.last_name = "";
