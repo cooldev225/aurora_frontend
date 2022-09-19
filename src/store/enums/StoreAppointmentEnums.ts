@@ -1,10 +1,6 @@
 /* eslint-disable prettier/prettier */
 const AppointmentActions = {
   BOOKING: {
-    LIST: "listBooking",
-    CREATE: "createBooking",
-    DELETE: "deleteBooking",
-    UPDATE: "updateBooking",
     SEARCH: {
       DATE: "searchBookingByDate",
       SPECIALISTS: "searchBookingBySPT",
@@ -12,7 +8,8 @@ const AppointmentActions = {
     },
   },
 
-  APPOINTMENT: {
+  
+    LIST: "listAppointment",                 // (get)    'appointments'
     REFERRAL: {
       UPDATE:   "updateAppointmentReferral", // (put)    'appointments/referral/{appointment}'
       VIEW:     "viewAppointmentReferral",   // (post)   'appointments/referral/file'
@@ -41,34 +38,16 @@ const AppointmentActions = {
       VALIDATE:     "validateAptPreAdmission",
       STORE:        "createAptPreAdmission",
     },
-  },
+  
 
+
+  // These are slowly being moved to the above
   APT: {
-    LIST: "listApt",
-    LISTBYID: "listAptById",
     CREATE: "createApt",
     DELETE: "deleteApt",
-    UPDATE: "updateApt",
- 
-    UNCONFIRMED: {
-      LIST: "listUnconfirmedApt",
-      DELETE: "deleteUnconfirmedApt",
-      UPDATE: "updateUnconfirmedApt",
-    },
-    WAITLISTED: {
-      LIST: "listWaitlistedApt",
-      DELETE: "deleteWaitlistedApt",
-      UPDATE: "updateWaitlistedApt",
-    },
-    UNAPPROVED: {
-      LIST: "listUnapprovedApt",
-      DELETE: "deleteUnapprovedApt",
-      UPDATE: "updateUnapprovedApt",
-    },
-    
+    UPDATE: "updateApt", 
     CHECK_IN: "checkInApt",
     CHECK_OUT: "checkOutApt",
-    
     USER_APT: {
       LIST: "userAptList",
     },
@@ -98,22 +77,6 @@ const AppointmentMutations = {
     TYPES: {
       LIST: "setAptType",
       SELECT: "setSelectAptType",
-    },
-    UNCONFIRMED: {
-      LIST: "setUnConfirmedApt",
-      SELECT: "setSelectUnconfirmedApt",
-    },
-    WAITLISTED: {
-      LIST: "setWaitlistedApt",
-      SELECT: "setSelectWaitlistedApt",
-    },
-    UNAPPROVED: {
-      LIST: "setUnapprovedApt",
-      SELECT: "setSelectUnapprovedApt",
-    },
-    CONFIRMATION_STATUS: {
-      LIST: "setCancellationApt",
-      SELECT: "setSelectCancellationApt",
     },
     PRE_ADMISSION: {
       ORG: "setAptPreAdmissionOrg",

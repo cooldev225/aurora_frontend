@@ -235,22 +235,22 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/appointments/Appointments.vue"),
       },
       {
-        path: "/booking/unconfirmed-apts",
+        path: "/appointments/unconfirmed-apts",
         name: "unconfirmed-apts",
         component: () => import("@/views/appointments/UnconfirmedApts.vue"),
       },
       {
-        path: "/booking/unapproved-procedures",
+        path: "/appointments/unapproved-procedures",
         name: "unapproved-procedures",
         component: () => import("@/views/appointments/UnapprovedProcedure.vue"),
       },
       {
-        path: "/booking/waitlisted-apts",
+        path: "/appointments/waitlisted-apts",
         name: "waitlisted-apts",
         component: () => import("@/views/appointments/WaitlistedApts.vue"),
       },
       {
-        path: "/booking/cancellation-list",
+        path: "/appointments/cancellation-list",
         name: "cancellation-list",
         component: () => import("@/views/appointments/CancellationList.vue"),
       },

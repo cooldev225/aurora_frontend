@@ -44,7 +44,7 @@ export default defineComponent({
     onMounted(() => {
       apt_id.value = router.currentRoute.value.params.id.toString();
       store.dispatch(
-        AppointmentActions.APPOINTMENT.PRE_ADMISSION.ORGANIZATION,
+        AppointmentActions.PRE_ADMISSION.ORGANIZATION,
         apt_id.value
       );
     });

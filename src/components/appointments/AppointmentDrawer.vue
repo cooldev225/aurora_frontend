@@ -286,14 +286,11 @@ export default defineComponent({
           var missed = Swal.getPopup().querySelector("#chkMissed").checked;
 
           await store
-            .dispatch(
-              AppointmentActions.APPOINTMENT.CONFIRMATION_STATUS.UPDATE,
-              {
-                id: aptData.value.id,
-                missed: missed,
-                reason: data,
-              }
-            )
+            .dispatch(AppointmentActions.CONFIRMATION_STATUS.UPDATE, {
+              id: aptData.value.id,
+              missed: missed,
+              reason: data,
+            })
             .then(() => {
               store.dispatch(
                 AppointmentActions.BOOKING.SEARCH.DATE,

@@ -228,7 +228,7 @@ export default defineComponent({
     watch(appointmentData, () => {
       if (appointmentData.value.referral?.referral_file) {
         store
-          .dispatch(AppointmentActions.APPOINTMENT.REFERRAL.VIEW, {
+          .dispatch(AppointmentActions.REFERRAL.VIEW, {
             path: appointmentData.value.referral.referral_file,
           })
           .then((data) => {
@@ -294,7 +294,7 @@ export default defineComponent({
           );
 
           store
-            .dispatch(AppointmentActions.APPOINTMENT.REFERRAL.UPDATE, {
+            .dispatch(AppointmentActions.REFERRAL.UPDATE, {
               appointment_id: appointmentData.value.id,
               submitData: submitData,
             })

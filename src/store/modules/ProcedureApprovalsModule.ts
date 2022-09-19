@@ -51,7 +51,7 @@ export default class ProcedureApprovalsModule
   }
 
   @Action
-  [AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.LIST]() {
+  [AppointmentActions.PROCEDURE_APPROVAL.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("procedure-approvals")
@@ -72,7 +72,7 @@ export default class ProcedureApprovalsModule
   }
 
   @Action
-  [AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.UPDATE](item) {
+  [AppointmentActions.PROCEDURE_APPROVAL.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.put(
@@ -92,7 +92,7 @@ export default class ProcedureApprovalsModule
   }
 
   @Action
-  [AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.UPLOAD](item) {
+  [AppointmentActions.PROCEDURE_APPROVAL.UPLOAD](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post(

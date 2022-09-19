@@ -121,7 +121,7 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(AppointmentActions.APPOINTMENT.COLLECTING_PERSON.UPDATE, {
+            .dispatch(AppointmentActions.COLLECTING_PERSON.UPDATE, {
               id: aptData.value.id,
               ...formData.value,
             })

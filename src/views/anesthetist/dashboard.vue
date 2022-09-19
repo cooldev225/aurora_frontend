@@ -282,11 +282,9 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Dashboard", ["Anesthetist"]);
-      store
-        .dispatch(AppointmentActions.APPOINTMENT.PROCEDURE_APPROVAL.LIST)
-        .then(() => {
-          loading.value = false;
-        });
+      store.dispatch(AppointmentActions.PROCEDURE_APPROVAL.LIST).then(() => {
+        loading.value = false;
+      });
     });
 
     return {

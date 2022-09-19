@@ -26,7 +26,7 @@
           placeholder="Select Appointment"
         >
           <el-option
-            v-for="item in appointmentList.pastAppointments"
+            v-for="item in appointmentList"
             :label="
               moment(item.date).format('DD-MM-YYYY') +
               ' ' +
@@ -75,11 +75,12 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect, computed } from "vue";
+import { defineComponent, ref, watchEffect, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import timeFrames from "@/core/data/time-frames";
 import moment from "moment";
 export default defineComponent({
@@ -89,7 +90,7 @@ export default defineComponent({
     const formRef = ref(null);
     const patientRecallReminderModal = ref(null);
     const loading = ref(false);
-    const appointmentList = computed(() => store.getters.getAptListById);
+    const appointmentList = computed(() => store.getters.getAptList);
 
     const formData = ref({
       patient_id: 0,
@@ -99,6 +100,11 @@ export default defineComponent({
     });
     const patientData = ref([]);
 
+    onMounted(() => {
+      store.dispatch(AppointmentActions.LIST, {
+        patient_id: patientData.value.id,
+      });
+    });
     watchEffect(() => {
       patientData.value = store.getters.selectedPatient;
     });
