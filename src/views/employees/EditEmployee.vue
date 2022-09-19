@@ -102,7 +102,7 @@
             <div class="border border-dashed border-primary pt-3 m-3">
               <div class="card d-flex flex-row">
                 <InputWrapper
-                  class="col-3"
+                  :class="formData.role_id === 5 ? 'col-2' : 'col-3'"
                   label="Day"
                   :prop="'weekday-' + hourIndex"
                 >
@@ -120,7 +120,7 @@
                   </el-select>
                 </InputWrapper>
                 <InputWrapper
-                  class="col-3"
+                  :class="formData.role_id === 5 ? 'col-3' : 'col-6'"
                   label="Location"
                   :prop="'location-' + hourIndex"
                 >
@@ -128,7 +128,7 @@
                     class="w-100"
                     type="text"
                     v-model="hour_schedule.clinic_id"
-                    :prop="'location-' + hourIndex"
+                    :prop="'location-select-' + hourIndex"
                   >
                     <el-option
                       v-for="clinic in clinicsList"
@@ -167,14 +167,34 @@
                   </div>
                 </InputWrapper>
                 <InputWrapper
-                  class="col-3"
+                  v-if="formData.role_id === 5"
+                  class="col-2"
+                  label="Restriction"
+                  :prop="'restriction-' + hourIndex"
+                >
+                  <el-select
+                    class="w-100"
+                    v-model="hour_schedule.appointment_type_restriction"
+                    :prop="'restriction-select-' + hourIndex"
+                  >
+                    <el-option
+                      v-for="item in restrictionsTypes"
+                      :value="item"
+                      :label="item"
+                      :key="item"
+                    />
+                  </el-select>
+                </InputWrapper>
+                <InputWrapper
+                  v-if="formData.role_id === 5"
+                  class="col-2"
                   label="Anesthetist"
                   :prop="'anesthetist-' + hourIndex"
                 >
                   <el-select
                     class="w-100"
                     v-model="hour_schedule.anesthetist_id"
-                    :prop="'anesthetist-' + hourIndex"
+                    :prop="'anesthetist-select-' + hourIndex"
                   >
                     <el-option
                       v-for="item in anesthetistList"
@@ -256,6 +276,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import employeeTypes from "@/core/data/employee-types";
 import employeeRoles from "@/core/data/employee-roles";
 import weekdays from "@/core/data/weekdays";
+import restrictionsTypes from "@/core/data/apt-restriction";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import { ElMessage } from "element-plus";
 
@@ -301,6 +322,7 @@ export default defineComponent({
           start_time: null,
           end_time: null,
           anesthetist_id: null,
+          appointment_type_restriction: null,
         },
       ],
     });
@@ -353,6 +375,7 @@ export default defineComponent({
         start_time: null,
         end_time: null,
         anesthetist_id: null,
+        appointment_type_restriction: null,
       });
       window.scrollTo({
         top: document.body.scrollHeight,
@@ -472,6 +495,7 @@ export default defineComponent({
       currentStepIndex,
       clinicsList,
       employeeTypes,
+      restrictionsTypes,
       employeeRoles,
       weekdays,
       anesthetistList,
