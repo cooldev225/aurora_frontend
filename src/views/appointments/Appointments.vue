@@ -359,7 +359,7 @@ export default defineComponent({
       appointment_type_id: "",
       specialist_id: "",
       time_requirement: 0,
-      x_weeks: "0",
+      date: moment(),
       clinic_id: "",
     });
 
@@ -423,7 +423,10 @@ export default defineComponent({
             searchAppointmentForm.value.specialist_id;
           search_next_apts.time_requirement =
             searchAppointmentForm.value.time_requirement;
-          search_next_apts.x_weeks = searchAppointmentForm.value.x_weeks;
+          search_next_apts.date = moment(moment())
+            .add(searchAppointmentForm.value.x_weeks, "weeks")
+            .format("DD/MM/YYYY")
+            .toString();
           search_next_apts.clinic_id = searchAppointmentForm.value.clinic_id;
 
           await store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
