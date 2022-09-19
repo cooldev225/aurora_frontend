@@ -479,10 +479,7 @@ export default defineComponent({
             "pre_admission_answers",
             JSON.stringify(formattedAnswer())
           );
-          await store.dispatch(
-            AppointmentActions.PRE_ADMISSION.STORE,
-            Data
-          );
+          await store.dispatch(AppointmentActions.PRE_ADMISSION.STORE, Data);
           loading.value = false;
           router.push({
             path:
