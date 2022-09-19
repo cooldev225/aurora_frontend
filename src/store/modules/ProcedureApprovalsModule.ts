@@ -12,7 +12,6 @@ export interface IProcedureApproval {
 }
 
 export interface ProcedureApprovalsInfo {
-  procedureApprovalList: Array<IProcedureApproval>;
   procedureApproval: IProcedureApproval;
 }
 
@@ -21,16 +20,7 @@ export default class ProcedureApprovalsModule
   extends VuexModule
   implements ProcedureApprovalsInfo
 {
-  procedureApprovalList = [] as Array<IProcedureApproval>;
   procedureApproval = {} as IProcedureApproval;
-
-  /**
-   * Get current ProcedureApprovals List
-   * @returns ProcedureApprovals
-   */
-  get getProcedureApprovalList(): Array<IProcedureApproval> {
-    return this.procedureApprovalList;
-  }
 
   /**
    * Get current ProcedureApprovals List
@@ -41,34 +31,8 @@ export default class ProcedureApprovalsModule
   }
 
   @Mutation
-  [AppointmentMutations.SET_PROCEDURE_APPROVAL.LIST](procedureApprovalList) {
-    this.procedureApprovalList = procedureApprovalList;
-  }
-
-  @Mutation
   [AppointmentMutations.SET_PROCEDURE_APPROVAL.DATA](procedureApproval) {
     this.procedureApproval = procedureApproval;
-  }
-
-  @Action
-  [AppointmentActions.PROCEDURE_APPROVAL.LIST]() {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.get("procedure-approvals")
-        .then(({ data }) => {
-          this.context.commit(
-            AppointmentMutations.SET_PROCEDURE_APPROVAL.LIST,
-            data.data
-          );
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
   }
 
   @Action

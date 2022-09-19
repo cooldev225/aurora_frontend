@@ -200,7 +200,7 @@ export default defineComponent({
     const loading = ref(false);
     const uploadRef = ref(null);
     const uploadDisabled = ref(true);
-    const uploadData = new FormData();
+    const userProfile = computed(() => store.getters.userProfile);
 
     const preAdmissionData = ref({
       notes: "",
@@ -236,7 +236,9 @@ export default defineComponent({
             .dispatch(AppointmentActions.PROCEDURE_APPROVAL.UPDATE, updateData)
             .then(() => {
               loading.value = false;
-              store.dispatch(AppointmentActions.PROCEDURE_APPROVAL.LIST);
+              store.dispatch(AppointmentActions.LIST, {
+                anesthetist_id: userProfile.value.id,
+              });
               Swal.fire({
                 text: "Successfully Updated!",
                 icon: "success",

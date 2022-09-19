@@ -221,14 +221,13 @@ export default defineComponent({
     ]);
     const procedureApprovalsData = ref([]);
     const tableData = ref([]);
-    const procedureApprovalsList = computed(
-      () => store.getters.getProcedureApprovalList
-    );
+    const procedureApprovalsList = computed(() => store.getters.getAptList);
     const loading = ref(true);
     const filterFirstName = ref("");
     const filterLastName = ref("");
     const tableKey = ref(0);
     const showAll = ref(true);
+    const userProfile = computed(() => store.getters.userProfile);
 
     const renderTable = () => tableKey.value++;
 
@@ -274,7 +273,6 @@ export default defineComponent({
     };
 
     watch(procedureApprovalsList, () => {
-      console.log(procedureApprovalsList.value);
       procedureApprovalsData.value = procedureApprovalsList.value;
       searchPatient();
     });
@@ -282,9 +280,16 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Dashboard", ["Anesthetist"]);
-      store.dispatch(AppointmentActions.PROCEDURE_APPROVAL.LIST).then(() => {
-        loading.value = false;
-      });
+    });
+
+    watch(userProfile, () => {
+      store
+        .dispatch(AppointmentActions.LIST, {
+          anesthetist_id: userProfile.value.id,
+        })
+        .then(() => {
+          loading.value = false;
+        });
     });
 
     return {

@@ -1,43 +1,35 @@
 /* eslint-disable prettier/prettier */
 const AppointmentActions = {
-  BOOKING: {
-    SEARCH: {
-      DATE: "searchBookingByDate",
-      SPECIALISTS: "searchBookingBySPT",
-      NEXT_APT: "searchNextApt",
-    },
-  },
+
 
   
-    LIST: "listAppointment",                 // (get)    'appointments'
-    REFERRAL: {
-      UPDATE:   "updateAppointmentReferral", // (put)    'appointments/referral/{appointment}'
-      VIEW:     "viewAppointmentReferral",   // (post)   'appointments/referral/file'
-    },
-    APPOINTMENT_TYPES:{
-      LIST:   "listAptTypes",               //  (get)    '/appointment-types'
-      CREATE: "createAptTypes",             //  (post)   '/appointment-types'
-      UPDATE: "updateAptTypes",             //  (put)    '/appointment-types/{appointmentType}'
-      DELETE: "deleteAptTypes",             //  (delete) '/appointment-types/{appointmentType}'
-    },
-    PROCEDURE_APPROVAL: {
-      LIST: "listProcedureApproval",        //  (get)    '/procedure-approvals'
-      UPDATE: "updateProcedureApproval",    //  (put)    '/appointment/procedure-approvals/{appointment}'
-      UPLOAD: "uploadProcedureApproval",    //  (put)    '/appointment/procedure-approvals/upload/{appointment}'
-    },
-    CONFIRMATION_STATUS: {   
-      LIST: "listCancellationApt",          //  (get) '/appointments/confirmation-status'
-      UPDATE: "updateCancellationApt",      //  (put) '/appointments/confirmation-status/{appointment}'
-    },
-    COLLECTING_PERSON:{
-      UPDATE: "updateCancellationApt",      //  (put) '/appointments/collecting-person/{appointment}'
-    },
-    PRE_ADMISSION: {
-      VIEW:     "viewPreAdmissionForm",      // (post)   'appointment/procedure-approvals/pdf/{appointment}'
-      ORGANIZATION: "listAptPreAdmissionOrg",
-      VALIDATE:     "validateAptPreAdmission",
-      STORE:        "createAptPreAdmission",
-    },
+  LIST: "listAppointment",                 // (get)    'appointments'
+  REFERRAL: {
+    UPDATE:   "updateAppointmentReferral", // (put)    'appointments/referral/{appointment}'
+    VIEW:     "viewAppointmentReferral",   // (post)   'appointments/referral/file'
+  },
+  APPOINTMENT_TYPES:{
+    LIST:   "listAptTypes",               //  (get)    '/appointment-types'
+    CREATE: "createAptTypes",             //  (post)   '/appointment-types'
+    UPDATE: "updateAptTypes",             //  (put)    '/appointment-types/{appointmentType}'
+    DELETE: "deleteAptTypes",             //  (delete) '/appointment-types/{appointmentType}'
+  },
+  PROCEDURE_APPROVAL: {
+    UPDATE: "updateProcedureApproval",    //  (put)    '/appointment/procedure-approvals/{appointment}'
+    UPLOAD: "uploadProcedureApproval",    //  (put)    '/appointment/procedure-approvals/upload/{appointment}'
+  },
+  CONFIRMATION_STATUS: {   
+    UPDATE: "updateCancellationApt",      //  (put) '/appointments/confirmation-status/{appointment}'
+  },
+  COLLECTING_PERSON:{
+    UPDATE: "updateCancellationApt",      //  (put) '/appointments/collecting-person/{appointment}'
+  },
+  PRE_ADMISSION: {
+    VIEW:     "viewPreAdmissionForm",      // (post)   'appointment/procedure-approvals/pdf/{appointment}'
+    ORGANIZATION: "listAptPreAdmissionOrg",
+    VALIDATE:     "validateAptPreAdmission",
+    STORE:        "createAptPreAdmission",
+  },
   
 
 
@@ -48,11 +40,14 @@ const AppointmentActions = {
     UPDATE: "updateApt", 
     CHECK_IN: "checkInApt",
     CHECK_OUT: "checkOutApt",
-    USER_APT: {
-      LIST: "userAptList",
+  },
+  BOOKING: {
+    SEARCH: {
+      DATE: "searchBookingByDate",
+      SPECIALISTS: "searchBookingBySPT",
+      NEXT_APT: "searchNextApt",
     },
   },
-
  
 };
 
@@ -86,7 +81,6 @@ const AppointmentMutations = {
       },
     },
     USER_APT: {
-      LIST: "setUserAptList",
       SELECT: "setSelectUserApt",
     },
   },

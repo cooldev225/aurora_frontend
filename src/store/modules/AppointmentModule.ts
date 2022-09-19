@@ -129,11 +129,6 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Mutation
-  [AppointmentMutations.SET_APT.USER_APT.LIST](data) {
-    this.userAptList = data;
-  }
-
-  @Mutation
   [AppointmentMutations.SET_APT.USER_APT.SELECT](data) {
     this.aptUserSelectedData = data;
   }
@@ -405,26 +400,5 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
           console.error(response);
         }
       });
-  }
-
-  @Action
-  [AppointmentActions.APT.USER_APT.LIST]() {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.get("user-appointments")
-        .then(({ data }) => {
-          this.context.commit(
-            AppointmentMutations.SET_APT.USER_APT.LIST,
-            data.data
-          );
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
   }
 }
