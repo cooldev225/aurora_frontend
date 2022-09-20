@@ -41,11 +41,19 @@ const OrgAdminMenu = [
     fontIcon: "bi-hospital",
   },
   {
-    heading: "Employees",
-    route: "/employees",
+    heading: "HRM",
+    route: "/hrm",
     svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-people",
     pages: [
+      {
+        heading: "Weekly Schedule Template",
+        route: "/hrm/weekly-schedule-template",
+      },
+      {
+        heading: "Weekly Schedule",
+        route: "/hrm/weekly-schedule",
+      },
       {
         heading: "All Employees",
         route: "/employees",

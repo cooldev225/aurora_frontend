@@ -39,16 +39,6 @@ const PatientRoutes = [
         name: "patients-view-clinical",
         component: () => import("@/views/patients/Clinical.vue"),
       },
-      {
-        path: "/hrm/weekly-schedule",
-        name: "hrm-weekly-schedule",
-        component: () => import("@/views/HRM/WeeklySchedule.vue"),
-      },
-      {
-        path: "/hrm/weekly-schedule-template",
-        name: "hrm-weekly-schedule-template",
-        component: () => import("@/views/HRM/WeeklyScheduleTemplate.vue"),
-      },
     ],
   },
   {
