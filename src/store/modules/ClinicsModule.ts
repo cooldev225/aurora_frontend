@@ -1,6 +1,7 @@
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { menuItemEmits } from "element-plus";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
 export interface IClinics {
@@ -148,7 +149,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
   [Actions.CLINICS.ROOMS.LIST](clinic_id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("clinics/" + clinic_id + "/rooms")
+      ApiService.get("clinics/" + clinic_id + "/rooms", "", { id: clinic_id })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_CLINICS.LISTROOMS, data.data);
           return data.data;
