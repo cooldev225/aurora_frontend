@@ -1729,13 +1729,13 @@ export default defineComponent({
 
     const patientStep_1 = () => {
       patientTableData.value = [];
-      store.dispatch(PatientActions.PATIENTS.LIST, filterPatient);
+      store.dispatch(PatientActions.LIST, filterPatient);
       patientStep.value++;
     };
 
     const selectPatient = (item) => {
-      store.dispatch(PatientActions.PATIENTS.APPOINTMENTS, item.id);
-      store.dispatch(PatientActions.PATIENTS.VIEW, item.id);
+      store.dispatch(PatientActions.APPOINTMENTS, item.id);
+      store.dispatch(PatientActions.VIEW, item.id);
       patientInfoData.value = item;
       aptInfoData.value.patient_id = item.id;
 

@@ -309,10 +309,7 @@ export default defineComponent({
       formRefMedicare.value.validate((valid) => {
         if (valid) {
           store
-            .dispatch(
-              PatientActions.PATIENTS.BILLING.VALIDATE_MEDICARE,
-              formData.value
-            )
+            .dispatch(PatientActions.BILLING.VALIDATE_MEDICARE, formData.value)
             .then(() => {
               loading.value = false;
             })
@@ -333,10 +330,7 @@ export default defineComponent({
             if (valid) {
               console.log(selectedPatient.value);
               store
-                .dispatch(
-                  PatientActions.PATIENTS.BILLING.UPDATE,
-                  formData.value
-                )
+                .dispatch(PatientActions.BILLING.UPDATE, formData.value)
                 .then(() => {
                   loading.value = false;
                 })
@@ -352,7 +346,7 @@ export default defineComponent({
 
     onMounted(() => {
       const id = route.params.id;
-      store.dispatch(PatientActions.PATIENTS.VIEW, id);
+      store.dispatch(PatientActions.VIEW, id);
       setCurrentPageBreadcrumbs("Billing", ["Patients"]);
       store.dispatch(Actions.HEALTH_FUND.LIST);
     });

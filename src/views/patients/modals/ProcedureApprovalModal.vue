@@ -148,7 +148,7 @@ export default defineComponent({
               store.dispatch(AppointmentActions.PROCEDURE_APPROVAL.LIST);
             } else {
               store.dispatch(
-                PatientActions.PATIENTS.VIEW,
+                PatientActions.VIEW,
                 appointmentData.value.patient_id
               );
             }

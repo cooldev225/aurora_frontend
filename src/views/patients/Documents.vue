@@ -32,7 +32,7 @@ export default defineComponent({
 
     onMounted(() => {
       const id = route.params.id;
-      store.dispatch(PatientActions.PATIENTS.VIEW, id);
+      store.dispatch(PatientActions.VIEW, id);
       setCurrentPageBreadcrumbs("Documents", ["Patients"]);
     });
 

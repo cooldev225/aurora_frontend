@@ -58,6 +58,12 @@ const Actions = {
     CREATE: "createClinics",
     DELETE: "deleteClinics",
     UPDATE: "updateClinics",
+    ROOMS: {
+      LIST: "listClinicsRooms",
+      CREATE: "createClinicsRooms",
+      DELETE: "deleteClinicsRooms",
+      UPDATE: "updateClinicsRooms",
+    }
   },
 
 
@@ -196,6 +202,8 @@ const Mutations = {
   SET_CLINICS: {
     LIST: "setClinicsList",
     SELECT: "setSelectClinics",
+    LISTROOMS: "setClinicsRoomsList",
+    SELECTROOMS: "setSelectClinicsRooms",
   },
 
   SET_BIRTH_CODE: {

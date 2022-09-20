@@ -147,6 +147,17 @@
             </router-link>
           </li>
           <!--end::Nav item-->
+          <!--begin::Nav item-->
+          <li class="nav-item">
+            <router-link
+              class="nav-link text-active-primary me-6"
+              :to="'/patients/' + patientData.id + '/recalls'"
+              active-class="active"
+            >
+              Recalls
+            </router-link>
+          </li>
+          <!--end::Nav item-->
         </ul>
       </div>
       <!--begin::Navs-->

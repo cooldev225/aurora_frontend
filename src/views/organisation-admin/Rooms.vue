@@ -2,7 +2,9 @@
   <div class="card w-75 m-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
-      <div class="card-title"></div>
+      <div class="card-title">
+        {{ clinic.name }}
+      </div>
       <!--begin::Card title-->
 
       <!--begin::Card toolbar-->
@@ -13,12 +15,18 @@
           data-kt-subscription-table-toolbar="base"
         >
           <!--begin::Add subscription-->
-          <router-link to="/clinics/create" class="btn btn-primary">
+          <button
+            type="button"
+            class="btn btn-light-primary ms-auto"
+            @click="
+              handleRoomEdit({ id: '-1', clinic_id: clinic.id, name: '' })
+            "
+          >
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
             </span>
             Add
-          </router-link>
+          </button>
           <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
@@ -35,22 +43,7 @@
         <template v-slot:cell-name="{ row: item }">
           {{ item.name }}
         </template>
-        <template v-slot:cell-email="{ row: item }">
-          {{ item.email }}
-        </template>
-        <template v-slot:cell-number="{ row: item }">
-          {{ item.phone_number }}
-        </template>
         <template v-slot:cell-action="{ row: item }">
-          <button
-            @click="handleRoomEdit(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/abstract/abs010.svg" />
-            </span>
-          </button>
-
           <button
             @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
@@ -72,40 +65,47 @@
       </Datatable>
     </div>
   </div>
+  <RoomModal></RoomModal>
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  watchEffect,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import RoomModal from "@/components/clinics/EditRoom.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
-  name: "clinics-main",
+  name: "clinics-room",
 
   components: {
     Datatable,
+    RoomModal,
   },
 
   setup() {
     const store = useStore();
+    const router = useRouter();
+    const route = useRoute();
+    let clinic = ref({
+      id: -1,
+      name: "",
+    });
     const tableHeader = ref([
       {
-        name: "Clinic Name",
+        name: "Room Name",
         key: "name",
-        sortable: true,
-      },
-      {
-        name: "Email Address",
-        key: "email",
-        sortable: true,
-      },
-      {
-        name: "Contact Number",
-        key: "number",
         sortable: true,
       },
       {
@@ -114,8 +114,8 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const router = useRouter();
     const clinicsList = computed(() => store.getters.clinicsList);
+    const roomsList = computed(() => store.getters.roomsList);
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_CLINICS.SELECT, item);
@@ -132,7 +132,7 @@ export default defineComponent({
         input: "text",
         inputAttributes: {
           autocapitalize: "off",
-          placeholder: "Clinic Name",
+          placeholder: "Room Name",
         },
         html: html,
         icon: "info",
@@ -153,7 +153,7 @@ export default defineComponent({
       }).then((result) => {
         if (result.value == "success") {
           store
-            .dispatch(Actions.CLINICS.DELETE, item.id)
+            .dispatch(Actions.CLINICS.ROOMS.DELETE, item)
             .then(() => {
               Swal.fire({
                 text: "Successfully Deleted!",
@@ -164,7 +164,9 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
+                let id = route.params.id;
                 store.dispatch(Actions.CLINICS.LIST);
+                store.dispatch(Actions.CLINICS.ROOMS.LIST, id);
               });
             })
             .catch(({ response }) => {
@@ -179,20 +181,41 @@ export default defineComponent({
     };
 
     const handleRoomEdit = (item) => {
-      store.commit(Mutations.SET_CLINICS.SELECT, item);
-      router.push({ name: "clinic-rooms", params: { id: item.id } });
+      console.log(["handleRoomEdit=", item]);
+      store.commit(Mutations.SET_CLINICS.SELECTROOMS, item);
+      const modal = new Modal(
+        document.getElementById("modal_edit_clinic_room")
+      );
+      modal.show();
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Clinics", []);
+      let id = route.params.id;
+      setCurrentPageBreadcrumbs("Rooms", []);
       store.dispatch(Actions.CLINICS.LIST);
+      store.dispatch(Actions.CLINICS.ROOMS.LIST, id);
       tableData.value = clinicsList;
     });
 
-    watchEffect(() => {
-      tableData.value = clinicsList;
+    watch(clinicsList, () => {
+      let id = route.params.id;
+      let clinics = clinicsList.value.filter((c) => c.id == id);
+      if (clinics.length) {
+        clinic.value = clinics[0];
+      }
     });
-    return { tableHeader, tableData, handleEdit, handleDelete, handleRoomEdit };
+
+    watchEffect(() => {
+      tableData.value = roomsList;
+    });
+    return {
+      tableHeader,
+      tableData,
+      handleEdit,
+      handleDelete,
+      handleRoomEdit,
+      clinic,
+    };
   },
 });
 </script>

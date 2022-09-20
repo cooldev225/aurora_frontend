@@ -62,6 +62,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/organisation-admin/Clinics.vue"),
       },
       {
+        path: "/recalls",
+        name: "recalls",
+        component: () => import("@/views/communication/Recalls.vue"),
+      },
+      {
         path: "/clinics/create",
         name: "clinic-create",
         component: () => import("@/components/clinics/CreateClinics.vue"),
@@ -70,6 +75,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/clinics/edit/:id",
         name: "clinic-edit",
         component: () => import("@/components/clinics/CreateClinics.vue"),
+      },
+      {
+        path: "/clinics/rooms/:id",
+        name: "clinic-rooms",
+        component: () => import("@/views/organisation-admin/Rooms.vue"),
       },
       {
         path: "/settings/health-fund",
@@ -174,6 +184,11 @@ const routes: Array<RouteRecordRaw> = [
             path: "billing",
             name: "patients-view-billing",
             component: () => import("@/views/patients/Billing.vue"),
+          },
+          {
+            path: "recalls",
+            name: "patients-recalls",
+            component: () => import("@/views/patients/Recalls.vue"),
           },
           {
             path: "administration",

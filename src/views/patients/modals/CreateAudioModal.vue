@@ -96,7 +96,7 @@ export default defineComponent({
           });
 
           store
-            .dispatch(Actions.PATIENTS.DOCUMENT.AUDIO.CREATE, Data)
+            .dispatch(Actions.DOCUMENT.AUDIO.CREATE, Data)
             .then(() => {
               loading.value = false;
               Swal.fire({
