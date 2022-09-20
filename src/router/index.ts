@@ -72,6 +72,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/components/clinics/CreateClinics.vue"),
       },
       {
+        path: "/clinics/rooms/:id",
+        name: "clinic-rooms",
+        component: () => import("@/views/organisation-admin/Rooms.vue"),
+      },
+      {
         path: "/settings/health-fund",
         name: "healthFund",
         component: () => import("@/views/settings/health-fund/HealthFund.vue"),
