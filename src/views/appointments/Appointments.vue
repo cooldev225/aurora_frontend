@@ -341,7 +341,7 @@ export default defineComponent({
     return {
       toggleLayout: false,
       toggleKey: false,
-      toggleRestrictionKey: true,
+      toggleRestrictionKey: false,
     };
   },
   setup() {
