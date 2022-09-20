@@ -116,7 +116,7 @@ export default defineComponent({
       loading.value = true;
       formData.value.patient_id = patientData.value.id;
       store
-        .dispatch(PatientActions.PATIENTS.RECALL.CREATE, formData.value)
+        .dispatch(PatientActions.RECALL.CREATE, formData.value)
         .then(() => {
           loading.value = false;
           Swal.fire({

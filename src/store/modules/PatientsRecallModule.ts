@@ -36,7 +36,7 @@ export default class PatientsRecallModule
    * Get current selected Patient
    * @returns SelectedpatientsRecallData
    */
-  get selectedPatientRecall(): IPatientsRecall {
+  get selectedPatientRecallList(): IPatientsRecall {
     return this.patientsRecallSelectData;
   }
 
@@ -45,14 +45,28 @@ export default class PatientsRecallModule
     this.patientsRecallData = patientsRecallData;
   }
 
-  @Mutation
-  [PatientMutations.SET_PATIENT_RECALL.SELECT](data) {
-    this.patientsRecallSelectData = data;
+  @Action
+  [PatientActions.RECALL.LIST](params) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.query("patients/recalls/", { params: params })
+        .then(({ data }) => {
+          this.context.commit(
+            PatientMutations.SET_PATIENT_RECALL.LIST,
+            data.data
+          );
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
   }
 
   @Action
-  [PatientActions.PATIENTS.RECALL.CREATE](data) {
-    console.log(data);
+  [PatientActions.RECALL.CREATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("patients/recalls/", data)
@@ -61,7 +75,6 @@ export default class PatientsRecallModule
         })
         .catch(({ response }) => {
           console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -69,7 +82,7 @@ export default class PatientsRecallModule
   }
 
   @Action
-  [PatientActions.PATIENTS.RECALL.UPDATE](data) {
+  [PatientActions.RECALL.UPDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("patients/recalls/", data.id, data)
@@ -78,7 +91,6 @@ export default class PatientsRecallModule
         })
         .catch(({ response }) => {
           console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

@@ -218,7 +218,7 @@ export default defineComponent({
             Data.append(key, formData.value[key]);
           });
           store
-            .dispatch(PatientActions.PATIENTS.DOCUMENTS.CREATE, Data)
+            .dispatch(PatientActions.DOCUMENTS.CREATE, Data)
             .then(() => {
               loading.value = false;
               Swal.fire({

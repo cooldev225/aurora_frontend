@@ -136,7 +136,7 @@ const OrgManagerMenu = [
       },
       {
         heading: "Patient Recall",
-        route: "/bookings/patient-recall",
+        route: "/recalls",
       },
     ],
   },

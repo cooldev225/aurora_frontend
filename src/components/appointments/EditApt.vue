@@ -1351,7 +1351,7 @@ export default defineComponent({
       formRef_2.value.resetFields();
       formRef_3.value.resetFields();
       formRef_4.value.resetFields();
-      store.dispatch(PatientActions.PATIENTS.LIST);
+      store.dispatch(PatientActions.LIST);
     };
 
     const handleCancel = () => {

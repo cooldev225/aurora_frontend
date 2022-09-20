@@ -136,10 +136,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                store.dispatch(
-                  PatientActions.PATIENTS.VIEW,
-                  aptData.value.patient_id
-                );
+                store.dispatch(PatientActions.VIEW, aptData.value.patient_id);
                 hideModal(collectingPersonModalRef.value);
               });
             })

@@ -237,7 +237,7 @@ export default defineComponent({
     const searchPatient = () => {
       loading.value = true;
       store
-        .dispatch(PatientActions.PATIENTS.LIST, {
+        .dispatch(PatientActions.LIST, {
           first_name: filter.first_name,
           last_name: filter.last_name,
           date_of_birth: filter.date_of_birth,
@@ -257,7 +257,7 @@ export default defineComponent({
     };
 
     const handleView = (item) => {
-      store.dispatch(PatientActions.PATIENTS.VIEW, item.id);
+      store.dispatch(PatientActions.VIEW, item.id);
       router.push({
         name: "patients-view-appointments",
         params: { id: item.id },

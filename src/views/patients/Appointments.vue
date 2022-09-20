@@ -320,7 +320,7 @@ export default defineComponent({
     onMounted(() => {
       setCurrentPageBreadcrumbs("Appointments", ["Patients"]);
       const id = route.params.id;
-      store.dispatch(PatientActions.PATIENTS.VIEW, id);
+      store.dispatch(PatientActions.VIEW, id);
     });
 
     return {
