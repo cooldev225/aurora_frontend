@@ -247,6 +247,7 @@ export default defineComponent({
           renderTable();
         });
     };
+    searchPatient();
     const clearFilters = () => {
       filter.first_name = "";
       filter.last_name = "";
