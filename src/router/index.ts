@@ -155,6 +155,17 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/organization/Organization.vue"),
       },
       {
+        path: "inbox",
+        name: "admin-document-inbox",
+        component: () => import("@/views/communication/AdminDocumentInbox.vue"),
+      },
+      {
+        path: "outbox",
+        name: "admin-document-outbox",
+        component: () =>
+          import("@/views/communication/AdminDocumentOutbox.vue"),
+      },
+      {
         path: "/patients",
         name: "patients",
         component: () => import("@/views/patients/PatientList.vue"),

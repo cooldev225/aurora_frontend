@@ -35,17 +35,25 @@ export default class DocumentModule extends VuexModule implements Documents {
       ApiService.query("documents", {
         params: {
           specialist_id: data.specialist_id,
+          appointment_id: data.appointment_id,
           patient_id: data.patient_id,
+
+          before_date: data.before_date,
+          after_date: data.after_date,
+
+          is_seen: data.is_seen,
+          origin: data.origin,
+
+          is_missing_information: data.is_missing_information,
         },
       })
         .then(({ data }) => {
-          this.context.commit(DocumentMutations.SET_LIST, data.data);
           console.log(data.data);
+          this.context.commit(DocumentMutations.SET_LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
           console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

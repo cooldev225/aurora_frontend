@@ -128,11 +128,11 @@ const OrgManagerMenu = [
     pages: [
       {
         heading: "Document Outbox",
-        route: "/thid-party-comms/sending-report",
+        route: "/outbox",
       },
       {
         heading: "Document Inbox",
-        route: "/third-party-comms/patient-result-inbox",
+        route: "/inbox",
       },
       {
         heading: "Patient Recall",

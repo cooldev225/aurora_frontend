@@ -75,15 +75,26 @@
         <div class="d-flex flex-row" v-if="selectedDocument">
           <!-- DOCUMENT INFO -->
           <div class="d-flex p-6 flex-column" v-if="showDocumentInformation">
-            <InfoSection heading="Patient">{{
-              selectedDocument.document_info.patient
-            }}</InfoSection>
-            <InfoSection heading="Specialist">{{
-              selectedDocument.document_info.specialist
-            }}</InfoSection>
-            <InfoSection heading="Appointment">{{
-              selectedDocument.document_info.appointment
-            }}</InfoSection>
+            <InfoSection heading="Patient">
+              {{ selectedDocument.document_info.patient }}
+              <IconButton
+                v-if="!selectedDocument.document_info.patient"
+                label="Assign Patient"
+              />
+            </InfoSection>
+            <InfoSection heading="Specialist"
+              >{{ selectedDocument.document_info.specialist }}
+              <IconButton
+                v-if="!selectedDocument.document_info.specialist"
+                label="Assign Specialist"
+              />
+            </InfoSection>
+            <InfoSection heading="Appointment"
+              >{{ selectedDocument.document_info.appointment }}
+              <IconButton
+                v-if="!selectedDocument.document_info.appointment"
+                label="Assign Appointment"
+            /></InfoSection>
           </div>
           <!-- DOCUMENT ACTIONS -->
           <div class="d-flex p-6 flex-column" v-if="showDocumentActions">
