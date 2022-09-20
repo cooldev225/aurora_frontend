@@ -45,7 +45,7 @@
         </template>
         <template v-slot:cell-action="{ row: item }">
           <button
-            @click="handleEdit(item)"
+            @click="handleRoomEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
@@ -78,7 +78,7 @@ import {
   watch,
 } from "vue";
 import { useStore } from "vuex";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -96,7 +96,6 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    const router = useRouter();
     const route = useRoute();
     let clinic = ref({
       id: -1,
@@ -116,11 +115,6 @@ export default defineComponent({
     const tableData = ref([]);
     const clinicsList = computed(() => store.getters.clinicsList);
     const roomsList = computed(() => store.getters.roomsList);
-
-    const handleEdit = (item) => {
-      store.commit(Mutations.SET_CLINICS.SELECT, item);
-      router.push({ name: "clinic-edit", params: { id: item.id } });
-    };
 
     const deleteAfterConfirmation = (item) => {
       const html =
@@ -164,9 +158,8 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                let id = route.params.id;
                 store.dispatch(Actions.CLINICS.LIST);
-                store.dispatch(Actions.CLINICS.ROOMS.LIST, id);
+                store.dispatch(Actions.CLINICS.ROOMS.LIST, clinic.value.id);
               });
             })
             .catch(({ response }) => {
@@ -190,11 +183,11 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      let id = route.params.id;
       setCurrentPageBreadcrumbs("Rooms", []);
       store.dispatch(Actions.CLINICS.LIST);
+
+      let id = route.params.id;
       store.dispatch(Actions.CLINICS.ROOMS.LIST, id);
-      tableData.value = clinicsList;
     });
 
     watch(clinicsList, () => {
@@ -202,6 +195,7 @@ export default defineComponent({
       let clinics = clinicsList.value.filter((c) => c.id == id);
       if (clinics.length) {
         clinic.value = clinics[0];
+        store.commit(Mutations.SET_CLINICS.SELECT, clinic.value);
       }
     });
 
@@ -211,7 +205,6 @@ export default defineComponent({
     return {
       tableHeader,
       tableData,
-      handleEdit,
       handleDelete,
       handleRoomEdit,
       clinic,

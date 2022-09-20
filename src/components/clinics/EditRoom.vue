@@ -121,7 +121,7 @@ export default defineComponent({
     const formData = ref({
       id: -1,
       name: "",
-      clinic_id: 0,
+      clinic: null,
     });
 
     const rules = ref({
@@ -136,6 +136,7 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.roomsSelected;
+      formData.value.clinic = store.getters.clinicsSelected;
     });
 
     const submit = () => {
@@ -156,7 +157,7 @@ export default defineComponent({
               store.dispatch(Actions.CLINICS.LIST);
               store.dispatch(
                 Actions.CLINICS.ROOMS.LIST,
-                formData.value.clinic_id
+                formData.value.clinic.id
               );
 
               Swal.fire({
