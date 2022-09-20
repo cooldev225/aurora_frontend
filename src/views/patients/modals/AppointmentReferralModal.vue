@@ -395,11 +395,5 @@ export default defineComponent({
       referralModalRef,
     };
   },
-  mounted() {
-    console.log("-0-------------");
-  },
-  unMounted() {
-    console.log("-1-------------");
-  },
 });
 </script>

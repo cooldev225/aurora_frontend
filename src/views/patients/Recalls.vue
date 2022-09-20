@@ -1,22 +1,23 @@
 <template>
-  <CardSection>
+  <CardSection heading="Recalls">
     <Datatable
       :table-header="tableHeader"
       :table-data="tableData"
       :loading="loading"
       :rows-per-page="10"
+      emptyTableText="This patient has no recalls"
       :enable-items-per-page-dropdown="true"
     >
-      <template v-slot:cell-patient="{ row: recall }">
-        {{ recall.summery.patient_name }} ({{
-          recall.summery.patient_contact_number
-        }})
-      </template>
       <template v-slot:cell-specialist="{ row: recall }">
         {{ recall.summery.specialist_name }}
       </template>
       <template v-slot:cell-time_frame="{ row: recall }">
         {{ recall.date_recall_due }}
+      </template>
+      <template v-slot:cell-appointment="{ row: recall }">
+        {{ recall.summery.appointment_type }} @
+        {{ recall.summery.appointment_clinic }}
+        {{ recall.summery.appointment_date }}
       </template>
       <template v-slot:cell-reason="{ row: recall }">
         {{ recall.reason }}
@@ -33,16 +34,17 @@
   </CardSection>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import moment from "moment";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
-  name: "patient-recalls",
+  name: "patient-recalls-view",
 
   components: {
     Datatable,
@@ -50,11 +52,6 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const tableHeader = ref([
-      {
-        name: "Patient",
-        key: "patient",
-        sortable: true,
-      },
       {
         name: "Specialist",
         key: "specialist",
@@ -66,8 +63,13 @@ export default defineComponent({
         sortable: true,
       },
       {
+        name: "Related Appointment",
+        key: "appointment",
+        sortable: true,
+      },
+      {
         name: "Reason",
-        key: "time_frame",
+        key: "reason",
         sortable: true,
       },
       {
@@ -79,17 +81,22 @@ export default defineComponent({
 
     const tableData = ref([]);
     const recalls = computed(() => store.getters.patientsRecallList);
+    const patient = computed(() => store.getters.selectedPatient);
     const loading = ref(false);
+    const route = useRoute();
 
     onMounted(() => {
-      store.dispatch(PatientActions.RECALL.LIST);
-
-      setCurrentPageBreadcrumbs("Patient Recalls");
+      const id = route.params.id;
+      store.dispatch(PatientActions.RECALL.LIST, { patient_id: id });
+      console.log(patient.value);
+      setCurrentPageBreadcrumbs("Recalls", ["Patients"]);
     });
 
     watchEffect(() => {
       tableData.value = recalls;
       loading.value = false;
+      const id = route.params.id;
+      store.dispatch(PatientActions.VIEW, id);
     });
 
     return {
