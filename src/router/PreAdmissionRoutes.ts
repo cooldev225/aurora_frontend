@@ -1,29 +1,26 @@
-const AppointmentRoutes = [
+const PreAdmissionRoutes = [
   {
-    path: "/appointments/dashboard",
-    name: "booking-dashboard",
-    component: () => import("@/views/appointments/Appointments.vue"),
-  },
-  {
-    path: "/appointments/unconfirmed-apts",
-    name: "unconfirmed-apts",
-    component: () => import("@/views/appointments/UnconfirmedApts.vue"),
-  },
-  {
-    path: "/appointments/unapproved-procedures",
-    name: "unapproved-procedures",
-    component: () => import("@/views/appointments/UnapprovedProcedure.vue"),
-  },
-  {
-    path: "/appointments/waitlisted-apts",
-    name: "waitlisted-apts",
-    component: () => import("@/views/appointments/WaitlistedApts.vue"),
-  },
-  {
-    path: "/appointments/cancellation-list",
-    name: "cancellation-list",
-    component: () => import("@/views/appointments/CancellationList.vue"),
+    path: "/appointment_pre_admissions/show",
+    name: "pre-admission",
+    component: () => import("@/views/pre-admission/index.vue"),
+    children: [
+      {
+        path: "/appointment_pre_admissions/show/:id/form_1",
+        name: "pre-admission-form1",
+        component: () => import("@/components/pre-admission/Form1.vue"),
+      },
+      {
+        path: "/appointment_pre_admissions/show/:id/form_2",
+        name: "pre-admission-form2",
+        component: () => import("@/components/pre-admission/Form2.vue"),
+      },
+      {
+        path: "/appointment_pre_admissions/show/:id/form_3",
+        name: "pre-admission-form3",
+        component: () => import("@/components/pre-admission/Form3.vue"),
+      },
+    ],
   },
 ];
 
-export default AppointmentRoutes;
+export default PreAdmissionRoutes;
