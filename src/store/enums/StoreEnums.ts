@@ -34,6 +34,7 @@ const Actions = {
     DELETE: "deleteOrg",
     UPDATE: "updateOrg",
     SELECT: "selectOrg",
+    FILE: "file",
   },
 
   ORG_ADMIN: {

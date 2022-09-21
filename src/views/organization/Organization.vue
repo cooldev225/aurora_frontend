@@ -241,21 +241,29 @@ export default defineComponent({
       });
     };
     const loadOrganizationData = (id) => {
-      // setTimeout(() => {
-      //   console.log("----------------", currentUser);
-      // }, 200);
       store
         .dispatch(Actions.ORG.SELECT, id)
         .then((data) => {
-          console.log("--------------", data);
+          store
+            .dispatch(Actions.ORG.FILE, {
+              type: "footer_organization",
+              path: data.document_letter_footer,
+            })
+            .then((data) => {
+              const blob = new Blob([data], { type: "application/pdf" });
+              const objectUrl = URL.createObjectURL(blob);
+              formData.value["document_letter_footer"] = objectUrl;
+            })
+            .catch(() => {
+              console.log("image load error");
+            });
         })
         .catch(({ response }) => {
           console.log(response.data.error);
         });
     };
     watch(currentUser, () => {
-      const orgId = currentUser.value.profile.organization_id.toString();
-      console.log("-------333---------", orgId);
+      const orgId = currentUser.value.profile.organization_id;
       currentUser.value.profile.organization_id && loadOrganizationData(orgId);
     });
     onMounted(() => {
