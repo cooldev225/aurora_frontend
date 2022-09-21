@@ -93,7 +93,7 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      tableData.value = recalls;
+      tableData.value = recalls.value;
       loading.value = false;
       const id = route.params.id;
       store.dispatch(PatientActions.VIEW, id);
