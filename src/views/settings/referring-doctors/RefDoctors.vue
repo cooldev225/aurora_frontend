@@ -21,12 +21,9 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :rows-per-page="20"
+        :rows-per-page="10"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-title="{ row: item }">
-          {{ item.title }}
-        </template>
         <template v-slot:cell-full_name="{ row: item }">
           {{ item.full_name }}
         </template>
@@ -80,11 +77,6 @@ export default defineComponent({
     const router = useRouter();
     const tableHeader = ref([
       {
-        name: "Title",
-        key: "title",
-        sortable: true,
-      },
-      {
         name: "Full Name",
         key: "full_name",
         sortable: true,
@@ -105,7 +97,9 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    //const referringDoctors = computed(() => store.getters.getReferringDoctorsList);
+    const referringDoctors = computed(
+      () => store.getters.getReferralDoctorList
+    );
 
     const handleEdit = (item) => {
       //
@@ -121,7 +115,7 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      //tableData.value = referringDoctors;
+      tableData.value = referringDoctors;
     });
 
     return { tableHeader, tableData, handleEdit, handleDelete };
