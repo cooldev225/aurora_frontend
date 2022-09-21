@@ -65,6 +65,12 @@ const SettingsRoutes = [
     component: () =>
       import("@/views/settings/anesthetic-questions/AnestheticQuestions.vue"),
   },
+  {
+    path: "/settings/referring-doctors",
+    name: "aptTypes",
+    component: () =>
+      import("@/views/settings/referring-doctors/RefDoctors.vue"),
+  },
 ];
 
 export default SettingsRoutes;
