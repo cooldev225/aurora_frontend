@@ -257,7 +257,7 @@ export default defineComponent({
               .indexOf(filterLastName.value.toLowerCase()) !== -1;
         }
         if (!showAll.value) {
-          result = data.procedure_approval_status === "NOT_ACCESSED";
+          result = data.procedure_approval_status === "NOT_ASSESSED";
         }
 
         return result;
