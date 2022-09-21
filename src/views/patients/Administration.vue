@@ -301,10 +301,10 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(PatientActions.PATIENTS.UPDATE, formData.value)
+            .dispatch(PatientActions.UPDATE, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(PatientActions.PATIENTS.LIST);
+              store.dispatch(PatientActions.LIST);
               Swal.fire({
                 text: "Successfully Updated!",
                 icon: "success",

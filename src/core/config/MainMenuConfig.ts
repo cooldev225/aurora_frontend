@@ -41,11 +41,19 @@ const OrgAdminMenu = [
     fontIcon: "bi-hospital",
   },
   {
-    heading: "Employees",
-    route: "/employees",
+    heading: "HRM",
+    route: "/hrm",
     svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-people",
     pages: [
+      {
+        heading: "Weekly Schedule Template",
+        route: "/hrm/weekly-schedule-template",
+      },
+      {
+        heading: "Weekly Schedule",
+        route: "/hrm/weekly-schedule",
+      },
       {
         heading: "All Employees",
         route: "/employees",
@@ -53,10 +61,6 @@ const OrgAdminMenu = [
       {
         heading: "Administrators",
         route: "/organisationAdmins",
-      },
-      {
-        heading: "Managers",
-        route: "/organisationManagers",
       },
     ],
   },
@@ -132,15 +136,15 @@ const OrgManagerMenu = [
     pages: [
       {
         heading: "Document Outbox",
-        route: "/thid-party-comms/sending-report",
+        route: "/outbox",
       },
       {
         heading: "Document Inbox",
-        route: "/third-party-comms/patient-result-inbox",
+        route: "/inbox",
       },
       {
         heading: "Patient Recall",
-        route: "/bookings/patient-recall",
+        route: "/recalls",
       },
     ],
   },
@@ -270,6 +274,13 @@ const SpecialistMenu = [
     heading: "Patients",
     route: "/patients",
     svgIcon: "media/icons/duotune/medicine/med001.svg",
+    fontIcon: "bi-clipboard2-pulse",
+  },
+
+  {
+    heading: "Incoming",
+    route: "/specialist/incoming-documents",
+    svgIcon: "media/icons/duotune/general/gen016.svg",
     fontIcon: "bi-clipboard2-pulse",
   },
 ];

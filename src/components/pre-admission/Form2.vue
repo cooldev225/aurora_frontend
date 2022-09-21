@@ -479,10 +479,7 @@ export default defineComponent({
             "pre_admission_answers",
             JSON.stringify(formattedAnswer())
           );
-          await store.dispatch(
-            AppointmentActions.APPOINTMENT.PRE_ADMISSION.STORE,
-            Data
-          );
+          await store.dispatch(AppointmentActions.PRE_ADMISSION.STORE, Data);
           loading.value = false;
           router.push({
             path:
@@ -506,7 +503,7 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Administration", ["Patients"]);
       apt_id.value = router.currentRoute.value.params.id.toString();
       await store.dispatch(
-        AppointmentActions.APPOINTMENT.PRE_ADMISSION.ORGANIZATION,
+        AppointmentActions.PRE_ADMISSION.ORGANIZATION,
         apt_id.value
       );
     });

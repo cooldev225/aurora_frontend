@@ -49,7 +49,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
   }
 
   @Action
-  [AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST]() {
+  [AppointmentActions.APPOINTMENT_TYPES.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("appointment-types")
@@ -70,7 +70,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
   }
 
   @Action
-  [AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.CREATE](item) {
+  [AppointmentActions.APPOINTMENT_TYPES.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("appointment-types", item)
@@ -86,7 +86,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
   }
 
   @Action
-  [AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.UPDATE](item) {
+  [AppointmentActions.APPOINTMENT_TYPES.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("appointment-types", item.id, item)
@@ -103,7 +103,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
   }
 
   @Action
-  [AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.DELETE](id) {
+  [AppointmentActions.APPOINTMENT_TYPES.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("appointment-types/" + id)

@@ -43,6 +43,15 @@
         </template>
         <template v-slot:cell-action="{ row: item }">
           <button
+            @click="handleRoomEdit(item)"
+            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+          >
+            <span class="svg-icon svg-icon-3">
+              <inline-svg src="media/icons/duotune/abstract/abs010.svg" />
+            </span>
+          </button>
+
+          <button
             @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
@@ -169,6 +178,11 @@ export default defineComponent({
       deleteAfterConfirmation(item);
     };
 
+    const handleRoomEdit = (item) => {
+      store.commit(Mutations.SET_CLINICS.SELECT, item);
+      router.push({ name: "clinic-rooms", params: { id: item.id } });
+    };
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("Clinics", []);
       store.dispatch(Actions.CLINICS.LIST);
@@ -178,7 +192,7 @@ export default defineComponent({
     watchEffect(() => {
       tableData.value = clinicsList;
     });
-    return { tableHeader, tableData, handleEdit, handleDelete };
+    return { tableHeader, tableData, handleEdit, handleDelete, handleRoomEdit };
   },
 });
 </script>

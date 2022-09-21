@@ -99,6 +99,7 @@
                 <el-input
                   required
                   v-model="formData.hospital_provider_number"
+                  v-mask="'#######A'"
                   type="text"
                   placeholder="Provider Number"
                 />
@@ -282,7 +283,7 @@ export default defineComponent({
           trigger: "change",
         },
         {
-          min: 6,
+          min: 7,
           message: "Provider Number must be at least 6 characters",
           trigger: "blur",
         },

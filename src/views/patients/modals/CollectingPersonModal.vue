@@ -121,7 +121,7 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(AppointmentActions.APPOINTMENT.COLLECTING_PERSON.UPDATE, {
+            .dispatch(AppointmentActions.COLLECTING_PERSON.UPDATE, {
               id: aptData.value.id,
               ...formData.value,
             })
@@ -136,10 +136,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                store.dispatch(
-                  PatientActions.PATIENTS.VIEW,
-                  aptData.value.patient_id
-                );
+                store.dispatch(PatientActions.VIEW, aptData.value.patient_id);
                 hideModal(collectingPersonModalRef.value);
               });
             })

@@ -8,7 +8,6 @@ import ConfigModule from "@/store/modules/ConfigModule";
 import AdminModule from "@/store/modules/AdminModule";
 import UserModule from "@/store/modules/UserModule";
 import OrganisationModule from "@/store/modules/OrganisationModule";
-import OrgManagerModule from "@/store/modules/OrgManagerModule";
 import OrgAdminModule from "@/store/modules/OrgAdminModule";
 import ClinicsModule from "@/store/modules/ClinicsModule";
 import HealthFundModule from "@/store/modules/HealthFundModule";
@@ -30,6 +29,9 @@ import ProfileModule from "@/store/modules/ProfileModule";
 import ReferralDoctorModule from "@/store/modules/ReferralDoctorModule";
 import ProcedureApprovalsModule from "@/store/modules/ProcedureApprovalsModule";
 import LetterModule from "@/store/modules/LetterModule";
+import DocumentModule from "@/store/modules/DocumentModule";
+import ReportModule from "@/store/modules/ReportModule";
+import HRMModule from "@/store/modules/HRMModule";
 
 config.rawError = true;
 
@@ -42,7 +44,6 @@ const store = createStore({
     AdminModule,
     UserModule,
     OrganisationModule,
-    OrgManagerModule,
     OrgAdminModule,
     ClinicsModule,
     HealthFundModule,
@@ -64,6 +65,9 @@ const store = createStore({
     ReferralDoctorModule,
     ProcedureApprovalsModule,
     LetterModule,
+    DocumentModule,
+    ReportModule,
+    HRMModule,
   },
 });
 

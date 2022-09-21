@@ -82,10 +82,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.LIST]() {
+  [PatientActions.LIST](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("patients")
+      ApiService.get("patients", "", data)
         .then(({ data }) => {
           this.context.commit(PatientMutations.SET_PATIENT.LIST, data.data);
           return data.data;
@@ -100,7 +100,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.UPDATE](data) {
+  [PatientActions.UPDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("patients", data.id, data)
@@ -117,7 +117,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.VIEW](id) {
+  [PatientActions.VIEW](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("patients/" + id)
@@ -135,7 +135,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.APPOINTMENTS](id) {
+  [PatientActions.APPOINTMENTS](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("patients/appointments/" + id)
@@ -156,7 +156,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.DOCUMENTS.LIST](id) {
+  [PatientActions.DOCUMENTS.LIST](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("patients/documents/" + id)
@@ -177,14 +177,14 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.DOCUMENTS.CREATE](data) {
+  [PatientActions.DOCUMENTS.CREATE](data) {
     console.log(data.get("document_type"));
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("patients/documents/" + data.get("patient_id"), data)
         .then(({ data }) => {
           this.context.dispatch(
-            PatientActions.PATIENTS.DOCUMENTS.LIST,
+            PatientActions.DOCUMENTS.LIST,
             data.get("patient_id")
           );
           return data.data;
@@ -199,13 +199,13 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.DOCUMENTS.SEND_VIA_EMAIL](data) {
+  [PatientActions.DOCUMENTS.SEND_VIA_EMAIL](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("patient-documents/send-via-email", data)
         .then(({ data }) => {
           this.context.dispatch(
-            PatientActions.PATIENTS.DOCUMENTS.LIST,
+            PatientActions.DOCUMENTS.LIST,
             data.get("patient_id")
           );
           return data.data;
@@ -220,7 +220,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.DOCUMENTS.VIEW](data) {
+  [PatientActions.DOCUMENTS.VIEW](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       return ApiService.post(
@@ -245,7 +245,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.BILLING.UPDATE](data) {
+  [PatientActions.BILLING.UPDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("patients/billing", data.id, data)
@@ -282,7 +282,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.PATIENTS.BILLING.VALIDATE_MEDICARE](data) {
+  [PatientActions.BILLING.VALIDATE_MEDICARE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post(

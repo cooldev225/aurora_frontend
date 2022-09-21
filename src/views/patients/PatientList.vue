@@ -15,7 +15,7 @@
                   <el-form-item prop="first_name">
                     <el-input
                       type="text"
-                      v-model="filterFirstName"
+                      v-model="filter.first_name"
                       placeholder="First Name"
                     />
                   </el-form-item>
@@ -29,7 +29,7 @@
                   <el-form-item prop="last_name">
                     <el-input
                       type="text"
-                      v-model="filterLastName"
+                      v-model="filter.last_name"
                       placeholder="Last Name"
                     />
                   </el-form-item>
@@ -42,7 +42,7 @@
                   <el-form-item prop="date">
                     <el-date-picker
                       class="w-100"
-                      v-model="filterBirth"
+                      v-model="filter.date_of_birth"
                       format="DD/MM/YYYY"
                       placeholder="01/01/1990"
                     />
@@ -54,6 +54,11 @@
                     <button
                       type="submit"
                       class="btn btn-primary me-5 w-50"
+                      :disabled="
+                        filter.first_name.length < 2 &&
+                        filter.last_name.length < 2 &&
+                        filter.date_of_birth.length < 2
+                      "
                       @click.prevent="searchPatient"
                     >
                       SEARCH
@@ -61,6 +66,11 @@
                     <button
                       type="submit"
                       class="btn btn-light-primary w-50"
+                      :disabled="
+                        filter.first_name.length === 0 &&
+                        filter.last_name.length === 0 &&
+                        filter.date_of_birth.length === 0
+                      "
                       @click="clearFilters"
                     >
                       CLEAR
@@ -143,12 +153,19 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, watch, computed } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  reactive,
+  watch,
+  computed,
+} from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Mutations } from "@/store/enums/StoreEnums";
+import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import moment from "moment";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
@@ -197,11 +214,13 @@ export default defineComponent({
     const patientData = ref([]);
     const tableData = ref([]);
     const list = computed(() => store.getters.patientsList);
-    const loading = ref(true);
-    const filterFirstName = ref("");
-    const filterLastName = ref("");
-    const filterBirth = ref("");
+    const loading = ref(false);
     const tableKey = ref(0);
+    const filter = reactive({
+      first_name: "",
+      last_name: "",
+      date_of_birth: "",
+    });
 
     const renderTable = () => tableKey.value++;
 
@@ -216,40 +235,29 @@ export default defineComponent({
     };
 
     const searchPatient = () => {
-      tableData.value = patientData.value.filter((data) => {
-        let result = true;
-        if (filterFirstName.value) {
-          result =
-            result &&
-            data.first_name.toLowerCase() ===
-              filterFirstName.value.toLowerCase();
-        }
-        if (filterLastName.value) {
-          result =
-            result &&
-            data.last_name.toLowerCase() === filterLastName.value.toLowerCase();
-        }
-        if (filterBirth.value) {
-          let searchDate = moment(filterBirth.value)
-            .format("YYYY-MM-DD")
-            .toString();
-          result = result && data.date_of_birth === searchDate;
-        }
-        return result;
-      });
-      renderTable();
+      loading.value = true;
+      store
+        .dispatch(PatientActions.LIST, {
+          first_name: filter.first_name,
+          last_name: filter.last_name,
+          date_of_birth: filter.date_of_birth,
+        })
+        .finally(() => {
+          loading.value = false;
+          renderTable();
+        });
     };
-
+    searchPatient();
     const clearFilters = () => {
-      filterFirstName.value = "";
-      filterLastName.value = "";
-      filterBirth.value = "";
-      tableData.value = patientData.value;
+      filter.first_name = "";
+      filter.last_name = "";
+      filter.date_of_birth = "";
+      tableData.value = [];
       renderTable();
     };
 
     const handleView = (item) => {
-      store.dispatch(PatientActions.PATIENTS.VIEW, item.id);
+      store.dispatch(PatientActions.VIEW, item.id);
       router.push({
         name: "patients-view-appointments",
         params: { id: item.id },
@@ -257,7 +265,7 @@ export default defineComponent({
     };
 
     const handleBadge = (upcoming_appointment) => {
-      store.commit(Mutations.SET_APT.SELECT, upcoming_appointment);
+      store.commit(AppointmentMutations.SET_APT.SELECT, upcoming_appointment);
       DrawerComponent?.getInstance("appointment-drawer")?.setBookingDrawerShown(
         true
       );
@@ -272,19 +280,13 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      loading.value = true;
       setCurrentPageBreadcrumbs("Patients", []);
-      store.dispatch(PatientActions.PATIENTS.LIST).then(() => {
-        loading.value = false;
-      });
     });
 
     return {
       tableHeader,
       tableData,
-      filterFirstName,
-      filterLastName,
-      filterBirth,
+      filter,
       tableKey,
       generateID,
       handleView,

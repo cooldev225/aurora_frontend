@@ -23,14 +23,37 @@
             </template>
           </el-select>
         </InputWrapper>
-        <InputWrapper class="col-6" label="Appointment" prop="appointment">
+
+        <InputWrapper class="col-12 f-row row" label="Attach document to: ">
+          <input
+            type="radio"
+            id="appointment"
+            value="appointment"
+            v-model="attachmentType"
+          />
+          <label for="appointment">Appointment</label>
+
+          <input
+            type="radio"
+            id="specialist"
+            value="specialist"
+            v-model="attachmentType"
+          />
+          <label for="specialist">Specialist</label>
+        </InputWrapper>
+        <InputWrapper
+          v-if="attachmentType != 'specialist'"
+          class="col-6"
+          label="Appointment"
+          prop="appointment"
+        >
           <el-select
             v-model="formData.appointment_id"
             class="w-100"
             placeholder="Select Appointment"
           >
             <el-option
-              v-for="item in aptList.pastAppointments"
+              v-for="item in aptList"
               :label="
                 moment(item.date).format('DD-MM-YYYY') +
                 ' ' +
@@ -46,6 +69,7 @@
             v-model="formData.specialist_id"
             class="w-100"
             placeholder="Select Specialist"
+            :disabled="attachmentType == 'appointment' ? true : false"
           >
             <el-option
               v-for="item in specialistList"
@@ -135,10 +159,11 @@ export default defineComponent({
     const uploadDocumentRef = ref(null);
     const loading = ref(false);
     const specialistList = computed(() => store.getters.getSpecialistList);
-    const aptList = computed(() => store.getters.getAptListById);
+    const aptList = computed(() => store.getters.getAptList);
     const patientId = computed(() => props.patientId);
     const uploadDisabled = ref(false);
     const upload = ref(null);
+    const attachmentType = ref("appointment");
     let Data = new FormData();
     const fileList = ref([]);
 
@@ -193,7 +218,7 @@ export default defineComponent({
             Data.append(key, formData.value[key]);
           });
           store
-            .dispatch(PatientActions.PATIENTS.DOCUMENTS.CREATE, Data)
+            .dispatch(PatientActions.DOCUMENTS.CREATE, Data)
             .then(() => {
               loading.value = false;
               Swal.fire({
@@ -221,23 +246,20 @@ export default defineComponent({
       });
     };
 
-    watch(patientId, () => {
-      formData.value.patient_id = patientId.value;
-      store.dispatch(AppointmentActions.APT.LISTBYID, patientId.value);
+    watch(formData.value, () => {
+      if (formData.value.appointment_id) {
+        console.log(
+          aptList.value.pastAppointments.filter((x) => x.id === 1)[0]
+            .specialist_id
+        );
+      }
     });
 
-    watchEffect(() => {
-      if (aptList.value && aptList.value.futureAppointments) {
-        aptList.value.futureAppointments.forEach((item) => {
-          if (
-            moment(item.date).format("DD-MM-YYYY") ===
-            moment(new Date()).format("DD-MM-YYYY")
-          ) {
-            formData.value.appointment_id = item.id;
-            formData.value.specialist_id = item.specialist_id;
-          }
-        });
-      }
+    watch(patientId, () => {
+      formData.value.patient_id = patientId.value;
+      store.dispatch(AppointmentActions.LIST, {
+        patient_id: patientId.value,
+      });
     });
 
     onMounted(() => {
@@ -273,6 +295,7 @@ export default defineComponent({
       handleRemove,
       uploadDisabled,
       fileList,
+      attachmentType,
     };
   },
 });

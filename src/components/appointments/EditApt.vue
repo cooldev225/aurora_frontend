@@ -1258,7 +1258,7 @@ export default defineComponent({
 
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
-      store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
+      store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.ORG.LIST);
     });
 
@@ -1351,7 +1351,7 @@ export default defineComponent({
       formRef_2.value.resetFields();
       formRef_3.value.resetFields();
       formRef_4.value.resetFields();
-      store.dispatch(PatientActions.PATIENTS.LIST);
+      store.dispatch(PatientActions.LIST);
     };
 
     const handleCancel = () => {

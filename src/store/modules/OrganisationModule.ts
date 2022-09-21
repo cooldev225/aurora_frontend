@@ -63,11 +63,12 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
       ApiService.setHeader();
       ApiService.get("organizations")
         .then(({ data }) => {
+          console.log(data.data);
           this.context.commit(Mutations.SET_ORG.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          // console.log(response.data.error);
           // this.context.commit(Mutations.SET_ERROR, response.data.errors);
         });
     } else {

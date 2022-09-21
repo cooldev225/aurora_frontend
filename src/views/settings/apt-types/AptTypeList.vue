@@ -110,9 +110,9 @@ export default defineComponent({
 
     const handleDelete = (id) => {
       store
-        .dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.DELETE, id)
+        .dispatch(AppointmentActions.APPOINTMENT_TYPES.DELETE, id)
         .then(() => {
-          store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
+          store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -130,7 +130,7 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Appointment Types", ["Settings"]);
-      store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
+      store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
     });
 
     watchEffect(() => {

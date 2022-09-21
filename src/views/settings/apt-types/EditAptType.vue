@@ -268,7 +268,7 @@ export default defineComponent({
 
     const formInfo = reactive({
       title: "Create Appointment Type",
-      submitAction: AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.CREATE,
+      submitAction: AppointmentActions.APPOINTMENT_TYPES.CREATE,
       submitButtonName: "CREATE",
       submittedText: "New Appointment Type Created",
     });
@@ -313,8 +313,7 @@ export default defineComponent({
           formData.value = item;
 
           formInfo.title = "Edit Appointment Type";
-          formInfo.submitAction =
-            AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.UPDATE;
+          formInfo.submitAction = AppointmentActions.APPOINTMENT_TYPES.UPDATE;
           formInfo.submitButtonName = "UPDATE";
           formInfo.submittedText = "Appointment Type Updated";
         }
@@ -324,7 +323,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      store.dispatch(AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST);
+      store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
     });
 
     const submit = () => {
@@ -339,9 +338,7 @@ export default defineComponent({
             .dispatch(formInfo.submitAction, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(
-                AppointmentActions.APPOINTMENT.APPOINTMENT_TYPES.LIST
-              );
+              store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
               Swal.fire({
                 text: formInfo.submittedText,
                 icon: "success",

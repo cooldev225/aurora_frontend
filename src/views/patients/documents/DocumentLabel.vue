@@ -13,7 +13,6 @@
       />
     </span>
 
-    <!--begin::Info-->
     <span class="d-block fw-bold text-start">
       <span class="text-dark fw-bolder d-block fs-4 mb-1">
         {{ document.document_name }}
@@ -22,7 +21,6 @@
         moment(document.created_at).format("DD/MM/YYYY HH:mm A")
       }}</span>
     </span>
-    <!--end::Info-->
   </label>
 </template>
 <script lang="ts">

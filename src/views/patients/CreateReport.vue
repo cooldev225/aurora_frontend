@@ -12,7 +12,12 @@
     <!--begin::Card header-->
     <!--begin::Card body-->
     <div class="card-body">
-      <el-form>
+      <el-form
+        @submit.prevent="submit()"
+        :model="formData"
+        :rules="rules"
+        ref="formRef"
+      >
         <div class="report-template-wrapper">
           <!--begin::Input group-->
           <div class="fv-row mb-10">
@@ -29,7 +34,7 @@
             <label class="col-md-6 fs-4 fw-bold mb-2">
               DATE:
               <span style="font-weight: 400">{{
-                moment(templateData.created_at).format("YYYY-MM-DD").toString()
+                moment(templateData.created_at).format("DD/MM/YYYY").toString()
               }}</span>
             </label>
           </div>
@@ -52,7 +57,9 @@
               <label class="col-md-6 fs-4 fw-bold mb-2">
                 DOB:
                 <span style="font-weight: 400">{{
-                  patientData.date_of_birth
+                  moment(patientData.date_of_birth)
+                    .format("DD/MM/YYYY")
+                    .toString()
                 }}</span>
               </label>
             </div>
@@ -77,8 +84,9 @@
             <div class="fv-row">
               <label class="col-md-6 fs-4 fw-bold mb-2">
                 REFERRING DOCTOR:
+                <!-- patientData.referring_doctor -->
                 <span style="font-weight: 400">{{
-                  patientData.referring_doctor
+                  appointmentData.referral.referring_doctor_name
                 }}</span>
               </label>
             </div>
@@ -88,7 +96,7 @@
               <label class="col-md-6 fs-4 fw-bold mb-2">
                 APPOINTMENT TYPES:
                 <span style="font-weight: 400">{{
-                  patientData.appointment_type_name
+                  appointmentData.referral.appointment_type_name
                 }}</span>
               </label>
             </div>
@@ -98,7 +106,7 @@
               <label class="col-md-6 fs-4 fw-bold mb-2">
                 SPECIALIST:
                 <span style="font-weight: 400">{{
-                  patientData.specialist_name
+                  appointmentData.specialist_name
                 }}</span>
               </label>
             </div>
@@ -108,7 +116,7 @@
               <label class="col-md-6 fs-4 fw-bold mb-2">
                 PROVIDER NUMBER:
                 <span style="font-weight: 400">{{
-                  patientData.provider_number
+                  appointmentData.clinic.hospital_provider_number
                 }}</span>
               </label>
             </div>
@@ -160,9 +168,9 @@
             </div>
           </div>
         </div>
-        <div class="d-flex ms-auto justify-content-end w-25">
-          <button type="submit" class="btn btn-primary w-25">Create</button>
-          <button type="reset" class="btn btn-light-primary w-25 ms-2">
+        <div class="d-flex ms-auto justify-content-end">
+          <button type="submit" class="btn btn-primary">Create</button>
+          <button type="reset" class="btn btn-light-primary ms-2">
             Cancel
           </button>
         </div>
@@ -176,7 +184,10 @@
 <script lang="ts">
 import { defineComponent, watchEffect, ref, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import { StoreReportActions } from "@/store/enums/StoreReportEnums";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import moment from "moment";
 
 export default defineComponent({
@@ -184,10 +195,15 @@ export default defineComponent({
   components: {},
   setup() {
     const store = useStore();
+    const router = useRouter();
+    const formRef = ref(null);
     const templateList = computed(
       () => store.getters.getReportTemplateSelected
     );
     const patientList = computed(() => store.getters.selectedPatient);
+    const appointment = computed(
+      () => store.getters.getReportAppointmentSelected
+    );
 
     const templateData = ref({
       id: "",
@@ -199,13 +215,47 @@ export default defineComponent({
     });
 
     const patientData = ref();
+    const appointmentData = ref();
     const formData = ref({
       section: {},
     });
 
+    const rules = ref({});
+    const loading = ref(false);
+    const submit = () => {
+      loading.value = true;
+      if (!formRef.value) {
+        loading.value = false;
+        return;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (formRef.value as any).validate(async (valid) => {
+        if (valid) {
+          const reportData: unknown[] = [];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (templateData.value.sections as any).forEach((data) => {
+            reportData.push({
+              sectionId: data.id,
+              free_text_default: data.free_text_default,
+              value: formData.value.section["section" + data.id],
+            });
+          });
+          store.dispatch(StoreReportActions.REPORT.PATIENT, {
+            patientId: patientList.value.id,
+            reportData: reportData,
+          });
+          router.push({
+            path: "/patients/" + patientList.value.id + "/documents",
+          });
+        }
+      });
+    };
+
     watchEffect(() => {
       templateData.value = templateList.value;
       patientData.value = patientList.value;
+      appointmentData.value = appointment.value;
     });
 
     onMounted(() => {
@@ -213,10 +263,14 @@ export default defineComponent({
     });
 
     return {
+      formRef,
+      rules,
       templateData,
       patientData,
+      appointmentData,
       formData,
       moment,
+      submit,
     };
   },
 });

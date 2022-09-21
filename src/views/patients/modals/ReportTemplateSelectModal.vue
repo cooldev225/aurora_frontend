@@ -3,6 +3,8 @@
     title="Select Report Template"
     modalId="report"
     modalRef="reportModal"
+    class="modal fade"
+    aria-hidden="true"
   >
     <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
       <InputWrapper label="Report Template">
@@ -20,10 +22,26 @@
         </el-select>
       </InputWrapper>
 
+      <InputWrapper label="Appointment">
+        <el-select
+          class="w-100"
+          v-model="appointment"
+          placeholder="Select Appointment"
+        >
+          <el-option
+            v-for="(option, idx) in appointmentsData"
+            :key="option.id"
+            :value="idx"
+            :label="option.appointment_type_name"
+          />
+        </el-select>
+      </InputWrapper>
+
       <button
         :data-kt-indicator="loading ? 'on' : null"
         class="btn btn-lg btn-primary m-6"
         type="submit"
+        data-bs-dismiss="modal"
       >
         <span v-if="!loading" class="indicator-label"> Select </span>
         <span v-if="loading" class="indicator-progress">
@@ -48,26 +66,35 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 export default defineComponent({
   name: "report-modal",
   components: {},
+  props: {},
   setup() {
     const router = useRouter();
     const store = useStore();
     const list = computed(() => store.getters.getReportTemplateList);
+    const patientData = computed(() => store.getters.selectedPatient);
     const loading = ref(false);
     const reportTemplate = ref();
+    const appointment = ref();
     const reportTemplatesData = ref([]);
+    const appointmentsData = ref([]);
     const reportModal = ref(null);
 
     watchEffect(() => {
       reportTemplatesData.value = list.value;
+      appointmentsData.value = patientData.value.appointments;
+      store.commit(
+        Mutations.SET_REPORT_APPOINTMENTS.LIST,
+        patientData.value.appointments
+      );
     });
 
     const submit = () => {
-      store.commit(
-        Mutations.SET_REPORT_TEMPLATES.SELECT,
-        reportTemplatesData.value[reportTemplate.value]
-      );
+      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, {
+        template: reportTemplatesData.value[reportTemplate.value],
+        appointment: appointmentsData.value[appointment.value],
+      });
 
-      hideModal(reportModal.value);
+      // hideModal(reportModal.value);
       router.push({ name: "patients-report" });
     };
 
@@ -76,6 +103,8 @@ export default defineComponent({
       reportModal,
       reportTemplate,
       reportTemplatesData,
+      appointment,
+      appointmentsData,
       submit,
     };
   },

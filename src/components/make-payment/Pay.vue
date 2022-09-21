@@ -98,6 +98,8 @@
         <label class="text-muted fs-6 fw-bold mt-2 d-block"
           >Total Payable Amount: $
           {{
+            billingData &&
+            billingData.appointment &&
             getProcedurePrice(
               billingData.payment,
               billingData.appointment.charge_type
@@ -105,7 +107,9 @@
           }}
 
           <br />
-          Amount Paid: ${{ billingData.payment.paid_amount }}
+          Amount Paid: ${{
+            billingData.payment && billingData.payment.paid_amount
+          }}
           <br />
           <ul>
             <li

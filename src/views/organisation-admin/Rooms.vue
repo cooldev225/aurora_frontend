@@ -1,8 +1,10 @@
 <template>
-  <div class="card w-75 mx-auto">
+  <div class="card w-75 m-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
-      <div class="card-title"></div>
+      <div class="card-title">
+        {{ clinic.name }}
+      </div>
       <!--begin::Card title-->
 
       <!--begin::Card toolbar-->
@@ -15,9 +17,10 @@
           <!--begin::Add subscription-->
           <button
             type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modal_add_orgManager"
+            class="btn btn-light-primary ms-auto"
+            @click="
+              handleRoomEdit({ id: '-1', clinic_id: clinic.id, name: '' })
+            "
           >
             <span class="svg-icon svg-icon-2">
               <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
@@ -34,33 +37,15 @@
       <Datatable
         :table-header="tableHeader"
         :table-data="tableData"
-        :key="tableKey"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-first_name="{ row: item }">
-          {{ item.first_name }}
-        </template>
-        <template v-slot:cell-last_name="{ row: item }">
-          {{ item.last_name }}
-        </template>
-        <template v-slot:cell-username="{ row: item }">
-          {{ item.username }}
-        </template>
-        <template v-slot:cell-email="{ row: item }">
-          {{ item.email }}
+        <template v-slot:cell-name="{ row: item }">
+          {{ item.name }}
         </template>
         <template v-slot:cell-action="{ row: item }">
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/coding/cod008.svg" />
-            </span>
-          </a>
           <button
-            @click="handleEdit(item)"
+            @click="handleRoomEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
@@ -80,56 +65,47 @@
       </Datatable>
     </div>
   </div>
-  <CreateModal></CreateModal>
-  <EditModal></EditModal>
+  <RoomModal></RoomModal>
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  watchEffect,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
+import { useRoute } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateModal from "@/components/organisation-managers/AddOrganisationManager.vue";
-import EditModal from "@/components/organisation-managers/EditOrganisationManager.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import RoomModal from "@/components/clinics/EditRoom.vue";
 import { Modal } from "bootstrap";
 
 export default defineComponent({
-  name: "admin-main",
+  name: "clinics-room",
 
   components: {
     Datatable,
-    CreateModal,
-    EditModal,
+    RoomModal,
   },
 
   setup() {
     const store = useStore();
+    const route = useRoute();
+    let clinic = ref({
+      id: -1,
+      name: "",
+    });
     const tableHeader = ref([
       {
-        name: "First Name",
-        key: "first_name",
+        name: "Room Name",
+        key: "name",
         sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Last Name",
-        key: "last_name",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Username",
-        key: "username",
-        sortable: true,
-        searchable: true,
-      },
-      {
-        name: "Email",
-        key: "email",
-        sortable: true,
-        searchable: true,
       },
       {
         name: "Action",
@@ -137,25 +113,20 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const orgManagerList = computed(() => store.getters.orgManagerList);
-
-    const handleEdit = (item) => {
-      store.commit(Mutations.SET_ORG_MANAGER.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_edit_admin"));
-      modal.show();
-    };
+    const clinicsList = computed(() => store.getters.clinicsList);
+    const roomsList = computed(() => store.getters.roomsList);
 
     const deleteAfterConfirmation = (item) => {
       const html =
         '<p class="fs-2">Please type <b>' +
-        item.first_name +
-        "</b> to confirm</p><br/>";
+        item.name +
+        "</b> to confirm deletion</p><br/>";
 
       Swal.fire({
         input: "text",
         inputAttributes: {
           autocapitalize: "off",
-          placeholder: "First Name",
+          placeholder: "Room Name",
         },
         html: html,
         icon: "info",
@@ -163,11 +134,11 @@ export default defineComponent({
         cancelButtonText: "Cancel",
         confirmButtonText: "Delete",
         customClass: {
-          confirmButton: "btn btn-primary",
+          confirmButton: "btn btn-danger",
           cancelButton: "btn btn-light-primary",
         },
         preConfirm: async (data) => {
-          if (data.toLowerCase() == item.first_name.toLowerCase()) {
+          if (data.toLowerCase() == item.name.toLowerCase()) {
             return "success";
           }
 
@@ -176,7 +147,7 @@ export default defineComponent({
       }).then((result) => {
         if (result.value == "success") {
           store
-            .dispatch(Actions.ORG_MANAGER.DELETE, item.id)
+            .dispatch(Actions.CLINICS.ROOMS.DELETE, item)
             .then(() => {
               Swal.fire({
                 text: "Successfully Deleted!",
@@ -187,7 +158,8 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                store.dispatch(Actions.ORG_MANAGER.LIST);
+                store.dispatch(Actions.CLINICS.LIST);
+                store.dispatch(Actions.CLINICS.ROOMS.LIST, clinic.value.id);
               });
             })
             .catch(({ response }) => {
@@ -201,16 +173,42 @@ export default defineComponent({
       deleteAfterConfirmation(item);
     };
 
+    const handleRoomEdit = (item) => {
+      console.log(["handleRoomEdit=", item]);
+      store.commit(Mutations.SET_CLINICS.SELECTROOMS, item);
+      const modal = new Modal(
+        document.getElementById("modal_edit_clinic_room")
+      );
+      modal.show();
+    };
+
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Organisation Managers", []);
-      store.dispatch(Actions.ORG_MANAGER.LIST);
-      tableData.value = orgManagerList;
+      setCurrentPageBreadcrumbs("Rooms", []);
+      store.dispatch(Actions.CLINICS.LIST);
+
+      let id = route.params.id;
+      store.dispatch(Actions.CLINICS.ROOMS.LIST, id);
+    });
+
+    watch(clinicsList, () => {
+      let id = route.params.id;
+      let clinics = clinicsList.value.filter((c) => c.id == id);
+      if (clinics.length) {
+        clinic.value = clinics[0];
+        store.commit(Mutations.SET_CLINICS.SELECT, clinic.value);
+      }
     });
 
     watchEffect(() => {
-      tableData.value = orgManagerList;
+      tableData.value = roomsList;
     });
-    return { tableHeader, tableData, handleEdit, handleDelete };
+    return {
+      tableHeader,
+      tableData,
+      handleDelete,
+      handleRoomEdit,
+      clinic,
+    };
   },
 });
 </script>

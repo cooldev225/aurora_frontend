@@ -123,9 +123,10 @@
             v-if="aptData.attendance_status === 'NOT_PRESENT'"
             @click="handleCheckIn"
             :heading="'Check In'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr024.svg'"
             :color="'primary'"
+            justify="start"
+            iconSize="3"
           />
 
           <!--Check Out Button-->
@@ -133,52 +134,58 @@
             v-if="aptData.attendance_status === 'CHECKED_IN'"
             @click="handleCheckOut"
             :heading="'Check Out'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr021.svg'"
             :color="'primary'"
+            justify="start"
+            iconSize="3"
           />
 
           <!--Checked Out Label-->
           <LargeIconButton
             v-if="aptData.attendance_status === 'CHECKED_OUT'"
             :heading="'Checked Out'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr021.svg'"
             :color="'grey'"
+            justify="start"
+            iconSize="3"
           />
 
           <!--View Patient-->
           <LargeIconButton
             @click="handleView"
             :heading="'View'"
-            :subheading="'Patient'"
             :iconPath="'media/icons/duotune/medicine/med001.svg'"
             :color="'primary'"
+            justify="start"
+            iconSize="3"
           />
 
           <!--Edit Appointment-->
           <LargeIconButton
             @click="handleEdit"
             :heading="'Edit'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/general/gen055.svg'"
             :color="'success'"
+            justify="start"
+            iconSize="3"
           />
           <!--Move Appointment-->
           <LargeIconButton
             :heading="'Move'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr035.svg'"
             :color="'success'"
+            justify="start"
+            iconSize="3"
           />
 
           <!--Cancel Appointment Button-->
           <LargeIconButton
             @click="handleCancel"
             :heading="'Cancel'"
-            :subheading="'Appointment'"
             :iconPath="'media/icons/duotune/arrows/arr011.svg'"
             :color="'danger'"
+            justify="start"
+            iconSize="3"
           />
         </div>
         <!--end::Appointment Actions-->
@@ -236,7 +243,7 @@ export default defineComponent({
     });
 
     const handleView = () => {
-      store.dispatch(PatientActions.PATIENTS.VIEW, aptData.value.patient_id);
+      store.dispatch(PatientActions.VIEW, aptData.value.patient_id);
       DrawerComponent?.getInstance("appointment-drawer")?.hide();
       router.push({
         name: "patients-view-administration",
@@ -245,10 +252,7 @@ export default defineComponent({
     };
 
     const handleEdit = () => {
-      store.dispatch(
-        PatientActions.PATIENTS.APPOINTMENTS,
-        aptData.value.patient_id
-      );
+      store.dispatch(PatientActions.APPOINTMENTS, aptData.value.patient_id);
       store.commit(AppointmentMutations.SET_APT.SELECT, aptData.value);
       const modal = new Modal(document.getElementById("modal_edit_apt"));
       modal.show();
@@ -279,14 +283,11 @@ export default defineComponent({
           var missed = Swal.getPopup().querySelector("#chkMissed").checked;
 
           await store
-            .dispatch(
-              AppointmentActions.APPOINTMENT.CONFIRMATION_STATUS.UPDATE,
-              {
-                id: aptData.value.id,
-                missed: missed,
-                reason: data,
-              }
-            )
+            .dispatch(AppointmentActions.CONFIRMATION_STATUS.UPDATE, {
+              id: aptData.value.id,
+              missed: missed,
+              reason: data,
+            })
             .then(() => {
               store.dispatch(
                 AppointmentActions.BOOKING.SEARCH.DATE,

@@ -213,7 +213,7 @@ export default defineComponent({
           );
           submitData.append("logo", formData.value.logo_file.raw);
           store
-            .dispatch(Actions.ORG_ADMIN.UPLOAD_IMAGE, {
+            .dispatch(Actions.ORG_ADMIN.ORGANIZATION.SETTINGS.UPDATE, {
               submitData: submitData,
             })
             .then(() => {

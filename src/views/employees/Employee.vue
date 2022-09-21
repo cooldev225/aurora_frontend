@@ -13,6 +13,7 @@
             data-kt-subscription-table-filter="search"
             class="form-control form-control-solid w-250px ps-14"
             placeholder="Search Employees"
+            v-model="filterAndSort.searchText"
           />
         </div>
         <!--end::Search-->
@@ -95,7 +96,15 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  watchEffect,
+  reactive,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -113,6 +122,9 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+    const filterAndSort = reactive({
+      searchText: "",
+    });
     const tableHeader = ref([
       {
         name: "Name",
@@ -144,8 +156,9 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
+    const filteredData = ref([]);
     const list = computed(() => store.getters.employeeList);
-    const organization = computed(() => store.getters.organization);
+    //const organization = computed(() => store.getters.organization);
     const loading = ref(true);
 
     const handleCreate = () => {
@@ -238,16 +251,69 @@ export default defineComponent({
       store.dispatch(Actions.ORG.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST).then(() => {
         tableData.value = list;
-        console.log(tableData.value);
         loading.value = false;
       });
     });
 
+    const applyFilterAndSort = () => {
+      if (filterAndSort.searchText != "") {
+        filteredData.value = list.value.filter((org) => {
+          if (
+            org.full_name
+              .toLowerCase()
+              .search(filterAndSort.searchText.toLowerCase()) >= 0
+          ) {
+            return true;
+          }
+
+          if (
+            org.email
+              .toLowerCase()
+              .search(filterAndSort.searchText.toLowerCase()) >= 0
+          ) {
+            return true;
+          }
+
+          if (
+            org.username
+              .toLowerCase()
+              .search(filterAndSort.searchText.toLowerCase()) >= 0
+          ) {
+            return true;
+          }
+
+          if (
+            org.role.name
+              .toLowerCase()
+              .search(filterAndSort.searchText.toLowerCase()) >= 0
+          ) {
+            return true;
+          }
+
+          return false;
+        });
+      } else {
+        filteredData.value = list.value;
+      }
+      tableData.value = filteredData;
+    };
+
     watchEffect(() => {
-      tableData.value = list;
-      loading.value = false;
+      applyFilterAndSort();
     });
-    return { tableHeader, tableData, handleEdit, handleDelete, handleCreate };
+
+    watch(filterAndSort, () => {
+      applyFilterAndSort();
+    });
+
+    return {
+      tableHeader,
+      tableData,
+      handleEdit,
+      handleDelete,
+      handleCreate,
+      filterAndSort,
+    };
   },
 });
 </script>

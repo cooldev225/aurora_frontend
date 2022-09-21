@@ -108,7 +108,7 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.PATIENTS.DOCUMENT.SEND_VIA_EMAIL, formData.value)
+            .dispatch(Actions.DOCUMENT.SEND_VIA_EMAIL, formData.value)
             .then(() => {
               loading.value = false;
               Swal.fire({

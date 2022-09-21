@@ -36,13 +36,6 @@ const Actions = {
     SELECT: "selectOrg",
   },
 
-  ORG_MANAGER: {
-    LIST: "listOrgManager",
-    CREATE: "createOrgManager",
-    DELETE: "deleteOrgManager",
-    UPDATE: "updateOrgManager",
-  },
-
   ORG_ADMIN: {
     LIST: "listOrgAdmin",
     CREATE: "createOrgAdmin",
@@ -50,6 +43,15 @@ const Actions = {
     UPDATE: "updateOrgAdmin",
     UPLOAD_IMAGE: "uploadImage",
     LOAD_ORGANIZATION_DATA: "loadOrganizationData",
+    ORGANIZATION: {
+      SETTINGS: {
+        UPDATE: "updateOrganizationSettings"
+      },
+      PRE_ADMISSION_SECTION: {
+        LIST: "listPreAdmissionSections",
+        UPDATE: "updatePreAdmissionSections",
+      }
+    }
   },
 
   CLINICS: {
@@ -57,6 +59,12 @@ const Actions = {
     CREATE: "createClinics",
     DELETE: "deleteClinics",
     UPDATE: "updateClinics",
+    ROOMS: {
+      LIST: "listClinicsRooms",
+      CREATE: "createClinicsRooms",
+      DELETE: "deleteClinicsRooms",
+      UPDATE: "updateClinicsRooms",
+    }
   },
 
 
@@ -195,6 +203,8 @@ const Mutations = {
   SET_CLINICS: {
     LIST: "setClinicsList",
     SELECT: "setSelectClinics",
+    LISTROOMS: "setClinicsRoomsList",
+    SELECTROOMS: "setSelectClinicsRooms",
   },
 
   SET_BIRTH_CODE: {
@@ -236,6 +246,11 @@ const Mutations = {
     SELECT: "setSelectReportTemplate",
   },
 
+  SET_REPORT_APPOINTMENTS: {
+    LIST: "setReportAppointments",
+    SELECT: "setSelectReportAppointment",
+  },
+
   SET_MAILS: {
     INBOX: "setInboxMails",
     SELECT: "setSelectedMail",
@@ -256,6 +271,7 @@ const Mutations = {
     LIST: "setMakePayment",
     SELECT: "setSelectMakePayment",
   },
+
 };
 
 export { Actions, Mutations };
