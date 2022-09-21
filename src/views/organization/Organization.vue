@@ -153,7 +153,7 @@
 }
 </style>
 <script>
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed, watch } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { ElMessage } from "element-plus";
 import { useStore } from "vuex";
@@ -175,6 +175,8 @@ export default defineComponent({
       logo_file: null,
     });
     const rules = ref({});
+    const currentUser = computed(() => store.getters.currentUser);
+
     const handleAvatarSuccess = (uploadFile, flag) => {
       formData.value[flag] = URL.createObjectURL(uploadFile.raw);
       formData.value[flag + "_file"] = uploadFile;
@@ -238,9 +240,12 @@ export default defineComponent({
         }
       });
     };
-    const loadOrganizationData = () => {
+    const loadOrganizationData = (id) => {
+      // setTimeout(() => {
+      //   console.log("----------------", currentUser);
+      // }, 200);
       store
-        .dispatch(Actions.ORG_ADMIN.LOAD_ORGANIZATION_DATA)
+        .dispatch(Actions.ORG.SELECT, id)
         .then(({ data }) => {
           loading.value = false;
           Swal.fire({
@@ -259,9 +264,13 @@ export default defineComponent({
           console.log(response.data.error);
         });
     };
+    watch(currentUser, () => {
+      const orgId = currentUser.value.profile.organization_id.toString();
+      console.log("-------333---------", orgId);
+      currentUser.value.profile.organization_id && loadOrganizationData(orgId);
+    });
     onMounted(() => {
       setCurrentPageBreadcrumbs("Organization Settings", ["Settings"]);
-      loadOrganizationData();
     });
     return {
       formData,
