@@ -1,6 +1,16 @@
 <template>
+  <el-select
+    class="w-100 mb-6"
+    placeholder="Select Clinic"
+    v-model="clinicFilter"
+  >
+    <template v-for="clinic in clinics" :key="clinic.value">
+      <el-option :value="clinic.id" :label="clinic.name">
+        {{ clinic.name }}
+      </el-option>
+    </template>
+  </el-select>
   <CardSection>
-    CLINIC SELECT HERE
     <table class="w-100">
       <thead>
         <th>Employee Type</th>
@@ -21,8 +31,17 @@
             <span class="svg-icon absolute text-white svg-icon-4 me-1">
               <inline-svg src="media/icons/duotune/art/art005.svg" />
             </span>
-            <InfoSection heading="Role"> {{ template.role_id }} </InfoSection>
-            <InfoSection heading="Default"> John Doe</InfoSection>
+            <InfoSection heading="Role">
+              {{
+                employeeRoles.filter((x) => x.value == template.role_id)[0]
+                  .label
+              }}
+            </InfoSection>
+            <InfoSection heading="Default">
+              <span v-if="template.default_employee">
+                {{ template.default_employee }} </span
+              ><span v-else>Unassigned</span>
+            </InfoSection>
           </td>
 
           <td v-for="day in weekdays" :key="day.id">
@@ -65,7 +84,9 @@ import { defineComponent, onMounted, computed, watch, ref } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
+import { Actions } from "@/store/enums/StoreEnums";
 import weekdays from "@/core/data/weekdays";
+import employeeRoles from "@/core/data/employee-roles";
 import moment from "moment";
 
 export default defineComponent({
@@ -73,7 +94,8 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const scheduleTemplates = computed(() => store.getters.hrmScheduleList);
-
+    const clinics = computed(() => store.getters.clinicsList);
+    const clinicFilter = ref();
     onMounted(() => {
       setCurrentPageBreadcrumbs("Weekly Schedule Template", [
         "Human Resource Management",
@@ -81,10 +103,17 @@ export default defineComponent({
       store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
         clinic_id: 1,
       });
+      store.dispatch(Actions.CLINICS.LIST);
     });
 
-    watch(scheduleTemplates, () => {
-      console.log(scheduleTemplates.value);
+    watch(clinics, () => {
+      clinicFilter.value = clinics.value[0].id;
+    });
+
+    watch(clinicFilter, () => {
+      store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
+        clinic_id: clinicFilter.value,
+      });
     });
 
     const handleEditTemplateTimeslots = (schedule, day) => {
@@ -101,6 +130,9 @@ export default defineComponent({
       moment,
       handleEditTemplateTimeslots,
       handleEditTemplate,
+      clinics,
+      clinicFilter,
+      employeeRoles,
     };
   },
 });
