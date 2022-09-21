@@ -242,7 +242,7 @@ export default defineComponent({
             });
           });
           store.dispatch(StoreReportActions.REPORT.PATIENT, {
-            patientId: patientList.value.id,
+            patient_id: patientList.value.id,
             reportData: reportData,
           });
           router.push({

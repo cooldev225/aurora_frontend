@@ -9,7 +9,10 @@ export default class ReportModule extends VuexModule {
   [StoreReportActions.REPORT.PATIENT](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      return ApiService.post("patients/report", data)
+      return ApiService.post(
+        "patients/documents/report/" + data.patient_id,
+        data
+      )
         .then(({ data }) => {
           return data.data;
         })
