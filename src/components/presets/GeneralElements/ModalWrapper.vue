@@ -4,7 +4,7 @@
     :id="'modal_' + modalId"
     tabindex="-1"
     aria-hidden="true"
-    :ref="modalRef"
+    ref="bModalRef"
   >
     <div class="modal-dialog modal-dialog-centered mw-850px">
       <div class="modal-content">
@@ -35,11 +35,25 @@
 </template>
 
 <script lang="ts">
+import { ref, onMounted } from "vue";
+
 export default {
   props: {
     title: { type: String, required: true },
     modalId: { type: String, required: true },
-    modalRef: { type: Object, required: true },
+    modalRef: { type: Object, required: false },
+    updateRef: { type: Function, required: false },
+  },
+  setup(props) {
+    const bModalRef = ref(null);
+    onMounted(() => {
+      props.updateRef &&
+        typeof props.updateRef !== "string" &&
+        props.updateRef(bModalRef.value);
+    });
+    return {
+      bModalRef,
+    };
   },
 };
 </script>

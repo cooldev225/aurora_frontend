@@ -2,9 +2,15 @@
   <ModalWrapper
     title="Create Recall"
     modalId="patient_recall_reminder"
-    :modalRef="patientRecallReminderModal"
+    modalRef="patientRecallReminderModal"
+    :updateRef="updateRef"
   >
-    <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
+    <el-form
+      @submit.prevent="submit()"
+      :model="formData"
+      ref="formRef"
+      :rules="rules"
+    >
       <InputWrapper label="Time Frame" prop="time_frame">
         <el-select
           class="w-100"
@@ -99,7 +105,15 @@ export default defineComponent({
       reason: "",
     });
     const patientData = ref([]);
-
+    const rules = ref({
+      reason: [
+        {
+          required: true,
+          message: "Reason cannot be blank",
+          trigger: "change",
+        },
+      ],
+    });
     onMounted(() => {
       store.dispatch(AppointmentActions.LIST, {
         patient_id: patientData.value.id,
@@ -109,33 +123,42 @@ export default defineComponent({
       patientData.value = store.getters.selectedPatient;
     });
 
+    const updateRef = (_ref) => {
+      patientRecallReminderModal.value = _ref;
+    };
+
     const submit = () => {
       if (!formRef.value) {
         return;
       }
-      loading.value = true;
       formData.value.patient_id = patientData.value.id;
-      store
-        .dispatch(PatientActions.RECALL.CREATE, formData.value)
-        .then(() => {
-          loading.value = false;
-          Swal.fire({
-            text: "Recall Created",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          }).then(() => {
-            hideModal(patientRecallReminderModal.value);
-          });
-        })
-        .catch(({ response }) => {
-          loading.value = false;
-          console.log(response.data.error);
-        });
-      formRef.value.resetFields();
+      formRef.value.validate((valid) => {
+        if (valid) {
+          loading.value = true;
+          store
+            .dispatch(PatientActions.RECALL.CREATE, formData.value)
+            .then(() => {
+              loading.value = false;
+              Swal.fire({
+                text: "Recall Created",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                formRef.value.resetFields();
+                loading.value = false;
+                hideModal(patientRecallReminderModal.value);
+              });
+            })
+            .catch(({ response }) => {
+              loading.value = false;
+              console.log(response.data.error);
+            });
+        }
+      });
     };
 
     watchEffect(() => {
@@ -160,6 +183,8 @@ export default defineComponent({
       submit,
       appointmentList,
       moment,
+      updateRef,
+      rules,
     };
   },
 });
