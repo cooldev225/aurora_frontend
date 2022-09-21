@@ -22,6 +22,7 @@ import ModalWrapper from "@/components/presets/GeneralElements/ModalWrapper.vue"
 InfoSection;
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
+import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
 import "@/core/plugins/prismjs";
 import "bootstrap";
 
@@ -49,7 +50,8 @@ app
   .component("InputWrapper", InputWrapper)
   .component("ModalWrapper", ModalWrapper)
   .component("InfoSection", InfoSection)
-  .component("IconButton", IconButton);
+  .component("IconButton", IconButton)
+  .component("LargeIconButton", LargeIconButton);
 
 app.use(i18n);
 
