@@ -9,7 +9,7 @@
     data-kt-drawer-overlay="true"
     data-kt-drawer-width="{default:'80px', '300px': '100px'}"
     data-kt-drawer-direction="start"
-    data-kt-drawer-toggle="#kt_aside_mobile_toggle"
+    data-kt-drawer-toggle="#kt_header_menu_mobile_toggle"
   >
     <!--begin::Brand-->
     <div class="aside-logo py-8" id="kt_aside_logo">

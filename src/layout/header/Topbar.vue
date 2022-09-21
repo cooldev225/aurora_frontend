@@ -38,14 +38,14 @@
       class="d-flex align-items-center d-lg-none ms-2 me-n3"
       title="Show header menu"
     >
-      <div
+      <button
         class="btn btn-icon btn-active-light-primary btn-custom w-30px h-30px w-md-40px h-md-40px"
         id="kt_header_menu_mobile_toggle"
       >
         <span class="svg-icon svg-icon-1">
           <inline-svg src="media/icons/duotune/text/txt001.svg" />
         </span>
-      </div>
+      </button>
     </div>
   </div>
 </template>
