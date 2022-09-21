@@ -229,43 +229,68 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               });
+              formRef.value.resetFields();
+              reloadOrgData();
             })
             .catch(({ response }) => {
               loading.value = false;
               console.log(response.data.error);
             });
-          formRef.value.resetFields();
         } else {
           // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
+    const reloadOrgData = () => {
+      const orgId = currentUser.value.profile.organization_id;
+      currentUser.value.profile.organization_id && loadOrganizationData(orgId);
+    };
+    const loadPreviewImage = (payload, key) => {
+      store
+        .dispatch(Actions.ORG.FILE, payload)
+        .then((data) => {
+          const blob = new Blob([data], { type: "application/image" });
+          const objectUrl = URL.createObjectURL(blob);
+          formData.value[key] = objectUrl;
+        })
+        .catch(() => {
+          console.log("image load error");
+        });
+    };
     const loadOrganizationData = (id) => {
       store
         .dispatch(Actions.ORG.SELECT, id)
         .then((data) => {
-          store
-            .dispatch(Actions.ORG.FILE, {
-              type: "footer_organization",
+          loadPreviewImage(
+            {
+              type: "ORGANIZATION_FOOTER",
               path: data.document_letter_footer,
-            })
-            .then((data) => {
-              const blob = new Blob([data], { type: "application/pdf" });
-              const objectUrl = URL.createObjectURL(blob);
-              formData.value["document_letter_footer"] = objectUrl;
-            })
-            .catch(() => {
-              console.log("image load error");
-            });
+            },
+            "document_letter_footer"
+          );
+          loadPreviewImage(
+            {
+              type: "ORGANIZATION_HEADER",
+              path: data.document_letter_header,
+            },
+            "document_letter_header"
+          );
+          loadPreviewImage(
+            {
+              type: "ORGANIZATION_LOGO",
+              path: data.logo,
+            },
+            "logo"
+          );
         })
         .catch(({ response }) => {
           console.log(response.data.error);
         });
     };
     watch(currentUser, () => {
-      const orgId = currentUser.value.profile.organization_id;
-      currentUser.value.profile.organization_id && loadOrganizationData(orgId);
+      reloadOrgData();
     });
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("Organization Settings", ["Settings"]);
     });
