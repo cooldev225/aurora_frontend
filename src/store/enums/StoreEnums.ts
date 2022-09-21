@@ -34,6 +34,7 @@ const Actions = {
     DELETE: "deleteOrg",
     UPDATE: "updateOrg",
     SELECT: "selectOrg",
+    FILE: "file",
   },
 
   ORG_ADMIN: {
@@ -42,6 +43,7 @@ const Actions = {
     DELETE: "deleteOrgAdmin",
     UPDATE: "updateOrgAdmin",
     UPLOAD_IMAGE: "uploadImage",
+    LOAD_ORGANIZATION_DATA: "loadOrganizationData",
     ORGANIZATION: {
       SETTINGS: {
         UPDATE: "updateOrganizationSettings"

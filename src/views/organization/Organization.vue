@@ -153,7 +153,7 @@
 }
 </style>
 <script>
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed, watch } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { ElMessage } from "element-plus";
 import { useStore } from "vuex";
@@ -175,6 +175,8 @@ export default defineComponent({
       logo_file: null,
     });
     const rules = ref({});
+    const currentUser = computed(() => store.getters.currentUser);
+
     const handleAvatarSuccess = (uploadFile, flag) => {
       formData.value[flag] = URL.createObjectURL(uploadFile.raw);
       formData.value[flag + "_file"] = uploadFile;
@@ -204,11 +206,11 @@ export default defineComponent({
           loading.value = true;
           let submitData = new FormData();
           submitData.append(
-            "document_letter_header",
+            "header",
             formData.value.document_letter_header_file.raw
           );
           submitData.append(
-            "document_letter_footer",
+            "footer",
             formData.value.document_letter_footer_file.raw
           );
           submitData.append("logo", formData.value.logo_file.raw);
@@ -227,17 +229,68 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               });
+              formRef.value.resetFields();
+              reloadOrgData();
             })
             .catch(({ response }) => {
               loading.value = false;
               console.log(response.data.error);
             });
-          formRef.value.resetFields();
         } else {
           // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
+    const reloadOrgData = () => {
+      const orgId = currentUser.value.profile.organization_id;
+      currentUser.value.profile.organization_id && loadOrganizationData(orgId);
+    };
+    const loadPreviewImage = (payload, key) => {
+      store
+        .dispatch(Actions.ORG.FILE, payload)
+        .then((data) => {
+          const blob = new Blob([data], { type: "application/image" });
+          const objectUrl = URL.createObjectURL(blob);
+          formData.value[key] = objectUrl;
+        })
+        .catch(() => {
+          console.log("image load error");
+        });
+    };
+    const loadOrganizationData = (id) => {
+      store
+        .dispatch(Actions.ORG.SELECT, id)
+        .then((data) => {
+          loadPreviewImage(
+            {
+              type: "ORGANIZATION_FOOTER",
+              path: data.document_letter_footer,
+            },
+            "document_letter_footer"
+          );
+          loadPreviewImage(
+            {
+              type: "ORGANIZATION_HEADER",
+              path: data.document_letter_header,
+            },
+            "document_letter_header"
+          );
+          loadPreviewImage(
+            {
+              type: "ORGANIZATION_LOGO",
+              path: data.logo,
+            },
+            "logo"
+          );
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    };
+    watch(currentUser, () => {
+      reloadOrgData();
+    });
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("Organization Settings", ["Settings"]);
     });
