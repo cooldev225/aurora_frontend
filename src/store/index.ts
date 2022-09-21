@@ -31,6 +31,7 @@ import ProcedureApprovalsModule from "@/store/modules/ProcedureApprovalsModule";
 import LetterModule from "@/store/modules/LetterModule";
 import DocumentModule from "@/store/modules/DocumentModule";
 import ReportModule from "@/store/modules/ReportModule";
+import HRMModule from "@/store/modules/HRMModule";
 
 config.rawError = true;
 
@@ -66,6 +67,7 @@ const store = createStore({
     LetterModule,
     DocumentModule,
     ReportModule,
+    HRMModule,
   },
 });
 
