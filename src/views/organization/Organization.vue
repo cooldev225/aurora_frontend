@@ -206,11 +206,11 @@ export default defineComponent({
           loading.value = true;
           let submitData = new FormData();
           submitData.append(
-            "document_letter_header",
+            "header",
             formData.value.document_letter_header_file.raw
           );
           submitData.append(
-            "document_letter_footer",
+            "footer",
             formData.value.document_letter_footer_file.raw
           );
           submitData.append("logo", formData.value.logo_file.raw);
@@ -246,21 +246,10 @@ export default defineComponent({
       // }, 200);
       store
         .dispatch(Actions.ORG.SELECT, id)
-        .then(({ data }) => {
-          loading.value = false;
-          Swal.fire({
-            text: "Successfully Updated organization",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          });
+        .then((data) => {
           console.log("--------------", data);
         })
         .catch(({ response }) => {
-          loading.value = false;
           console.log(response.data.error);
         });
     };
