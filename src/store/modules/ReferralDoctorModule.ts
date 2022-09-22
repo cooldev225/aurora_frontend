@@ -47,4 +47,21 @@ export default class ReferralDoctorModule
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.REFERRAL_DOCTOR.CREATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      console.log(["Actions.REFERRAL_DOCTOR.CREATE=", item]);
+      ApiService.post("referring-doctors", item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }

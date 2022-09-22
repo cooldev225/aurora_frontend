@@ -67,9 +67,21 @@ const SettingsRoutes = [
   },
   {
     path: "/settings/referring-doctors",
-    name: "aptTypes",
+    name: "refDoctors",
     component: () =>
       import("@/views/settings/referring-doctors/RefDoctors.vue"),
+  },
+  {
+    path: "/settings/referring-doctors/create",
+    name: "createRefDoctors",
+    component: () =>
+      import("@/views/settings/referring-doctors/EditRefDoctors.vue"),
+  },
+  {
+    path: "/settings/referring-doctors/edit/:id",
+    name: "editRefDoctors",
+    component: () =>
+      import("@/views/settings/referring-doctors/EditRefDoctors.vue"),
   },
 ];
 

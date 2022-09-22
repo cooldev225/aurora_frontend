@@ -138,6 +138,7 @@ const Actions = {
 
   REFERRAL_DOCTOR: {
     LIST: "searchReferralDoctor", // (get) 'referring-doctors'
+    CREATE: "createReferralDoctor"
   },
 
   LETTER_TEMPLATE: {
