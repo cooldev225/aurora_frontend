@@ -64,6 +64,7 @@ import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "referring-doctors",
@@ -106,7 +107,23 @@ export default defineComponent({
     };
 
     const handleDelete = (id) => {
-      //
+      store
+        .dispatch(Actions.REFERRAL_DOCTOR.DELETE, id)
+        .then(() => {
+          store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+          Swal.fire({
+            text: "Successfully Deleted!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
     };
 
     onMounted(() => {

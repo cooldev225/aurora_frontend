@@ -139,6 +139,7 @@ const Actions = {
   REFERRAL_DOCTOR: {
     LIST: "searchReferralDoctor", // (get) 'referring-doctors'
     CREATE: "createReferralDoctor",
+    DELETE: "deleteReferralDoctor",
     UPDATE: "updateReferralDoctor",
   },
 

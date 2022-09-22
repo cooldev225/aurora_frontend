@@ -79,4 +79,20 @@ export default class ReferralDoctorModule
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.REFERRAL_DOCTOR.DELETE](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.delete("referring-doctors/" + id)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }
