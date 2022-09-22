@@ -60,6 +60,7 @@
 <script>
 import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -73,6 +74,7 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
+    const router = useRouter();
     const tableHeader = ref([
       {
         name: "Full Name",
@@ -100,7 +102,7 @@ export default defineComponent({
     );
 
     const handleEdit = (item) => {
-      //
+      router.push({ name: "editRefDoctors", params: { id: item.id } });
     };
 
     const handleDelete = (id) => {

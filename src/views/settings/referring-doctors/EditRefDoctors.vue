@@ -37,7 +37,7 @@
                 <el-input
                   v-model="formData.first_name"
                   type="text"
-                  placeholder="Enter the First Name"
+                  placeholder="Enter the first name"
                 />
               </InputWrapper>
             </div>
@@ -46,7 +46,7 @@
                 <el-input
                   v-model="formData.last_name"
                   type="text"
-                  placeholder="Enter the Last Name"
+                  placeholder="Enter the last name"
                 />
               </InputWrapper>
             </div>
@@ -56,7 +56,7 @@
                 <el-input
                   v-model="formData.address"
                   type="text"
-                  placeholder="Enter the Address"
+                  placeholder="Enter the address"
                 />
               </InputWrapper>
             </div>
@@ -65,7 +65,7 @@
                 <el-input
                   v-model="formData.street"
                   type="text"
-                  placeholder="Enter the Street"
+                  placeholder="Enter the street"
                 />
               </InputWrapper>
             </div>
@@ -75,7 +75,7 @@
                 <el-input
                   v-model="formData.city"
                   type="text"
-                  placeholder="Enter the City"
+                  placeholder="Enter the city"
                 />
               </InputWrapper>
             </div>
@@ -84,7 +84,7 @@
                 <el-input
                   v-model="formData.state"
                   type="text"
-                  placeholder="Enter the State"
+                  placeholder="Enter the state"
                 />
               </InputWrapper>
             </div>
@@ -94,7 +94,7 @@
                 <el-input
                   v-model="formData.country"
                   type="text"
-                  placeholder="Enter the Country"
+                  placeholder="Enter the country"
                 />
               </InputWrapper>
             </div>
@@ -103,7 +103,7 @@
                 <el-input
                   v-model="formData.postcode"
                   type="text"
-                  placeholder="Enter the Postcode"
+                  placeholder="Enter the postcode"
                 />
               </InputWrapper>
             </div>
@@ -114,7 +114,7 @@
                   v-model="formData.phone"
                   type="text"
                   v-mask="'0#-####-####'"
-                  placeholder="Enter Phone Number"
+                  placeholder="Enter phone number"
                 />
               </InputWrapper>
             </div>
@@ -123,7 +123,7 @@
                 <el-input
                   v-model="formData.fax"
                   type="text"
-                  placeholder="Enter the Fax"
+                  placeholder="Enter the fax"
                 />
               </InputWrapper>
             </div>
@@ -133,7 +133,8 @@
                 <el-input
                   v-model="formData.mobile"
                   type="text"
-                  placeholder="Enter the Mobile"
+                  v-mask="'0#-####-####'"
+                  placeholder="Enter the mobile"
                 />
               </InputWrapper>
             </div>
@@ -142,7 +143,7 @@
                 <el-input
                   v-model="formData.email"
                   type="text"
-                  placeholder="Enter Email Address"
+                  placeholder="Enter email address"
                 />
               </InputWrapper>
             </div>
@@ -152,7 +153,7 @@
                 <el-input
                   v-model="formData.practice_name"
                   type="text"
-                  placeholder="Enter Practice Name"
+                  placeholder="Enter practice name"
                 />
               </InputWrapper>
             </div>
@@ -164,7 +165,6 @@
                   :limit="2"
                   :file-list="formData.upload_file"
                   :on-change="handleChange"
-                  :on-remove="handleRemove"
                   :auto-upload="false"
                   accept="*/*"
                 >
@@ -182,7 +182,7 @@
           <!--begin::Button-->
           <router-link
             type="reset"
-            to="/settings/apt-types"
+            to="/settings/referring-doctors"
             class="btn btn-light me-3"
           >
             Cancel
@@ -383,6 +383,7 @@ export default defineComponent({
           message: "Mobile Number cannot be blank",
           trigger: "change",
         },
+        { validator: validatePhone, trigger: "blur" },
       ],
       email: [
         {
@@ -425,7 +426,6 @@ export default defineComponent({
     const handleChange = (file) => {
       formData.value.upload_file = [];
       formData.value.upload_file.push(file);
-      console.log(["file=", file]);
       formData.value.upload_file_name = file.name;
     };
 
@@ -441,14 +441,14 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          let Data = new FormData();
+          let Data = {};
           Object.keys(formData.value).forEach((key) => {
             if (key == "upload_file") {
               if (formData.value[key].length) {
-                Data.append("file", formData.value[key][0].raw);
+                Data.file = formData.value[key][0].raw;
               }
             } else {
-              Data.append(key, formData.value[key]);
+              Data[key] = formData.value[key];
             }
           });
           store
