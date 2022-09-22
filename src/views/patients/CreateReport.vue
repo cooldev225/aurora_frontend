@@ -244,6 +244,10 @@ export default defineComponent({
           store.dispatch(StoreReportActions.REPORT.PATIENT, {
             patient_id: patientList.value.id,
             reportData: reportData,
+            referringDoctor:
+              appointmentData.value.referral.referring_doctor_name,
+            patientName:
+              patientData.value.first_name + " " + patientData.value.last_name,
           });
           router.push({
             path: "/patients/" + patientList.value.id + "/documents",
