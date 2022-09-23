@@ -62,4 +62,21 @@ export default class HRMModule
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [HRMActions.SCHEDULE_TEMPLATE.UPDATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("hrm/schedule-templates", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }

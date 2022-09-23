@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 const HRMActions = {
   SCHEDULE_TEMPLATE : {
-    LIST: 'ScheduleTemplateList' //  (get) 'hrm/schedule-templates'
+    LIST: 'ScheduleTemplateList', //  (get) 'hrm/schedule-templates'
+    UPDATE: 'ScheduleTemplateUpdate',
   },
  
 };

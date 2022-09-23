@@ -38,8 +38,11 @@
               }}
             </InfoSection>
             <InfoSection heading="Default">
-              <span v-if="template.default_employee">
-                {{ template.default_employee }} </span
+              <span v-if="template.user_id">
+                {{
+                  employeeList.filter((e) => e.id == template.user_id)[0]
+                    .full_name
+                }} </span
               ><span v-else>Unassigned</span>
             </InfoSection>
           </td>
@@ -100,6 +103,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const scheduleTemplates = computed(() => store.getters.hrmScheduleList);
+    const employeeList = computed(() => store.getters.employeeList);
     const clinics = computed(() => store.getters.clinicsList);
     const clinicFilter = ref();
     onMounted(() => {
@@ -107,17 +111,18 @@ export default defineComponent({
         "Human Resource Management",
       ]);
       store.dispatch(Actions.CLINICS.LIST);
+      store.dispatch(Actions.EMPLOYEE.LIST);
     });
 
     watch(clinics, () => {
-      console.log(["clinics=", clinics.value]);
+      //console.log(["clinics=", clinics.value]);
       if (clinics.value.length) {
         clinicFilter.value = clinics.value[0].id;
       }
     });
 
     watch(clinicFilter, () => {
-      console.log(["clinicFilter=", clinicFilter.value]);
+      //console.log(["clinicFilter=", clinicFilter.value]);
       store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
         clinic_id: clinicFilter.value,
       });
@@ -132,10 +137,12 @@ export default defineComponent({
     };
 
     const handleEditTemplate = (schedule) => {
-      console.log("EDIT schedule id:" + schedule.id);
+      //console.log("EDIT schedule id:" + schedule.id);
       schedule._title = "Edit Employee Type";
       schedule._action = "edit_employee_type";
+      schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
       store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
+      console.log(["schedule= ", schedule]);
       const modal = new Modal(document.getElementById("modal_edit_schedule"));
       modal.show();
     };
@@ -149,6 +156,7 @@ export default defineComponent({
       clinics,
       clinicFilter,
       employeeRoles,
+      employeeList,
     };
   },
 });

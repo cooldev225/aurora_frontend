@@ -4,7 +4,7 @@
     id="modal_edit_schedule"
     tabindex="-1"
     aria-hidden="true"
-    ref="editAdminModalRef"
+    ref="editScheduleModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -60,21 +60,12 @@
                     />
                   </el-select>
                 </InputWrapper>
-                <InputWrapper class="col-4" label="Type" prop="type">
-                  <el-select
-                    class="w-100"
-                    v-model="formData.employee_type"
-                    filterable
-                  >
-                    <el-option
-                      v-for="item in employeeTypes"
-                      :value="item.value"
-                      :label="item.label"
-                      :key="item.value"
-                    />
-                  </el-select>
-                </InputWrapper>
-                <InputWrapper class="col-8" label="Employee" prop="user">
+                <InputWrapper
+                  class="col-12"
+                  label="Employee"
+                  prop="user"
+                  filterable
+                >
                   <el-select
                     class="w-100"
                     v-model="formData.user_id"
@@ -138,13 +129,21 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref, watchEffect, onMounted } from "vue";
+import {
+  defineComponent,
+  computed,
+  ref,
+  watchEffect,
+  watch,
+  onMounted,
+} from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import employeeTypes from "@/core/data/employee-types";
 import employeeRoles from "@/core/data/employee-roles";
+import { HRMActions } from "@/store/enums/StoreHRMEnums";
 
 export default defineComponent({
   name: "edit-admin-modal",
@@ -152,12 +151,10 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const formRef = ref(null);
-    const editAdminModalRef = ref(null);
+    const editScheduleModalRef = ref(null);
     const employeeList = computed(() => store.getters.employeeList);
     const loading = ref(false);
-    const formData = ref({
-      role_id: 0,
-    });
+    const formData = ref();
 
     watchEffect(() => {
       formData.value = store.getters.hrmScheduleSelected;
@@ -183,10 +180,12 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.ADMIN.UPDATE, formData.value)
+            .dispatch(formData.value._submit, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.ADMIN.LIST);
+              store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
+                clinic_id: formData.value.clinic_id,
+              });
               Swal.fire({
                 text: "Successfully Updated!",
                 icon: "success",
@@ -196,7 +195,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(editAdminModalRef.value);
+                hideModal(editScheduleModalRef.value);
               });
             })
             .catch(({ response }) => {
@@ -219,7 +218,7 @@ export default defineComponent({
       submit,
       formRef,
       loading,
-      editAdminModalRef,
+      editScheduleModalRef,
       employeeList,
       employeeTypes,
       employeeRoles,
