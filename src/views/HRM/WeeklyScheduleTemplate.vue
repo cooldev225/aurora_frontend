@@ -49,7 +49,7 @@
 
           <td v-for="day in weekdays" :key="day.id">
             <div
-              @click="handleEditTemplateTimeslots(template, day.value)"
+              @click="handleEditTemplateTimeslots(template, day)"
               class="d-flex flex-column rounded min-h-100px min-w-100px cursor-pointer bg-hover-light-primary bg-primary p-3"
             >
               <span class="svg-icon absolute text-primary svg-icon-4 me-1">
@@ -133,7 +133,15 @@ export default defineComponent({
     });
 
     const handleEditTemplateTimeslots = (schedule, day) => {
-      console.log("EDIT schedule id:" + schedule.id + " on " + day);
+      //console.log("EDIT schedule id:" + schedule.id + " on " + day);
+      //console.log("EDIT schedule id:" + schedule.id);
+      schedule._title = "Edit Time Slot - " + day.label;
+      schedule._action = "edit_weekly_time";
+      schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
+      schedule._day = day.id;
+      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
+      const modal = new Modal(document.getElementById("modal_edit_schedule"));
+      modal.show();
     };
 
     const handleEditTemplate = (schedule) => {
@@ -142,7 +150,6 @@ export default defineComponent({
       schedule._action = "edit_employee_type";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
       store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
-      console.log(["schedule= ", schedule]);
       const modal = new Modal(document.getElementById("modal_edit_schedule"));
       modal.show();
     };

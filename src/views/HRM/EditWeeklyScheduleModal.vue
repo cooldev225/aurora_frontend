@@ -49,7 +49,7 @@
               data-kt-scroll-wrappers="#kt_modal_edit_schedule_scroll"
               data-kt-scroll-offset="300px"
             >
-              <div class="row">
+              <div class="row" v-if="formData._action == 'edit_employee_type'">
                 <InputWrapper class="col-12" label="Role" prop="role" required>
                   <el-select v-model="formData.role_id" class="w-100">
                     <el-option
@@ -81,6 +81,40 @@
                 </InputWrapper>
               </div>
               <el-divider v-if="formData._action == 'add_schedule'" />
+              <div
+                class="border border-dashed border-primary pt-3 m-3"
+                v-for="day in weekdays"
+                :key="day.id"
+              >
+                <InputWrapper
+                  class="col-3"
+                  label="Time Slot"
+                  :prop="'timeslot-' + day.id"
+                >
+                  <div class="d-flex">
+                    <el-time-select
+                      class="w-50 pe-2"
+                      placeholder="Start time"
+                      start="07:00"
+                      step="00:15"
+                      end="18:30"
+                      format="HH:mm"
+                      v-model="hour_schedule.start_time"
+                      :prop="'starttime-' + hourIndex"
+                    />
+                    <el-time-select
+                      class="w-50 ps-2"
+                      placeholder="End time"
+                      start="07:00"
+                      step="00:15"
+                      end="18:30"
+                      format="HH:mm"
+                      v-model="hour_schedule.end_time"
+                      :prop="'endtime-' + hourIndex"
+                    />
+                  </div>
+                </InputWrapper>
+              </div>
             </div>
             <!--end::Scroll-->
           </div>
@@ -154,7 +188,11 @@ export default defineComponent({
     const editScheduleModalRef = ref(null);
     const employeeList = computed(() => store.getters.employeeList);
     const loading = ref(false);
-    const formData = ref();
+    const formData = ref({
+      clinic_id: -1,
+      role_id: -1,
+      user_id: null,
+    });
 
     watchEffect(() => {
       formData.value = store.getters.hrmScheduleSelected;
@@ -178,9 +216,12 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-
+          let submit = formData.value._submit;
+          delete formData.value["_action"];
+          delete formData.value["_title"];
+          delete formData.value["_submit"];
           store
-            .dispatch(formData.value._submit, formData.value)
+            .dispatch(submit, formData.value)
             .then(() => {
               loading.value = false;
               store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
