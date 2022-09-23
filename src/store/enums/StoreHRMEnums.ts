@@ -9,6 +9,7 @@ const HRMActions = {
 const HRMMutations = {
   SCHEDULE_TEMPLATE : {
     SET_LIST : "setScheduleTemplateList",
+    SET_SELECT : "setScheduleTemplateSelect",
   }
 
 };

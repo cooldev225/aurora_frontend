@@ -77,20 +77,26 @@
       </tbody>
     </table>
   </CardSection>
+  <EditModal></EditModal>
 </template>
 
 <script>
 import { defineComponent, onMounted, computed, watch, ref } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
-import { HRMActions } from "@/store/enums/StoreHRMEnums";
+import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import weekdays from "@/core/data/weekdays";
 import employeeRoles from "@/core/data/employee-roles";
 import moment from "moment";
+import { Modal } from "bootstrap";
+import EditModal from "@/views/HRM/EditWeeklyScheduleModal.vue";
 
 export default defineComponent({
   name: "hrm-weekly-schedule-template",
+  components: {
+    EditModal,
+  },
   setup() {
     const store = useStore();
     const scheduleTemplates = computed(() => store.getters.hrmScheduleList);
@@ -100,20 +106,25 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Weekly Schedule Template", [
         "Human Resource Management",
       ]);
-      store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
-        clinic_id: 1,
-      });
       store.dispatch(Actions.CLINICS.LIST);
     });
 
     watch(clinics, () => {
-      clinicFilter.value = clinics.value[0].id;
+      console.log(["clinics=", clinics.value]);
+      if (clinics.value.length) {
+        clinicFilter.value = clinics.value[0].id;
+      }
     });
 
     watch(clinicFilter, () => {
+      console.log(["clinicFilter=", clinicFilter.value]);
       store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
         clinic_id: clinicFilter.value,
       });
+    });
+
+    watch(scheduleTemplates, () => {
+      console.log(["scheduleTemplates=", scheduleTemplates.value]);
     });
 
     const handleEditTemplateTimeslots = (schedule, day) => {
@@ -122,6 +133,11 @@ export default defineComponent({
 
     const handleEditTemplate = (schedule) => {
       console.log("EDIT schedule id:" + schedule.id);
+      schedule._title = "Edit Employee Type";
+      schedule._action = "edit_employee_type";
+      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
+      const modal = new Modal(document.getElementById("modal_edit_schedule"));
+      modal.show();
     };
 
     return {

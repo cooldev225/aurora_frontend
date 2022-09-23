@@ -10,6 +10,7 @@ export interface IHRMWeeklyScheduleTemplate {
 
 export interface IHRMWeeklyScheduleTemplates {
   hrmScheduleData: Array<IHRMWeeklyScheduleTemplate>;
+  hrmScheduleSelectData: IHRMWeeklyScheduleTemplate;
 }
 
 @Module
@@ -18,14 +19,24 @@ export default class HRMModule
   implements IHRMWeeklyScheduleTemplates
 {
   hrmScheduleData = [] as Array<IHRMWeeklyScheduleTemplate>;
+  hrmScheduleSelectData = {} as IHRMWeeklyScheduleTemplate;
 
   get hrmScheduleList(): Array<IHRMWeeklyScheduleTemplate> {
     return this.hrmScheduleData;
   }
 
+  get hrmScheduleSelected(): IHRMWeeklyScheduleTemplate {
+    return this.hrmScheduleSelectData;
+  }
+
   @Mutation
   [HRMMutations.SCHEDULE_TEMPLATE.SET_LIST](data) {
     this.hrmScheduleData = data;
+  }
+
+  @Mutation
+  [HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT](data) {
+    this.hrmScheduleSelectData = data;
   }
 
   @Action
