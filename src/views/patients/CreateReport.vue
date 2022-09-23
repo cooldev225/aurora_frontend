@@ -248,6 +248,9 @@ export default defineComponent({
               appointmentData.value.referral.referring_doctor_name,
             patientName:
               patientData.value.first_name + " " + patientData.value.last_name,
+            appointmentId: appointmentData.value.id,
+            specialistId: appointmentData.value.specialist_id,
+            documentName: patientList.value.id,
           });
           router.push({
             path: "/patients/" + patientList.value.id + "/documents",
