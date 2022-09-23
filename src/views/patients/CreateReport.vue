@@ -250,7 +250,7 @@ export default defineComponent({
               patientData.value.first_name + " " + patientData.value.last_name,
             appointmentId: appointmentData.value.id,
             specialistId: appointmentData.value.specialist_id,
-            documentName: patientList.value.id,
+            documentName: appointmentData.value.appointment_type_name,
           });
           router.push({
             path: "/patients/" + patientList.value.id + "/documents",
