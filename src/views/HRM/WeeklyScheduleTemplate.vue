@@ -14,7 +14,7 @@
     <table class="w-100">
       <thead>
         <th>Employee Type</th>
-        <th v-for="day in weekdays" :key="day.id">
+        <th v-for="day in weekdays" :key="day.value">
           {{ day.label }}
         </th>
       </thead>
@@ -129,16 +129,15 @@ export default defineComponent({
     });
 
     watch(scheduleTemplates, () => {
-      console.log(["scheduleTemplates=", scheduleTemplates.value]);
+      //console.log(["scheduleTemplates=", scheduleTemplates.value]);
     });
 
     const handleEditTemplateTimeslots = (schedule, day) => {
       //console.log("EDIT schedule id:" + schedule.id + " on " + day);
-      //console.log("EDIT schedule id:" + schedule.id);
       schedule._title = "Edit Time Slot - " + day.label;
       schedule._action = "edit_weekly_time";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
-      schedule._day = day.id;
+      schedule._day = day.value;
       store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
       const modal = new Modal(document.getElementById("modal_edit_schedule"));
       modal.show();

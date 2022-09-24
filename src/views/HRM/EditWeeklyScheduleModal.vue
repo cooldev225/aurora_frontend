@@ -13,7 +13,7 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_edit_schedule_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">{{ formData._title }}</h2>
+          <h2 class="fw-bolder">{{ schedule._title }}</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -49,7 +49,7 @@
               data-kt-scroll-wrappers="#kt_modal_edit_schedule_scroll"
               data-kt-scroll-offset="300px"
             >
-              <div class="row" v-if="formData._action == 'edit_employee_type'">
+              <div class="row" v-if="schedule._action == 'edit_employee_type'">
                 <InputWrapper class="col-12" label="Role" prop="role" required>
                   <el-select v-model="formData.role_id" class="w-100">
                     <el-option
@@ -80,40 +80,84 @@
                   </el-select>
                 </InputWrapper>
               </div>
-              <el-divider v-if="formData._action == 'add_schedule'" />
-              <div
-                class="border border-dashed border-primary pt-3 m-3"
-                v-for="day in weekdays"
-                :key="day.id"
-              >
-                <InputWrapper
-                  class="col-3"
-                  label="Time Slot"
-                  :prop="'timeslot-' + day.id"
+              <el-divider v-if="schedule._action == 'add_schedule'" />
+              <div v-for="(day, index) in formData.timeslots" :key="index">
+                <div
+                  class="border border-dashed border-primary pt-3 m-3"
+                  v-if="
+                    schedule._action == 'edit_weekly_time' &&
+                    schedule._day == day.value
+                  "
                 >
-                  <div class="d-flex">
-                    <el-time-select
-                      class="w-50 pe-2"
-                      placeholder="Start time"
-                      start="07:00"
-                      step="00:15"
-                      end="18:30"
-                      format="HH:mm"
-                      v-model="hour_schedule.start_time"
-                      :prop="'starttime-' + hourIndex"
-                    />
-                    <el-time-select
-                      class="w-50 ps-2"
-                      placeholder="End time"
-                      start="07:00"
-                      step="00:15"
-                      end="18:30"
-                      format="HH:mm"
-                      v-model="hour_schedule.end_time"
-                      :prop="'endtime-' + hourIndex"
-                    />
+                  <div class="card d-flex flex-row">
+                    <InputWrapper
+                      class="col-3"
+                      :label="day.label"
+                      :prop="'category-' + index"
+                    >
+                      <el-select
+                        class="w-100"
+                        type="text"
+                        v-model="day.category"
+                        :prop="'category-select-' + index"
+                      >
+                        <el-option
+                          v-for="item in schCategories"
+                          :value="item"
+                          :label="item"
+                          :key="item"
+                        />
+                      </el-select>
+                    </InputWrapper>
+                    <InputWrapper
+                      class="col-3"
+                      label="Restriction"
+                      :prop="'restriction-' + index"
+                    >
+                      <el-select
+                        class="w-100"
+                        type="text"
+                        v-model="day.restriction"
+                        :prop="'restriction-select-' + index"
+                      >
+                        <el-option
+                          v-for="item in restrictionsTypes"
+                          :value="item"
+                          :label="item"
+                          :key="item"
+                        />
+                      </el-select>
+                    </InputWrapper>
+                    <InputWrapper
+                      class="col-6"
+                      label="Time Slot"
+                      :prop="'timeslot-' + index"
+                    >
+                      <div class="d-flex">
+                        <el-time-select
+                          class="w-50 pe-2"
+                          placeholder="Start time"
+                          start="07:00"
+                          step="00:15"
+                          end="18:30"
+                          format="HH:mm"
+                          v-model="day.start_time"
+                          :prop="'starttime-' + index"
+                        />
+                        <el-time-select
+                          class="w-50 ps-2"
+                          placeholder="End time"
+                          start="07:00"
+                          step="00:15"
+                          end="18:30"
+                          format="HH:mm"
+                          v-model="day.end_time"
+                          :prop="'endtime-' + index"
+                        />
+                      </div>
+                    </InputWrapper>
                   </div>
-                </InputWrapper>
+                </div>
               </div>
             </div>
             <!--end::Scroll-->
@@ -163,14 +207,7 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  computed,
-  ref,
-  watchEffect,
-  watch,
-  onMounted,
-} from "vue";
+import { defineComponent, computed, ref, watch, onMounted } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -178,6 +215,9 @@ import { Actions } from "@/store/enums/StoreEnums";
 import employeeTypes from "@/core/data/employee-types";
 import employeeRoles from "@/core/data/employee-roles";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
+import weekdays from "@/core/data/weekdays";
+import restrictionsTypes from "@/core/data/apt-restriction";
+import schCategories from "@/core/data/schedule-category";
 
 export default defineComponent({
   name: "edit-admin-modal",
@@ -187,15 +227,30 @@ export default defineComponent({
     const formRef = ref(null);
     const editScheduleModalRef = ref(null);
     const employeeList = computed(() => store.getters.employeeList);
+    const schedule = computed(() => store.getters.hrmScheduleSelected);
     const loading = ref(false);
     const formData = ref({
       clinic_id: -1,
       role_id: -1,
       user_id: null,
+      timeslots: weekdays,
     });
 
-    watchEffect(() => {
-      formData.value = store.getters.hrmScheduleSelected;
+    watch(schedule, () => {
+      formData.value.id = schedule.value.id;
+      formData.value.clinic_id = schedule.value.clinic_id;
+      formData.value.role_id = schedule.value.role_id;
+      formData.value.user_id = schedule.value.user_id;
+      formData.value.timeslots = weekdays;
+      formData.value.timeslots.map((d, i) => {
+        let f = schedule.value.timeslots.filter((t) => t.week_day == d.value);
+        if (f.length) {
+          f[0].value = formData.value.timeslots[i].value;
+          f[0].label = formData.value.timeslots[i].label;
+          formData.value.timeslots[i] = f[0];
+        }
+      });
+      console.log(["formData.value after watch=", formData.value]);
     });
 
     const rules = ref({
@@ -216,12 +271,42 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          let submit = formData.value._submit;
-          delete formData.value["_action"];
-          delete formData.value["_title"];
-          delete formData.value["_submit"];
+          let timeslots = [];
+          for (var i = 0; i < formData.value.timeslots.length; i++) {
+            if (
+              formData.value.timeslots[i].category == null ||
+              formData.value.timeslots[i].restriction == null ||
+              formData.value.timeslots[i].start_time == null ||
+              formData.value.timeslots[i].end_time == null
+            ) {
+              if (
+                schedule.value._action == "edit_weekly_time" &&
+                formData.value.timeslots[i].value == schedule.value._day
+              ) {
+                //message alert
+                loading.value = false;
+                return;
+              }
+            } else {
+              let timeslot = {
+                week_day: formData.value.timeslots[i].value,
+                category: formData.value.timeslots[i].category,
+                restriction: formData.value.timeslots[i].restriction,
+                start_time: formData.value.timeslots[i].start_time,
+                end_time: formData.value.timeslots[i].end_time,
+              };
+              if (formData.value.timeslots[i].id) {
+                timeslot.id = formData.value.timeslots[i].id;
+                timeslot.hrm_weekly_schedule_template_id =
+                  formData.value.timeslots[i].hrm_weekly_schedule_template_id;
+              }
+              timeslots.push(timeslot);
+            }
+          }
+          formData.value.timeslots = timeslots;
+          console.log(["formData.value before submit=", formData.value]);
           store
-            .dispatch(submit, formData.value)
+            .dispatch(schedule.value._submit, formData.value)
             .then(() => {
               loading.value = false;
               store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
@@ -263,6 +348,9 @@ export default defineComponent({
       employeeList,
       employeeTypes,
       employeeRoles,
+      schedule,
+      restrictionsTypes,
+      schCategories,
     };
   },
 });
