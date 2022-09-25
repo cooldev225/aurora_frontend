@@ -144,6 +144,7 @@ const Actions = {
 
   LETTER_TEMPLATE: {
     LIST: "listLetterTemplate",
+    CREATE: "createLetterTemplate",
   },
 
   LETTER: {
@@ -239,6 +240,7 @@ const Mutations = {
 
   SET_LETTER_TEMPLATE: {
     LIST: "setLetterTemplate",
+    SELECT: "setLetterTemplateSelect",
   },
 
 

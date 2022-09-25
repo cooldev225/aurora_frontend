@@ -30,7 +30,6 @@
         <template v-slot:cell-body="{ row: item }">
           {{ item.body }}
         </template>
-
         <template v-slot:cell-action="{ row: item }">
           <button
             @click="handleEdit(item)"
@@ -53,7 +52,7 @@
       </Datatable>
     </div>
   </div>
-  <CreateLetterTemplate />
+  <EditLetterTemplate />
 </template>
 
 <script>
@@ -61,7 +60,7 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateLetterTemplate from "@/views/settings/report-templates/CreateReportTemplate.vue";
+import EditLetterTemplate from "@/views/settings/letter-templates/EditLetterTemplate.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 
@@ -70,7 +69,7 @@ export default defineComponent({
 
   components: {
     Datatable,
-    CreateLetterTemplate,
+    EditLetterTemplate,
   },
 
   setup() {
@@ -83,7 +82,7 @@ export default defineComponent({
       },
       {
         name: "Body",
-        key: "bady",
+        key: "body",
         sortable: true,
       },
       {
@@ -97,6 +96,22 @@ export default defineComponent({
 
     const handleAdd = () => {
       //add templates
+      const new_item = {
+        id: 0,
+        heading: "",
+        body: "",
+        _title: "Create Letter Template",
+        _action: "add",
+        _button: "Save",
+        _submit: Actions.LETTER_TEMPLATE.CREATE,
+        _submit_text: "Successfully Created!",
+      };
+
+      store.commit(Mutations.SET_LETTER_TEMPLATE.SELECT, new_item);
+      const modal = new Modal(
+        document.getElementById("modal_edit_letter_template")
+      );
+      modal.show();
     };
 
     const handleEdit = (item) => {
