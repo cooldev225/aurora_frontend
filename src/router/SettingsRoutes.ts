@@ -65,6 +65,12 @@ const SettingsRoutes = [
     component: () =>
       import("@/views/settings/anesthetic-questions/AnestheticQuestions.vue"),
   },
+  {
+    path: "/settings/letter-templates",
+    name: "letterTypes",
+    component: () =>
+      import("@/views/settings/letter-templates/LetterTemplates.vue"),
+  },
 ];
 
 export default SettingsRoutes;
