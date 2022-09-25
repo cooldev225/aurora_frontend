@@ -49,7 +49,7 @@
               data-kt-scroll-wrappers="#kt_modal_edit_schedule_scroll"
               data-kt-scroll-offset="300px"
             >
-              <div class="row" v-if="schedule._action == 'edit_employee_type'">
+              <div class="row" v-if="schedule._action != 'edit_weekly_time'">
                 <InputWrapper class="col-12" label="Role" prop="role" required>
                   <el-select v-model="formData.role_id" class="w-100">
                     <el-option
@@ -81,81 +81,84 @@
                 </InputWrapper>
               </div>
               <el-divider v-if="schedule._action == 'add_schedule'" />
-              <div v-for="(day, index) in formData.timeslots" :key="index">
-                <div
-                  class="border border-dashed border-primary pt-3 m-3"
-                  v-if="
-                    schedule._action == 'edit_weekly_time' &&
-                    schedule._day == day.value
-                  "
-                >
-                  <div class="card d-flex flex-row">
-                    <InputWrapper
-                      class="col-3"
-                      :label="day.label"
-                      :prop="'category-' + index"
-                    >
-                      <el-select
-                        class="w-100"
-                        type="text"
-                        v-model="day.category"
-                        :prop="'category-select-' + index"
+              <div v-if="schedule._action != 'edit_employee_type'">
+                <div v-for="(day, index) in formData.timeslots" :key="index">
+                  <div
+                    class="border border-dashed border-primary pt-3 m-3"
+                    v-if="
+                      (schedule._action == 'edit_weekly_time' &&
+                        schedule._day == day.value) ||
+                      schedule._action == 'add_schedule'
+                    "
+                  >
+                    <div class="card d-flex flex-row">
+                      <InputWrapper
+                        class="col-3"
+                        :label="day.label"
+                        :prop="'category-' + index"
                       >
-                        <el-option
-                          v-for="item in schCategories"
-                          :value="item"
-                          :label="item"
-                          :key="item"
-                        />
-                      </el-select>
-                    </InputWrapper>
-                    <InputWrapper
-                      class="col-3"
-                      label="Restriction"
-                      :prop="'restriction-' + index"
-                    >
-                      <el-select
-                        class="w-100"
-                        type="text"
-                        v-model="day.restriction"
-                        :prop="'restriction-select-' + index"
+                        <el-select
+                          class="w-100"
+                          type="text"
+                          v-model="day.category"
+                          :prop="'category-select-' + index"
+                        >
+                          <el-option
+                            v-for="item in schCategories"
+                            :value="item"
+                            :label="item"
+                            :key="item"
+                          />
+                        </el-select>
+                      </InputWrapper>
+                      <InputWrapper
+                        class="col-3"
+                        label="Restriction"
+                        :prop="'restriction-' + index"
                       >
-                        <el-option
-                          v-for="item in restrictionsTypes"
-                          :value="item"
-                          :label="item"
-                          :key="item"
-                        />
-                      </el-select>
-                    </InputWrapper>
-                    <InputWrapper
-                      class="col-6"
-                      label="Time Slot"
-                      :prop="'timeslot-' + index"
-                    >
-                      <div class="d-flex">
-                        <el-time-select
-                          class="w-50 pe-2"
-                          placeholder="Start time"
-                          start="07:00"
-                          step="00:15"
-                          end="18:30"
-                          format="HH:mm"
-                          v-model="day.start_time"
-                          :prop="'starttime-' + index"
-                        />
-                        <el-time-select
-                          class="w-50 ps-2"
-                          placeholder="End time"
-                          start="07:00"
-                          step="00:15"
-                          end="18:30"
-                          format="HH:mm"
-                          v-model="day.end_time"
-                          :prop="'endtime-' + index"
-                        />
-                      </div>
-                    </InputWrapper>
+                        <el-select
+                          class="w-100"
+                          type="text"
+                          v-model="day.restriction"
+                          :prop="'restriction-select-' + index"
+                        >
+                          <el-option
+                            v-for="item in restrictionsTypes"
+                            :value="item"
+                            :label="item"
+                            :key="item"
+                          />
+                        </el-select>
+                      </InputWrapper>
+                      <InputWrapper
+                        class="col-6"
+                        label="Time Slot"
+                        :prop="'timeslot-' + index"
+                      >
+                        <div class="d-flex">
+                          <el-time-select
+                            class="w-50 pe-2"
+                            placeholder="Start time"
+                            start="07:00"
+                            step="00:15"
+                            end="18:30"
+                            format="HH:mm"
+                            v-model="day.start_time"
+                            :prop="'starttime-' + index"
+                          />
+                          <el-time-select
+                            class="w-50 ps-2"
+                            placeholder="End time"
+                            start="07:00"
+                            step="00:15"
+                            end="18:30"
+                            format="HH:mm"
+                            v-model="day.end_time"
+                            :prop="'endtime-' + index"
+                          />
+                        </div>
+                      </InputWrapper>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -218,6 +221,7 @@ import { HRMActions } from "@/store/enums/StoreHRMEnums";
 import weekdays from "@/core/data/weekdays";
 import restrictionsTypes from "@/core/data/apt-restriction";
 import schCategories from "@/core/data/schedule-category";
+import { ElMessage } from "element-plus";
 
 export default defineComponent({
   name: "edit-admin-modal",
@@ -250,14 +254,14 @@ export default defineComponent({
           formData.value.timeslots[i] = f[0];
         }
       });
-      console.log(["formData.value after watch=", formData.value]);
+      //console.log(["formData.value after watch=", formData.value]);
     });
 
     const rules = ref({
-      first_name: [
+      role_id: [
         {
           required: true,
-          message: "First Name cannot be blank",
+          message: "Role cannot be blank",
           trigger: "change",
         },
       ],
@@ -283,7 +287,7 @@ export default defineComponent({
                 schedule.value._action == "edit_weekly_time" &&
                 formData.value.timeslots[i].value == schedule.value._day
               ) {
-                //message alert
+                ElMessage.error("Please complete the fields.");
                 loading.value = false;
                 return;
               }
@@ -304,7 +308,7 @@ export default defineComponent({
             }
           }
           formData.value.timeslots = timeslots;
-          console.log(["formData.value before submit=", formData.value]);
+          //console.log(["formData.value before submit=", formData.value]);
           store
             .dispatch(schedule.value._submit, formData.value)
             .then(() => {

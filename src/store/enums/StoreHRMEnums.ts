@@ -2,6 +2,7 @@
 const HRMActions = {
   SCHEDULE_TEMPLATE : {
     LIST: 'ScheduleTemplateList', //  (get) 'hrm/schedule-templates'
+    CREATE: 'ScheduleTemplateCreate',
     UPDATE: 'ScheduleTemplateUpdate',
   },
  

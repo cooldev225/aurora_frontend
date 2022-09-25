@@ -64,6 +64,22 @@ export default class HRMModule
   }
 
   @Action
+  [HRMActions.SCHEDULE_TEMPLATE.CREATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("hrm/schedule-templates", item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
   [HRMActions.SCHEDULE_TEMPLATE.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();

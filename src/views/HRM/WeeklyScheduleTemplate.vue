@@ -73,6 +73,7 @@
               :heading="'Add new Schedule'"
               :iconPath="'media/icons/duotune/abstract/abs011.svg'"
               :color="'success'"
+              @click="handleAddTemplate()"
               iconSize="3"
             />
           </td>
@@ -153,12 +154,28 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleAddTemplate = () => {
+      let schedule = {
+        clinic_id: clinicFilter.value,
+        role_id: "",
+        user_id: null,
+        timeslots: [],
+      };
+      schedule._title = "Add Schedule";
+      schedule._action = "add_schedule";
+      schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
+      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
+      const modal = new Modal(document.getElementById("modal_edit_schedule"));
+      modal.show();
+    };
+
     return {
       scheduleTemplates,
       weekdays,
       moment,
       handleEditTemplateTimeslots,
       handleEditTemplate,
+      handleAddTemplate,
       clinics,
       clinicFilter,
       employeeRoles,
