@@ -12,6 +12,7 @@
       <!--begin::Copyright-->
       <div class="text-dark order-2 order-md-1">
         <span class="text-muted fw-bold me-1">Powered by Aurora Software</span>
+        <img alt="Logo" src="aurora-sml-logo.png" class="h-20px logo" />
       </div>
       <!--end::Copyright-->
     </div>

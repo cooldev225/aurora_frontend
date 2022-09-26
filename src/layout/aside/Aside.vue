@@ -15,7 +15,19 @@
     <div class="aside-logo py-8" id="kt_aside_logo">
       <!--begin::Logo-->
       <router-link to="/dashboard" class="d-flex align-items-center">
-        <img alt="Logo" src="aurora-sml-logo.png" class="h-75px logo" />
+        <!-- <img alt="Logo" src="aurora-sml-logo.png" class="h-75px logo" /> -->
+        <img
+          alt="Logo"
+          :src="
+            orgData?.logo
+              ? `http://localhost:8000/file/public/logo/` +
+                orgData.id +
+                `/` +
+                orgData.logo
+              : `aurora-sml-logo.png`
+          "
+          class="h-75px w-75px logo"
+        />
       </router-link>
       <!--end::Logo-->
     </div>
@@ -39,10 +51,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import KTMenu from "@/layout/aside/Menu.vue";
 import { asideTheme } from "@/core/helpers/config";
+import { useStore } from "vuex";
+import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "KTAside",
@@ -55,10 +69,29 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
+    const store = useStore();
+    const currentUser = computed(() => store.getters.currentUser);
 
+    const orgData = ref(null);
+
+    const loadOrganizationData = (id) => {
+      store.dispatch(Actions.ORG.SELECT, id).then((data) => {
+        orgData.value = data;
+      });
+    };
+
+    const reloadOrgData = () => {
+      const orgId = currentUser.value.profile.organization_id;
+      currentUser.value.profile.organization_id && loadOrganizationData(orgId);
+    };
+
+    watch(currentUser, () => {
+      reloadOrgData();
+    });
     return {
       asideTheme,
       t,
+      orgData,
     };
   },
 });
