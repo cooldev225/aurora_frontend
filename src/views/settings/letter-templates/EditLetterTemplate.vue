@@ -53,12 +53,24 @@
               <div class="report-template-wrapper">
                 <div class="fv-row col-12 mb-5">
                   <!--begin::Input-->
-                  <el-form-item prop="heading">
+                  <el-form-item prop="title">
                     <el-input
-                      v-model="formData.heading"
+                      v-model="formData.title"
                       class="w-100"
                       type="text"
-                      placeholder="Letter Template Heading"
+                      placeholder="Letter Template Title"
+                    />
+                  </el-form-item>
+                  <!--end::Input-->
+                </div>
+                <div class="fv-row col-12 mb-5">
+                  <!--begin::Input-->
+                  <el-form-item prop="subject">
+                    <el-input
+                      v-model="formData.subject"
+                      class="w-100"
+                      type="text"
+                      placeholder="Letter Template Subject"
                     />
                   </el-form-item>
                   <!--end::Input-->
@@ -66,13 +78,7 @@
                 <div class="fv-row col-12 mb-5">
                   <!--begin::Input-->
                   <el-form-item prop="body">
-                    <el-input
-                      v-model="formData.body"
-                      class="w-100"
-                      :rows="3"
-                      type="textarea"
-                      placeholder="Letter Template Body"
-                    />
+                    <ckeditor :editor="ClassicEditor" v-model="formData.body" />
                   </el-form-item>
                   <!--end::Input-->
                 </div>
@@ -127,10 +133,14 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
+import CKEditor from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default defineComponent({
   name: "edit-letter-template-modal",
-  components: {},
+  components: {
+    ckeditor: CKEditor.component,
+  },
   setup() {
     const store = useStore();
     const formRef = ref(null);
@@ -138,15 +148,23 @@ export default defineComponent({
     const loading = ref(false);
     const formData = ref({
       id: 0,
-      heading: "",
+      title: "",
+      subject: "",
       body: "",
     });
 
     const rules = ref({
-      heading: [
+      title: [
         {
           required: true,
-          message: "heading cannot be blank",
+          message: "title cannot be blank",
+          trigger: "change",
+        },
+      ],
+      subject: [
+        {
+          required: true,
+          message: "subject cannot be blank",
           trigger: "change",
         },
       ],
@@ -170,7 +188,8 @@ export default defineComponent({
           store
             .dispatch(formData.value._submit, {
               id: formData.value.id,
-              heading: formData.value.heading,
+              title: formData.value.title,
+              subject: formData.value.subject,
               body: formData.value.body,
             })
             .then(() => {
@@ -208,6 +227,7 @@ export default defineComponent({
       loading,
       editLetterTemplateModalRef,
       submit,
+      ClassicEditor,
     };
   },
 });

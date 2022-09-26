@@ -24,8 +24,11 @@
         :rows-per-page="20"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-heading="{ row: item }">
-          {{ item.heading }}
+        <template v-slot:cell-title="{ row: item }">
+          {{ item.title }}
+        </template>
+        <template v-slot:cell-subject="{ row: item }">
+          {{ item.subject }}
         </template>
         <template v-slot:cell-body="{ row: item }">
           {{ item.body }}
@@ -77,8 +80,13 @@ export default defineComponent({
     const store = useStore();
     const tableHeader = ref([
       {
-        name: "Heading",
-        key: "heading",
+        name: "Title",
+        key: "title",
+        sortable: true,
+      },
+      {
+        name: "Subject",
+        key: "subject",
         sortable: true,
       },
       {
@@ -99,7 +107,8 @@ export default defineComponent({
       //add templates
       const new_item = {
         id: 0,
-        heading: "",
+        title: "",
+        subject: "",
         body: "",
         _title: "Create Letter Template",
         _button: "Save",
