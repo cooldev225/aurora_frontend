@@ -63,6 +63,7 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import EditLetterTemplate from "@/views/settings/letter-templates/EditLetterTemplate.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
   name: "letter-templates",
@@ -101,7 +102,6 @@ export default defineComponent({
         heading: "",
         body: "",
         _title: "Create Letter Template",
-        _action: "add",
         _button: "Save",
         _submit: Actions.LETTER_TEMPLATE.CREATE,
         _submit_text: "Successfully Created!",
@@ -116,10 +116,37 @@ export default defineComponent({
 
     const handleEdit = (item) => {
       //edit templates
+      item._title = "Edit Letter Template";
+      item._button = "Update";
+      item._submit = Actions.LETTER_TEMPLATE.UPDATE;
+      item._submit_text = "Successfully Updated!";
+
+      store.commit(Mutations.SET_LETTER_TEMPLATE.SELECT, item);
+      const modal = new Modal(
+        document.getElementById("modal_edit_letter_template")
+      );
+      modal.show();
     };
 
     const handleDelete = (id) => {
       //delete templates
+      store
+        .dispatch(Actions.LETTER_TEMPLATE.DELETE, id)
+        .then(() => {
+          store.dispatch(Actions.LETTER_TEMPLATE.LIST);
+          Swal.fire({
+            text: "Successfully Deleted!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
     };
 
     onMounted(() => {

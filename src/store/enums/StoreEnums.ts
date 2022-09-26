@@ -145,6 +145,8 @@ const Actions = {
   LETTER_TEMPLATE: {
     LIST: "listLetterTemplate",
     CREATE: "createLetterTemplate",
+    UPDATE: "updateLetterTemplate",
+    DELETE: "deleteLetterTemplate",
   },
 
   LETTER: {

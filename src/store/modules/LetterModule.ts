@@ -78,6 +78,39 @@ export default class LetterModule extends VuexModule implements ILetterInfo {
   }
 
   @Action
+  [Actions.LETTER_TEMPLATE.UPDATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("letter-templates", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.LETTER_TEMPLATE.DELETE](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.delete("letter-templates/" + id)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
   [Actions.LETTER.CREATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
