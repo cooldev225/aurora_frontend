@@ -49,6 +49,12 @@
       >
         Pre-admission Consent
       </router-link>
+      <router-link
+        to="/settings/letter-templates"
+        class="btn btn-light-primary m-2"
+      >
+        Letter Templates
+      </router-link>
     </div>
   </div>
   <div class="d-flex flex-sm-row gap-3 mt-6">
