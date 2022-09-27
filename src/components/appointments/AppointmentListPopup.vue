@@ -4,86 +4,92 @@
     modalId="available_time_slot_popup"
     modalRef="AppointmentListPopupModalRef"
   >
-    <div class="search-params d-flex flex-wrap gap-4">
-      <h4 class="text-nowrap" style="color: var(--el-color-info)">
-        Clinic:
-        <span class="text-primary">{{ clinic_name }}</span>
-      </h4>
-      <h4 class="text-nowrap" style="color: var(--el-color-info)">
-        Specialist:
-        <span class="text-primary">{{ specialist_name }}</span>
-      </h4>
-      <h4 class="text-nowrap" style="color: var(--el-color-info)">
-        Time Requirement:
-        <span class="text-primary">{{ time_requirement }}</span>
-      </h4>
-      <h4 class="text-nowrap" style="color: var(--el-color-info)">
-        Time Frame: <span class="text-primary">{{ time_frame }}</span>
-      </h4>
-      <h4 class="text-nowrap" style="color: var(--el-color-info)">
-        Appointment Type:
-        <span class="text-primary">{{ appointment_type }}</span>
-      </h4>
-    </div>
-    <div class="scroll h-500px">
-      <template v-if="availableSlotsByDate">
-        <div class="row justify-content-center">
-          <div class="col" v-for="date in availableSlotsByDate" :key="date">
-            <h3
-              class="py-3 position-fixed border-bottom border-bottom-dashed border-bottom-primary"
-              style="
-                background: white;
-                border-bottom: solid black 2px;
-                padding-right: 50px;
-                text-align: center;
-              "
-            >
-              {{ date.day }} <br />{{ moment(date.date).format("DD/MM") }}
-            </h3>
-            <div class="mt-20">
-              <template
-                v-for="time_slot in date.available_timeslots"
-                :key="time_slot"
-              >
-                <div
-                  class="mt-3 justify-content-center align-items-center mw-250 text-wrap"
-                >
-                  <span
-                    class="w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
-                    style="color: var(--el-color-primary)"
-                    data-kt-drawer-toggle="true"
-                    data-kt-drawer-target="#kt_drawer_chat"
-                    @click="
-                      handleAddApt(
-                        time_slot.specialist_ids,
-                        date.date,
-                        time_slot.start_time
-                      )
-                    "
-                  >
-                    {{ time_slot.time }}
-                  </span>
-                  <p
-                    class="mb-1 small"
-                    style="color: var(--el-text-color-secondary)"
-                    v-if="clinic_name == 'Any'"
-                  >
-                    {{ time_slot.clinic_name }}
-                  </p>
-                  <p
-                    class="small"
-                    style="color: var(--el-color-warning)"
-                    v-if="specialist_name == 'Any'"
-                  >
-                    {{ time_slot.specialist_name }}
-                  </p>
-                </div>
-              </template>
-            </div>
-          </div>
+    <div class="d-flex flex-row">
+      <div></div>
+      <div class="flex">
+        <div class="search-params d-flex flex-wrap gap-4">
+          <h4 class="text-nowrap" style="color: var(--el-color-info)">
+            Clinic:
+            <span class="text-primary">{{ clinic_name }}</span>
+          </h4>
+          <h4 class="text-nowrap" style="color: var(--el-color-info)">
+            Specialist:
+            <span class="text-primary">{{ specialist_name }}</span>
+          </h4>
+          <h4 class="text-nowrap" style="color: var(--el-color-info)">
+            Time Requirement:
+            <span class="text-primary">{{ time_requirement }}</span>
+          </h4>
+          <h4 class="text-nowrap" style="color: var(--el-color-info)">
+            Time Frame: <span class="text-primary">{{ time_frame }}</span>
+          </h4>
+          <h4 class="text-nowrap" style="color: var(--el-color-info)">
+            Appointment Type:
+            <span class="text-primary">{{ appointment_type }}</span>
+          </h4>
         </div>
-      </template>
-      <p v-else>No Next available Appointments.</p>
+        <div class="scroll h-500px">
+          <template v-if="availableSlotsByDate">
+            <div class="row justify-content-center">
+              <div class="col" v-for="date in availableSlotsByDate" :key="date">
+                <h3
+                  class="py-3 position-fixed border-bottom border-bottom-dashed border-bottom-primary"
+                  style="
+                    background: white;
+                    border-bottom: solid black 2px;
+                    padding-right: 50px;
+                    text-align: center;
+                  "
+                >
+                  {{ date.day }} <br />{{ moment(date.date).format("DD/MM") }}
+                </h3>
+                <div class="mt-20">
+                  <template
+                    v-for="time_slot in date.available_timeslots"
+                    :key="time_slot"
+                  >
+                    <div
+                      class="mt-3 justify-content-center align-items-center mw-250 text-wrap"
+                    >
+                      <span
+                        class="w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
+                        style="color: var(--el-color-primary)"
+                        data-kt-drawer-toggle="true"
+                        data-kt-drawer-target="#kt_drawer_chat"
+                        @click="
+                          handleAddApt(
+                            time_slot.specialist_ids,
+                            date.date,
+                            time_slot.start_time
+                          )
+                        "
+                      >
+                        {{ time_slot.time }}
+                      </span>
+                      <p
+                        class="mb-1 small"
+                        style="color: var(--el-text-color-secondary)"
+                        v-if="clinic_name == 'Any'"
+                      >
+                        {{ time_slot.clinic_name }}
+                      </p>
+                      <p
+                        class="small"
+                        style="color: var(--el-color-warning)"
+                        v-if="specialist_name == 'Any'"
+                      >
+                        {{ time_slot.specialist_name }}
+                      </p>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </template>
+          <p v-else>No Next available Appointments.</p>
+        </div>
+      </div>
+      <div></div>
     </div>
   </ModalWrapper>
 </template>
