@@ -10,7 +10,7 @@
           class="text-nowrap btn btn-light-primary ms-auto"
         >
           <span class="svg-icon svg-icon-2">
-            <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
+            <InlineSVG icon="plus" />
           </span>
           Add
         </router-link>

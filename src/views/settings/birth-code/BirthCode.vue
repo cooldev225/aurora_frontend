@@ -48,7 +48,7 @@
             data-bs-target="#modal-create-birth-code"
           >
             <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
+              <InlineSVG icon="plus" />
             </span>
             Add
           </button>

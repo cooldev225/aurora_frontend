@@ -20,7 +20,7 @@
             data-bs-target="#modal_add_org_admin"
           >
             <span class="svg-icon svg-icon-2">
-              <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
+              <InlineSVG icon="plus" />
             </span>
             Add
           </button>

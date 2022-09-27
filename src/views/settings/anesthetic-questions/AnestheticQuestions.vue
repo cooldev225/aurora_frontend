@@ -25,7 +25,7 @@
           data-bs-target="#modal_add_anesthetic_question"
         >
           <span class="svg-icon svg-icon-2">
-            <inline-svg src="media/icons/duotune/arrows/arr075.svg" />
+            <InlineSVG icon="plus" />
           </span>
           Add
         </button>
