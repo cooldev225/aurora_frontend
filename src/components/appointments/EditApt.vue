@@ -26,7 +26,7 @@
             data-bs-dismiss="modal"
           >
             <span class="svg-icon svg-icon-3 my-auto">
-              <inline-svg src="media/icons/duotune/arrows/arr061.svg" />
+              <InlineSVG icon="cross" />
             </span>
             Cancel
           </button>

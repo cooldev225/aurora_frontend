@@ -23,7 +23,7 @@
             class="btn btn-icon btn-sm btn-active-icon-primary"
           >
             <span class="svg-icon svg-icon-1">
-              <inline-svg src="media/icons/duotune/arrows/arr061.svg" />
+              <InlineSVG icon="cross" />
             </span>
           </div>
           <!--end::Close-->

@@ -31,7 +31,7 @@
             id="booing_edit_close"
           >
             <span class="svg-icon svg-icon-2x">
-              <inline-svg src="media/icons/duotune/arrows/arr061.svg" />
+              <InlineSVG icon="cross" />
             </span>
           </div>
           <!--end::Close-->
