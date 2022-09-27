@@ -1,10 +1,17 @@
 /* eslint-disable prettier/prettier */
 export const icons = {
   search: "media/icons/duotune/general/gen021.svg",
-  plus:   "media/icons/duotune/arrows/arr075.svg",  // Used for create
-  pencil: "media/icons/duotune/art/art005.svg",     // Used for edit
-  bin:    "media/icons/duotune/general/gen027.svg",  //used for delete
-  cross:  "media/icons/duotune/arrows/arr061.svg",   // Used form close
+  plus:   "media/icons/duotune/arrows/arr075.svg",  // create
+  pencil: "media/icons/duotune/art/art005.svg",     // edit
+  bin:    "media/icons/duotune/general/gen027.svg",  // delete
+  cross:  "media/icons/duotune/arrows/arr061.svg",   // close
+  calender: "media/icons/duotune/general/gen014.svg", // Booking nav
+  heart_pulse: "media/icons/duotune/medicine/med001.svg", // Patient nav
+  credit_card: "media/icons/duotune/finance/fin002.svg", // Billing nav
+  paper_plane: "media/icons/duotune/general/gen016.svg", // Communication nav
+  person_circle: "media/icons/duotune/communication/com006.svg", // HRM nav
+  gear: "media/icons/duotune/coding/cod001.svg", // Setting nav
+  location_house: "media/icons/duotune/maps/map008.svg", // Clinic nav
 };
 
 export default icons;
