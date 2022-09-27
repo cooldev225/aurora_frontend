@@ -391,7 +391,6 @@ export default defineComponent({
 
     watch(employeeList, () => {
       const id = route.params.id;
-      console.log(["employeeList=", employeeList.value]);
       if (id != undefined) {
         let employees = employeeList.value.filter((e) => e.id == id);
         if (employees && employees.length) {

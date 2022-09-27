@@ -1,0 +1,155 @@
+<template>
+  <ModalWrapper
+    title="Employee Provider Number"
+    modalId="employee_provider_modal"
+    modalRef="providerModalRef"
+  >
+    <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
+      <div
+        class="scroll-y me-n7 pe-7"
+        id="kt_modal_provider_scroll"
+        data-kt-scroll="true"
+        data-kt-scroll-activate="{default: false, lg: true}"
+        data-kt-scroll-max-height="auto"
+        data-kt-scroll-dependencies="#kt_modal_provider_header"
+        data-kt-scroll-wrappers="#kt_modal_provider_scroll"
+        data-kt-scroll-offset="300px"
+      >
+        <InputWrapper label="Clinic" prop="clinic">
+          <el-select
+            class="w-100"
+            type="text"
+            v-model="formData.clinic_id"
+            :prop="'location-select'"
+          >
+            <el-option
+              v-for="clinic in clinicsList"
+              :value="clinic.id"
+              :label="clinic.name"
+              :key="clinic.id"
+            />
+          </el-select>
+        </InputWrapper>
+
+        <InputWrapper label="Provider Number" prop="provider_number">
+          <el-input
+            v-model="formData.provider_number"
+            type="text"
+            placeholder="Enter Provider Number"
+          />
+        </InputWrapper>
+      </div>
+
+      <button
+        :data-kt-indicator="loading ? 'on' : null"
+        class="btn btn-lg btn-primary m-6"
+        type="submit"
+      >
+        <span v-if="!loading" class="indicator-label"> Create </span>
+        <span v-if="loading" class="indicator-progress">
+          Please wait...
+          <span
+            class="spinner-border spinner-border-sm align-middle ms-2"
+          ></span>
+        </span>
+      </button>
+    </el-form>
+  </ModalWrapper>
+</template>
+
+<script>
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import { useStore } from "vuex";
+import { Actions } from "@/store/enums/StoreEnums";
+import { hideModal } from "@/core/helpers/dom";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import CKEditor from "@ckeditor/ckeditor5-vue";
+
+export default defineComponent({
+  name: "edit-employee-provider-number-modal",
+  setup() {
+    const store = useStore();
+    const formRef = ref(null);
+    const providerModalRef = ref(null);
+    const loading = ref(false);
+    const clinicsList = computed(() => store.getters.clinicsList);
+    const employee = computed(() => store.getters.employeeSelected);
+
+    const formData = ref({
+      clinic_id: null,
+      specilasit_id: null,
+      provider_number: null,
+    });
+
+    const rules = ref({
+      clinic_id: [
+        {
+          required: true,
+          message: "This field cannot be blank",
+          trigger: "change",
+        },
+      ],
+      provider_number: [
+        {
+          required: true,
+          message: "This field cannot be blank",
+          trigger: "blur",
+        },
+      ],
+    });
+
+    const submit = () => {
+      if (!formRef.value) {
+        return;
+      }
+
+      formRef.value.validate((valid) => {
+        if (valid) {
+          loading.value = true;
+
+          store
+            .dispatch(Actions.EMPLOYEE.UPDATE, {
+              ...employee.value,
+              provider_number: formData.value,
+            })
+            .then(() => {
+              loading.value = false;
+              Swal.fire({
+                text: "Successfully Created!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                hideModal(providerModalRef.value);
+              });
+            })
+            .catch(({ response }) => {
+              loading.value = false;
+              console.log(response.data.error);
+            });
+          formRef.value.resetFields();
+        } else {
+          // this.context.commit(Mutations.PURGE_AUTH);
+        }
+      });
+    };
+
+    onMounted(() => {
+      //
+    });
+
+    return {
+      formData,
+      rules,
+      formRef,
+      loading,
+      clinicsList,
+      providerModalRef,
+      submit,
+    };
+  },
+});
+</script>
