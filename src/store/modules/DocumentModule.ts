@@ -48,7 +48,6 @@ export default class DocumentModule extends VuexModule implements Documents {
         },
       })
         .then(({ data }) => {
-          console.log(data.data);
           this.context.commit(DocumentMutations.SET_LIST, data.data);
           return data.data;
         })

@@ -57,6 +57,19 @@
       </router-link>
     </div>
   </div>
+  <div class="d-flex flex-sm-row gap-3 mt-6">
+    <div class="card col-sm-6 shadow-sm">
+      <div class="card-header">
+        <h3 class="card-title">General Settings</h3>
+      </div>
+      <router-link
+        to="/settings/referring-doctors"
+        class="btn btn-light-primary m-2"
+      >
+        Referring Doctors
+      </router-link>
+    </div>
+  </div>
 </template>
 
 <script>
