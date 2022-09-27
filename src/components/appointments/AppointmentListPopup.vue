@@ -161,8 +161,7 @@ export default defineComponent({
         const specialist = props.allSpecialists.find(
           ({ id }) => id === props.searchNextApts.specialist_id
         );
-
-        return specialist == undefined ? "Any" : specialist.name;
+        return specialist == undefined ? "Any" : specialist.full_name;
       }
       return null;
     });

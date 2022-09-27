@@ -383,6 +383,7 @@ export default defineComponent({
       time_requirement: 0,
       date: moment(),
       clinic_id: "",
+      x_weeks: 0,
     });
 
     const specialists_search = reactive({
@@ -449,11 +450,12 @@ export default defineComponent({
             .add(searchAppointmentForm.value.x_weeks, "weeks")
             .format("DD/MM/YYYY")
             .toString();
+          search_next_apts.x_weeks = searchAppointmentForm.value.x_weeks;
           search_next_apts.clinic_id = searchAppointmentForm.value.clinic_id;
 
-          await store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
-            ...search_next_apts,
-          });
+          // await store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
+          //   ...search_next_apts,
+          // });
 
           const modal = new Modal(
             document.getElementById("modal_available_time_slot_popup")
