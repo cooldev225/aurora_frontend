@@ -4,6 +4,10 @@ import { Mutations } from "@/store/enums/StoreEnums";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
+export interface IHRMWeeklyScheduleTimeslot {
+  id: number;
+}
+
 export interface IHRMWeeklyScheduleTemplate {
   id: number;
 }
@@ -11,6 +15,7 @@ export interface IHRMWeeklyScheduleTemplate {
 export interface IHRMWeeklyScheduleTemplates {
   hrmScheduleData: Array<IHRMWeeklyScheduleTemplate>;
   hrmScheduleSelectData: IHRMWeeklyScheduleTemplate;
+  hrmTimeslotSelectData: Array<IHRMWeeklyScheduleTimeslot>;
 }
 
 @Module
@@ -20,6 +25,7 @@ export default class HRMModule
 {
   hrmScheduleData = [] as Array<IHRMWeeklyScheduleTemplate>;
   hrmScheduleSelectData = {} as IHRMWeeklyScheduleTemplate;
+  hrmTimeslotSelectData = [] as Array<IHRMWeeklyScheduleTimeslot>;
 
   get hrmScheduleList(): Array<IHRMWeeklyScheduleTemplate> {
     return this.hrmScheduleData;
@@ -27,6 +33,10 @@ export default class HRMModule
 
   get hrmScheduleSelected(): IHRMWeeklyScheduleTemplate {
     return this.hrmScheduleSelectData;
+  }
+
+  get hrmTimeslotSelected(): Array<IHRMWeeklyScheduleTimeslot> {
+    return this.hrmTimeslotSelectData;
   }
 
   @Mutation
@@ -37,6 +47,11 @@ export default class HRMModule
   @Mutation
   [HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT](data) {
     this.hrmScheduleSelectData = data;
+  }
+
+  @Mutation
+  [HRMMutations.SCHEDULE_TEMPLATE.SET_TIMESLOT](data) {
+    this.hrmTimeslotSelectData = data;
   }
 
   @Action

@@ -49,7 +49,7 @@
               data-kt-scroll-wrappers="#kt_modal_edit_schedule_scroll"
               data-kt-scroll-offset="300px"
             >
-              <div class="row" v-if="schedule._action != 'edit_weekly_time'">
+              <div class="row" v-if="schedule._action == 'edit_employee_type'">
                 <InputWrapper class="col-12" label="Role" prop="role" required>
                   <el-select v-model="formData.role_id" class="w-100">
                     <el-option
@@ -80,21 +80,51 @@
                   </el-select>
                 </InputWrapper>
               </div>
-              <el-divider v-if="schedule._action == 'add_schedule'" />
-              <div v-if="schedule._action != 'edit_employee_type'">
+
+              <div v-if="schedule._action == 'edit_weekly_time'">
                 <div v-for="(day, index) in formData.timeslots" :key="index">
                   <div
-                    class="border border-dashed border-primary pt-3 m-3"
-                    v-if="
-                      (schedule._action == 'edit_weekly_time' &&
-                        schedule._day == day.value) ||
-                      schedule._action == 'add_schedule'
-                    "
+                    class="m-3 time-slots-box d-flex flex-row time-slots-wrapper"
                   >
-                    <div class="card d-flex flex-row">
+                    <div class="card d-flex flex-row time-slots-view">
+                      <InputWrapper
+                        class="col-3 px-1"
+                        label="Start Time"
+                        :prop="'timeslot-' + index"
+                      >
+                        <el-time-select
+                          placeholder="Start time"
+                          :max-time="day?.end_time"
+                          class="w-100"
+                          start="07:00"
+                          step="00:15"
+                          end="18:30"
+                          format="HH:mm"
+                          v-model="day.start_time"
+                          :prop="'starttime-' + index"
+                        />
+                      </InputWrapper>
+                      <div class="gap">:</div>
+                      <InputWrapper
+                        class="px-1 col-3"
+                        label="End Time"
+                        :prop="'timeslot-' + index"
+                      >
+                        <el-time-select
+                          class="w-100"
+                          placeholder="End time"
+                          :min-time="day?.start_time"
+                          start="07:00"
+                          step="00:15"
+                          end="18:30"
+                          format="HH:mm"
+                          v-model="day.end_time"
+                          :prop="'endtime-' + index"
+                        />
+                      </InputWrapper>
                       <InputWrapper
                         class="col-3"
-                        :label="day.label"
+                        label="Type"
                         :prop="'category-' + index"
                       >
                         <el-select
@@ -130,36 +160,32 @@
                           />
                         </el-select>
                       </InputWrapper>
-                      <InputWrapper
-                        class="col-6"
-                        label="Time Slot"
-                        :prop="'timeslot-' + index"
+                    </div>
+                    <div class="time-slots-delete">
+                      <a
+                        @click="handleDeleteTimeslot(index)"
+                        class="btn btn-sm btn-icon btn-light"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Delete"
                       >
-                        <div class="d-flex">
-                          <el-time-select
-                            class="w-50 pe-2"
-                            placeholder="Start time"
-                            start="07:00"
-                            step="00:15"
-                            end="18:30"
-                            format="HH:mm"
-                            v-model="day.start_time"
-                            :prop="'starttime-' + index"
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
+                        <span class="svg-icon svg-icon-2">
+                          <inline-svg
+                            src="media/icons/duotune/general/gen034.svg"
                           />
-                          <el-time-select
-                            class="w-50 ps-2"
-                            placeholder="End time"
-                            start="07:00"
-                            step="00:15"
-                            end="18:30"
-                            format="HH:mm"
-                            v-model="day.end_time"
-                            :prop="'endtime-' + index"
-                          />
-                        </div>
-                      </InputWrapper>
+                        </span>
+                        <!--end::Svg Icon-->
+                      </a>
                     </div>
                   </div>
+                  <el-divider class="time-slots-divider" />
+                </div>
+                <div
+                  class="border border-dashed border-primary m-3 time-slots-add-box d-flex flex-row"
+                  @click="handleAddTimeslot()"
+                >
+                  ADD TIMESLOT
                 </div>
               </div>
             </div>
@@ -208,7 +234,37 @@
     </div>
   </div>
 </template>
-
+<style lang="scss">
+.time-slots-divider {
+  margin-top: 0px !important;
+}
+.time-slots-box {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  .time-slots-view {
+    & > div {
+      padding-right: 0.5rem !important;
+      padding-left: 0.5rem !important;
+    }
+    & > div.gap {
+      align-items: center;
+      display: flex;
+      padding-right: 0px !important;
+      padding-left: 0px !important;
+    }
+  }
+  .time-slots-delete {
+    display: flex;
+    align-items: center;
+    margin-right: 0.5rem;
+  }
+}
+.time-slots-add-box {
+  justify-content: center;
+  cursor: pointer;
+  padding: 1.5rem;
+}
+</style>
 <script>
 import { defineComponent, computed, ref, watch, onMounted } from "vue";
 import { useStore } from "vuex";
@@ -232,29 +288,21 @@ export default defineComponent({
     const editScheduleModalRef = ref(null);
     const employeeList = computed(() => store.getters.employeeList);
     const schedule = computed(() => store.getters.hrmScheduleSelected);
+    const timeslots = computed(() => store.getters.hrmTimeslotSelected);
     const loading = ref(false);
     const formData = ref({
       clinic_id: -1,
       role_id: -1,
       user_id: null,
-      timeslots: weekdays,
+      timeslots: [],
     });
 
-    watch(schedule, () => {
+    watch([schedule, timeslots], () => {
       formData.value.id = schedule.value.id;
       formData.value.clinic_id = schedule.value.clinic_id;
       formData.value.role_id = schedule.value.role_id;
       formData.value.user_id = schedule.value.user_id;
-      formData.value.timeslots = weekdays;
-      formData.value.timeslots.map((d, i) => {
-        let f = schedule.value.timeslots.filter((t) => t.week_day == d.value);
-        if (f.length) {
-          f[0].value = formData.value.timeslots[i].value;
-          f[0].label = formData.value.timeslots[i].label;
-          formData.value.timeslots[i] = f[0];
-        }
-      });
-      //console.log(["formData.value after watch=", formData.value]);
+      formData.value.timeslots = timeslots.value;
     });
 
     const rules = ref({
@@ -267,6 +315,23 @@ export default defineComponent({
       ],
     });
 
+    const handleAddTimeslot = () => {
+      formData.value.timeslots.push({
+        start_time: null,
+        end_time: null,
+        category: null,
+        restriction: null,
+        hrm_weekly_schedule_template_id: schedule.value.id,
+        week_day: schedule.value._day,
+      });
+    };
+
+    const handleDeleteTimeslot = (index) => {
+      formData.value.timeslots = formData.value.timeslots.filter(
+        (t, i) => i != index
+      );
+    };
+
     const submit = () => {
       if (!formRef.value) {
         return;
@@ -275,39 +340,24 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          let timeslots = [];
-          for (var i = 0; i < formData.value.timeslots.length; i++) {
+          let _timeslots = [];
+          formData.value.timeslots.map((t) => {
             if (
-              formData.value.timeslots[i].category == null ||
-              formData.value.timeslots[i].restriction == null ||
-              formData.value.timeslots[i].start_time == null ||
-              formData.value.timeslots[i].end_time == null
+              t.category != null &&
+              t.restriction != null &&
+              t.start_time != null &&
+              t.end_time != null
             ) {
-              if (
-                schedule.value._action == "edit_weekly_time" &&
-                formData.value.timeslots[i].value == schedule.value._day
-              ) {
-                ElMessage.error("Please complete the fields.");
-                loading.value = false;
-                return;
-              }
-            } else {
-              let timeslot = {
-                week_day: formData.value.timeslots[i].value,
-                category: formData.value.timeslots[i].category,
-                restriction: formData.value.timeslots[i].restriction,
-                start_time: formData.value.timeslots[i].start_time,
-                end_time: formData.value.timeslots[i].end_time,
-              };
-              if (formData.value.timeslots[i].id) {
-                timeslot.id = formData.value.timeslots[i].id;
-                timeslot.hrm_weekly_schedule_template_id =
-                  formData.value.timeslots[i].hrm_weekly_schedule_template_id;
-              }
-              timeslots.push(timeslot);
+              _timeslots.push(t);
             }
-          }
-          formData.value.timeslots = timeslots;
+          });
+          schedule.value.timeslots.map((t) => {
+            if (t.week_day != schedule.value._day) {
+              _timeslots.push(t);
+            }
+          });
+          hideModal(editScheduleModalRef.value);
+          formData.value.timeslots = _timeslots;
           //console.log(["formData.value before submit=", formData.value]);
           store
             .dispatch(schedule.value._submit, formData.value)
@@ -325,7 +375,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(editScheduleModalRef.value);
+                //
               });
             })
             .catch(({ response }) => {
@@ -355,6 +405,8 @@ export default defineComponent({
       schedule,
       restrictionsTypes,
       schCategories,
+      handleAddTimeslot,
+      handleDeleteTimeslot,
     };
   },
 });

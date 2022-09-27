@@ -12,7 +12,7 @@ export default defineComponent({
   name: "hrm-weekly-schedule",
   setup() {
     onMounted(() => {
-      setCurrentPageBreadcrumbs("HRM", []);
+      setCurrentPageBreadcrumbs("HRM", ["Human Resource Management"]);
     });
   },
 });

@@ -21,7 +21,7 @@
       <tbody>
         <tr
           class="min-h-100px"
-          v-for="template in scheduleTemplates"
+          v-for="template in tableData"
           :key="template.id"
         >
           <td
@@ -34,7 +34,9 @@
             <InfoSection heading="Role">
               {{
                 employeeRoles.filter((x) => x.value == template.role_id)[0]
-                  .label
+                  ? employeeRoles.filter((x) => x.value == template.role_id)[0]
+                      .label
+                  : "Unassigned"
               }}
             </InfoSection>
             <InfoSection heading="Default">
@@ -107,10 +109,9 @@ export default defineComponent({
     const employeeList = computed(() => store.getters.employeeList);
     const clinics = computed(() => store.getters.clinicsList);
     const clinicFilter = ref();
+    const tableData = ref();
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Weekly Schedule Template", [
-        "Human Resource Management",
-      ]);
+      setCurrentPageBreadcrumbs("Weekly Schedule Template", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
@@ -130,7 +131,10 @@ export default defineComponent({
     });
 
     watch(scheduleTemplates, () => {
-      //console.log(["scheduleTemplates=", scheduleTemplates.value]);
+      //let add_data = tableData.value?.filter((t) => t.id == -1);
+      tableData.value = scheduleTemplates.value;
+      //if (add_data?.length) tableData.value.push(add_data);
+      //console.log(["tableData.value=", tableData.value]);
     });
 
     const handleEditTemplateTimeslots = (schedule, day) => {
@@ -139,7 +143,15 @@ export default defineComponent({
       schedule._action = "edit_weekly_time";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
       schedule._day = day.value;
+
       store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
+      let timeslots = schedule.timeslots.filter(
+        (t) => t.week_day == schedule._day
+      );
+      if (!timeslots.length) {
+        timeslots = [];
+      }
+      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_TIMESLOT, timeslots);
       const modal = new Modal(document.getElementById("modal_edit_schedule"));
       modal.show();
     };
@@ -161,12 +173,13 @@ export default defineComponent({
         user_id: null,
         timeslots: [],
       };
-      schedule._title = "Add Schedule";
+      /*schedule._title = "Add Schedule";
       schedule._action = "add_schedule";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
       store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
       const modal = new Modal(document.getElementById("modal_edit_schedule"));
-      modal.show();
+      modal.show();*/
+      tableData.value.push(schedule);
     };
 
     return {
@@ -179,6 +192,7 @@ export default defineComponent({
       clinics,
       clinicFilter,
       employeeRoles,
+      tableData,
       employeeList,
     };
   },

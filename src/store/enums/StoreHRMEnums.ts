@@ -12,6 +12,7 @@ const HRMMutations = {
   SCHEDULE_TEMPLATE : {
     SET_LIST : "setScheduleTemplateList",
     SET_SELECT : "setScheduleTemplateSelect",
+    SET_TIMESLOT: "setTimeslotTemplateSelect",
   }
 
 };
