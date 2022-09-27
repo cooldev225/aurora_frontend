@@ -293,7 +293,6 @@
 
   <CreateModal></CreateModal>
   <AppointmentListPopup
-    :available-slots-by-date="available_slots_by_date"
     :all-specialists="allSpecialists"
     :search-next-apts="search_next_apts"
     :apt-type-list="aptTypelist"
@@ -383,6 +382,7 @@ export default defineComponent({
       time_requirement: 0,
       date: moment(),
       clinic_id: "",
+      x_weeks: 0,
     });
 
     const specialists_search = reactive({
@@ -447,13 +447,13 @@ export default defineComponent({
             searchAppointmentForm.value.time_requirement;
           search_next_apts.date = moment(moment())
             .add(searchAppointmentForm.value.x_weeks, "weeks")
-            .format("DD/MM/YYYY")
-            .toString();
+            .format("DD/MM/YYYY");
+          search_next_apts.x_weeks = searchAppointmentForm.value.x_weeks;
           search_next_apts.clinic_id = searchAppointmentForm.value.clinic_id;
 
-          await store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
-            ...search_next_apts,
-          });
+          // await store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
+          //   ...search_next_apts,
+          // });
 
           const modal = new Modal(
             document.getElementById("modal_available_time_slot_popup")
