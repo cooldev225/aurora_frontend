@@ -66,13 +66,12 @@ const SettingsRoutes = [
       import("@/views/settings/anesthetic-questions/AnestheticQuestions.vue"),
   },
   {
-
     path: "/settings/letter-templates",
     name: "letterTypes",
     component: () =>
       import("@/views/settings/letter-templates/LetterTemplates.vue"),
-},
-{
+  },
+  {
     path: "/settings/referring-doctors",
     name: "refDoctors",
     component: () =>
@@ -89,7 +88,6 @@ const SettingsRoutes = [
     name: "editRefDoctors",
     component: () =>
       import("@/views/settings/referring-doctors/EditRefDoctors.vue"),
-
   },
 ];
 
