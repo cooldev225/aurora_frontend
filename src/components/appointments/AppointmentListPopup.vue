@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, onMounted } from "vue";
+import { defineComponent, computed, watch } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
 import { Mutations } from "@/store/enums/StoreEnums";
@@ -251,7 +251,7 @@ export default defineComponent({
       });
     };
 
-    onMounted(() => {
+    watch(props.searchNextApts, () => {
       setTimeout(() => {
         handleSearch();
       }, 300);

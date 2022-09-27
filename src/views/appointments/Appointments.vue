@@ -293,7 +293,6 @@
 
   <CreateModal></CreateModal>
   <AppointmentListPopup
-    :available-slots-by-date="available_slots_by_date"
     :all-specialists="allSpecialists"
     :search-next-apts="search_next_apts"
     :apt-type-list="aptTypelist"
