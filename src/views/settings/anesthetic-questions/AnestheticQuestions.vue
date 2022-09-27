@@ -54,7 +54,7 @@
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
           >
             <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen027.svg" />
+              <InlineSVG icon="bin" />
             </span>
           </button>
           {{ item.question }}

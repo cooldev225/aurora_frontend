@@ -110,7 +110,7 @@
         >
           <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
           <span class="svg-icon svg-icon-2">
-            <inline-svg src="media/icons/duotune/general/gen027.svg" />
+            <InlineSVG icon="bin" />
           </span>
           <!--end::Svg Icon-->
         </a>
