@@ -154,7 +154,7 @@
         <div class="d-flex align-items-center position-relative">
           <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
           <span class="svg-icon svg-icon-2 position-absolute ms-4">
-            <inline-svg src="media/icons/duotune/general/gen021.svg" />
+            <InlineSVG icon="search" />
           </span>
           <!--end::Svg Icon-->
           <input

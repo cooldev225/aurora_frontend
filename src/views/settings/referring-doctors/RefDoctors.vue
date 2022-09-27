@@ -4,7 +4,7 @@
       <div class="card-title">
         <div class="d-flex align-items-center position-relative my-1">
           <span class="svg-icon svg-icon-1 position-absolute ms-6">
-            <inline-svg src="media/icons/duotune/general/gen021.svg" />
+            <InlineSVG icon="search" />
           </span>
           <input
             type="text"

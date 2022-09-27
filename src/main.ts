@@ -19,9 +19,9 @@ import HeadingText from "./components/presets/GeneralElements/HeadingText.vue";
 import CardSection from "./components/presets/GeneralElements/CardSection.vue";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import ModalWrapper from "@/components/presets/GeneralElements/ModalWrapper.vue";
-InfoSection;
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
+import InlineSVG from "@/components/presets/GeneralElements/InlineSVG.vue";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
 import "@/core/plugins/prismjs";
 import "bootstrap";
@@ -50,6 +50,7 @@ app
   .component("InputWrapper", InputWrapper)
   .component("ModalWrapper", ModalWrapper)
   .component("InfoSection", InfoSection)
+  .component("InlineSVG", InlineSVG)
   .component("IconButton", IconButton)
   .component("LargeIconButton", LargeIconButton);
 
