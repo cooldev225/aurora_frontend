@@ -45,9 +45,8 @@
             <InputWrapper
               class="col-12 col-md-6"
               label="Contact Number"
-              :v-mask="'0#-####-####'"
+              v-mask="'0#-####-####'"
               prop="mobile_number"
-              @input="acceptNumber"
             >
               <el-input
                 v-model="formData.mobile_number"
@@ -70,7 +69,7 @@
           <el-divider />
           <HeadingText text="Employee Type" />
           <div class="row">
-            <InputWrapper class="col-4" label="Type" prop="type">
+            <InputWrapper class="col-6" label="Type" prop="type">
               <el-select class="w-100" v-model="formData.type" filterable>
                 <el-option
                   v-for="item in employeeTypes"
@@ -80,7 +79,7 @@
                 />
               </el-select>
             </InputWrapper>
-            <InputWrapper class="col-4" label="Role" prop="role">
+            <InputWrapper class="col-6" label="Role" prop="role">
               <el-select v-model="formData.role_id" class="w-100">
                 <el-option
                   v-for="item in employeeRoles"
@@ -90,6 +89,39 @@
                 />
               </el-select>
             </InputWrapper>
+          </div>
+          <div v-if="formData.role_id == 5">
+            <el-divider />
+            <HeadingText text="Provider Number" />
+            <div class="row">
+              <InputWrapper class="col-6" label="Clinic" prop="clinic_id">
+                <el-select
+                  class="w-100"
+                  type="text"
+                  v-model="formData.provider.clinic_id"
+                  :prop="'location-select'"
+                >
+                  <el-option
+                    v-for="clinic in clinicsList"
+                    :value="clinic.id"
+                    :label="clinic.name"
+                    :key="clinic.id"
+                  />
+                </el-select>
+              </InputWrapper>
+
+              <InputWrapper
+                class="col-6"
+                label="Provider Number"
+                prop="provider_number"
+              >
+                <el-input
+                  v-model="formData.provider.provider_number"
+                  type="text"
+                  placeholder="Enter Provider Number"
+                />
+              </InputWrapper>
+            </div>
           </div>
           <el-divider />
           <HeadingText text="Employee Hours" />
@@ -279,10 +311,14 @@ import weekdays from "@/core/data/weekdays";
 import restrictionsTypes from "@/core/data/apt-restriction";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import { ElMessage } from "element-plus";
+import { mask } from "vue-the-mask";
 
 export default defineComponent({
   name: "create-employee",
   components: { InputWrapper },
+  directives: {
+    mask,
+  },
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -325,6 +361,11 @@ export default defineComponent({
           appointment_type_restriction: null,
         },
       ],
+      provider: {
+        specilasit_id: null,
+        clinic_id: null,
+        provider_number: null,
+      },
     });
 
     const commonRoles = {
@@ -354,18 +395,25 @@ export default defineComponent({
           trigger: ["blur", "change"],
         },
       ],
+      provider: {
+        clinic_id: [
+          {
+            required: true,
+            message: "This field cannot be blank",
+            trigger: "blur, change",
+          },
+        ],
+        provider_number: [
+          {
+            required: true,
+            message: "This field cannot be blank",
+            trigger: "blur",
+          },
+        ],
+      },
     };
 
     const rules = ref(commonRoles);
-
-    const acceptNumber = () => {
-      //0#-####-####
-      var v = formData.value.mobile_number;
-      var x = v.replace(/\D/g, "").match(/(\d{0,2})(\d{0,4})(\d{0,4})/);
-      if (x != undefined && x?.length > 3)
-        v = !x[2] ? x[1] : x[1] + "-" + x[2] + (x[3] ? "-" + x[3] : "");
-      formData.value.mobile_number = v;
-    };
 
     const addSchedualHandle = () => {
       formData.value.hrm_user_base_schedules.push({
@@ -407,6 +455,10 @@ export default defineComponent({
           if (employee.hrm_user_base_schedules.length) {
             formData.value.hrm_user_base_schedules =
               employee.hrm_user_base_schedules;
+          }
+          formData.value.provider.specilasit_id = employee.id;
+          if (employee.provider) {
+            formData.value.provider = employee.provider;
           }
         }
       }
@@ -454,6 +506,15 @@ export default defineComponent({
             ElMessage.error("Please fill employee hours fields!");
             return false;
           }
+          if (
+            formData.value.role_id == 5 &&
+            (formData.value.provider.clinic_id == null ||
+              formData.value.provider.provider_number == null)
+          ) {
+            valid = false;
+            ElMessage.error("Please fill provider number fields!");
+            return false;
+          }
           loading.value = true;
 
           store
@@ -498,7 +559,6 @@ export default defineComponent({
       employeeRoles,
       weekdays,
       anesthetistList,
-      acceptNumber,
       addSchedualHandle,
       deleteSchedualHandle,
     };

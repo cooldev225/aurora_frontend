@@ -122,6 +122,7 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import ProviderModal from "@/views/employees/ProviderModal.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "employee-main",
@@ -201,7 +202,11 @@ export default defineComponent({
     };
 
     const handleEditProviderNumber = (item) => {
-      //
+      store.commit(Mutations.SET_EMPLOYEE.SELECT, item);
+      const modal = new Modal(
+        document.getElementById("modal_employee_provider")
+      );
+      modal.show();
     };
 
     const deleteAfterConfirmation = (item) => {
