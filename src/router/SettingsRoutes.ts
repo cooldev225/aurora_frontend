@@ -65,6 +65,24 @@ const SettingsRoutes = [
     component: () =>
       import("@/views/settings/anesthetic-questions/AnestheticQuestions.vue"),
   },
+  {
+    path: "/settings/referring-doctors",
+    name: "refDoctors",
+    component: () =>
+      import("@/views/settings/referring-doctors/RefDoctors.vue"),
+  },
+  {
+    path: "/settings/referring-doctors/create",
+    name: "createRefDoctors",
+    component: () =>
+      import("@/views/settings/referring-doctors/EditRefDoctors.vue"),
+  },
+  {
+    path: "/settings/referring-doctors/edit/:id",
+    name: "editRefDoctors",
+    component: () =>
+      import("@/views/settings/referring-doctors/EditRefDoctors.vue"),
+  },
 ];
 
 export default SettingsRoutes;
