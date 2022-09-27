@@ -36,7 +36,7 @@
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
             <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/art/art005.svg" />
+              <InlineSVG icon="pencil" />
             </span>
           </button>
 

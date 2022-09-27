@@ -29,7 +29,7 @@
             class="d-flex text-hover-primary cursor-pointer background-hover-light-primary flex-column"
           >
             <span class="svg-icon absolute text-white svg-icon-4 me-1">
-              <inline-svg src="media/icons/duotune/art/art005.svg" />
+              <InlineSVG icon="pencil" />
             </span>
             <InfoSection heading="Role">
               {{
@@ -50,7 +50,7 @@
               class="d-flex flex-column rounded min-h-100px min-w-100px cursor-pointer bg-hover-light-primary bg-primary p-3"
             >
               <span class="svg-icon absolute text-primary svg-icon-4 me-1">
-                <inline-svg src="media/icons/duotune/art/art005.svg" />
+                <InlineSVG icon="pencil" />
               </span>
               <span
                 v-for="timeslot in template.timeslots.filter(
