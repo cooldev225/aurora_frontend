@@ -5,15 +5,14 @@
     modalRef="AppointmentListPopupModalRef"
   >
     <div class="d-flex flex-row">
-      <div
-        class="d-flex align-items-center justify-content-center cursor-pointer"
-      >
+      <div class="d-flex align-items-center justify-content-center">
         <svg
+          @click="search('PREV')"
           xmlns="http://www.w3.org/2000/svg"
           width="16"
           height="16"
           fill="currentColor"
-          class="bi bi-chevron-compact-left"
+          class="bi bi-chevron-compact-left cursor-pointer"
           viewBox="0 0 16 16"
           style="width: 32px; height: 32px"
         >
@@ -48,7 +47,11 @@
         <div class="scroll h-500px">
           <template v-if="availableSlotsByDate">
             <div class="row justify-content-center">
-              <div class="col" v-for="date in availableSlotsByDate" :key="date">
+              <div
+                :class="getClass(date)"
+                v-for="date in availableSlotsByDate"
+                :key="date"
+              >
                 <h3
                   class="py-3 position-fixed border-bottom border-bottom-dashed border-bottom-primary"
                   style="
@@ -106,15 +109,14 @@
           <p v-else>No Next available Appointments.</p>
         </div>
       </div>
-      <div
-        class="d-flex align-items-center justify-content-center cursor-pointer"
-      >
+      <div class="d-flex align-items-center justify-content-center">
         <svg
+          @click="search('NEXT')"
           xmlns="http://www.w3.org/2000/svg"
           width="16"
           height="16"
           fill="currentColor"
-          class="bi bi-chevron-compact-right"
+          class="bi bi-chevron-compact-right cursor-pointer"
           viewBox="0 0 16 16"
           style="width: 32px; height: 32px"
         >
@@ -129,7 +131,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, watch } from "vue";
+import { defineComponent, computed, watch, ref } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
 import { Mutations } from "@/store/enums/StoreEnums";
@@ -151,6 +153,8 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
+    const searchParam = ref(null);
+
     const clinic_name = computed(() => {
       const clinic = props.clinicList.find(
         ({ id }) => id === props.searchNextApts.clinic_id
@@ -194,6 +198,14 @@ export default defineComponent({
 
       return appointment_type == undefined ? "Any" : appointment_type.name;
     });
+
+    const getClass = (date) => {
+      var flag = moment(date.date, "YYYY-MM-DD").diff(
+        moment(moment().format("YYYY-MM-DD"), "YYYY-MM-DD")
+      );
+      if (flag >= 0) return "col";
+      else return "col bg-light bg-gradient";
+    };
 
     const handleAddApt = (specialist_ids, date, startTime, endTime) => {
       const _date = moment(date).format("YYYY-MM-DD").toString();
@@ -245,14 +257,29 @@ export default defineComponent({
       current_modal.hide();
     };
 
+    const search = (param) => {
+      if (param === "PREV") {
+        searchParam.value.date = moment(searchParam.value.date, "DD/MM/YYYY")
+          .add(-1, "weeks")
+          .format("DD/MM/YYYY");
+      }
+      if (param === "NEXT") {
+        searchParam.value.date = moment(searchParam.value.date, "DD/MM/YYYY")
+          .add(1, "weeks")
+          .format("DD/MM/YYYY");
+      }
+      handleSearch();
+    };
+
     const handleSearch = async () => {
       await store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
-        ...props.searchNextApts,
+        ...searchParam.value,
       });
     };
 
     watch(props.searchNextApts, () => {
       setTimeout(() => {
+        searchParam.value = props.searchNextApts;
         handleSearch();
       }, 300);
     });
@@ -266,6 +293,8 @@ export default defineComponent({
       time_frame,
       appointment_type,
       moment,
+      search,
+      getClass,
     };
   },
 });

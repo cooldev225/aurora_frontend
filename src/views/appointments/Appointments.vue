@@ -447,8 +447,7 @@ export default defineComponent({
             searchAppointmentForm.value.time_requirement;
           search_next_apts.date = moment(moment())
             .add(searchAppointmentForm.value.x_weeks, "weeks")
-            .format("DD/MM/YYYY")
-            .toString();
+            .format("DD/MM/YYYY");
           search_next_apts.x_weeks = searchAppointmentForm.value.x_weeks;
           search_next_apts.clinic_id = searchAppointmentForm.value.clinic_id;
 
