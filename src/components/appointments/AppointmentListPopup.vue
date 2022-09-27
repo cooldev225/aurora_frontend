@@ -129,16 +129,19 @@
 </template>
 
 <script>
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
 import { Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "@/store/enums/StoreAppointmentEnums";
 
 export default defineComponent({
   name: "appointment-list-popup",
   props: {
-    availableSlotsByDate: { type: Object, required: true },
     allSpecialists: { type: Array, required: true },
     searchNextApts: { type: Object, required: true },
     aptTypeList: { type: Array, required: true },
@@ -155,6 +158,10 @@ export default defineComponent({
 
       return clinic == undefined ? "Any" : clinic.name;
     });
+
+    const availableSlotsByDate = computed(
+      () => store.getters.getAvailableAppointmentList
+    );
 
     const specialist_name = computed(() => {
       if (props.allSpecialists.length > 0) {
@@ -238,8 +245,21 @@ export default defineComponent({
       current_modal.hide();
     };
 
+    const handleSearch = async () => {
+      await store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
+        ...props.searchNextApts,
+      });
+    };
+
+    onMounted(() => {
+      setTimeout(() => {
+        handleSearch();
+      }, 300);
+    });
+
     return {
       handleAddApt,
+      availableSlotsByDate,
       clinic_name,
       specialist_name,
       time_requirement,
