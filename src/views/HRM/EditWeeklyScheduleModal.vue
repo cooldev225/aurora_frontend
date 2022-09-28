@@ -50,10 +50,20 @@
               data-kt-scroll-offset="300px"
             >
               <div class="row" v-if="schedule._action == 'edit_employee_type'">
+                <InputWrapper class="col-12" label="Type" prop="type">
+                  <el-select class="w-100" v-model="formData.type" filterable>
+                    <el-option
+                      v-for="item in employeeTypes"
+                      :value="item"
+                      :label="item"
+                      :key="item"
+                    />
+                  </el-select>
+                </InputWrapper>
                 <InputWrapper class="col-12" label="Role" prop="role" required>
                   <el-select v-model="formData.role_id" class="w-100">
                     <el-option
-                      v-for="item in employeeRoles"
+                      v-for="item in employeeRoles.filter((e) => e.value > 2)"
                       :value="item.value"
                       :label="item.label"
                       :key="item.value"
@@ -271,7 +281,7 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
-import employeeTypes from "@/core/data/employee-types";
+import employeeTypes from "@/core/data/employee-schedule-types";
 import employeeRoles from "@/core/data/employee-roles";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
 import weekdays from "@/core/data/weekdays";
@@ -292,7 +302,8 @@ export default defineComponent({
     const loading = ref(false);
     const formData = ref({
       clinic_id: -1,
-      role_id: -1,
+      role_id: null,
+      type: "Permanent",
       user_id: null,
       timeslots: [],
     });
