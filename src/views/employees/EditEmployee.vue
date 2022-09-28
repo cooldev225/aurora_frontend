@@ -95,7 +95,7 @@
             <HeadingText text="Provider Number" />
             <div
               class="row"
-              v-for="(provider, index) in formData.provider"
+              v-for="(provider, index) in formData.specialist_clinic_relations"
               :key="index"
             >
               <InputWrapper class="col-6" label="Clinic" prop="clinic_id">
@@ -107,6 +107,11 @@
                 >
                   <el-option
                     v-for="clinic in clinicsList"
+                    :disabled="
+                      formData.specialist_clinic_relations.filter(
+                        (f) => f.clinic_id == clinic.id?.length
+                      )
+                    "
                     :value="clinic.id"
                     :label="clinic.name"
                     :key="clinic.id"
@@ -126,10 +131,11 @@
                 />
               </InputWrapper>
             </div>
-            <el-divider v-if="formData.provider.length < clinicsList.length" />
             <div
-              v-if="formData.provider.length < clinicsList.length"
-              class="w-100 cursor-pointer text-center text-nowrap col-9 border border-gray-300 h-40px d-flex flex-center"
+              v-if="
+                formData.specialist_clinic_relations.length < clinicsList.length
+              "
+              class="m-3 cursor-pointer text-center text-nowrap border border-gray-300 h-40px d-flex flex-center"
               style="font-size: 1.2rem; line-height: 40px; color: #bd5"
               @click="handleAddOtherNumber()"
             >
@@ -374,10 +380,10 @@ export default defineComponent({
           appointment_type_restriction: null,
         },
       ],
-      provider: [
+      specialist_clinic_relations: [
         {
           clinic_id: null,
-          specilasit_id: null,
+          specilasit_id: "-1",
           provider_number: null,
         },
       ],
@@ -410,7 +416,7 @@ export default defineComponent({
           trigger: ["blur", "change"],
         },
       ],
-      provider: {
+      specialist_clinic_relations: {
         clinic_id: [
           {
             required: true,
@@ -467,12 +473,13 @@ export default defineComponent({
           formData.value.address = employee.address;
           formData.value.role_id = employee.role_id;
           formData.value.type = employee.type;
-          if (employee.hrm_user_base_schedules.length) {
+          if (employee.hrm_user_base_schedules?.length) {
             formData.value.hrm_user_base_schedules =
               employee.hrm_user_base_schedules;
           }
-          if (employee.provider.length) {
-            formData.value.provider = employee.provider;
+          if (employee.specialist_clinic_relations?.length) {
+            formData.value.specialist_clinic_relations =
+              employee.specialist_clinic_relations;
           }
         }
       }
@@ -501,11 +508,13 @@ export default defineComponent({
     });
 
     const handleAddOtherNumber = () => {
-      formData.value.provider.push({
+      let id = route.params.id;
+      let provider = {
         clinic_id: null,
-        specilasit_id: null,
+        specilasit_id: id.toString(),
         provider_number: null,
-      });
+      };
+      formData.value.specialist_clinic_relations.push(provider);
     };
 
     const submit = () => {
@@ -529,6 +538,13 @@ export default defineComponent({
             return false;
           }
           loading.value = true;
+
+          let provideres = formData.value.specialist_clinic_relations.filter(
+            (f) => f.clinic_id != null && f.provider_number != null
+          );
+          formData.value.specialist_clinic_relations = provideres
+            ? provideres
+            : [];
 
           store
             .dispatch(formInfo.submitAction, formData.value)

@@ -172,7 +172,7 @@ export default defineComponent({
           store
             .dispatch(Actions.EMPLOYEE.UPDATE, {
               ...employee.value,
-              provider: provideres.length ? provideres : [],
+              specialist_clinic_relations: provideres.length ? provideres : [],
             })
             .then(() => {
               loading.value = false;
@@ -208,8 +208,8 @@ export default defineComponent({
 
     watch(employee, () => {
       formData.value.specilasit_id = employee.value.id;
-      if (employee.value.provider) {
-        formData.value = employee.value.provider;
+      if (employee.value.specialist_clinic_relations) {
+        formData.value = employee.value.specialist_clinic_relations;
       }
     });
 
