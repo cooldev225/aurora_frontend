@@ -186,25 +186,30 @@ export default defineComponent({
 
     // Loads the selected document from the server to the view window
     watch(selectedDocument, () => {
-      store
-        .dispatch(DocumentActions.SHOW, {
-          path: selectedDocument.value.file_path,
-        })
-        .then((data) => {
-          tempFile.value = data;
-          if (selectedDocument.value.file_type === "PDF") {
-            document.getElementById("document-view").innerHTML = "";
-            let blob = new Blob([data], { type: "application/pdf" });
-            let objectUrl = URL.createObjectURL(blob);
-            pdf.embed(objectUrl + "#toolbar=0", "#document-view");
-          } else if (selectedDocument.value.file_type === "PNG") {
-            document.getElementById("document-view").innerHTML =
-              "<img src='" + data + "' />";
-          }
-        })
-        .catch(() => {
-          console.log("Document Load Error");
-        });
+      if (selectedDocument.value.file_type === "HTML") {
+        document.getElementById("document-view").innerHTML =
+          selectedDocument.value.document_body;
+      } else {
+        store
+          .dispatch(DocumentActions.SHOW, {
+            path: selectedDocument.value.file_path,
+          })
+          .then((data) => {
+            tempFile.value = data;
+            if (selectedDocument.value.file_type === "PDF") {
+              document.getElementById("document-view").innerHTML = "";
+              let blob = new Blob([data], { type: "application/pdf" });
+              let objectUrl = URL.createObjectURL(blob);
+              pdf.embed(objectUrl + "#toolbar=0", "#document-view");
+            } else if (selectedDocument.value.file_type === "PNG") {
+              document.getElementById("document-view").innerHTML =
+                "<img src='" + data + "' />";
+            }
+          })
+          .catch(() => {
+            console.log("Document Load Error");
+          });
+      }
     });
 
     const handleSendEmail = () => {
