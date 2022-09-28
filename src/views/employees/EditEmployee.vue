@@ -93,12 +93,16 @@
           <div v-if="formData.role_id == 5">
             <el-divider />
             <HeadingText text="Provider Number" />
-            <div class="row">
+            <div
+              class="row"
+              v-for="(provider, index) in formData.provider"
+              :key="index"
+            >
               <InputWrapper class="col-6" label="Clinic" prop="clinic_id">
                 <el-select
                   class="w-100"
                   type="text"
-                  v-model="formData.provider.clinic_id"
+                  v-model="provider.clinic_id"
                   :prop="'location-select'"
                 >
                   <el-option
@@ -116,11 +120,20 @@
                 prop="provider_number"
               >
                 <el-input
-                  v-model="formData.provider.provider_number"
+                  v-model="provider.provider_number"
                   type="text"
                   placeholder="Enter Provider Number"
                 />
               </InputWrapper>
+            </div>
+            <el-divider v-if="formData.provider.length < clinicsList.length" />
+            <div
+              v-if="formData.provider.length < clinicsList.length"
+              class="w-100 cursor-pointer text-center text-nowrap col-9 border border-gray-300 h-40px d-flex flex-center"
+              style="font-size: 1.2rem; line-height: 40px; color: #bd5"
+              @click="handleAddOtherNumber()"
+            >
+              <span><span>+</span> Add Other Number</span>
             </div>
           </div>
           <el-divider />
@@ -361,11 +374,13 @@ export default defineComponent({
           appointment_type_restriction: null,
         },
       ],
-      provider: {
-        specilasit_id: null,
-        clinic_id: null,
-        provider_number: null,
-      },
+      provider: [
+        {
+          clinic_id: null,
+          specilasit_id: null,
+          provider_number: null,
+        },
+      ],
     });
 
     const commonRoles = {
@@ -400,7 +415,7 @@ export default defineComponent({
           {
             required: true,
             message: "This field cannot be blank",
-            trigger: "blur, change",
+            trigger: ["blur", "change"],
           },
         ],
         provider_number: [
@@ -456,8 +471,7 @@ export default defineComponent({
             formData.value.hrm_user_base_schedules =
               employee.hrm_user_base_schedules;
           }
-          formData.value.provider.specilasit_id = employee.id;
-          if (employee.provider) {
+          if (employee.provider.length) {
             formData.value.provider = employee.provider;
           }
         }
@@ -486,6 +500,14 @@ export default defineComponent({
       store.dispatch(Actions.CLINICS.LIST);
     });
 
+    const handleAddOtherNumber = () => {
+      formData.value.provider.push({
+        clinic_id: null,
+        specilasit_id: null,
+        provider_number: null,
+      });
+    };
+
     const submit = () => {
       if (!formRef.value) {
         return;
@@ -504,15 +526,6 @@ export default defineComponent({
           if (null_schedules.length) {
             valid = false;
             ElMessage.error("Please fill employee hours fields!");
-            return false;
-          }
-          if (
-            formData.value.role_id == 5 &&
-            (formData.value.provider.clinic_id == null ||
-              formData.value.provider.provider_number == null)
-          ) {
-            valid = false;
-            ElMessage.error("Please fill provider number fields!");
             return false;
           }
           loading.value = true;
@@ -561,6 +574,7 @@ export default defineComponent({
       anesthetistList,
       addSchedualHandle,
       deleteSchedualHandle,
+      handleAddOtherNumber,
     };
   },
 });

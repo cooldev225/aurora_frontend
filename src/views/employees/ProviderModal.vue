@@ -21,12 +21,7 @@
             </span>
           </div>
         </div>
-        <el-form
-          @submit.prevent="submit()"
-          :model="formData"
-          :rules="rules"
-          ref="formRef"
-        >
+        <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
           <div class="modal-body py-10 px-lg-17">
             <div
               class="scroll-y me-n7 pe-7"
@@ -38,29 +33,58 @@
               data-kt-scroll-wrappers="#kt_modal_provider_scroll"
               data-kt-scroll-offset="300px"
             >
-              <InputWrapper label="Clinic" prop="clinic_id">
-                <el-select
-                  class="w-100"
-                  type="text"
-                  v-model="formData.clinic_id"
-                  :prop="'location-select'"
+              <div
+                class="row"
+                v-for="(provider, index) in formData"
+                :key="index"
+              >
+                <el-form-item
+                  class="col-6 d-block"
+                  label="Clinic"
+                  :prop="'clinic_id'"
                 >
-                  <el-option
-                    v-for="clinic in clinicsList"
-                    :value="clinic.id"
-                    :label="clinic.name"
-                    :key="clinic.id"
-                  />
-                </el-select>
-              </InputWrapper>
+                  <el-select
+                    class="w-100"
+                    type="text"
+                    v-model="provider.clinic_id"
+                    :prop="'location_select_' + index"
+                  >
+                    <el-option
+                      v-for="clinic in clinicsList"
+                      :disabled="
+                        formData.filter((f) => f.clinic_id == clinic.id)?.length
+                      "
+                      :value="clinic.id"
+                      :label="clinic.name"
+                      :key="clinic.id"
+                    />
+                  </el-select>
+                </el-form-item>
 
-              <InputWrapper label="Provider Number" prop="provider_number">
-                <el-input
-                  v-model="formData.provider_number"
-                  type="text"
-                  placeholder="Enter Provider Number"
-                />
-              </InputWrapper>
+                <el-form-item
+                  :class="'col-6 d-block ' + (true ? '' : 'is-error')"
+                  label="Provider Number"
+                  :prop="'provider_' + idnex + '_provider_number'"
+                >
+                  <el-input
+                    v-model="provider.provider_number"
+                    type="text"
+                    placeholder="Enter Provider Number"
+                  />
+                  <div v-if="false" class="el-form-item__error">
+                    This field cannot be blank {{ clinicsList.length }}
+                  </div>
+                </el-form-item>
+              </div>
+              <el-divider v-if="formData.length < clinicsList.length" />
+              <div
+                v-if="formData.length < clinicsList.length"
+                class="w-100 cursor-pointer text-center text-nowrap col-9 border border-gray-300 h-40px d-flex flex-center"
+                style="font-size: 1.2rem; line-height: 40px; color: #bd5"
+                @click="handleAddOtherNumber()"
+              >
+                <span><span>+</span> Add Other Number</span>
+              </div>
             </div>
           </div>
           <div class="modal-footer flex-center">
@@ -108,18 +132,20 @@ export default defineComponent({
     const clinicsList = computed(() => store.getters.clinicsList);
     const employee = computed(() => store.getters.employeeSelected);
 
-    const formData = ref({
-      clinic_id: null,
-      specilasit_id: null,
-      provider_number: null,
-    });
+    const formData = ref([
+      {
+        clinic_id: null,
+        specilasit_id: null,
+        provider_number: null,
+      },
+    ]);
 
     const rules = ref({
       clinic_id: [
         {
           required: true,
           message: "This field cannot be blank",
-          trigger: "blur, change",
+          trigger: ["blur", "change"],
         },
       ],
       provider_number: [
@@ -139,11 +165,14 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
+          let provideres = formData.value.filter(
+            (f) => f.clinic_id != null && f.provider_number != null
+          );
 
           store
             .dispatch(Actions.EMPLOYEE.UPDATE, {
               ...employee.value,
-              provider: formData.value,
+              provider: provideres.length ? provideres : [],
             })
             .then(() => {
               loading.value = false;
@@ -169,6 +198,14 @@ export default defineComponent({
       });
     };
 
+    const handleAddOtherNumber = () => {
+      formData.value.push({
+        clinic_id: null,
+        specilasit_id: null,
+        provider_number: null,
+      });
+    };
+
     watch(employee, () => {
       formData.value.specilasit_id = employee.value.id;
       if (employee.value.provider) {
@@ -188,6 +225,7 @@ export default defineComponent({
       clinicsList,
       employeeProviderModalRef,
       submit,
+      handleAddOtherNumber,
     };
   },
 });
