@@ -5,6 +5,7 @@ import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
 export interface User {
   profile: object;
+  organization: object;
   username: string;
   email: string;
   access_token: string;
@@ -40,11 +41,19 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
   }
 
   /**
-   * Get current user id
+   * Get current user profile
    * @returns User
    */
   get userProfile() {
     return this.user.profile;
+  }
+
+  /**
+   * Get current user organization
+   * @returns User
+   */
+  get userOrganization() {
+    return this.user.organization;
   }
 
   /**
