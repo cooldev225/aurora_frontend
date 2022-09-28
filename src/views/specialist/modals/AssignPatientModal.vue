@@ -1,5 +1,9 @@
 <template>
-  <ModalWrapper title="Search Patients" modalId="assign_patient">
+  <ModalWrapper
+    title="Search Patients"
+    modalId="assign_patient"
+    :updateRef="updateRef"
+  >
     <el-form class="w-100" ref="formRef">
       <!--begin::Row-->
       <div class="row g-8">
@@ -71,61 +75,134 @@
       </div>
       <!--end::Row-->
     </el-form>
+    <div class="row g-8">
+      <Datatable
+        :table-header="tableHeader"
+        :table-data="tableData"
+        :rows-per-page="5"
+        :key="tableKey"
+        :loading="loading"
+        :enable-items-per-page-dropdown="true"
+      >
+        <template v-slot:cell-full_name="{ row: item }">
+          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
+            <button
+              @click="handleView(item)"
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            >
+              <span class="svg-icon svg-icon-3">
+                <i class="fas fa-eye"></i>
+              </span>
+            </button>
+            {{ item.first_name }} {{ item.last_name }}
+          </span>
+        </template>
+        <template v-slot:cell-dob="{ row: item }">
+          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
+            {{ new Date(item.date_of_birth).toLocaleDateString("en-AU") }}
+          </span>
+        </template>
+        <template v-slot:cell-contact_number="{ row: item }">
+          {{ item.contact_number }}
+        </template>
+      </Datatable>
+    </div>
   </ModalWrapper>
 </template>
 
 <script>
-import {
-  defineComponent,
-  ref,
-  computed,
-  onMounted,
-  watchEffect,
-  watch,
-  reactive,
-} from "vue";
+import { defineComponent, ref, reactive, watch, computed } from "vue";
 import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
-import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { hideModal } from "@/core/helpers/dom";
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import patientDocumentTypes from "@/core/data/patient-document-types";
-import moment from "moment";
+import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 
 export default defineComponent({
+  components: {
+    Datatable,
+  },
   name: "assign-patient-modal",
   props: {},
-  setup(props) {
+  setup() {
     const store = useStore();
-    const formRef = ref(null);
-
+    const list = computed(() => store.getters.patientsList);
     const formData = ref({});
-
+    const loading = ref(false);
+    const assignPatientModalRef = ref(null);
     const filter = reactive({
       first_name: "",
       last_name: "",
       date_of_birth: "",
     });
 
-    const rules = ref({
-      // document_name: [
-      //   {
-      //     required: true,
-      //     message: "Document name cannot be blank",
-      //     trigger: "change",
-      //   },
-      // ],
-    });
+    const tableHeader = ref([
+      {
+        name: "Full Name",
+        key: "full_name",
+        sortable: true,
+        searchable: true,
+      },
+      {
+        name: "Date of Birth",
+        key: "dob",
+        sortable: true,
+        searchable: true,
+      },
+      {
+        name: "Contact Number",
+        key: "contact_number",
+        sortable: true,
+        searchable: true,
+      },
+    ]);
 
-    const submit = () => {
-      if (!formRef.value) {
-        return;
-      }
+    const patientData = ref([]);
+    const tableData = ref([]);
+    const tableKey = ref(0);
+    const renderTable = () => tableKey.value++;
+    const clearFilters = () => {
+      filter.first_name = "";
+      filter.last_name = "";
+      filter.date_of_birth = "";
     };
+
+    const searchPatient = () => {
+      loading.value = true;
+      store
+        .dispatch(PatientActions.LIST, {
+          first_name: filter.first_name,
+          last_name: filter.last_name,
+          date_of_birth: filter.date_of_birth,
+        })
+        .finally(() => {
+          loading.value = false;
+          renderTable();
+          // hideModal(assignPatientModalRef.value);
+        });
+    };
+
+    searchPatient();
+    const updateRef = (_ref) => {
+      assignPatientModalRef.value = _ref;
+    };
+
+    watch(list, () => {
+      patientData.value = list.value;
+      tableData.value = list.value;
+      console.log(tableData.value[0]);
+      renderTable();
+    });
 
     return {
       filter,
+      searchPatient,
+      formData,
+      clearFilters,
+      assignPatientModalRef,
+      updateRef,
+      tableHeader,
+      patientData,
+      tableData,
     };
   },
 });
