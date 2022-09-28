@@ -241,7 +241,7 @@ export default defineComponent({
     };
 
     const showAssignPatientModal = () => {
-      const modal = new Modal(document.getElementById("upload_document"));
+      const modal = new Modal(document.getElementById("modal_assign_patient"));
       modal.show();
     };
 
