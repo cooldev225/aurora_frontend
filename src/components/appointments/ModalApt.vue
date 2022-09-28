@@ -2,7 +2,7 @@
   <!--begin::Modal - Create App-->
   <div
     class="modal fade"
-    id="modal_create_apt"
+    :id="modalId"
     ref="createAptModalRef"
     tabindex="-1"
     aria-hidden="true"
@@ -15,7 +15,7 @@
         <!--begin::Modal header-->
         <div class="modal-header">
           <!--begin::Modal title-->
-          <h2>Create Appointment</h2>
+          <h2>{{ title }}</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -49,6 +49,7 @@
               <!--begin::Nav-->
               <div class="stepper-nav ps-lg-10">
                 <StepperNavItem
+                  @click="gotoPage(1)"
                   dataStepperElement="nav"
                   stepperNumber="1"
                   stepperTitle="Appointment"
@@ -56,6 +57,7 @@
                 />
 
                 <StepperNavItem
+                  @click="gotoPage(2)"
                   dataStepperElement="nav"
                   stepperNumber="2"
                   stepperTitle="Patient Info"
@@ -63,6 +65,7 @@
                 />
 
                 <StepperNavItem
+                  @click="gotoPage(3)"
                   dataStepperElement="nav"
                   stepperNumber="3"
                   stepperTitle="Patient Billing"
@@ -70,6 +73,7 @@
                 />
 
                 <StepperNavItem
+                  @click="gotoPage(4)"
                   dataStepperElement="nav"
                   stepperNumber="4"
                   stepperTitle="Other Info"
@@ -79,17 +83,17 @@
                 <div
                   class="p-4 mb-4 card border border-dashed border-primary d-flex flex-column gap-2"
                 >
-                  <InfoSection heading="Appointment Type">{{
-                    appointment_name
-                  }}</InfoSection>
+                  <InfoSection heading="Appointment Type"
+                    >{{ appointment_name }}
+                  </InfoSection>
 
-                  <InfoSection heading="Specialist">{{
-                    specialist_name
-                  }}</InfoSection>
+                  <InfoSection heading="Specialist"
+                    >{{ specialist_name }}
+                  </InfoSection>
 
-                  <InfoSection heading="Clinic">{{
-                    aptInfoData.clinic_name
-                  }}</InfoSection>
+                  <InfoSection heading="Clinic"
+                    >{{ aptInfoData.clinic_name }}
+                  </InfoSection>
 
                   <InfoSection heading="Time">
                     {{ start_time }}
@@ -107,8 +111,8 @@
 
                   <InfoSection heading="Patient"
                     >{{ patientInfoData.first_name }}
-                    {{ patientInfoData.last_name }}</InfoSection
-                  >
+                    {{ patientInfoData.last_name }}
+                  </InfoSection>
                 </div>
                 <!--end::Appointment Overview-->
               </div>
@@ -126,7 +130,7 @@
                   :rules="rules"
                   :model="aptInfoData"
                   ref="formRef_1"
-                  @submit.prevent=""
+                  @submit.prevent="handleStep_1"
                 >
                   <div class="row scroll h-520px">
                     <InputWrapper
@@ -174,7 +178,10 @@
                         placeholder="Enter appointment notes"
                       />
                     </InputWrapper>
-                    <el-form-item class="px-6">
+                    <el-form-item
+                      class="px-6"
+                      v-if="modalId === 'modal_create_apt'"
+                    >
                       <el-checkbox
                         type="checkbox"
                         v-model="aptInfoData.send_forms"
@@ -187,7 +194,10 @@
                     </el-form-item>
 
                     <el-divider />
-                    <div class="card-info">
+                    <div
+                      class="card-info"
+                      v-if="modalId === 'modal_create_apt'"
+                    >
                       <div class="d-flex flex-row gap-3">
                         <!--begin::Col-->
                         <div class="fv-row">
@@ -267,7 +277,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="d-flex justify-content-between flex-row-reverse">
+                  <div
+                    class="d-flex justify-content-between flex-row-reverse"
+                    v-if="modalId == 'modal_create_apt'"
+                  >
                     <button
                       type="button"
                       class="btn btn-lg btn-primary align-self-end"
@@ -281,11 +294,31 @@
                       </span>
                     </button>
                   </div>
+                  <div class="d-flex justify-content-end" v-else>
+                    <button
+                      type="button"
+                      class="btn btn-lg btn-light-primary me-3"
+                      @click="handleSave"
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="submit"
+                      class="btn btn-lg btn-primary align-self-end"
+                    >
+                      Continue
+                      <span class="svg-icon svg-icon-4 ms-1 me-0">
+                        <inline-svg
+                          src="media/icons/duotune/arrows/arr064.svg"
+                        />
+                      </span>
+                    </button>
+                  </div>
                 </el-form>
               </div>
               <!--end::Step 1-->
 
-              <!--begin::Step 3-->
+              <!--begin::Step 2-->
               <div data-kt-stepper-element="content">
                 <div class="w-100">
                   <el-form
@@ -336,9 +369,30 @@
                         <button
                           type="button"
                           class="btn btn-lg btn-primary align-self-end"
+                          v-if="modalId == 'modal_create_apt'"
                           @click="patientStep_1"
                         >
                           Search
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
+                      <div v-if="modalId == 'modal_edit_apt'">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          @click="handleSave"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-lg btn-primary align-self-end"
+                        >
+                          Continue
                           <span class="svg-icon svg-icon-4 ms-1 me-0">
                             <inline-svg
                               src="media/icons/duotune/arrows/arr064.svg"
@@ -553,18 +607,28 @@
                         </span>
                         Back
                       </button>
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-primary align-self-end"
-                        @click="handleStep_2"
-                      >
-                        Continue
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
-                        </span>
-                      </button>
+                      <div>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          v-if="modalId == 'modal_edit_apt'"
+                          @click="handleSave"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-primary align-self-end"
+                          @click="handleStep_2"
+                        >
+                          Continue
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </el-form>
                 </div>
@@ -853,18 +917,28 @@
                         </span>
                         Back
                       </button>
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-primary align-self-end"
-                        @click="handleStep_3"
-                      >
-                        Continue
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
-                        </span>
-                      </button>
+                      <div>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          v-if="modalId == 'modal_edit_apt'"
+                          @click="handleSave"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-primary align-self-end"
+                          @click="handleStep_3"
+                        >
+                          Continue
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </el-form>
                 </div>
@@ -1046,10 +1120,20 @@
                         </span>
                         Back
                       </button>
+
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-light-primary me-3"
+                        v-if="modalId == 'modal_edit_apt'"
+                        @click="handleSave"
+                      >
+                        Save
+                      </button>
                       <button
                         type="button"
                         class="btn btn-lg btn-primary align-self-end"
                         @click="submit"
+                        v-else
                       >
                         Create Appointment
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -1111,6 +1195,10 @@ import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 
 export default defineComponent({
+  props: {
+    modalId: { type: String, required: true },
+  },
+
   name: "create-apt-modal",
   directives: {
     mask,
@@ -1123,7 +1211,7 @@ export default defineComponent({
     InputWrapper,
     AlertBadge,
   },
-  setup() {
+  setup(props) {
     const store = useStore();
     const formRef_1 = ref(null);
     const formRef_2 = ref(null);
@@ -1303,11 +1391,14 @@ export default defineComponent({
       triple: 3,
     });
     const appointment_time = ref(30);
-    console.log(aptInfoData.value);
     const _stepperObj = ref(null);
     const createAptRef = ref(null);
     const createAptModalRef = ref(null);
     const currentStepIndex = ref(0);
+
+    const editAptRef = ref(null);
+    const editAptModalRef = ref(null);
+    const cur_specialist_id = ref("");
 
     const ava_specialist = ref([]);
     const apt_type = ref("");
@@ -1328,6 +1419,9 @@ export default defineComponent({
     const arrival_time = ref(30);
 
     const addressRef = ref(null);
+    const title = ref(null);
+    const refName = ref(null);
+    const refCode = ref(null);
 
     const patientTableData = ref([]);
     const patientTableHeader = ref([
@@ -1374,16 +1468,63 @@ export default defineComponent({
     const organisation = computed(() => store.getters.orgList);
     const patientList = computed(() => store.getters.patientsList);
     const patientAptData = computed(() => store.getters.getPatientAppointments);
+    const aptData = computed(() => store.getters.getAptSelected);
+
+    const setTitle = () => {
+      if (props.modalId === "modal_create_apt") {
+        title.value = "Create Appointment";
+        refName.value = "createAptModalRef";
+      } else if (props.modalId === "modal_edit_apt") {
+        title.value = "Update Appointment";
+        refName.value = "editAptModalRef";
+        refCode.value = "editAptRef";
+        _stepperObj.value = StepperComponent.createInstance(editAptRef.value);
+      }
+    };
 
     const formatDate = (date) => {
       return moment(date).format("DD-MM-YYYY").toString();
     };
+
+    // Make sure this watch runs only when edit
+    watch(aptData, () => {
+      if (props.modalId == "modal_edit_apt") {
+        aptInfoData.value.clinic_id = aptData.value.clinic_id;
+        getAvailableRooms();
+        for (let key in aptInfoData.value)
+          aptInfoData.value[key] = aptData.value[key];
+        aptInfoData.value.time_slot = [];
+        aptInfoData.value.time_slot.push(aptData.value.start_time);
+        aptInfoData.value.time_slot.push(aptData.value.end_time);
+        cur_appointment_type_id.value = aptData.value.appointment_type_id;
+        for (let key in patientInfoData.value)
+          patientInfoData.value[key] = aptData.value[key];
+        for (let key in billingInfoData.value)
+          billingInfoData.value[key] = aptData.value[key];
+        for (let key in otherInfoData.value)
+          otherInfoData.value[key] = aptData.value[key];
+      }
+    });
 
     watch(cur_appointment_type_id, () => {
       aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
       const _selected = aptTypeList.value.filter(
         (aptType) => aptType.id === cur_appointment_type_id.value
       )[0];
+
+      // Make sure this watch runs only when edit
+      // if (props.modalId === "modal_edit_apt") {
+      // appointment_name.value = _selected.name;
+      // _appointment_time.value = Number(
+      //   appointment_length[_selected.appointment_time] *
+      //     appointment_time.value
+      // );
+      //start_time.value = aptInfoData.value.time_slot[0];
+      // arrival_time.value = Number(_selected.arrival_time);
+      //aptInfoData.value.clinical_code = _selected.clinical_code;
+      //aptInfoData.value.mbs_code = _selected.mbs_code;
+      //apt_type.value = _selected.type;
+      // }
 
       if (typeof _selected === "undefined") {
         appointment_name.value = "";
@@ -1412,6 +1553,7 @@ export default defineComponent({
         .format("HH:mm")
         .toString();
       aptInfoData.value.time_slot[1] = end_time.value;
+
       aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
         .subtract(arrival_time.value, "minutes")
         .format("HH:mm")
@@ -1443,6 +1585,17 @@ export default defineComponent({
       }
 
       overlapping_cnt.value = cnt;
+    });
+
+    // Make sure this watch runs only edit
+    watch(cur_specialist_id, () => {
+      aptInfoData.value.specialist_id = cur_specialist_id.value;
+      const _selected = ava_specialist.value.filter(
+        (item) => item.id === cur_specialist_id.value
+      )[0];
+      specialist_name.value = _selected.name;
+      anesthetist.value = _selected.anesthetist;
+      aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
     });
 
     watch(cur_specialist, () => {
@@ -1503,7 +1656,10 @@ export default defineComponent({
       ava_specialist.value = bookingData.ava_specialist;
 
       let specialistRestriction = bookingData.restriction;
-      if (specialistRestriction == "NONE") {
+      if (
+        specialistRestriction === "NONE" ||
+        props.modalId === "modal_edit_apt"
+      ) {
         aptTypeListWithRestriction.value = aptTypeList.value;
       } else {
         aptTypeListWithRestriction.value = aptTypeList.value.filter(
@@ -1530,19 +1686,7 @@ export default defineComponent({
             bookingData.selected_specialist.hrm_user_base_schedules[0].clinic;
           aptInfoData.value.clinic_name = clinic.value.name;
           aptInfoData.value.clinic_id = clinic.value.id;
-          if (JwtService.getToken()) {
-            ApiService.setHeader();
-            ApiService.get("clinics/" + clinic.value.id + "/rooms")
-              .then(({ data }) => {
-                rooms.value = data.data;
-              })
-              .catch(({ response }) => {
-                console.log(response.data.errors);
-                // this.context.commit(Mutations.PURGE_AUTH);
-              });
-          } else {
-            // this.context.commit(Mutations.PURGE_AUTH);
-          }
+          getAvailableRooms();
         }
       }
 
@@ -1558,31 +1702,51 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      setTitle();
       _stepperObj.value = StepperComponent.createInstance(createAptRef.value);
-
+      if (props.modalId === "modal_create_apt") {
+        store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      }
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.ORG.LIST);
-      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
     });
+
+    const getAvailableRooms = () => {
+      if (JwtService.getToken()) {
+        ApiService.setHeader();
+        ApiService.get("clinics/" + aptInfoData.value.clinic_id + "/rooms")
+          .then(({ data }) => {
+            rooms.value = data.data;
+          })
+          .catch(({ response }) => {
+            console.log(response.data.errors);
+            // this.context.commit(Mutations.PURGE_AUTH);
+          });
+      } else {
+        // this.context.commit(Mutations.PURGE_AUTH);
+      }
+    };
 
     const handleStep_1 = () => {
       if (!formRef_1.value) {
         return;
       }
 
-      patientInfoData.value = {
-        first_name: "",
-        last_name: "",
-        date_of_birth: "",
-        email: "",
-        address: "",
-        contact_number: "",
-        appointment_confirm_method: "sms",
-        allergies: "",
-        clinical_alerts: "",
-      };
+      if (props.modalId == "modal_create_apt") {
+        patientInfoData.value = {
+          first_name: "",
+          last_name: "",
+          date_of_birth: "",
+          email: "",
+          address: "",
+          contact_number: "",
+          appointment_confirm_method: "sms",
+          allergies: "",
+          clinical_alerts: "",
+        };
+      }
 
       if (formRef_2.value) formRef_2.value.resetFields();
       formRef_1.value.validate((valid) => {
@@ -1627,6 +1791,40 @@ export default defineComponent({
         }
       });
     };
+    // Send request to update exiting appointment
+    const handleSave = () => {
+      loading.value = true;
+      store
+        .dispatch(Actions.APT.UPDATE, {
+          id: aptData.value.id,
+          ...aptInfoData.value,
+          ...patientInfoData.value,
+          ...billingInfoData.value,
+          ...otherInfoData.value,
+        })
+        .then(() => {
+          loading.value = false;
+          store.dispatch(AppointmentActions.APT.LIST);
+          hideModal(editAptModalRef.value);
+          if (searchVal.value.date) {
+            store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
+              ...searchVal.value,
+            });
+            store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
+              ...searchVal.value,
+            });
+          } else {
+            store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
+              ...searchVal.value,
+            });
+          }
+          resetCreateModal();
+        })
+        .catch(({ response }) => {
+          loading.value = false;
+          console.log(response.data.errors);
+        });
+    };
 
     const resetCreateModal = () => {
       currentStepIndex.value = 0;
@@ -1636,10 +1834,16 @@ export default defineComponent({
       formRef_3.value.resetFields();
       formRef_4.value.resetFields();
 
-      filterPatient.first_name = "";
-      filterPatient.last_name = "";
-      filterPatient.date_of_birth = "";
-      filterPatient.ur_number = "";
+      // Create Modal confirm again
+      if (props.modalId == "modal_create_apt") {
+        filterPatient.first_name = "";
+        filterPatient.last_name = "";
+        filterPatient.date_of_birth = "";
+        filterPatient.ur_number = "";
+      } else {
+        // Edit modal
+        store.dispatch(PatientActions.LIST);
+      }
 
       cur_appointment_type_id.value = "";
       patientStatus.value = "new";
@@ -1670,61 +1874,95 @@ export default defineComponent({
       formRef_4.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          store
-            .dispatch(AppointmentActions.APT.CREATE, {
-              ...aptInfoData.value,
-              ...patientInfoData.value,
-              ...billingInfoData.value,
-              ...otherInfoData.value,
-            })
-            .then(() => {
-              loading.value = false;
-              store.dispatch(AppointmentActions.APT.LIST);
-              handleCancel();
-              Swal.fire({
-                text: "Successfully Created!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                  cancelButton: "btn btn-info",
-                },
-                showCancelButton: true,
-                cancelButtonText: "Deposit",
-              }).then((result) => {
-                hideModal(createAptModalRef.value);
-                if (searchVal.value.date) {
-                  store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
-                    ...searchVal.value,
-                  });
-                  store.dispatch(
-                    AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
-                    {
-                      ...searchVal.value,
-                    }
-                  );
-                } else {
-                  store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
-                    ...searchVal.value,
-                  });
-                }
-
-                resetCreateModal();
-
-                if (result.dismiss === "cancel") {
-                  router.push({ name: "make-payment-pay" });
-                }
-              });
-            })
-            .catch(({ response }) => {
-              loading.value = false;
-              console.log(response.data.error);
-            });
+          props.modalId === "modal_create_apt" ? createApt() : updateApt();
+          resetCreateModal();
         } else {
           // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
+    };
+
+    const createApt = () => {
+      store
+        .dispatch(AppointmentActions.APT.CREATE, {
+          ...aptInfoData.value,
+          ...patientInfoData.value,
+          ...billingInfoData.value,
+          ...otherInfoData.value,
+        })
+        .then(() => {
+          loading.value = false;
+          store.dispatch(AppointmentActions.APT.LIST);
+          handleCancel();
+          Swal.fire({
+            text: "Successfully Created!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+              cancelButton: "btn btn-info",
+            },
+            showCancelButton: true,
+            cancelButtonText: "Deposit",
+          }).then((result) => {
+            hideModal(createAptModalRef.value);
+            if (searchVal.value.date) {
+              store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
+                ...searchVal.value,
+              });
+              store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
+                ...searchVal.value,
+              });
+            } else {
+              store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
+                ...searchVal.value,
+              });
+            }
+
+            resetCreateModal();
+
+            if (result.dismiss === "cancel") {
+              router.push({ name: "make-payment-pay" });
+            }
+          });
+        })
+        .catch(({ response }) => {
+          loading.value = false;
+          console.log(response.data.errors);
+        });
+    };
+
+    const updateApt = () => {
+      store
+        .dispatch(Actions.APT.UPDATE, {
+          id: aptData.value.id,
+          ...aptInfoData.value,
+          ...patientInfoData.value,
+          ...billingInfoData.value,
+          ...otherInfoData.value,
+        })
+        .then(() => {
+          loading.value = false;
+          store.dispatch(Actions.APT.LIST);
+          hideModal(editAptModalRef.value);
+          if (searchVal.value.date) {
+            store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+              ...searchVal.value,
+            });
+            store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+              ...searchVal.value,
+            });
+          } else {
+            store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+              ...searchVal.value,
+            });
+          }
+        })
+        .catch(({ response }) => {
+          loading.value = false;
+          console.log(response.data.error);
+        });
     };
 
     const patientStep_1 = () => {
@@ -1748,6 +1986,13 @@ export default defineComponent({
       }
 
       patientStep.value++;
+    };
+
+    const gotoPage = (page) => {
+      if (props.modalId === "modal_edit_apt") {
+        currentStepIndex.value = Number(page - 1);
+        _stepperObj.value.goto(page);
+      }
     };
 
     const patientPrevStep = () => {
@@ -1853,6 +2098,14 @@ export default defineComponent({
       searchReferralDoctor,
       handleSelectReferringDoctor,
       tableKey,
+      gotoPage,
+      editAptRef,
+      editAptModalRef,
+      handleSave,
+      aptTypeList,
+      cur_specialist_id,
+      title,
+      refName,
     };
   },
 });

@@ -291,7 +291,7 @@
     </div>
   </div>
 
-  <CreateModal></CreateModal>
+  <AptModal modalId="modal_create_apt" />
   <AppointmentListPopup
     :available-slots-by-date="available_slots_by_date"
     :all-specialists="allSpecialists"
@@ -314,7 +314,7 @@ import {
 } from "vue";
 import { useStore } from "vuex";
 import AppointmentListPopup from "@/components/appointments/AppointmentListPopup.vue";
-import CreateModal from "@/components/appointments/CreateApt.vue";
+import AptModal from "@/components/appointments/ModalApt.vue";
 import AppointmentTable from "@/components/appointments/AppointmentTable.vue";
 import VueCtkDateTimePicker from "vue-ctk-date-time-picker";
 import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
@@ -333,7 +333,7 @@ export default defineComponent({
   name: "bookings-dashboard",
   components: {
     VueCtkDateTimePicker,
-    CreateModal,
+    AptModal,
     AppointmentTable,
     AppointmentListPopup,
   },
