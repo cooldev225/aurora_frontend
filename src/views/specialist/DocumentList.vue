@@ -78,6 +78,7 @@
             <InfoSection heading="Patient">
               {{ selectedDocument.document_info.patient }}
               <IconButton
+                @click="showAssignPatientModal()"
                 v-if="!selectedDocument.document_info.patient"
                 label="Assign Patient"
               />
@@ -123,6 +124,7 @@
     v-if="selectedDocument"
     :document="selectedDocument"
   ></SendDocumentViaEmailModal>
+  <AssignPatientModal></AssignPatientModal>
 </template>
 <style lang="scss">
 .pdf_viewer_wrapper {
@@ -146,12 +148,14 @@ import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import DocumentLabel from "@/views/patients/documents/DocumentLabel.vue";
 import SendDocumentViaEmailModal from "@/views/patients/documents/SendDocumentViaEmailModal.vue";
 import { Modal } from "bootstrap";
+import AssignPatientModal from "@/views/specialist/modals/AssignPatientModal.vue";
+
 const selectedDocument = ref(null);
 
 export default defineComponent({
   name: "admin-main",
 
-  components: { DocumentLabel },
+  components: { DocumentLabel, AssignPatientModal },
   props: {
     showDocumentInformation: { default: true },
     showDocumentActions: { default: true },
@@ -236,6 +240,11 @@ export default defineComponent({
       }
     };
 
+    const showAssignPatientModal = () => {
+      const modal = new Modal(document.getElementById("upload_document"));
+      modal.show();
+    };
+
     return {
       patientDocumentTypes,
       DocumentLabel,
@@ -246,6 +255,7 @@ export default defineComponent({
       handleSendEmail,
       SendDocumentViaEmailModal,
       handlePrint,
+      showAssignPatientModal,
     };
   },
 });
