@@ -337,6 +337,29 @@ export default defineComponent({
         return;
       }
 
+      //validate overlap time range
+      let overlap = formData.value.timeslots.filter((t, i) => {
+        let res = formData.value.timeslots.filter((tt, ii) => {
+          t.start_time += t.start_time.split(":").length < 3 ? ":00" : "";
+          t.end_time += t.end_time.split(":").length < 3 ? ":00" : "";
+          tt.start_time += tt.start_time.split(":").length < 3 ? ":00" : "";
+          tt.end_time += tt.end_time.split(":").length < 3 ? ":00" : "";
+          return (
+            i != ii &&
+            ((tt.start_time > t.start_time && tt.start_time < t.end_time) ||
+              (t.start_time > tt.start_time && t.start_time < tt.end_time) ||
+              (tt.end_time > t.start_time && tt.end_time < t.end_time) ||
+              (t.end_time > tt.start_time && t.end_time < tt.end_time))
+          );
+        });
+        if (res?.length) return true;
+        return false;
+      });
+      if (overlap?.length) {
+        ElMessage.error("There is the over lap slots!");
+        return;
+      }
+
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
