@@ -4,7 +4,7 @@
     modalId="assign_patient"
     :updateRef="updateRef"
   >
-    <el-form class="w-100" ref="formRef">
+    <el-form class="w-100" ref="formRef_search_patient">
       <!--begin::Row-->
       <div class="row g-8">
         <!--begin::Col-->
@@ -126,7 +126,6 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const list = computed(() => store.getters.patientsList);
-    const formData = ref({});
     const loading = ref(false);
     const assignPatientModalRef = ref(null);
     const filter = reactive({
@@ -156,7 +155,6 @@ export default defineComponent({
       },
     ]);
 
-    const patientData = ref([]);
     const tableData = ref([]);
     const tableKey = ref(0);
     const renderTable = () => tableKey.value++;
@@ -164,6 +162,7 @@ export default defineComponent({
       filter.first_name = "";
       filter.last_name = "";
       filter.date_of_birth = "";
+      renderTable();
     };
 
     const searchPatient = () => {
@@ -181,28 +180,25 @@ export default defineComponent({
         });
     };
 
-    searchPatient();
     const updateRef = (_ref) => {
       assignPatientModalRef.value = _ref;
     };
 
     watch(list, () => {
-      patientData.value = list.value;
       tableData.value = list.value;
-      console.log(tableData.value[0]);
       renderTable();
     });
 
     return {
       filter,
       searchPatient,
-      formData,
       clearFilters,
       assignPatientModalRef,
       updateRef,
+      tableKey,
       tableHeader,
-      patientData,
       tableData,
+      loading,
     };
   },
 });
