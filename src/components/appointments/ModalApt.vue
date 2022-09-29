@@ -80,40 +80,13 @@
                   stepperDescription="Referral information and Appointment history"
                 />
                 <!--begin::Appointment Overview-->
-                <div
-                  class="p-4 mb-4 card border border-dashed border-primary d-flex flex-column gap-2"
-                >
-                  <InfoSection heading="Appointment Type"
-                    >{{ appointment_name }}
-                  </InfoSection>
-
-                  <InfoSection heading="Specialist"
-                    >{{ specialist_name }}
-                  </InfoSection>
-
-                  <InfoSection heading="Clinic"
-                    >{{ aptInfoData.clinic_name }}
-                  </InfoSection>
-
-                  <InfoSection heading="Time">
-                    {{ start_time }}
-                    - {{ aptInfoData.time_slot[1] }}
-                    <span
-                      v-if="aptInfoData.arrival_time"
-                      class="text-black fs-5"
-                    >
-                      (Arrive: {{ aptInfoData.arrival_time }})</span
-                    ></InfoSection
-                  >
-                  <InfoSection heading="Date">
-                    {{ new Date(aptInfoData.date).toLocaleDateString("en-AU") }}
-                  </InfoSection>
-
-                  <InfoSection heading="Patient"
-                    >{{ patientInfoData.first_name }}
-                    {{ patientInfoData.last_name }}
-                  </InfoSection>
-                </div>
+                <AptOverview
+                  :aptInfoData="aptInfoData"
+                  :patientInfoData="patientInfoData"
+                  :specialistName="specialist_name"
+                  :appointmentName="appointment_name"
+                  :startTime="start_time"
+                />
                 <!--end::Appointment Overview-->
               </div>
 
@@ -1185,12 +1158,11 @@ import moment from "moment";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { useRouter } from "vue-router";
-
+import AptOverview from "@/components/appointments/partials/AppointmentOverview";
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
 import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
-import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 
@@ -1207,10 +1179,11 @@ export default defineComponent({
     Datatable,
     AppointmentHistory,
     StepperNavItem,
-    InfoSection,
     InputWrapper,
     AlertBadge,
+    AptOverview,
   },
+
   setup(props) {
     const store = useStore();
     const formRef_1 = ref(null);
@@ -1470,6 +1443,7 @@ export default defineComponent({
     const patientAptData = computed(() => store.getters.getPatientAppointments);
     const aptData = computed(() => store.getters.getAptSelected);
 
+    // Setting modal Heading and Ids
     const setTitle = () => {
       if (props.modalId === "modal_create_apt") {
         title.value = "Create Appointment";
@@ -1486,19 +1460,31 @@ export default defineComponent({
       return moment(date).format("DD-MM-YYYY").toString();
     };
 
-    // Make sure this watch runs only when edit
+    const updateAptTime = (startTime, endTime) => {
+      aptInfoData.value.time_slot = [];
+      aptInfoData.value.time_slot.push(
+        moment(startTime, "HH:mm").format("HH:mm")
+      );
+      start_time.value = aptInfoData.value.time_slot[0];
+      aptInfoData.value.time_slot.push(
+        moment(endTime, "HH:mm").format("HH:mm")
+      );
+    };
+
+    // Get Selected APT data when user edit appointments
     watch(aptData, () => {
       if (props.modalId == "modal_edit_apt") {
-        aptInfoData.value.clinic_id = aptData.value.clinic_id;
-        getAvailableRooms();
         for (let key in aptInfoData.value)
           aptInfoData.value[key] = aptData.value[key];
-        aptInfoData.value.time_slot = [];
-        aptInfoData.value.time_slot.push(aptData.value.start_time);
-        aptInfoData.value.time_slot.push(aptData.value.end_time);
+        aptInfoData.value.clinic_id = aptData.value.clinic_id;
+        aptInfoData.value.clinic_name = aptData.value.clinic.name;
+        specialist_name.value = aptData.value.specialist.full_name;
+        getAvailableRooms();
+        updateAptTime(aptData.value.start_time, aptData.value.end_time);
+
         cur_appointment_type_id.value = aptData.value.appointment_type_id;
         for (let key in patientInfoData.value)
-          patientInfoData.value[key] = aptData.value[key];
+          patientInfoData.value[key] = aptData.value.patient[key];
         for (let key in billingInfoData.value)
           billingInfoData.value[key] = aptData.value[key];
         for (let key in otherInfoData.value)
@@ -1552,12 +1538,13 @@ export default defineComponent({
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      aptInfoData.value.time_slot[1] = end_time.value;
-
-      aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
-        .subtract(arrival_time.value, "minutes")
-        .format("HH:mm")
-        .toString();
+      if (props.modalId == "modal_create_apt") {
+        updateAptTime(start_time.value, end_time.value);
+        aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
+          .subtract(arrival_time.value, "minutes")
+          .format("HH:mm")
+          .toString();
+      }
 
       if (apt_type.value === "Consultation") {
         otherInfoData.value.anesthetic_questions = false;
@@ -1606,7 +1593,6 @@ export default defineComponent({
     });
 
     watch(start_time, () => {
-      aptInfoData.value.time_slot[0] = start_time.value;
       aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
         .subtract(arrival_time.value, "minutes")
         .format("HH:mm")
@@ -1615,7 +1601,9 @@ export default defineComponent({
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      aptInfoData.value.time_slot[1] = end_time.value;
+      if (props.modalId == "modal_create_apt") {
+        updateAptTime(start_time.value, end_time.value);
+      }
     });
 
     watch(patientStatus, () => {
@@ -1671,7 +1659,7 @@ export default defineComponent({
         start_time.value = moment(bookingData.time_slot[0]).format("HH:mm");
         end_time.value = moment(bookingData.time_slot[1]).format("HH:mm");
       }
-      aptInfoData.value.date = bookingData.date;
+      // aptInfoData.value.date = bookingData.date;
       if (cur_appointment_type_id.value == "") {
         overlapping_cnt.value = bookingData.overlapping_cnt;
       }
@@ -1746,9 +1734,9 @@ export default defineComponent({
           allergies: "",
           clinical_alerts: "",
         };
+        if (formRef_2.value) formRef_2.value.resetFields();
       }
 
-      if (formRef_2.value) formRef_2.value.resetFields();
       formRef_1.value.validate((valid) => {
         if (valid) {
           currentStepIndex.value++;
@@ -1795,7 +1783,7 @@ export default defineComponent({
     const handleSave = () => {
       loading.value = true;
       store
-        .dispatch(Actions.APT.UPDATE, {
+        .dispatch(AppointmentActions.APT.UPDATE, {
           id: aptData.value.id,
           ...aptInfoData.value,
           ...patientInfoData.value,
@@ -1829,13 +1817,12 @@ export default defineComponent({
     const resetCreateModal = () => {
       currentStepIndex.value = 0;
       _stepperObj.value.goFirst();
-      formRef_1.value.resetFields();
-      if (formRef_2.value) formRef_2.value.resetFields();
-      formRef_3.value.resetFields();
-      formRef_4.value.resetFields();
 
-      // Create Modal confirm again
       if (props.modalId == "modal_create_apt") {
+        formRef_1.value.resetFields();
+        formRef_3.value.resetFields();
+        formRef_4.value.resetFields();
+        if (formRef_2.value) formRef_2.value.resetFields();
         filterPatient.first_name = "";
         filterPatient.last_name = "";
         filterPatient.date_of_birth = "";
@@ -1844,11 +1831,11 @@ export default defineComponent({
         // Edit modal
         store.dispatch(PatientActions.LIST);
       }
-
-      cur_appointment_type_id.value = "";
-      patientStatus.value = "new";
-      patientStep.value = 1;
-      patientTableData.value = patientList.value;
+      //
+      // cur_appointment_type_id.value = "";
+      // patientStatus.value = "new";
+      // patientStep.value = 1;
+      // patientTableData.value = patientList.value;
     };
 
     const handleCancel = () => {
@@ -1927,9 +1914,9 @@ export default defineComponent({
             }
           });
         })
-        .catch(({ response }) => {
+        .catch((response) => {
           loading.value = false;
-          console.log(response.data.errors);
+          console.log(response);
         });
     };
 
