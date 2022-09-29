@@ -54,9 +54,9 @@
                   <el-select class="w-100" v-model="formData.type" filterable>
                     <el-option
                       v-for="item in employeeTypes"
-                      :value="item"
-                      :label="item"
-                      :key="item"
+                      :value="item.value"
+                      :label="item.label"
+                      :key="item.value"
                     />
                   </el-select>
                 </InputWrapper>
@@ -301,9 +301,10 @@ export default defineComponent({
     const timeslots = computed(() => store.getters.hrmTimeslotSelected);
     const loading = ref(false);
     const formData = ref({
+      id: -1,
       clinic_id: -1,
       role_id: null,
-      type: "Permanent",
+      type: "PERMANENT",
       user_id: null,
       timeslots: [],
     });
@@ -393,6 +394,7 @@ export default defineComponent({
           hideModal(editScheduleModalRef.value);
           formData.value.timeslots = _timeslots;
           //console.log(["formData.value before submit=", formData.value]);
+          //
           store
             .dispatch(schedule.value._submit, formData.value)
             .then(() => {
