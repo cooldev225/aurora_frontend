@@ -141,7 +141,8 @@ export default defineComponent({
       //console.log("EDIT schedule id:" + schedule.id + " on " + day);
       schedule._title = "Edit Time Slot - " + day.label;
       schedule._action = "edit_weekly_time";
-      schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
+      schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
+      if (schedule.id) schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
       schedule._day = day.value;
 
       store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
@@ -160,7 +161,8 @@ export default defineComponent({
       //console.log("EDIT schedule id:" + schedule.id);
       schedule._title = "Edit Employee Type";
       schedule._action = "edit_employee_type";
-      schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
+      schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
+      if (schedule.id) schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
       store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
       const modal = new Modal(document.getElementById("modal_edit_schedule"));
       modal.show();
