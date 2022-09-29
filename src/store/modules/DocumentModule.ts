@@ -88,7 +88,9 @@ export default class DocumentModule extends VuexModule implements Documents {
   [DocumentActions.SET_PATIENT](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      return ApiService.post("documents/patient", data)
+      return ApiService.put("documents/" + data.document_id, {
+        patient_id: data.patient_id,
+      })
         .then(({ data }) => {
           return data;
         })
