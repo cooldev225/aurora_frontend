@@ -124,7 +124,7 @@
     v-if="selectedDocument"
     :document="selectedDocument"
   ></SendDocumentViaEmailModal>
-  <AssignPatientModal></AssignPatientModal>
+  <AssignPatientModal :document="selectedDocument"></AssignPatientModal>
 </template>
 <style lang="scss">
 .pdf_viewer_wrapper {

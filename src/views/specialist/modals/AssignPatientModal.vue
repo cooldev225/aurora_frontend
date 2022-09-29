@@ -87,11 +87,11 @@
         <template v-slot:cell-full_name="{ row: item }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
             <button
-              @click="handleView(item)"
+              @click="handleAssign(item)"
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
             >
               <span class="svg-icon svg-icon-3">
-                <i class="fas fa-eye"></i>
+                <i class="bi bi-check-circle"></i>
               </span>
             </button>
             {{ item.first_name }} {{ item.last_name }}
@@ -113,7 +113,9 @@
 <script>
 import { defineComponent, ref, reactive, watch, computed } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
+import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 
@@ -122,10 +124,14 @@ export default defineComponent({
     Datatable,
   },
   name: "assign-patient-modal",
-  props: {},
-  setup() {
+  props: {
+    document: { type: Object, required: true },
+  },
+  setup(props) {
     const store = useStore();
+    const router = useRouter();
     const list = computed(() => store.getters.patientsList);
+    const documentId = computed(() => props.document.id);
     const loading = ref(false);
     const assignPatientModalRef = ref(null);
     const filter = reactive({
@@ -184,6 +190,17 @@ export default defineComponent({
       assignPatientModalRef.value = _ref;
     };
 
+    const handleAssign = (patient) => {
+      store.dispatch(DocumentActions.SET_PATIENT, {
+        patient_id: patient.id,
+        document_id: documentId,
+      });
+      // router.push({
+      //   name: "patients-view-appointments",
+      //   params: { id: patient.id },
+      // });
+    };
+
     watch(list, () => {
       tableData.value = list.value;
       renderTable();
@@ -199,6 +216,7 @@ export default defineComponent({
       tableHeader,
       tableData,
       loading,
+      handleAssign,
     };
   },
 });
