@@ -45,9 +45,8 @@
             <InputWrapper
               class="col-12 col-md-6"
               label="Contact Number"
-              :v-mask="'0#-####-####'"
+              v-mask="'0#-####-####'"
               prop="mobile_number"
-              @input="acceptNumber"
             >
               <el-input
                 v-model="formData.mobile_number"
@@ -70,7 +69,7 @@
           <el-divider />
           <HeadingText text="Employee Type" />
           <div class="row">
-            <InputWrapper class="col-4" label="Type" prop="type">
+            <InputWrapper class="col-6" label="Type" prop="type">
               <el-select class="w-100" v-model="formData.type" filterable>
                 <el-option
                   v-for="item in employeeTypes"
@@ -80,7 +79,7 @@
                 />
               </el-select>
             </InputWrapper>
-            <InputWrapper class="col-4" label="Role" prop="role">
+            <InputWrapper class="col-6" label="Role" prop="role">
               <el-select v-model="formData.role_id" class="w-100">
                 <el-option
                   v-for="item in employeeRoles"
@@ -90,6 +89,58 @@
                 />
               </el-select>
             </InputWrapper>
+          </div>
+          <div v-if="formData.role_id == 5">
+            <el-divider />
+            <HeadingText text="Provider Number" />
+            <div
+              class="row"
+              v-for="(provider, index) in formData.specialist_clinic_relations"
+              :key="index"
+            >
+              <InputWrapper class="col-6" label="Clinic" prop="clinic_id">
+                <el-select
+                  class="w-100"
+                  type="text"
+                  v-model="provider.clinic_id"
+                  :prop="'location-select'"
+                >
+                  <el-option
+                    v-for="clinic in clinicsList"
+                    :disabled="
+                      formData.specialist_clinic_relations.filter(
+                        (f) => f.clinic_id == clinic.id
+                      )?.length
+                    "
+                    :value="clinic.id"
+                    :label="clinic.name"
+                    :key="clinic.id"
+                  />
+                </el-select>
+              </InputWrapper>
+
+              <InputWrapper
+                class="col-6"
+                label="Provider Number"
+                prop="provider_number"
+              >
+                <el-input
+                  v-model="provider.provider_number"
+                  type="text"
+                  placeholder="Enter Provider Number"
+                />
+              </InputWrapper>
+            </div>
+            <div
+              v-if="
+                formData.specialist_clinic_relations.length < clinicsList.length
+              "
+              class="m-3 cursor-pointer text-center text-nowrap border border-gray-300 h-40px d-flex flex-center"
+              style="font-size: 1.2rem; line-height: 40px; color: #bd5"
+              @click="handleAddOtherNumber()"
+            >
+              <span><span>+</span> Add Other Number</span>
+            </div>
           </div>
           <el-divider />
           <HeadingText text="Employee Hours" />
@@ -279,10 +330,14 @@ import weekdays from "@/core/data/weekdays";
 import restrictionsTypes from "@/core/data/apt-restriction";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import { ElMessage } from "element-plus";
+import { mask } from "vue-the-mask";
 
 export default defineComponent({
   name: "create-employee",
   components: { InputWrapper },
+  directives: {
+    mask,
+  },
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -325,6 +380,13 @@ export default defineComponent({
           appointment_type_restriction: null,
         },
       ],
+      specialist_clinic_relations: [
+        {
+          clinic_id: null,
+          specilasit_id: "-1",
+          provider_number: null,
+        },
+      ],
     });
 
     const commonRoles = {
@@ -354,18 +416,25 @@ export default defineComponent({
           trigger: ["blur", "change"],
         },
       ],
+      specialist_clinic_relations: {
+        clinic_id: [
+          {
+            required: true,
+            message: "This field cannot be blank",
+            trigger: ["blur", "change"],
+          },
+        ],
+        provider_number: [
+          {
+            required: true,
+            message: "This field cannot be blank",
+            trigger: "blur",
+          },
+        ],
+      },
     };
 
     const rules = ref(commonRoles);
-
-    const acceptNumber = () => {
-      //0#-####-####
-      var v = formData.value.mobile_number;
-      var x = v.replace(/\D/g, "").match(/(\d{0,2})(\d{0,4})(\d{0,4})/);
-      if (x != undefined && x?.length > 3)
-        v = !x[2] ? x[1] : x[1] + "-" + x[2] + (x[3] ? "-" + x[3] : "");
-      formData.value.mobile_number = v;
-    };
 
     const addSchedualHandle = () => {
       formData.value.hrm_user_base_schedules.push({
@@ -391,7 +460,6 @@ export default defineComponent({
 
     watch(employeeList, () => {
       const id = route.params.id;
-      console.log(["employeeList=", employeeList.value]);
       if (id != undefined) {
         let employees = employeeList.value.filter((e) => e.id == id);
         if (employees && employees.length) {
@@ -405,9 +473,13 @@ export default defineComponent({
           formData.value.address = employee.address;
           formData.value.role_id = employee.role_id;
           formData.value.type = employee.type;
-          if (employee.hrm_user_base_schedules.length) {
+          if (employee.hrm_user_base_schedules?.length) {
             formData.value.hrm_user_base_schedules =
               employee.hrm_user_base_schedules;
+          }
+          if (employee.specialist_clinic_relations?.length) {
+            formData.value.specialist_clinic_relations =
+              employee.specialist_clinic_relations;
           }
         }
       }
@@ -435,6 +507,16 @@ export default defineComponent({
       store.dispatch(Actions.CLINICS.LIST);
     });
 
+    const handleAddOtherNumber = () => {
+      let id = route.params.id;
+      let provider = {
+        clinic_id: null,
+        specilasit_id: id.toString(),
+        provider_number: null,
+      };
+      formData.value.specialist_clinic_relations.push(provider);
+    };
+
     const submit = () => {
       if (!formRef.value) {
         return;
@@ -456,6 +538,13 @@ export default defineComponent({
             return false;
           }
           loading.value = true;
+
+          let provideres = formData.value.specialist_clinic_relations.filter(
+            (f) => f.clinic_id != null && f.provider_number != null
+          );
+          formData.value.specialist_clinic_relations = provideres
+            ? provideres
+            : [];
 
           store
             .dispatch(formInfo.submitAction, formData.value)
@@ -499,9 +588,9 @@ export default defineComponent({
       employeeRoles,
       weekdays,
       anesthetistList,
-      acceptNumber,
       addSchedualHandle,
       deleteSchedualHandle,
+      handleAddOtherNumber,
     };
   },
 });
