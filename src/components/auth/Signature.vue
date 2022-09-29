@@ -110,7 +110,9 @@ export default defineComponent({
       if (!isEmpty) {
         loading.value = true;
         store
-          .dispatch(Actions.PROFILE.UPDATE_SIGNATURE, data)
+          .dispatch(Actions.PROFILE.UPDATE_SIGNATURE, {
+            signature: data,
+          })
           .then(() => {
             loading.value = false;
             store.dispatch(Actions.PROFILE.VIEW);

@@ -82,4 +82,21 @@ export default class ProfileModule extends VuexModule implements ProfileInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.PROFILE.UPDATE_SIGNATURE](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("change-signature", data)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }
