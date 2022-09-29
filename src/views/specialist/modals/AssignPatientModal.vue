@@ -182,7 +182,6 @@ export default defineComponent({
         .finally(() => {
           loading.value = false;
           renderTable();
-          // hideModal(assignPatientModalRef.value);
         });
     };
 
@@ -191,14 +190,21 @@ export default defineComponent({
     };
 
     const handleAssign = (patient) => {
-      store.dispatch(DocumentActions.SET_PATIENT, {
-        patient_id: patient.id,
-        document_id: documentId,
-      });
-      // router.push({
-      //   name: "patients-view-appointments",
-      //   params: { id: patient.id },
-      // });
+      store
+        .dispatch(DocumentActions.SET_PATIENT, {
+          patient_id: patient.id,
+          document_id: documentId.value,
+        })
+        .then(() => {
+          clearFilters();
+          tableData.value = [];
+          renderTable();
+          store.dispatch(DocumentActions.LIST, {
+            is_missing_information: 1,
+            origin: "RECEIVED",
+          });
+          hideModal(assignPatientModalRef.value);
+        });
     };
 
     watch(list, () => {
