@@ -29,6 +29,17 @@
             </router-link>
           </li>
           <!--end::Nav item-->
+          <!--begin::Nav item-->
+          <li class="nav-item">
+            <router-link
+              class="nav-link text-active-primary me-6"
+              to="/profile/signature"
+              active-class="active"
+            >
+              Signature
+            </router-link>
+          </li>
+          <!--end::Nav item-->
         </ul>
       </div>
       <!--begin::Navs-->
