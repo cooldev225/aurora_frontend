@@ -132,6 +132,8 @@ export default defineComponent({
     const router = useRouter();
     const list = computed(() => store.getters.patientsList);
     const documentId = computed(() => props.document.id);
+    const documentType = computed(() => props.document.document_type);
+    const documentName = computed(() => props.document.document_name);
     const loading = ref(false);
     const assignPatientModalRef = ref(null);
     const filter = reactive({
@@ -191,9 +193,11 @@ export default defineComponent({
 
     const handleAssign = (patient) => {
       store
-        .dispatch(DocumentActions.SET_PATIENT, {
+        .dispatch(DocumentActions.UPDATE, {
           patient_id: patient.id,
           document_id: documentId.value,
+          document_type: documentType.value,
+          document_name: documentName.value,
         })
         .then(() => {
           clearFilters();

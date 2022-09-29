@@ -2,7 +2,7 @@
 const DocumentActions = {
     LIST: "documentList",
     SHOW: "documentShow",
-    SET_PATIENT: "setPatient",
+    UPDATE: "update",
 };
 
 const DocumentMutations = {
