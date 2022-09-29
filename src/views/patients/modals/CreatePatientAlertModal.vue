@@ -82,7 +82,10 @@ import { PatientActions } from "@/store/enums/StorePatientEnums";
 import timeFrames from "@/core/data/time-frames";
 export default defineComponent({
   name: "patient-alert-modal",
-  setup() {
+  props: {
+    patientId: { required: true },
+  },
+  setup(props) {
     const store = useStore();
     const formRef = ref(null);
     const patientAlertModal = ref(null);
@@ -119,16 +122,16 @@ export default defineComponent({
       if (!formRef.value) {
         return;
       }
-      formData.value.patient_id = patientData.value.id;
+      formData.value.patient_id = props.patientId;
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
           store
-            .dispatch(PatientActions.RECALL.CREATE, formData.value)
+            .dispatch(PatientActions.ALERT.CREATE, formData.value)
             .then(() => {
               loading.value = false;
               Swal.fire({
-                text: "Recall Created",
+                text: "Alert Created",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",

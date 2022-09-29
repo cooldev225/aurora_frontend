@@ -166,7 +166,9 @@
   </div>
   <!--end::Navbar-->
   <RecallReminderModal></RecallReminderModal>
-  <CreatePatientAlertModal></CreatePatientAlertModal>
+  <CreatePatientAlertModal
+    :patientId="patientData.id"
+  ></CreatePatientAlertModal>
   <ReportModal></ReportModal>
   <LetterModal :patientId="patientData.id"></LetterModal>
   <CreateAudioModal :patientId="patientData.id"></CreateAudioModal>
