@@ -121,7 +121,6 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      store.dispatch(Actions.ORG.LIST);
       appointmentTimesList.value = generateAppointmentTimes();
     });
 

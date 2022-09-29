@@ -18,14 +18,7 @@
         <!-- <img alt="Logo" src="aurora-sml-logo.png" class="h-75px logo" /> -->
         <img
           alt="Logo"
-          :src="
-            orgData?.logo
-              ? `http://localhost:8000/file/public/logo/` +
-                orgData.id +
-                `/` +
-                orgData.logo
-              : `aurora-sml-logo.png`
-          "
+          :src="logo ? logo : `aurora-sml-logo.png`"
           class="h-75px w-75px logo"
         />
       </router-link>
@@ -57,7 +50,6 @@ import KTMenu from "@/layout/aside/Menu.vue";
 import { asideTheme } from "@/core/helpers/config";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
-
 export default defineComponent({
   name: "KTAside",
   components: {
@@ -71,27 +63,28 @@ export default defineComponent({
     const { t } = useI18n();
     const store = useStore();
     const currentUser = computed(() => store.getters.currentUser);
-
-    const orgData = ref(null);
-
-    const loadOrganizationData = (id) => {
-      store.dispatch(Actions.ORG.SELECT, id).then((data) => {
-        orgData.value = data;
-      });
-    };
-
-    const reloadOrgData = () => {
-      const orgId = currentUser.value.profile.organization_id;
-      currentUser.value.profile.organization_id && loadOrganizationData(orgId);
-    };
+    const logo = ref("");
 
     watch(currentUser, () => {
-      reloadOrgData();
+      store
+        .dispatch(Actions.ORG.FILE, {
+          type: "ORGANIZATION_LOGO",
+          path: currentUser.value.organization?.logo,
+        })
+        .then((data) => {
+          const blob = new Blob([data], { type: "application/image" });
+          const objectUrl = URL.createObjectURL(blob);
+          logo.value = objectUrl;
+        })
+        .catch(() => {
+          console.log("image load error");
+        });
     });
+
     return {
       asideTheme,
       t,
-      orgData,
+      logo,
     };
   },
 });
