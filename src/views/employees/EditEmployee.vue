@@ -109,8 +109,8 @@
                     v-for="clinic in clinicsList"
                     :disabled="
                       formData.specialist_clinic_relations.filter(
-                        (f) => f.clinic_id == clinic.id?.length
-                      )
+                        (f) => f.clinic_id == clinic.id
+                      )?.length
                     "
                     :value="clinic.id"
                     :label="clinic.name"
