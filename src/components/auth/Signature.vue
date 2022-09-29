@@ -68,7 +68,11 @@
         </div>
         <div class="d-flex ms-auto justify-content-end w-25">
           <button type="submit" class="btn btn-primary w-25">Save</button>
-          <button type="reset" class="btn btn-light-primary w-25 ms-2">
+          <button
+            type="button"
+            @click="clearSignature"
+            class="btn btn-light-primary w-25 ms-2"
+          >
             Cancel
           </button>
         </div>
@@ -102,6 +106,10 @@ export default defineComponent({
 
     const getSignatureData = () => {
       return signaturePad.value.saveSignature();
+    };
+
+    const clearSignature = () => {
+      signaturePad.value.clearSignature();
     };
 
     const submit = () => {
@@ -143,6 +151,7 @@ export default defineComponent({
       signaturePad,
       getSignatureData,
       submit,
+      clearSignature,
     };
   },
 });
