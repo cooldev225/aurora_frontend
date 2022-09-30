@@ -87,7 +87,7 @@ export default class ProfileModule extends VuexModule implements ProfileInfo {
   [Actions.PROFILE.UPDATE_SIGNATURE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("change-signature", data)
+      ApiService.post("profile/signature", data)
         .then(({ data }) => {
           return data.data;
         })
