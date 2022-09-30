@@ -58,7 +58,7 @@ export default class HRMModule
   [HRMActions.SCHEDULE_TEMPLATE.LIST](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("hrm/schedule-templates", {
+      ApiService.query("hrm/hrm-weekly-schedule-template", {
         params: {
           clinic_id: data.clinic_id,
         },
@@ -82,7 +82,7 @@ export default class HRMModule
   [HRMActions.SCHEDULE_TEMPLATE.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("hrm/schedule-templates", item)
+      ApiService.post("hrm/hrm-weekly-schedule-template", item)
         .then(({ data }) => {
           return data.data;
         })
@@ -98,7 +98,7 @@ export default class HRMModule
   [HRMActions.SCHEDULE_TEMPLATE.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("hrm/schedule-templates", item.id, item)
+      ApiService.update("hrm/hrm-weekly-schedule-template", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
