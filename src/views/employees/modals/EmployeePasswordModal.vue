@@ -183,22 +183,43 @@ export default defineComponent({
               new_password: formData.value.new_employee_password,
               confirm_password: formData.value.repeat_employee_password,
             })
-            .then(() => {
+            .then((data) => {
+              console.log(data);
               loading.value = false;
+              if (data && data.success) {
+                Swal.fire({
+                  text: "Successfully Updated!",
+                  icon: "success",
+                  buttonsStyling: false,
+                  confirmButtonText: "Ok, got it!",
+                  customClass: {
+                    confirmButton: "btn btn-primary",
+                  },
+                }).then(() => {
+                  hideModal(employeePasswordModalRef.value);
+                });
+              } else {
+                throw new Error(
+                  data
+                    ? data.message
+                      ? data.message
+                      : data.errors.old_password ||
+                        data.errors.new_password ||
+                        data.errors.confirm_password
+                    : "Action failed."
+                );
+              }
+            })
+            .catch((e) => {
               Swal.fire({
-                text: "Successfully Created!",
-                icon: "success",
+                text: e.message ? e.message : "Action failed.",
+                icon: "failed",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
                 customClass: {
                   confirmButton: "btn btn-primary",
                 },
-              }).then(() => {
-                hideModal(employeePasswordModalRef.value);
               });
-            })
-            .catch(() => {
-              //
             });
           formRef.value.resetFields();
         } else {
