@@ -37,6 +37,15 @@
         />
       </div>
 
+      <InputWrapper required label="Title" prop="title">
+        <el-input
+          v-model="formData.title"
+          class="w-100"
+          type="input"
+          rows="3"
+          placeholder="title for alert"
+        />
+      </InputWrapper>
       <InputWrapper required label="Explanation" prop="explanation">
         <el-input
           v-model="formData.explanation"
@@ -92,7 +101,9 @@ export default defineComponent({
     const loading = ref(false);
 
     const formData = ref({
+      patient_id: null,
       alert_level: "NOTICE",
+      title: "",
       explanation: "",
     });
     const patientData = ref([]);

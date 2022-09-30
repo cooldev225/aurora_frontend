@@ -16,6 +16,12 @@
               {{ patientData.first_name }} {{ patientData.last_name }}
             </span>
 
+            <span>
+              <template v-for="alert in patientData.alerts" :key="alert.id">
+                <PatientAlert :alert="alert" />
+              </template>
+            </span>
+
             <!--begin::Actions-->
             <div class="my-4">
               <div class="d-flex">
@@ -192,6 +198,7 @@ import PrintLabelModal from "@/views/patients/modals/PrintLabelsModal.vue";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import store from "@/store";
+import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue";
 
 export default defineComponent({
   name: "patients-view",
@@ -205,6 +212,7 @@ export default defineComponent({
     PrintLabelModal,
     IconText,
     IconButton,
+    PatientAlert,
   },
   data: function () {
     return {
@@ -222,6 +230,7 @@ export default defineComponent({
       email: "",
       date_of_birth: "",
       contact_number: "",
+      alerts: {},
     });
 
     const handleRecallReminder = () => {
@@ -257,6 +266,7 @@ export default defineComponent({
 
     watchEffect(() => {
       patientData.value = store.getters.selectedPatient;
+      console.log(patientData.value);
     });
 
     const handleUploadDocument = () => {
@@ -266,6 +276,8 @@ export default defineComponent({
 
     return {
       patientData,
+      PatientAlert,
+
       handleRecallReminder,
       CreatePatientAlertModal,
       handleReport,

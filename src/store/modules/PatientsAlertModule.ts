@@ -8,9 +8,10 @@ import { Module, Action, VuexModule } from "vuex-module-decorators";
 export default class PatientsAlertModule extends VuexModule {
   @Action
   [PatientActions.ALERT.CREATE](data) {
+    console.log(data);
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("patients/alerts/" + data.patient_id, data)
+      ApiService.post("patients/alerts", data)
         .then(({ data }) => {
           return data.data;
         })
