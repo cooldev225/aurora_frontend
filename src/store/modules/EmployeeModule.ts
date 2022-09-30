@@ -117,4 +117,20 @@ export default class EmployeeModule extends VuexModule implements EmployeeInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.EMPLOYEE.UPDATE_PASSWORD](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("users/password/update", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }
