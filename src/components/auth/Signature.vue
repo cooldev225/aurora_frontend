@@ -1,6 +1,7 @@
+<!-- eslint-disable prettier/prettier -->
 <template>
   <!--begin::Navbar-->
-  <div class="card pb-9">
+  <div class="card pb-9 signature-page">
     <div class="card-header">
       <!--begin::Navs-->
       <div class="d-flex overflow-auto">
@@ -53,7 +54,7 @@
         ref="formRef"
       >
         <div class="row">
-          <div class="col-sm-12">
+          <div class="col-sm-6">
             <div class="fv-row mb-7">
               <el-form-item>
                 <VueSignaturePad
@@ -61,9 +62,52 @@
                   height="500px"
                   ref="signaturePad"
                   class="border border-primary border-1"
+                  :options="{ onBegin }"
                 />
               </el-form-item>
             </div>
+          </div>
+          <div class="col-sm-6">
+            <InputWrapper
+              required
+              class="full"
+              label="Signature Upload"
+              prop="signature"
+            >
+              <el-upload
+                action="#"
+                ref="signatureRef"
+                class="signature-uploader"
+                list-type="picture-card"
+                :auto-upload="false"
+                :show-file-list="false"
+                :on-change="
+                  (uploadFile) => {
+                    handleSignatureUploadSuccess(uploadFile);
+                  }
+                "
+              >
+                <img
+                  v-if="formData.signature"
+                  :src="formData.signature"
+                  class="signature"
+                />
+                <i
+                  v-if="!formData.signature"
+                  class="el-icon avatar-uploader-icon"
+                >
+                  <svg
+                    viewBox="0 0 1024 1024"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"
+                    ></path>
+                  </svg>
+                </i>
+              </el-upload>
+            </InputWrapper>
           </div>
         </div>
         <div class="d-flex ms-auto justify-content-end w-25">
@@ -82,7 +126,21 @@
   </div>
   <!--end::Navbar-->
 </template>
-
+<style lang="scss">
+.signature-page {
+  .signature-uploader {
+    img.signature {
+      cursor: pointer;
+      width: 100%;
+      position: relative;
+      transition: var(--el-transition-duration-fast);
+    }
+    .el-upload {
+      overflow: hidden;
+    }
+  }
+}
+</style>
 <script>
 import { defineComponent, ref, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -96,11 +154,11 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const formRef = ref(null);
+    const isUpload = ref(false);
     const signaturePad = ref(null);
     const formData = ref({
-      old_password: "",
-      new_password: "",
-      confirm_password: "",
+      signature: null,
+      signature_file: null,
     });
     const loading = ref(false);
 
@@ -112,14 +170,46 @@ export default defineComponent({
       signaturePad.value.clearSignature();
     };
 
-    const submit = () => {
-      const { isEmpty, data } = getSignatureData();
+    const onBegin = () => {
+      formData.value.signature = null;
+      formData.value.signature_file = null;
+      isUpload.value = false;
+    };
 
-      if (!isEmpty) {
+    const handleSignatureUploadSuccess = async (uploadFile) => {
+      formData.value.signature = URL.createObjectURL(uploadFile.raw);
+      formData.value.signature_file = await convertBlobToBase64(uploadFile.raw);
+      isUpload.value = true;
+      clearSignature();
+    };
+
+    const blobToBase64 = (blob) =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+
+    const convertBlobToBase64 = async (blob) => {
+      // blob data
+      return await blobToBase64(blob);
+    };
+
+    const submit = () => {
+      var signature = null;
+      if (isUpload.value === true) {
+        signature = formData.value.signature_file;
+      } else {
+        const { isEmpty, data } = getSignatureData();
+        signature = !isEmpty ? data : null;
+      }
+
+      if (signature) {
         loading.value = true;
         store
           .dispatch(Actions.PROFILE.UPDATE_SIGNATURE, {
-            signature: data,
+            signature: signature,
           })
           .then(() => {
             loading.value = false;
@@ -152,6 +242,9 @@ export default defineComponent({
       getSignatureData,
       submit,
       clearSignature,
+      handleSignatureUploadSuccess,
+      onBegin,
+      isUpload,
     };
   },
 });
