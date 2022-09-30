@@ -111,10 +111,10 @@
           </div>
         </div>
         <div class="d-flex ms-auto justify-content-end w-25">
-          <button type="submit" class="btn btn-primary w-25">Save</button>
+          <button type="submit" :data-kt-indicator="loading ? 'on' : null" class="btn btn-primary w-25" :disabled="isUpload === null">Save</button>
           <button
             type="button"
-            @click="clearSignature"
+            @click="cancel"
             class="btn btn-light-primary w-25 ms-2"
           >
             Cancel
@@ -154,7 +154,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const formRef = ref(null);
-    const isUpload = ref(false);
+    const isUpload = ref(null);
     const signaturePad = ref(null);
     const formData = ref({
       signature: null,
@@ -170,10 +170,10 @@ export default defineComponent({
       signaturePad.value.clearSignature();
     };
 
-    const onBegin = () => {
+    const onBegin = (flag = false) => {
       formData.value.signature = null;
       formData.value.signature_file = null;
-      isUpload.value = false;
+      isUpload.value = flag;
     };
 
     const handleSignatureUploadSuccess = async (uploadFile) => {
@@ -196,6 +196,34 @@ export default defineComponent({
       return await blobToBase64(blob);
     };
 
+    const loadSignatureImage = () => {
+      store
+        .dispatch(Actions.PROFILE.VIEW_SIGNATURE)
+        .then((data) => {
+          if (data) {
+            const blob = new Blob([data], { type: "application/image" });
+            const objectUrl = URL.createObjectURL(blob);
+            formData.value.signature = objectUrl;
+          } else {
+            onBegin();
+          }
+        })
+        .catch(() => {
+          console.log("image load error");
+          onBegin();
+        });
+    };
+
+    const resetForm = () => {
+      clearSignature();
+      onBegin(null);
+      loadSignatureImage();
+    };
+
+    const cancel = () => {
+      resetForm();
+    };
+
     const submit = () => {
       var signature = null;
       if (isUpload.value === true) {
@@ -214,6 +242,7 @@ export default defineComponent({
           .then(() => {
             loading.value = false;
             store.dispatch(Actions.PROFILE.VIEW);
+            resetForm();
             Swal.fire({
               text: "Successfully Updated!",
               icon: "success",
@@ -232,6 +261,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
+      loadSignatureImage();
       setCurrentPageBreadcrumbs("Password", ["Profile"]);
     });
 
@@ -245,6 +275,7 @@ export default defineComponent({
       handleSignatureUploadSuccess,
       onBegin,
       isUpload,
+      cancel,
     };
   },
 });

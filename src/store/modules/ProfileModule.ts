@@ -99,4 +99,21 @@ export default class ProfileModule extends VuexModule implements ProfileInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.PROFILE.VIEW_SIGNATURE]() {
+    return ApiService.post(
+      "profile/signature/view",
+      {},
+      {
+        responseType: "blob",
+      }
+    )
+      .then(({ data }) => {
+        return data;
+      })
+      .catch(({ response }) => {
+        console.log(response.data.error);
+      });
+  }
 }
