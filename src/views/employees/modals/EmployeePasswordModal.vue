@@ -159,9 +159,11 @@ export default defineComponent({
           loading.value = true;
 
           store
-            .dispatch(Actions.EMPLOYEE.UPDATE, {
+            .dispatch(Actions.EMPLOYEE.UPDATE_PASSWORD, {
               ...employee.value,
-              // formData.values
+              current_password: formData.value.current_password,
+              new_employee_password: formData.value.new_employee_password,
+              repeat_employee_password: formData.value.repeat_employee_password,
             })
             .then(() => {
               loading.value = false;
