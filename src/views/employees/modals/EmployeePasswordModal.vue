@@ -21,53 +21,46 @@
             </span>
           </div>
         </div>
-        <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
+        <el-form
+          @submit.prevent="submit()"
+          :rules="rules"
+          :model="formData"
+          ref="formRef"
+        >
           <div class="modal-body py-10 px-lg-17">
-            <div
-              class="scroll-y me-n7 pe-7"
-              id="kt_modal_provider_scroll"
-              data-kt-scroll="true"
-              data-kt-scroll-activate="{default: false, lg: true}"
-              data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#kt_modal_provider_header"
-              data-kt-scroll-wrappers="#kt_modal_provider_scroll"
-              data-kt-scroll-offset="300px"
-            >
+            <div class="row">
               <InputWrapper
                 required
-                :class="colString"
                 label="Current your password"
                 prop="current_password"
               >
                 <el-input
                   v-model="formData.current_password"
-                  type="text"
+                  type="password"
                   placeholder="Enter current your password"
                 />
               </InputWrapper>
 
               <InputWrapper
                 required
-                :class="colString"
                 label="New employee password"
                 prop="new_employee_password"
               >
                 <el-input
                   v-model="formData.new_employee_password"
-                  type="text"
+                  type="password"
                   placeholder="Enter new employee password"
                 />
               </InputWrapper>
 
               <InputWrapper
                 required
-                :class="colString"
                 label="Repeat employee password"
                 prop="repeat_employee_password"
               >
                 <el-input
                   v-model="formData.repeat_employee_password"
-                  type="text"
+                  type="password"
                   placeholder="Repeat employee password"
                 />
               </InputWrapper>
@@ -125,6 +118,26 @@ export default defineComponent({
       },
     ]);
 
+    const validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Please input the password"));
+      } else {
+        if (formData.value.repeat_employee_password !== "") {
+          formRef.value.validateField("checkPass", () => null);
+        }
+        callback();
+      }
+    };
+
+    const validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Please input the password again"));
+      } else if (value !== formData.value.new_employee_password) {
+        callback(new Error("Password doesn't match!"));
+      } else {
+        callback();
+      }
+    };
     const rules = ref({
       current_password: [
         {
@@ -132,20 +145,25 @@ export default defineComponent({
           message: "This field cannot be blank",
           trigger: ["blur", "change"],
         },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
       new_employee_password: [
+        { validator: validatePass, trigger: "blur" },
         {
           required: true,
           message: "This field cannot be blank",
           trigger: ["blur", "change"],
         },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
       repeat_employee_password: [
+        { validator: validatePass2, trigger: "blur" },
         {
           required: true,
           message: "This field cannot be blank",
           trigger: ["blur", "change"],
         },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
     });
 
@@ -161,9 +179,9 @@ export default defineComponent({
           store
             .dispatch(Actions.EMPLOYEE.UPDATE_PASSWORD, {
               ...employee.value,
-              current_password: formData.value.current_password,
-              new_employee_password: formData.value.new_employee_password,
-              repeat_employee_password: formData.value.repeat_employee_password,
+              old_password: formData.value.current_password,
+              new_password: formData.value.new_employee_password,
+              confirm_password: formData.value.repeat_employee_password,
             })
             .then(() => {
               loading.value = false;
