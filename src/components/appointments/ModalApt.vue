@@ -1206,6 +1206,7 @@ export default defineComponent({
       specialist_id: "",
       room_id: "",
       note: "",
+      patient_id: null,
     });
 
     const patientInfoData = ref({
@@ -1442,6 +1443,7 @@ export default defineComponent({
     const patientList = computed(() => store.getters.patientsList);
     const patientAptData = computed(() => store.getters.getPatientAppointments);
     const aptData = computed(() => store.getters.getAptSelected);
+    const bookingData = computed(() => store.getters.bookingDatas);
 
     // Setting modal Heading and Ids
     const setTitle = () => {
@@ -1476,19 +1478,19 @@ export default defineComponent({
       if (props.modalId == "modal_edit_apt") {
         for (let key in aptInfoData.value)
           aptInfoData.value[key] = aptData.value[key];
-        aptInfoData.value.clinic_id = aptData.value.clinic_id;
-        aptInfoData.value.clinic_name = aptData.value.clinic.name;
-        specialist_name.value = aptData.value.specialist.full_name;
-        getAvailableRooms();
-        updateAptTime(aptData.value.start_time, aptData.value.end_time);
-
         cur_appointment_type_id.value = aptData.value.appointment_type_id;
         for (let key in patientInfoData.value)
           patientInfoData.value[key] = aptData.value.patient[key];
         for (let key in billingInfoData.value)
-          billingInfoData.value[key] = aptData.value[key];
+          billingInfoData.value[key] = aptData.value.patient.billing[0][key];
         for (let key in otherInfoData.value)
           otherInfoData.value[key] = aptData.value[key];
+        aptInfoData.value.clinic_id = aptData.value.clinic_id;
+        aptInfoData.value.clinic_name = aptData.value.clinic.name;
+        specialist_name.value = aptData.value.specialist.full_name;
+        billingInfoData.value.charge_type = aptData.value.charge_type;
+        getAvailableRooms();
+        updateAptTime(aptData.value.start_time, aptData.value.end_time);
       }
     });
 
@@ -1638,6 +1640,13 @@ export default defineComponent({
       renderTable();
     });
 
+    // Setting user selected date
+    watch(searchVal, () => {
+      aptInfoData.value.date = moment(searchVal.value.date)
+        .format("DD-MM-YYYY")
+        .toString();
+    });
+
     watchEffect(() => {
       appointment_time.value = 30; // Create api for this
       const bookingData = store.getters.bookingDatas;
@@ -1659,7 +1668,6 @@ export default defineComponent({
         start_time.value = moment(bookingData.time_slot[0]).format("HH:mm");
         end_time.value = moment(bookingData.time_slot[1]).format("HH:mm");
       }
-      // aptInfoData.value.date = bookingData.date;
       if (cur_appointment_type_id.value == "") {
         overlapping_cnt.value = bookingData.overlapping_cnt;
       }
@@ -1879,7 +1887,7 @@ export default defineComponent({
         })
         .then(() => {
           loading.value = false;
-          store.dispatch(AppointmentActions.APT.LIST);
+          store.dispatch(AppointmentActions.LIST);
           handleCancel();
           Swal.fire({
             text: "Successfully Created!",
