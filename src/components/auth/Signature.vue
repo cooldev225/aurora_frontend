@@ -5,6 +5,7 @@
     <div class="card-header">
       <!--begin::Navs-->
       <div class="d-flex overflow-auto">
+
         <ul
           class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap"
         >
@@ -45,8 +46,12 @@
       </div>
       <!--begin::Navs-->
     </div>
+    
     <div class="card-body pt-9 pb-0">
       <!--begin::Details-->
+
+      <img :src="signature" />
+
       <el-form
         @submit.prevent="submit()"
         :model="formData"
@@ -87,13 +92,7 @@
                   }
                 "
               >
-                <img
-                  v-if="formData.signature"
-                  :src="formData.signature"
-                  class="signature"
-                />
                 <i
-                  v-if="!formData.signature"
                   class="el-icon avatar-uploader-icon"
                 >
                   <svg
@@ -142,7 +141,7 @@
 }
 </style>
 <script>
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed, watch } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -153,9 +152,11 @@ export default defineComponent({
   components: {},
   setup() {
     const store = useStore();
+    const currentUser = computed(() => store.getters.currentUser);
     const formRef = ref(null);
     const isUpload = ref(null);
     const signaturePad = ref(null);
+    const signature = ref(null);
     const formData = ref({
       signature: null,
       signature_file: null,
@@ -198,19 +199,17 @@ export default defineComponent({
 
     const loadSignatureImage = () => {
       store
-        .dispatch(Actions.PROFILE.VIEW_SIGNATURE)
+        .dispatch(Actions.ORG.FILE, {
+          type: "USER_SIGNATURE",
+          path: currentUser.value.profile.signature,
+        })
         .then((data) => {
-          if (data) {
-            const blob = new Blob([data], { type: "application/image" });
-            const objectUrl = URL.createObjectURL(blob);
-            formData.value.signature = objectUrl;
-          } else {
-            onBegin();
-          }
+          const blob = new Blob([data], { type: "application/image" });
+          const objectUrl = URL.createObjectURL(blob);
+          signature.value = objectUrl;
         })
         .catch(() => {
           console.log("image load error");
-          onBegin();
         });
     };
 
@@ -260,8 +259,11 @@ export default defineComponent({
       }
     };
 
-    onMounted(() => {
+    watch(currentUser, () => {
       loadSignatureImage();
+    });
+
+    onMounted(() => {
       setCurrentPageBreadcrumbs("Password", ["Profile"]);
     });
 
@@ -276,6 +278,7 @@ export default defineComponent({
       onBegin,
       isUpload,
       cancel,
+      signature,
     };
   },
 });

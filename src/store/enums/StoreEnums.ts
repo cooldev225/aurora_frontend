@@ -20,7 +20,6 @@ const Actions = {
     UPDATE: "updateProfile",
     UPDATE_PASSWORD: "updatePassword",
     UPDATE_SIGNATURE: "updateSignature",
-    VIEW_SIGNATURE: "viewSignature",
   },
 
   ADMIN: {
