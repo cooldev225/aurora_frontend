@@ -48,6 +48,11 @@ const OrgManagerMenu = [
     ],
   },
   {
+    heading: "Coding",
+    route: "/coding",
+    svgIcon: icons.paper,
+  },
+  {
     heading: "Communication",
     route: "/third-party-comms",
     svgIcon: icons.paper_plane,
