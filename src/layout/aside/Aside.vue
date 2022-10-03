@@ -66,7 +66,11 @@ export default defineComponent({
     const logo = ref("");
 
     watch(currentUser, () => {
-      if (currentUser.value.organization.logo != "") {
+      if (
+        currentUser.value.organization.logo !== null &&
+        currentUser.value.organization.logo !== ""
+      ) {
+        console.log("getting the logo");
         store
           .dispatch(Actions.ORG.FILE, {
             type: "ORGANIZATION_LOGO",
