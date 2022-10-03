@@ -68,6 +68,7 @@
                 >
                   <el-input
                     v-model="provider.provider_number"
+                    v-mask="'#######A'"
                     type="text"
                     placeholder="Enter Provider Number"
                   />
@@ -77,14 +78,16 @@
                 </el-form-item>
               </div>
               <el-divider v-if="formData.length < clinicsList.length" />
-              <div
+
+              <LargeIconButton
                 v-if="formData.length < clinicsList.length"
-                class="w-100 cursor-pointer text-center text-nowrap col-9 border border-gray-300 h-40px d-flex flex-center"
-                style="font-size: 1.2rem; line-height: 40px; color: #bd5"
                 @click="handleAddOtherNumber()"
-              >
-                <span><span>+</span> Add Other Number</span>
-              </div>
+                heading="Add Provider Number"
+                :iconPath="'media/icons/duotune/arrows/arr075.svg'"
+                :color="'success'"
+                justify="center"
+                iconSize="3"
+              />
             </div>
           </div>
           <div class="modal-footer flex-center">
@@ -121,9 +124,13 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import { mask } from "vue-the-mask";
 
 export default defineComponent({
   name: "edit-employee-provider-number-modal",
+  directives: {
+    mask,
+  },
   setup() {
     const store = useStore();
     const formRef = ref(null);
