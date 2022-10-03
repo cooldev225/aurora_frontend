@@ -2,6 +2,7 @@
 const DocumentActions = {
     LIST: "documentList",
     SHOW: "documentShow",
+    UPDATE: "update",
 };
 
 const DocumentMutations = {

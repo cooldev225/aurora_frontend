@@ -4,12 +4,18 @@ import { Mutations } from "@/store/enums/StoreEnums";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
+export interface IHRMWeeklyScheduleTimeslot {
+  id: number;
+}
+
 export interface IHRMWeeklyScheduleTemplate {
   id: number;
 }
 
 export interface IHRMWeeklyScheduleTemplates {
   hrmScheduleData: Array<IHRMWeeklyScheduleTemplate>;
+  hrmScheduleSelectData: IHRMWeeklyScheduleTemplate;
+  hrmTimeslotSelectData: Array<IHRMWeeklyScheduleTimeslot>;
 }
 
 @Module
@@ -18,9 +24,19 @@ export default class HRMModule
   implements IHRMWeeklyScheduleTemplates
 {
   hrmScheduleData = [] as Array<IHRMWeeklyScheduleTemplate>;
+  hrmScheduleSelectData = {} as IHRMWeeklyScheduleTemplate;
+  hrmTimeslotSelectData = [] as Array<IHRMWeeklyScheduleTimeslot>;
 
   get hrmScheduleList(): Array<IHRMWeeklyScheduleTemplate> {
     return this.hrmScheduleData;
+  }
+
+  get hrmScheduleSelected(): IHRMWeeklyScheduleTemplate {
+    return this.hrmScheduleSelectData;
+  }
+
+  get hrmTimeslotSelected(): Array<IHRMWeeklyScheduleTimeslot> {
+    return this.hrmTimeslotSelectData;
   }
 
   @Mutation
@@ -28,11 +44,21 @@ export default class HRMModule
     this.hrmScheduleData = data;
   }
 
+  @Mutation
+  [HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT](data) {
+    this.hrmScheduleSelectData = data;
+  }
+
+  @Mutation
+  [HRMMutations.SCHEDULE_TEMPLATE.SET_TIMESLOT](data) {
+    this.hrmTimeslotSelectData = data;
+  }
+
   @Action
   [HRMActions.SCHEDULE_TEMPLATE.LIST](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("hrm/schedule-templates", {
+      ApiService.query("hrm/hrm-weekly-schedule-template", {
         params: {
           clinic_id: data.clinic_id,
         },
@@ -46,6 +72,39 @@ export default class HRMModule
         })
         .catch(({ response }) => {
           console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [HRMActions.SCHEDULE_TEMPLATE.CREATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("hrm/hrm-weekly-schedule-template", item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [HRMActions.SCHEDULE_TEMPLATE.UPDATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("hrm/hrm-weekly-schedule-template", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

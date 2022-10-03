@@ -19,6 +19,9 @@ const PatientActions = {
     CREATE: "createPatientsRecall",
     UPDATE: "updatePatientsRecall",
   },
+  ALERT: {
+    CREATE: "createPatientAlert",
+  },
   BILLING: {
     VALIDATE_MEDICARE: "validatePatientsBillingMedicare",
     UPDATE: "updatePatientsBilling",

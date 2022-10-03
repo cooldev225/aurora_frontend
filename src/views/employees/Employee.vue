@@ -61,40 +61,50 @@
           {{ item.email }}
         </template>
         <template v-slot:cell-action="{ row: item }">
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/coding/cod008.svg" />
-            </span>
-          </a>
+          <div class="d-flex justify-content-end">
+            <button
+              @click="handleEditProviderNumber(item)"
+              v-if="item.role_id == 5"
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            >
+              <span class="svg-icon svg-icon-3">
+                <inline-svg src="media/icons/duotune/general/gen018.svg" />
+              </span>
+            </button>
 
-          <button
-            @click="handleEdit(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <InlineSVG icon="pencil" />
-            </span>
-          </button>
+            <a
+              href="#"
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            >
+              <span class="svg-icon svg-icon-3">
+                <inline-svg src="media/icons/duotune/coding/cod008.svg" />
+              </span>
+            </a>
 
-          <button
-            @click="handleDelete(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-          >
-            <span class="svg-icon svg-icon-3">
-              <InlineSVG icon="bin" />
-            </span>
-          </button>
+            <button
+              @click="handleEdit(item)"
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            >
+              <span class="svg-icon svg-icon-3">
+                <InlineSVG icon="pencil" />
+              </span>
+            </button>
+
+            <button
+              @click="handleDelete(item)"
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+            >
+              <span class="svg-icon svg-icon-3">
+                <InlineSVG icon="bin" />
+              </span>
+            </button>
+          </div>
         </template>
       </Datatable>
     </div>
   </div>
-  <CreateModal></CreateModal>
-  <EditModal></EditModal>
+  <ProviderModal></ProviderModal>
 </template>
-
 <script>
 import {
   defineComponent,
@@ -111,12 +121,15 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import ProviderModal from "@/views/employees/ProviderModal.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "employee-main",
 
   components: {
     Datatable,
+    ProviderModal,
   },
 
   setup() {
@@ -186,6 +199,14 @@ export default defineComponent({
     const handleEdit = (item) => {
       store.commit(Mutations.SET_EMPLOYEE.SELECT, item);
       router.push({ name: "employees-edit", params: { id: item.id } });
+    };
+
+    const handleEditProviderNumber = (item) => {
+      store.commit(Mutations.SET_EMPLOYEE.SELECT, item);
+      const modal = new Modal(
+        document.getElementById("modal_employee_provider")
+      );
+      modal.show();
     };
 
     const deleteAfterConfirmation = (item) => {
@@ -313,6 +334,7 @@ export default defineComponent({
       handleDelete,
       handleCreate,
       filterAndSort,
+      handleEditProviderNumber,
     };
   },
 });

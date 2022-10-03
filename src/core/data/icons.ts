@@ -12,6 +12,7 @@ export const icons = {
   person_circle: "media/icons/duotune/communication/com006.svg", // HRM nav
   gear: "media/icons/duotune/coding/cod001.svg", // Setting nav
   location_house: "media/icons/duotune/maps/map008.svg", // Clinic nav
+  bell: "media/icons/duotune/general/gen007.svg", // for notifications and alerts
 };
 
 export default icons;

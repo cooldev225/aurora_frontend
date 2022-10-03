@@ -16,6 +16,12 @@
               {{ patientData.first_name }} {{ patientData.last_name }}
             </span>
 
+            <span>
+              <template v-for="alert in patientData.alerts" :key="alert.id">
+                <PatientAlert :alert="alert" />
+              </template>
+            </span>
+
             <!--begin::Actions-->
             <div class="my-4">
               <div class="d-flex">
@@ -33,6 +39,7 @@
                   @click="handleRecallReminder"
                   label="Add Recall Reminder"
                 />
+                <IconButton @click="handleAddAlert" label="Add Alert" />
                 <!-- SPECIALIST ONLY ACTIONS-->
 
                 <IconButton
@@ -165,6 +172,9 @@
   </div>
   <!--end::Navbar-->
   <RecallReminderModal></RecallReminderModal>
+  <CreatePatientAlertModal
+    :patientId="patientData.id"
+  ></CreatePatientAlertModal>
   <ReportModal></ReportModal>
   <LetterModal :patientId="patientData.id"></LetterModal>
   <CreateAudioModal :patientId="patientData.id"></CreateAudioModal>
@@ -179,6 +189,7 @@ import { useStore } from "vuex";
 import { Modal } from "bootstrap";
 import { Actions } from "@/store/enums/StoreEnums";
 import RecallReminderModal from "@/views/patients/modals/RecallReminderModal.vue";
+import CreatePatientAlertModal from "@/views/patients/modals/CreatePatientAlertModal.vue";
 import ReportModal from "@/views/patients/modals/ReportTemplateSelectModal.vue";
 import LetterModal from "@/views/patients/modals/LetterModal.vue";
 import CreateAudioModal from "@/views/patients/modals/CreateAudioModal.vue";
@@ -187,11 +198,13 @@ import PrintLabelModal from "@/views/patients/modals/PrintLabelsModal.vue";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import store from "@/store";
+import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue";
 
 export default defineComponent({
   name: "patients-view",
   components: {
     RecallReminderModal,
+    CreatePatientAlertModal,
     ReportModal,
     LetterModal,
     CreateAudioModal,
@@ -199,6 +212,7 @@ export default defineComponent({
     PrintLabelModal,
     IconText,
     IconButton,
+    PatientAlert,
   },
   data: function () {
     return {
@@ -216,12 +230,16 @@ export default defineComponent({
       email: "",
       date_of_birth: "",
       contact_number: "",
+      alerts: {},
     });
 
     const handleRecallReminder = () => {
-      const modal = new Modal(
-        document.getElementById("modal_patient_recall_reminder")
-      );
+      const modal = new Modal(document.getElementById("modal_patient_alert"));
+      modal.show();
+    };
+
+    const handleAddAlert = () => {
+      const modal = new Modal(document.getElementById("modal_patient_alert"));
       modal.show();
     };
 
@@ -248,6 +266,7 @@ export default defineComponent({
 
     watchEffect(() => {
       patientData.value = store.getters.selectedPatient;
+      console.log(patientData.value);
     });
 
     const handleUploadDocument = () => {
@@ -257,12 +276,16 @@ export default defineComponent({
 
     return {
       patientData,
+      PatientAlert,
+
       handleRecallReminder,
+      CreatePatientAlertModal,
       handleReport,
       handleLetter,
       handleAudio,
       handleUploadDocument,
       handlePrintLabel,
+      handleAddAlert,
     };
   },
 });

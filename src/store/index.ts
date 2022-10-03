@@ -32,7 +32,7 @@ import LetterModule from "@/store/modules/LetterModule";
 import DocumentModule from "@/store/modules/DocumentModule";
 import ReportModule from "@/store/modules/ReportModule";
 import HRMModule from "@/store/modules/HRMModule";
-
+import PatientsAlertModule from "@/store/modules/PatientsAlertModule";
 config.rawError = true;
 
 const store = createStore({
@@ -68,6 +68,7 @@ const store = createStore({
     DocumentModule,
     ReportModule,
     HRMModule,
+    PatientsAlertModule,
   },
 });
 
