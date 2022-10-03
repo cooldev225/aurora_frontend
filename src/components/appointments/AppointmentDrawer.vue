@@ -192,7 +192,7 @@
       </div>
     </div>
   </div>
-  <EditModal></EditModal>
+  <EditModal modalId="modal_edit_apt" />
   <CheckInModal></CheckInModal>
 </template>
 
@@ -207,7 +207,7 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
-import EditModal from "@/components/appointments/EditApt.vue";
+import EditModal from "@/components/appointments/ModalApt.vue";
 import CheckInModal from "@/components/appointments/CheckInModal.vue";
 import { Modal } from "bootstrap";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
