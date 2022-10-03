@@ -58,12 +58,13 @@ export default class HRMModule
   [HRMActions.SCHEDULE_TEMPLATE.LIST](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("hrm/hrm-weekly-schedule-template", {
+      ApiService.query("hrm/hrm-schedule-timeslot", {
         params: {
           clinic_id: data.clinic_id,
         },
       })
         .then(({ data }) => {
+          console.log(data.data);
           this.context.commit(
             HRMMutations.SCHEDULE_TEMPLATE.SET_LIST,
             data.data
