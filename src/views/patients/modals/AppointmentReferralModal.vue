@@ -165,7 +165,7 @@ import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { ElMessage } from "element-plus";
-
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { mask } from "vue-the-mask";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import pdf from "pdfobject";
@@ -225,11 +225,7 @@ export default defineComponent({
       ],
     });
 
-    watch(appointmentData, () => {
-      console.log([
-        "appointmentData.value.referral?.referral_file",
-        appointmentData.value.referral?.referral_file,
-      ]);
+    const afterChangedData = () => {
       if (appointmentData.value.referral?.referral_file) {
         store
           .dispatch(AppointmentActions.REFERRAL.VIEW, {
@@ -269,6 +265,9 @@ export default defineComponent({
         document.getElementById("divPDFViewer").innerHTML =
           "No referral uploaded";
       }
+    };
+    watch(appointmentData, () => {
+      afterChangedData();
     });
 
     const submit = () => {
@@ -313,11 +312,10 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                document.getElementById("divPDFViewer").innerHTML =
-                  "No referral uploaded";
-                if (data.data) {
-                  appointmentData.value.referral_file = data.data.referral_file;
-                }
+                store.dispatch(
+                  PatientActions.VIEW,
+                  data.data.appointment.patient_id
+                );
                 hideModal(referralModalRef.value);
               });
             })
