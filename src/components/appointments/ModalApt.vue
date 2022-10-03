@@ -1199,7 +1199,7 @@ export default defineComponent({
       clinic_name: "",
       clinic_id: "",
       send_forms: true,
-      date: new Date(),
+      date: "",
       arrival_time: "",
       time_slot: ["2022-06-20T09:00", "2022-06-20T17:00"],
       appointment_type_id: "",
@@ -1489,6 +1489,9 @@ export default defineComponent({
         aptInfoData.value.clinic_name = aptData.value.clinic.name;
         specialist_name.value = aptData.value.specialist.full_name;
         billingInfoData.value.charge_type = aptData.value.charge_type;
+        aptInfoData.value.date = moment(aptData.value.date)
+          .format("DD-MM-YYYY")
+          .toString();
         getAvailableRooms();
         updateAptTime(aptData.value.start_time, aptData.value.end_time);
       }
@@ -1499,20 +1502,6 @@ export default defineComponent({
       const _selected = aptTypeList.value.filter(
         (aptType) => aptType.id === cur_appointment_type_id.value
       )[0];
-
-      // Make sure this watch runs only when edit
-      // if (props.modalId === "modal_edit_apt") {
-      // appointment_name.value = _selected.name;
-      // _appointment_time.value = Number(
-      //   appointment_length[_selected.appointment_time] *
-      //     appointment_time.value
-      // );
-      //start_time.value = aptInfoData.value.time_slot[0];
-      // arrival_time.value = Number(_selected.arrival_time);
-      //aptInfoData.value.clinical_code = _selected.clinical_code;
-      //aptInfoData.value.mbs_code = _selected.mbs_code;
-      //apt_type.value = _selected.type;
-      // }
 
       if (typeof _selected === "undefined") {
         appointment_name.value = "";
@@ -1835,6 +1824,13 @@ export default defineComponent({
         filterPatient.last_name = "";
         filterPatient.date_of_birth = "";
         filterPatient.ur_number = "";
+
+        for (let key in aptInfoData.value) aptInfoData.value[key] = "";
+        cur_appointment_type_id.value = "";
+        for (let key in patientInfoData.value) patientInfoData.value[key] = "";
+        aptInfoData.value.date = moment().format("DD-MM-YYYY").toString();
+        for (let key in billingInfoData.value) billingInfoData.value[key] = "";
+        // for (let key in otherInfoData.value) otherInfoData.value[key] = "";
       } else {
         // Edit modal
         store.dispatch(PatientActions.LIST);
@@ -1902,6 +1898,7 @@ export default defineComponent({
             cancelButtonText: "Deposit",
           }).then((result) => {
             hideModal(createAptModalRef.value);
+            resetCreateModal();
             if (searchVal.value.date) {
               store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
                 ...searchVal.value,
