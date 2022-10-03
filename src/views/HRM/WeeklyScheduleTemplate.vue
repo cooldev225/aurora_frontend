@@ -21,51 +21,57 @@
       <tbody>
         <tr
           class="min-h-100px"
-          v-for="template in tableData"
-          :key="template.id"
+          v-for="employee in employeeList"
+          :key="employee"
         >
           <td
-            @click="handleEditTemplate(template)"
+            @click="handleEditTemplate(employee)"
             class="d-flex text-hover-primary cursor-pointer background-hover-light-primary flex-column"
           >
             <span class="svg-icon absolute text-white svg-icon-4 me-1">
               <InlineSVG icon="pencil" />
             </span>
-            <InfoSection heading="Role">
-              {{
-                employeeRoles.filter((x) => x.value == template.role_id)[0]
-                  ? employeeRoles.filter((x) => x.value == template.role_id)[0]
-                      .label
-                  : "Unassigned"
-              }}
-            </InfoSection>
-            <InfoSection heading="Default">
-              <span v-if="template.user_id">
-                {{
-                  employeeList.filter((e) => e.id == template.user_id)[0]
-                    .full_name
-                }} </span
-              ><span v-else>Unassigned</span>
-            </InfoSection>
+            {{ employee.full_name }}<br />
+            ({{
+              employeeRoles.filter((x) => x.value == employee.role_id)[0].label
+            }})
           </td>
 
           <td v-for="day in weekdays" :key="day.id">
             <div
-              @click="handleEditTemplateTimeslots(template, day)"
-              class="d-flex flex-column rounded min-h-100px min-w-100px cursor-pointer bg-hover-light-primary bg-primary p-3"
+              @click="handleEditTemplateTimeslots(employee, day)"
+              class="d-flex flex-column rounded min-h-150px min-w-100px cursor-pointer bg-hover-primary bg-light-primary p-3"
             >
-              <span class="svg-icon absolute text-primary svg-icon-4 me-1">
+              <span
+                class="svg-icon absolute text-light-primary svg-icon-4 me-1"
+              >
                 <InlineSVG icon="pencil" />
               </span>
-              <span
-                v-for="timeslot in template.timeslots.filter(
+              <template
+                v-for="timeslot in employee.schedule_timeslots.filter(
                   (x) => x.week_day == day.value
                 )"
                 :key="timeslot.id"
               >
-                {{ moment(timeslot.start_time, "hh:ss").format("hh:ss") }} -
-                {{ moment(timeslot.end_time, "hh:ss").format("hh:ss") }}</span
-              >
+                <span
+                  class="p-2"
+                  :class="
+                    clinicFilter == timeslot.clinic_id
+                      ? 'bg-primary text-light'
+                      : ''
+                  "
+                >
+                  {{ moment(timeslot.start_time, "hh:ss").format("hh:ss") }} -
+                  {{ moment(timeslot.end_time, "hh:ss").format("hh:ss") }}
+                  <span
+                    >({{
+                      clinics
+                        .filter((x) => x.id == timeslot.clinic_id)[0]
+                        .name.split(" ")[0]
+                    }})</span
+                  ></span
+                >
+              </template>
             </div>
           </td>
         </tr>
@@ -114,6 +120,7 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Weekly Schedule Template", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
+      console.log(employeeList.value);
     });
 
     watch(clinics, () => {
@@ -121,13 +128,6 @@ export default defineComponent({
       if (clinics.value.length) {
         clinicFilter.value = clinics.value[0].id;
       }
-    });
-
-    watch(clinicFilter, () => {
-      //console.log(["clinicFilter=", clinicFilter.value]);
-      store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
-        clinic_id: clinicFilter.value,
-      });
     });
 
     watch(scheduleTemplates, () => {
