@@ -18,6 +18,8 @@
 <script lang="ts">
 import icons from "@/core/data/icons";
 import { onMounted, ref } from "vue";
+import { Modal } from "bootstrap";
+
 export default {
   props: {
     alert: { required: true, type: Object },
@@ -40,7 +42,10 @@ export default {
     });
 
     const openAlertModal = () => {
-      console.log("open alert modal");
+      const modal = new Modal(
+        document.getElementById("modal_patient_alert_" + props.alert.id)
+      );
+      modal.show();
     };
 
     return {

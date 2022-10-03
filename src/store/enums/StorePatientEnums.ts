@@ -21,6 +21,7 @@ const PatientActions = {
   },
   ALERT: {
     CREATE: "createPatientAlert",
+    DELETE: "deletePatientAlert",
   },
   BILLING: {
     VALIDATE_MEDICARE: "validatePatientsBillingMedicare",
