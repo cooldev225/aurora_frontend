@@ -1800,8 +1800,8 @@ export default defineComponent({
         })
         .then(() => {
           loading.value = false;
-          store.dispatch(AppointmentActions.APT.LIST);
-          hideModal(editAptModalRef.value);
+          store.dispatch(AppointmentActions.LIST);
+          hideModal(createAptModalRef.value);
           if (searchVal.value.date) {
             store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
               ...searchVal.value,
