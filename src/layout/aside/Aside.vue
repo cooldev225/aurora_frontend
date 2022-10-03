@@ -66,19 +66,21 @@ export default defineComponent({
     const logo = ref("");
 
     watch(currentUser, () => {
-      store
-        .dispatch(Actions.ORG.FILE, {
-          type: "ORGANIZATION_LOGO",
-          path: currentUser.value.organization?.logo,
-        })
-        .then((data) => {
-          const blob = new Blob([data], { type: "application/image" });
-          const objectUrl = URL.createObjectURL(blob);
-          logo.value = objectUrl;
-        })
-        .catch(() => {
-          console.log("image load error");
-        });
+      if (currentUser.value.organization.logo != "") {
+        store
+          .dispatch(Actions.ORG.FILE, {
+            type: "ORGANIZATION_LOGO",
+            path: currentUser.value.organization.logo,
+          })
+          .then((data) => {
+            const blob = new Blob([data], { type: "application/image" });
+            const objectUrl = URL.createObjectURL(blob);
+            logo.value = objectUrl;
+          })
+          .catch(() => {
+            console.log("image load error");
+          });
+      }
     });
 
     return {
