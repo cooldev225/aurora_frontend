@@ -226,6 +226,10 @@ export default defineComponent({
     });
 
     watch(appointmentData, () => {
+      console.log([
+        "appointmentData.value.referral?.referral_file",
+        appointmentData.value.referral?.referral_file,
+      ]);
       if (appointmentData.value.referral?.referral_file) {
         store
           .dispatch(AppointmentActions.REFERRAL.VIEW, {
@@ -298,7 +302,7 @@ export default defineComponent({
               appointment_id: appointmentData.value.id,
               submitData: submitData,
             })
-            .then(() => {
+            .then((data) => {
               loading.value = false;
               Swal.fire({
                 text: "Successfully Updated Referral",
@@ -311,6 +315,9 @@ export default defineComponent({
               }).then(() => {
                 document.getElementById("divPDFViewer").innerHTML =
                   "No referral uploaded";
+                if (data.data) {
+                  appointmentData.value.referral_file = data.data.referral_file;
+                }
                 hideModal(referralModalRef.value);
               });
             })
