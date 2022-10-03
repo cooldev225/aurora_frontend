@@ -16,12 +16,12 @@
               {{ patientData.first_name }} {{ patientData.last_name }}
             </span>
 
-            <span>
+            <div class="d-flex gap-2 flex-row">
               <template v-for="alert in patientData.alerts" :key="alert.id">
                 <PatientAlert :alert="alert" />
                 <ViewPatientAlertModal :alert="alert" />
               </template>
-            </span>
+            </div>
 
             <!--begin::Actions-->
             <div class="my-4">
