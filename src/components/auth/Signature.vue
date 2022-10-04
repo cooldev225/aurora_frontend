@@ -92,7 +92,13 @@
                   }
                 "
               >
+                <img
+                  v-if="formData.signature"
+                  :src="formData.signature"
+                  class="signature"
+                />
                 <i
+                  v-if="!formData.signature"
                   class="el-icon avatar-uploader-icon"
                 >
                   <svg
