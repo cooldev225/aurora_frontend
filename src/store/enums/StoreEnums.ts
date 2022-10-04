@@ -95,6 +95,7 @@ const Actions = {
     CREATE: "createEmployee",
     DELETE: "deleteEmployee",
     UPDATE: "updateEmployee",
+    UPDATE_PASSWORD: "updateEmployeePassword",
   },
 
   ANESTHETIST_QUES: {
