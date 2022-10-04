@@ -127,6 +127,7 @@
                 <el-input
                   v-model="provider.provider_number"
                   type="text"
+                  v-mask="'#######A'"
                   placeholder="Enter Provider Number"
                 />
               </InputWrapper>

@@ -19,6 +19,7 @@
                   v-model="formData.provider_no"
                   type="text"
                   placeholder="Enter the Provider No"
+                  v-mask="'#######A'"
                 />
               </InputWrapper>
             </div>

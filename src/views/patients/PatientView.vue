@@ -16,11 +16,12 @@
               {{ patientData.first_name }} {{ patientData.last_name }}
             </span>
 
-            <span>
+            <div class="d-flex gap-2 flex-row">
               <template v-for="alert in patientData.alerts" :key="alert.id">
                 <PatientAlert :alert="alert" />
+                <ViewPatientAlertModal :alert="alert" />
               </template>
-            </span>
+            </div>
 
             <!--begin::Actions-->
             <div class="my-4">
@@ -190,6 +191,7 @@ import { Modal } from "bootstrap";
 import { Actions } from "@/store/enums/StoreEnums";
 import RecallReminderModal from "@/views/patients/modals/RecallReminderModal.vue";
 import CreatePatientAlertModal from "@/views/patients/modals/CreatePatientAlertModal.vue";
+import ViewPatientAlertModal from "@/views/patients/modals/ViewPatientAlertModal.vue";
 import ReportModal from "@/views/patients/modals/ReportTemplateSelectModal.vue";
 import LetterModal from "@/views/patients/modals/LetterModal.vue";
 import CreateAudioModal from "@/views/patients/modals/CreateAudioModal.vue";
@@ -213,6 +215,7 @@ export default defineComponent({
     IconText,
     IconButton,
     PatientAlert,
+    ViewPatientAlertModal,
   },
   data: function () {
     return {
@@ -286,6 +289,7 @@ export default defineComponent({
       handleUploadDocument,
       handlePrintLabel,
       handleAddAlert,
+      ViewPatientAlertModal,
     };
   },
 });

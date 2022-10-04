@@ -2,8 +2,8 @@
   <!--begin::Modal - Create App-->
   <div
     class="modal fade"
-    id="modal_edit_apt"
-    ref="editAptModalRef"
+    :id="modalId"
+    ref="createAptModalRef"
     tabindex="-1"
     aria-hidden="true"
     data-bs-backdrop="static"
@@ -15,7 +15,7 @@
         <!--begin::Modal header-->
         <div class="modal-header">
           <!--begin::Modal title-->
-          <h2>Edit Appointment</h2>
+          <h2>{{ title }}</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -39,12 +39,12 @@
           <!--begin::Stepper-->
           <div
             class="stepper stepper-pills stepper-column d-flex flex-column flex-xl-row flex-row-fluid"
-            id="modal_edit_apt_stepper"
-            ref="editAptRef"
+            id="modal_create_apt_stepper"
+            ref="createAptRef"
           >
             <!--begin::Aside-->
             <div
-              class="cursor-pointer d-flex justify-content-center justify-content-xl-start flex-row-auto w-100 w-xl-350px"
+              class="d-flex justify-content-center justify-content-xl-start flex-row-auto w-100 w-xl-350px"
             >
               <!--begin::Nav-->
               <div class="stepper-nav ps-lg-10">
@@ -79,42 +79,14 @@
                   stepperTitle="Other Info"
                   stepperDescription="Referral information and Appointment history"
                 />
-
                 <!--begin::Appointment Overview-->
-                <div
-                  class="p-4 mb-4 card border border-dashed border-primary d-flex flex-column gap-2"
-                >
-                  <InfoSection heading="Appointment Type">{{
-                    appointment_name
-                  }}</InfoSection>
-
-                  <InfoSection heading="Specialist">{{
-                    specialist_name
-                  }}</InfoSection>
-
-                  <InfoSection heading="Clinic">{{
-                    aptInfoData.clinic_name
-                  }}</InfoSection>
-
-                  <InfoSection heading="Time">
-                    {{ start_time }}
-                    - {{ aptInfoData.time_slot[1] }}
-                    <span
-                      v-if="aptInfoData.arrival_time"
-                      class="text-black fs-5"
-                    >
-                      (Arrive: {{ aptInfoData.arrival_time }})</span
-                    ></InfoSection
-                  >
-                  <InfoSection heading="Date">
-                    {{ new Date(aptInfoData.date).toLocaleDateString("en-AU") }}
-                  </InfoSection>
-
-                  <InfoSection heading="Patient"
-                    >{{ patientInfoData.first_name }}
-                    {{ patientInfoData.last_name }}</InfoSection
-                  >
-                </div>
+                <AptOverview
+                  :aptInfoData="aptInfoData"
+                  :patientInfoData="patientInfoData"
+                  :specialistName="specialist_name"
+                  :appointmentName="appointment_name"
+                  :startTime="start_time"
+                />
                 <!--end::Appointment Overview-->
               </div>
 
@@ -124,6 +96,7 @@
 
             <!--begin::Content-->
             <div class="flex-row-fluid py-lg-5 px-lg-15">
+              <!--begin::Step 1-->
               <div class="current" data-kt-stepper-element="content">
                 <el-form
                   class="w-100"
@@ -132,7 +105,7 @@
                   ref="formRef_1"
                   @submit.prevent="handleStep_1"
                 >
-                  <div class="scroll h-500px">
+                  <div class="row scroll h-520px">
                     <InputWrapper
                       label="Appointment Type"
                       prop="appointment_type_id"
@@ -142,14 +115,14 @@
                         v-model="cur_appointment_type_id"
                       >
                         <el-option
-                          v-for="item in aptTypeList"
+                          v-for="item in aptTypeListWithRestriction"
                           :value="item.id"
                           :label="item.name"
                           :key="item.id"
                         />
                       </el-select>
                     </InputWrapper>
-                    <div class="px-6" v-if="overlapping_cnt > 1">
+                    <div class="px-6" v-if="overlapping_cnt >= 1">
                       <AlertBadge
                         text="This appointment will overlap with an
                           upcoming appointment"
@@ -178,8 +151,123 @@
                         placeholder="Enter appointment notes"
                       />
                     </InputWrapper>
+                    <el-form-item
+                      class="px-6"
+                      v-if="modalId === 'modal_create_apt'"
+                    >
+                      <el-checkbox
+                        type="checkbox"
+                        v-model="aptInfoData.send_forms"
+                        :label="
+                          appointmentType === 'procedure'
+                            ? 'Send Pre-admission form with appointment confirmation?'
+                            : 'Send Patient form with appointment confirmation?'
+                        "
+                      />
+                    </el-form-item>
+
+                    <el-divider />
+                    <div
+                      class="card-info"
+                      v-if="modalId === 'modal_create_apt'"
+                    >
+                      <div class="d-flex flex-row gap-3">
+                        <!--begin::Col-->
+                        <div class="fv-row">
+                          <!--begin::Option-->
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="patientType"
+                            value="new"
+                            checked="checked"
+                            id="create-new-patient"
+                            v-model="patientStatus"
+                          />
+                          <label
+                            class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-10"
+                            for="create-new-patient"
+                          >
+                            <span class="svg-icon svg-icon-3x me-5">
+                              <inline-svg
+                                src="media/icons/duotune/communication/com005.svg"
+                              />
+                            </span>
+
+                            <!--begin::Info-->
+                            <span class="d-block fw-bold text-start">
+                              <span
+                                class="text-dark fw-bolder d-block fs-4 mb-2"
+                              >
+                                New Patient
+                              </span>
+                              <span class="text-gray-400 fw-bold fs-6"
+                                >Create New Patient</span
+                              >
+                            </span>
+                            <!--end::Info-->
+                          </label>
+                          <!--end::Option-->
+                        </div>
+                        <!--end::Col-->
+
+                        <!--begin::Col-->
+                        <div class="fv-row">
+                          <!--begin::Option-->
+                          <input
+                            type="radio"
+                            class="btn-check"
+                            name="patientType"
+                            value="exist"
+                            id="select-existing-patient"
+                            v-model="patientStatus"
+                          />
+                          <label
+                            class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center"
+                            for="select-existing-patient"
+                          >
+                            <span class="svg-icon svg-icon-3x me-5">
+                              <inline-svg
+                                src="media/icons/duotune/finance/fin006.svg"
+                              />
+                            </span>
+
+                            <!--begin::Info-->
+                            <span class="d-block fw-bold text-start">
+                              <span
+                                class="text-dark fw-bolder d-block fs-4 mb-2"
+                                >Existing Patient</span
+                              >
+                              <span class="text-gray-400 fw-bold fs-6"
+                                >Import Existing Patient</span
+                              >
+                            </span>
+                            <!--end::Info-->
+                          </label>
+                          <!--end::Option-->
+                        </div>
+                        <!--end::Col-->
+                      </div>
+                    </div>
                   </div>
-                  <div class="d-flex justify-content-end">
+                  <div
+                    class="d-flex justify-content-between flex-row-reverse"
+                    v-if="modalId == 'modal_create_apt'"
+                  >
+                    <button
+                      type="button"
+                      class="btn btn-lg btn-primary align-self-end"
+                      @click="handleStep_1"
+                    >
+                      Continue
+                      <span class="svg-icon svg-icon-4 ms-1 me-0">
+                        <inline-svg
+                          src="media/icons/duotune/arrows/arr064.svg"
+                        />
+                      </span>
+                    </button>
+                  </div>
+                  <div class="d-flex justify-content-end" v-else>
                     <button
                       type="button"
                       class="btn btn-lg btn-light-primary me-3"
@@ -201,16 +289,166 @@
                   </div>
                 </el-form>
               </div>
+              <!--end::Step 1-->
 
-              <!--begin::Step 3-->
+              <!--begin::Step 2-->
               <div data-kt-stepper-element="content">
                 <div class="w-100">
                   <el-form
+                    v-if="patientStep === 1"
+                    class="w-100"
+                    :model="filterPatient"
+                    @submit.prevent=""
+                  >
+                    <div class="d-flex flex-column">
+                      <InputWrapper label="First Name" prop="filter_first_name">
+                        <el-input
+                          type="text"
+                          v-model="filterPatient.first_name"
+                          placeholder="First Name"
+                        />
+                      </InputWrapper>
+                      <InputWrapper label="Last Name" prop="filter_last_name">
+                        <el-input
+                          type="text"
+                          v-model="filterPatient.last_name"
+                          placeholder="Last Name"
+                        />
+                      </InputWrapper>
+                      <InputWrapper label="Date of Birth" prop="filter_date">
+                        <el-date-picker
+                          editable
+                          class="w-100"
+                          v-model="filterPatient.date_of_birth"
+                          format="DD-MM-YYYY"
+                          placeholder="01-01-1990"
+                        />
+                      </InputWrapper>
+
+                      <div class="d-flex justify-content-between my-auto">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          data-kt-stepper-action="previous"
+                          @click="previousStep"
+                        >
+                          <span class="svg-icon svg-icon-4 me-1">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr063.svg"
+                            />
+                          </span>
+                          Back
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-primary align-self-end"
+                          v-if="modalId == 'modal_create_apt'"
+                          @click="patientStep_1"
+                        >
+                          Search
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
+                      <div v-if="modalId == 'modal_edit_apt'">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          @click="handleSave"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-lg btn-primary align-self-end"
+                        >
+                          Continue
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <!--end::Row-->
+                    <!--begin::Separator-->
+                  </el-form>
+                  <el-form
+                    v-if="patientStep === 2"
+                    class="w-100"
+                    @submit.prevent=""
+                  >
+                    <div class="row scroll h-500px">
+                      <Datatable
+                        :table-header="patientTableHeader"
+                        :table-data="patientTableData"
+                        :key="tableKey"
+                        :rows-per-page="5"
+                        :enable-items-per-page-dropdown="true"
+                      >
+                        <template v-slot:cell-UR_number="{ row: item }">
+                          {{ item.UR_number }}
+                        </template>
+                        <template v-slot:cell-full_name="{ row: item }">
+                          <span
+                            class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                          >
+                            {{ item.first_name }} {{ item.last_name }}
+                          </span>
+                        </template>
+                        <template v-slot:cell-dob="{ row: item }">
+                          <span
+                            class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                          >
+                            {{ formatDate(item.date_of_birth) }}
+                          </span>
+                        </template>
+                        <template v-slot:cell-contact_number="{ row: item }">
+                          <span
+                            class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                          >
+                            {{ item.contact_number }}
+                          </span>
+                        </template>
+                        <template v-slot:cell-action="{ row: item }">
+                          <button
+                            @click="selectPatient(item)"
+                            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                          >
+                            <span class="svg-icon svg-icon-3">
+                              <i class="fas fa-check"></i>
+                            </span>
+                          </button>
+                        </template>
+                      </Datatable>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-light-primary me-3"
+                        data-kt-stepper-action="previous"
+                        @click="patientPrevStep"
+                      >
+                        <span class="svg-icon svg-icon-4 me-1">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr063.svg"
+                          />
+                        </span>
+                        Back
+                      </button>
+                    </div>
+                  </el-form>
+                  <el-form
+                    v-if="patientStep === 3"
                     class="w-100"
                     :model="patientInfoData"
                     :rules="rules"
                     ref="formRef_2"
-                    @submit.prevent="handleStep_2"
+                    @submit.prevent=""
                   >
                     <div class="row scroll h-500px">
                       <InputWrapper
@@ -333,7 +571,7 @@
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
                         data-kt-stepper-action="previous"
-                        @click="previousStep"
+                        @click="patientPrevStep"
                       >
                         <span class="svg-icon svg-icon-4 me-1">
                           <inline-svg
@@ -346,13 +584,15 @@
                         <button
                           type="button"
                           class="btn btn-lg btn-light-primary me-3"
+                          v-if="modalId == 'modal_edit_apt'"
                           @click="handleSave"
                         >
                           Save
                         </button>
                         <button
-                          type="submit"
+                          type="button"
                           class="btn btn-lg btn-primary align-self-end"
+                          @click="handleStep_2"
                         >
                           Continue
                           <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -376,269 +616,264 @@
                     :model="billingInfoData"
                     :rules="rules"
                     ref="formRef_3"
-                    @submit.prevent="handleStep_3"
+                    @submit.prevent=""
                   >
                     <div class="row">
-                      <div class="row">
-                        <InputWrapper
-                          class="col-6"
-                          label="Appointment Price"
-                          prop="procedure_price"
+                      <InputWrapper
+                        class="col-6"
+                        label="Appointment Price"
+                        prop="procedure_price"
+                      >
+                        <el-input
+                          type="text"
+                          v-model.number="billingInfoData.procedure_price"
+                          disabled
+                        />
+                      </InputWrapper>
+                      <InputWrapper
+                        class="col-6"
+                        label="Charge Type"
+                        prop="charge_type"
+                      >
+                        <el-select
+                          class="w-100"
+                          v-model="billingInfoData.charge_type"
+                          placeholder="Select Charge Type"
                         >
-                          <el-input
-                            type="text"
-                            v-model.number="billingInfoData.procedure_price"
-                            disabled
+                          <el-option
+                            v-for="type in chargeTypes"
+                            :key="type.value"
+                            :value="type.value"
+                            :label="type.label"
                           />
-                        </InputWrapper>
+                        </el-select>
+                      </InputWrapper>
+
+                      <el-divider />
+
+                      <InputWrapper
+                        class="col-6"
+                        label="Medicare Number"
+                        prop="medicare_number"
+                      >
+                        <el-input
+                          type="text"
+                          v-model="billingInfoData.medicare_number"
+                          placeholder="Enter Medicare Number"
+                        />
+                      </InputWrapper>
+                      <InputWrapper
+                        class="col-6"
+                        label="Medicare Reference Number"
+                        prop="medicare_reference_number"
+                      >
+                        <el-input
+                          type="text"
+                          v-model="billingInfoData.medicare_reference_number"
+                          placeholder=""
+                        />
+                      </InputWrapper>
+                      <InputWrapper
+                        class="col-6"
+                        label="Medicare Expiry Date"
+                        prop="medicare_expiry_date"
+                      >
+                        <el-date-picker
+                          editable
+                          class="w-100"
+                          v-model="billingInfoData.medicare_expiry_date"
+                          format="MM-YYYY"
+                          placeholder="Enter Expiry Date"
+                        />
+                      </InputWrapper>
+                      <el-divider />
+
+                      <div
+                        class="row"
+                        v-if="
+                          billingInfoData.charge_type ===
+                            'private-health-excess' ||
+                          billingInfoData.charge_type ===
+                            'private-health-excess-0'
+                        "
+                      >
                         <InputWrapper
                           class="col-6"
-                          label="Charge Type"
-                          prop="charge_type"
+                          label="Health Fund"
+                          prop="health_fund_id"
                         >
                           <el-select
                             class="w-100"
-                            v-model="billingInfoData.charge_type"
-                            placeholder="Select Charge Type"
+                            v-model="billingInfoData.health_fund_id"
                           >
                             <el-option
-                              v-for="type in chargeTypes"
-                              :key="type.value"
-                              :value="type.value"
-                              :label="type.label"
+                              v-for="item in healthFundsList"
+                              :value="item.id"
+                              :label="item.code + '-' + item.name"
+                              :key="item.id"
                             />
                           </el-select>
                         </InputWrapper>
-
-                        <el-divider />
-
                         <InputWrapper
                           class="col-6"
-                          label="Medicare Number"
-                          prop="medicare_number"
+                          label="Health Fund Membership Number"
+                          prop="health_fund_membership_number"
                         >
                           <el-input
                             type="text"
-                            v-model="billingInfoData.medicare_number"
-                            placeholder="Enter Medicare Number"
+                            v-model="
+                              billingInfoData.health_fund_membership_number
+                            "
+                            placeholder="12345678"
                           />
                         </InputWrapper>
                         <InputWrapper
                           class="col-6"
-                          label="Medicare Reference Number"
-                          prop="medicare_reference_number"
+                          label="Health Fund Reference Number"
+                          prop="health_fund_reference_number"
                         >
                           <el-input
                             type="text"
-                            v-model="billingInfoData.medicare_reference_number"
-                            placeholder=""
+                            v-model="
+                              billingInfoData.health_fund_reference_number
+                            "
+                            placeholder="00"
                           />
                         </InputWrapper>
+
                         <InputWrapper
                           class="col-6"
-                          label="Medicare Expiry Date"
-                          prop="medicare_expiry_date"
+                          label="Health Fund Expiry Date"
+                          prop="health_fund_expiry_date"
                         >
                           <el-date-picker
                             editable
                             class="w-100"
-                            v-model="billingInfoData.medicare_expiry_date"
+                            v-model="billingInfoData.health_fund_expiry_date"
                             format="MM-YYYY"
-                            placeholder="Enter Expiry Date"
                           />
                         </InputWrapper>
-                        <el-divider />
 
-                        <div
-                          class="row"
+                        <InputWrapper
                           v-if="
                             billingInfoData.charge_type ===
-                              'private-health-excess' ||
-                            billingInfoData.charge_type ===
-                              'private-health-excess-0'
-                          "
-                        >
-                          <InputWrapper
-                            class="col-6"
-                            label="Health Fund"
-                            prop="health_fund_id"
-                          >
-                            <el-select
-                              class="w-100"
-                              v-model="billingInfoData.health_fund_id"
-                            >
-                              <el-option
-                                v-for="item in healthFundsList"
-                                :value="item.id"
-                                :label="item.code + '-' + item.name"
-                                :key="item.id"
-                              />
-                            </el-select>
-                          </InputWrapper>
-                          <InputWrapper
-                            class="col-6"
-                            label="Health Fund Membership Number"
-                            prop="health_fund_membership_number"
-                          >
-                            <el-input
-                              type="text"
-                              v-model="
-                                billingInfoData.health_fund_membership_number
-                              "
-                              placeholder="12345678"
-                            />
-                          </InputWrapper>
-                          <InputWrapper
-                            class="col-6"
-                            label="Health Fund Reference Number"
-                            prop="health_fund_reference_number"
-                          >
-                            <el-input
-                              type="text"
-                              v-model="
-                                billingInfoData.health_fund_reference_number
-                              "
-                              placeholder="00"
-                            />
-                          </InputWrapper>
-
-                          <InputWrapper
-                            class="col-6"
-                            label="Health Fund Expiry Date"
-                            prop="health_fund_expiry_date"
-                          >
-                            <el-date-picker
-                              editable
-                              class="w-100"
-                              v-model="billingInfoData.health_fund_expiry_date"
-                              format="MM-YYYY"
-                            />
-                          </InputWrapper>
-
-                          <InputWrapper
-                            v-if="
-                              billingInfoData.charge_type ===
-                              'private-health-excess'
-                            "
-                            class="col-6"
-                            label="Fund Excess"
-                            prop="fund_excess"
-                          >
-                            <el-input
-                              type="text"
-                              v-model.number="billingInfoData.fund_excess"
-                            />
-                          </InputWrapper>
-                        </div>
-
-                        <InputWrapper
-                          v-if="billingInfoData.charge_type === 'pension-card'"
-                          class="col-6"
-                          label="Pension Card Number"
-                          prop="pension_card_number"
-                        >
-                          <el-input
-                            class="w-100"
-                            v-model="billingInfoData.pension_card_number"
-                          />
-                        </InputWrapper>
-
-                        <InputWrapper
-                          v-if="
-                            billingInfoData.charge_type === 'healthcare-card'
+                            'private-health-excess'
                           "
                           class="col-6"
-                          label="Healthcare Card Number"
-                          prop="healthcare_card_number"
+                          label="Fund Excess"
+                          prop="fund_excess"
                         >
                           <el-input
-                            class="w-100"
-                            v-model="billingInfoData.healthcare_card_number"
+                            type="text"
+                            v-model.number="billingInfoData.fund_excess"
                           />
                         </InputWrapper>
-                        <InputWrapper
-                          v-if="
-                            billingInfoData.charge_type === 'healthcare-card' ||
-                            billingInfoData.charge_type === 'pension-card'
-                          "
-                          class="col-6"
-                          label="Expiry Date"
-                          prop="expiry_date"
-                        >
-                          <el-input
-                            class="w-100"
-                            v-model="billingInfoData.healthcare_card_number"
-                          />
-                        </InputWrapper>
-
-                        <div
-                          class="row"
-                          v-if="
-                            billingInfoData.charge_type === 'department-veteran'
-                          "
-                        >
-                          <InputWrapper
-                            class="col-6"
-                            label="DVA Number"
-                            prop="dva_number"
-                          >
-                            <el-input
-                              class="w-100"
-                              v-model="billingInfoData.dva_number"
-                            />
-                          </InputWrapper>
-                          <InputWrapper
-                            class="col-6"
-                            label="DVA Type"
-                            prop="dva_expiry_date"
-                          >
-                            <el-date-picker
-                              editable
-                              class="w-100"
-                              format="MM-YYYY"
-                              v-model="billingInfoData.dva_expiry_date"
-                            />
-                          </InputWrapper>
-                          <InputWrapper
-                            class="col-6"
-                            label="DVA Expiry Date"
-                            prop="dva_type"
-                          >
-                            <el-select
-                              class="w-100"
-                              v-model="billingInfoData.dva_type"
-                            >
-                              <el-option value="white" label="White" />
-                              <el-option value="gold" label="Gold" />
-                              <el-option value="orange" label="Orange" />
-                            </el-select>
-                          </InputWrapper>
-                        </div>
-                        <div
-                          class="col-sm-6 d-flex align-items-center justify-content-center"
-                        >
-                          <!--begin::Input group-->
-                          <div class="fv-row">
-                            <!--begin::Input-->
-                            <el-form-item
-                              class="m-0"
-                              prop="add_other_account_holder"
-                            >
-                              <el-checkbox
-                                type="checkbox"
-                                v-model="
-                                  billingInfoData.add_other_account_holder
-                                "
-                                label="Add other account holder"
-                              />
-                            </el-form-item>
-                            <!--end::Input-->
-                          </div>
-                          <!--end::Input group-->
-                        </div>
                       </div>
-                      <!--end::Body-->
 
+                      <InputWrapper
+                        v-if="billingInfoData.charge_type === 'pension-card'"
+                        class="col-6"
+                        label="Pension Card Number"
+                        prop="pension_card_number"
+                      >
+                        <el-input
+                          class="w-100"
+                          v-model="billingInfoData.pension_card_number"
+                        />
+                      </InputWrapper>
+
+                      <InputWrapper
+                        v-if="billingInfoData.charge_type === 'healthcare-card'"
+                        class="col-6"
+                        label="Healthcare Card Number"
+                        prop="healthcare_card_number"
+                      >
+                        <el-input
+                          class="w-100"
+                          v-model="billingInfoData.healthcare_card_number"
+                        />
+                      </InputWrapper>
+                      <InputWrapper
+                        v-if="
+                          billingInfoData.charge_type === 'healthcare-card' ||
+                          billingInfoData.charge_type === 'pension-card'
+                        "
+                        class="col-6"
+                        label="Expiry Date"
+                        prop="expiry_date"
+                      >
+                        <el-input
+                          class="w-100"
+                          v-model="billingInfoData.healthcare_card_number"
+                        />
+                      </InputWrapper>
+
+                      <div
+                        class="row"
+                        v-if="
+                          billingInfoData.charge_type === 'department-veteran'
+                        "
+                      >
+                        <InputWrapper
+                          class="col-6"
+                          label="DVA Number"
+                          prop="dva_number"
+                        >
+                          <el-input
+                            class="w-100"
+                            v-model="billingInfoData.dva_number"
+                          />
+                        </InputWrapper>
+                        <InputWrapper
+                          class="col-6"
+                          label="DVA Type"
+                          prop="dva_expiry_date"
+                        >
+                          <el-date-picker
+                            editable
+                            class="w-100"
+                            format="MM-YYYY"
+                            v-model="billingInfoData.dva_expiry_date"
+                          />
+                        </InputWrapper>
+                        <InputWrapper
+                          class="col-6"
+                          label="DVA Expiry Date"
+                          prop="dva_type"
+                        >
+                          <el-select
+                            class="w-100"
+                            v-model="billingInfoData.dva_type"
+                          >
+                            <el-option value="white" label="White" />
+                            <el-option value="gold" label="Gold" />
+                            <el-option value="orange" label="Orange" />
+                          </el-select>
+                        </InputWrapper>
+                      </div>
+
+                      <div
+                        class="col-sm-6 d-flex align-items-center justify-content-center"
+                      >
+                        <!--begin::Input group-->
+                        <div class="fv-row">
+                          <!--begin::Input-->
+                          <el-form-item
+                            class="m-0"
+                            prop="add_other_account_holder"
+                          >
+                            <el-checkbox
+                              type="checkbox"
+                              v-model="billingInfoData.add_other_account_holder"
+                              label="Add other account holder"
+                            />
+                          </el-form-item>
+                          <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--end::Body-->
+                      </div>
                       <el-divider />
                     </div>
                     <div class="d-flex justify-content-between">
@@ -659,13 +894,15 @@
                         <button
                           type="button"
                           class="btn btn-lg btn-light-primary me-3"
+                          v-if="modalId == 'modal_edit_apt'"
                           @click="handleSave"
                         >
                           Save
                         </button>
                         <button
-                          type="submit"
+                          type="button"
                           class="btn btn-lg btn-primary align-self-end"
+                          @click="handleStep_3"
                         >
                           Continue
                           <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -689,7 +926,7 @@
                     :model="otherInfoData"
                     :rules="rules"
                     ref="formRef_4"
-                    @submit.prevent="submit"
+                    @submit.prevent=""
                   >
                     <div class="row scroll h-500px">
                       <div v-if="apt_type == 'Procedure'" class="card-info">
@@ -828,7 +1065,7 @@
                       <!--end::Referral Information-->
                       <!--start::Appointment History-->
                       <div class="card-info">
-                        <span class="fs-3 fw-bold text-muted mb-4"
+                        <span class="fs-3 fw-bold text-muted"
                           >Appointment History</span
                         >
 
@@ -839,8 +1076,9 @@
                           "
                         />
                       </div>
-                      <!--end::Appointment History-->
                     </div>
+                    <!--end::Appointment History-->
+
                     <div class="d-flex justify-content-between">
                       <button
                         type="button"
@@ -855,15 +1093,28 @@
                         </span>
                         Back
                       </button>
-                      <div>
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-light-primary me-3"
-                          @click="handleSave"
-                        >
-                          Save
-                        </button>
-                      </div>
+
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-light-primary me-3"
+                        v-if="modalId == 'modal_edit_apt'"
+                        @click="handleSave"
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-lg btn-primary align-self-end"
+                        @click="submit"
+                        v-else
+                      >
+                        Create Appointment
+                        <span class="svg-icon svg-icon-4 ms-1 me-0">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr064.svg"
+                          />
+                        </span>
+                      </button>
                     </div>
                   </el-form>
                 </div>
@@ -894,55 +1145,68 @@ import {
   reactive,
 } from "vue";
 import { useStore } from "vuex";
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { Actions } from "@/store/enums/StoreEnums";
-import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
+import ApiService from "@/core/services/ApiService";
+import JwtService from "@/core/services/JwtService";
 import { hideModal } from "@/core/helpers/dom";
 import moment from "moment";
 import chargeTypes, { getProcedurePrice } from "@/core/data/charge-types";
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
-import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
-import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
+import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import { useRouter } from "vue-router";
+import AptOverview from "@/components/appointments/partials/AppointmentOverview";
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
-import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
+import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
+import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 
 export default defineComponent({
+  props: {
+    modalId: { type: String, required: true },
+  },
+
   name: "create-apt-modal",
   directives: {
     mask,
   },
   components: {
+    Datatable,
     AppointmentHistory,
     StepperNavItem,
-    InfoSection,
     InputWrapper,
     AlertBadge,
+    AptOverview,
   },
-  setup() {
+
+  setup(props) {
     const store = useStore();
     const formRef_1 = ref(null);
     const formRef_2 = ref(null);
     const formRef_3 = ref(null);
     const formRef_4 = ref(null);
     const loading = ref(false);
+    const tableKey = ref(0);
     const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const router = useRouter();
 
     const aptInfoData = ref({
       clinic_name: "",
       clinic_id: "",
-      date: new Date(),
+      send_forms: true,
+      date: "",
       arrival_time: "",
       time_slot: ["2022-06-20T09:00", "2022-06-20T17:00"],
       appointment_type_id: "",
       specialist_id: "",
       room_id: "",
       note: "",
+      patient_id: null,
     });
 
     const patientInfoData = ref({
@@ -958,7 +1222,7 @@ export default defineComponent({
     });
 
     const billingInfoData = ref({
-      charge_type: "",
+      charge_type: chargeTypes[0].value,
       medicare_number: "",
       medicare_reference_number: "",
       medicare_expiry_date: "",
@@ -989,6 +1253,20 @@ export default defineComponent({
     });
 
     const rules = ref({
+      clinic_id: [
+        {
+          required: true,
+          message: "Clinic Name cannot be blank.",
+          trigger: "blur",
+        },
+      ],
+      arrival_time: [
+        {
+          required: true,
+          message: "Arrival time cannot be blank.",
+          trigger: "blur",
+        },
+      ],
       appointment_type_id: [
         {
           required: true,
@@ -1027,7 +1305,7 @@ export default defineComponent({
       contact_number: [
         {
           required: true,
-          message: "Contact Number cannot be blank.",
+          message: "Mobile Number cannot be blank.",
           trigger: "blur",
         },
         { validator: validatePhone, trigger: "blur" },
@@ -1039,22 +1317,29 @@ export default defineComponent({
           trigger: "blur",
         },
       ],
+      procedure_price: [
+        {
+          type: "number",
+          message: "Procedure price must be a number",
+        },
+      ],
       fund_excess: [
         {
+          type: "number",
           message: "Fund excess must be a number",
         },
       ],
       medicare_number: [
         {
           required: false,
-          message: "Medicare number must be a number",
+          message: "Medicare number cannot be blank.",
           trigger: "blur",
         },
       ],
       medicare_reference_number: [
         {
           required: false,
-          message: "Medicare reference number must be a number",
+          message: "Medicare Reference Number cannot be blank.",
           trigger: "blur",
         },
       ],
@@ -1073,18 +1358,21 @@ export default defineComponent({
         },
       ],
     });
+
     const appointment_length = reactive({
       single: 1,
       double: 2,
       triple: 3,
     });
-
     const appointment_time = ref(30);
-
     const _stepperObj = ref(null);
+    const createAptRef = ref(null);
+    const createAptModalRef = ref(null);
+    const currentStepIndex = ref(0);
+
     const editAptRef = ref(null);
     const editAptModalRef = ref(null);
-    const currentStepIndex = ref(0);
+    const cur_specialist_id = ref("");
 
     const ava_specialist = ref([]);
     const apt_type = ref("");
@@ -1095,39 +1383,118 @@ export default defineComponent({
     const clinic = ref([]);
     const rooms = ref([]);
     const cur_appointment_type_id = ref("");
-    const cur_specialist_id = ref("");
+    const appointmentType = ref("");
+    const cur_specialist = ref("");
     const start_time = ref("");
     const end_time = ref("");
     const appointment_name = ref("");
     const specialist_name = ref("");
     const _appointment_time = ref(30);
     const arrival_time = ref(30);
-    const overlapping_cnt = ref(0);
 
     const addressRef = ref(null);
+    const title = ref(null);
+    const refName = ref(null);
+    const refCode = ref(null);
+
+    const patientTableData = ref([]);
+    const patientTableHeader = ref([
+      {
+        name: "Full Name",
+        key: "full_name",
+        sortable: true,
+        searchable: true,
+      },
+      {
+        name: "Date of Birth",
+        key: "dob",
+        sortable: true,
+        searchable: true,
+      },
+      {
+        name: "Contact Number",
+        key: "contact_number",
+        sortable: true,
+        searchable: true,
+      },
+      {
+        name: "",
+        key: "action",
+      },
+    ]);
+    const filterPatient = reactive({
+      first_name: "",
+      last_name: "",
+      date_of_birth: "",
+      ur_number: "",
+    });
+    const patientStatus = ref("new");
+    const patientStep = ref(3);
+
+    const overlapping_cnt = ref(0);
 
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
     const proQuestions = computed(() => store.getters.getProQuestionActiveList);
     const aptTypeList = computed(() => store.getters.getAptTypesList);
+    const aptTypeListWithRestriction = ref();
     const searchVal = computed(() => store.getters.getSearchVariable);
     const organisation = computed(() => store.getters.orgList);
-    const aptData = computed(() => store.getters.getAptSelected);
+    const patientList = computed(() => store.getters.patientsList);
     const patientAptData = computed(() => store.getters.getPatientAppointments);
+    const aptData = computed(() => store.getters.getAptSelected);
+    const bookingData = computed(() => store.getters.bookingDatas);
 
-    watch(aptData, () => {
-      for (let key in aptInfoData.value)
-        aptInfoData.value[key] = aptData.value[key];
+    // Setting modal Heading and Ids
+    const setTitle = () => {
+      if (props.modalId === "modal_create_apt") {
+        title.value = "Create Appointment";
+        refName.value = "createAptModalRef";
+      } else if (props.modalId === "modal_edit_apt") {
+        title.value = "Update Appointment";
+        refName.value = "editAptModalRef";
+        refCode.value = "editAptRef";
+        _stepperObj.value = StepperComponent.createInstance(editAptRef.value);
+      }
+    };
+
+    const formatDate = (date) => {
+      return moment(date).format("DD-MM-YYYY").toString();
+    };
+
+    const updateAptTime = (startTime, endTime) => {
       aptInfoData.value.time_slot = [];
-      aptInfoData.value.time_slot.push(aptData.value.start_time);
-      aptInfoData.value.time_slot.push(aptData.value.end_time);
-      cur_appointment_type_id.value = aptData.value.appointment_type_id;
-      for (let key in patientInfoData.value)
-        patientInfoData.value[key] = aptData.value[key];
-      for (let key in billingInfoData.value)
-        billingInfoData.value[key] = aptData.value[key];
-      for (let key in otherInfoData.value)
-        otherInfoData.value[key] = aptData.value[key];
+      aptInfoData.value.time_slot.push(
+        moment(startTime, "HH:mm").format("HH:mm")
+      );
+      start_time.value = aptInfoData.value.time_slot[0];
+      aptInfoData.value.time_slot.push(
+        moment(endTime, "HH:mm").format("HH:mm")
+      );
+    };
+
+    // Get Selected APT data when user edit appointments
+    watch(aptData, () => {
+      if (props.modalId == "modal_edit_apt") {
+        for (let key in aptInfoData.value)
+          aptInfoData.value[key] = aptData.value[key];
+        cur_appointment_type_id.value = aptData.value.appointment_type_id;
+        for (let key in patientInfoData.value)
+          patientInfoData.value[key] = aptData.value.patient[key];
+        for (let key in billingInfoData.value)
+          billingInfoData.value[key] = aptData.value.patient.billing[0][key];
+        for (let key in otherInfoData.value)
+          otherInfoData.value[key] = aptData.value[key];
+        aptInfoData.value.clinic_id = aptData.value.clinic_id;
+        aptInfoData.value.clinic_name = aptData.value.clinic.name;
+        specialist_name.value = aptData.value.specialist.full_name;
+        billingInfoData.value.charge_type = aptData.value.charge_type;
+        aptInfoData.value.date = moment(aptData.value.date)
+          .format("DD-MM-YYYY")
+          .toString();
+        getAvailableRooms();
+        updateAptTime(aptData.value.start_time, aptData.value.end_time);
+      }
     });
 
     watch(cur_appointment_type_id, () => {
@@ -1135,42 +1502,43 @@ export default defineComponent({
       const _selected = aptTypeList.value.filter(
         (aptType) => aptType.id === cur_appointment_type_id.value
       )[0];
-      appointment_name.value = _selected.name;
-      _appointment_time.value = Number(
-        appointment_length[_selected.appointment_time] * appointment_time.value
-      );
 
-      start_time.value = aptInfoData.value.time_slot[0];
+      if (typeof _selected === "undefined") {
+        appointment_name.value = "";
+        _appointment_time.value = Number(appointment_time.value);
+        arrival_time.value = 30;
+
+        aptInfoData.value.clinical_code = "";
+        aptInfoData.value.mbs_code = "";
+        apt_type.value = "";
+      } else {
+        appointment_name.value = _selected.name;
+        appointmentType.value = _selected.type;
+        _appointment_time.value = Number(
+          appointment_length[_selected.appointment_time] *
+            appointment_time.value
+        );
+        arrival_time.value = Number(_selected.arrival_time);
+
+        aptInfoData.value.clinical_code = _selected.clinical_code;
+        aptInfoData.value.mbs_code = _selected.mbs_code;
+        apt_type.value = _selected.type;
+      }
+
       end_time.value = moment(start_time.value, "HH:mm")
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      aptInfoData.value.time_slot[1] = end_time.value;
-      arrival_time.value = Number(_selected.arrival_time);
-      aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
-        .subtract(arrival_time.value, "minutes")
-        .format("HH:mm")
-        .toString();
-
-      aptInfoData.value.clinical_code = _selected.clinical_code;
-      aptInfoData.value.mbs_code = _selected.mbs_code;
-      apt_type.value = _selected.type;
-      if (apt_type.value === "Consultation") {
-        otherInfoData.value.anesthetic_questions = false;
+      if (props.modalId == "modal_create_apt") {
+        updateAptTime(start_time.value, end_time.value);
+        aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
+          .subtract(arrival_time.value, "minutes")
+          .format("HH:mm")
+          .toString();
       }
 
-      if (JwtService.getToken()) {
-        ApiService.setHeader();
-        ApiService.get("clinics/" + aptInfoData.value.clinic_id + "/rooms")
-          .then(({ data }) => {
-            rooms.value = data.data;
-          })
-          .catch(({ response }) => {
-            console.log(response.data.errors);
-            // this.context.commit(Mutations.PURGE_AUTH);
-          });
-      } else {
-        // this.context.commit(Mutations.PURGE_AUTH);
+      if (apt_type.value === "Consultation") {
+        otherInfoData.value.anesthetic_questions = false;
       }
 
       const specialist = store.getters.getSelectedSpecialist;
@@ -1193,9 +1561,11 @@ export default defineComponent({
           }
         }
       }
+
       overlapping_cnt.value = cnt;
     });
 
+    // Make sure this watch runs only edit
     watch(cur_specialist_id, () => {
       aptInfoData.value.specialist_id = cur_specialist_id.value;
       const _selected = ava_specialist.value.filter(
@@ -1206,8 +1576,14 @@ export default defineComponent({
       aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
     });
 
+    watch(cur_specialist, () => {
+      aptInfoData.value.specialist_id = cur_specialist.value.id;
+      specialist_name.value = cur_specialist.value.full_name;
+      //anesthetist.value = _selected.anesthetist;
+      //aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
+    });
+
     watch(start_time, () => {
-      aptInfoData.value.time_slot[0] = start_time.value;
       aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
         .subtract(arrival_time.value, "minutes")
         .format("HH:mm")
@@ -1216,8 +1592,17 @@ export default defineComponent({
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
         .toString();
-      aptInfoData.value.time_slot[1] = end_time.value;
+      if (props.modalId == "modal_create_apt") {
+        updateAptTime(start_time.value, end_time.value);
+      }
     });
+
+    watch(patientStatus, () => {
+      if (patientStatus.value === "new") patientStep.value = 3;
+      else patientStep.value = 1;
+    });
+
+    const renderTable = () => tableKey.value++;
 
     const handleAneQuestions = () => {
       let temp = [];
@@ -1239,8 +1624,56 @@ export default defineComponent({
       otherInfoData.value.procedure_answers = temp;
     };
 
+    watch(patientList, () => {
+      patientTableData.value = patientList;
+      renderTable();
+    });
+
+    // Setting user selected date
+    watch(searchVal, () => {
+      aptInfoData.value.date = moment(searchVal.value.date)
+        .format("DD-MM-YYYY")
+        .toString();
+    });
+
     watchEffect(() => {
-      appointment_time.value = 30; // create api
+      appointment_time.value = 30; // Create api for this
+      const bookingData = store.getters.bookingDatas;
+      ava_specialist.value = bookingData.ava_specialist;
+
+      let specialistRestriction = bookingData.restriction;
+      if (
+        specialistRestriction === "NONE" ||
+        props.modalId === "modal_edit_apt"
+      ) {
+        aptTypeListWithRestriction.value = aptTypeList.value;
+      } else {
+        aptTypeListWithRestriction.value = aptTypeList.value.filter(
+          (item) => item.type === specialistRestriction
+        );
+      }
+
+      if (bookingData.time_slot) {
+        start_time.value = moment(bookingData.time_slot[0]).format("HH:mm");
+        end_time.value = moment(bookingData.time_slot[1]).format("HH:mm");
+      }
+      if (cur_appointment_type_id.value == "") {
+        overlapping_cnt.value = bookingData.overlapping_cnt;
+      }
+      if (bookingData.selected_specialist) {
+        cur_specialist.value = bookingData.selected_specialist;
+        if (bookingData.selected_specialist.anesthetist) {
+          anesthetist.value = bookingData.selected_specialist.anesthetist;
+        }
+
+        if (bookingData.selected_specialist) {
+          clinic.value =
+            bookingData.selected_specialist.hrm_user_base_schedules[0].clinic;
+          aptInfoData.value.clinic_name = clinic.value.name;
+          aptInfoData.value.clinic_id = clinic.value.id;
+          getAvailableRooms();
+        }
+      }
 
       if (cur_appointment_type_id.value && billingInfoData.value.charge_type) {
         const filteredApt = aptTypeList.value.filter(
@@ -1254,16 +1687,51 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      _stepperObj.value = StepperComponent.createInstance(editAptRef.value);
-
+      setTitle();
+      _stepperObj.value = StepperComponent.createInstance(createAptRef.value);
+      if (props.modalId === "modal_create_apt") {
+        store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      }
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
+      store.dispatch(Actions.ORG.LIST);
     });
+
+    const getAvailableRooms = () => {
+      if (JwtService.getToken()) {
+        ApiService.setHeader();
+        ApiService.get("clinics/" + aptInfoData.value.clinic_id + "/rooms")
+          .then(({ data }) => {
+            rooms.value = data.data;
+          })
+          .catch(({ response }) => {
+            console.log(response.data.errors);
+            // this.context.commit(Mutations.PURGE_AUTH);
+          });
+      } else {
+        // this.context.commit(Mutations.PURGE_AUTH);
+      }
+    };
 
     const handleStep_1 = () => {
       if (!formRef_1.value) {
         return;
+      }
+
+      if (props.modalId == "modal_create_apt") {
+        patientInfoData.value = {
+          first_name: "",
+          last_name: "",
+          date_of_birth: "",
+          email: "",
+          address: "",
+          contact_number: "",
+          appointment_confirm_method: "sms",
+          allergies: "",
+          clinical_alerts: "",
+        };
+        if (formRef_2.value) formRef_2.value.resetFields();
       }
 
       formRef_1.value.validate((valid) => {
@@ -1308,11 +1776,11 @@ export default defineComponent({
         }
       });
     };
-
+    // Send request to update exiting appointment
     const handleSave = () => {
       loading.value = true;
       store
-        .dispatch(Actions.APT.UPDATE, {
+        .dispatch(AppointmentActions.APT.UPDATE, {
           id: aptData.value.id,
           ...aptInfoData.value,
           ...patientInfoData.value,
@@ -1321,8 +1789,8 @@ export default defineComponent({
         })
         .then(() => {
           loading.value = false;
-          store.dispatch(AppointmentActions.APT.LIST);
-          hideModal(editAptModalRef.value);
+          store.dispatch(AppointmentActions.LIST);
+          hideModal(createAptModalRef.value);
           if (searchVal.value.date) {
             store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
               ...searchVal.value,
@@ -1335,26 +1803,47 @@ export default defineComponent({
               ...searchVal.value,
             });
           }
-          resetEditModal();
+          resetCreateModal();
         })
         .catch(({ response }) => {
           loading.value = false;
-          console.log(response.data.error);
+          console.log(response.data.errors);
         });
     };
 
-    const resetEditModal = () => {
+    const resetCreateModal = () => {
       currentStepIndex.value = 0;
       _stepperObj.value.goFirst();
-      formRef_1.value.resetFields();
-      formRef_2.value.resetFields();
-      formRef_3.value.resetFields();
-      formRef_4.value.resetFields();
-      store.dispatch(PatientActions.LIST);
+
+      if (props.modalId == "modal_create_apt") {
+        formRef_1.value.resetFields();
+        formRef_3.value.resetFields();
+        formRef_4.value.resetFields();
+        if (formRef_2.value) formRef_2.value.resetFields();
+        filterPatient.first_name = "";
+        filterPatient.last_name = "";
+        filterPatient.date_of_birth = "";
+        filterPatient.ur_number = "";
+
+        for (let key in aptInfoData.value) aptInfoData.value[key] = "";
+        cur_appointment_type_id.value = "";
+        for (let key in patientInfoData.value) patientInfoData.value[key] = "";
+        aptInfoData.value.date = moment().format("DD-MM-YYYY").toString();
+        for (let key in billingInfoData.value) billingInfoData.value[key] = "";
+        // for (let key in otherInfoData.value) otherInfoData.value[key] = "";
+      } else {
+        // Edit modal
+        store.dispatch(PatientActions.LIST);
+      }
+      //
+      // cur_appointment_type_id.value = "";
+      // patientStatus.value = "new";
+      // patientStep.value = 1;
+      // patientTableData.value = patientList.value;
     };
 
     const handleCancel = () => {
-      resetEditModal();
+      resetCreateModal();
     };
 
     const handleAddressChange = (e) => {
@@ -1376,44 +1865,131 @@ export default defineComponent({
       formRef_4.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          store
-            .dispatch(Actions.APT.UPDATE, {
-              id: aptData.value.id,
-              ...aptInfoData.value,
-              ...patientInfoData.value,
-              ...billingInfoData.value,
-              ...otherInfoData.value,
-            })
-            .then(() => {
-              loading.value = false;
-              store.dispatch(Actions.APT.LIST);
-              hideModal(editAptModalRef.value);
-              if (searchVal.value.date) {
-                store.dispatch(Actions.BOOKING.SEARCH.DATE, {
-                  ...searchVal.value,
-                });
-                store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-                  ...searchVal.value,
-                });
-              } else {
-                store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
-                  ...searchVal.value,
-                });
-              }
-            })
-            .catch(({ response }) => {
-              loading.value = false;
-              console.log(response.data.error);
-            });
+          props.modalId === "modal_create_apt" ? createApt() : updateApt();
+          resetCreateModal();
         } else {
           // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
 
+    const createApt = () => {
+      store
+        .dispatch(AppointmentActions.APT.CREATE, {
+          ...aptInfoData.value,
+          ...patientInfoData.value,
+          ...billingInfoData.value,
+          ...otherInfoData.value,
+        })
+        .then(() => {
+          loading.value = false;
+          store.dispatch(AppointmentActions.LIST);
+          handleCancel();
+          Swal.fire({
+            text: "Successfully Created!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+              cancelButton: "btn btn-info",
+            },
+            showCancelButton: true,
+            cancelButtonText: "Deposit",
+          }).then((result) => {
+            hideModal(createAptModalRef.value);
+            resetCreateModal();
+            if (searchVal.value.date) {
+              store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
+                ...searchVal.value,
+              });
+              store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
+                ...searchVal.value,
+              });
+            } else {
+              store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
+                ...searchVal.value,
+              });
+            }
+
+            resetCreateModal();
+
+            if (result.dismiss === "cancel") {
+              router.push({ name: "make-payment-pay" });
+            }
+          });
+        })
+        .catch((response) => {
+          loading.value = false;
+          console.log(response);
+        });
+    };
+
+    const updateApt = () => {
+      store
+        .dispatch(Actions.APT.UPDATE, {
+          id: aptData.value.id,
+          ...aptInfoData.value,
+          ...patientInfoData.value,
+          ...billingInfoData.value,
+          ...otherInfoData.value,
+        })
+        .then(() => {
+          loading.value = false;
+          store.dispatch(Actions.APT.LIST);
+          hideModal(editAptModalRef.value);
+          if (searchVal.value.date) {
+            store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+              ...searchVal.value,
+            });
+            store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+              ...searchVal.value,
+            });
+          } else {
+            store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
+              ...searchVal.value,
+            });
+          }
+        })
+        .catch(({ response }) => {
+          loading.value = false;
+          console.log(response.data.error);
+        });
+    };
+
+    const patientStep_1 = () => {
+      patientTableData.value = [];
+      store.dispatch(PatientActions.LIST, filterPatient);
+      patientStep.value++;
+    };
+
+    const selectPatient = (item) => {
+      store.dispatch(PatientActions.APPOINTMENTS, item.id);
+      store.dispatch(PatientActions.VIEW, item.id);
+      patientInfoData.value = item;
+      aptInfoData.value.patient_id = item.id;
+
+      for (let key in billingInfoData.value) {
+        if (key === "charge_type" || key === "procedure_price") {
+          continue;
+        }
+
+        billingInfoData.value[key] = item[key];
+      }
+
+      patientStep.value++;
+    };
+
     const gotoPage = (page) => {
-      currentStepIndex.value = Number(page - 1);
-      _stepperObj.value.goto(page);
+      if (props.modalId === "modal_edit_apt") {
+        currentStepIndex.value = Number(page - 1);
+        _stepperObj.value.goto(page);
+      }
+    };
+
+    const patientPrevStep = () => {
+      if (patientStatus.value === "new") previousStep();
+      else patientStep.value--;
     };
 
     const handleSelectReferringDoctor = (item) => {
@@ -1466,14 +2042,15 @@ export default defineComponent({
       proQuestions,
       aneAnswers,
       proAnswers,
-      aptTypeList,
+      aptTypeListWithRestriction,
       anesthetist,
       apt_type,
       cur_appointment_type_id,
-      cur_specialist_id,
+      cur_specialist,
       start_time,
       end_time,
       appointment_name,
+      appointmentType,
       specialist_name,
       submit,
       formRef_1,
@@ -1485,26 +2062,42 @@ export default defineComponent({
       handleStep_1,
       handleStep_2,
       handleStep_3,
-      handleSave,
       handleCancel,
       currentStepIndex,
-      editAptRef,
-      editAptModalRef,
+      createAptRef,
+      createAptModalRef,
       countryList,
       timeZoneList,
       handleAneQuestions,
       handleProQuestions,
       handleAddressChange,
       addressRef,
+      patientStatus,
+      patientStep,
+      patientStep_1,
+      filterPatient,
+      patientTableHeader,
+      patientTableData,
+      selectPatient,
+      patientPrevStep,
       aptInfoData,
       patientInfoData,
       billingInfoData,
       otherInfoData,
+      formatDate,
       patientAptData,
-      gotoPage,
       overlapping_cnt,
       searchReferralDoctor,
       handleSelectReferringDoctor,
+      tableKey,
+      gotoPage,
+      editAptRef,
+      editAptModalRef,
+      handleSave,
+      aptTypeList,
+      cur_specialist_id,
+      title,
+      refName,
     };
   },
 });
