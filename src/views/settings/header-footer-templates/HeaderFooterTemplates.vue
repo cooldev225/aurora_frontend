@@ -28,10 +28,10 @@
           {{ item.title }}
         </template>
         <template v-slot:cell-subject="{ row: item }">
-          {{ item.subject }}
+          {{ item.header_file }}
         </template>
         <template v-slot:cell-body="{ row: item }">
-          {{ item.body }}
+          {{ item.footer_file }}
         </template>
         <template v-slot:cell-action="{ row: item }">
           <button
@@ -55,7 +55,7 @@
       </Datatable>
     </div>
   </div>
-  <EditLetterTemplate />
+  <EditHeaderFooterTemplate />
 </template>
 
 <script>
@@ -63,17 +63,17 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import EditLetterTemplate from "@/views/settings/letter-templates/EditLetterTemplate.vue";
+import EditHeaderFooterTemplate from "@/views/settings/header-footer-templates/EditHeaderFooterTemplate.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
-  name: "letter-templates",
+  name: "document-header-footer-templates",
 
   components: {
     Datatable,
-    EditLetterTemplate,
+    EditHeaderFooterTemplate,
   },
 
   setup() {
@@ -85,14 +85,12 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "Subject",
-        key: "subject",
-        sortable: true,
+        name: "Header",
+        key: "header_file",
       },
       {
-        name: "Body",
-        key: "body",
-        sortable: true,
+        name: "Footer",
+        key: "footer_file",
       },
       {
         name: "Action",
@@ -101,38 +99,40 @@ export default defineComponent({
     ]);
 
     const tableData = ref([]);
-    const letterTemplates = computed(() => store.getters.getLetterTemplateList);
+    const headerFooterTemplates = computed(
+      () => store.getters.getHeaderFooterTemplateList
+    );
 
     const handleAdd = () => {
       //add templates
       const new_item = {
         id: 0,
         title: "",
-        subject: "",
-        body: "",
-        _title: "Create Letter Template",
+        header_file: "",
+        footer_file: "",
+        _title: "Create Header/Footer Template",
         _button: "Save",
-        _submit: Actions.LETTER_TEMPLATE.CREATE,
+        _submit: Actions.HEADER_FOOTER_TEMPLATE.CREATE,
         _submit_text: "Successfully Created!",
       };
 
-      store.commit(Mutations.SET_LETTER_TEMPLATE.SELECT, new_item);
+      store.commit(Mutations.SET_HEADER_FOOTER_TEMPLATE.SELECT, new_item);
       const modal = new Modal(
-        document.getElementById("modal_edit_letter_template")
+        document.getElementById("modal_edit_header_footer_template")
       );
       modal.show();
     };
 
     const handleEdit = (item) => {
       //edit templates
-      item._title = "Edit Letter Template";
+      item._title = "Edit Header/Footer Template";
       item._button = "Update";
-      item._submit = Actions.LETTER_TEMPLATE.UPDATE;
+      item._submit = Actions.HEADER_FOOTER_TEMPLATE.UPDATE;
       item._submit_text = "Successfully Updated!";
 
-      store.commit(Mutations.SET_LETTER_TEMPLATE.SELECT, item);
+      store.commit(Mutations.SET_HEADER_FOOTER_TEMPLATE.SELECT, item);
       const modal = new Modal(
-        document.getElementById("modal_edit_letter_template")
+        document.getElementById("modal_edit_heaedr_footer_template")
       );
       modal.show();
     };
@@ -140,9 +140,9 @@ export default defineComponent({
     const handleDelete = (id) => {
       //delete templates
       store
-        .dispatch(Actions.LETTER_TEMPLATE.DELETE, id)
+        .dispatch(Actions.HEADER_FOOTER_TEMPLATE.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LETTER_TEMPLATE.LIST);
+          store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -159,12 +159,12 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Letter Templates", ["Settings"]);
-      store.dispatch(Actions.LETTER_TEMPLATE.LIST);
+      setCurrentPageBreadcrumbs("Header/Footer Templates", ["Settings"]);
+      store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST);
     });
 
     watchEffect(() => {
-      tableData.value = letterTemplates;
+      tableData.value = headerFooterTemplates;
     });
 
     return { tableHeader, tableData, handleAdd, handleEdit, handleDelete };
