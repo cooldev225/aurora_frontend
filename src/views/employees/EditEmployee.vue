@@ -146,9 +146,7 @@
           <el-divider />
           <HeadingText text="Employee Hours" />
           <div
-            v-for="(
-              hour_schedule, hourIndex
-            ) in formData.hrm_user_base_schedules"
+            v-for="(hour_schedule, hourIndex) in formData.schedule_timeslots"
             :key="hourIndex"
           >
             <div class="border border-dashed border-primary pt-3 m-3">
@@ -370,7 +368,7 @@ export default defineComponent({
       address: "",
       role_id: 4,
       type: "full-time",
-      hrm_user_base_schedules: [
+      schedule_timeslots: [
         {
           id: null,
           week_day: null,
@@ -438,7 +436,7 @@ export default defineComponent({
     const rules = ref(commonRoles);
 
     const addSchedualHandle = () => {
-      formData.value.hrm_user_base_schedules.push({
+      formData.value.schedule_timeslots.push({
         id: null,
         week_day: null,
         clinic_id: null,
@@ -454,7 +452,7 @@ export default defineComponent({
     };
 
     const deleteSchedualHandle = (hourIndex) => {
-      formData.value.hrm_user_base_schedules.splice(hourIndex, 1);
+      formData.value.schedule_timeslots.splice(hourIndex, 1);
     };
 
     const currentStepIndex = ref(0);
@@ -474,9 +472,8 @@ export default defineComponent({
           formData.value.address = employee.address;
           formData.value.role_id = employee.role_id;
           formData.value.type = employee.type;
-          if (employee.hrm_user_base_schedules?.length) {
-            formData.value.hrm_user_base_schedules =
-              employee.hrm_user_base_schedules;
+          if (employee.schedule_timeslots?.length) {
+            formData.value.schedule_timeslots = employee.schedule_timeslots;
           }
           if (employee.specialist_clinic_relations?.length) {
             formData.value.specialist_clinic_relations =
@@ -487,10 +484,7 @@ export default defineComponent({
     });
 
     watch(formData.value, () => {
-      console.log([
-        "hrm_user_base_schedules",
-        formData.value.hrm_user_base_schedules,
-      ]);
+      console.log(["schedule_timeslots", formData.value.schedule_timeslots]);
     });
 
     onMounted(() => {
@@ -525,7 +519,7 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
-          let null_schedules = formData.value.hrm_user_base_schedules.filter(
+          let null_schedules = formData.value.schedule_timeslots.filter(
             (schedule) =>
               schedule.week_day == null ||
               schedule.clinic_id == null ||

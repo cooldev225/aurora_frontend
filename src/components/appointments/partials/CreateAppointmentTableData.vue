@@ -29,9 +29,7 @@ export default {
     };
 
     const setColor = () => {
-      let restriction =
-        props.specialist.hrm_user_base_schedules[0]
-          .appointment_type_restriction;
+      let restriction = props.specialist.schedule_timeslots[0].restriction;
       if (restriction == "PROCEDURE") return "text-danger";
       if (restriction == "CONSULTATION") return "text-primary";
       if (restriction == "NONE") return "text-success";
@@ -44,9 +42,7 @@ export default {
         time_slot: [date + "T" + props.startTime],
         date: date,
         selected_specialist: props.specialist,
-        restriction:
-          props.specialist.hrm_user_base_schedules[0]
-            .appointment_type_restriction,
+        restriction: props.specialist.schedule_timeslots[0].restriction,
       };
 
       store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
@@ -60,19 +56,19 @@ export default {
     };
 
     const specialistAvailable = () => {
-      if (!props.specialist.hrm_user_base_schedules) return false;
+      if (!props.specialist.schedule_timeslots) return false;
       let startTime = timeStr2Number(
-        props.specialist.hrm_user_base_schedules[0].start_time
+        props.specialist.schedule_timeslots[0].start_time
       );
       let endTime = timeStr2Number(
-        props.specialist.hrm_user_base_schedules[0].end_time
+        props.specialist.schedule_timeslots[0].end_time
       );
       let appointmentTime = timeStr2Number(props.startTime);
       if (startTime <= appointmentTime && appointmentTime < endTime) {
         return true;
       }
 
-      return false;
+      return true;
     };
 
     return {

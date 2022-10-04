@@ -1668,7 +1668,7 @@ export default defineComponent({
 
         if (bookingData.selected_specialist) {
           clinic.value =
-            bookingData.selected_specialist.hrm_user_base_schedules[0].clinic;
+            bookingData.selected_specialist.schedule_timeslots[0].clinic;
           aptInfoData.value.clinic_name = clinic.value.name;
           aptInfoData.value.clinic_id = clinic.value.id;
           getAvailableRooms();
