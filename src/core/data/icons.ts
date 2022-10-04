@@ -4,7 +4,7 @@ export const icons = {
   plus:   "media/icons/duotune/arrows/arr075.svg",  // create
   pencil: "media/icons/duotune/art/art005.svg",     // edit
   bin:    "media/icons/duotune/general/gen027.svg",  // delete
-  cross:  "media/icons/duotune/arrows/arr061.svg",   // close
+  cross:  "media/icons/duotune/arrows/arr061.svg",   // close 
   calender: "media/icons/duotune/general/gen014.svg", // Booking nav
   heart_pulse: "media/icons/duotune/medicine/med001.svg", // Patient nav
   credit_card: "media/icons/duotune/finance/fin002.svg", // Billing nav
@@ -13,6 +13,7 @@ export const icons = {
   gear: "media/icons/duotune/coding/cod001.svg", // Setting nav
   location_house: "media/icons/duotune/maps/map008.svg", // Clinic nav
   bell: "media/icons/duotune/general/gen007.svg", // for notifications and alerts
+  paper: "media/icons/duotune/general/gen005.svg", // Coding nav
 };
 
 export default icons;

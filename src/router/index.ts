@@ -31,6 +31,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "appointment-print-hospital-certificate-view",
         component: () => import("@/views/LabelTest.vue"),
       },
+      {
+        path: "/coding",
+        name: "coding-dashboard",
+        component: () => import("@/views/coding/dashboard.vue"),
+      },
       ...OrganizationRoutes,
       ...ClinicRoutes,
       ...DocumentRoutes,
