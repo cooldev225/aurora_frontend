@@ -70,7 +70,7 @@ export default class ProfileModule extends VuexModule implements ProfileInfo {
   [Actions.PROFILE.UPDATE_PASSWORD](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("change-password", item)
+      ApiService.update("users/change-password", "0", item)
         .then(({ data }) => {
           return data.data;
         })
