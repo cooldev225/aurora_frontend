@@ -29,8 +29,8 @@
             }}
             <br />
             {{
-              specialist.hrm_user_base_schedules
-                ? specialist.hrm_user_base_schedules[0].clinic_name
+              specialist.schedule_timeslots
+                ? specialist.schedule_timeslots[0].clinic_name
                 : ""
             }}
           </th>
