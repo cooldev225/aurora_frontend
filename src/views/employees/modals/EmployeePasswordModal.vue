@@ -178,7 +178,7 @@ export default defineComponent({
 
           store
             .dispatch(Actions.EMPLOYEE.UPDATE_PASSWORD, {
-              ...employee.value,
+              id: employee.value.id,
               old_password: formData.value.current_password,
               new_password: formData.value.new_employee_password,
               confirm_password: formData.value.repeat_employee_password,
