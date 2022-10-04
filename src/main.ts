@@ -25,6 +25,7 @@ import InlineSVG from "@/components/presets/GeneralElements/InlineSVG.vue";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
 import "@/core/plugins/prismjs";
 import "bootstrap";
+import VueSignaturePad from "vue-signature-pad";
 
 const app = createApp(App);
 
@@ -38,6 +39,7 @@ app.use(VueGoogleMaps, {
     libraries: "places",
   },
 });
+app.use(VueSignaturePad);
 
 ApiService.init(app);
 initApexCharts(app);
