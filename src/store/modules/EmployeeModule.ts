@@ -122,7 +122,7 @@ export default class EmployeeModule extends VuexModule implements EmployeeInfo {
   [Actions.EMPLOYEE.UPDATE_PASSWORD](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      return ApiService.update("users/password/update", item.id, item)
+      return ApiService.post("users/change-password", item)
         .then(({ data }) => {
           return data;
         })
