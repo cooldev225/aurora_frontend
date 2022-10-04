@@ -50,7 +50,7 @@
               data-kt-scroll-wrappers="#kt_modal_edit_header_footer_template_scroll"
               data-kt-scroll-offset="300px"
             >
-              <div class="report-template-wrapper">
+              <div class="header-footer-wrapper">
                 <div class="fv-row col-12 mb-5">
                   <!--begin::Input-->
                   <el-form-item prop="title">
@@ -189,7 +189,15 @@
     </div>
   </div>
 </template>
-
+<style lang="scss">
+.header-footer-wrapper {
+  .avatar-uploader {
+    img.avatar {
+      width: 100%;
+    }
+  }
+}
+</style>
 <script>
 import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
