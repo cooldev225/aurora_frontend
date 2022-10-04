@@ -32,7 +32,7 @@ export default class HeaderFooterModule
    * Get current selected header/footer template
    * @returns Patients
    */
-  get getLetterTemplateSelect(): IHeaderFooterTemplate {
+  get getHeaderFooterTemplateSelect(): IHeaderFooterTemplate {
     return this.headerFooterTemplateSelectData;
   }
 

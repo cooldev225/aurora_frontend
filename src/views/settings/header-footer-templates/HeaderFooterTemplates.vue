@@ -27,10 +27,10 @@
         <template v-slot:cell-title="{ row: item }">
           {{ item.title }}
         </template>
-        <template v-slot:cell-subject="{ row: item }">
+        <template v-slot:cell-header_file="{ row: item }">
           {{ item.header_file }}
         </template>
-        <template v-slot:cell-body="{ row: item }">
+        <template v-slot:cell-footer_file="{ row: item }">
           {{ item.footer_file }}
         </template>
         <template v-slot:cell-action="{ row: item }">

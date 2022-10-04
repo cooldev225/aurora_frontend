@@ -91,7 +91,7 @@ const SettingsRoutes = [
   },
   {
     path: "/settings/header-footer-templates",
-    name: "letterTypes",
+    name: "headerFooterTemplates",
     component: () =>
       import(
         "@/views/settings/header-footer-templates/HeaderFooterTemplates.vue"

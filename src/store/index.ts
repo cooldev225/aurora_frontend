@@ -33,6 +33,7 @@ import DocumentModule from "@/store/modules/DocumentModule";
 import ReportModule from "@/store/modules/ReportModule";
 import HRMModule from "@/store/modules/HRMModule";
 import PatientsAlertModule from "@/store/modules/PatientsAlertModule";
+import HeaderFooterModule from "@/store/modules/HeaderFooterModule";
 config.rawError = true;
 
 const store = createStore({
@@ -69,6 +70,7 @@ const store = createStore({
     ReportModule,
     HRMModule,
     PatientsAlertModule,
+    HeaderFooterModule,
   },
 });
 

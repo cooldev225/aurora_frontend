@@ -4,7 +4,7 @@
     id="modal_edit_header_footer_template"
     tabindex="-1"
     aria-hidden="true"
-    ref="editLetterTemplateModalRef"
+    ref="editHeaderFooterTemplateModalRef"
     data-bs-backdrop="static"
   >
     <!--begin::Modal dialog-->
@@ -12,14 +12,14 @@
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_add_customer_header">
+        <div class="modal-header" id="kt_modal_header_footer_header">
           <!--begin::Modal title-->
           <h2 class="fw-bolder">{{ formData._title }}</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
           <div
-            id="kt_modal_add_customer_close"
+            id="kt_modal_header_footer_close"
             data-bs-dismiss="modal"
             class="btn btn-icon btn-sm btn-active-icon-primary"
           >
@@ -63,24 +63,87 @@
                   </el-form-item>
                   <!--end::Input-->
                 </div>
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Input-->
-                  <el-form-item prop="subject">
-                    <el-input
-                      v-model="formData.subject"
-                      class="w-100"
-                      type="text"
-                      placeholder="Letter Template Subject"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Input-->
-                  <el-form-item prop="body">
-                    <ckeditor :editor="ClassicEditor" v-model="formData.body" />
-                  </el-form-item>
-                  <!--end::Input-->
+                <div class="row mt-10 me-5 ms-5">
+                  <InputWrapper
+                    required
+                    class="col-6"
+                    label="Document Header"
+                    prop="document_header"
+                  >
+                    <el-upload
+                      action="#"
+                      ref="headerRef"
+                      class="avatar-uploader"
+                      list-type="picture-card"
+                      :auto-upload="false"
+                      :show-file-list="false"
+                      :on-change="
+                        (uploadFile) => {
+                          handleAvatarSuccess(uploadFile, 'header');
+                        }
+                      "
+                    >
+                      <img
+                        v-if="formData.header"
+                        :src="formData.header"
+                        class="avatar"
+                      />
+                      <i
+                        v-if="!formData.header"
+                        class="el-icon avatar-uploader-icon"
+                      >
+                        <svg
+                          viewBox="0 0 1024 1024"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"
+                          ></path>
+                        </svg>
+                      </i>
+                    </el-upload>
+                  </InputWrapper>
+                  <InputWrapper
+                    required
+                    class="col-4"
+                    label="Document Footer"
+                    prop="document_footer"
+                  >
+                    <el-upload
+                      action="#"
+                      ref="footerRef"
+                      class="avatar-uploader"
+                      list-type="picture-card"
+                      :auto-upload="false"
+                      :show-file-list="false"
+                      :on-change="
+                        (uploadFile) => {
+                          handleAvatarSuccess(uploadFile, 'footer');
+                        }
+                      "
+                    >
+                      <img
+                        v-if="formData.footer"
+                        :src="formData.footer"
+                        class="avatar"
+                      />
+                      <i
+                        v-if="!formData.footer"
+                        class="el-icon avatar-uploader-icon"
+                      >
+                        <svg
+                          viewBox="0 0 1024 1024"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"
+                          ></path>
+                        </svg>
+                      </i>
+                    </el-upload>
+                  </InputWrapper>
                 </div>
               </div>
             </div>
@@ -94,7 +157,7 @@
             <button
               type="reset"
               data-bs-dismiss="modal"
-              id="kt_modal_add_report_template_cancel"
+              id="kt_modal_add_header_footer_template_cancel"
               class="btn btn-light me-3"
             >
               Cancel
@@ -133,24 +196,22 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
-import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default defineComponent({
-  name: "edit-letter-template-modal",
-  components: {
-    ckeditor: CKEditor.component,
-  },
+  name: "edit-header-footer-template-modal",
   setup() {
     const store = useStore();
     const formRef = ref(null);
-    const editLetterTemplateModalRef = ref(null);
+    const editHeaderFooterTemplateModalRef = ref(null);
     const loading = ref(false);
     const formData = ref({
       id: 0,
       title: "",
-      subject: "",
-      body: "",
+      header: null,
+      footer: null,
+      header_file: null,
+      footer_file: null,
     });
 
     const rules = ref({
@@ -161,21 +222,12 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      subject: [
-        {
-          required: true,
-          message: "subject cannot be blank",
-          trigger: "change",
-        },
-      ],
-      body: [
-        {
-          required: true,
-          message: "Body cannot be blank",
-          trigger: "change",
-        },
-      ],
     });
+
+    const handleAvatarSuccess = (uploadFile, flag) => {
+      formData.value[flag] = URL.createObjectURL(uploadFile.raw);
+      formData.value[flag + "_file"] = uploadFile;
+    };
 
     const submit = () => {
       if (!formRef.value) {
@@ -194,7 +246,7 @@ export default defineComponent({
             })
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.header_footer_template.LIST);
+              store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST);
               Swal.fire({
                 text: formData.value._submit_text,
                 icon: "success",
@@ -204,7 +256,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(editLetterTemplateModalRef.value);
+                hideModal(editHeaderFooterTemplateModalRef.value);
               });
             })
             .catch(({ response }) => {
@@ -217,7 +269,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      formData.value = store.getters.getLetterTemplateSelect;
+      formData.value = store.getters.getHeaderFooterTemplateSelect;
     });
 
     return {
@@ -225,9 +277,10 @@ export default defineComponent({
       rules,
       formRef,
       loading,
-      editLetterTemplateModalRef,
+      editHeaderFooterTemplateModalRef,
       submit,
       ClassicEditor,
+      handleAvatarSuccess,
     };
   },
 });
