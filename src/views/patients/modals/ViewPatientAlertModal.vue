@@ -55,7 +55,7 @@
             class="btn btn-light me-3"
             @click="dismissHandle()"
           >
-            Dismiss
+            Mark Resolved
           </button>
           <!--end::Button-->
         </div>
