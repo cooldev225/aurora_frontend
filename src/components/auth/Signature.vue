@@ -49,18 +49,18 @@
     
     <div class="card-body pt-9 pb-0">
       <!--begin::Details-->
-      <div>
-        <div class="text-primary border width-200 h6">
-          {{currentUser ? currentUser.profile.sign_off: 'Sign Off (User data doesn\'t existed.)'}}
+      <div class="border width-500 mb-2">
+        <div class="text-primary p-2 border-bottom width-500 h6">
+          {{userInfo?.sign_off ? userInfo.sign_off: 'Sign Off doesn\'t existed.'}}
         </div>
         <img class="width-200" :src="signature" />
-        <div class="text-primary border width-200 h6">
-          {{currentUser ? currentUser.profile.first_name + ' ' + currentUser.profile.last_name : 'Full Name (User data doesn\'t existed.)'}}
+        <div class="text-primary p-2 border-bottom width-500 h6">
+          {{userInfo?.first_name ? userInfo.first_name + ' ' + userInfo.last_name : 'Full Name doesn\'t existed.'}}
         </div>
-        <div class="text-primary border width-200 h6">
-          {{currentUser ? currentUser.profile.education_code : 'Education Code (User data doesn\'t existed.)'}}
+        <div class="text-primary p-2 border-bottom width-500 h6">
+          {{userInfo?.education_code ? userInfo.education_code : 'Education Code doesn\'t existed.'}}
         </div>
-        <div class="text-primary border width-200 h6">
+        <div class="text-primary p-2 width-500 h6">
           0000000A
         </div>
       </div>
@@ -145,8 +145,8 @@
   <!--end::Navbar-->
 </template>
 <style lang="scss">
-.width-200 {
-  width: 200px !important;
+.width-500 {
+  width: 500px !important;
 }
 .signature-page {
   .signature-uploader {
@@ -175,6 +175,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const currentUser = computed(() => store.getters.currentUser);
+    const userInfo = ref(null);
     const formRef = ref(null);
     const isUpload = ref(null);
     const signaturePad = ref(null);
@@ -282,7 +283,8 @@ export default defineComponent({
     };
 
     watch(currentUser, () => {
-      console.log("-------------", currentUser);
+      if (currentUser.value && currentUser.value.profile)
+        userInfo.value = currentUser.value.profile;
       loadSignatureImage();
     });
 
@@ -302,6 +304,7 @@ export default defineComponent({
       isUpload,
       cancel,
       signature,
+      userInfo,
     };
   },
 });
