@@ -280,7 +280,6 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Employees", []);
-      store.dispatch(Actions.ORG.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST).then(() => {
         tableData.value = list;
         loading.value = false;
