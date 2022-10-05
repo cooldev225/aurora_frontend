@@ -49,8 +49,21 @@
     
     <div class="card-body pt-9 pb-0">
       <!--begin::Details-->
-
-      <img :src="signature" />
+      <div>
+        <div class="text-primary border width-200 h6">
+          {{currentUser ? currentUser.profile.sign_off: 'Sign Off (User data doesn\'t existed.)'}}
+        </div>
+        <img class="width-200" :src="signature" />
+        <div class="text-primary border width-200 h6">
+          {{currentUser ? currentUser.profile.first_name + ' ' + currentUser.profile.last_name : 'Full Name (User data doesn\'t existed.)'}}
+        </div>
+        <div class="text-primary border width-200 h6">
+          {{currentUser ? currentUser.profile.education_code : 'Education Code (User data doesn\'t existed.)'}}
+        </div>
+        <div class="text-primary border width-200 h6">
+          0000000A
+        </div>
+      </div>
 
       <el-form
         @submit.prevent="submit()"
@@ -132,6 +145,9 @@
   <!--end::Navbar-->
 </template>
 <style lang="scss">
+.width-200 {
+  width: 200px !important;
+}
 .signature-page {
   .signature-uploader {
     img.signature {
@@ -266,6 +282,7 @@ export default defineComponent({
     };
 
     watch(currentUser, () => {
+      console.log("-------------", currentUser);
       loadSignatureImage();
     });
 
