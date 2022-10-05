@@ -13,7 +13,9 @@
         <img alt="Logo" src="aurora-logo.png" class="h-75px logo" />
       </div>
       <!--begin::Heading-->
-
+      <div v-if="errorMessage" class="text-danger fw-bold fs-3 mb-6">
+        {{ errorMessage }}
+      </div>
       <!--begin::Input group-->
       <div class="fv-row mb-10">
         <!--begin::Label-->
@@ -84,7 +86,6 @@ import { Field, Form } from "vee-validate";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import * as Yup from "yup";
 
 export default defineComponent({
@@ -97,6 +98,7 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const userRole = computed(() => store.getters.userRole);
+    const errorMessage = ref("");
 
     const submitButton = ref<HTMLButtonElement | null>(null);
 
@@ -137,15 +139,7 @@ export default defineComponent({
         if (userRole.value === "specialist")
           router.push({ name: "employee-booking-dashboard" });
       } else {
-        Swal.fire({
-          text: "Incorrect username or password!!!",
-          icon: "error",
-          buttonsStyling: false,
-          confirmButtonText: "Try again!",
-          customClass: {
-            confirmButton: "btn fw-bold btn-light-danger",
-          },
-        });
+        errorMessage.value = "Incorrect username or password.";
       }
 
       //Deactivate indicator
@@ -158,6 +152,7 @@ export default defineComponent({
       onSubmitLogin,
       login,
       submitButton,
+      errorMessage,
     };
   },
 });
