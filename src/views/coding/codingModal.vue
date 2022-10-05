@@ -7,7 +7,7 @@
     ref="codingModalRef"
   >
     <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-850px">
+    <div class="modal-dialog modal-dialog-centered mw-1000px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
@@ -49,23 +49,33 @@
               data-kt-scroll-wrappers="#kt_modal_coding_scroll"
               data-kt-scroll-offset="300px"
             >
-              <div class="row appointment-data-view">
-                <div class="col-4">
-                  <p>Patient Name: {{ formData.patient_name.full }}</p>
-                  <p>
-                    Patient Date of Birth:
-                    {{ formData.patient_details.date_of_birth }}
-                  </p>
-                  <p>Patient gender: {{ formData.patient.gender }}</p>
-                </div>
+              <div class="d-flex flex-row">
                 <div class="col-6">
-                  <p>
-                    Appointment date and time: {{ formData.date }}
+                  <InfoSection heading="Patient Name">{{
+                    formData.patient_name.full
+                  }}</InfoSection
+                  ><br />
+                  <InfoSection heading="Patient DOB">{{
+                    formData.patient_details.date_of_birth
+                  }}</InfoSection
+                  ><br />
+                  <InfoSection heading="Patient gender">{{
+                    formData.patient.gender
+                  }}</InfoSection
+                  ><br />
+                </div>
+                <div class="column col-6">
+                  <InfoSection heading="Appointment">
+                    {{ formData.date }},
                     {{ formData.formatted_appointment_time }}
-                  </p>
-                  <p>Specialsit name: {{ formData.specialist_name }}</p>
-                  <p>Appointment type: {{ formData.appointment_type_name }}</p>
-                  <p>clinic: {{ formData.clinic_details.name }}</p>
+                    {{ formData.appointment_type_name }} </InfoSection
+                  ><br />
+                  <InfoSection heading="Specialist">
+                    {{ formData.specialist_name }} </InfoSection
+                  ><br />
+                  <InfoSection heading="Clinic">
+                    {{ formData.clinic_details.name }} </InfoSection
+                  ><br />
                 </div>
               </div>
               <div class="row mt-10">
@@ -113,18 +123,21 @@
               <div class="row">
                 <div class="col-6">
                   <label class="required fs-6 fw-bold mb-2">Indications</label>
-                  <el-form-item prop="indications">
+                  <el-form-item>
                     <el-select
                       class="w-100"
-                      filterable
                       multiple
-                      v-model="formData.indications"
+                      remote
+                      filterable
+                      v-model="selected"
+                      :remote-method="searchCodes"
+                      :loading="loadingICD"
                     >
                       <el-option
-                        v-for="item in indications"
-                        :value="item"
-                        :label="item"
-                        :key="item"
+                        v-for="item in codes"
+                        :key="item[0]"
+                        :label="item[0] + ' - ' + item[1]"
+                        :value="item[0]"
                       />
                     </el-select>
                   </el-form-item>
@@ -148,28 +161,48 @@
                   </el-form-item>
                 </div>
               </div>
-              <div class="row mt-10 button-group">
-                <div class="col-6">
-                  <button
-                    class="btn btn-lg btn-primary"
-                    type="button"
-                    @click="submit(0)"
-                  >
-                    <span class="indicator-label">MARK COMPLETE AND CLOSE</span>
-                  </button>
-                </div>
-                <div
-                  class="col-6"
+              <div
+                class="d-flex flex-row justify-content-around gap-3 mt-10 button-group"
+              >
+                <button
                   v-if="formData?.id != aptList[aptList.length - 1]?.id"
+                  class="btn btn-lg btn-primary"
+                  type="button"
+                  @click="submit(1)"
                 >
-                  <button
-                    class="btn btn-lg btn-primary"
-                    type="button"
-                    @click="submit(1)"
-                  >
-                    <span class="indicator-label">MARK COMPLETE AND NEXT</span>
-                  </button>
-                </div>
+                  <span class="indicator-label"> &lt;&lt; BACK</span>
+                </button>
+                <button
+                  class="btn btn-lg btn-danger"
+                  type="button"
+                  @click="submit(0)"
+                >
+                  <span class="indicator-label">MARK INCOMPLETE</span>
+                </button>
+                <button
+                  class="btn btn-lg btn-success"
+                  type="button"
+                  @click="submit(0)"
+                >
+                  <span class="indicator-label">MARK COMPLETE AND CLOSE</span>
+                </button>
+
+                <button
+                  v-if="formData?.id != aptList[aptList.length - 1]?.id"
+                  class="btn btn-lg btn-success"
+                  type="button"
+                  @click="submit(1)"
+                >
+                  <span class="indicator-label">MARK COMPLETE AND NEXT</span>
+                </button>
+                <button
+                  v-if="formData?.id != aptList[aptList.length - 1]?.id"
+                  class="btn btn-lg btn-primary"
+                  type="button"
+                  @click="submit(1)"
+                >
+                  <span class="indicator-label">SKIP >></span>
+                </button>
               </div>
               <div
                 class="row mt-10 document-viewer"
@@ -185,19 +218,6 @@
     </div>
   </div>
 </template>
-<style lang="scss">
-.appointment-data-view {
-  font-size: 12px;
-  p {
-    margin-bottom: 0.5rem;
-  }
-}
-.button-group {
-  button {
-    width: 100%;
-  }
-}
-</style>
 <script>
 import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
@@ -220,6 +240,11 @@ export default defineComponent({
     const extraitems = ref(["EA", "EB", "EC", "ED", "EE"]);
     const indications = ref(["IA", "IB", "IC", "ID", "IE"]);
     const diagnosis = ref(["DA", "DB", "DC", "DD", "DE"]);
+
+    // ICD-10 API seach
+    const codes = ref();
+    const selected = ref(null);
+    const loadingICD = ref(false);
 
     const formData = ref({
       id: null,
@@ -245,31 +270,49 @@ export default defineComponent({
       diagnosis,
     });
 
+    const searchCodes = (query) => {
+      if (query) {
+        loadingICD.value = true;
+
+        store
+          .dispatch(CodingActions.SEARCH_DIAGNOSES, query)
+          .then((response) => {
+            codes.value = response.data[3];
+            loadingICD.value = false;
+          })
+          .catch((response) => {
+            console.log(response);
+          });
+      } else {
+        codes.value = [];
+      }
+    };
+
     const rules = ref({
       undertaken: [
         {
-          required: true,
+          required: false,
           message: "Procedures cannot be blank",
           trigger: "change",
         },
       ],
       extraitems: [
         {
-          required: true,
+          required: false,
           message: "Extra Items cannot be blank",
           trigger: "change",
         },
       ],
       indications: [
         {
-          required: true,
+          required: false,
           message: "Indications cannot be blank",
           trigger: "change",
         },
       ],
       diagnosis: [
         {
-          required: true,
+          required: false,
           message: "Diagnosis cannot be blank",
           trigger: "change",
         },
@@ -360,6 +403,10 @@ export default defineComponent({
     };
 
     return {
+      codes,
+      searchCodes,
+      selected,
+      loadingICD,
       formData,
       rules,
       submit,
