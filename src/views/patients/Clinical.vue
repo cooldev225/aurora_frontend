@@ -1,32 +1,55 @@
 <template>
-  <!--begin::details View-->
-  <div class="card mb-5 mb-xl-10" id="patient_view_clinical"></div>
-  <!--end::details View-->
+  <CardSection>
+    <div class="row">
+      <CardSection class="col-6" heading="Allergies">
+        <PatientAllergiesTable :patient="patient" />
+      </CardSection>
+      <CardSection class="col-6" heading="Medications">
+        <PatientMedicationsTable :patient="patient" />
+      </CardSection>
+
+      <CardSection class="col-6" heading="Medical History">
+        <PatientMedicalHistoryTable :patient="patient" />
+      </CardSection>
+    </div>
+  </CardSection>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect, onMounted } from "vue";
+import { defineComponent, computed, watch, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
+import { useRoute } from "vue-router";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
+import CardSection from "@/components/presets/GeneralElements/CardSection.vue";
+import PatientAllergiesTable from "../../components/presets/PatientElements/PatientAllergiesTable.vue";
+import PatientMedicationsTable from "../../components/presets/PatientElements/PatientMedicationsTable.vue";
+import PatientMedicalHistoryTable from "../../components/presets/PatientElements/PatientMedicalHistoryTable.vue";
 
 export default defineComponent({
   name: "patient-clinical",
-  components: {},
+  components: {
+    CardSection,
+    PatientAllergiesTable,
+    PatientMedicationsTable,
+    PatientMedicalHistoryTable,
+  },
   setup() {
     const store = useStore();
-    const formData = ref({});
+    const patient = computed(() => store.getters.selectedPatient);
+    const route = useRoute();
 
-    watchEffect(() => {
-      formData.value = store.getters.selectedPatient;
+    watch(patient, () => {
+      console.log(patient);
     });
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Documents", ["Patients"]);
+      const id = route.params.id;
+      store.dispatch(PatientActions.VIEW, id);
     });
 
-    return {
-      formData,
-    };
+    return { patient };
   },
 });
 </script>

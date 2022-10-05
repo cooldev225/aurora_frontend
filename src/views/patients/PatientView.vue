@@ -269,7 +269,6 @@ export default defineComponent({
 
     watchEffect(() => {
       patientData.value = store.getters.selectedPatient;
-      console.log(patientData.value);
     });
 
     const handleUploadDocument = () => {
