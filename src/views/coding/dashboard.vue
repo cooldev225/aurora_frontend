@@ -3,6 +3,7 @@
     :table-header="tableHeader"
     :table-data="tableData"
     :rows-per-page="20"
+    :loading="loading"
     :enable-items-per-page-dropdown="true"
   >
     <template v-slot:cell-appointment="{ row: item }">
@@ -20,7 +21,14 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  watchEffect,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { CodingActions } from "@/store/enums/StoreCodingEnums";
@@ -34,8 +42,9 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
-    const list = computed(() => store.getters.getCodingAptList);
     const tableData = ref([]);
+    const aptList = computed(() => store.getters.getCodingAptList);
+    const loading = ref(true);
     const tableHeader = ref([
       {
         name: "Appointment",
@@ -60,7 +69,8 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      tableData.value = list.value;
+      tableData.value = aptList;
+      loading.value = false;
     });
 
     const updateCodes = (appointment) => {
@@ -71,6 +81,7 @@ export default defineComponent({
       tableData,
       tableHeader,
       updateCodes,
+      loading,
     };
   },
 });
