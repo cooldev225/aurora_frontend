@@ -6,6 +6,7 @@ const CodingActions = {
 
 const CodingMutations = {
   SET_LIST: "setListAppointmentsForCoding",
+  SET_SELECT: "setSelectedAppointmentsForCoding",
 };
 
 export { CodingActions, CodingMutations };

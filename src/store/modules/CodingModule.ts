@@ -11,11 +11,13 @@ interface IApt {
 
 interface AptInfo {
   aptData: Array<IApt>;
+  aptSelectData: IApt;
 }
 
 @Module
 export default class CodingModule extends VuexModule implements AptInfo {
   aptData = [] as Array<IApt>;
+  aptSelectData = {} as IApt;
 
   /**
    * Get list of appointment to be coded
@@ -25,9 +27,22 @@ export default class CodingModule extends VuexModule implements AptInfo {
     return this.aptData;
   }
 
+  /**
+   * Get selected appointment to be coded
+   * @returns AdminData
+   */
+  get getCodingAptSelect(): IApt {
+    return this.aptSelectData;
+  }
+
   @Mutation
   [CodingMutations.SET_LIST](aptData) {
     this.aptData = aptData;
+  }
+
+  @Mutation
+  [CodingMutations.SET_SELECT](aptData) {
+    this.aptSelectData = aptData;
   }
 
   @Action

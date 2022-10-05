@@ -18,26 +18,23 @@
       {{ item.codes.is_complete }}
     </template>
   </Datatable>
+  <CodingModal></CodingModal>
 </template>
 
 <script>
-import {
-  defineComponent,
-  onMounted,
-  ref,
-  computed,
-  watchEffect,
-  watch,
-} from "vue";
+import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import { CodingActions } from "@/store/enums/StoreCodingEnums";
+import { CodingActions, CodingMutations } from "@/store/enums/StoreCodingEnums";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import CodingModal from "@/views/coding/codingModal.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "coding-dashboard",
   components: {
     Datatable,
+    CodingModal,
   },
   setup() {
     const store = useStore();
@@ -75,6 +72,9 @@ export default defineComponent({
 
     const updateCodes = (appointment) => {
       console.log(appointment);
+      store.commit(CodingMutations.SET_SELECT, appointment);
+      const modal = new Modal(document.getElementById("modal_coding"));
+      modal.show();
     };
 
     return {
