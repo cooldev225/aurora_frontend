@@ -28,10 +28,14 @@
           {{ item.title }}
         </template>
         <template v-slot:cell-header_file="{ row: item }">
-          {{ item.header_file }}
+          <div class="img-previewer">
+            <img :src="item.header_file" />
+          </div>
         </template>
         <template v-slot:cell-footer_file="{ row: item }">
-          {{ item.footer_file }}
+          <div class="img-previewer">
+            <img :src="item.footer_file" />
+          </div>
         </template>
         <template v-slot:cell-action="{ row: item }">
           <button

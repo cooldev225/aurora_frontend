@@ -205,6 +205,7 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { ElMessage } from "element-plus";
 
 export default defineComponent({
   name: "edit-header-footer-template-modal",
@@ -230,11 +231,30 @@ export default defineComponent({
           trigger: "change",
         },
       ],
+      header_file: [
+        {
+          required: true,
+          message: "header file cannot be blank",
+          trigger: "change",
+        },
+      ],
+      footer_file: [
+        {
+          required: true,
+          message: "footer file cannot be blank",
+          trigger: "change",
+        },
+      ],
     });
 
     const handleAvatarSuccess = (uploadFile, flag) => {
       formData.value[flag] = URL.createObjectURL(uploadFile.raw);
       formData.value[flag + "_file"] = uploadFile;
+      console.log([
+        "file",
+        formData.value[flag],
+        formData.value[flag + "_file"],
+      ]);
     };
 
     const submit = () => {
@@ -244,14 +264,23 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
+          if (!formData.value.header_file) {
+            valid = false;
+            ElMessage.error("Please upload header file!");
+            return false;
+          }
+          if (!formData.value.footer_file) {
+            valid = false;
+            ElMessage.error("Please upload footer file!");
+            return false;
+          }
           loading.value = true;
+          let submitData = new FormData();
+          submitData.append("title", formData.value.title);
+          submitData.append("header_file", formData.value.header_file.raw);
+          submitData.append("footer_file", formData.value.footer_file.raw);
           store
-            .dispatch(formData.value._submit, {
-              id: formData.value.id,
-              title: formData.value.title,
-              subject: formData.value.subject,
-              body: formData.value.body,
-            })
+            .dispatch(formData.value._submit, submitData)
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST);

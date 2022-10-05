@@ -71,7 +71,11 @@ export default class HeaderFooterModule
   [Actions.HEADER_FOOTER_TEMPLATE.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("document-header-footer-templates", item)
+      ApiService.post("document-header-footer-templates", item, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
         .then(({ data }) => {
           return data.data;
         })
