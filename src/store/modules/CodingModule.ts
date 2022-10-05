@@ -11,11 +11,13 @@ interface IApt {
 
 interface AptInfo {
   aptData: Array<IApt>;
+  aptSelectData: IApt;
 }
 
 @Module
 export default class CodingModule extends VuexModule implements AptInfo {
   aptData = [] as Array<IApt>;
+  aptSelectData = {} as IApt;
 
   /**
    * Get list of appointment to be coded
@@ -25,9 +27,22 @@ export default class CodingModule extends VuexModule implements AptInfo {
     return this.aptData;
   }
 
+  /**
+   * Get selected appointment to be coded
+   * @returns AdminData
+   */
+  get getCodingAptSelect(): IApt {
+    return this.aptSelectData;
+  }
+
   @Mutation
   [CodingMutations.SET_LIST](aptData) {
     this.aptData = aptData;
+  }
+
+  @Mutation
+  [CodingMutations.SET_SELECT](aptData) {
+    this.aptSelectData = aptData;
   }
 
   @Action
@@ -42,6 +57,42 @@ export default class CodingModule extends VuexModule implements AptInfo {
         .catch(({ response }) => {
           console.log(response.data.error);
           // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [CodingActions.DOCUMENT_VIEW](data) {
+    return ApiService.post(
+      "file",
+      {
+        path: data.path,
+        type: "PATIENT_DOCUMENT",
+      },
+      {
+        responseType: "blob",
+      }
+    )
+      .then(({ data }) => {
+        return data;
+      })
+      .catch(({ response }) => {
+        console.log(response.data.error);
+      });
+  }
+
+  @Action
+  [CodingActions.COMPLETE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("coding", item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
