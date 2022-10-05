@@ -51,12 +51,12 @@
             >
               <div class="row appointment-data-view">
                 <div class="col-4">
-                  <p>Patient Name: {{ formData.patient_name?.full }}</p>
+                  <p>Patient Name: {{ formData.patient_name.full }}</p>
                   <p>
                     Patient Date of Birth:
-                    {{ formData.patient_details?.date_of_birth }}
+                    {{ formData.patient_details.date_of_birth }}
                   </p>
-                  <p>Patient gender: {{ formData.patient?.gender }}</p>
+                  <p>Patient gender: {{ formData.patient.gender }}</p>
                 </div>
                 <div class="col-6">
                   <p>
@@ -65,65 +65,116 @@
                   </p>
                   <p>Specialsit name: {{ formData.specialist_name }}</p>
                   <p>Appointment type: {{ formData.appointment_type_name }}</p>
-                  <p>clinic: {{ formData.clinic_details?.name }}</p>
+                  <p>clinic: {{ formData.clinic_details.name }}</p>
                 </div>
               </div>
               <div class="row mt-10">
-                <div class="col-6 mb-7">
+                <div class="col-6">
                   <label class="required fs-6 fw-bold mb-2"
                     >Procedures Undertaken</label
                   >
                   <el-form-item prop="undertaken">
-                    <el-input
-                      v-model="formData.first_name"
-                      type="text"
-                      placeholder="Undertaken"
-                    />
+                    <el-select
+                      class="w-100"
+                      multiple
+                      filterable
+                      v-model="formData.undertaken"
+                    >
+                      <el-option
+                        v-for="item in undertaken"
+                        :value="item"
+                        :label="item"
+                        :key="item"
+                      />
+                    </el-select>
                   </el-form-item>
                 </div>
-                <div class="col-6 mb-7">
+                <div class="col-6">
                   <label class="required fs-6 fw-bold mb-2"
                     >Extra Items Used</label
                   >
                   <el-form-item prop="extraitems">
-                    <el-input
-                      v-model="formData.password"
-                      type="password"
-                      placeholder="Extra Items"
-                    />
+                    <el-select
+                      class="w-100"
+                      multiple
+                      filterable
+                      v-model="formData.extraitems"
+                    >
+                      <el-option
+                        v-for="item in extraitems"
+                        :value="item"
+                        :label="item"
+                        :key="item"
+                      />
+                    </el-select>
                   </el-form-item>
                 </div>
               </div>
               <div class="row">
-                <div class="col-6 mb-7">
+                <div class="col-6">
                   <label class="required fs-6 fw-bold mb-2">Indications</label>
                   <el-form-item prop="indications">
-                    <el-input
-                      v-model="formData.first_name"
-                      type="text"
-                      placeholder="Indications"
-                    />
+                    <el-select
+                      class="w-100"
+                      filterable
+                      multiple
+                      v-model="formData.indications"
+                    >
+                      <el-option
+                        v-for="item in indications"
+                        :value="item"
+                        :label="item"
+                        :key="item"
+                      />
+                    </el-select>
                   </el-form-item>
                 </div>
-                <div class="col-6 mb-7">
+                <div class="col-6">
                   <label class="required fs-6 fw-bold mb-2">Diagnosis</label>
                   <el-form-item prop="diagnosis">
-                    <el-input
-                      v-model="formData.password"
-                      type="password"
-                      placeholder="Diagnosis"
-                    />
+                    <el-select
+                      class="w-100"
+                      filterable
+                      multiple
+                      v-model="formData.diagnosis"
+                    >
+                      <el-option
+                        v-for="item in diagnosis"
+                        :value="item"
+                        :label="item"
+                        :key="item"
+                      />
+                    </el-select>
                   </el-form-item>
                 </div>
               </div>
-              <div class="row mt-10">
-                <button class="col-6 btn btn-lg btn-primary" type="submit">
-                  <span class="indicator-label"> MARK COMPLETE AND CLOSE </span>
-                </button>
-                <button class="col-6 btn btn-lg btn-primary" type="submit">
-                  <span class="indicator-label"> MARK COMPLETE AND NEXT </span>
-                </button>
+              <div class="row mt-10 button-group">
+                <div class="col-6">
+                  <button
+                    class="btn btn-lg btn-primary"
+                    type="button"
+                    @click="submit(0)"
+                  >
+                    <span class="indicator-label">MARK COMPLETE AND CLOSE</span>
+                  </button>
+                </div>
+                <div
+                  class="col-6"
+                  v-if="formData?.id != aptList[aptList.length - 1]?.id"
+                >
+                  <button
+                    class="btn btn-lg btn-primary"
+                    type="button"
+                    @click="submit(1)"
+                  >
+                    <span class="indicator-label">MARK COMPLETE AND NEXT</span>
+                  </button>
+                </div>
               </div>
+              <div
+                class="row mt-10 document-viewer"
+                id="documents_viewer"
+              ></div>
             </div>
             <!--end::Scroll-->
           </div>
@@ -141,13 +192,19 @@
     margin-bottom: 0.5rem;
   }
 }
+.button-group {
+  button {
+    width: 100%;
+  }
+}
 </style>
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import { Actions } from "@/store/enums/StoreEnums";
+import { CodingActions, CodingMutations } from "@/store/enums/StoreCodingEnums";
+import pdf from "pdfobject";
 
 export default defineComponent({
   name: "coding-modal",
@@ -157,57 +214,117 @@ export default defineComponent({
     const formRef = ref(null);
     const codingModalRef = ref(null);
     const loading = ref(false);
-    const formData = computed(() => store.getters.getCodingAptSelect);
+    const apt = computed(() => store.getters.getCodingAptSelect);
+    const aptList = computed(() => store.getters.getCodingAptList);
+    const undertaken = ref(["UA", "UB", "UC", "UD", "UE"]);
+    const extraitems = ref(["EA", "EB", "EC", "ED", "EE"]);
+    const indications = ref(["IA", "IB", "IC", "ID", "IE"]);
+    const diagnosis = ref(["DA", "DB", "DC", "DD", "DE"]);
+
+    const formData = ref({
+      id: null,
+      patient_name: {
+        full: null,
+      },
+      patient_details: {
+        date_of_birth: null,
+      },
+      patient: {
+        gender: null,
+      },
+      date: null,
+      formatted_appointment_time: null,
+      specialist_name: null,
+      appointment_type_name: null,
+      clinic_details: {
+        name: null,
+      },
+      undertaken,
+      extraitems,
+      indications,
+      diagnosis,
+    });
 
     const rules = ref({
-      first_name: [
+      undertaken: [
         {
           required: true,
-          message: "First Name cannot be blank",
+          message: "Procedures cannot be blank",
           trigger: "change",
         },
       ],
-      last_name: [
+      extraitems: [
         {
           required: true,
-          message: "Last Name cannnot be blank",
+          message: "Extra Items cannot be blank",
           trigger: "change",
         },
       ],
-      username: [
+      indications: [
         {
           required: true,
-          message: "Username cannot be blank",
+          message: "Indications cannot be blank",
           trigger: "change",
         },
       ],
-      email: [
+      diagnosis: [
         {
           required: true,
-          message: "Email cannot be blank",
+          message: "Diagnosis cannot be blank",
           trigger: "change",
-        },
-        {
-          type: "email",
-          message: "Please input correct email address",
-          trigger: ["blur", "change"],
         },
       ],
     });
 
-    const submit = () => {
+    watch(apt, () => {
+      formData.value = apt.value;
+      if (apt.value && apt.value.documents?.length) {
+        const doc = formData.value.documents[0];
+        document.getElementById("documents_viewer").innerHTML = "";
+        store
+          .dispatch(CodingActions.DOCUMENT_VIEW, {
+            path: doc.file_path,
+          })
+          .then((data) => {
+            if (doc.file_type === "PDF") {
+              let blob = new Blob([data], { type: "application/pdf" });
+              let objectUrl = URL.createObjectURL(blob);
+              pdf.embed(objectUrl + "#toolbar=0", "#documents_viewer");
+            } else if (doc.file_type === "PNG") {
+              document.getElementById("documents_viewer").innerHTML =
+                "<img src='" + data + "' />";
+            }
+          })
+          .catch(() => {
+            console.log("Document Load Error");
+          });
+      }
+    });
+
+    const submit = (f) => {
       if (!formRef.value) {
         return;
       }
 
       formRef.value.validate((valid) => {
         if (valid) {
+          const Data = {
+            id: formData.value.id,
+            patient_id: formData.value.patient_id,
+            clinic_id: formData.value.clinic_id,
+            appointment_type_id: formData.value.appointment_type_id,
+            appointment_id: formData.value.appointment_id,
+            undertaken: formData.value.undertaken,
+            extraitems: formData.value.extraitems,
+            indications: formData.value.indications,
+            diagnosis: formData.value.diagnosis,
+          };
           loading.value = true;
           store
-            .dispatch(Actions.ADMIN.CREATE, formData.value)
+            .dispatch(CodingActions.COMPLETE, Data)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.ADMIN.LIST);
+              store.dispatch(CodingActions.LIST);
               Swal.fire({
                 text: "Successfully Created!",
                 icon: "success",
@@ -217,7 +334,18 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(codingModalRef.value);
+                if (!f) hideModal(codingModalRef.value);
+                else {
+                  aptList.value.map((a, i) => {
+                    if (formData.value.id == a.id) {
+                      store.commit(
+                        CodingMutations.SET_SELECT,
+                        aptList.value[i + 1]
+                      );
+                      return;
+                    }
+                  });
+                }
               });
             })
             .catch(({ response }) => {
@@ -238,6 +366,11 @@ export default defineComponent({
       formRef,
       loading,
       codingModalRef,
+      undertaken,
+      extraitems,
+      indications,
+      diagnosis,
+      aptList,
     };
   },
 });

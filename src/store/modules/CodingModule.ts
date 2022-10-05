@@ -64,6 +64,42 @@ export default class CodingModule extends VuexModule implements AptInfo {
   }
 
   @Action
+  [CodingActions.DOCUMENT_VIEW](data) {
+    return ApiService.post(
+      "file",
+      {
+        path: data.path,
+        type: "PATIENT_DOCUMENT",
+      },
+      {
+        responseType: "blob",
+      }
+    )
+      .then(({ data }) => {
+        return data;
+      })
+      .catch(({ response }) => {
+        console.log(response.data.error);
+      });
+  }
+
+  @Action
+  [CodingActions.COMPLETE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("coding", item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
   [CodingActions.SEARCH_DIAGNOSES](searchParam) {
     console.log("SEARCH:" + searchParam);
 
