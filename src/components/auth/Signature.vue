@@ -2,55 +2,24 @@
 <template>
   <!--begin::Navbar-->
   <div class="card pb-9 signature-page">
-    <div class="card-header">
-      <!--begin::Navs-->
-      <div class="d-flex overflow-auto">
-
-        <ul
-          class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap"
-        >
-          <!--begin::Nav item-->
-          <li class="nav-item">
-            <router-link
-              to="/profile"
-              class="nav-link text-active-primary me-6"
-              active-class="active"
-            >
-              Profile
-            </router-link>
-          </li>
-          <!--end::Nav item-->
-          <!--begin::Nav item-->
-          <li class="nav-item">
-            <router-link
-              class="nav-link text-active-primary me-6"
-              to="/profile/password-change"
-              active-class="active"
-            >
-              Password
-            </router-link>
-          </li>
-          <!--end::Nav item-->
-          <!--begin::Nav item-->
-          <li class="nav-item">
-            <router-link
-              class="nav-link text-active-primary me-6"
-              to="/profile/signature"
-              active-class="active"
-            >
-              Signature
-            </router-link>
-          </li>
-          <!--end::Nav item-->
-        </ul>
-      </div>
-      <!--begin::Navs-->
-    </div>
-    
+   <ProfileNavigation/>
     <div class="card-body pt-9 pb-0">
       <!--begin::Details-->
-
-      <img :src="signature" />
+      Signature Example:
+      <div class="border width-500 mb-2 p-5">
+       
+          {{ formData.sign_off }}<br/>
+     
+        <img style="height:80px" :src="signature" />
+        <div class="text-primary p-2idth-500 h6">
+          {{userInfo?.full_name}}
+        </div>
+      
+          {{formData.education_code }} <br/>
+   
+          0000000A
+       
+      </div>
 
       <el-form
         @submit.prevent="submit()"
@@ -64,7 +33,7 @@
               <el-form-item>
                 <VueSignaturePad
                   width="500px"
-                  height="500px"
+                  height="300px"
                   ref="signaturePad"
                   class="border border-primary border-1"
                   :options="{ onBegin }"
@@ -113,6 +82,20 @@
                 </i>
               </el-upload>
             </InputWrapper>
+            <InputWrapper label="Sign Of" prop="sign_off">
+              <el-input
+                type="text"
+                v-model="formData.sign_off"
+                placeholder="E.g. Regards,"
+              />
+            </InputWrapper>
+            <InputWrapper label="Subheading" prop="education_code">
+              <el-input
+                type="text"
+                v-model="formData.education_code"
+                placeholder="E.g. MBBS"
+              />
+            </InputWrapper>
           </div>
         </div>
         <div class="d-flex ms-auto justify-content-end w-25">
@@ -132,6 +115,9 @@
   <!--end::Navbar-->
 </template>
 <style lang="scss">
+.width-500 {
+  width: 500px !important;
+}
 .signature-page {
   .signature-uploader {
     img.signature {
@@ -152,13 +138,15 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import ProfileNavigation from "@/components/auth/ProfileNavigation";
 
 export default defineComponent({
   name: "user-signature",
-  components: {},
+  components: { ProfileNavigation },
   setup() {
     const store = useStore();
     const currentUser = computed(() => store.getters.currentUser);
+    const userInfo = ref(null);
     const formRef = ref(null);
     const isUpload = ref(null);
     const signaturePad = ref(null);
@@ -166,6 +154,8 @@ export default defineComponent({
     const formData = ref({
       signature: null,
       signature_file: null,
+      education_code: "",
+      sign_off: "",
     });
     const loading = ref(false);
 
@@ -243,6 +233,8 @@ export default defineComponent({
         store
           .dispatch(Actions.PROFILE.UPDATE_SIGNATURE, {
             signature: signature,
+            sign_off: formData.value.sign_off,
+            education_code: formData.value.education_code,
           })
           .then(() => {
             loading.value = false;
@@ -266,6 +258,10 @@ export default defineComponent({
     };
 
     watch(currentUser, () => {
+      if (currentUser.value && currentUser.value.profile)
+        userInfo.value = currentUser.value.profile;
+      formData.value.sign_off = currentUser.value.profile.sign_off;
+      formData.value.education_code = currentUser.value.profile.education_code;
       loadSignatureImage();
     });
 
@@ -285,6 +281,7 @@ export default defineComponent({
       isUpload,
       cancel,
       signature,
+      userInfo,
     };
   },
 });
