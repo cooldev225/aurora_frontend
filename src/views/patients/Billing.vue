@@ -17,6 +17,7 @@
             v-model="formData.medicare_number"
             type="text"
             placeholder="Medicare Number"
+            :disabled="loading.medicare || validated.medicare"
           />
         </InputWrapper>
         <InputWrapper
@@ -28,6 +29,7 @@
             v-model="formData.medicare_reference_number"
             type="text"
             placeholder="Medicare Reference Number"
+            :disabled="loading.medicare || validated.medicare"
           />
         </InputWrapper>
         <InputWrapper
@@ -39,13 +41,39 @@
             class="w-100"
             v-model="formData.medicare_expiry_date"
             placeholder="Medicare Expiry Date"
+            :disabled="loading.medicare || validated.medicare"
           />
         </InputWrapper>
-        <span class="m-auto" :class="colString"
-          ><button class="btn btn-light-warning m-3" type="submit">
-            Validate Medicare</button
-          >Last validated on: xx/xxx/xxxx</span
-        >
+        <span class="m-auto" :class="colString">
+          <button
+            class="btn btn-light-warning m-3"
+            type="submit"
+            :disabled="loading.medicare || validated.medicare"
+            :data-kt-indicator="loading.medicare ? 'on' : 'off'"
+          >
+            <span class="indicator-label"> Validate Medicare </span>
+
+            <span class="indicator-progress">
+              Validating...
+              <span
+                class="spinner-border spinner-border-sm align-middle ms-2"
+              ></span>
+            </span>
+          </button>
+
+          Last validated on: xx/xxx/xxxx
+        </span>
+        <div v-if="validated.medicare !== null" class="col-12">
+          <AlertBadge
+            :text="
+              validated.medicare
+                ? 'Medicare details validated'
+                : validationErrors.medicare
+            "
+            :color="validated.medicare ? 'success' : 'warning'"
+            icon=""
+          />
+        </div>
       </div>
     </el-form>
     <el-form
@@ -181,10 +209,13 @@ import { useRoute } from "vue-router";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 
 export default defineComponent({
   name: "patient-billing",
-  components: {},
+  components: {
+    AlertBadge,
+  },
   data: function () {
     return {
       colString: "col-12 col-sm-6 ",
@@ -234,7 +265,7 @@ export default defineComponent({
       ],
       medicare_expiry_date: [
         {
-          required: true,
+          required: false,
           message: "Medicare Expiry Date cannot be blank",
           trigger: "change",
         },
@@ -300,22 +331,54 @@ export default defineComponent({
     });
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const selectedPatient = computed(() => store.getters.selectedPatient);
-    const loading = ref(false);
+    const loading = ref({
+      medicare: false,
+      form: false,
+    });
+    const validated = ref({
+      medicare: null,
+    });
+    const validationErrors = ref({
+      medicare: null,
+    });
 
     const validateMedicare = () => {
       if (!formRefMedicare.value) {
         return;
       }
+
       formRefMedicare.value.validate((valid) => {
         if (valid) {
+          const data = formData.value;
+          const patient = store.getters.selectedPatient;
+
+          loading.value.medicare = true;
           store
-            .dispatch(PatientActions.BILLING.VALIDATE_MEDICARE, formData.value)
-            .then(() => {
-              loading.value = false;
+            .dispatch(PatientActions.BILLING.VALIDATE_MEDICARE, {
+              first_name: patient.first_name,
+              last_name: patient.last_name,
+              date_of_birth: patient.date_of_birth,
+              sex: 9,
+              medicare_number: data.medicare_number,
+              medicare_reference_number: data.medicare_reference_number,
+              minor_id: "AUA00000",
             })
-            .catch(({ response }) => {
-              loading.value = false;
-              console.log(response.data.error);
+            .then(() => {
+              const validation = store.getters.medicareValidationResponse;
+              if (validation.data.verified) {
+                validated.value.medicare = true;
+              }
+
+              if (!validation.data.verified) {
+                validated.value.medicare = false;
+                validationErrors.value.medicare = validation.data.message;
+              }
+            })
+            .catch(() => {
+              const errors = store.getters.getErrors;
+            })
+            .finally(() => {
+              loading.value.medicare = false;
             });
         }
       });
@@ -332,10 +395,10 @@ export default defineComponent({
               store
                 .dispatch(PatientActions.BILLING.UPDATE, formData.value)
                 .then(() => {
-                  loading.value = false;
+                  loading.value.form = false;
                 })
                 .catch(({ response }) => {
-                  loading.value = false;
+                  loading.value.form = false;
                   console.log(response.data.error);
                 });
             }
@@ -360,6 +423,9 @@ export default defineComponent({
       submit,
       rules,
       rulesMedicare,
+      loading,
+      validated,
+      validationErrors,
     };
   },
 });

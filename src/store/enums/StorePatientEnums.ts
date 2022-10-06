@@ -43,6 +43,10 @@ const PatientMutations = {
     LIST: "setPatientsRecallList",
     SELECT: "setSelectPatientRecall",
   },
+
+  SET_VALIDATION: {
+    MEDICARE: "setValidationMedicare",
+  },
 };
 
 export { PatientActions, PatientMutations };
