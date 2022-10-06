@@ -1647,6 +1647,7 @@ export default defineComponent({
       ) {
         aptTypeListWithRestriction.value = aptTypeList.value;
       } else {
+        aptInfoData.value.date = bookingData.date;
         aptTypeListWithRestriction.value = aptTypeList.value.filter(
           (item) => item.type === specialistRestriction
         );
@@ -1670,6 +1671,7 @@ export default defineComponent({
             bookingData.selected_specialist.schedule_timeslots[0].clinic;
           aptInfoData.value.clinic_name = clinic.value.name;
           aptInfoData.value.clinic_id = clinic.value.id;
+          cur_appointment_type_id.value = bookingData.appointment_type.id;
           getAvailableRooms();
         }
       }
