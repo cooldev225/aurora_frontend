@@ -79,130 +79,117 @@
                 </div>
               </div>
               <div class="row mt-10">
-                <div class="col-6">
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Procedures Undertaken</label
+                <InputWrapper
+                  class="col-6"
+                  label="Procedures Undertaken"
+                  prop="undertaken"
+                >
+                  <el-select
+                    class="w-100"
+                    multiple
+                    filterable
+                    v-model="formData.undertaken"
                   >
-                  <el-form-item prop="undertaken">
-                    <el-select
-                      class="w-100"
-                      multiple
-                      filterable
-                      v-model="formData.undertaken"
-                    >
-                      <el-option
-                        v-for="item in undertaken"
-                        :value="item"
-                        :label="item"
-                        :key="item"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </div>
-                <div class="col-6">
-                  <label class="required fs-6 fw-bold mb-2"
-                    >Extra Items Used</label
+                    <el-option
+                      v-for="item in undertaken"
+                      :value="item"
+                      :label="item"
+                      :key="item"
+                    />
+                  </el-select>
+                </InputWrapper>
+                <InputWrapper
+                  class="col-6"
+                  label="Extra Items Used"
+                  prop="undertaken"
+                >
+                  <el-select
+                    class="w-100"
+                    multiple
+                    filterable
+                    v-model="formData.extraitems"
                   >
-                  <el-form-item prop="extraitems">
-                    <el-select
-                      class="w-100"
-                      multiple
-                      filterable
-                      v-model="formData.extraitems"
-                    >
-                      <el-option
-                        v-for="item in extraitems"
-                        :value="item"
-                        :label="item"
-                        :key="item"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </div>
+                    <el-option
+                      v-for="item in extraitems"
+                      :value="item"
+                      :label="item"
+                      :key="item"
+                    />
+                  </el-select>
+                </InputWrapper>
+                <InputWrapper
+                  class="col-6"
+                  label="Indications"
+                  prop="indications"
+                >
+                  <el-select
+                    class="w-100"
+                    multiple
+                    remote
+                    filterable
+                    v-model="selected"
+                    :remote-method="searchCodes"
+                    :loading="loadingICD"
+                  >
+                    <el-option
+                      v-for="item in codes"
+                      :key="item[0]"
+                      :label="item[0] + ' - ' + item[1]"
+                      :value="item[0]"
+                    />
+                  </el-select>
+                </InputWrapper>
+                <InputWrapper class="col-6" label="Diagnosis" prop="diagnosis">
+                  <el-select
+                    class="w-100"
+                    filterable
+                    multiple
+                    v-model="formData.diagnosis"
+                  >
+                    <el-option
+                      v-for="item in diagnosis"
+                      :value="item"
+                      :label="item"
+                      :key="item"
+                    />
+                  </el-select>
+                </InputWrapper>
               </div>
-              <div class="row">
-                <div class="col-6">
-                  <label class="required fs-6 fw-bold mb-2">Indications</label>
-                  <el-form-item>
-                    <el-select
-                      class="w-100"
-                      multiple
-                      remote
-                      filterable
-                      v-model="selected"
-                      :remote-method="searchCodes"
-                      :loading="loadingICD"
-                    >
-                      <el-option
-                        v-for="item in codes"
-                        :key="item[0]"
-                        :label="item[0] + ' - ' + item[1]"
-                        :value="item[0]"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </div>
-                <div class="col-6">
-                  <label class="required fs-6 fw-bold mb-2">Diagnosis</label>
-                  <el-form-item prop="diagnosis">
-                    <el-select
-                      class="w-100"
-                      filterable
-                      multiple
-                      v-model="formData.diagnosis"
-                    >
-                      <el-option
-                        v-for="item in diagnosis"
-                        :value="item"
-                        :label="item"
-                        :key="item"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </div>
-              </div>
+
               <div
                 class="d-flex flex-row justify-content-around gap-3 mt-10 button-group"
               >
-                <button
+                <LargeIconButton
                   v-if="formData?.id != aptList[aptList.length - 1]?.id"
-                  class="btn btn-lg btn-primary"
-                  type="button"
-                  @click="submit(1)"
-                >
-                  <span class="indicator-label"> &lt;&lt; BACK</span>
-                </button>
-                <button
-                  class="btn btn-lg btn-danger"
-                  type="button"
+                  @click="move(-1)"
+                  heading="&lt;&lt; Back"
+                  :color="'primary'"
+                />
+                <LargeIconButton
                   @click="submit(0)"
-                >
-                  <span class="indicator-label">MARK INCOMPLETE</span>
-                </button>
-                <button
-                  class="btn btn-lg btn-success"
-                  type="button"
-                  @click="submit(0)"
-                >
-                  <span class="indicator-label">MARK COMPLETE AND CLOSE</span>
-                </button>
+                  heading="Mark Incomplete"
+                  :color="'danger'"
+                />
 
-                <button
+                <LargeIconButton
+                  @click="submit(0)"
+                  heading="Mark Complete and close"
+                  :color="'success'"
+                />
+
+                <LargeIconButton
                   v-if="formData?.id != aptList[aptList.length - 1]?.id"
-                  class="btn btn-lg btn-success"
-                  type="button"
-                  @click="submit(1)"
-                >
-                  <span class="indicator-label">MARK COMPLETE AND NEXT</span>
-                </button>
-                <button
+                  @click="submit(0)"
+                  heading="Mark Complete and next"
+                  :color="'success'"
+                />
+
+                <LargeIconButton
                   v-if="formData?.id != aptList[aptList.length - 1]?.id"
-                  class="btn btn-lg btn-primary"
-                  type="button"
-                  @click="submit(1)"
-                >
-                  <span class="indicator-label">SKIP >></span>
-                </button>
+                  @click="move(+1)"
+                  heading="SKIP >>"
+                  :color="'primary'"
+                />
               </div>
               <div
                 class="row mt-10 document-viewer"
@@ -344,6 +331,18 @@ export default defineComponent({
       }
     });
 
+    const move = (direction) => {
+      aptList.value.map((a, i) => {
+        if (formData.value.id == a.id) {
+          store.commit(
+            CodingMutations.SET_SELECT,
+            aptList.value[i + direction]
+          );
+          return;
+        }
+      });
+    };
+
     const submit = (f) => {
       if (!formRef.value) {
         return;
@@ -367,16 +366,7 @@ export default defineComponent({
             .dispatch(CodingActions.COMPLETE, Data)
             .then(() => {
               loading.value = false;
-              store.dispatch(CodingActions.LIST);
-              Swal.fire({
-                text: "Successfully Created!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
+              store.dispatch(CodingActions.LIST).then(() => {
                 if (!f) hideModal(codingModalRef.value);
                 else {
                   aptList.value.map((a, i) => {
@@ -418,6 +408,7 @@ export default defineComponent({
       indications,
       diagnosis,
       aptList,
+      move,
     };
   },
 });

@@ -84,10 +84,10 @@ export default class CodingModule extends VuexModule implements AptInfo {
   }
 
   @Action
-  [CodingActions.COMPLETE](item) {
+  [CodingActions.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("coding", item)
+      ApiService.put("coding/" + item.id, item)
         .then(({ data }) => {
           return data.data;
         })
