@@ -22,6 +22,7 @@
         :table-header="tableHeader"
         :table-data="tableData"
         :rows-per-page="20"
+        :loading="loading"
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-title="{ row: item }">
@@ -29,12 +30,12 @@
         </template>
         <template v-slot:cell-header_file="{ row: item }">
           <div class="img-previewer">
-            <img :src="item.header_file" />
+            <img :src="item.header_file_src" />
           </div>
         </template>
         <template v-slot:cell-footer_file="{ row: item }">
           <div class="img-previewer">
-            <img :src="item.footer_file" />
+            <img :src="item.footer_file_src" />
           </div>
         </template>
         <template v-slot:cell-action="{ row: item }">
@@ -62,6 +63,13 @@
   <EditHeaderFooterTemplate />
 </template>
 
+<style lang="scss">
+.img-previewer {
+  img {
+    width: 50px;
+  }
+}
+</style>
 <script>
 import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
@@ -103,6 +111,7 @@ export default defineComponent({
     ]);
 
     const tableData = ref([]);
+    const loading = ref(true);
     const headerFooterTemplates = computed(
       () => store.getters.getHeaderFooterTemplateList
     );
@@ -163,15 +172,54 @@ export default defineComponent({
     };
 
     onMounted(() => {
+      loading.value = true;
       setCurrentPageBreadcrumbs("Header/Footer Templates", ["Settings"]);
-      store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST);
+      store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST).then(() => {
+        loading.value = false;
+      });
     });
 
     watchEffect(() => {
       tableData.value = headerFooterTemplates;
+      console.log(["tableData.value", tableData.value]);
+      tableData.value.value.map((template, index) => {
+        store
+          .dispatch(Actions.HEADER_FOOTER_TEMPLATE.IMAGE, {
+            path: template.header_file,
+            type: "DOCUMENT_HEADER",
+          })
+          .then((data) => {
+            const blob = new Blob([data], { type: "application/image" });
+            const objectUrl = URL.createObjectURL(blob);
+            tableData.value.value[index].header_file_src = objectUrl;
+          })
+          .catch(() => {
+            //
+          });
+        store
+          .dispatch(Actions.HEADER_FOOTER_TEMPLATE.IMAGE, {
+            path: template.footer_file,
+            type: "DOCUMENT_FOOTER",
+          })
+          .then((data) => {
+            const blob = new Blob([data], { type: "application/image" });
+            const objectUrl = URL.createObjectURL(blob);
+            tableData.value.value[index].footer_file_src = objectUrl;
+          })
+          .catch(() => {
+            //
+          });
+      });
     });
 
-    return { tableHeader, tableData, handleAdd, handleEdit, handleDelete };
+    return {
+      tableHeader,
+      tableData,
+      handleAdd,
+      handleEdit,
+      handleDelete,
+      loading,
+    };
   },
 });
 </script>

@@ -165,6 +165,7 @@ const Actions = {
 
   HEADER_FOOTER_TEMPLATE: {
     LIST: "listHeaderFooterTemplate",
+    IMAGE: "downloadHeaderFooterTemplateImage",
     CREATE: "createHeaderFooterTemplate",
     UPDATE: "updateHeaderFooterTemplate",
     DELETE: "deleteHeaderFooterTemplate",
