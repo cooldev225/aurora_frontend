@@ -78,9 +78,9 @@
                         data-kt-drawer-target="#kt_drawer_chat"
                         @click="
                           handleAddApt(
-                            time_slot.specialist_ids,
+                            time_slot.specialist_id,
                             date.date,
-                            time_slot.start_time
+                            time_slot.time
                           )
                         "
                       >
@@ -207,7 +207,7 @@ export default defineComponent({
       else return "col bg-light bg-gradient";
     };
 
-    const handleAddApt = (specialist_ids, date, startTime, endTime) => {
+    const handleAddApt = (specialist_ids, date, startTime) => {
       const _date = moment(date).format("YYYY-MM-DD").toString();
 
       let available_specialists = [];
@@ -235,18 +235,22 @@ export default defineComponent({
 
       const specialist_id = Object.values(specialist_ids)[0];
 
-      const selected_specialist = available_specialists.find(
-        ({ id }) => id == specialist_id
+      const selected_specialist = props.allSpecialists.find(
+        ({ id }) => id == specialist_ids
       );
-
+      let $restriction;
+      selected_specialist.schedule_timeslots.forEach(function (slot) {
+        let $weekDay = moment(date).format("ddd").toString().toUpperCase();
+        if (slot.week_day == $weekDay) $restriction = slot.restriction;
+      });
       const item = {
-        time_slots: [_date + "T" + startTime, _date + "T" + endTime],
+        time_slot: [_date + "T" + startTime],
         date: _date,
         ava_specialist: available_specialists,
         selected_specialist: selected_specialist,
+        restriction: $restriction,
       };
-
-      store.commit(Mutations.SET_BOOKING.SELECT, item);
+      store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
 
       const modal = new Modal(document.getElementById("modal_create_apt"));
       modal.show();

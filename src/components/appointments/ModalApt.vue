@@ -1647,6 +1647,7 @@ export default defineComponent({
       ) {
         aptTypeListWithRestriction.value = aptTypeList.value;
       } else {
+        aptInfoData.value.date = bookingData.date;
         aptTypeListWithRestriction.value = aptTypeList.value.filter(
           (item) => item.type === specialistRestriction
         );
