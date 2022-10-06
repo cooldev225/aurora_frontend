@@ -53,7 +53,7 @@
                 filter.last_name.length < 2 &&
                 filter.date_of_birth.length < 2
               "
-              @click.prevent="searchPatient"
+              @click.prevent="searchSpecialist"
             >
               SEARCH
             </button>
@@ -118,6 +118,7 @@ import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   components: {
@@ -173,10 +174,10 @@ export default defineComponent({
       renderTable();
     };
 
-    const searchPatient = () => {
+    const searchSpecialist = () => {
       loading.value = true;
       store
-        .dispatch(PatientActions.LIST, {
+        .dispatch(Actions.SPECIALIST.SEARCH.LIST, {
           first_name: filter.first_name,
           last_name: filter.last_name,
           date_of_birth: filter.date_of_birth,
@@ -218,7 +219,7 @@ export default defineComponent({
 
     return {
       filter,
-      searchPatient,
+      searchSpecialist,
       clearFilters,
       assignPatientModalRef,
       updateRef,

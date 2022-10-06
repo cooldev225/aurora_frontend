@@ -115,4 +115,25 @@ export default class SpecialistModule
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.SPECIALIST.SEARCH.LIST](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.get("specialists", "", data)
+        .then(({ data }) => {
+          this.context.commit(
+            Mutations.SET_SPECIALIST.SEARCH.SEARCH_LIST,
+            data.data
+          );
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }
