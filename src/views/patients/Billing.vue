@@ -376,6 +376,17 @@ export default defineComponent({
             })
             .catch(() => {
               const errors = store.getters.getErrors;
+
+              validated.value.medicare = false;
+              if (
+                Object.prototype.hasOwnProperty.call(errors, "errors") &&
+                errors.errors.length >= 1
+              ) {
+                validationErrors.value.medicare = errors.errors[0];
+              } else {
+                validationErrors.value.medicare =
+                  "Unknown Error. Please try again.";
+              }
             })
             .finally(() => {
               loading.value.medicare = false;

@@ -56,10 +56,14 @@ export default class BillingValidationModule
     BillingApiService.setHeader();
     return BillingApiService.post("api/validate/medicare", details)
       .then(({ data }) => {
-        this.context.commit(PatientMutations.SET_VALIDATION.MEDICARE, data);
+        if (data.success) {
+          this.context.commit(PatientMutations.SET_VALIDATION.MEDICARE, data);
+        } else {
+          throw data;
+        }
       })
       .catch(({ response }) => {
-        this.context.commit(Mutations.SET_ERROR, response.data);
+        this.context.commit(Mutations.SET_ERROR, response.data.data);
       });
   }
 }
