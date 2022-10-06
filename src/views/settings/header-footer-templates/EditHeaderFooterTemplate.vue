@@ -8,7 +8,7 @@
     data-bs-backdrop="static"
   >
     <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-800px">
+    <div class="modal-dialog modal-dialog-centered mw-650px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
@@ -51,22 +51,22 @@
               data-kt-scroll-offset="300px"
             >
               <div class="header-footer-wrapper">
-                <div class="fv-row col-12 mb-5">
-                  <!--begin::Input-->
-                  <el-form-item prop="title">
-                    <el-input
-                      v-model="formData.title"
-                      class="w-100"
-                      type="text"
-                      placeholder="Letter Template Title"
-                    />
-                  </el-form-item>
-                  <!--end::Input-->
-                </div>
-                <div class="row mt-10 me-5 ms-5">
+                <div class="row">
                   <InputWrapper
                     required
-                    class="col-6"
+                    class="col-12 mb-8"
+                    label="Title"
+                    prop="title"
+                  >
+                    <el-input
+                      type="text"
+                      v-model="formData.title"
+                      placeholder="Enter Title"
+                    />
+                  </InputWrapper>
+                  <InputWrapper
+                    required
+                    class="col-6 img-upload"
                     label="Document Header"
                     prop="document_header"
                   >
@@ -106,7 +106,7 @@
                   </InputWrapper>
                   <InputWrapper
                     required
-                    class="col-4"
+                    class="col-6 img-upload"
                     label="Document Footer"
                     prop="document_footer"
                   >
@@ -191,9 +191,13 @@
 </template>
 <style lang="scss">
 .header-footer-wrapper {
-  .avatar-uploader {
-    img.avatar {
-      width: 100%;
+  .img-upload {
+    text-align: center;
+    .avatar-uploader {
+      img.avatar {
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 }
@@ -313,7 +317,6 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.getHeaderFooterTemplateSelect;
-      //
     });
 
     return {
