@@ -276,11 +276,17 @@ export default defineComponent({
           }
           loading.value = true;
           let submitData = new FormData();
+          if (formData.value.id) submitData.append("id", formData.value.id);
           submitData.append("title", formData.value.title);
-          submitData.append("header_file", formData.value.header_file.raw);
-          submitData.append("footer_file", formData.value.footer_file.raw);
+          if (formData.value.header_file.raw)
+            submitData.append("header_file", formData.value.header_file.raw);
+          if (formData.value.footer_file.raw)
+            submitData.append("footer_file", formData.value.footer_file.raw);
           store
-            .dispatch(formData.value._submit, submitData)
+            .dispatch(formData.value._submit, {
+              id: formData.value.id,
+              data: submitData,
+            })
             .then(() => {
               loading.value = false;
               store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST);
@@ -307,6 +313,7 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.getHeaderFooterTemplateSelect;
+      //
     });
 
     return {

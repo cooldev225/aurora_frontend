@@ -30,12 +30,12 @@
         </template>
         <template v-slot:cell-header_file="{ row: item }">
           <div class="img-previewer">
-            <img :src="item.header_file_src" />
+            <img :src="item.header" />
           </div>
         </template>
         <template v-slot:cell-footer_file="{ row: item }">
           <div class="img-previewer">
-            <img :src="item.footer_file_src" />
+            <img :src="item.footer" />
           </div>
         </template>
         <template v-slot:cell-action="{ row: item }">
@@ -71,7 +71,14 @@
 }
 </style>
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  watchEffect,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
@@ -140,12 +147,11 @@ export default defineComponent({
       //edit templates
       item._title = "Edit Header/Footer Template";
       item._button = "Update";
-      item._submit = Actions.HEADER_FOOTER_TEMPLATE.UPDATE;
+      item._submit = Actions.HEADER_FOOTER_TEMPLATE.CREATE;
       item._submit_text = "Successfully Updated!";
-
       store.commit(Mutations.SET_HEADER_FOOTER_TEMPLATE.SELECT, item);
       const modal = new Modal(
-        document.getElementById("modal_edit_heaedr_footer_template")
+        document.getElementById("modal_edit_header_footer_template")
       );
       modal.show();
     };
@@ -181,35 +187,45 @@ export default defineComponent({
 
     watchEffect(() => {
       tableData.value = headerFooterTemplates;
-      console.log(["tableData.value", tableData.value]);
-      tableData.value.value.map((template, index) => {
-        store
-          .dispatch(Actions.HEADER_FOOTER_TEMPLATE.IMAGE, {
-            path: template.header_file,
-            type: "DOCUMENT_HEADER",
-          })
-          .then((data) => {
-            const blob = new Blob([data], { type: "application/image" });
-            const objectUrl = URL.createObjectURL(blob);
-            tableData.value.value[index].header_file_src = objectUrl;
-          })
-          .catch(() => {
-            //
-          });
-        store
-          .dispatch(Actions.HEADER_FOOTER_TEMPLATE.IMAGE, {
-            path: template.footer_file,
-            type: "DOCUMENT_FOOTER",
-          })
-          .then((data) => {
-            const blob = new Blob([data], { type: "application/image" });
-            const objectUrl = URL.createObjectURL(blob);
-            tableData.value.value[index].footer_file_src = objectUrl;
-          })
-          .catch(() => {
-            //
-          });
-      });
+    });
+
+    watch(headerFooterTemplates, () => {
+      if (!loading.value) {
+        headerFooterTemplates.value.map((template, index) => {
+          if (template.header_file && template.header_file != {}) {
+            store
+              .dispatch(Actions.HEADER_FOOTER_TEMPLATE.IMAGE, {
+                path: template.header_file,
+                type: "DOCUMENT_HEADER",
+              })
+              .then((data) => {
+                const blob = new Blob([data], { type: "application/image" });
+                const objectUrl = URL.createObjectURL(blob);
+                tableData.value.value[index].header = objectUrl;
+                tableData.value.value[index].header_file = data;
+              })
+              .catch(() => {
+                //
+              });
+          }
+          if (template.footer_file && template.footer_file != "") {
+            store
+              .dispatch(Actions.HEADER_FOOTER_TEMPLATE.IMAGE, {
+                path: template.footer_file,
+                type: "DOCUMENT_FOOTER",
+              })
+              .then((data) => {
+                const blob = new Blob([data], { type: "application/image" });
+                const objectUrl = URL.createObjectURL(blob);
+                tableData.value.value[index].footer = objectUrl;
+                tableData.value.value[index].footer_file = data;
+              })
+              .catch(() => {
+                //
+              });
+          }
+        });
+      }
     });
 
     return {

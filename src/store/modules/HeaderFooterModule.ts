@@ -96,7 +96,7 @@ export default class HeaderFooterModule
   [Actions.HEADER_FOOTER_TEMPLATE.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("document-header-footer-templates", item, {
+      ApiService.post("document-header-footer-templates", item.data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -106,23 +106,6 @@ export default class HeaderFooterModule
         })
         .catch(({ response }) => {
           console.log(response.data.error);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
-  [Actions.HEADER_FOOTER_TEMPLATE.UPDATE](item) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.update("document-header-footer-templates", item.id, item)
-        .then(({ data }) => {
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
