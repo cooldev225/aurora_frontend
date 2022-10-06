@@ -103,7 +103,7 @@
           </span>
         </template>
         <template v-slot:cell-contact_number="{ row: item }">
-          {{ item.contact_number }}
+          {{ item.mobile_number }}
         </template>
       </Datatable>
     </div>
@@ -114,7 +114,6 @@
 import { defineComponent, ref, reactive, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
@@ -127,16 +126,17 @@ export default defineComponent({
   name: "assign-specialist-modal",
   props: {
     document: { type: Object, required: true },
+    handleSetSelectedDocument: { type: Function, required: true },
   },
   setup(props) {
     const store = useStore();
     const router = useRouter();
-    const list = computed(() => store.getters.patientsList);
+    const list = computed(() => store.getters.getSearchSpecialistList);
     const documentId = computed(() => props.document.id);
     const documentType = computed(() => props.document.document_type);
     const documentName = computed(() => props.document.document_name);
     const loading = ref(false);
-    const assignPatientModalRef = ref(null);
+    const assignSpecialistModalRef = ref(null);
     const filter = reactive({
       first_name: "",
       last_name: "",
@@ -189,13 +189,13 @@ export default defineComponent({
     };
 
     const updateRef = (_ref) => {
-      assignPatientModalRef.value = _ref;
+      assignSpecialistModalRef.value = _ref;
     };
 
-    const handleAssign = (patient) => {
+    const handleAssign = (specialist_id) => {
       store
         .dispatch(DocumentActions.UPDATE, {
-          patient_id: patient.id,
+          specialist_id: specialist_id.id,
           document_id: documentId.value,
           document_type: documentType.value,
           document_name: documentName.value,
@@ -208,7 +208,10 @@ export default defineComponent({
             is_missing_information: 1,
             origin: "RECEIVED",
           });
-          hideModal(assignPatientModalRef.value);
+          setTimeout(() => {
+            props.handleSetSelectedDocument();
+            hideModal(assignSpecialistModalRef.value);
+          }, 200);
         });
     };
 
@@ -221,7 +224,7 @@ export default defineComponent({
       filter,
       searchSpecialist,
       clearFilters,
-      assignPatientModalRef,
+      assignSpecialistModalRef,
       updateRef,
       tableKey,
       tableHeader,

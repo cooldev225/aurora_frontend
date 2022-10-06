@@ -126,7 +126,10 @@
     :document="selectedDocument"
   ></SendDocumentViaEmailModal>
   <AssignPatientModal :document="selectedDocument"></AssignPatientModal>
-  <AssignSpecialistModal :document="selectedDocument"></AssignSpecialistModal>
+  <AssignSpecialistModal
+    :document="selectedDocument"
+    :handle-set-selected-document="handleSetSelectedDocument"
+  ></AssignSpecialistModal>
 </template>
 <style lang="scss">
 .pdf_viewer_wrapper {
@@ -255,6 +258,14 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleSetSelectedDocument = () => {
+      if (selectedDocument.value) {
+        selectedDocument.value = documents.value.find(
+          (doc) => doc.id === selectedDocument.value.id
+        );
+      }
+    };
+
     return {
       patientDocumentTypes,
       DocumentLabel,
@@ -267,6 +278,7 @@ export default defineComponent({
       handlePrint,
       showAssignPatientModal,
       showAssignSpecialistModal,
+      handleSetSelectedDocument,
     };
   },
 });
