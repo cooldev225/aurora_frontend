@@ -249,6 +249,10 @@ export default defineComponent({
         ava_specialist: available_specialists,
         selected_specialist: selected_specialist,
         restriction: $restriction,
+        appointment_type: {
+          id: props.searchNextApts.appointment_type_id,
+          name: appointment_type.value,
+        },
       };
       store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
 
