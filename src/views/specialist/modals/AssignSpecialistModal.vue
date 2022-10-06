@@ -204,14 +204,17 @@ export default defineComponent({
           clearFilters();
           tableData.value = [];
           renderTable();
-          store.dispatch(DocumentActions.LIST, {
-            is_missing_information: 1,
-            origin: "RECEIVED",
-          });
-          setTimeout(() => {
-            props.handleSetSelectedDocument();
-            hideModal(assignSpecialistModalRef.value);
-          }, 200);
+          store
+            .dispatch(DocumentActions.LIST, {
+              is_missing_information: 1,
+              origin: "RECEIVED",
+            })
+            .then(() => {
+              setTimeout(() => {
+                props.handleSetSelectedDocument();
+                hideModal(assignSpecialistModalRef.value);
+              }, 200);
+            });
         });
     };
 

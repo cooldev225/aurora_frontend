@@ -31,8 +31,9 @@ export default class DocumentModule extends VuexModule implements Documents {
   @Action
   [DocumentActions.LIST](data) {
     if (JwtService.getToken()) {
+      this.context.commit(DocumentMutations.SET_LIST, []);
       ApiService.setHeader();
-      ApiService.query("documents", {
+      return ApiService.query("documents", {
         params: {
           specialist_id: data.specialist_id,
           appointment_id: data.appointment_id,

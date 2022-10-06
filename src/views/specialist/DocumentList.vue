@@ -156,8 +156,6 @@ import { Modal } from "bootstrap";
 import AssignPatientModal from "@/views/specialist/modals/AssignPatientModal.vue";
 import AssignSpecialistModal from "@/views/specialist/modals/AssignSpecialistModal.vue";
 
-const selectedDocument = ref(null);
-
 export default defineComponent({
   name: "admin-main",
 
@@ -174,7 +172,7 @@ export default defineComponent({
     const documentTypeFilter = ref("ALL");
     const appointmentFilter = ref("ALL");
     const tempFile = ref();
-
+    var selectedDocument = ref(null);
     // Filters the documents by appointment and document type.
     watch([documentTypeFilter, appointmentFilter, documents], () => {
       document.getElementById("document-view").innerHTML = "";
@@ -259,7 +257,11 @@ export default defineComponent({
     };
 
     const handleSetSelectedDocument = () => {
-      if (selectedDocument.value) {
+      if (
+        selectedDocument &&
+        selectedDocument.value &&
+        selectedDocument.value.id
+      ) {
         selectedDocument.value = documents.value.find(
           (doc) => doc.id === selectedDocument.value.id
         );
