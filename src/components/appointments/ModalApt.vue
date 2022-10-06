@@ -1790,9 +1790,6 @@ export default defineComponent({
           store.dispatch(AppointmentActions.LIST);
           hideModal(createAptModalRef.value);
           if (searchVal.value.date) {
-            store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
-              ...searchVal.value,
-            });
             store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
               ...searchVal.value,
             });
@@ -1898,9 +1895,6 @@ export default defineComponent({
             hideModal(createAptModalRef.value);
             resetCreateModal();
             if (searchVal.value.date) {
-              store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
-                ...searchVal.value,
-              });
               store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
                 ...searchVal.value,
               });
@@ -1937,7 +1931,7 @@ export default defineComponent({
           store.dispatch(Actions.APT.LIST);
           hideModal(editAptModalRef.value);
           if (searchVal.value.date) {
-            store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+            store.dispatch(Actions.BOOKING.SEARCH.SPECIALIST, {
               ...searchVal.value,
             });
             store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {

@@ -349,7 +349,7 @@ export default defineComponent({
       await store
         .dispatch(Actions.APT.CHECK_IN, aptData.value)
         .then(() => {
-          store.dispatch(Actions.BOOKING.SEARCH.DATE, searchVal.value);
+          store.dispatch(Actions.BOOKING.SEARCH.SPECIALIST, searchVal.value);
           hideModal(checkInAptModalRef.value);
           loading.value = false;
 

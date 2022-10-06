@@ -422,11 +422,6 @@ export default defineComponent({
 
     onMounted(() => {
       toggleLayout.value = false;
-
-      store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
-        ...date_search,
-        ...specialists_search,
-      });
       store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
         ...specialists_search,
@@ -495,10 +490,6 @@ export default defineComponent({
       }
     });
     watch(date_search, () => {
-      store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
-        ...date_search,
-        specialists: [],
-      });
       store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
         ...specialists_search,

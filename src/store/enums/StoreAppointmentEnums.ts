@@ -2,7 +2,6 @@
 const AppointmentActions = {
 
 
-  
   LIST: "listAppointment",                 // (get)    'appointments'
   REFERRAL: {
     UPDATE:   "updateAppointmentReferral", // (put)    'appointments/referral/{appointment}'
@@ -43,7 +42,6 @@ const AppointmentActions = {
   },
   BOOKING: {
     SEARCH: {
-      DATE: "searchBookingByDate",
       SPECIALISTS: "searchBookingBySPT",
       NEXT_APT: "searchNextApt",
     },
