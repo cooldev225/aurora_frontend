@@ -1,6 +1,6 @@
 <template>
   <ModalWrapper
-    title="Search Appointments"
+    title="Assign Appointments"
     modalId="assign_appointment"
     :updateRef="updateRef"
   >
@@ -40,13 +40,20 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, watch, computed } from "vue";
+import {
+  defineComponent,
+  ref,
+  reactive,
+  watch,
+  computed,
+  onMounted,
+} from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 
 export default defineComponent({
   components: {
@@ -60,12 +67,14 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const router = useRouter();
-    const list = computed(() => store.getters.getSearchSpecialistList);
+    const list = computed(() => store.getters.getAptList);
+    const selectedDocument = computed(() => props.document);
     const documentId = computed(() => props.document.id);
     const documentType = computed(() => props.document.document_type);
     const documentName = computed(() => props.document.document_name);
     const loading = ref(false);
-    const assignSpecialistModalRef = ref(null);
+    const assignAppointmentModalRef = ref(null);
+
     const filter = reactive({
       first_name: "",
       last_name: "",
@@ -103,22 +112,15 @@ export default defineComponent({
       renderTable();
     };
 
-    const searchSpecialist = () => {
+    const searchAppointments = (params) => {
       loading.value = true;
-      store
-        .dispatch(Actions.SPECIALIST.SEARCH.LIST, {
-          first_name: filter.first_name,
-          last_name: filter.last_name,
-          date_of_birth: filter.date_of_birth,
-        })
-        .finally(() => {
-          loading.value = false;
-          renderTable();
-        });
+      store.dispatch(AppointmentActions.LIST, params).then(() => {
+        loading.value = false;
+      });
     };
 
     const updateRef = (_ref) => {
-      assignSpecialistModalRef.value = _ref;
+      assignAppointmentModalRef.value = _ref;
     };
 
     const handleAssign = (specialist_id) => {
@@ -141,7 +143,7 @@ export default defineComponent({
             .then(() => {
               setTimeout(() => {
                 props.handleSetSelectedDocument();
-                hideModal(assignSpecialistModalRef.value);
+                hideModal(assignAppointmentModalRef.value);
               }, 200);
             });
         });
@@ -152,17 +154,26 @@ export default defineComponent({
       renderTable();
     });
 
+    watch(selectedDocument, () => {
+      selectedDocument.value &&
+        selectedDocument.value.patient &&
+        searchAppointments({
+          patient_id: selectedDocument.value.patient.id,
+        });
+    });
+
     return {
       filter,
-      searchSpecialist,
+      searchAppointments,
       clearFilters,
-      assignSpecialistModalRef,
+      assignAppointmentModalRef,
       updateRef,
       tableKey,
       tableHeader,
       tableData,
       loading,
       handleAssign,
+      selectedDocument,
     };
   },
 });
