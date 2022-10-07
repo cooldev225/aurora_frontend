@@ -19,6 +19,7 @@ const Actions = {
     VIEW: "viewProfile",
     UPDATE: "updateProfile",
     UPDATE_PASSWORD: "updatePassword",
+    UPDATE_SIGNATURE: "updateSignature",
   },
 
   ADMIN: {
@@ -94,6 +95,7 @@ const Actions = {
     CREATE: "createEmployee",
     DELETE: "deleteEmployee",
     UPDATE: "updateEmployee",
+    UPDATE_PASSWORD: "updateEmployeePassword",
   },
 
   ANESTHETIST_QUES: {

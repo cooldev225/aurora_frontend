@@ -16,7 +16,7 @@
       ></InfoSection
     >
     <InfoSection heading="Date">
-      {{ new Date(aptInfoData.date).toLocaleDateString("en-AU") }}
+      {{ aptInfoData.date }}
     </InfoSection>
 
     <InfoSection heading="Patient"

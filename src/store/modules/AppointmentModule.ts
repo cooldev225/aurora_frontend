@@ -298,7 +298,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   @Action
   [AppointmentActions.REFERRAL.UPDATE](data) {
     console.log(data);
-    ApiService.post(
+    return ApiService.post(
       "appointments/referral/" + data.appointment_id,
       data.submitData,
       {
@@ -308,10 +308,11 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
       }
     )
       .then(({ data }) => {
-        return data.message;
+        return data;
       })
       .catch(({ response }) => {
         console.log(response.data.error);
+        return response.data;
       });
   }
 

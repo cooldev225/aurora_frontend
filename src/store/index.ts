@@ -34,6 +34,9 @@ import ReportModule from "@/store/modules/ReportModule";
 import HRMModule from "@/store/modules/HRMModule";
 import PatientsAlertModule from "@/store/modules/PatientsAlertModule";
 import HeaderFooterModule from "@/store/modules/HeaderFooterModule";
+
+import CodingModule from "@/store/modules/CodingModule";
+
 config.rawError = true;
 
 const store = createStore({
@@ -71,6 +74,8 @@ const store = createStore({
     HRMModule,
     PatientsAlertModule,
     HeaderFooterModule,
+    CodingModule,
+
   },
 });
 

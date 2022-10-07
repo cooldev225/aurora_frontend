@@ -72,14 +72,14 @@
               </span>
             </button>
 
-            <a
-              href="#"
+            <button
+              @click="handleUpdatePassword(item)"
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
             >
               <span class="svg-icon svg-icon-3">
                 <inline-svg src="media/icons/duotune/coding/cod008.svg" />
               </span>
-            </a>
+            </button>
 
             <button
               @click="handleEdit(item)"
@@ -104,6 +104,7 @@
     </div>
   </div>
   <ProviderModal></ProviderModal>
+  <EmployeePasswordModal></EmployeePasswordModal>
 </template>
 <script>
 import {
@@ -121,7 +122,8 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import ProviderModal from "@/views/employees/ProviderModal.vue";
+import ProviderModal from "@/views/employees/modals/ProviderModal.vue";
+import EmployeePasswordModal from "@/views/employees/modals/EmployeePasswordModal.vue";
 import { Modal } from "bootstrap";
 
 export default defineComponent({
@@ -130,6 +132,7 @@ export default defineComponent({
   components: {
     Datatable,
     ProviderModal,
+    EmployeePasswordModal,
   },
 
   setup() {
@@ -209,6 +212,14 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleUpdatePassword = (item) => {
+      store.commit(Mutations.SET_EMPLOYEE.SELECT, item);
+      const modal = new Modal(
+        document.getElementById("modal_employee_password")
+      );
+      modal.show();
+    };
+
     const deleteAfterConfirmation = (item) => {
       const html =
         '<p class="fs-2">Please type <b>' +
@@ -269,7 +280,6 @@ export default defineComponent({
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Employees", []);
-      store.dispatch(Actions.ORG.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST).then(() => {
         tableData.value = list;
         loading.value = false;
@@ -335,6 +345,7 @@ export default defineComponent({
       handleCreate,
       filterAndSort,
       handleEditProviderNumber,
+      handleUpdatePassword,
     };
   },
 });

@@ -29,8 +29,8 @@
             }}
             <br />
             {{
-              specialist.hrm_user_base_schedules
-                ? specialist.hrm_user_base_schedules[0].clinic_name
+              specialist.schedule_timeslots
+                ? specialist.schedule_timeslots[0].clinic_name
                 : ""
             }}
           </th>
@@ -113,22 +113,27 @@ export default defineComponent({
 
     const filteredSpecialists = computed(() => store.getters.getFilteredData);
     const appointmentTimesList = ref();
+
+    const userProfile = computed(() => store.getters.userProfile);
     //  The length of each time slot i.e 30 min = 7:00 - 7:30
-    const timeslot_length = ref(30);
+    const timeslot_length = ref();
 
     const timeStr2Number = (time) => {
       return Number(time.split(":")[0] + time.split(":")[1]);
     };
 
-    onMounted(() => {
+    watch(userProfile, () => {
+      timeslot_length.value = userProfile.value.organization.appointment_length;
       appointmentTimesList.value = generateAppointmentTimes();
     });
 
     const generateAppointmentTimes = () => {
-      let start_time = "07:00";
+      let start_time = userProfile.value.organization.start_time.slice(0, 5);
       let time_increment = start_time;
-      let end_time = "18:00";
+      let end_time = userProfile.value.organization.end_time.slice(0, 5);
       let appointment_time_list: string[] = [];
+
+      console.log(start_time);
 
       while (timeStr2Number(time_increment) < timeStr2Number(end_time)) {
         appointment_time_list.push(time_increment);

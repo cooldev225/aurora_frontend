@@ -290,10 +290,6 @@ export default defineComponent({
             })
             .then(() => {
               store.dispatch(
-                AppointmentActions.BOOKING.SEARCH.DATE,
-                searchVal.value
-              );
-              store.dispatch(
                 AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
                 searchVal.value
               );
@@ -314,7 +310,7 @@ export default defineComponent({
         .dispatch(AppointmentActions.APT.CHECK_OUT, aptData.value)
         .then(() => {
           store.dispatch(
-            AppointmentActions.BOOKING.SEARCH.DATE,
+            AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
             searchVal.value
           );
           Swal.fire({

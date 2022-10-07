@@ -31,6 +31,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "appointment-print-hospital-certificate-view",
         component: () => import("@/views/LabelTest.vue"),
       },
+      {
+        path: "/coding",
+        name: "coding-dashboard",
+        component: () => import("@/views/coding/dashboard.vue"),
+      },
       ...OrganizationRoutes,
       ...ClinicRoutes,
       ...DocumentRoutes,
@@ -49,6 +54,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/profile/password-change",
         name: "password-change",
         component: () => import("@/components/auth/Password.vue"),
+      },
+      {
+        path: "/profile/signature",
+        name: "signature",
+        component: () => import("@/components/auth/Signature.vue"),
       },
       {
         path: "/employee-booking-dashboard",

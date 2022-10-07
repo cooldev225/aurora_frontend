@@ -92,11 +92,6 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   }
 
   @Mutation
-  [AppointmentMutations.SET_BOOKING.SEARCH.DATE](data: IBookingData) {
-    this.availableSPT = data;
-  }
-
-  @Mutation
   [AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS](data: IBookingData) {
     this.filteredData = data;
   }
@@ -132,10 +127,6 @@ export default class BooingModule extends VuexModule implements BookingInfo {
 
   @Action
   [AppointmentActions.BOOKING.SEARCH.SPECIALISTS](payload) {
-    this.context.commit(
-      AppointmentMutations.SET_BOOKING.SEARCH.VARIABLE,
-      payload
-    );
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.query("appointments/specialists", { params: payload })
@@ -144,30 +135,6 @@ export default class BooingModule extends VuexModule implements BookingInfo {
             AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS,
             data.data
           );
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
-  [AppointmentActions.BOOKING.SEARCH.DATE](payload) {
-    this.context.commit(
-      AppointmentMutations.SET_BOOKING.SEARCH.VARIABLE,
-      payload
-    );
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.query("appointments/specialists", { params: payload })
-        .then(({ data }) => {
-          this.context.commit(
-            AppointmentMutations.SET_BOOKING.SEARCH.DATE,
-            data.data
-          );
-          console.log(data);
         })
         .catch(({ response }) => {
           console.log(response.data.error);
