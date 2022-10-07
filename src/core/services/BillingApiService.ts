@@ -1,7 +1,8 @@
-import { Actions } from "@/store/enums/StoreEnums";
 import axios, { AxiosInstance } from "axios";
 import { AxiosResponse, AxiosRequestConfig } from "axios";
 import BillingTokenService from "./BillingTokenService";
+import store from "@/store";
+import { Actions } from "@/store/enums/StoreEnums";
 
 /**
  * @description service to call HTTP request via Axios
@@ -29,13 +30,21 @@ class BillingApiService {
   /**
    * @description set the default HTTP request headers
    */
-  public static setHeader(): void {
-    BillingTokenService[Actions.BILLING_TOKEN];
-    BillingApiService.axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${BillingTokenService.getToken()}`;
-    BillingApiService.axios.defaults.headers.common["Accept"] =
-      "application/json";
+  public static setHeader(): Promise<boolean> {
+    BillingTokenService.destroyToken();
+    return store
+      .dispatch(Actions.BILLING_TOKEN)
+      .then(() => {
+        BillingApiService.axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${BillingTokenService.getToken()}`;
+        BillingApiService.axios.defaults.headers.common["Accept"] =
+          "application/json";
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
   }
 
   /**

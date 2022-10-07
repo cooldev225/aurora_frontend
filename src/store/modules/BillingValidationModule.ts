@@ -52,18 +52,20 @@ export default class BillingValidationModule
   }
 
   @Action
-  [PatientActions.BILLING.VALIDATE_MEDICARE](details) {
-    BillingApiService.setHeader();
-    return BillingApiService.post("api/validate/medicare", details)
-      .then(({ data }) => {
-        if (data.success) {
-          this.context.commit(PatientMutations.SET_VALIDATION.MEDICARE, data);
-        } else {
-          throw data;
-        }
-      })
-      .catch(({ response }) => {
-        this.context.commit(Mutations.SET_ERROR, response.data.data);
-      });
+  async [PatientActions.BILLING.VALIDATE_MEDICARE](details) {
+    if (await BillingApiService.setHeader()) {
+      return BillingApiService.post("api/validate/medicare", details)
+        .then(({ data }) => {
+          if (data.success) {
+            this.context.commit(PatientMutations.SET_VALIDATION.MEDICARE, data);
+          } else {
+            throw data;
+          }
+        })
+        .catch(({ response }) => {
+          this.context.commit(Mutations.SET_ERROR, response.data.data);
+          return Promise.reject();
+        });
+    }
   }
 }
