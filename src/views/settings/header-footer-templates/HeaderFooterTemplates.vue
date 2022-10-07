@@ -195,8 +195,8 @@ export default defineComponent({
 
     watch(headerFooterTemplates, () => {
       if (!loading.value) {
-        loading.value = true;
         headerFooterTemplates.value.map((template, index) => {
+          loading.value = true;
           if (template.header_file && template.header_file != {}) {
             store
               .dispatch(Actions.HEADER_FOOTER_TEMPLATE.IMAGE, {
