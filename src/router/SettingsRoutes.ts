@@ -89,6 +89,14 @@ const SettingsRoutes = [
     component: () =>
       import("@/views/settings/referring-doctors/EditRefDoctors.vue"),
   },
+  {
+    path: "/settings/header-footer-templates",
+    name: "headerFooterTemplates",
+    component: () =>
+      import(
+        "@/views/settings/header-footer-templates/HeaderFooterTemplates.vue"
+      ),
+  },
 ];
 
 export default SettingsRoutes;

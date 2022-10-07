@@ -58,14 +58,14 @@
       <div class="d-inline-block mb-2 p-2">
         <div class="d-flex flex-row">
           <span
-            @click="toggleLayout = true"
+            @click="setToggleLayout(true)"
             :class="{ 'svg-icon-primary': toggleLayout }"
             class="svg-icon svg-icon-2x btn m-0 p-0"
           >
             <inline-svg src="media/icons/duotune/layouts/lay004.svg" />
           </span>
           <span
-            @click="toggleLayout = false"
+            @click="setToggleLayout(false)"
             :class="{ 'svg-icon-primary': !toggleLayout }"
             class="svg-icon svg-icon-2x btn m-0 p-0"
           >
@@ -81,7 +81,7 @@
   </div>
   <!--end::Booking Toolbar-->
   <div :class="{ row: toggleLayout }">
-    <div :class="{ 'col-2': toggleLayout }">
+    <div :class="{ 'col-4': toggleLayout }">
       <div class="card card-flush">
         <div class="card-body">
           <div :class="{ row: !toggleLayout }">
@@ -278,7 +278,7 @@
         </div>
       </div>
     </div>
-    <div :class="{ 'col-10': toggleLayout }">
+    <div :class="{ 'col-8': toggleLayout }">
       <div class="card-body">
         <div class="scroll" :class="{ 'h-500px': !toggleLayout }">
           <div class="d-flex flex-column">
@@ -338,7 +338,6 @@ export default defineComponent({
   },
   data: function () {
     return {
-      toggleLayout: false,
       toggleKey: false,
       toggleRestrictionKey: false,
     };
@@ -350,12 +349,19 @@ export default defineComponent({
       date: new Date(),
     });
 
+    const toggleLayout = ref(false);
+
     const validateAppointmentTypeId = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("Please select appointment type"));
       } else {
         callback();
       }
+    };
+
+    const setToggleLayout = (value) => {
+      toggleLayout.value = value;
+      localStorage.setItem("toggleBookingLayout", toggleLayout.value);
     };
 
     const searchAppointmentForm = ref({
@@ -415,10 +421,7 @@ export default defineComponent({
     const clinic_list = computed(() => store.getters.clinicsList);
 
     onMounted(() => {
-      store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
-        ...date_search,
-        ...specialists_search,
-      });
+      toggleLayout.value = false;
       store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
         ...specialists_search,
@@ -487,10 +490,6 @@ export default defineComponent({
       }
     });
     watch(date_search, () => {
-      store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
-        ...date_search,
-        specialists: [],
-      });
       store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
         ...specialists_search,
@@ -591,6 +590,8 @@ export default defineComponent({
       handleReset,
       timeStr2Number,
       changeDate,
+      toggleLayout,
+      setToggleLayout,
     };
   },
 });

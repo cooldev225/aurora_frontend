@@ -33,6 +33,7 @@ import DocumentModule from "@/store/modules/DocumentModule";
 import ReportModule from "@/store/modules/ReportModule";
 import HRMModule from "@/store/modules/HRMModule";
 import PatientsAlertModule from "@/store/modules/PatientsAlertModule";
+import HeaderFooterModule from "@/store/modules/HeaderFooterModule";
 import CodingModule from "@/store/modules/CodingModule";
 import BillingTokenModule from "@/store/modules/BillingTokenModule";
 import BillingValidationModule from "@/store/modules/BillingValidationModule";
@@ -72,6 +73,7 @@ const store = createStore({
     ReportModule,
     HRMModule,
     PatientsAlertModule,
+    HeaderFooterModule,
     CodingModule,
     BillingTokenModule,
     BillingValidationModule,

@@ -1360,9 +1360,9 @@ export default defineComponent({
     });
 
     const appointment_length = reactive({
-      single: 1,
-      double: 2,
-      triple: 3,
+      SINGLE: 1,
+      DOUBLE: 2,
+      TRIPLE: 3,
     });
     const appointment_time = ref(30);
     const _stepperObj = ref(null);
@@ -1519,7 +1519,6 @@ export default defineComponent({
             appointment_time.value
         );
         arrival_time.value = Number(_selected.arrival_time);
-
         aptInfoData.value.clinical_code = _selected.clinical_code;
         aptInfoData.value.mbs_code = _selected.mbs_code;
         apt_type.value = _selected.type;
@@ -1648,6 +1647,7 @@ export default defineComponent({
       ) {
         aptTypeListWithRestriction.value = aptTypeList.value;
       } else {
+        aptInfoData.value.date = bookingData.date;
         aptTypeListWithRestriction.value = aptTypeList.value.filter(
           (item) => item.type === specialistRestriction
         );
@@ -1671,6 +1671,7 @@ export default defineComponent({
             bookingData.selected_specialist.schedule_timeslots[0].clinic;
           aptInfoData.value.clinic_name = clinic.value.name;
           aptInfoData.value.clinic_id = clinic.value.id;
+          cur_appointment_type_id.value = bookingData.appointment_type.id;
           getAvailableRooms();
         }
       }
@@ -1791,9 +1792,6 @@ export default defineComponent({
           store.dispatch(AppointmentActions.LIST);
           hideModal(createAptModalRef.value);
           if (searchVal.value.date) {
-            store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
-              ...searchVal.value,
-            });
             store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
               ...searchVal.value,
             });
@@ -1899,9 +1897,6 @@ export default defineComponent({
             hideModal(createAptModalRef.value);
             resetCreateModal();
             if (searchVal.value.date) {
-              store.dispatch(AppointmentActions.BOOKING.SEARCH.DATE, {
-                ...searchVal.value,
-              });
               store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
                 ...searchVal.value,
               });
@@ -1938,7 +1933,7 @@ export default defineComponent({
           store.dispatch(Actions.APT.LIST);
           hideModal(editAptModalRef.value);
           if (searchVal.value.date) {
-            store.dispatch(Actions.BOOKING.SEARCH.DATE, {
+            store.dispatch(Actions.BOOKING.SEARCH.SPECIALIST, {
               ...searchVal.value,
             });
             store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {

@@ -68,6 +68,12 @@
       >
         Referring Doctors
       </router-link>
+      <router-link
+        to="/settings/header-footer-templates"
+        class="btn btn-light-primary m-2"
+      >
+        Header/Footer Template
+      </router-link>
     </div>
   </div>
 </template>
