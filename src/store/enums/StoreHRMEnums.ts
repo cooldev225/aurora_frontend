@@ -5,7 +5,9 @@ const HRMActions = {
     CREATE: 'ScheduleTemplateCreate',
     UPDATE: 'ScheduleTemplateUpdate',
   },
- 
+  BULLETIN: {
+    LIST: 'BulletinList',
+  }
 };
 
 const HRMMutations = {
@@ -13,8 +15,11 @@ const HRMMutations = {
     SET_LIST : "setScheduleTemplateList",
     SET_SELECT : "setScheduleTemplateSelect",
     SET_TIMESLOT: "setTimeslotTemplateSelect",
+  },
+  BULLETIN: {
+    SET_LIST : "setBulletinList",
+    SET_SELECT : "setBulletinSelect",
   }
-
 };
 
 export { HRMActions,HRMMutations };
