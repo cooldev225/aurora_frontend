@@ -5,6 +5,7 @@
       <!--begin::Add button-->
       <div class="card-toolbar text-center col-sm-2">
         <button
+          :disabled="loading"
           type="button"
           class="btn btn-light-primary ms-auto text-nowrap"
           @click="handleAdd()"
@@ -40,6 +41,7 @@
         </template>
         <template v-slot:cell-action="{ row: item }">
           <button
+            :disabled="loading"
             @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
           >
@@ -49,6 +51,7 @@
           </button>
 
           <button
+            :disabled="loading"
             @click="handleDelete(item.id)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
           >
@@ -192,6 +195,7 @@ export default defineComponent({
 
     watch(headerFooterTemplates, () => {
       if (!loading.value) {
+        loading.value = true;
         headerFooterTemplates.value.map((template, index) => {
           if (template.header_file && template.header_file != {}) {
             store
@@ -220,6 +224,10 @@ export default defineComponent({
                 const objectUrl = URL.createObjectURL(blob);
                 tableData.value.value[index].footer = objectUrl;
                 tableData.value.value[index].footer_file = data;
+
+                if (headerFooterTemplates.value.length - 1 == index) {
+                  loading.value = false;
+                }
               })
               .catch(() => {
                 //
