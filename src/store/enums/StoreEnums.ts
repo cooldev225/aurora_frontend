@@ -14,6 +14,7 @@ const Actions = {
   FORGOT_PASSWORD: "forgotPassword",
   SET_BREADCRUMB_ACTION: "setBreadcrumbAction",
   USER_LIST: "userList",
+  BILLING_TOKEN: "getBillingToken",
 
   PROFILE: {
     VIEW: "viewProfile",
@@ -189,6 +190,9 @@ const Mutations = {
   OVERRIDE_LAYOUT_CONFIG: "overrideLayoutConfig",
   OVERRIDE_PAGE_LAYOUT_CONFIG: "overridePageLayoutConfig",
   SET_USER_LIST: "setUserList",
+  SET_BILLING_TOKEN: "setBillingToken",
+  PURGE_BILLING_TOKEN: "deleteBillingToken",
+  SET_BILLING_VALIDATION: "setBillingValidation",
 
   SET_SPECIALIST: {
     LIST: "setSpecialists",
