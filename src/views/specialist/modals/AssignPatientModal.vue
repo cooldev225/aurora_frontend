@@ -126,6 +126,7 @@ export default defineComponent({
   name: "assign-patient-modal",
   props: {
     document: { type: Object, required: true },
+    handleSetSelectedDocument: { type: Function, required: true },
   },
   setup(props) {
     const store = useStore();
@@ -203,11 +204,17 @@ export default defineComponent({
           clearFilters();
           tableData.value = [];
           renderTable();
-          store.dispatch(DocumentActions.LIST, {
-            is_missing_information: 1,
-            origin: "RECEIVED",
-          });
-          hideModal(assignPatientModalRef.value);
+          store
+            .dispatch(DocumentActions.LIST, {
+              is_missing_information: 1,
+              origin: "RECEIVED",
+            })
+            .then(() => {
+              setTimeout(() => {
+                props.handleSetSelectedDocument();
+                hideModal(assignPatientModalRef.value);
+              }, 200);
+            });
         });
     };
 

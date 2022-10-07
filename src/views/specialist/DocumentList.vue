@@ -125,7 +125,10 @@
     v-if="selectedDocument"
     :document="selectedDocument"
   ></SendDocumentViaEmailModal>
-  <AssignPatientModal :document="selectedDocument"></AssignPatientModal>
+  <AssignPatientModal
+    :document="selectedDocument"
+    :handle-set-selected-document="handleSetSelectedDocument"
+  ></AssignPatientModal>
   <AssignSpecialistModal
     :document="selectedDocument"
     :handle-set-selected-document="handleSetSelectedDocument"
