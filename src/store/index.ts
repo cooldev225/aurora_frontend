@@ -75,7 +75,6 @@ const store = createStore({
     PatientsAlertModule,
     HeaderFooterModule,
     CodingModule,
-
   },
 });
 
