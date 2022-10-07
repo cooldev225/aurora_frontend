@@ -13,8 +13,8 @@
         :loading="loading"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-full_name="{ row: item }">
-          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
+        <template v-slot:cell-date="{ row: item }">
+          <div class="p-4 d-flex flex-column">
             <button
               @click="handleAssign(item)"
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
@@ -23,16 +23,124 @@
                 <i class="bi bi-check-circle"></i>
               </span>
             </button>
-            {{ item.first_name }} {{ item.last_name }}
-          </span>
+            <span
+              :class="`mb-1 p-2 rounded text-uppercase badge-xl badge-${
+                item.confirmation_status === 'CONFIRMED'
+                  ? 'success'
+                  : item.confirmation_status === 'CANCELED'
+                  ? 'danger'
+                  : item.confirmation_status === 'MISSED'
+                  ? 'danger'
+                  : 'warning'
+              } mb-2`"
+              style="width: fit-content"
+            >
+              {{ item.confirmation_status.replace("_", " ") }}</span
+            >
+            <div v-if="item.confirmation_status === 'CANCELED'">
+              Reason: {{ item.cancel_reason }}
+            </div>
+            <span
+              >{{ item.aus_formatted_date }}
+              {{ item.formatted_appointment_time }}</span
+            >
+            <span>@ {{ item.clinic_details.name }}</span>
+
+            <span>{{ item.appointment_type.name }}</span>
+            <span> {{ item.specialist_name }}</span>
+          </div>
         </template>
-        <template v-slot:cell-dob="{ row: item }">
-          <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">
-            {{ new Date(item.date_of_birth).toLocaleDateString("en-AU") }}
-          </span>
+        <template v-slot:cell-referral="{ row: item }">
+          <div
+            v-if="item.referral && item.referral.referring_doctor_name"
+            class="d-flex flex-column"
+          >
+            <div v-if="!item.is_no_referral" class="d-flex flex-column">
+              <span>{{ item.referral.referring_doctor_name }}</span>
+              <span>{{ item.referral.referral_date }}</span>
+              <span>{{ item.referral.referral_duration }} months</span>
+            </div>
+            <div v-else-if="item.is_no_referral" class="d-flex flex-column">
+              <span> NO REFERRAL </span>
+              <span>{{ item.referral.no_referral_reason }}</span>
+            </div>
+          </div>
+          <div v-else class="d-flex flex-column">No referral information</div>
+          <button
+            class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
+            @click="handleReferral(item)"
+          >
+            Update Referral
+          </button>
         </template>
-        <template v-slot:cell-contact_number="{ row: item }">
-          {{ item.mobile_number }}
+        <template v-slot:cell-attendance_status="{ row: item }">
+          <div class="d-flex flex-column">
+            <span
+              :class="`text-uppercase badge badge-light-${
+                item.attendance_status === 'not_present'
+                  ? 'dark'
+                  : item.attendance_status === 'waiting'
+                  ? 'warning'
+                  : item.attendance_status === 'checked_in'
+                  ? 'success'
+                  : 'primary'
+              } mb-2`"
+              style="width: fit-content"
+            >
+              {{ item.attendance_status.replace("_", " ") }}</span
+            >
+            <span>{{ item.collecting_person_name }}</span>
+            <span>{{ item.collecting_person_phone }}</span>
+            <span>{{ item.collecting_person_alternate_contact }}</span>
+          </div>
+          <button
+            class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
+            @click="handleCollectingPerson(item)"
+          >
+            Update Collecting Person
+          </button>
+        </template>
+        <template v-slot:cell-report="{ row: item }">
+          <div class="d-flex flex-column">
+            <a
+              @click="handlePay(item)"
+              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
+            >
+              <span class="svg-icon svg-icon-1">
+                <inline-svg src="media/icons/duotune/finance/fin002.svg" />
+              </span>
+              Payment
+            </a>
+            <a
+              @click="handlePrintHospitalCertificate(item)"
+              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
+            >
+              <span class="svg-icon svg-icon-1">
+                <inline-svg src="media/icons/duotune/files/fil017.svg" />
+              </span>
+              Hospital Certificate
+            </a>
+            <a
+              v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
+              @click="handlePreAdmission(item)"
+              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
+            >
+              <span class="svg-icon svg-icon-1">
+                <inline-svg src="media/icons/duotune/general/gen004.svg" />
+              </span>
+              Pre-Admission Form
+            </a>
+            <a
+              v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
+              @click="handlePreAdmissionTest(item)"
+              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
+            >
+              <span class="svg-icon svg-icon-1">
+                <inline-svg src="media/icons/duotune/general/gen004.svg" />
+              </span>
+              Pre-Admission Test
+            </a>
+          </div>
         </template>
       </Datatable>
     </div>
