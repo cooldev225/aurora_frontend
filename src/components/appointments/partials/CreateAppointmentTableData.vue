@@ -15,6 +15,7 @@ import { useStore } from "vuex";
 import moment from "moment";
 import { Mutations } from "@/store/enums/StoreEnums";
 import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
+import { computed } from "vue";
 export default {
   props: {
     date: { required: true },
@@ -34,17 +35,15 @@ export default {
       if (restriction == "CONSULTATION") return "text-primary";
       if (restriction == "NONE") return "text-success";
     };
-
+    const _apt_date = computed(() => props.date);
     const handleCreateAppointment = () => {
-      const date = moment(props.date.value).format("YYYY-MM-DD").toString();
-
+      const date = moment(_apt_date.value).format("YYYY-MM-DD").toString();
       const item = {
         time_slot: [date + "T" + props.startTime],
         date: date,
         selected_specialist: props.specialist,
         restriction: props.specialist.schedule_timeslots[0].restriction,
       };
-
       store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
       store.commit(
         AppointmentMutations.SET_APT.SELECT_SPECIALIST,
