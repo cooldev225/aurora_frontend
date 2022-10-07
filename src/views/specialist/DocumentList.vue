@@ -58,23 +58,31 @@
           No Documents Exist
         </div>
         <div class="d-flex flex-column h-450px scroll">
-          <div v-for="document in filteredDocuments" :key="document.id">
-            <input
-              type="radio"
-              class="btn-check"
-              :name="document.created_at"
-              :value="document"
-              :id="document.id"
-              v-model="selectedDocument"
-            />
-            <DocumentLabel :document="document" />
-          </div>
+          <el-form class="w-100" :model="formData" ref="form_ref_document_list">
+            <div v-for="document in filteredDocuments" :key="document.id">
+              <input
+                type="radio"
+                class="btn-check"
+                :name="document.created_at"
+                :value="document"
+                :id="document.id"
+                v-model="formData.selectedDocument"
+              />
+              <DocumentLabel :document="document" />
+            </div>
+          </el-form>
         </div>
       </div>
       <div class="col-md-8 d-flex flex-column">
-        <div class="d-flex flex-row" v-if="selectedDocument">
+        <div
+          class="d-flex flex-row"
+          v-if="showDocumentDetail && selectedDocument"
+        >
           <!-- DOCUMENT INFO -->
-          <div class="d-flex p-6 flex-column" v-if="showDocumentInformation">
+          <div
+            class="d-flex p-6 flex-column"
+            v-if="showDocumentDetail && showDocumentInformation"
+          >
             <InfoSection heading="Patient">
               {{ selectedDocument.document_info.patient }}
               <IconButton
@@ -186,7 +194,12 @@ export default defineComponent({
     const documentTypeFilter = ref("ALL");
     const appointmentFilter = ref("ALL");
     const tempFile = ref();
+    const form_ref_document_list = ref(null);
     var selectedDocument = ref(null);
+    const showDocumentDetail = ref(true);
+    const formData = ref({
+      selectedDocument: null,
+    });
     // Filters the documents by appointment and document type.
     watch([documentTypeFilter, appointmentFilter, documents], () => {
       document.getElementById("document-view").innerHTML = "";
@@ -206,9 +219,18 @@ export default defineComponent({
       filteredDocuments.value = temp;
     });
 
+    watch(formData.value, () => {
+      console.log(formData.value.selectedDocument);
+      selectedDocument.value = formData.value.selectedDocument;
+      showDocumentDetail.value = true;
+    });
+
     // Loads the selected document from the server to the view window
     watch(selectedDocument, () => {
-      if (selectedDocument.value.file_type === "HTML") {
+      if (
+        selectedDocument.value &&
+        selectedDocument.value.file_type === "HTML"
+      ) {
         document.getElementById("document-view").innerHTML =
           selectedDocument.value.document_body;
       } else {
@@ -277,15 +299,47 @@ export default defineComponent({
       modal.show();
     };
 
-    const handleSetSelectedDocument = () => {
+    const handleSetSelectedDocument = (flag = null) => {
       if (
         selectedDocument &&
         selectedDocument.value &&
         selectedDocument.value.id
       ) {
-        selectedDocument.value = documents.value.find(
-          (doc) => doc.id === selectedDocument.value.id
-        );
+        if (flag === "PATIENT") {
+          selectedDocument.value = documents.value.find(
+            (doc) => doc.id === selectedDocument.value.id
+          );
+        } else if (flag === "SPECIALIST") {
+          if (
+            selectedDocument.value.patient_id &&
+            selectedDocument.value.appointment_id
+          ) {
+            form_ref_document_list.value.resetFields();
+            form_ref_document_list.value.model.selectedDocument = null;
+            form_ref_document_list.value.resetFields();
+            showDocumentDetail.value = false;
+            console.log(form_ref_document_list.value.model);
+          } else {
+            selectedDocument.value = documents.value.find(
+              (doc) => doc.id === selectedDocument.value.id
+            );
+          }
+        } else if (flag === "APPOINTMENT") {
+          if (
+            selectedDocument.value.patient_id &&
+            selectedDocument.value.specialist_id
+          ) {
+            form_ref_document_list.value.resetFields();
+            form_ref_document_list.value.model.selectedDocument = null;
+            form_ref_document_list.value.resetFields();
+            showDocumentDetail.value = false;
+            console.log(form_ref_document_list.value.model);
+          } else {
+            selectedDocument.value = documents.value.find(
+              (doc) => doc.id === selectedDocument.value.id
+            );
+          }
+        }
       }
     };
 
@@ -303,6 +357,9 @@ export default defineComponent({
       showAssignSpecialistModal,
       showAssignAppointmentModal,
       handleSetSelectedDocument,
+      form_ref_document_list,
+      formData,
+      showDocumentDetail,
     };
   },
 });

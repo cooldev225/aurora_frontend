@@ -15,14 +15,6 @@
       >
         <template v-slot:cell-date="{ row: item }">
           <div class="p-4 d-flex flex-column">
-            <button
-              @click="handleAssign(item)"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            >
-              <span class="svg-icon svg-icon-3">
-                <i class="bi bi-check-circle"></i>
-              </span>
-            </button>
             <span
               :class="`mb-1 p-2 rounded text-uppercase badge-xl badge-${
                 item.confirmation_status === 'CONFIRMED'
@@ -102,44 +94,14 @@
         </template>
         <template v-slot:cell-report="{ row: item }">
           <div class="d-flex flex-column">
-            <a
-              @click="handlePay(item)"
-              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
+            <button
+              @click="handleAssign(item)"
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
             >
-              <span class="svg-icon svg-icon-1">
-                <inline-svg src="media/icons/duotune/finance/fin002.svg" />
+              <span class="svg-icon svg-icon-3">
+                <i class="bi bi-check-circle"></i>
               </span>
-              Payment
-            </a>
-            <a
-              @click="handlePrintHospitalCertificate(item)"
-              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
-            >
-              <span class="svg-icon svg-icon-1">
-                <inline-svg src="media/icons/duotune/files/fil017.svg" />
-              </span>
-              Hospital Certificate
-            </a>
-            <a
-              v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
-              @click="handlePreAdmission(item)"
-              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
-            >
-              <span class="svg-icon svg-icon-1">
-                <inline-svg src="media/icons/duotune/general/gen004.svg" />
-              </span>
-              Pre-Admission Form
-            </a>
-            <a
-              v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
-              @click="handlePreAdmissionTest(item)"
-              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
-            >
-              <span class="svg-icon svg-icon-1">
-                <inline-svg src="media/icons/duotune/general/gen004.svg" />
-              </span>
-              Pre-Admission Test
-            </a>
+            </button>
           </div>
         </template>
       </Datatable>
@@ -233,10 +195,10 @@ export default defineComponent({
       assignAppointmentModalRef.value = _ref;
     };
 
-    const handleAssign = (specialist_id) => {
+    const handleAssign = (appointment) => {
       store
         .dispatch(DocumentActions.UPDATE, {
-          specialist_id: specialist_id.id,
+          appointment_id: appointment.id,
           document_id: documentId.value,
           document_type: documentType.value,
           document_name: documentName.value,
@@ -252,7 +214,7 @@ export default defineComponent({
             })
             .then(() => {
               setTimeout(() => {
-                props.handleSetSelectedDocument();
+                props.handleSetSelectedDocument("APPOINTMENT");
                 hideModal(assignAppointmentModalRef.value);
               }, 200);
             });

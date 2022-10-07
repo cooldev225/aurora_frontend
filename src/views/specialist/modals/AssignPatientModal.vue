@@ -211,7 +211,7 @@ export default defineComponent({
             })
             .then(() => {
               setTimeout(() => {
-                props.handleSetSelectedDocument();
+                props.handleSetSelectedDocument("PATIENT");
                 hideModal(assignPatientModalRef.value);
               }, 200);
             });
