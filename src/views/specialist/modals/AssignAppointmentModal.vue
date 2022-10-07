@@ -83,22 +83,24 @@ export default defineComponent({
 
     const tableHeader = ref([
       {
-        name: "Full Name",
-        key: "full_name",
+        name: "Time/Place",
+        key: "date",
         sortable: true,
-        searchable: true,
       },
       {
-        name: "Date of Birth",
-        key: "dob",
-        sortable: true,
-        searchable: true,
+        name: "Referral",
+        key: "referral",
+        sortable: false,
       },
       {
-        name: "Contact Number",
-        key: "contact_number",
-        sortable: true,
-        searchable: true,
+        name: "Attendance Status",
+        key: "attendance_status",
+        sortable: false,
+      },
+      {
+        name: "Actions",
+        key: "report",
+        sortable: false,
       },
     ]);
 
