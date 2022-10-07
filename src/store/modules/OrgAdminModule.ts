@@ -112,7 +112,6 @@ export default class OrgAdminModule extends VuexModule implements OrgAdminInfo {
 
   @Action
   [Actions.ORG_ADMIN.ORGANIZATION.SETTINGS.UPDATE](data) {
-    console.log(data.submitData);
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("organizations/settings", data.submitData, {

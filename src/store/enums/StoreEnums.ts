@@ -165,6 +165,13 @@ const Actions = {
     CREATE: "createMakePayment",
   },
 
+  HEADER_FOOTER_TEMPLATE: {
+    LIST: "listHeaderFooterTemplate",
+    IMAGE: "downloadHeaderFooterTemplateImage",
+    CREATE: "createHeaderFooterTemplate",
+    UPDATE: "updateHeaderFooterTemplate",
+    DELETE: "deleteHeaderFooterTemplate",
+  },
 };
 
 const Mutations = {
@@ -250,7 +257,6 @@ const Mutations = {
     SELECT: "setLetterTemplateSelect",
   },
 
-
   SET_REPORT_TEMPLATES: {
     LIST: "setReportTemplates",
     SELECT: "setSelectReportTemplate",
@@ -275,13 +281,16 @@ const Mutations = {
     LIST: "setNtfTemplates",
     SELECT: "setSelectNtfTemplates",
   },
-
   
   SET_MAKE_PAYMENT: {
     LIST: "setMakePayment",
     SELECT: "setSelectMakePayment",
   },
 
+  SET_HEADER_FOOTER_TEMPLATE: {
+    LIST: "setHeaderFootersTemplate",
+    SELECT: "setHeaderFooterTemplateSelect",
+  },
 };
 
 export { Actions, Mutations };
