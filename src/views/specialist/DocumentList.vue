@@ -94,6 +94,7 @@
             <InfoSection heading="Appointment"
               >{{ selectedDocument.document_info.appointment }}
               <IconButton
+                @click="showAssignAppointmentModal()"
                 v-if="!selectedDocument.document_info.appointment"
                 label="Assign Appointment"
             /></InfoSection>
@@ -133,6 +134,10 @@
     :document="selectedDocument"
     :handle-set-selected-document="handleSetSelectedDocument"
   ></AssignSpecialistModal>
+  <AssignAppointmentModal
+    :document="selectedDocument"
+    :handle-set-selected-document="handleSetSelectedDocument"
+  ></AssignAppointmentModal>
 </template>
 <style lang="scss">
 .pdf_viewer_wrapper {
@@ -158,11 +163,17 @@ import SendDocumentViaEmailModal from "@/views/patients/documents/SendDocumentVi
 import { Modal } from "bootstrap";
 import AssignPatientModal from "@/views/specialist/modals/AssignPatientModal.vue";
 import AssignSpecialistModal from "@/views/specialist/modals/AssignSpecialistModal.vue";
+import AssignAppointmentModal from "@/views/specialist/modals/AssignAppointmentModal.vue";
 
 export default defineComponent({
   name: "admin-main",
 
-  components: { DocumentLabel, AssignPatientModal, AssignSpecialistModal },
+  components: {
+    DocumentLabel,
+    AssignPatientModal,
+    AssignSpecialistModal,
+    AssignAppointmentModal,
+  },
   props: {
     showDocumentInformation: { default: true },
     showDocumentActions: { default: true },
@@ -259,6 +270,13 @@ export default defineComponent({
       modal.show();
     };
 
+    const showAssignAppointmentModal = () => {
+      const modal = new Modal(
+        document.getElementById("modal_assign_appointment")
+      );
+      modal.show();
+    };
+
     const handleSetSelectedDocument = () => {
       if (
         selectedDocument &&
@@ -283,6 +301,7 @@ export default defineComponent({
       handlePrint,
       showAssignPatientModal,
       showAssignSpecialistModal,
+      showAssignAppointmentModal,
       handleSetSelectedDocument,
     };
   },
