@@ -189,6 +189,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import moment from "moment";
+import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
 
 export default defineComponent({
   name: "patient-report",
@@ -241,20 +242,29 @@ export default defineComponent({
               value: formData.value.section["section" + data.id],
             });
           });
-          store.dispatch(StoreReportActions.REPORT.PATIENT, {
-            patient_id: patientList.value.id,
-            reportData: reportData,
-            referringDoctor:
-              appointmentData.value.referral.referring_doctor_name,
-            patientName:
-              patientData.value.first_name + " " + patientData.value.last_name,
-            appointmentId: appointmentData.value.id,
-            specialistId: appointmentData.value.specialist_id,
-            documentName: appointmentData.value.appointment_type_name,
-          });
-          router.push({
-            path: "/patients/" + patientList.value.id + "/documents",
-          });
+          store
+            .dispatch(StoreReportActions.REPORT.PATIENT, {
+              patient_id: patientList.value.id,
+              reportData: reportData,
+              referringDoctor:
+                appointmentData.value.referral.referring_doctor_name,
+              patientName:
+                patientData.value.first_name +
+                " " +
+                patientData.value.last_name,
+              appointmentId: appointmentData.value.id,
+              specialistId: appointmentData.value.specialist_id,
+              documentName: appointmentData.value.appointment_type_name,
+            })
+            .then((data) => {
+              console.log(data);
+              store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
+                id: data,
+              });
+              router.push({
+                path: "/patients/" + patientList.value.id + "/documents",
+              });
+            });
         }
       });
     };

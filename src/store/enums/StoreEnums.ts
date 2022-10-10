@@ -91,6 +91,9 @@ const Actions = {
     CREATE: "createSpecialists",
     DELETE: "deleteSpecialists",
     UPDATE: "updateSpecialists",
+    SEARCH: {
+      LIST: "listSearchSpecialist",
+    },
   },
 
 
@@ -200,6 +203,9 @@ const Mutations = {
   SET_SPECIALIST: {
     LIST: "setSpecialists",
     SELECT: "setSelectSpecialists",
+    SEARCH: {
+      SEARCH_LIST: "setSearchSpecialists",
+    },
   },
 
   SET_ADMIN: {

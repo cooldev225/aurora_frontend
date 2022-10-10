@@ -13,14 +13,20 @@ export interface IDocument {
 
 export interface Documents {
   documentsData: Array<IDocument>;
+  selectedDocument: unknown;
 }
 
 @Module
 export default class DocumentModule extends VuexModule implements Documents {
   documentsData = [] as Array<IDocument>;
+  selectedDocument = null;
 
   get documentsList(): Array<IDocument> {
     return this.documentsData;
+  }
+
+  get getSelectedDocument(): unknown {
+    return this.selectedDocument;
   }
 
   @Mutation
@@ -28,11 +34,17 @@ export default class DocumentModule extends VuexModule implements Documents {
     this.documentsData = data;
   }
 
+  @Mutation
+  [DocumentMutations.SET_SELECTED_DOCUMENT](data = null) {
+    this.selectedDocument = data;
+  }
+
   @Action
   [DocumentActions.LIST](data) {
     if (JwtService.getToken()) {
+      this.context.commit(DocumentMutations.SET_LIST, []);
       ApiService.setHeader();
-      ApiService.query("documents", {
+      return ApiService.query("documents", {
         params: {
           specialist_id: data.specialist_id,
           appointment_id: data.appointment_id,
