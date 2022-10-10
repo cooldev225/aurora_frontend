@@ -64,26 +64,6 @@ export default class CodingModule extends VuexModule implements AptInfo {
   }
 
   @Action
-  [CodingActions.DOCUMENT_VIEW](data) {
-    return ApiService.post(
-      "file",
-      {
-        path: data.path,
-        type: "PATIENT_DOCUMENT",
-      },
-      {
-        responseType: "blob",
-      }
-    )
-      .then(({ data }) => {
-        return data;
-      })
-      .catch(({ response }) => {
-        console.log(response.data.error);
-      });
-  }
-
-  @Action
   [CodingActions.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();

@@ -60,31 +60,6 @@ export default class DocumentModule extends VuexModule implements Documents {
   }
 
   @Action
-  [DocumentActions.SHOW](data) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      return ApiService.post(
-        "file",
-        {
-          path: data.path,
-          type: "PATIENT_DOCUMENT",
-        },
-        {
-          responseType: "blob",
-        }
-      )
-        .then(({ data }) => {
-          return data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
   [DocumentActions.UPDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
