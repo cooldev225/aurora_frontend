@@ -14,6 +14,7 @@ export const icons = {
   location_house: "media/icons/duotune/maps/map008.svg", // Clinic nav
   bell: "media/icons/duotune/general/gen007.svg", // for notifications and alerts
   paper: "media/icons/duotune/general/gen005.svg", // Coding nav
+  save: "media/icons/duotune/files/fil013.svg", // Save
 };
 
 export default icons;

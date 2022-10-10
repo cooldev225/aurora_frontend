@@ -18,8 +18,10 @@
 
             <div class="d-flex gap-2 flex-row">
               <template v-for="alert in patientData.alerts" :key="alert.id">
-                <PatientAlert :alert="alert" />
-                <ViewPatientAlertModal :alert="alert" />
+                <template v-if="!alert.is_dismissed">
+                  <PatientAlert :alert="alert" />
+                  <ViewPatientAlertModal :alert="alert" />
+                </template>
               </template>
             </div>
 
@@ -269,7 +271,6 @@ export default defineComponent({
 
     watchEffect(() => {
       patientData.value = store.getters.selectedPatient;
-      console.log(patientData.value);
     });
 
     const handleUploadDocument = () => {
