@@ -47,7 +47,6 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("HRM", ["Bulletin Board"]);
       store.dispatch(HRMActions.BULLETIN.LIST).then(() => {
         loading.value = false;
-        console.log(["Bulletins", bulletins.value]);
       });
     });
 

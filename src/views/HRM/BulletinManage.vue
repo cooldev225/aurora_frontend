@@ -62,7 +62,7 @@
       </Datatable>
     </div>
   </div>
-  <CreateReportTemplate />
+  <BulletinEditModal></BulletinEditModal>
 </template>
 
 <script>
@@ -70,12 +70,15 @@ import { defineComponent, onMounted, computed, ref, watchEffect } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import BulletinEditModal from "@/views/HRM/BulletinEditModal.vue";
 import { useStore } from "vuex";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "bulletin-manage",
   components: {
     Datatable,
+    BulletinEditModal,
   },
   setup() {
     const store = useStore();
@@ -114,15 +117,44 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("HRM", ["Manage Bulletins"]);
       store.dispatch(HRMActions.BULLETIN.LIST).then(() => {
         loading.value = false;
-        console.log(["Bulletins", bulletins.value]);
       });
     });
+
+    const handleAdd = () => {
+      const new_item = {
+        title: "",
+        body: "",
+        created_by_name: "",
+        created_at: "",
+        _title: "Create Bulletin",
+        _button: "Save",
+        _submit: HRMActions.BULLETIN.CREATE,
+        _submit_text: "Successfully Created!",
+      };
+
+      store.commit(HRMMutations.BULLETIN.SET_SELECT, new_item);
+      const modal = new Modal(document.getElementById("modal_eidt_bulletin"));
+      modal.show();
+    };
+
+    const handleEdit = (item) => {
+      item._title = "Edit Bulletin";
+      item._button = "Update";
+      item._submit = HRMActions.BULLETIN.UPDATE;
+      item._submit_text = "Successfully Updated!";
+
+      store.commit(HRMMutations.BULLETIN.SET_SELECT, item);
+      const modal = new Modal(document.getElementById("modal_eidt_bulletin"));
+      modal.show();
+    };
 
     return {
       bulletins,
       loading,
       tableData,
       tableHeader,
+      handleAdd,
+      handleEdit,
     };
   },
 });
