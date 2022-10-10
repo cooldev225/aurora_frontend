@@ -113,15 +113,22 @@
           </div>
           <!-- DOCUMENT ACTIONS -->
           <div class="d-flex p-6 flex-column" v-if="showDocumentActions">
+            <IconButton label="Print" @click="handlePrint" />
+            <IconButton label="Email" @click="handleSendEmail" />
             <IconButton
-              iconSRC="media/icons/duotune/files/fil005.svg"
-              label="Print"
-              @click="handlePrint"
+              v-if="userRole == 'specialist'"
+              label="Mark Read"
+              @click="handleMarkRead"
             />
             <IconButton
-              iconSRC="media/icons/duotune/communication/com011.svg"
-              label="Email"
-              @click="handleSendEmail"
+              v-if="userRole == 'specialist'"
+              label="Mark Urgent"
+              @click="handleMarkUrgent"
+            />
+            <IconButton
+              v-if="userRole == 'specialist'"
+              label="Flag Incorrectly assigned"
+              @click="handleMarkUrgent"
             />
           </div>
           <!-- DOCUMENT VIEW DIV -->
@@ -200,6 +207,7 @@ export default defineComponent({
     const selectedDocumentData = computed(
       () => store.getters.getSelectedDocument
     );
+    const userRole = computed(() => store.getters.userRole);
     const filteredDocuments = ref();
     const documentTypeFilter = ref("ALL");
     const appointmentFilter = ref("ALL");
@@ -269,8 +277,9 @@ export default defineComponent({
             selectedDocument.value.document_body;
         } else {
           store
-            .dispatch(DocumentActions.SHOW, {
+            .dispatch(Actions.FILE.VIEW, {
               path: selectedDocument.value.file_path,
+              type: "PATIENT_DOCUMENT",
             })
             .then((data) => {
               tempFile.value = data;
@@ -386,6 +395,7 @@ export default defineComponent({
       handleSetSelectedDocument,
       selectedDocumentId,
       showDocumentDetail,
+      userRole,
     };
   },
 });
