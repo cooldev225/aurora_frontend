@@ -162,6 +162,7 @@
 import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
+import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { ElMessage } from "element-plus";
@@ -228,8 +229,9 @@ export default defineComponent({
     const afterChangedData = () => {
       if (appointmentData.value.referral?.referral_file) {
         store
-          .dispatch(AppointmentActions.REFERRAL.VIEW, {
+          .dispatch(Actions.FILE.VIEW, {
             path: appointmentData.value.referral.referral_file,
+            type: "REFERRAL",
           })
           .then((data) => {
             const blob = new Blob([data], { type: "application/pdf" });

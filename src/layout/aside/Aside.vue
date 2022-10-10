@@ -73,7 +73,7 @@ export default defineComponent({
         ) {
           console.log("getting the logo");
           store
-            .dispatch(Actions.ORG.FILE, {
+            .dispatch(Actions.FILE.VIEW, {
               type: "ORGANIZATION_LOGO",
               path: currentUser.value.organization.logo,
             })
