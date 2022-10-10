@@ -68,31 +68,6 @@ export default class HeaderFooterModule
   }
 
   @Action
-  [Actions.HEADER_FOOTER_TEMPLATE.IMAGE](data) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      return ApiService.post(
-        "file",
-        {
-          path: data.path,
-          type: data.type,
-        },
-        {
-          responseType: "blob",
-        }
-      )
-        .then(({ data }) => {
-          return data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
   [Actions.HEADER_FOOTER_TEMPLATE.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();

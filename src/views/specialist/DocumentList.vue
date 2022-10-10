@@ -170,6 +170,7 @@ import { useStore } from "vuex";
 import pdf from "pdfobject";
 import patientDocumentTypes from "@/core/data/patient-document-types";
 import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
+import { Actions } from "@/store/enums/StoreEnums";
 import DocumentLabel from "@/views/patients/documents/DocumentLabel.vue";
 import SendDocumentViaEmailModal from "@/views/patients/documents/SendDocumentViaEmailModal.vue";
 import { Modal } from "bootstrap";
@@ -250,8 +251,9 @@ export default defineComponent({
     watch(selectedPatient, () => {
       if (selectedPatient.value) {
         store
-          .dispatch(DocumentActions.LIST, {
-            patient_id: selectedPatient.value.id,
+          .dispatch(Actions.FILE.VIEW, {
+            path: selectedDocument.value.file_path,
+            type: "PATIENT_DOCUMENT",
           })
           .then(() => {
             setSelectedDocumentId();

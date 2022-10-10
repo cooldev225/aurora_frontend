@@ -219,31 +219,6 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.DOCUMENTS.VIEW](data) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      return ApiService.post(
-        "file",
-        {
-          path: data.path,
-          type: "PATIENT_DOCUMENT",
-        },
-        {
-          responseType: "blob",
-        }
-      )
-        .then(({ data }) => {
-          return data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
   [PatientActions.BILLING.UPDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();

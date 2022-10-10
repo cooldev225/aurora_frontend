@@ -199,7 +199,7 @@ export default defineComponent({
           loading.value = true;
           if (template.header_file && template.header_file != {}) {
             store
-              .dispatch(Actions.HEADER_FOOTER_TEMPLATE.IMAGE, {
+              .dispatch(Actions.FILE.VIEW, {
                 path: template.header_file,
                 type: "DOCUMENT_HEADER",
               })
@@ -215,7 +215,7 @@ export default defineComponent({
           }
           if (template.footer_file && template.footer_file != "") {
             store
-              .dispatch(Actions.HEADER_FOOTER_TEMPLATE.IMAGE, {
+              .dispatch(Actions.FILE.VIEW, {
                 path: template.footer_file,
                 type: "DOCUMENT_FOOTER",
               })

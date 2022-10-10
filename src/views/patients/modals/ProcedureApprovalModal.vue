@@ -53,6 +53,7 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
+import { Actions } from "@/store/enums/StoreEnums";
 import pdf from "pdfobject";
 import { mask } from "vue-the-mask";
 import { ElMessage } from "element-plus";
@@ -87,8 +88,9 @@ export default defineComponent({
     watch(appointmentData, () => {
       if (appointmentData.value.pre_admission?.pre_admission_file) {
         store
-          .dispatch(AppointmentActions.PRE_ADMISSION.VIEW, {
+          .dispatch(Actions.FILE.VIEW, {
             path: appointmentData.value.pre_admission.pre_admission_file,
+            type: "PRE_ADMISSION",
           })
           .then((data) => {
             const blob = new Blob([data], { type: pdfType });

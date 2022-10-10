@@ -269,8 +269,9 @@ export default defineComponent({
     watch(preAdmissionData, () => {
       if (preAdmissionData.value.pre_admission.pre_admission_file) {
         store
-          .dispatch(AppointmentActions.PRE_ADMISSION.VIEW, {
+          .dispatch(Actions.FILE.VIEW, {
             path: preAdmissionData.value.pre_admission.pre_admission_file,
+            type: "PRE_ADMISSION",
           })
           .then((data) => {
             const blob = new Blob([data], { type: "application/pdf" });

@@ -247,7 +247,7 @@ export default defineComponent({
     };
     const loadPreviewImage = (payload, key) => {
       store
-        .dispatch(Actions.ORG.FILE, payload)
+        .dispatch(Actions.FILE.VIEW, payload)
         .then((data) => {
           const blob = new Blob([data], { type: "application/image" });
           const objectUrl = URL.createObjectURL(blob);

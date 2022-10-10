@@ -16,6 +16,10 @@ const Actions = {
   USER_LIST: "userList",
   BILLING_TOKEN: "getBillingToken",
 
+  FILE: {
+    VIEW: "fileView",
+  },
+
   PROFILE: {
     VIEW: "viewProfile",
     UPDATE: "updateProfile",
@@ -36,7 +40,6 @@ const Actions = {
     DELETE: "deleteOrg",
     UPDATE: "updateOrg",
     SELECT: "selectOrg",
-    FILE: "file",
   },
 
   ORG_ADMIN: {

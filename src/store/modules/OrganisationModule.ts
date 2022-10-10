@@ -145,24 +145,4 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
-
-  @Action
-  [Actions.ORG.FILE](data) {
-    return ApiService.post(
-      "file",
-      {
-        path: data.path,
-        type: data.type,
-      },
-      {
-        responseType: "blob",
-      }
-    )
-      .then(({ data }) => {
-        return data;
-      })
-      .catch(({ response }) => {
-        console.log(response.data.error);
-      });
-  }
 }
