@@ -194,6 +194,9 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const documents = computed(() => store.getters.documentsList);
+    const selectedDocumentData = computed(
+      () => store.getters.getSelectedDocument
+    );
     const filteredDocuments = ref();
     const documentTypeFilter = ref("ALL");
     const appointmentFilter = ref("ALL");
@@ -254,6 +257,12 @@ export default defineComponent({
               console.log("Document Load Error");
             });
         }
+      }
+    });
+
+    watch(selectedDocumentData, () => {
+      if (selectedDocumentData.value && selectedDocumentData.value.id) {
+        selectedDocumentId.value = selectedDocumentData.value.id;
       }
     });
 

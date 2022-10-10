@@ -189,6 +189,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import moment from "moment";
+import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
 
 export default defineComponent({
   name: "patient-report",
@@ -257,10 +258,13 @@ export default defineComponent({
             })
             .then((data) => {
               console.log(data);
+              store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
+                id: data,
+              });
+              router.push({
+                path: "/patients/" + patientList.value.id + "/documents",
+              });
             });
-          router.push({
-            path: "/patients/" + patientList.value.id + "/documents",
-          });
         }
       });
     };
