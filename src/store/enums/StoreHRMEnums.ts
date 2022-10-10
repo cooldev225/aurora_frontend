@@ -7,6 +7,9 @@ const HRMActions = {
   },
   BULLETIN: {
     LIST: 'BulletinList',
+    CREATE: 'BulletinCreate',
+    UPDATE: 'BulletinUpdate',
+    DELETE: 'BulletinDelete',
   }
 };
 

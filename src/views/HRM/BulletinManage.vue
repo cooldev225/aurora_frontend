@@ -73,6 +73,7 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import BulletinEditModal from "@/views/HRM/BulletinEditModal.vue";
 import { useStore } from "vuex";
 import { Modal } from "bootstrap";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
   name: "bulletin-manage",
@@ -125,7 +126,7 @@ export default defineComponent({
         title: "",
         body: "",
         created_by_name: "",
-        created_at: "",
+        created_at: new Date(),
         _title: "Create Bulletin",
         _button: "Save",
         _submit: HRMActions.BULLETIN.CREATE,
@@ -148,6 +149,27 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleDelete = (id) => {
+      //delete templates
+      store
+        .dispatch(HRMActions.BULLETIN.DELETE, id)
+        .then(() => {
+          store.dispatch(HRMActions.BULLETIN.LIST);
+          Swal.fire({
+            text: "Successfully Deleted!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response);
+        });
+    };
+
     return {
       bulletins,
       loading,
@@ -155,6 +177,7 @@ export default defineComponent({
       tableHeader,
       handleAdd,
       handleEdit,
+      handleDelete,
     };
   },
 });

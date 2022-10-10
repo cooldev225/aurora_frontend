@@ -62,4 +62,52 @@ export default class BulletinModule extends VuexModule implements BulletinInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [HRMActions.BULLETIN.CREATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("bulletins", item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+  @Action
+  [HRMActions.BULLETIN.UPDATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("bulletins", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [HRMActions.BULLETIN.DELETE](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.delete("bulletins/" + id)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }

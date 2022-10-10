@@ -62,7 +62,7 @@
                   <ckeditor :editor="ClassicEditor" v-model="formData.body" />
                 </el-form-item>
               </InputWrapper>
-
+              <!--
               <div class="d-flex">
                 <InputWrapper
                   prop="create_by"
@@ -99,7 +99,7 @@
                   />
                 </InputWrapper>
               </div>
-            </div>
+            --></div>
             <!--end::Scroll-->
           </div>
           <!--end::Modal body-->
@@ -120,7 +120,9 @@
               class="btn btn-lg btn-primary"
               type="submit"
             >
-              <span v-if="!loading" class="indicator-label"> Create </span>
+              <span v-if="!loading" class="indicator-label">
+                {{ formData._button }}
+              </span>
               <span v-if="loading" class="indicator-progress">
                 Please wait...
                 <span
@@ -143,6 +145,8 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import CKEditor from "@ckeditor/ckeditor5-vue";
+import { hideModal } from "@/core/helpers/dom";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useStore } from "vuex";
 
@@ -154,6 +158,8 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const loading = ref(true);
+    const formRef = ref(null);
+    const editBulletinModalRef = ref(null);
     const employeeList = computed(() => store.getters.employeeList);
     const bulletin = computed(() => store.getters.getBulletinSelected);
 
@@ -207,12 +213,55 @@ export default defineComponent({
       });
     });
 
+    const submit = () => {
+      if (!formRef.value) {
+        return;
+      }
+
+      formRef.value.validate((valid) => {
+        if (valid) {
+          loading.value = true;
+          store
+            .dispatch(formData.value._submit, {
+              id: formData.value.id,
+              title: formData.value.title,
+              body: formData.value.body,
+              created_by: formData.value.created_by,
+              created_at: formData.value.created_at,
+            })
+            .then(() => {
+              loading.value = false;
+              store.dispatch(HRMActions.BULLETIN.LIST);
+              Swal.fire({
+                text: formData.value._submit_text,
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                hideModal(editBulletinModalRef.value);
+              });
+            })
+            .catch(({ response }) => {
+              loading.value = false;
+              console.log(response.data.error);
+            });
+          formRef.value.resetFields();
+        }
+      });
+    };
+
     return {
       loading,
       formData,
       rules,
       ClassicEditor,
       employeeList,
+      submit,
+      editBulletinModalRef,
+      formRef,
     };
   },
 });
