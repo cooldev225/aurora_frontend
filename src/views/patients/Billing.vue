@@ -61,7 +61,12 @@
             </span>
           </button>
 
-          Last validated on: xx/xxx/xxxx
+          Last validated:
+          <template v-if="selectedPatient?.billing?.medicare_last_validated_at">
+            {{ selectedPatient.billing.medicare_last_validated_at }}
+          </template>
+
+          <template v-else>Never</template>
         </span>
         <div v-if="validated.medicare !== null" class="col-12">
           <AlertBadge
@@ -191,6 +196,11 @@
         </div>
       </div>
     </el-form>
+
+    <MedicareUpdateDetailsModal
+      :patientId="selectedPatient?.id"
+      :updateDetails="updateDetails.medicare"
+    />
   </CardSection>
 </template>
 
@@ -210,11 +220,14 @@ import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
+import MedicareUpdateDetailsModal from "@/views/patients/modals/MedicareUpdateDetailsModal.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "patient-billing",
   components: {
     AlertBadge,
+    MedicareUpdateDetailsModal,
   },
   data: function () {
     return {
@@ -341,6 +354,10 @@ export default defineComponent({
     const validationErrors = ref({
       medicare: null,
     });
+    const updateDetails = ref({
+      medicare: {},
+    });
+    const patientId = ref(null);
 
     const validateMedicare = () => {
       if (!formRefMedicare.value) {
@@ -350,14 +367,13 @@ export default defineComponent({
       formRefMedicare.value.validate((valid) => {
         if (valid) {
           const data = formData.value;
-          const patient = store.getters.selectedPatient;
 
           loading.value.medicare = true;
           store
             .dispatch(PatientActions.BILLING.VALIDATE_MEDICARE, {
-              first_name: patient.first_name,
-              last_name: patient.last_name,
-              date_of_birth: patient.date_of_birth,
+              first_name: selectedPatient.value.first_name,
+              last_name: selectedPatient.value.last_name,
+              date_of_birth: selectedPatient.value.date_of_birth,
               sex: 9,
               medicare_number: data.medicare_number,
               medicare_reference_number: data.medicare_reference_number,
@@ -373,10 +389,47 @@ export default defineComponent({
                 validated.value.medicare = false;
                 validationErrors.value.medicare = validation.data.message;
               }
-            })
-            .catch(() => {
-              const errors = store.getters.getErrors;
 
+              if (
+                !Object.prototype.hasOwnProperty.call(
+                  validation.data.update_details
+                )
+              ) {
+                for (const detail in validation.data.update_details) {
+                  switch (detail) {
+                    case "givenName":
+                      updateDetails.value.medicare.firstName = {
+                        old: selectedPatient.value.firstName,
+                        new: validation.data.update_details.givenName,
+                        name: "First Name",
+                      };
+                      break;
+                    case "familyName":
+                      updateDetails.value.medicare.lastName = {
+                        old: selectedPatient.value.lastName,
+                        new: validation.data.update_details.familyName,
+                        name: "Last Name",
+                      };
+                      break;
+                    case "memberRefNumber":
+                      updateDetails.value.medicare.referenceNumber = {
+                        old: data.medicare_reference_number,
+                        new: validation.data.update_details.memberRefNumber,
+                        name: "Medicare Reference Number",
+                      };
+                      break;
+                  }
+                }
+
+                const modal = new Modal(
+                  document.getElementById("modal_update_patient_details")
+                );
+                modal.show();
+              }
+            })
+            .catch((e) => {
+              const errors = store.getters.getErrors;
+              console.log(e);
               validated.value.medicare = false;
               if (
                 Object.prototype.hasOwnProperty.call(errors, "errors") &&
@@ -437,6 +490,8 @@ export default defineComponent({
       loading,
       validated,
       validationErrors,
+      updateDetails,
+      selectedPatient,
     };
   },
 });
