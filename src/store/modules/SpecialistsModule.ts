@@ -12,6 +12,7 @@ export interface ISpecialist {
 
 export interface SpecalistInfo {
   specialistsData: Array<ISpecialist>;
+  searchSpecialistsData: Array<ISpecialist>;
   specialistsSelectData: ISpecialist;
 }
 
@@ -21,6 +22,7 @@ export default class SpecialistModule
   implements SpecalistInfo
 {
   specialistsData = [] as Array<ISpecialist>;
+  searchSpecialistsData = [] as Array<ISpecialist>;
   specialistsSelectData = {} as ISpecialist;
 
   /**
@@ -39,6 +41,14 @@ export default class SpecialistModule
     return this.specialistsSelectData;
   }
 
+  /**
+   * Get current searched specialist list object
+   * @returns SpecalistList
+   */
+  get getSearchSpecialistList(): Array<ISpecialist> {
+    return this.searchSpecialistsData;
+  }
+
   @Mutation
   [Mutations.SET_SPECIALIST.LIST](specialistsData) {
     this.specialistsData = specialistsData;
@@ -47,6 +57,11 @@ export default class SpecialistModule
   @Mutation
   [Mutations.SET_SPECIALIST.SELECT](data) {
     this.specialistsSelectData = data;
+  }
+
+  @Mutation
+  [Mutations.SET_SPECIALIST.SEARCH.SEARCH_LIST](specialistsData) {
+    this.searchSpecialistsData = specialistsData;
   }
 
   @Action
@@ -110,6 +125,27 @@ export default class SpecialistModule
         })
         .catch(({ response }) => {
           console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.SPECIALIST.SEARCH.LIST](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.get("specialists", "", data)
+        .then(({ data }) => {
+          this.context.commit(
+            Mutations.SET_SPECIALIST.SEARCH.SEARCH_LIST,
+            data.data
+          );
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

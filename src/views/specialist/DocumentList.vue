@@ -62,10 +62,10 @@
             <input
               type="radio"
               class="btn-check"
-              :name="document.created_at"
-              :value="document"
+              :name="document.id"
+              :value="document.id"
               :id="document.id"
-              v-model="selectedDocument"
+              v-model="selectedDocumentId"
             />
             <DocumentLabel :document="document" />
           </div>
@@ -86,6 +86,7 @@
             <InfoSection heading="Specialist"
               >{{ selectedDocument.document_info.specialist }}
               <IconButton
+                @click="showAssignSpecialistModal()"
                 v-if="!selectedDocument.document_info.specialist"
                 label="Assign Specialist"
               />
@@ -93,9 +94,22 @@
             <InfoSection heading="Appointment"
               >{{ selectedDocument.document_info.appointment }}
               <IconButton
-                v-if="!selectedDocument.document_info.appointment"
+                v-if="
+                  selectedDocument.document_info.patient &&
+                  !selectedDocument.document_info.appointment
+                "
+                @click="showAssignAppointmentModal()"
                 label="Assign Appointment"
-            /></InfoSection>
+              />
+              <IconButton
+                class="disabled"
+                v-if="
+                  !selectedDocument.document_info.patient &&
+                  !selectedDocument.document_info.appointment
+                "
+                label="Assign Appointment"
+              />
+            </InfoSection>
           </div>
           <!-- DOCUMENT ACTIONS -->
           <div class="d-flex p-6 flex-column" v-if="showDocumentActions">
@@ -124,7 +138,18 @@
     v-if="selectedDocument"
     :document="selectedDocument"
   ></SendDocumentViaEmailModal>
-  <AssignPatientModal :document="selectedDocument"></AssignPatientModal>
+  <AssignPatientModal
+    :document="selectedDocument"
+    :handle-set-selected-document="handleSetSelectedDocument"
+  ></AssignPatientModal>
+  <AssignSpecialistModal
+    :document="selectedDocument"
+    :handle-set-selected-document="handleSetSelectedDocument"
+  ></AssignSpecialistModal>
+  <AssignAppointmentModal
+    :document="selectedDocument"
+    :handle-set-selected-document="handleSetSelectedDocument"
+  ></AssignAppointmentModal>
 </template>
 <style lang="scss">
 .pdf_viewer_wrapper {
@@ -149,13 +174,18 @@ import DocumentLabel from "@/views/patients/documents/DocumentLabel.vue";
 import SendDocumentViaEmailModal from "@/views/patients/documents/SendDocumentViaEmailModal.vue";
 import { Modal } from "bootstrap";
 import AssignPatientModal from "@/views/specialist/modals/AssignPatientModal.vue";
-
-const selectedDocument = ref(null);
+import AssignSpecialistModal from "@/views/specialist/modals/AssignSpecialistModal.vue";
+import AssignAppointmentModal from "@/views/specialist/modals/AssignAppointmentModal.vue";
 
 export default defineComponent({
   name: "admin-main",
 
-  components: { DocumentLabel, AssignPatientModal },
+  components: {
+    DocumentLabel,
+    AssignPatientModal,
+    AssignSpecialistModal,
+    AssignAppointmentModal,
+  },
   props: {
     showDocumentInformation: { default: true },
     showDocumentActions: { default: true },
@@ -168,7 +198,9 @@ export default defineComponent({
     const documentTypeFilter = ref("ALL");
     const appointmentFilter = ref("ALL");
     const tempFile = ref();
-
+    var selectedDocument = ref(null);
+    var selectedDocumentId = ref(null);
+    const showDocumentDetail = ref(true);
     // Filters the documents by appointment and document type.
     watch([documentTypeFilter, appointmentFilter, documents], () => {
       document.getElementById("document-view").innerHTML = "";
@@ -188,31 +220,40 @@ export default defineComponent({
       filteredDocuments.value = temp;
     });
 
+    watch(selectedDocumentId, () => {
+      const temp = documents.value.filter(
+        (item) => item.id === selectedDocumentId.value
+      );
+      selectedDocument.value = temp && temp.length > 0 ? temp[0] : null;
+    });
+
     // Loads the selected document from the server to the view window
     watch(selectedDocument, () => {
-      if (selectedDocument.value.file_type === "HTML") {
-        document.getElementById("document-view").innerHTML =
-          selectedDocument.value.document_body;
-      } else {
-        store
-          .dispatch(DocumentActions.SHOW, {
-            path: selectedDocument.value.file_path,
-          })
-          .then((data) => {
-            tempFile.value = data;
-            if (selectedDocument.value.file_type === "PDF") {
-              document.getElementById("document-view").innerHTML = "";
-              let blob = new Blob([data], { type: "application/pdf" });
-              let objectUrl = URL.createObjectURL(blob);
-              pdf.embed(objectUrl + "#toolbar=0", "#document-view");
-            } else if (selectedDocument.value.file_type === "PNG") {
-              document.getElementById("document-view").innerHTML =
-                "<img src='" + data + "' />";
-            }
-          })
-          .catch(() => {
-            console.log("Document Load Error");
-          });
+      if (selectedDocument.value) {
+        if (selectedDocument.value.file_type === "HTML") {
+          document.getElementById("document-view").innerHTML =
+            selectedDocument.value.document_body;
+        } else {
+          store
+            .dispatch(DocumentActions.SHOW, {
+              path: selectedDocument.value.file_path,
+            })
+            .then((data) => {
+              tempFile.value = data;
+              if (selectedDocument.value.file_type === "PDF") {
+                document.getElementById("document-view").innerHTML = "";
+                let blob = new Blob([data], { type: "application/pdf" });
+                let objectUrl = URL.createObjectURL(blob);
+                pdf.embed(objectUrl + "#toolbar=0", "#document-view");
+              } else if (selectedDocument.value.file_type === "PNG") {
+                document.getElementById("document-view").innerHTML =
+                  "<img src='" + data + "' />";
+              }
+            })
+            .catch(() => {
+              console.log("Document Load Error");
+            });
+        }
       }
     });
 
@@ -245,6 +286,56 @@ export default defineComponent({
       modal.show();
     };
 
+    const showAssignSpecialistModal = () => {
+      const modal = new Modal(
+        document.getElementById("modal_assign_specialist")
+      );
+      modal.show();
+    };
+
+    const showAssignAppointmentModal = () => {
+      const modal = new Modal(
+        document.getElementById("modal_assign_appointment")
+      );
+      modal.show();
+    };
+
+    const handleSetSelectedDocument = (flag = null) => {
+      if (
+        selectedDocument &&
+        selectedDocument.value &&
+        selectedDocument.value.id
+      ) {
+        if (flag === "PATIENT") {
+          selectedDocument.value = documents.value.find(
+            (doc) => doc.id === selectedDocument.value.id
+          );
+        } else if (flag === "SPECIALIST") {
+          if (
+            selectedDocument.value.patient_id &&
+            selectedDocument.value.appointment_id
+          ) {
+            selectedDocumentId.value = null;
+          } else {
+            selectedDocument.value = documents.value.find(
+              (doc) => doc.id === selectedDocument.value.id
+            );
+          }
+        } else if (flag === "APPOINTMENT") {
+          if (
+            selectedDocument.value.patient_id &&
+            selectedDocument.value.specialist_id
+          ) {
+            selectedDocumentId.value = null;
+          } else {
+            selectedDocument.value = documents.value.find(
+              (doc) => doc.id === selectedDocument.value.id
+            );
+          }
+        }
+      }
+    };
+
     return {
       patientDocumentTypes,
       DocumentLabel,
@@ -256,6 +347,11 @@ export default defineComponent({
       SendDocumentViaEmailModal,
       handlePrint,
       showAssignPatientModal,
+      showAssignSpecialistModal,
+      showAssignAppointmentModal,
+      handleSetSelectedDocument,
+      selectedDocumentId,
+      showDocumentDetail,
     };
   },
 });
