@@ -1207,6 +1207,7 @@ export default defineComponent({
       room_id: "",
       note: "",
       patient_id: null,
+      start_time: null,
     });
 
     const patientInfoData = ref({
@@ -1471,6 +1472,7 @@ export default defineComponent({
       aptInfoData.value.time_slot.push(
         moment(endTime, "HH:mm").format("HH:mm")
       );
+      aptInfoData.value.start_time = moment(startTime, "HH:mm").format("HH:mm");
     };
 
     // Get Selected APT data when user edit appointments
