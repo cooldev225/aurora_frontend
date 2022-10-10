@@ -94,10 +94,22 @@
             <InfoSection heading="Appointment"
               >{{ selectedDocument.document_info.appointment }}
               <IconButton
+                v-if="
+                  selectedDocument.document_info.patient &&
+                  !selectedDocument.document_info.appointment
+                "
                 @click="showAssignAppointmentModal()"
-                v-if="!selectedDocument.document_info.appointment"
                 label="Assign Appointment"
-            /></InfoSection>
+              />
+              <IconButton
+                class="disabled"
+                v-if="
+                  !selectedDocument.document_info.patient &&
+                  !selectedDocument.document_info.appointment
+                "
+                label="Assign Appointment"
+              />
+            </InfoSection>
           </div>
           <!-- DOCUMENT ACTIONS -->
           <div class="d-flex p-6 flex-column" v-if="showDocumentActions">
