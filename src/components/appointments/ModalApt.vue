@@ -1671,7 +1671,12 @@ export default defineComponent({
             bookingData.selected_specialist.schedule_timeslots[0].clinic;
           aptInfoData.value.clinic_name = clinic.value.name;
           aptInfoData.value.clinic_id = clinic.value.id;
-          cur_appointment_type_id.value = bookingData.appointment_type.id;
+          if (props.modalId === "modal_create_apt") {
+            aptInfoData.value.date = bookingData.date;
+          }
+          if (bookingData.appointment_type) {
+            cur_appointment_type_id.value = bookingData.appointment_type.id;
+          }
           getAvailableRooms();
         }
       }
@@ -1821,13 +1826,9 @@ export default defineComponent({
         filterPatient.last_name = "";
         filterPatient.date_of_birth = "";
         filterPatient.ur_number = "";
-
-        for (let key in aptInfoData.value) aptInfoData.value[key] = "";
         cur_appointment_type_id.value = "";
         for (let key in patientInfoData.value) patientInfoData.value[key] = "";
-        aptInfoData.value.date = moment().format("DD-MM-YYYY").toString();
         for (let key in billingInfoData.value) billingInfoData.value[key] = "";
-        // for (let key in otherInfoData.value) otherInfoData.value[key] = "";
       } else {
         // Edit modal
         store.dispatch(PatientActions.LIST);
