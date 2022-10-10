@@ -21,7 +21,7 @@ const PatientActions = {
   },
   ALERT: {
     CREATE: "createPatientAlert",
-    DELETE: "deletePatientAlert",
+    UPDATE: "updatePatientAlert",
   },
   BILLING: {
     VALIDATE_MEDICARE: "validatePatientsBillingMedicare",
@@ -42,6 +42,10 @@ const PatientMutations = {
   SET_PATIENT_RECALL: {
     LIST: "setPatientsRecallList",
     SELECT: "setSelectPatientRecall",
+  },
+
+  SET_VALIDATION: {
+    MEDICARE: "setValidationMedicare",
   },
 };
 

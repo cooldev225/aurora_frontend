@@ -8,6 +8,7 @@ import i18n from "@/core/plugins/i18n";
 
 //imports for app initialization
 import ApiService from "@/core/services/ApiService";
+import BillingApiService from "./core/services/BillingApiService";
 import { initApexCharts } from "@/core/plugins/apexcharts";
 import { initInlineSvg } from "@/core/plugins/inline-svg";
 import { initVeeValidate } from "@/core/plugins/vee-validate";
@@ -42,6 +43,7 @@ app.use(VueGoogleMaps, {
 app.use(VueSignaturePad);
 
 ApiService.init(app);
+BillingApiService.init();
 initApexCharts(app);
 initInlineSvg(app);
 initVeeValidate();

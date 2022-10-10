@@ -14,6 +14,7 @@ const Actions = {
   FORGOT_PASSWORD: "forgotPassword",
   SET_BREADCRUMB_ACTION: "setBreadcrumbAction",
   USER_LIST: "userList",
+  BILLING_TOKEN: "getBillingToken",
 
   PROFILE: {
     VIEW: "viewProfile",
@@ -165,6 +166,13 @@ const Actions = {
     CREATE: "createMakePayment",
   },
 
+  HEADER_FOOTER_TEMPLATE: {
+    LIST: "listHeaderFooterTemplate",
+    IMAGE: "downloadHeaderFooterTemplateImage",
+    CREATE: "createHeaderFooterTemplate",
+    UPDATE: "updateHeaderFooterTemplate",
+    DELETE: "deleteHeaderFooterTemplate",
+  },
 };
 
 const Mutations = {
@@ -182,6 +190,9 @@ const Mutations = {
   OVERRIDE_LAYOUT_CONFIG: "overrideLayoutConfig",
   OVERRIDE_PAGE_LAYOUT_CONFIG: "overridePageLayoutConfig",
   SET_USER_LIST: "setUserList",
+  SET_BILLING_TOKEN: "setBillingToken",
+  PURGE_BILLING_TOKEN: "deleteBillingToken",
+  SET_BILLING_VALIDATION: "setBillingValidation",
 
   SET_SPECIALIST: {
     LIST: "setSpecialists",
@@ -250,7 +261,6 @@ const Mutations = {
     SELECT: "setLetterTemplateSelect",
   },
 
-
   SET_REPORT_TEMPLATES: {
     LIST: "setReportTemplates",
     SELECT: "setSelectReportTemplate",
@@ -275,13 +285,16 @@ const Mutations = {
     LIST: "setNtfTemplates",
     SELECT: "setSelectNtfTemplates",
   },
-
   
   SET_MAKE_PAYMENT: {
     LIST: "setMakePayment",
     SELECT: "setSelectMakePayment",
   },
 
+  SET_HEADER_FOOTER_TEMPLATE: {
+    LIST: "setHeaderFootersTemplate",
+    SELECT: "setHeaderFooterTemplateSelect",
+  },
 };
 
 export { Actions, Mutations };

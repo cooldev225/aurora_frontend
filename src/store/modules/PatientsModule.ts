@@ -178,7 +178,6 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
 
   @Action
   [PatientActions.DOCUMENTS.CREATE](data) {
-    console.log(data.get("document_type"));
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("patients/documents/" + data.get("patient_id"), data)
@@ -263,46 +262,6 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           } else {
             Swal.fire({
               text: data.message,
-              icon: "error",
-              buttonsStyling: false,
-              confirmButtonText: "Ok",
-              customClass: {
-                confirmButton: "btn btn-secondary",
-              },
-            });
-          }
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
-  [PatientActions.BILLING.VALIDATE_MEDICARE](data) {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.post(
-        "patients/billing/" + data.patient_id + "/validate-medicare",
-        data
-      )
-        .then(({ data }) => {
-          if (data.status) {
-            Swal.fire({
-              text: "Medicare is Valid",
-              icon: "success",
-              buttonsStyling: false,
-              confirmButtonText: "Ok, got it!",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-            });
-          } else {
-            Swal.fire({
-              text: "Medicare is Invalid",
               icon: "error",
               buttonsStyling: false,
               confirmButtonText: "Ok",
