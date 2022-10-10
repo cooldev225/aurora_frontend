@@ -76,6 +76,12 @@ const OrgManagerMenu = [
     heading: "HRM",
     route: "/human-resource-management",
     svgIcon: icons.person_circle,
+    pages: [
+      {
+        heading: "Bulletin Board",
+        route: "/hrm/bulletin-board",
+      },
+    ],
   },
 ];
 

@@ -24,6 +24,16 @@ const HRMRoutes = [
     name: "hrm-weekly-schedule-template",
     component: () => import("@/views/HRM/WeeklyScheduleTemplate.vue"),
   },
+  {
+    path: "/hrm/bulletin-board",
+    name: "bulletin-board",
+    component: () => import("@/views/HRM/BulletinBoard.vue"),
+  },
+  {
+    path: "/hrm/bulletin-manage",
+    name: "bulletin-manage",
+    component: () => import("@/views/HRM/BulletinManage.vue"),
+  },
 ];
 
 export default HRMRoutes;

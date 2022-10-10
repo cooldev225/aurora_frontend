@@ -35,8 +35,10 @@ import HRMModule from "@/store/modules/HRMModule";
 import PatientsAlertModule from "@/store/modules/PatientsAlertModule";
 import HeaderFooterModule from "@/store/modules/HeaderFooterModule";
 import CodingModule from "@/store/modules/CodingModule";
+import BulletinModule from "@/store/modules/BulletinModule";
 import BillingTokenModule from "@/store/modules/BillingTokenModule";
 import BillingValidationModule from "@/store/modules/BillingValidationModule";
+
 config.rawError = true;
 
 const store = createStore({
@@ -75,6 +77,7 @@ const store = createStore({
     PatientsAlertModule,
     HeaderFooterModule,
     CodingModule,
+    BulletinModule,
     BillingTokenModule,
     BillingValidationModule,
   },
