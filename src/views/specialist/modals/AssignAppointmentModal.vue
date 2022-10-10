@@ -231,6 +231,7 @@ export default defineComponent({
         selectedDocument.value.patient &&
         searchAppointments({
           patient_id: selectedDocument.value.patient.id,
+          specialist_id: selectedDocument.value.specialist?.id,
         });
     });
 
