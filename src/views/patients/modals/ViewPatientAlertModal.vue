@@ -65,10 +65,11 @@
 </template>
 
 <script>
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { defineComponent, ref, onMounted } from "vue";
 import icons from "@/core/data/icons";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
-
+import { useStore } from "vuex";
 export default defineComponent({
   name: "patient-alert-view-modal",
   props: {
@@ -78,13 +79,22 @@ export default defineComponent({
     IconText,
   },
   setup(props) {
+    const store = useStore();
     const loading = ref(false);
     const alertData = ref("");
     const icon = ref("");
     const color = ref("");
 
     const dismissHandle = () => {
-      //
+      store
+        .dispatch(PatientActions.ALERT.UPDATE, {
+          patient_alert_id: props.alert.id,
+          is_dismissed: true,
+        })
+
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
     };
 
     onMounted(() => {
