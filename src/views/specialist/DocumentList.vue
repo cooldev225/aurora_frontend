@@ -165,7 +165,7 @@
 </style>
 
 <script>
-import { defineComponent, computed, watch, ref } from "vue";
+import { defineComponent, computed, watch, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import pdf from "pdfobject";
 import patientDocumentTypes from "@/core/data/patient-document-types";
@@ -193,6 +193,8 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+
+    const selectedPatient = computed(() => store.getters.selectedPatient);
     const documents = computed(() => store.getters.documentsList);
     const selectedDocumentData = computed(
       () => store.getters.getSelectedDocument
@@ -223,15 +225,31 @@ export default defineComponent({
       filteredDocuments.value = temp;
     });
 
-    watch(selectedDocumentId, () => {
+    const setSelectedDocument = () => {
       const temp = documents.value.filter(
         (item) => item.id === selectedDocumentId.value
       );
       selectedDocument.value = temp && temp.length > 0 ? temp[0] : null;
+    };
+
+    watch(selectedDocumentData, () => {
+      const temp = documents.value.filter(
+        (item) => item.id === selectedDocumentData.value.id
+      );
+      selectedDocumentId.value =
+        temp && temp.length > 0 ? selectedDocumentData.value.id : null;
+    });
+
+    watch(selectedPatient, () => {
+      if (selectedPatient.value) {
+        store.dispatch(DocumentActions.LIST, {
+          patient_id: selectedPatient.value.id,
+        });
+      }
     });
 
     // Loads the selected document from the server to the view window
-    watch(selectedDocument, () => {
+    watch(selectedDocument.value, () => {
       if (selectedDocument.value) {
         if (selectedDocument.value.file_type === "HTML") {
           document.getElementById("document-view").innerHTML =
@@ -260,9 +278,21 @@ export default defineComponent({
       }
     });
 
-    watch(selectedDocumentData, () => {
-      if (selectedDocumentData.value && selectedDocumentData.value.id) {
-        selectedDocumentId.value = selectedDocumentData.value.id;
+    watch(selectedPatient, () => {
+      if (selectedPatient.value) {
+        store.dispatch(DocumentActions.LIST, {
+          patient_id: selectedPatient.value.id,
+        });
+      }
+    });
+
+    watchEffect(() => {
+      if (
+        selectedDocumentId.value &&
+        documents.value &&
+        documents.value.length > 0
+      ) {
+        setSelectedDocument();
       }
     });
 
