@@ -13,19 +13,30 @@ export interface IDocument {
 
 export interface Documents {
   documentsData: Array<IDocument>;
+  selectedDocument: unknown;
 }
 
 @Module
 export default class DocumentModule extends VuexModule implements Documents {
   documentsData = [] as Array<IDocument>;
+  selectedDocument = null;
 
   get documentsList(): Array<IDocument> {
     return this.documentsData;
   }
 
+  get getSelectedDocument(): unknown {
+    return this.selectedDocument;
+  }
+
   @Mutation
   [DocumentMutations.SET_LIST](data) {
     this.documentsData = data;
+  }
+
+  @Mutation
+  [DocumentMutations.SET_SELECTED_DOCUMENT](data = null) {
+    this.selectedDocument = data;
   }
 
   @Action
