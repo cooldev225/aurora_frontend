@@ -232,24 +232,35 @@ export default defineComponent({
       selectedDocument.value = temp && temp.length > 0 ? temp[0] : null;
     };
 
-    watch(selectedDocumentData, () => {
-      const temp = documents.value.filter(
-        (item) => item.id === selectedDocumentData.value.id
-      );
-      selectedDocumentId.value =
-        temp && temp.length > 0 ? selectedDocumentData.value.id : null;
+    const setSelectedDocumentId = () => {
+      if (selectedDocumentData.value && selectedDocumentData.value.id) {
+        const temp = documents.value.filter(
+          (item) => item.id === selectedDocumentData.value.id
+        );
+        selectedDocumentId.value =
+          temp && temp.length > 0 ? selectedDocumentData.value.id : null;
+      }
+    };
+    watch(selectedDocumentId, () => {
+      if (selectedDocumentId.value) {
+        setSelectedDocument();
+      }
     });
 
     watch(selectedPatient, () => {
       if (selectedPatient.value) {
-        store.dispatch(DocumentActions.LIST, {
-          patient_id: selectedPatient.value.id,
-        });
+        store
+          .dispatch(DocumentActions.LIST, {
+            patient_id: selectedPatient.value.id,
+          })
+          .then(() => {
+            setSelectedDocumentId();
+          });
       }
     });
 
     // Loads the selected document from the server to the view window
-    watch(selectedDocument.value, () => {
+    watch(selectedDocument, () => {
       if (selectedDocument.value) {
         if (selectedDocument.value.file_type === "HTML") {
           document.getElementById("document-view").innerHTML =
@@ -275,24 +286,6 @@ export default defineComponent({
               console.log("Document Load Error");
             });
         }
-      }
-    });
-
-    watch(selectedPatient, () => {
-      if (selectedPatient.value) {
-        store.dispatch(DocumentActions.LIST, {
-          patient_id: selectedPatient.value.id,
-        });
-      }
-    });
-
-    watchEffect(() => {
-      if (
-        selectedDocumentId.value &&
-        documents.value &&
-        documents.value.length > 0
-      ) {
-        setSelectedDocument();
       }
     });
 
