@@ -158,6 +158,15 @@
                 />
               </InputWrapper>
             </div>
+            <div class="col-sm-6 mb-5">
+              <InputWrapper label="Health Link" prop="healthlink_edi">
+                <el-input
+                  v-model="formData.healthlink_edi"
+                  type="text"
+                  placeholder="Enter health link"
+                />
+              </InputWrapper>
+            </div>
             <div class="col-sm-6 mb-5 upload-file">
               <InputWrapper label="Upload File" prop="uploadfile">
                 <el-upload
@@ -288,6 +297,7 @@ export default defineComponent({
       mobile: "",
       email: "",
       practice_name: "",
+      healthlink_edi: "",
       upload_file_name: "",
       upload_file: [],
     });
