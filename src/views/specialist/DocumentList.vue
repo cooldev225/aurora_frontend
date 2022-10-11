@@ -67,7 +67,7 @@
               :id="document.id"
               v-model="selectedDocumentId"
             />
-            <DocumentLabel :document="document" />
+            <DocumentLabel :condensed="condensed" :document="document" />
           </div>
         </div>
       </div>
@@ -176,7 +176,6 @@ import { defineComponent, computed, watch, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import pdf from "pdfobject";
 import patientDocumentTypes from "@/core/data/patient-document-types";
-import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import DocumentLabel from "@/views/patients/documents/DocumentLabel.vue";
 import SendDocumentViaEmailModal from "@/views/patients/documents/SendDocumentViaEmailModal.vue";
@@ -195,6 +194,7 @@ export default defineComponent({
     AssignAppointmentModal,
   },
   props: {
+    condensed: { default: true },
     showDocumentInformation: { default: true },
     showDocumentActions: { default: true },
     appointments: { required: false },

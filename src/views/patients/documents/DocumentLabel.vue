@@ -1,9 +1,9 @@
 <template>
   <label
-    class="btn btn-outline btn-outline-dashed btn-outline-default p-3 d-flex align-items-center mb-5"
+    class="btn btn-outline btn-outline-dashed btn-outline-default mb-1 py-1 d-flex align-items-center"
     :for="document.id"
   >
-    <span class="svg-icon svg-icon-3x me-5">
+    <span class="svg-icon svg-icon-2x me-2">
       <inline-svg
         :src="
           patientDocumentTypes.find(
@@ -13,11 +13,11 @@
       />
     </span>
 
-    <span class="d-block fw-bold text-start">
-      <span class="text-dark fw-bolder d-block fs-4 mb-1">
+    <span class="fw-bold text-start">
+      <span class="text-dark d-block fs-6 mb-1">
         {{ document.document_name }}
       </span>
-      <span class="text-gray-400 fw-bold fs-6">{{
+      <span class="text-gray-400">{{
         moment(document.created_at).format("DD/MM/YYYY HH:mm A")
       }}</span>
     </span>
