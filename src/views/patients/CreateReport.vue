@@ -5,7 +5,7 @@
     <div class="card-header cursor-pointer">
       <!--begin::Card title-->
       <div class="card-title m-0">
-        <h3 class="fw-bolder m-0">Create Report</h3>
+        <h3 class="fw-bolder m-0">Procedure Report:</h3>
       </div>
       <!--end::Card title-->
     </div>
@@ -21,121 +21,34 @@
         <div class="report-template-wrapper">
           <!--begin::Input group-->
           <div class="fv-row mb-10">
-            <h2
-              style="
-                font-weight: 600;
-                color: #373fa2;
-                font-size: 25px;
-                margin-bottom: 4px;
-              "
-            >
-              {{ templateData.title }}
-            </h2>
-            <label class="col-md-6 fs-4 fw-bold mb-2">
-              DATE:
-              <span style="font-weight: 400">{{
-                moment(templateData.created_at).format("DD/MM/YYYY").toString()
-              }}</span>
-            </label>
+            <input
+              class="w-100 h-50px p-3 fs-1 text-primary"
+              :value="templateData.title"
+            />
           </div>
           <!--end::Input group-->
 
-          <div class="d-flex flex-column gap-2 m">
-            <!--begin::Input group-->
-            <div class="fv-row">
-              <label class="col-md-6 fs-4 fw-bold mb-2">
-                NAME:
-                <span style="font-weight: 400"
-                  >{{ patientData.title }} {{ patientData.first_name }}
-                  {{ patientData.last_name }}</span
-                >
-              </label>
-            </div>
-            <!--end::Input group-->
-            <!--begin::Input group-->
-            <div class="fv-row">
-              <label class="col-md-6 fs-4 fw-bold mb-2">
-                DOB:
-                <span style="font-weight: 400">{{
-                  moment(patientData.date_of_birth)
-                    .format("DD/MM/YYYY")
-                    .toString()
-                }}</span>
-              </label>
-            </div>
-            <!--end::Input group-->
-            <!--begin::Input group-->
-            <div class="fv-row">
-              <label class="col-md-6 fs-4 fw-bold mb-2">
-                GENDER:
-                <span style="font-weight: 400">{{ patientData.gender }}</span>
-              </label>
-            </div>
-            <!--end::Input group-->
-            <!--begin::Input group-->
-            <div class="fv-row">
-              <label class="col-md-6 fs-4 fw-bold mb-2">
-                ADDRESS:
-                <span style="font-weight: 400">{{ patientData.address }}</span>
-              </label>
-            </div>
-            <!--end::Input group-->
-            <!--begin::Input group-->
-            <div class="fv-row">
-              <label class="col-md-6 fs-4 fw-bold mb-2">
-                REFERRING DOCTOR:
-                <!-- patientData.referring_doctor -->
-                <span style="font-weight: 400">{{
-                  appointmentData.referral.referring_doctor_name
-                }}</span>
-              </label>
-            </div>
-            <!--end::Input group-->
-            <!--begin::Input group-->
-            <div class="fv-row">
-              <label class="col-md-6 fs-4 fw-bold mb-2">
-                APPOINTMENT TYPES:
-                <span style="font-weight: 400">{{
-                  appointmentData.referral.appointment_type_name
-                }}</span>
-              </label>
-            </div>
-            <!--end::Input group-->
-            <!--begin::Input group-->
-            <div class="fv-row">
-              <label class="col-md-6 fs-4 fw-bold mb-2">
-                SPECIALIST:
-                <span style="font-weight: 400">{{
-                  appointmentData.specialist_name
-                }}</span>
-              </label>
-            </div>
-            <!--end::Input group-->
-            <!--begin::Input group-->
-            <div class="fv-row">
-              <label class="col-md-6 fs-4 fw-bold mb-2">
-                PROVIDER NUMBER:
-                <span style="font-weight: 400">{{
-                  appointmentData.clinic.hospital_provider_number
-                }}</span>
-              </label>
-            </div>
-            <!--end::Input group-->
-          </div>
+          <div class="d-flex flex-column gap-2 mb-6">
+            <InfoSection heading="Patient"
+              >{{ patientData.title }} {{ patientData.first_name }}
+              {{ patientData.last_name }},
+              {{
+                moment(patientData.date_of_birth)
+                  .format("DD/MM/YYYY")
+                  .toString()
+              }}</InfoSection
+            >
 
-          <div class="fv-row my-10">
-            <label class="col-md-6 fs-4 fw-bold mb-2">
-              Dear Dr MIMERAN:
-              <span style="font-weight: 400"
-                >Thank you for referring this patient</span
-              >
-            </label>
+            <InfoSection heading="Referring Doctor">{{
+              appointmentData.referral.referring_doctor_name
+            }}</InfoSection>
           </div>
           <div
             v-for="section in templateData.sections"
             class="d-flex flex-column gap-2"
             :key="section.id"
           >
+            <el-divider />
             <div class="fv-row">
               <!--begin::Label-->
               <label class="required fs-6 fw-bold mb-2">{{
@@ -190,10 +103,11 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import moment from "moment";
 import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
+import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 
 export default defineComponent({
   name: "patient-report",
-  components: {},
+  components: { InfoSection },
   setup() {
     const store = useStore();
     const router = useRouter();
