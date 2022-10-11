@@ -16,6 +16,10 @@ const Actions = {
   USER_LIST: "userList",
   BILLING_TOKEN: "getBillingToken",
 
+  FILE: {
+    VIEW: "fileView",
+  },
+
   PROFILE: {
     VIEW: "viewProfile",
     UPDATE: "updateProfile",
@@ -36,7 +40,6 @@ const Actions = {
     DELETE: "deleteOrg",
     UPDATE: "updateOrg",
     SELECT: "selectOrg",
-    FILE: "file",
   },
 
   ORG_ADMIN: {
@@ -88,6 +91,9 @@ const Actions = {
     CREATE: "createSpecialists",
     DELETE: "deleteSpecialists",
     UPDATE: "updateSpecialists",
+    SEARCH: {
+      LIST: "listSearchSpecialist",
+    },
   },
 
 
@@ -197,6 +203,9 @@ const Mutations = {
   SET_SPECIALIST: {
     LIST: "setSpecialists",
     SELECT: "setSelectSpecialists",
+    SEARCH: {
+      SEARCH_LIST: "setSearchSpecialists",
+    },
   },
 
   SET_ADMIN: {

@@ -317,47 +317,6 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Action
-  [AppointmentActions.REFERRAL.VIEW](data) {
-    return ApiService.post(
-      "file",
-      {
-        path: data.path,
-        type: "REFERRAL",
-      },
-      {
-        responseType: "blob",
-      }
-    )
-      .then(({ data }) => {
-        return data;
-      })
-      .catch(({ response }) => {
-        console.log(response.data.error);
-      });
-  }
-
-  @Action
-  [AppointmentActions.PRE_ADMISSION.VIEW](data) {
-    console.log(data);
-    return ApiService.post(
-      "file",
-      {
-        path: data.path,
-        type: "PRE_ADMISSION",
-      },
-      {
-        responseType: "blob",
-      }
-    )
-      .then(({ data }) => {
-        return data;
-      })
-      .catch(({ response }) => {
-        console.log(response.data.error);
-      });
-  }
-
-  @Action
   [AppointmentActions.PRE_ADMISSION.VALIDATE](params) {
     ApiService.setHeader();
     ApiService.post("appointments/pre-admissions/validate/" + params.id, {

@@ -13,8 +13,9 @@
 import { Modal } from "bootstrap";
 import { useStore } from "vuex";
 import moment from "moment";
-import { Mutations } from "@/store/enums/StoreEnums";
 import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
+import { computed } from "vue";
+
 export default {
   props: {
     date: { required: true },
@@ -29,22 +30,22 @@ export default {
     };
 
     const setColor = () => {
-      let restriction = props.specialist.schedule_timeslots[0].restriction;
+      let timeSlot = getTimeSlot();
+      let restriction = timeSlot.restriction;
       if (restriction == "PROCEDURE") return "text-danger";
       if (restriction == "CONSULTATION") return "text-primary";
       if (restriction == "NONE") return "text-success";
     };
-
+    const _apt_date = computed(() => props.date);
     const handleCreateAppointment = () => {
-      const date = moment(props.date.value).format("YYYY-MM-DD").toString();
-
+      let timeSlot = getTimeSlot();
+      const date = moment(_apt_date.value).format("YYYY-MM-DD").toString();
       const item = {
         time_slot: [date + "T" + props.startTime],
         date: date,
         selected_specialist: props.specialist,
-        restriction: props.specialist.schedule_timeslots[0].restriction,
+        restriction: timeSlot.restriction,
       };
-
       store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
       store.commit(
         AppointmentMutations.SET_APT.SELECT_SPECIALIST,
@@ -56,19 +57,26 @@ export default {
     };
 
     const specialistAvailable = () => {
-      if (!props.specialist.schedule_timeslots) return false;
-      let startTime = timeStr2Number(
-        props.specialist.schedule_timeslots[0].start_time
-      );
-      let endTime = timeStr2Number(
-        props.specialist.schedule_timeslots[0].end_time
-      );
-      let appointmentTime = timeStr2Number(props.startTime);
-      if (startTime <= appointmentTime && appointmentTime < endTime) {
-        return true;
+      if (!props.specialist.schedule_timeslots) {
+        return false;
+      } else {
+        if (getTimeSlot()) {
+          return true;
+        }
       }
+    };
 
-      return false;
+    const getTimeSlot = () => {
+      let result;
+      props.specialist.schedule_timeslots.forEach(function (timeSlot) {
+        let startTime = timeStr2Number(timeSlot.start_time);
+        let endTime = timeStr2Number(timeSlot.end_time);
+        let appointmentTime = timeStr2Number(props.startTime);
+        if (startTime <= appointmentTime && appointmentTime < endTime) {
+          result = timeSlot;
+        }
+      });
+      return result;
     };
 
     return {

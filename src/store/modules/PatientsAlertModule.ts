@@ -8,10 +8,26 @@ import { Module, Action, VuexModule } from "vuex-module-decorators";
 export default class PatientsAlertModule extends VuexModule {
   @Action
   [PatientActions.ALERT.CREATE](data) {
-    console.log(data);
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("patients/alerts", data)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [PatientActions.ALERT.UPDATE](data) {
+    console.log(data);
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.put("patients/alerts/" + data.patient_alert_id, data)
         .then(({ data }) => {
           return data.data;
         })

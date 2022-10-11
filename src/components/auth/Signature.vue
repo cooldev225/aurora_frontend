@@ -195,7 +195,7 @@ export default defineComponent({
 
     const loadSignatureImage = () => {
       store
-        .dispatch(Actions.ORG.FILE, {
+        .dispatch(Actions.FILE.VIEW, {
           type: "USER_SIGNATURE",
           path: currentUser.value.profile.signature,
         })

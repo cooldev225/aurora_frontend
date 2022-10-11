@@ -7,6 +7,7 @@ const DocumentActions = {
 
 const DocumentMutations = {
     SET_LIST : "setDocumentList",
+    SET_SELECTED_DOCUMENT: "setSelectedDocument",
 };
 
 export { DocumentActions, DocumentMutations };

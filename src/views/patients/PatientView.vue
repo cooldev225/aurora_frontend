@@ -18,8 +18,10 @@
 
             <div class="d-flex gap-2 flex-row">
               <template v-for="alert in patientData.alerts" :key="alert.id">
-                <PatientAlert :alert="alert" />
-                <ViewPatientAlertModal :alert="alert" />
+                <template v-if="!alert.is_dismissed">
+                  <PatientAlert :alert="alert" />
+                  <ViewPatientAlertModal :alert="alert" />
+                </template>
               </template>
             </div>
 
@@ -48,6 +50,12 @@
                   iconSRC="media/icons/duotune/arrows/arr009.svg"
                   @click="handleReport"
                   label="Report"
+                />
+                <IconButton
+                  v-if="userRole == 'specialist'"
+                  iconSRC="media/icons/duotune/arrows/arr009.svg"
+                  @click="handleReferral"
+                  label="Referral"
                 />
                 <IconButton
                   v-if="userRole == 'specialist'"
@@ -177,6 +185,7 @@
     :patientId="patientData.id"
   ></CreatePatientAlertModal>
   <ReportModal></ReportModal>
+  <ReferralModal :patientId="patientData.id"></ReferralModal>
   <LetterModal :patientId="patientData.id"></LetterModal>
   <CreateAudioModal :patientId="patientData.id"></CreateAudioModal>
   <UploadDocumentModal :patientId="patientData.id"></UploadDocumentModal>
@@ -193,6 +202,7 @@ import RecallReminderModal from "@/views/patients/modals/RecallReminderModal.vue
 import CreatePatientAlertModal from "@/views/patients/modals/CreatePatientAlertModal.vue";
 import ViewPatientAlertModal from "@/views/patients/modals/ViewPatientAlertModal.vue";
 import ReportModal from "@/views/patients/modals/ReportTemplateSelectModal.vue";
+import ReferralModal from "@/views/patients/modals/ReferralModal.vue";
 import LetterModal from "@/views/patients/modals/LetterModal.vue";
 import CreateAudioModal from "@/views/patients/modals/CreateAudioModal.vue";
 import UploadDocumentModal from "@/views/patients/modals/UploadDocumentModal.vue";
@@ -208,6 +218,7 @@ export default defineComponent({
     RecallReminderModal,
     CreatePatientAlertModal,
     ReportModal,
+    ReferralModal,
     LetterModal,
     CreateAudioModal,
     UploadDocumentModal,
@@ -257,6 +268,12 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleReferral = () => {
+      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      const modal = new Modal(document.getElementById("modal_referral"));
+      modal.show();
+    };
+
     const handleLetter = () => {
       const modal = new Modal(document.getElementById("modal_letter"));
       modal.show();
@@ -269,7 +286,6 @@ export default defineComponent({
 
     watchEffect(() => {
       patientData.value = store.getters.selectedPatient;
-      console.log(patientData.value);
     });
 
     const handleUploadDocument = () => {
@@ -284,6 +300,7 @@ export default defineComponent({
       handleRecallReminder,
       CreatePatientAlertModal,
       handleReport,
+      handleReferral,
       handleLetter,
       handleAudio,
       handleUploadDocument,
