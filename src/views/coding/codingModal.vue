@@ -60,7 +60,7 @@
                   }}</InfoSection
                   ><br />
                   <InfoSection heading="Patient gender">{{
-                    formData.patient.gender
+                    formData.patient.gender_name
                   }}</InfoSection
                   ><br />
                 </div>

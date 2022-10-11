@@ -68,7 +68,9 @@
             <div class="fv-row">
               <label class="col-md-6 fs-4 fw-bold mb-2">
                 GENDER:
-                <span style="font-weight: 400">{{ patientData.gender }}</span>
+                <span style="font-weight: 400">
+                  {{ patientData.gender_name }}
+                </span>
               </label>
             </div>
             <!--end::Input group-->
