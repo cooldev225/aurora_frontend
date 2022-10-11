@@ -84,12 +84,11 @@
             v-model="formData.gender"
             placeholder="Select Gender"
           >
-            <el-option value="male" label="Male" />
-            <el-option value="female" label="Female" />
-            <el-option value="other" label="Other" />
             <el-option
-              value="undisclosed"
-              label="Not Stated / Inadequately Described"
+              v-for="item in genders"
+              :key="item.value"
+              :value="item.value"
+              :label="item.label"
             />
           </el-select>
         </InputWrapper>
@@ -189,6 +188,7 @@ import { PatientActions } from "@/store/enums/StorePatientEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import maritalStatus from "@/core/data/marital-status";
 import titles from "@/core/data/titles";
+import genders from "@/core/data/genders";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 import { mask } from "vue-the-mask";
@@ -336,6 +336,7 @@ export default defineComponent({
       formRef,
       rules,
       titles,
+      genders,
       maritalStatus,
       submit,
     };
