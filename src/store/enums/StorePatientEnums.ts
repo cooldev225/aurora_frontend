@@ -23,9 +23,13 @@ const PatientActions = {
     CREATE: "createPatientAlert",
     UPDATE: "updatePatientAlert",
   },
-  BILLING: {
+  CLAIM_SOURCE: {
     VALIDATE_MEDICARE: "validatePatientsBillingMedicare",
+    VALIDATE_CONCESSION: "validatePatientsBillingConcession",
+    VALIDATE_HEALTH_FUND: "validatePatientsBillingHealthFund",
+    VALIDATE_DVA: "validatePatientsBillingDva",
     UPDATE: "updatePatientsBilling",
+    DELETE: "deletePatientsBilling",
   },
 };
 
@@ -44,8 +48,8 @@ const PatientMutations = {
     SELECT: "setSelectPatientRecall",
   },
 
-  SET_VALIDATION: {
-    MEDICARE: "setValidationMedicare",
+  CLAIM_SOURCE: {
+    SET_VALIDATION: "setClaimSourceValidation",
   },
 };
 

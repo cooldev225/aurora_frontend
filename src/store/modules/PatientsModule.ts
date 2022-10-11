@@ -11,6 +11,11 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export interface IPatient {
   id: string;
+  appointments: Array<IApt>;
+}
+
+export interface IMinorId {
+  minorId?: string | null;
 }
 
 export interface PatientsInfo {
@@ -55,6 +60,26 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
    */
   get selectedPatient(): IPatient {
     return this.patientsSelectData;
+  }
+
+  /**
+   * Get current selected Patient
+   * @returns SelectedpatientsData
+   */
+  get latestMinorId(): IMinorId {
+    if (
+      this.selectedPatient?.appointments &&
+      this.selectedPatient.appointments.length > 0
+    ) {
+      const latestApt = this.selectedPatient.appointments[0];
+      return {
+        minorId: latestApt?.clinic?.minor_id ?? null,
+      };
+    }
+
+    return {
+      minorId: null,
+    };
   }
 
   get getPatientAppointments(): PatientAppointmentsData {
@@ -219,32 +244,38 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.BILLING.UPDATE](data) {
+  [PatientActions.CLAIM_SOURCE.UPDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("patients/billing", data.id, data)
         .then(({ data }) => {
-          if (data.status) {
-            Swal.fire({
-              text: "Successful Updated!",
-              icon: "success",
-              buttonsStyling: false,
-              confirmButtonText: "Ok, got it!",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-            });
-          } else {
-            Swal.fire({
-              text: data.message,
-              icon: "error",
-              buttonsStyling: false,
-              confirmButtonText: "Ok",
-              customClass: {
-                confirmButton: "btn btn-secondary",
-              },
-            });
-          }
+          return data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [PatientActions.CLAIM_SOURCE.DELETE](source) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.delete(`patients/billing/${source.id}`)
+        .then(({ data }) => {
+          this.context.dispatch(PatientActions.VIEW, source.patient_id);
+          Swal.fire({
+            text: "Successfully Deleted!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-secondary",
+            },
+          });
         })
         .catch(({ response }) => {
           console.log(response.data.error);

@@ -31,28 +31,64 @@
 
         <template v-slot:cell-validated="{ row: item }">
           <div>
-            <span
-              v-if="item.verified_at != null"
-              class="badge badge-success opacity-50 mx-2"
-            >
-              {{ moment(item.verified_at).format("DD-MM-YYYY") }}
-            </span>
+            {{
+              item.verified_at
+                ? moment(item.verified_at).format("DD-MM-YYYY")
+                : "Never"
+            }}
 
-            <span v-else>Never</span>
+            <span
+              v-if="item.verified_at"
+              class="badge opacity-50 mx-2"
+              :class="{
+                'badge-success': item.is_valid,
+                'badge-danger': !item.is_valid,
+              }"
+            >
+              {{ item.is_valid ? "Valid" : "Invalid" }}
+            </span>
           </div>
 
           <button
             class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
-            @click="validateSource(item)"
+            @click="revalidateSource(item)"
+            :disabled="loading != null"
+            :data-kt-indicator="loading == item.id ? 'on' : 'off'"
           >
-            Re-validate
+            <span class="indicator-label">Re-validate</span>
+
+            <span class="indicator-progress">
+              Validating...
+              <span
+                class="spinner-border spinner-border-sm align-middle ms-2"
+              ></span>
+            </span>
           </button>
         </template>
 
         <template v-slot:cell-actions="{ row: item }">
           <div class="d-flex flex-column">
             <button
+              v-if="item.billing_type == 1"
               class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
+              :disabled="loading != null || !item.is_valid"
+              @click="handleCheckConcession(item)"
+              :data-kt-indicator="loading == `${item.id}-Con` ? 'on' : 'off'"
+            >
+              <!-- Only show this button if it's a Medicare source -->
+              <span class="indicator-label">Check Concession</span>
+
+              <span class="indicator-progress">
+                Validating...
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
+            </button>
+
+            <button
+              class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
+              :disabled="loading != null"
               @click="handleCollectingPerson(item)"
             >
               Update Details
@@ -60,13 +96,15 @@
 
             <button
               class="btn btn-bg-danger btn-active-color-danger btn-sm mt-2"
-              @click="handleCollectingPerson(item)"
+              :disabled="loading != null"
+              @click="handleDeleteSource(item)"
             >
               Delete Source
             </button>
           </div>
         </template>
       </Datatable>
+      {{ loading }}
     </template>
   </CardSection>
 </template>
@@ -110,7 +148,8 @@ export default defineComponent({
     const route = useRoute();
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const selectedPatient = computed(() => store.getters.selectedPatient);
-    const loading = ref(false);
+    const minorId = computed(() => store.getters.latestMinorId);
+    const loading = ref(null);
     const tableHeader = ref([
       {
         name: "Source Type",
@@ -151,98 +190,133 @@ export default defineComponent({
       return foundType?.label ?? null;
     };
 
-    // const validateMedicare = () => {
-    //   if (!formRefMedicare.value) {
-    //     return;
-    //   }
+    const handleDeleteSource = (item) => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: `Are you sure you want to delete this ${getBillingType(
+          item.billing_type
+        )}?`,
+        icon: "question",
+        buttonsStyling: false,
+        confirmButtonText: "Yes",
+        showCancelButton: true,
+        cancelButtonText: "No",
+        customClass: {
+          confirmButton: "btn btn-primary",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          deleteSource(item);
+        }
+      });
+    };
 
-    //   formRefMedicare.value.validate((valid) => {
-    //     if (valid) {
-    //       const data = formData.value;
+    const deleteSource = (item) => {
+      store.dispatch(PatientActions.CLAIM_SOURCE.DELETE, item);
+    };
 
-    //       loading.value.medicare = true;
-    //       store
-    //         .dispatch(PatientActions.BILLING.VALIDATE_MEDICARE, {
-    //           first_name: selectedPatient.value.first_name,
-    //           last_name: selectedPatient.value.last_name,
-    //           date_of_birth: selectedPatient.value.date_of_birth,
-    //           sex: 9,
-    //           medicare_number: data.medicare_number,
-    //           medicare_reference_number: data.medicare_reference_number,
-    //           minor_id: "AUA00000",
-    //         })
-    //         .then(() => {
-    //           const validation = store.getters.medicareValidationResponse;
-    //           if (validation.data.verified) {
-    //             validated.value.medicare = true;
-    //           }
+    const doValidation = (endpoint, data, item, isConcession = false) => {
+      loading.value = isConcession ? `${item.id}-Con` : item.id;
 
-    //           if (!validation.data.verified) {
-    //             validated.value.medicare = false;
-    //             validationErrors.value.medicare = validation.data.message;
-    //           }
+      store
+        .dispatch(endpoint, data)
+        .then(() => {
+          const validation = store.getters.validationResponse;
 
-    //           if (
-    //             !Object.prototype.hasOwnProperty.call(
-    //               validation.data.update_details
-    //             )
-    //           ) {
-    //             for (const detail in validation.data.update_details) {
-    //               switch (detail) {
-    //                 case "givenName":
-    //                   updateDetails.value.medicare.firstName = {
-    //                     old: selectedPatient.value.firstName,
-    //                     new: validation.data.update_details.givenName,
-    //                     name: "First Name",
-    //                   };
-    //                   break;
-    //                 case "familyName":
-    //                   updateDetails.value.medicare.lastName = {
-    //                     old: selectedPatient.value.lastName,
-    //                     new: validation.data.update_details.familyName,
-    //                     name: "Last Name",
-    //                   };
-    //                   break;
-    //                 case "memberRefNumber":
-    //                   updateDetails.value.medicare.referenceNumber = {
-    //                     old: data.medicare_reference_number,
-    //                     new: validation.data.update_details.memberRefNumber,
-    //                     name: "Medicare Reference Number",
-    //                   };
-    //                   break;
-    //               }
-    //             }
+          if (validation.data.verified) {
+            if (isConcession) {
+              item.has_medicare_concession = true;
+            } else {
+              item.is_valid = true;
+            }
 
-    //             const modal = new Modal(
-    //               document.getElementById("modal_update_patient_details")
-    //             );
-    //             modal.show();
-    //           }
-    //         })
-    //         .catch((e) => {
-    //           const errors = store.getters.getErrors;
-    //           console.log(e);
-    //           validated.value.medicare = false;
-    //           if (
-    //             Object.prototype.hasOwnProperty.call(errors, "errors") &&
-    //             errors.errors.length >= 1
-    //           ) {
-    //             validationErrors.value.medicare = errors.errors[0];
-    //           } else {
-    //             validationErrors.value.medicare =
-    //               "Unknown Error. Please try again.";
-    //           }
-    //         })
-    //         .finally(() => {
-    //           loading.value.medicare = false;
-    //         });
-    //     }
-    //   });
-    // };
+            Swal.fire({
+              title: "Verification successful!",
+              icon: "success",
+              buttonsStyling: true,
+              confirmButtonText: "Okay",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+            });
+          }
 
-    const validateSource = (item) => {
+          if (!validation.data.verified) {
+            if (isConcession) {
+              item.has_medicare_concession = false;
+            } else {
+              item.is_valid = false;
+            }
+
+            Swal.fire({
+              title: "Verification unsuccessful",
+              text: `Reason: ${validation.data.message}`,
+              icon: "error",
+              buttonsStyling: true,
+              confirmButtonText: "Okay",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+            });
+          }
+
+          store.dispatch(PatientActions.CLAIM_SOURCE.UPDATE, item);
+
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              validation.data,
+              "update_details"
+            )
+          ) {
+            // Show modal to update the customers values
+          }
+        })
+        .catch((e) => {
+          const errors = store.getters.getErrors;
+          let message;
+          console.log(e);
+          if (
+            Object.prototype.hasOwnProperty.call(errors, "errors") &&
+            errors.errors.length >= 1
+          ) {
+            message = errors.errors[0];
+          } else {
+            message = "Unknown Error. Please try again.";
+          }
+
+          Swal.fire({
+            title: "Verification unsuccessful",
+            text: message,
+            icon: "error",
+            buttonsStyling: true,
+            confirmButtonText: "Okay",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          });
+        })
+        .finally(() => {
+          loading.value = null;
+        });
+    };
+
+    const revalidateSource = (item) => {
       let validationData = {};
       let endpoint;
+
+      // if (minorId.value.minorId == null) {
+      //   Swal.fire({
+      //     text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
+      //     icon: "error",
+      //     buttonsStyling: true,
+      //     confirmButtonText: "Okay",
+      //     customClass: {
+      //       confirmButton: "btn btn-primary",
+      //     },
+      //   }).then(() => {
+      //     return;
+      //   });
+      // }
 
       switch (item.billing_type) {
         case 1:
@@ -251,16 +325,56 @@ export default defineComponent({
             first_name: selectedPatient.value.first_name,
             last_name: selectedPatient.value.last_name,
             date_of_birth: selectedPatient.value.date_of_birth,
-            sex: 9,
-            medicare_number: data.medicare_number,
-            medicare_reference_number: data.medicare_reference_number,
+            sex: selectedPatient.value.gender,
+            medicare_number: item.member_number,
+            medicare_reference_number: item.member_reference_number,
             minor_id: "AUA00000",
           };
-
-          endpoint = PatientActions.BILLING.VALIDATE_MEDICARE;
-
-          doValidation(endpoint, validationData);
+          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_MEDICARE;
+          break;
+        case 2:
+          // Health Fund
+          validationData = {
+            first_name: selectedPatient.value.first_name,
+            last_name: selectedPatient.value.last_name,
+            date_of_birth: selectedPatient.value.date_of_birth,
+            sex: selectedPatient.value.gender,
+            fund_member_number: item.member_number,
+            fund_reference_number: item.member_reference_number,
+            fund_organisation_code: "TST", //item.health_fund.code
+            minor_id: "AUA00000",
+          };
+          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND;
+          break;
+        case 3:
+          // DVA
+          validationData = {
+            first_name: selectedPatient.value.first_name,
+            last_name: selectedPatient.value.last_name,
+            date_of_birth: selectedPatient.value.date_of_birth,
+            sex: selectedPatient.value.gender,
+            veteran_number: item.member_number,
+            minor_id: "AUA00000",
+          };
+          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_DVA;
+          break;
       }
+
+      doValidation(endpoint, validationData, item);
+    };
+
+    const handleCheckConcession = (item) => {
+      const validationData = {
+        first_name: selectedPatient.value.first_name,
+        last_name: selectedPatient.value.last_name,
+        date_of_birth: selectedPatient.value.date_of_birth,
+        medicare_number: item.member_number,
+        medicare_reference_number: item.member_reference_number,
+        minor_id: "AUA00000",
+      };
+      const endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_CONCESSION;
+
+      doValidation(endpoint, validationData, item, true);
     };
 
     onMounted(() => {
@@ -285,6 +399,9 @@ export default defineComponent({
       PatientBillingTypes,
       getBillingType,
       moment,
+      revalidateSource,
+      handleDeleteSource,
+      handleCheckConcession,
     };
   },
 });

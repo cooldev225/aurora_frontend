@@ -9,8 +9,10 @@ import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import router from "@/router";
+import { IClinics } from "./ClinicsModule";
 export interface IApt {
   id: number;
+  clinic: IClinics;
 }
 
 export interface AptInfo {
