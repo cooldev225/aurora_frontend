@@ -144,6 +144,11 @@
                 <div class="card-header">
                   <div class="card-title">
                     <span>SPECIALISTS</span>
+                    <el-checkbox
+                      v-model="test"
+                      label="specialist.first_name"
+                      size="large"
+                    />
                   </div>
                 </div>
                 <div
@@ -155,15 +160,27 @@
                       class="d-flex flex-column"
                     >
                       <template
-                        v-for="(specialist, index) in ava_specialists"
+                        v-for="(specialist, index) in filtered_specialists"
                         :key="index"
                       >
                         <el-checkbox
+                          v-model="test"
+                          :label="specialist.first_name"
                           size="large"
-                          :label="specialist.id"
-                          :checked="true"
-                          >Dr. {{ specialist.first_name }}
-                          {{ specialist.last_name }}</el-checkbox
+                        />
+
+                        <span style="font-size: 10px">
+                          <input
+                            :id="specialist.id"
+                            v-model="specialist.checked"
+                            type="checkbox"
+                            :aria-hidden="specialist.id ? 'true' : 'false'"
+                            :value="specialist.id"
+                            :name="specialist.id"
+                            :tabindex="specialist.id"
+                            :label="specialist.first_name"
+                          />
+                          {{ specialist.first_name }}</span
                         >
                       </template>
                     </el-checkbox-group>
@@ -342,7 +359,7 @@ export default defineComponent({
       toggleRestrictionKey: false,
     };
   },
-  setup() {
+  setup: function () {
     const store = useStore();
     const format = ref("YYYY-MM-DD");
     const date_search = reactive({
@@ -407,7 +424,11 @@ export default defineComponent({
       24: "In 6 months",
     });
 
-    const ava_specialists = computed(() => store.getters.getAvailableSPTData);
+    const test = ref(false);
+
+    const filtered_specialists = computed(
+      () => store.getters.getAvailableSPTData
+    );
     const specialists = computed(() => store.getters.getFilteredData);
 
     const available_slots_by_date = computed(
@@ -424,7 +445,6 @@ export default defineComponent({
       toggleLayout.value = false;
       store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
-        ...specialists_search,
       });
 
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
@@ -492,53 +512,46 @@ export default defineComponent({
     watch(date_search, () => {
       store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
-        ...specialists_search,
       });
     });
 
-    watch(ava_specialists, () => {
-      let temp = [];
-
-      ava_specialists.value.forEach((item) => {
-        specialists_search.specialist_ids.forEach((selected) => {
-          if (item.id === selected) temp.push(item);
-        });
-      });
-      if (temp.length === 0) temp = ava_specialists.value;
-      const data = ref({});
-      //const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
-      data.value = temp; //[data_key]
-      store.commit(
-        AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS,
-        data.value
-      );
-      store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
-        ...date_search,
-        ...specialists_search,
-      });
+    watch(filtered_specialists, () => {
+      console.log("changed");
+      console.log(filtered_specialists.value);
+      // test.value = filtered_specialists.value;
     });
 
-    watch(specialists_search, () => {
-      let temp = [];
-      ava_specialists.value.forEach((item) => {
-        specialists_search.specialist_ids.forEach((selected) => {
-          if (item.id === selected) temp.push(item);
-        });
+    watch(specialists, () => {
+      let tempArray = [];
+      specialists.value.forEach(function (specialist) {
+        specialist.checked = true;
+        tempArray.push(specialist);
       });
-      if (specialists_search.specialist_ids.length === 0)
-        temp = ava_specialists.value;
-      const data = ref({});
-      //const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
-      data.value = temp; //[data_key]
       store.commit(
-        AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS,
-        data.value
+        AppointmentMutations.SET_BOOKING.SEARCH.FILLTEREDSPECIALISTS,
+        tempArray
       );
-      // store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
-      // store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-      //   ...date_search,
-      //   ...specialists_search,
+
+      // let temp = [];
+      // ava_specialists.value.forEach((item) => {
+      //   specialists_search.specialist_ids.forEach((selected) => {
+      //     if (item.id === selected) temp.push(item);
+      //   });
       // });
+      // if (specialists_search.specialist_ids.length === 0)
+      //   temp = ava_specialists.value;
+      // const data = ref({});
+      // //const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
+      // data.value = temp; //[data_key]
+      // store.commit(
+      //   AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS,
+      //   data.value
+      // );
+      // // store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
+      // // store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
+      // //   ...date_search,
+      // //   ...specialists_search,
+      // // });
     });
 
     const changeDate = (mode) => {
@@ -566,12 +579,24 @@ export default defineComponent({
           break;
       }
     };
-
+    const updateFilteredSpecialist = (val, event) => {
+      let tempArray = [];
+      specialists.value.forEach(function (specialist) {
+        if (specialist.id == parseInt(val)) {
+          specialist.checked = event;
+        }
+        tempArray.push(specialist);
+      });
+      store.commit(
+        AppointmentMutations.SET_BOOKING.SEARCH.FILLTEREDSPECIALISTS,
+        tempArray
+      );
+    };
     return {
       format,
       date_search,
       specialists_search,
-      ava_specialists,
+      filtered_specialists,
       specialists,
       available_slots_by_date,
       aptTypelist,
@@ -592,6 +617,8 @@ export default defineComponent({
       changeDate,
       toggleLayout,
       setToggleLayout,
+      updateFilteredSpecialist,
+      test,
     };
   },
 });
