@@ -211,6 +211,7 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { CodingActions, CodingMutations } from "@/store/enums/StoreCodingEnums";
+import { Actions } from "@/store/enums/StoreEnums";
 import pdf from "pdfobject";
 
 export default defineComponent({
@@ -312,8 +313,9 @@ export default defineComponent({
         const doc = formData.value.documents[0];
         document.getElementById("documents_viewer").innerHTML = "";
         store
-          .dispatch(CodingActions.DOCUMENT_VIEW, {
+          .dispatch(Actions.FILE.VIEW, {
             path: doc.file_path,
+            type: "PATIENT_DOCUMENT",
           })
           .then((data) => {
             if (doc.file_type === "PDF") {

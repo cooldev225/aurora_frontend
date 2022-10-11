@@ -19,6 +19,12 @@ const AnesthetistMenu = [
     route: "/human-resource-management",
     svgIcon: "media/icons/duotune/communication/com006.svg",
     fontIcon: "bi-layers",
+    pages: [
+      {
+        heading: "Bulletin Board",
+        route: "/hrm/bulletin-board",
+      },
+    ],
   },
 ];
 

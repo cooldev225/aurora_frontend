@@ -28,6 +28,14 @@ const OrgAdminMenu = [
         heading: "Administrators",
         route: "/organisationAdmins",
       },
+      {
+        heading: "Bulletin Board",
+        route: "/hrm/bulletin-board",
+      },
+      {
+        heading: "Manage Bulletins",
+        route: "/hrm/bulletin-manage",
+      },
     ],
   },
   {
