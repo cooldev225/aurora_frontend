@@ -135,7 +135,7 @@ export default class SpecialistModule
   [Actions.SPECIALIST.SEARCH.LIST](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("specialists", "", data)
+      ApiService.get("users", "", data)
         .then(({ data }) => {
           this.context.commit(
             Mutations.SET_SPECIALIST.SEARCH.SEARCH_LIST,
