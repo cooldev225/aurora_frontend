@@ -137,11 +137,18 @@
       </div>
 
       <el-divider />
-      <div class="d-flex">
-        <HeadingText class="me-5" text="Next Of Kin" />
-        <span style="color: grey"
-          >would you like your next of kin to receive copies of correspondence?
-        </span>
+      <div
+        class="d-flex flex-row mb-5 align-items-center justify-content-between"
+      >
+        <HeadingText class="align-items-center" text="Next Of Kin" />
+
+        <el-checkbox
+          prop="kin_receive_correspondence"
+          type="checkbox"
+          class="pb-5"
+          v-model="formData.kin_receive_correspondence"
+          label="NOK to receive copies of correspondence"
+        />
       </div>
       <div class="row justify-content-md-center">
         <InputWrapper :class="colString" label="Name" prop="kin_name">
@@ -237,6 +244,7 @@ export default defineComponent({
       kin_phone_number: "",
       kin_relationship: "",
       kin_email: "",
+      kin_receive_correspondence: false,
     });
 
     const rules = ref({
