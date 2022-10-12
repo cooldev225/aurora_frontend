@@ -183,6 +183,7 @@ import { Modal } from "bootstrap";
 import AssignPatientModal from "@/views/specialist/modals/AssignPatientModal.vue";
 import AssignSpecialistModal from "@/views/specialist/modals/AssignSpecialistModal.vue";
 import AssignAppointmentModal from "@/views/specialist/modals/AssignAppointmentModal.vue";
+import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 
 export default defineComponent({
   name: "admin-main",
@@ -259,9 +260,8 @@ export default defineComponent({
     watch(selectedPatient, () => {
       if (selectedPatient.value) {
         store
-          .dispatch(Actions.FILE.VIEW, {
-            path: selectedDocument.value.file_path,
-            type: "PATIENT_DOCUMENT",
+          .dispatch(DocumentActions.LIST, {
+            patient_id: selectedPatient.value.id,
           })
           .then(() => {
             setSelectedDocumentId();
