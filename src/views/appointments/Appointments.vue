@@ -144,46 +144,27 @@
                 <div class="card-header">
                   <div class="card-title">
                     <span>SPECIALISTS</span>
-                    <el-checkbox
-                      v-model="test"
-                      label="specialist.first_name"
-                      size="large"
-                    />
                   </div>
                 </div>
                 <div
                   class="card-body card-scroll h-350px d-flex flex-column justify-content-between"
                 >
                   <div class="d-flex flex-column">
-                    <el-checkbox-group
-                      v-model="specialists_search.specialist_ids"
-                      class="d-flex flex-column"
+                    <template
+                      v-for="(specialist, index) in specialists"
+                      :key="index"
                     >
-                      <template
-                        v-for="(specialist, index) in filtered_specialists"
-                        :key="index"
-                      >
-                        <el-checkbox
-                          v-model="test"
-                          :label="specialist.first_name"
-                          size="large"
-                        />
-
-                        <span style="font-size: 10px">
-                          <input
-                            :id="specialist.id"
-                            v-model="specialist.checked"
-                            type="checkbox"
-                            :aria-hidden="specialist.id ? 'true' : 'false'"
-                            :value="specialist.id"
-                            :name="specialist.id"
-                            :tabindex="specialist.id"
-                            :label="specialist.first_name"
-                          />
-                          {{ specialist.first_name }}</span
-                        >
-                      </template>
-                    </el-checkbox-group>
+                      <el-checkbox
+                        v-model="specialist.checked"
+                        :label="
+                          'Dr. ' +
+                          specialist.first_name +
+                          ' ' +
+                          specialist.first_name
+                        "
+                        size="large"
+                      />
+                    </template>
                   </div>
                   <button
                     class="btn btn-light-primary w-100 mt-2"
@@ -423,9 +404,6 @@ export default defineComponent({
       12: "In 3 months",
       24: "In 6 months",
     });
-
-    const test = ref(false);
-
     const filtered_specialists = computed(
       () => store.getters.getAvailableSPTData
     );
@@ -473,11 +451,6 @@ export default defineComponent({
             .format("DD/MM/YYYY");
           search_next_apts.x_weeks = searchAppointmentForm.value.x_weeks;
           search_next_apts.clinic_id = searchAppointmentForm.value.clinic_id;
-
-          // await store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
-          //   ...search_next_apts,
-          // });
-
           const modal = new Modal(
             document.getElementById("modal_available_time_slot_popup")
           );
@@ -514,46 +487,11 @@ export default defineComponent({
         ...date_search,
       });
     });
-
-    watch(filtered_specialists, () => {
-      console.log("changed");
-      console.log(filtered_specialists.value);
-      // test.value = filtered_specialists.value;
-    });
-
     watch(specialists, () => {
-      let tempArray = [];
       specialists.value.forEach(function (specialist) {
         specialist.checked = true;
-        tempArray.push(specialist);
       });
-      store.commit(
-        AppointmentMutations.SET_BOOKING.SEARCH.FILLTEREDSPECIALISTS,
-        tempArray
-      );
-
-      // let temp = [];
-      // ava_specialists.value.forEach((item) => {
-      //   specialists_search.specialist_ids.forEach((selected) => {
-      //     if (item.id === selected) temp.push(item);
-      //   });
-      // });
-      // if (specialists_search.specialist_ids.length === 0)
-      //   temp = ava_specialists.value;
-      // const data = ref({});
-      // //const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
-      // data.value = temp; //[data_key]
-      // store.commit(
-      //   AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS,
-      //   data.value
-      // );
-      // // store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
-      // // store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-      // //   ...date_search,
-      // //   ...specialists_search,
-      // // });
     });
-
     const changeDate = (mode) => {
       switch (mode) {
         case 0:
@@ -579,19 +517,7 @@ export default defineComponent({
           break;
       }
     };
-    const updateFilteredSpecialist = (val, event) => {
-      let tempArray = [];
-      specialists.value.forEach(function (specialist) {
-        if (specialist.id == parseInt(val)) {
-          specialist.checked = event;
-        }
-        tempArray.push(specialist);
-      });
-      store.commit(
-        AppointmentMutations.SET_BOOKING.SEARCH.FILLTEREDSPECIALISTS,
-        tempArray
-      );
-    };
+
     return {
       format,
       date_search,
@@ -617,8 +543,6 @@ export default defineComponent({
       changeDate,
       toggleLayout,
       setToggleLayout,
-      updateFilteredSpecialist,
-      test,
     };
   },
 });
