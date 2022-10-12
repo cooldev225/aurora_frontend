@@ -1,5 +1,5 @@
 <template>
-    <h3 class="fw-bold d-flex align-items-center text-dark">{{ text }}</h3>
+  <h3 class="fw-bold d-flex align-items-center text-dark">{{ text }}</h3>
 </template>
 
 <script lang="ts">
