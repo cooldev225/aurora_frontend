@@ -178,6 +178,7 @@ export default defineComponent({
       loading.value = true;
       store
         .dispatch(Actions.SPECIALIST.SEARCH.LIST, {
+          role_id: 5,
           first_name: filter.first_name,
           last_name: filter.last_name,
           date_of_birth: filter.date_of_birth,
