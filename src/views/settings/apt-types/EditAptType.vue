@@ -186,6 +186,20 @@
             >
               <el-input v-model="formData.payment_tier_10" type="number" />
             </InputWrapper>
+            <InputWrapper
+              class="col-sm-6 mb-5"
+              label="Default Report Template"
+              prop="report_template"
+            >
+              <el-select v-model="formData.report_template" class="w-100">
+                <el-option
+                  v-for="reportTemplate in reportTemplates"
+                  :value="reportTemplate.id"
+                  :label="reportTemplate.title"
+                  :key="reportTemplate.id"
+                />
+              </el-select>
+            </InputWrapper>
           </div>
         </div>
         <!--end::Scroll-->
@@ -243,6 +257,7 @@ import { useRouter, useRoute } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
+import { Actions } from "@/store/enums/StoreEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import { ColorPicker } from "vue-accessible-color-picker";
 
@@ -264,6 +279,7 @@ export default defineComponent({
     const formRef = ref(null);
     const createAptTypeModalRef = ref(null);
     const aptTypes = computed(() => store.getters.getAptTypesList);
+    const reportTemplates = computed(() => store.getters.getReportTemplateList);
     const loading = ref(false);
 
     const formInfo = reactive({
@@ -293,6 +309,7 @@ export default defineComponent({
       payment_tier_8: 0,
       payment_tier_9: 0,
       payment_tier_10: 0,
+      report_template: null,
     });
 
     const rules = ref({
@@ -324,6 +341,7 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
+      store.dispatch(Actions.REPORT_TEMPLATES.LIST);
     });
 
     const submit = () => {
@@ -369,6 +387,7 @@ export default defineComponent({
       formRef,
       loading,
       createAptTypeModalRef,
+      reportTemplates,
       submit,
     };
   },
