@@ -24,7 +24,7 @@
         <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
           <div class="modal-body py-2 px-lg-5">
             <div
-              class="scroll-y me-n7 pe-7"
+              class="scroll-y me-n7 pe-7 w-100"
               id="kt_modal_referral_scroll"
               data-kt-scroll="true"
               data-kt-scroll-activate="{default: false, lg: true}"
@@ -33,6 +33,25 @@
               data-kt-scroll-wrappers="#kt_modal_referral_scroll"
               data-kt-scroll-offset="300px"
             >
+              <InputWrapper prop="toggle">
+                <div class="d-flex w-100">
+                  <LargeIconButton
+                    :class="
+                      'col-6 me-2' +
+                      (!formData.toggleLetterReferral ? ' active' : '')
+                    "
+                    heading="LETTER"
+                    @click="toggleLetterRferralHandle(0)"
+                  />
+                  <LargeIconButton
+                    :class="
+                      'col-6' + (formData.toggleLetterReferral ? ' active' : '')
+                    "
+                    heading="REFERRAL"
+                    @click="toggleLetterRferralHandle(1)"
+                  />
+                </div>
+              </InputWrapper>
               <InputWrapper label="Referral Doctor" prop="referral_doctor">
                 <el-autocomplete
                   class="w-100"
@@ -51,6 +70,29 @@
                     <div class="address">{{ item.address }}</div>
                   </template>
                 </el-autocomplete>
+              </InputWrapper>
+              <InputWrapper label="Appointment" prop="appointment">
+                <el-select
+                  class="w-100"
+                  v-model.number="formData.appointment_id"
+                >
+                  <el-option
+                    v-for="item in appointments"
+                    :value="item.id"
+                    :label="
+                      item.aus_formatted_date +
+                      ' ' +
+                      item.formatted_appointment_time +
+                      '@' +
+                      item.clinic_details.name +
+                      ' ' +
+                      item.appointment_type.name +
+                      ' ' +
+                      item.specialist_name
+                    "
+                    :key="item.id"
+                  />
+                </el-select>
               </InputWrapper>
               <InputWrapper label="Include:" prop="include">
                 <div class="d-flex">
@@ -133,6 +175,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 
 export default defineComponent({
   name: "create-referral-modal",
@@ -150,6 +193,7 @@ export default defineComponent({
     const loading = ref(false);
     const patientId = computed(() => props.patientId);
     const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const appointments = computed(() => store.getters.getAptList);
 
     const formData = ref({
       referral_doctor_name: "",
@@ -160,6 +204,8 @@ export default defineComponent({
       current_medications: null,
       past_medical_history: null,
       message: "",
+      appointment_id: null,
+      toggleLetterReferral: 0,
     });
 
     const rules = ref({
@@ -232,9 +278,20 @@ export default defineComponent({
       //
     };
 
+    const toggleLetterRferralHandle = (toggle) => {
+      formData.value.toggleLetterRferral = toggle;
+    };
+
     onMounted(() => {
       store.dispatch(Actions.LETTER_TEMPLATE.LIST);
       store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      store
+        .dispatch(AppointmentActions.LIST, {
+          //patient_id: patientId.value,
+        })
+        .then(() => {
+          console.log(appointments.value);
+        });
     });
 
     return {
@@ -249,6 +306,8 @@ export default defineComponent({
       handleSelect,
       searchReferralDoctor,
       handleInvest,
+      appointments,
+      toggleLetterRferralHandle,
     };
   },
 });
