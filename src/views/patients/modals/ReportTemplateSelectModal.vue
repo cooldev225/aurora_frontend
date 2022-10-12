@@ -25,7 +25,7 @@
       <InputWrapper label="Header/Footer Template">
         <el-select
           class="w-100"
-          v-model="reportTemplate"
+          v-model="headerFooter"
           placeholder="Select Header/Footer Template"
         >
           <el-option
@@ -92,6 +92,7 @@ export default defineComponent({
     const patientData = computed(() => store.getters.selectedPatient);
     const loading = ref(false);
     const reportTemplate = ref();
+    const headerFooter = ref();
     const appointment = ref();
     const reportTemplatesData = ref([]);
     const headerFooterTemplatesData = ref([]);
@@ -119,6 +120,7 @@ export default defineComponent({
       store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, {
         template: reportTemplatesData.value[reportTemplate.value],
         appointment: appointmentsData.value[appointment.value],
+        headerFooter: headerFooterTemplatesData.value[headerFooter.value],
       });
 
       // hideModal(reportModal.value);
@@ -129,7 +131,10 @@ export default defineComponent({
       loading,
       reportModal,
       reportTemplate,
+      headerFooter,
+      headerFooterData,
       reportTemplatesData,
+      headerFooterTemplatesData,
       appointment,
       appointmentsData,
       submit,

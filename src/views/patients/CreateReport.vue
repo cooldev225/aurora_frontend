@@ -42,6 +42,10 @@
             <InfoSection heading="Referring Doctor">{{
               appointmentData.referral.referring_doctor_name
             }}</InfoSection>
+
+            <InfoSection heading="Header Footer">{{
+              headerFooterData.title
+            }}</InfoSection>
           </div>
           <div
             v-for="section in templateData.sections"
@@ -116,6 +120,9 @@ export default defineComponent({
       () => store.getters.getReportTemplateSelected
     );
     const patientList = computed(() => store.getters.selectedPatient);
+    const headerFooter = computed(
+      () => store.getters.getReportHeaderFooterSelected
+    );
     const appointment = computed(
       () => store.getters.getReportAppointmentSelected
     );
@@ -131,6 +138,7 @@ export default defineComponent({
 
     const patientData = ref();
     const appointmentData = ref();
+    const headerFooterData = ref();
     const formData = ref({
       section: {},
     });
@@ -169,6 +177,7 @@ export default defineComponent({
               appointmentId: appointmentData.value.id,
               specialistId: appointmentData.value.specialist_id,
               documentName: appointmentData.value.appointment_type_name,
+              header_footer_id: headerFooterData.value.id,
             })
             .then((data) => {
               console.log(data);
@@ -187,6 +196,7 @@ export default defineComponent({
       templateData.value = templateList.value;
       patientData.value = patientList.value;
       appointmentData.value = appointment.value;
+      headerFooterData.value = headerFooter.value;
     });
 
     onMounted(() => {
@@ -199,6 +209,7 @@ export default defineComponent({
       templateData,
       patientData,
       appointmentData,
+      headerFooterData,
       formData,
       moment,
       submit,

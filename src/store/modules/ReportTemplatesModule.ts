@@ -26,6 +26,7 @@ export interface ReportTemplateInfo {
   reportAppointmentsData: Array<unknown>;
   reportTemplateSelectData: IReportTemplate;
   reportAppointmentSelectData: unknown;
+  reportHeaderFooterSelectData: unknown;
 }
 
 @Module
@@ -38,6 +39,7 @@ export default class ReportTemplateModule
 
   reportAppointmentsData = [] as Array<unknown>;
   reportAppointmentSelectData = {} as unknown;
+  reportHeaderFooterSelectData = {} as unknown;
 
   /**
    * Get Report Template for current organization
@@ -59,6 +61,10 @@ export default class ReportTemplateModule
     return this.reportAppointmentSelectData;
   }
 
+  get getReportHeaderFooterSelected(): unknown {
+    return this.reportHeaderFooterSelectData;
+  }
+
   @Mutation
   [Mutations.SET_REPORT_APPOINTMENTS.LIST](data) {
     this.reportAppointmentsData = data;
@@ -73,6 +79,7 @@ export default class ReportTemplateModule
   [Mutations.SET_REPORT_TEMPLATES.SELECT](data) {
     this.reportTemplateSelectData = data.template;
     this.reportAppointmentSelectData = data.appointment;
+    this.reportHeaderFooterSelectData = data.headerFooter;
   }
 
   @Action
