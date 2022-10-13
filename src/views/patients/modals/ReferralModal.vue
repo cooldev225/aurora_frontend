@@ -24,7 +24,7 @@
         <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
           <div class="modal-body py-2 px-lg-5">
             <div
-              class="scroll-y me-n7 pe-7"
+              class="scroll-y me-n7 pe-7 w-100"
               id="kt_modal_referral_scroll"
               data-kt-scroll="true"
               data-kt-scroll-activate="{default: false, lg: true}"
@@ -33,14 +33,61 @@
               data-kt-scroll-wrappers="#kt_modal_referral_scroll"
               data-kt-scroll-offset="300px"
             >
+              <InputWrapper prop="toggle">
+                <div class="d-flex">
+                  <LargeIconButton
+                    :class="
+                      'col-6 me-2' +
+                      (!formData.toggleLetterReferral ? ' active' : '')
+                    "
+                    heading="LETTER"
+                    @click="toggleLetterRferralHandle(0)"
+                  />
+                  <LargeIconButton
+                    :class="
+                      'col-6' + (formData.toggleLetterReferral ? ' active' : '')
+                    "
+                    heading="REFERRAL"
+                    @click="toggleLetterRferralHandle(1)"
+                  />
+                </div>
+              </InputWrapper>
+              <InputWrapper
+                label="Appointment"
+                prop="appointment"
+                v-if="!formData.toggleLetterReferral"
+              >
+                <el-select
+                  class="w-100"
+                  v-model.number="formData.appointment_id"
+                  @change="aptChangeHandle"
+                >
+                  <el-option
+                    v-for="item in appointments"
+                    :value="item.id"
+                    :label="
+                      item.aus_formatted_date +
+                      ' ' +
+                      item.formatted_appointment_time +
+                      '@' +
+                      item.clinic_details.name +
+                      ' ' +
+                      item.appointment_type.name +
+                      ' ' +
+                      item.specialist_name
+                    "
+                    :key="item.id"
+                  />
+                </el-select>
+              </InputWrapper>
               <InputWrapper label="Referral Doctor" prop="referral_doctor">
                 <el-autocomplete
                   class="w-100"
-                  v-model="formData.referring_doctor_name"
+                  v-model="formData.referral_doctor_name"
                   value-key="full_name"
                   :fetch-suggestions="searchReferralDoctor"
                   placeholder="Enter Doctor Name"
-                  :trigger-on-focus="false"
+                  :trigger-on-focus="true"
                   @select="handleSelect"
                 >
                   <template #default="{ item }">
@@ -133,6 +180,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 
 export default defineComponent({
   name: "create-referral-modal",
@@ -150,6 +198,7 @@ export default defineComponent({
     const loading = ref(false);
     const patientId = computed(() => props.patientId);
     const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const appointments = computed(() => store.getters.getAptList);
 
     const formData = ref({
       referral_doctor_name: "",
@@ -160,6 +209,8 @@ export default defineComponent({
       current_medications: null,
       past_medical_history: null,
       message: "",
+      appointment_id: null,
+      toggleLetterReferral: 0,
     });
 
     const rules = ref({
@@ -225,16 +276,38 @@ export default defineComponent({
     };
 
     const handleSelect = (item) => {
-      formData.value.referring_doctor_id = item.id;
+      formData.value.referral_doctor_id = item.id;
     };
 
     const handleInvest = () => {
       //
     };
 
+    const toggleLetterRferralHandle = (toggle) => {
+      formData.value.toggleLetterReferral = toggle;
+    };
+
+    const aptChangeHandle = () => {
+      let apt = appointments.value.filter(
+        (a) => a.id == formData.value.appointment_id
+      );
+      if (apt.length) {
+        formData.value.referral_doctor_id = apt[0].referral.referring_doctor.id;
+        formData.value.referral_doctor_name =
+          apt[0].referral.referring_doctor.full_name;
+      }
+    };
+
     onMounted(() => {
       store.dispatch(Actions.LETTER_TEMPLATE.LIST);
       store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      store
+        .dispatch(AppointmentActions.LIST, {
+          //patient_id: patientId.value,
+        })
+        .then(() => {
+          console.log(["appointments", appointments.value]);
+        });
     });
 
     return {
@@ -249,6 +322,9 @@ export default defineComponent({
       handleSelect,
       searchReferralDoctor,
       handleInvest,
+      appointments,
+      toggleLetterRferralHandle,
+      aptChangeHandle,
     };
   },
 });
