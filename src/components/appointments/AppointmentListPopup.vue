@@ -4,7 +4,7 @@
     modalId="available_time_slot_popup"
     modalRef="AppointmentListPopupModalRef"
   >
-    <div class="d-flex flex-row">
+    <div class="d-flex flex-row" v-loading="loading">
       <div class="d-flex align-items-center justify-content-center">
         <svg
           @click="search('PREV')"
@@ -154,6 +154,8 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const searchParam = ref(null);
+    const isInitial = ref(false);
+    const loading = ref(false);
 
     const clinic_name = computed(() => {
       const clinic = props.clinicList.find(
@@ -280,15 +282,23 @@ export default defineComponent({
     };
 
     const handleSearch = async () => {
-      await store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
-        ...searchParam.value,
-      });
+      loading.value = true;
+      await store
+        .dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
+          ...searchParam.value,
+        })
+        .finally(() => {
+          setTimeout(() => {
+            loading.value = false;
+          }, 1000);
+        });
     };
 
     watch(props.searchNextApts, () => {
       setTimeout(() => {
         searchParam.value = props.searchNextApts;
-        handleSearch();
+        !isInitial.value && handleSearch();
+        isInitial.value = true;
       }, 300);
     });
 
@@ -303,6 +313,7 @@ export default defineComponent({
       moment,
       search,
       getClass,
+      loading,
     };
   },
 });
