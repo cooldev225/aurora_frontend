@@ -35,7 +35,7 @@ export interface BookingInfo {
   bookingData: IBookingData;
   filteredData: IBookingData;
   availableAppointmentList: IBookingData;
-  availableSPT: IBookingData;
+  filteredSpecialists: IBookingData;
   searchVal: ISearchVariable;
 }
 
@@ -44,7 +44,7 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   bookingData = {} as IBookingData;
   filteredData = {} as IBookingData;
   availableAppointmentList = {} as IBookingData;
-  availableSPT = {} as IBookingData;
+  filteredSpecialists = {} as IBookingData;
   searchVal = {} as ISearchVariable;
   /**
    * Get current user object
@@ -75,7 +75,7 @@ export default class BooingModule extends VuexModule implements BookingInfo {
    * @returns SelectedclinicsData
    */
   get getAvailableSPTData(): IBookingData {
-    return this.availableSPT;
+    return this.filteredSpecialists;
   }
 
   /**
@@ -104,6 +104,13 @@ export default class BooingModule extends VuexModule implements BookingInfo {
   @Mutation
   [AppointmentMutations.SET_BOOKING.SEARCH.VARIABLE](data: ISearchVariable) {
     this.searchVal = data;
+  }
+
+  @Mutation
+  [AppointmentMutations.SET_BOOKING.SEARCH.FILLTEREDSPECIALISTS](
+    data: IBookingData
+  ) {
+    this.filteredSpecialists = data;
   }
 
   @Action

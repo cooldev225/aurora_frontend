@@ -150,23 +150,31 @@
                   class="card-body card-scroll h-350px d-flex flex-column justify-content-between"
                 >
                   <div class="d-flex flex-column">
-                    <el-checkbox-group
-                      v-model="specialists_search.specialist_ids"
-                      class="d-flex flex-column"
+                    <el-checkbox
+                      v-model="isShowAllSpecialist"
+                      label="Show All Specialists"
+                      size="large"
+                    />
+                    <el-select
+                      v-model="specialistsData"
+                      multiple
+                      filterable
+                      remote
+                      reserve-keyword
+                      placeholder="Please type a specialist name"
+                      remote-show-suffix
+                      :remote-method="remoteMethodSpecalist"
+                      :loading="loading"
+                      :disabled="isShowAllSpecialist"
+                      @change="filterSpecialists"
                     >
-                      <template
-                        v-for="(specialist, index) in ava_specialists"
-                        :key="index"
-                      >
-                        <el-checkbox
-                          size="large"
-                          :label="specialist.id"
-                          :checked="true"
-                          >Dr. {{ specialist.first_name }}
-                          {{ specialist.last_name }}</el-checkbox
-                        >
-                      </template>
-                    </el-checkbox-group>
+                      <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
                   </div>
                   <button
                     class="btn btn-light-primary w-100 mt-2"
@@ -342,13 +350,14 @@ export default defineComponent({
       toggleRestrictionKey: false,
     };
   },
-  setup() {
+  setup: function () {
     const store = useStore();
     const format = ref("YYYY-MM-DD");
     const date_search = reactive({
       date: new Date(),
     });
 
+    const isShowAllSpecialist = ref(false);
     const toggleLayout = ref(false);
 
     const validateAppointmentTypeId = (rule, value, callback) => {
@@ -407,7 +416,14 @@ export default defineComponent({
       24: "In 6 months",
     });
 
-    const ava_specialists = computed(() => store.getters.getAvailableSPTData);
+    const specialistsList = ref([]);
+    const options = ref([]);
+    const specialistsData = ref([]);
+    const loading = ref(false);
+
+    const filtered_specialists = computed(
+      () => store.getters.getAvailableSPTData
+    );
     const specialists = computed(() => store.getters.getFilteredData);
 
     const available_slots_by_date = computed(
@@ -424,15 +440,11 @@ export default defineComponent({
       toggleLayout.value = false;
       store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
-        ...specialists_search,
       });
-
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
-
-      setCurrentPageBreadcrumbs("Dashboard", ["Bookings"]);
     });
 
     const timeStr2Number = (time) => {
@@ -453,11 +465,6 @@ export default defineComponent({
             .format("DD/MM/YYYY");
           search_next_apts.x_weeks = searchAppointmentForm.value.x_weeks;
           search_next_apts.clinic_id = searchAppointmentForm.value.clinic_id;
-
-          // await store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
-          //   ...search_next_apts,
-          // });
-
           const modal = new Modal(
             document.getElementById("modal_available_time_slot_popup")
           );
@@ -492,55 +499,20 @@ export default defineComponent({
     watch(date_search, () => {
       store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
-        ...specialists_search,
       });
     });
-
-    watch(ava_specialists, () => {
-      let temp = [];
-
-      ava_specialists.value.forEach((item) => {
-        specialists_search.specialist_ids.forEach((selected) => {
-          if (item.id === selected) temp.push(item);
-        });
+    watch(specialists, () => {
+      specialistsList.value = specialists.value.map((specialist) => {
+        return {
+          value: specialist.id,
+          label: `Dr.${specialist.first_name} ${specialist.last_name}`,
+        };
       });
-      if (temp.length === 0) temp = ava_specialists.value;
-      const data = ref({});
-      //const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
-      data.value = temp; //[data_key]
-      store.commit(
-        AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS,
-        data.value
-      );
-      store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
-        ...date_search,
-        ...specialists_search,
+      specialists.value.forEach(function (specialist) {
+        // specialist.checked = true;
       });
+      getFilterSpecialists();
     });
-
-    watch(specialists_search, () => {
-      let temp = [];
-      ava_specialists.value.forEach((item) => {
-        specialists_search.specialist_ids.forEach((selected) => {
-          if (item.id === selected) temp.push(item);
-        });
-      });
-      if (specialists_search.specialist_ids.length === 0)
-        temp = ava_specialists.value;
-      const data = ref({});
-      //const data_key = moment(date_search.date).format("YYYY-MM-DD").toString();
-      data.value = temp; //[data_key]
-      store.commit(
-        AppointmentMutations.SET_BOOKING.SEARCH.SPECIALISTS,
-        data.value
-      );
-      // store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
-      // store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-      //   ...date_search,
-      //   ...specialists_search,
-      // });
-    });
-
     const changeDate = (mode) => {
       switch (mode) {
         case 0:
@@ -567,11 +539,94 @@ export default defineComponent({
       }
     };
 
+    watch(specialistsData, () => {
+      let newArray = [];
+      specialistsData.value.forEach(function (data) {
+        if (data.value) {
+          newArray.push(parseInt(data.value));
+        } else {
+          newArray.push(data);
+        }
+      });
+      localStorage.setItem("selectedSpecialist", JSON.stringify(newArray));
+    });
+
+    watch(isShowAllSpecialist, () => {
+      filterSpecialists();
+    });
+
+    const remoteMethodSpecalist = (query) => {
+      if (query) {
+        loading.value = true;
+        setTimeout(() => {
+          loading.value = false;
+          options.value = specialistsList.value.filter((item) => {
+            return item.label.toLowerCase().includes(query.toLowerCase());
+          });
+        }, 200);
+      } else {
+        options.value = [];
+      }
+    };
+    const checkSpecialistSelectected = (id) => {
+      let isSpecialistSelected = false;
+      specialistsData.value.forEach(function (val) {
+        if (val.value == id) isSpecialistSelected = true;
+        if (val === parseInt(id)) isSpecialistSelected = true;
+      });
+      return isSpecialistSelected;
+    };
+    const filterSpecialists = () => {
+      specialists.value.forEach(function (specialist) {
+        if (isShowAllSpecialist.value) {
+          specialist.checked = true;
+        } else {
+          let track = false;
+          specialistsData.value.forEach(function (val) {
+            if (val == specialist.id) {
+              track = true;
+              specialist.checked = true;
+            }
+          });
+          if (!track) specialist.checked = false;
+        }
+      });
+    };
+    //Getting selected specialists from localstorage
+    const getFilterSpecialists = () => {
+      let localSpeclistCodes = null;
+      if (localStorage.getItem("selectedSpecialist") !== null) {
+        localSpeclistCodes = localStorage.getItem("selectedSpecialist");
+        const savedSpecialists = JSON.parse(localSpeclistCodes);
+        if (savedSpecialists.length > 0) {
+          options.value = [];
+          specialists.value.forEach(function (specialist) {
+            options.value.push({
+              value: specialist.id,
+              label: `Dr. ${specialist.first_name} ${specialist.last_name}`,
+            });
+            savedSpecialists.forEach(function (e) {
+              if (e == specialist.id) {
+                specialist.checked = true;
+                if (!checkSpecialistSelectected(e)) {
+                  specialistsData.value.push(specialist.id);
+                }
+              }
+            });
+          });
+        } else {
+          isShowAllSpecialist.value = true;
+        }
+      } else {
+        isShowAllSpecialist.value = true;
+      }
+    };
+
     return {
       format,
       date_search,
       specialists_search,
-      ava_specialists,
+      filtered_specialists,
       specialists,
       available_slots_by_date,
       aptTypelist,
@@ -592,6 +647,12 @@ export default defineComponent({
       changeDate,
       toggleLayout,
       setToggleLayout,
+      isShowAllSpecialist,
+      remoteMethodSpecalist,
+      specialistsData,
+      loading,
+      options,
+      filterSpecialists,
     };
   },
 });

@@ -17,7 +17,7 @@ const AppointmentActions = {
     UPDATE: "updateProcedureApproval",    //  (put)    '/appointment/procedure-approvals/{appointment}'
     UPLOAD: "uploadProcedureApproval",    //  (put)    '/appointment/procedure-approvals/upload/{appointment}'
   },
-  CONFIRMATION_STATUS: {   
+  CONFIRMATION_STATUS: {
     UPDATE: "updateCancellationApt",      //  (put) '/appointments/confirmation-status/{appointment}'
   },
   COLLECTING_PERSON:{
@@ -29,14 +29,14 @@ const AppointmentActions = {
     VALIDATE:     "validateAptPreAdmission",
     STORE:        "createAptPreAdmission",
   },
-  
+
 
 
   // These are slowly being moved to the above
   APT: {
     CREATE: "createApt",
     DELETE: "deleteApt",
-    UPDATE: "updateApt", 
+    UPDATE: "updateApt",
     CHECK_IN: "checkInApt",
     CHECK_OUT: "checkOutApt",
   },
@@ -46,7 +46,7 @@ const AppointmentActions = {
       NEXT_APT: "searchNextApt",
     },
   },
- 
+
 };
 
 const AppointmentMutations = {
@@ -58,6 +58,7 @@ const AppointmentMutations = {
       VARIABLE: "setSearchVariable",
       DATE: "setFilteredBookingByDate",
       SPECIALISTS: "setFilteredBookingBySPT",
+      FILLTEREDSPECIALISTS: "setFilteredBookingBySPT1",
       NEXT_APTS: "setNextAptList",
     },
   },
@@ -82,7 +83,7 @@ const AppointmentMutations = {
       SELECT: "setSelectUserApt",
     },
   },
-  
+
   SET_PROCEDURE_APPROVAL: {
     LIST: "setProcedureApprovalsList",
     DATA: "setProcedureApproval",
