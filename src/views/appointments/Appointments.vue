@@ -150,21 +150,31 @@
                   class="card-body card-scroll h-350px d-flex flex-column justify-content-between"
                 >
                   <div class="d-flex flex-column">
-                    <template
-                      v-for="(specialist, index) in specialists"
-                      :key="index"
+                    <el-checkbox
+                      v-model="isShowAllSpecialist"
+                      label="Show All Specialists"
+                      size="large"
+                    />
+                    <el-select
+                      v-model="specialistsData"
+                      multiple
+                      filterable
+                      remote
+                      reserve-keyword
+                      placeholder="Please type a specialist name"
+                      remote-show-suffix
+                      :remote-method="remoteMethodSpecalist"
+                      :loading="loading"
+                      :disabled="isShowAllSpecialist"
+                      @change="filterSpecialists"
                     >
-                      <el-checkbox
-                        v-model="specialist.checked"
-                        :label="
-                          'Dr. ' +
-                          specialist.first_name +
-                          ' ' +
-                          specialist.first_name
-                        "
-                        size="large"
+                      <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
                       />
-                    </template>
+                    </el-select>
                   </div>
                   <button
                     class="btn btn-light-primary w-100 mt-2"
@@ -347,6 +357,7 @@ export default defineComponent({
       date: new Date(),
     });
 
+    const isShowAllSpecialist = ref(false);
     const toggleLayout = ref(false);
 
     const validateAppointmentTypeId = (rule, value, callback) => {
@@ -404,6 +415,12 @@ export default defineComponent({
       12: "In 3 months",
       24: "In 6 months",
     });
+
+    const specialistsList = ref([]);
+    const options = ref([]);
+    const specialistsData = ref([]);
+    const loading = ref(false);
+
     const filtered_specialists = computed(
       () => store.getters.getAvailableSPTData
     );
@@ -429,8 +446,6 @@ export default defineComponent({
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
-
-      setCurrentPageBreadcrumbs("Dashboard", ["Bookings"]);
     });
 
     const timeStr2Number = (time) => {
@@ -488,9 +503,16 @@ export default defineComponent({
       });
     });
     watch(specialists, () => {
-      specialists.value.forEach(function (specialist) {
-        specialist.checked = true;
+      specialistsList.value = specialists.value.map((specialist) => {
+        return {
+          value: specialist.id,
+          label: `Dr.${specialist.first_name} ${specialist.last_name}`,
+        };
       });
+      specialists.value.forEach(function (specialist) {
+        // specialist.checked = true;
+      });
+      getFilterSpecialists();
     });
     const changeDate = (mode) => {
       switch (mode) {
@@ -515,6 +537,87 @@ export default defineComponent({
         case 6:
           date_search.date = moment(date_search.date).add(1, "years");
           break;
+      }
+    };
+
+    watch(specialistsData, () => {
+      let newArray = [];
+      specialistsData.value.forEach(function (data) {
+        if (data.value) {
+          newArray.push(parseInt(data.value));
+        } else {
+          newArray.push(data);
+        }
+      });
+      localStorage.setItem("selectedSpecialist", JSON.stringify(newArray));
+    });
+
+    watch(isShowAllSpecialist, () => {
+      filterSpecialists();
+    });
+
+    const remoteMethodSpecalist = (query) => {
+      if (query) {
+        loading.value = true;
+        setTimeout(() => {
+          loading.value = false;
+          options.value = specialistsList.value.filter((item) => {
+            return item.label.toLowerCase().includes(query.toLowerCase());
+          });
+        }, 200);
+      } else {
+        options.value = [];
+      }
+    };
+    const checkSpecialistSelectected = (id) => {
+      let isSpecialistSelected = false;
+      specialistsData.value.forEach(function (val) {
+        if (val.value == id) isSpecialistSelected = true;
+        if (val === parseInt(id)) isSpecialistSelected = true;
+      });
+      return isSpecialistSelected;
+    };
+    const filterSpecialists = () => {
+      specialists.value.forEach(function (specialist) {
+        if (isShowAllSpecialist.value) {
+          specialist.checked = true;
+        } else {
+          let track = false;
+          specialistsData.value.forEach(function (val) {
+            if (val == specialist.id) {
+              track = true;
+              specialist.checked = true;
+            }
+          });
+          if (!track) specialist.checked = false;
+        }
+      });
+    };
+    //Getting selected specialists from localstorage
+    const getFilterSpecialists = () => {
+      let localSpeclistCodes = null;
+      if (localStorage.getItem("selectedSpecialist") !== null) {
+        localSpeclistCodes = localStorage.getItem("selectedSpecialist");
+        const savedSpecialists = JSON.parse(localSpeclistCodes);
+        if (savedSpecialists.length > 0) {
+          savedSpecialists.forEach(function (e) {
+            specialists.value.forEach(function (specialist) {
+              if (e == specialist.id) {
+                specialist.checked = true;
+                if (!checkSpecialistSelectected(e)) {
+                  specialistsData.value.push({
+                    value: `${specialist.id}`,
+                    label: `Dr. ${specialist.first_name} ${specialist.last_name}`,
+                  });
+                }
+              }
+            });
+          });
+        } else {
+          isShowAllSpecialist.value = true;
+        }
+      } else {
+        isShowAllSpecialist.value = true;
       }
     };
 
@@ -543,6 +646,12 @@ export default defineComponent({
       changeDate,
       toggleLayout,
       setToggleLayout,
+      isShowAllSpecialist,
+      remoteMethodSpecalist,
+      specialistsData,
+      loading,
+      options,
+      filterSpecialists,
     };
   },
 });
