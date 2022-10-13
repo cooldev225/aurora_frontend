@@ -605,10 +605,11 @@ export default defineComponent({
               if (e == specialist.id) {
                 specialist.checked = true;
                 if (!checkSpecialistSelectected(e)) {
-                  specialistsData.value.push({
-                    value: `${specialist.id}`,
+                  options.value.push({
+                    value: specialist.id,
                     label: `Dr. ${specialist.first_name} ${specialist.last_name}`,
                   });
+                  specialistsData.value.push(specialist.id);
                 }
               }
             });
