@@ -488,6 +488,7 @@
                         <el-input
                           type="text"
                           v-model="patientInfoData.first_name"
+                          @keyup="matchExistPatientHandle(event)"
                           placeholder="Enter First Name"
                         />
                       </InputWrapper>
@@ -500,6 +501,7 @@
                         <el-input
                           type="text"
                           v-model="patientInfoData.last_name"
+                          @keyup="matchExistPatientHandle(event)"
                           placeholder="Enter Last Name"
                         />
                       </InputWrapper>
@@ -515,6 +517,7 @@
                           class="w-100"
                           format="DD-MM-YYYY"
                           v-model="patientInfoData.date_of_birth"
+                          @change="matchExistPatientHandle(event)"
                           placeholder=""
                         />
                       </InputWrapper>
@@ -531,6 +534,22 @@
                           placeholder="Enter Contact Number"
                         />
                       </InputWrapper>
+
+                      <div
+                        class="exist-message px-7 mt-2 mb-2"
+                        v-if="patientInfoData.is_exist"
+                      >
+                        <label class="mb-2">
+                          A patient matching these details already exists
+                        </label>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-primary w-100 mb-5"
+                          @click="showMatchPatientsHandle"
+                        >
+                          Show match patients
+                        </button>
+                      </div>
 
                       <InputWrapper label="Address" prop="address">
                         <GMapAutocomplete
@@ -1166,6 +1185,11 @@
 .modal.patient-alert .modal-footer {
   display: none;
 }
+.exist-message {
+  label {
+    color: grey;
+  }
+}
 </style>
 <script>
 import {
@@ -1257,6 +1281,7 @@ export default defineComponent({
       appointment_confirm_method: "",
       allergies: "",
       clinical_alerts: "",
+      is_exist: false,
     });
 
     const billingInfoData = ref({
@@ -1662,6 +1687,27 @@ export default defineComponent({
       otherInfoData.value.procedure_answers = temp;
     };
 
+    const matchExistPatientHandle = () => {
+      let filtered_patients = patientList.value.filter(
+        (p) =>
+          p.first_name === patientInfoData.value.first_name &&
+          p.last_name === patientInfoData.value.last_name &&
+          moment(p.date_of_birth).format("DD/MM/YYYY") ===
+            moment(patientInfoData.value.date_of_birth).format("DD/MM/YYYY")
+      );
+      if (filtered_patients.length) {
+        patientInfoData.value.is_exist = true;
+      }
+    };
+
+    const showMatchPatientsHandle = () => {
+      patientStep.value = 1;
+      filterPatient.first_name = patientInfoData.value.first_name;
+      filterPatient.last_name = patientInfoData.value.last_name;
+      filterPatient.date_of_birth = patientInfoData.value.date_of_birth;
+      patientInfoData.value.is_exist = false;
+    };
+
     watch(patientList, () => {
       patientTableData.value = patientList;
       renderTable();
@@ -1784,6 +1830,7 @@ export default defineComponent({
           if (!_stepperObj.value) {
             return;
           }
+          store.dispatch(PatientActions.LIST);
           _stepperObj.value.goNext();
         }
       });
@@ -1995,6 +2042,10 @@ export default defineComponent({
     const patientStep_1 = () => {
       patientTableData.value = [];
       for (let key in patientInfoData.value) patientInfoData.value[key] = "";
+      if (filterPatient.date_of_birth != "")
+        filterPatient.date_of_birth = moment(
+          filterPatient.date_of_birth
+        ).format("YYYY-MM-DD");
       store.dispatch(PatientActions.LIST, filterPatient);
       patientStep.value++;
     };
@@ -2148,6 +2199,8 @@ export default defineComponent({
       cur_specialist_id,
       title,
       refName,
+      matchExistPatientHandle,
+      showMatchPatientsHandle,
     };
   },
 });
