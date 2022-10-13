@@ -28,19 +28,24 @@
         <td>{{ data.new }}</td>
       </tr>
     </table>
-    <button
-      :data-kt-indicator="loading ? 'on' : null"
-      class="btn btn-lg btn-primary"
-      type="submit"
-    >
-      <span v-if="!loading" class="indicator-label">Yes, update details</span>
-      <span v-if="loading" class="indicator-progress">
-        Please wait...
-        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-      </span>
-    </button>
 
-    <button class="btn btn-lg btn-secondary" type="submit">No</button>
+    <div class="d-flex justify-content-end">
+      <button
+        :data-kt-indicator="loading ? 'on' : null"
+        class="btn btn-lg btn-primary me-2"
+        type="submit"
+      >
+        <span v-if="!loading" class="indicator-label">Yes, update details</span>
+        <span v-if="loading" class="indicator-progress">
+          Please wait...
+          <span
+            class="spinner-border spinner-border-sm align-middle ms-2"
+          ></span>
+        </span>
+      </button>
+
+      <button class="btn btn-lg btn-secondary" type="submit">No</button>
+    </div>
   </ModalWrapper>
 </template>
 

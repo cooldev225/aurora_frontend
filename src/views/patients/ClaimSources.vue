@@ -14,6 +14,10 @@
       >
         <template v-slot:cell-billing_type="{ row: item }">
           {{ getBillingType(item.billing_type) }}
+          <span v-if="item.billing_type == 2" class="text-primary">
+            <br />
+            {{ getHealthFund(item.health_fund_id) }}
+          </span>
 
           <template v-if="item.has_medicare_concession">
             <br />
@@ -95,7 +99,7 @@
             </button>
 
             <button
-              class="btn btn-bg-danger btn-active-color-danger btn-sm mt-2"
+              class="btn btn-bg-danger btn-sm mt-2"
               :disabled="loading != null"
               @click="handleDeleteSource(item)"
             >
@@ -104,7 +108,13 @@
           </div>
         </template>
       </Datatable>
-      {{ loading }}
+
+      <MedicareUpdateDetailsModal
+        :patientId="selectedPatient?.id"
+        :updateDetails="updateDetails"
+      />
+
+      <AddClaimSourceModal :patient="selectedPatient" />
     </template>
   </CardSection>
 </template>
@@ -127,6 +137,7 @@ import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import MedicareUpdateDetailsModal from "@/views/patients/modals/MedicareUpdateDetailsModal.vue";
+import AddClaimSourceModal from "@/views/patients/modals/AddClaimSourceModal.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import { Modal } from "bootstrap";
 import PatientBillingTypes from "@/core/data/patient-billing-types";
@@ -134,7 +145,8 @@ import PatientBillingTypes from "@/core/data/patient-billing-types";
 export default defineComponent({
   name: "patient-claim-sources",
   components: {
-    // MedicareUpdateDetailsModal,
+    MedicareUpdateDetailsModal,
+    AddClaimSourceModal,
     IconButton,
     Datatable,
   },
@@ -179,6 +191,7 @@ export default defineComponent({
     ]);
     const tableData = ref([]);
     const tableKey = ref(0);
+    const updateDetails = ref({});
 
     const renderTable = () => tableKey.value++;
 
@@ -190,9 +203,21 @@ export default defineComponent({
       return foundType?.label ?? null;
     };
 
+    const getHealthFund = (id) => {
+      const foundFund = healthFundsList.value.find((fund) => fund.id == id);
+
+      return foundFund?.name ?? null;
+    };
+
+    const handleAddClaimSource = () => {
+      const modal = new Modal(
+        document.getElementById("modal_add_claim_source")
+      );
+      modal.show();
+    };
+
     const handleDeleteSource = (item) => {
       Swal.fire({
-        title: "Are you sure?",
         text: `Are you sure you want to delete this ${getBillingType(
           item.billing_type
         )}?`,
@@ -203,6 +228,7 @@ export default defineComponent({
         cancelButtonText: "No",
         customClass: {
           confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-secondary",
         },
       }).then((result) => {
         if (result.isConfirmed) {
@@ -217,6 +243,7 @@ export default defineComponent({
 
     const doValidation = (endpoint, data, item, isConcession = false) => {
       loading.value = isConcession ? `${item.id}-Con` : item.id;
+      updateDetails.value = {};
 
       store
         .dispatch(endpoint, data)
@@ -268,7 +295,27 @@ export default defineComponent({
               "update_details"
             )
           ) {
-            // Show modal to update the customers values
+            for (const detailName in validation.data.update_details) {
+              switch (detailName) {
+                case "givenName":
+                  updateDetails.value.first_name =
+                    validation.data.update_details[detailName];
+                  break;
+                case "familyName":
+                  updateDetails.value.last_name =
+                    validation.data.update_details[detailName];
+                  break;
+                case "memberRefNumber":
+                  updateDetails.value.member_reference_number =
+                    validation.data.update_details[detailName];
+                  break;
+              }
+            }
+
+            const modal = new Modal(
+              document.getElementById("modal_update_patient_details")
+            );
+            modal.show();
           }
         })
         .catch((e) => {
@@ -402,6 +449,9 @@ export default defineComponent({
       revalidateSource,
       handleDeleteSource,
       handleCheckConcession,
+      updateDetails,
+      handleAddClaimSource,
+      getHealthFund,
     };
   },
 });
