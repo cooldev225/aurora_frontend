@@ -20,7 +20,12 @@
           v-for="specialist in filteredSpecialists"
           :key="specialist.id"
         >
-          <template v-if="specialist.checked">
+          <template
+            v-if="
+              specialist.checked &&
+              filterClinics(specialist.schedule_timeslots[0].clinic_id)
+            "
+          >
             <th style="height: 60px; width: 40px"></th>
             <th class="text-center text-primary py-3">
               {{
@@ -51,7 +56,12 @@
           v-for="specialist in filteredSpecialists"
           :key="specialist.id"
         >
-          <template v-if="specialist.checked">
+          <template
+            v-if="
+              specialist.checked &&
+              filterClinics(specialist.schedule_timeslots[0].clinic_id)
+            "
+          >
             <CreateAppointmentTableData
               v-if="specialist"
               :specialist="specialist"
@@ -103,7 +113,7 @@ export default defineComponent({
   components: { CreateAppointmentTableData, AppointmentTableData },
   props: {
     date: { type: String, required: true },
-    selectedSpecialists: { type: Array, required: true },
+    filteredClinics: { type: Array, required: true },
   },
   setup(props) {
     const store = useStore();
@@ -221,6 +231,10 @@ export default defineComponent({
       return false;
     };
 
+    //Check specialist clinic is selected one in filter or not
+    const filterClinics = (id) => {
+      return props.filteredClinics.includes(id, 0);
+    };
     return {
       format,
       tableData,
@@ -233,6 +247,7 @@ export default defineComponent({
       filteredSpecialists,
       clinic_list,
       _apt_date,
+      filterClinics,
     };
   },
 });

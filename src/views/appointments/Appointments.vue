@@ -176,6 +176,32 @@
                       />
                     </el-select>
                   </div>
+                  <div class="d-flex flex-column">
+                    <el-checkbox
+                      v-model="isShowAllClinics"
+                      label="Show All Clinics"
+                      size="large"
+                    />
+                    <el-select
+                      v-model="clinicsData"
+                      multiple
+                      filterable
+                      remote
+                      reserve-keyword
+                      placeholder="Please type a clinc name"
+                      remote-show-suffix
+                      :remote-method="remoteMethodClinic"
+                      :loading="loading"
+                      :disabled="isShowAllClinics"
+                    >
+                      <el-option
+                        v-for="item in clinicOptions"
+                        :value="item.id"
+                        :label="item.name"
+                        :key="item.id"
+                      />
+                    </el-select>
+                  </div>
                   <button
                     class="btn btn-light-primary w-100 mt-2"
                     @click="handleReset"
@@ -292,6 +318,7 @@
           <div class="d-flex flex-column">
             <AppointmentTable
               :date="moment(date_search.date.toString()).format('MM-DD-YYYY')"
+              :filteredClinics="selectedClinicIds"
             />
           </div>
         </div>
@@ -420,6 +447,9 @@ export default defineComponent({
     const options = ref([]);
     const specialistsData = ref([]);
     const loading = ref(false);
+    const isShowAllClinics = ref(false);
+    const clinicOptions = ref([]);
+    const clinicsData = ref([]);
 
     const filtered_specialists = computed(
       () => store.getters.getAvailableSPTData
@@ -445,6 +475,20 @@ export default defineComponent({
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
+    });
+
+    const selectedClinicIds = computed(() => {
+      let newArray = [];
+      if (isShowAllClinics.value) {
+        newArray = clinic_list.value.map((item) => {
+          return item.id;
+        });
+      } else {
+        newArray = clinicsData.value.map((item) => {
+          return item;
+        });
+      }
+      return newArray;
     });
 
     const timeStr2Number = (time) => {
@@ -483,6 +527,8 @@ export default defineComponent({
       searchAppointmentForm.value.clinic_id = "";
       searchAppointmentForm.value.specialist_id = "";
       searchAppointmentForm.value.time_requirement = 0;
+      isShowAllClinics.value = true;
+      isShowAllSpecialist.value = true;
     };
 
     watchEffect(() => {
@@ -508,10 +554,11 @@ export default defineComponent({
           label: `Dr.${specialist.first_name} ${specialist.last_name}`,
         };
       });
-      specialists.value.forEach(function (specialist) {
-        // specialist.checked = true;
-      });
       getFilterSpecialists();
+    });
+
+    watch(clinic_list, () => {
+      getSelectedClinics();
     });
     const changeDate = (mode) => {
       switch (mode) {
@@ -551,6 +598,18 @@ export default defineComponent({
       localStorage.setItem("selectedSpecialist", JSON.stringify(newArray));
     });
 
+    watch(clinicsData, () => {
+      let newArray = [];
+      clinicsData.value.forEach(function (data) {
+        if (data.value) {
+          newArray.push(parseInt(data.value));
+        } else {
+          newArray.push(data);
+        }
+      });
+      localStorage.setItem("selectedClinics", JSON.stringify(newArray));
+    });
+
     watch(isShowAllSpecialist, () => {
       filterSpecialists();
     });
@@ -568,6 +627,23 @@ export default defineComponent({
         options.value = [];
       }
     };
+
+    const remoteMethodClinic = (query) => {
+      if (query) {
+        loading.value = true;
+        setTimeout(() => {
+          loading.value = false;
+          clinicOptions.value = clinic_list.value.filter((item) => {
+            return item.name.toLowerCase().includes(query.toLowerCase());
+          });
+        }, 200);
+      } else {
+        clinicOptions.value = clinic_list.value.filter((item) => {
+          return item.name.toLowerCase();
+        });
+      }
+    };
+
     const checkSpecialistSelectected = (id) => {
       let isSpecialistSelected = false;
       specialistsData.value.forEach(function (val) {
@@ -594,10 +670,10 @@ export default defineComponent({
     };
     //Getting selected specialists from localstorage
     const getFilterSpecialists = () => {
-      let localSpeclistCodes = null;
+      let localSpecialistCodes = null;
       if (localStorage.getItem("selectedSpecialist") !== null) {
-        localSpeclistCodes = localStorage.getItem("selectedSpecialist");
-        const savedSpecialists = JSON.parse(localSpeclistCodes);
+        localSpecialistCodes = localStorage.getItem("selectedSpecialist");
+        const savedSpecialists = JSON.parse(localSpecialistCodes);
         if (savedSpecialists.length > 0) {
           options.value = [];
           specialists.value.forEach(function (specialist) {
@@ -621,7 +697,24 @@ export default defineComponent({
         isShowAllSpecialist.value = true;
       }
     };
-
+    //Getting selected clinics from localstorage
+    const getSelectedClinics = () => {
+      let localClinicCodes = null;
+      if (localStorage.getItem("selectedClinics") !== null) {
+        localClinicCodes = JSON.parse(localStorage.getItem("selectedClinics"));
+        if (localClinicCodes.length > 0) {
+          clinicsData.value = [];
+          remoteMethodClinic();
+          localClinicCodes.forEach(function (code) {
+            clinicsData.value.push(code);
+          });
+        } else {
+          isShowAllClinics.value = true;
+        }
+      } else {
+        isShowAllClinics.value = true;
+      }
+    };
     return {
       format,
       date_search,
@@ -653,6 +746,11 @@ export default defineComponent({
       loading,
       options,
       filterSpecialists,
+      isShowAllClinics,
+      remoteMethodClinic,
+      clinicOptions,
+      clinicsData,
+      selectedClinicIds,
     };
   },
 });
