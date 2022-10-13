@@ -441,7 +441,6 @@ export default defineComponent({
       store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
       });
-
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
@@ -600,15 +599,16 @@ export default defineComponent({
         localSpeclistCodes = localStorage.getItem("selectedSpecialist");
         const savedSpecialists = JSON.parse(localSpeclistCodes);
         if (savedSpecialists.length > 0) {
-          savedSpecialists.forEach(function (e) {
-            specialists.value.forEach(function (specialist) {
+          options.value = [];
+          specialists.value.forEach(function (specialist) {
+            options.value.push({
+              value: specialist.id,
+              label: `Dr. ${specialist.first_name} ${specialist.last_name}`,
+            });
+            savedSpecialists.forEach(function (e) {
               if (e == specialist.id) {
                 specialist.checked = true;
                 if (!checkSpecialistSelectected(e)) {
-                  options.value.push({
-                    value: specialist.id,
-                    label: `Dr. ${specialist.first_name} ${specialist.last_name}`,
-                  });
                   specialistsData.value.push(specialist.id);
                 }
               }
