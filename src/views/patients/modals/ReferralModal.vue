@@ -34,7 +34,7 @@
               data-kt-scroll-offset="300px"
             >
               <InputWrapper prop="toggle">
-                <div class="d-flex w-100">
+                <div class="d-flex">
                   <LargeIconButton
                     :class="
                       'col-6 me-2' +
@@ -52,29 +52,15 @@
                   />
                 </div>
               </InputWrapper>
-              <InputWrapper label="Referral Doctor" prop="referral_doctor">
-                <el-autocomplete
-                  class="w-100"
-                  v-model="formData.referring_doctor_name"
-                  value-key="full_name"
-                  :fetch-suggestions="searchReferralDoctor"
-                  placeholder="Enter Doctor Name"
-                  :trigger-on-focus="false"
-                  @select="handleSelect"
-                >
-                  <template #default="{ item }">
-                    <div class="name">
-                      {{ item.title }}
-                      {{ item.first_name }} {{ item.last_name }}
-                    </div>
-                    <div class="address">{{ item.address }}</div>
-                  </template>
-                </el-autocomplete>
-              </InputWrapper>
-              <InputWrapper label="Appointment" prop="appointment">
+              <InputWrapper
+                label="Appointment"
+                prop="appointment"
+                v-if="!formData.toggleLetterReferral"
+              >
                 <el-select
                   class="w-100"
                   v-model.number="formData.appointment_id"
+                  @change="aptChangeHandle"
                 >
                   <el-option
                     v-for="item in appointments"
@@ -93,6 +79,25 @@
                     :key="item.id"
                   />
                 </el-select>
+              </InputWrapper>
+              <InputWrapper label="Referral Doctor" prop="referral_doctor">
+                <el-autocomplete
+                  class="w-100"
+                  v-model="formData.referral_doctor_name"
+                  value-key="full_name"
+                  :fetch-suggestions="searchReferralDoctor"
+                  placeholder="Enter Doctor Name"
+                  :trigger-on-focus="true"
+                  @select="handleSelect"
+                >
+                  <template #default="{ item }">
+                    <div class="name">
+                      {{ item.title }}
+                      {{ item.first_name }} {{ item.last_name }}
+                    </div>
+                    <div class="address">{{ item.address }}</div>
+                  </template>
+                </el-autocomplete>
               </InputWrapper>
               <InputWrapper label="Include:" prop="include">
                 <div class="d-flex">
@@ -271,7 +276,7 @@ export default defineComponent({
     };
 
     const handleSelect = (item) => {
-      formData.value.referring_doctor_id = item.id;
+      formData.value.referral_doctor_id = item.id;
     };
 
     const handleInvest = () => {
@@ -279,7 +284,18 @@ export default defineComponent({
     };
 
     const toggleLetterRferralHandle = (toggle) => {
-      formData.value.toggleLetterRferral = toggle;
+      formData.value.toggleLetterReferral = toggle;
+    };
+
+    const aptChangeHandle = () => {
+      let apt = appointments.value.filter(
+        (a) => a.id == formData.value.appointment_id
+      );
+      if (apt.length) {
+        formData.value.referral_doctor_id = apt[0].referral.referring_doctor.id;
+        formData.value.referral_doctor_name =
+          apt[0].referral.referring_doctor.full_name;
+      }
     };
 
     onMounted(() => {
@@ -290,7 +306,7 @@ export default defineComponent({
           //patient_id: patientId.value,
         })
         .then(() => {
-          console.log(appointments.value);
+          console.log(["appointments", appointments.value]);
         });
     });
 
@@ -308,6 +324,7 @@ export default defineComponent({
       handleInvest,
       appointments,
       toggleLetterRferralHandle,
+      aptChangeHandle,
     };
   },
 });
