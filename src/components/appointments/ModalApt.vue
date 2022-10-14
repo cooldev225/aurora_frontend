@@ -1662,7 +1662,12 @@ export default defineComponent({
 
     watch(patientStatus, () => {
       if (patientStatus.value === "new") patientStep.value = 3;
-      else patientStep.value = 1;
+      else {
+        patientStep.value = 1;
+        filterPatient.first_name = "";
+        filterPatient.last_name = "";
+        filterPatient.date_of_birth = "";
+      }
     });
 
     const renderTable = () => tableKey.value++;
@@ -1705,6 +1710,7 @@ export default defineComponent({
       filterPatient.first_name = patientInfoData.value.first_name;
       filterPatient.last_name = patientInfoData.value.last_name;
       filterPatient.date_of_birth = patientInfoData.value.date_of_birth;
+      patientStep_1();
       patientInfoData.value.is_exist = false;
     };
 
@@ -1807,6 +1813,13 @@ export default defineComponent({
     const handleStep_1 = () => {
       if (!formRef_1.value) {
         return;
+      }
+
+      //custom
+      if (patientStatus.value === "new") {
+        patientStep.value = 3;
+      } else {
+        patientStep.value = 1;
       }
 
       if (props.modalId == "modal_create_apt") {
@@ -1915,6 +1928,8 @@ export default defineComponent({
         cur_appointment_type_id.value = "";
         for (let key in patientInfoData.value) patientInfoData.value[key] = "";
         for (let key in billingInfoData.value) billingInfoData.value[key] = "";
+        patientStatus.value = "new";
+        patientStep.value = 3;
       } else {
         // Edit modal
         store.dispatch(PatientActions.LIST);
