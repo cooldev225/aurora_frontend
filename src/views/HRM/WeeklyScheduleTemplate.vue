@@ -63,13 +63,7 @@
                 >
                   {{ moment(timeslot.start_time, "hh:ss").format("hh:ss") }} -
                   {{ moment(timeslot.end_time, "hh:ss").format("hh:ss") }}
-                  <span
-                    >({{
-                      clinics
-                        .filter((x) => x.id == timeslot.clinic_id)[0]
-                        .name.split(" ")[0]
-                    }})</span
-                  ></span
+                  <span> ({{ timeslotClinicName(timeslot) }})</span></span
                 >
               </template>
             </div>
@@ -120,11 +114,9 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Weekly Schedule Template", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
-      console.log(employeeList.value);
     });
 
     watch(clinics, () => {
-      //console.log(["clinics=", clinics.value]);
       if (clinics.value.length) {
         clinicFilter.value = clinics.value[0].id;
       }
@@ -134,19 +126,18 @@ export default defineComponent({
       //let add_data = tableData.value?.filter((t) => t.id == -1);
       tableData.value = scheduleTemplates.value;
       //if (add_data?.length) tableData.value.push(add_data);
-      //console.log(["tableData.value=", tableData.value]);
     });
 
     const handleEditTemplateTimeslots = (schedule, day) => {
-      //console.log("EDIT schedule id:" + schedule.id + " on " + day);
       schedule._title = "Edit Time Slot - " + day.label;
       schedule._action = "edit_weekly_time";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
+      schedule.clinic_id = clinicFilter.value;
       if (schedule.id) schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
       schedule._day = day.value;
 
       store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
-      let timeslots = schedule.timeslots.filter(
+      let timeslots = schedule.schedule_timeslots.filter(
         (t) => t.week_day == schedule._day
       );
       if (!timeslots.length) {
@@ -158,7 +149,6 @@ export default defineComponent({
     };
 
     const handleEditTemplate = (schedule) => {
-      //console.log("EDIT schedule id:" + schedule.id);
       schedule._title = "Edit Employee Type";
       schedule._action = "edit_employee_type";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
@@ -184,6 +174,16 @@ export default defineComponent({
       tableData.value.push(schedule);
     };
 
+    const timeslotClinicName = (timeslot) => {
+      let clinicName = null;
+      if (timeslot) {
+        clinicName = clinics.value
+          .filter((x) => x.id == timeslot.clinic_id)[0]
+          .name.split(" ")[0];
+      }
+      return clinicName;
+    };
+
     return {
       scheduleTemplates,
       weekdays,
@@ -196,6 +196,7 @@ export default defineComponent({
       employeeRoles,
       tableData,
       employeeList,
+      timeslotClinicName,
     };
   },
 });

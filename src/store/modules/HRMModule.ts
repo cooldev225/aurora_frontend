@@ -64,7 +64,6 @@ export default class HRMModule
         },
       })
         .then(({ data }) => {
-          console.log(data.data);
           this.context.commit(
             HRMMutations.SCHEDULE_TEMPLATE.SET_LIST,
             data.data
@@ -83,7 +82,7 @@ export default class HRMModule
   [HRMActions.SCHEDULE_TEMPLATE.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("hrm/hrm-weekly-schedule-template", item)
+      ApiService.post("hrm/hrm-schedule-timeslot", item)
         .then(({ data }) => {
           return data.data;
         })
@@ -99,7 +98,7 @@ export default class HRMModule
   [HRMActions.SCHEDULE_TEMPLATE.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("hrm/hrm-weekly-schedule-template", item.id, item)
+      ApiService.update("hrm/hrm-schedule-timeslot", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
