@@ -1111,7 +1111,7 @@
                       </div>
                       <!--end::Referral Information-->
                       <!--start::Appointment History-->
-                      <div class="card-info">
+                      <div class="card-info" v-if="patientStatus === 'exist'">
                         <span class="fs-3 fw-bold text-muted"
                           >Appointment History</span
                         >
@@ -2105,6 +2105,7 @@ export default defineComponent({
     const patientPrevStep = () => {
       if (patientStatus.value === "new") previousStep();
       else patientStep.value--;
+      console.log(["patientAptData", patientAptData.value]);
     };
 
     const handleSelectReferringDoctor = (item) => {
