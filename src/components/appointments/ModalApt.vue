@@ -425,6 +425,21 @@
                           </button>
                         </template>
                       </Datatable>
+                      <span v-if="patientInfoData.is_ok === false">
+                        This patient is blacklisted and cannot be booked in.
+                        Please speak to your organization manager to resolve.
+                      </span>
+                      <div class="special-patient-alerts d-flex gap-2 flex-row">
+                        <template
+                          v-for="alert in patientInfoData.alerts"
+                          :key="alert.id"
+                        >
+                          <template v-if="!alert.is_dismissed">
+                            <PatientAlert :alert="alert" />
+                            <ViewPatientAlertModal :alert="alert" />
+                          </template>
+                        </template>
+                      </div>
                     </div>
                     <div class="d-flex justify-content-between">
                       <button
@@ -439,6 +454,19 @@
                           />
                         </span>
                         Back
+                      </button>
+                      <button
+                        type="button"
+                        v-if="patientInfoData.is_ok"
+                        class="btn btn-lg btn-primary align-self-end"
+                        @click="afterSelectPatient"
+                      >
+                        Continue
+                        <span class="svg-icon svg-icon-4 ms-1 me-0">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr064.svg"
+                          />
+                        </span>
                       </button>
                     </div>
                   </el-form>
@@ -1134,6 +1162,11 @@
   <!--end::Modal - Create App-->
 </template>
 
+<style lang="scss">
+.modal.patient-alert .modal-footer {
+  display: none;
+}
+</style>
 <script>
 import {
   defineComponent,
@@ -1165,6 +1198,8 @@ import AppointmentHistory from "@/components/presets/PatientElements/Appointment
 import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
+import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue";
+import ViewPatientAlertModal from "@/views/patients/modals/ViewPatientAlertModal.vue";
 
 export default defineComponent({
   props: {
@@ -1182,6 +1217,8 @@ export default defineComponent({
     InputWrapper,
     AlertBadge,
     AptOverview,
+    PatientAlert,
+    ViewPatientAlertModal,
   },
 
   setup(props) {
@@ -1843,6 +1880,7 @@ export default defineComponent({
     };
 
     const handleCancel = () => {
+      _stepperObj.value = StepperComponent.createInstance(createAptRef.value);
       resetCreateModal();
     };
 
@@ -1956,6 +1994,7 @@ export default defineComponent({
 
     const patientStep_1 = () => {
       patientTableData.value = [];
+      for (let key in patientInfoData.value) patientInfoData.value[key] = "";
       store.dispatch(PatientActions.LIST, filterPatient);
       patientStep.value++;
     };
@@ -1963,7 +2002,10 @@ export default defineComponent({
     const selectPatient = (item) => {
       store.dispatch(PatientActions.APPOINTMENTS, item.id);
       store.dispatch(PatientActions.VIEW, item.id);
-      patientInfoData.value = item;
+      //patientInfoData.value = item;
+      for (let key in patientInfoData.value)
+        patientInfoData.value[key] = item[key];
+      patientInfoData.value.alerts = item.alerts;
       aptInfoData.value.patient_id = item.id;
 
       for (let key in billingInfoData.value) {
@@ -1974,6 +2016,16 @@ export default defineComponent({
         billingInfoData.value[key] = item[key];
       }
 
+      patientInfoData.value.is_ok = true;
+      let blocklist = patientInfoData.value.alerts.filter(
+        (a) => a.alert_level == "BLACKLISTED" && !a.is_dismissed
+      );
+      console.log(["selectPatient=", item, patientInfoData.value]);
+      if (blocklist.length) patientInfoData.value.is_ok = false;
+      // patientStep.value++;
+    };
+
+    const afterSelectPatient = () => {
       patientStep.value++;
     };
 
@@ -2076,6 +2128,7 @@ export default defineComponent({
       patientTableHeader,
       patientTableData,
       selectPatient,
+      afterSelectPatient,
       patientPrevStep,
       aptInfoData,
       patientInfoData,
