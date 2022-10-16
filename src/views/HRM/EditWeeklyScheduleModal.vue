@@ -296,10 +296,8 @@ export default defineComponent({
     const store = useStore();
     const formRef = ref(null);
     const editScheduleModalRef = ref(null);
-    const employeeList = computed(() => store.getters.employeeList);
-    const schedule = computed(() => store.getters.hrmScheduleSelected);
-    const timeslots = computed(() => store.getters.hrmTimeslotSelected);
     const loading = ref(false);
+    const deleteTimeslots = ref([]);
     const formData = ref({
       id: -1,
       clinic_id: -1,
@@ -307,16 +305,10 @@ export default defineComponent({
       type: "PERMANENT",
       user_id: null,
       timeslots: [],
+      deleteTimeslots: [],
+      organization_id: null,
+      is_template: 1,
     });
-
-    watch([schedule, timeslots], () => {
-      formData.value.id = schedule.value.id;
-      formData.value.clinic_id = schedule.value.clinic_id;
-      formData.value.role_id = schedule.value.role_id;
-      formData.value.user_id = schedule.value.user_id;
-      formData.value.timeslots = timeslots.value;
-    });
-
     const rules = ref({
       role_id: [
         {
@@ -325,6 +317,19 @@ export default defineComponent({
           trigger: "change",
         },
       ],
+    });
+
+    const employeeList = computed(() => store.getters.employeeList);
+    const schedule = computed(() => store.getters.hrmScheduleSelected);
+    const timeslots = computed(() => store.getters.hrmTimeslotSelected);
+
+    watch([schedule, timeslots], () => {
+      formData.value.id = schedule.value.id;
+      formData.value.clinic_id = schedule.value.clinic_id;
+      formData.value.role_id = schedule.value.role_id;
+      formData.value.user_id = schedule.value.id;
+      formData.value.organization_id = schedule.value.organization_id;
+      formData.value.timeslots = timeslots.value;
     });
 
     const handleAddTimeslot = () => {
@@ -339,6 +344,7 @@ export default defineComponent({
     };
 
     const handleDeleteTimeslot = (index) => {
+      deleteTimeslots.value.push(formData.value.timeslots[index].id);
       formData.value.timeslots = formData.value.timeslots.filter(
         (t, i) => i != index
       );
@@ -371,7 +377,6 @@ export default defineComponent({
         ElMessage.error("There is the over lap slots!");
         return;
       }
-
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
@@ -383,18 +388,30 @@ export default defineComponent({
               t.start_time != null &&
               t.end_time != null
             ) {
+              if (t.user_id == null) {
+                t.organization_id = formData.value.organization_id;
+                t.clinic_id = formData.value.clinic_id;
+                t.user_id = formData.value.user_id;
+                t.is_template = 1;
+              }
               _timeslots.push(t);
             }
           });
-          schedule.value.timeslots.map((t) => {
+          schedule.value.schedule_timeslots.map((t) => {
             if (t.week_day != schedule.value._day) {
               _timeslots.push(t);
             }
           });
+
+          // Add deleted timeslots to payload
+          if (deleteTimeslots.value.length > 0) {
+            formData.value.deleteTimeslots = [];
+            deleteTimeslots.value.map((slotId) => {
+              formData.value.deleteTimeslots.push(slotId);
+            });
+          }
           hideModal(editScheduleModalRef.value);
           formData.value.timeslots = _timeslots;
-          //console.log(["formData.value before submit=", formData.value]);
-          //
           store
             .dispatch(schedule.value._submit, formData.value)
             .then(() => {
