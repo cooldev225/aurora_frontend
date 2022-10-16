@@ -382,7 +382,7 @@
                     class="w-100"
                     @submit.prevent=""
                   >
-                    <div class="row scroll h-500px">
+                    <div class="row scroll h-300px">
                       <Datatable
                         :table-header="patientTableHeader"
                         :table-data="patientTableData"
@@ -425,21 +425,21 @@
                           </button>
                         </template>
                       </Datatable>
-                      <span v-if="patientInfoData.is_ok === false">
-                        This patient is blacklisted and cannot be booked in.
-                        Please speak to your organization manager to resolve.
-                      </span>
-                      <div class="special-patient-alerts d-flex gap-2 flex-row">
-                        <template
-                          v-for="alert in patientInfoData.alerts"
-                          :key="alert.id"
-                        >
-                          <template v-if="!alert.is_dismissed">
-                            <PatientAlert :alert="alert" />
-                            <ViewPatientAlertModal :alert="alert" />
-                          </template>
+                    </div>
+                    <span v-if="patientInfoData.is_ok === false">
+                      This patient is blacklisted and cannot be booked in.
+                      Please speak to your organization manager to resolve.
+                    </span>
+                    <div class="special-patient-alerts d-flex gap-2 flex-row">
+                      <template
+                        v-for="alert in patientInfoData.alerts"
+                        :key="alert.id"
+                      >
+                        <template v-if="!alert.is_dismissed">
+                          <PatientAlert :alert="alert" />
+                          <ViewPatientAlertModal :alert="alert" />
                         </template>
-                      </div>
+                      </template>
                     </div>
                     <div class="d-flex justify-content-between">
                       <button
