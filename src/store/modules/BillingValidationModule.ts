@@ -20,7 +20,7 @@ export interface ValidationResponse {
 
 export interface ValidationInfo {
   errors: unknown;
-  medicareValidation: ValidationResponse;
+  sourceValidationResponse: ValidationResponse;
   isVerified: boolean;
 }
 
@@ -30,20 +30,20 @@ export default class BillingValidationModule
   implements ValidationInfo
 {
   errors = {};
-  medicareValidation = {} as ValidationResponse;
+  sourceValidationResponse = {} as ValidationResponse;
   isVerified = false;
 
   /**
    * Get medicare validation response
    * @returns ValidationResponse
    */
-  get medicareValidationResponse(): ValidationResponse {
-    return this.medicareValidation;
+  get validationResponse(): ValidationResponse {
+    return this.sourceValidationResponse;
   }
 
   @Mutation
-  [PatientMutations.SET_VALIDATION.MEDICARE](data) {
-    this.medicareValidation = data;
+  [PatientMutations.CLAIM_SOURCE.SET_VALIDATION](data) {
+    this.sourceValidationResponse = data;
   }
 
   @Mutation
@@ -52,12 +52,78 @@ export default class BillingValidationModule
   }
 
   @Action
-  async [PatientActions.BILLING.VALIDATE_MEDICARE](details) {
+  async [PatientActions.CLAIM_SOURCE.VALIDATE_MEDICARE](details) {
     if (await BillingApiService.setHeader()) {
       return BillingApiService.post("api/validate/medicare", details)
         .then(({ data }) => {
           if (data.success) {
-            this.context.commit(PatientMutations.SET_VALIDATION.MEDICARE, data);
+            this.context.commit(
+              PatientMutations.CLAIM_SOURCE.SET_VALIDATION,
+              data
+            );
+          } else {
+            throw data;
+          }
+        })
+        .catch(({ response }) => {
+          this.context.commit(Mutations.SET_ERROR, response.data.data);
+          return Promise.reject();
+        });
+    }
+  }
+
+  @Action
+  async [PatientActions.CLAIM_SOURCE.VALIDATE_CONCESSION](details) {
+    if (await BillingApiService.setHeader()) {
+      return BillingApiService.post("api/validate/concession", details)
+        .then(({ data }) => {
+          if (data.success) {
+            this.context.commit(
+              PatientMutations.CLAIM_SOURCE.SET_VALIDATION,
+              data
+            );
+          } else {
+            throw data;
+          }
+        })
+        .catch(({ response }) => {
+          this.context.commit(Mutations.SET_ERROR, response.data.data);
+          return Promise.reject();
+        });
+    }
+  }
+
+  @Action
+  async [PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND](details) {
+    if (await BillingApiService.setHeader()) {
+      return BillingApiService.post("api/validate/healthfund", details)
+        .then(({ data }) => {
+          if (data.success) {
+            this.context.commit(
+              PatientMutations.CLAIM_SOURCE.SET_VALIDATION,
+              data
+            );
+          } else {
+            throw data;
+          }
+        })
+        .catch(({ response }) => {
+          this.context.commit(Mutations.SET_ERROR, response.data.data);
+          return Promise.reject();
+        });
+    }
+  }
+
+  @Action
+  async [PatientActions.CLAIM_SOURCE.VALIDATE_DVA](details) {
+    if (await BillingApiService.setHeader()) {
+      return BillingApiService.post("api/validate/dva", details)
+        .then(({ data }) => {
+          if (data.success) {
+            this.context.commit(
+              PatientMutations.CLAIM_SOURCE.SET_VALIDATION,
+              data
+            );
           } else {
             throw data;
           }

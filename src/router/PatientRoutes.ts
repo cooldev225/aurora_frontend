@@ -15,9 +15,9 @@ const PatientRoutes = [
         component: () => import("@/views/patients/Appointments.vue"),
       },
       {
-        path: "billing",
-        name: "patients-view-billing",
-        component: () => import("@/views/patients/Billing.vue"),
+        path: "claim-sources",
+        name: "patients-view-claim-sources",
+        component: () => import("@/views/patients/ClaimSources.vue"),
       },
       {
         path: "recalls",

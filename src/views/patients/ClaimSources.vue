@@ -1,0 +1,487 @@
+<template>
+  <CardSection heading="Claim Sources">
+    <template #header-actions>
+      <IconButton label="Add Claim Source" @click="handleAddClaimSource" />
+    </template>
+
+    <template #default>
+      <Datatable
+        :table-header="tableHeader"
+        :table-data="tableData"
+        :key="tableKey"
+        :rows-per-page="5"
+        :enable-items-per-page-dropdown="true"
+      >
+        <template v-slot:cell-billing_type="{ row: item }">
+          {{ getBillingType(item.billing_type) }}
+          <span v-if="item.billing_type == 2" class="text-primary">
+            <br />
+            {{ getHealthFund(item.health_fund_id) }}
+          </span>
+
+          <template v-if="item.has_medicare_concession">
+            <br />
+            <span class="badge badge-info opacity-50 mx-2"> CONCESSION </span>
+          </template>
+        </template>
+
+        <template v-slot:cell-member_number="{ row: item }">
+          {{ item.member_number }}
+        </template>
+
+        <template v-slot:cell-ref_number="{ row: item }">
+          {{ item.member_reference_number ?? "N/A" }}
+        </template>
+
+        <template v-slot:cell-validated="{ row: item }">
+          <div>
+            {{
+              item.verified_at
+                ? moment(item.verified_at).format("DD-MM-YYYY")
+                : "Never"
+            }}
+
+            <span
+              v-if="item.verified_at"
+              class="badge opacity-50 mx-2"
+              :class="{
+                'badge-success': item.is_valid,
+                'badge-danger': !item.is_valid,
+              }"
+            >
+              {{ item.is_valid ? "Valid" : "Invalid" }}
+            </span>
+          </div>
+
+          <button
+            class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
+            @click="revalidateSource(item)"
+            :disabled="loading != null"
+            :data-kt-indicator="loading == item.id ? 'on' : 'off'"
+          >
+            <span class="indicator-label">Re-validate</span>
+
+            <span class="indicator-progress">
+              Validating...
+              <span
+                class="spinner-border spinner-border-sm align-middle ms-2"
+              ></span>
+            </span>
+          </button>
+        </template>
+
+        <template v-slot:cell-actions="{ row: item }">
+          <div class="d-flex flex-column">
+            <button
+              v-if="item.billing_type == 1"
+              class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
+              :disabled="loading != null || !item.is_valid"
+              @click="handleCheckConcession(item)"
+              :data-kt-indicator="loading == `${item.id}-Con` ? 'on' : 'off'"
+            >
+              <!-- Only show this button if it's a Medicare source -->
+              <span class="indicator-label">Check Concession</span>
+
+              <span class="indicator-progress">
+                Validating...
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
+            </button>
+
+            <button
+              class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
+              :disabled="loading != null"
+              @click="handleUpdateClaimSource(item)"
+            >
+              Update Details
+            </button>
+
+            <button
+              class="btn btn-bg-danger btn-sm mt-2"
+              :disabled="loading != null"
+              @click="handleDeleteSource(item)"
+            >
+              Delete Source
+            </button>
+          </div>
+        </template>
+      </Datatable>
+
+      <MedicareUpdateDetailsModal
+        :patientId="selectedPatient?.id"
+        :updateDetails="updateDetails"
+      />
+
+      <AddClaimSourceModal :patient="selectedPatient" />
+      <UpdateClaimSourceModal
+        :patient="selectedPatient"
+        :claimSource="updatingSource"
+      />
+    </template>
+  </CardSection>
+</template>
+
+<script>
+import {
+  defineComponent,
+  ref,
+  watchEffect,
+  onMounted,
+  computed,
+  watch,
+} from "vue";
+import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
+import { useStore } from "vuex";
+import { useRoute } from "vue-router";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
+import { Actions } from "@/store/enums/StoreEnums";
+import moment from "moment";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import MedicareUpdateDetailsModal from "@/views/patients/modals/MedicareUpdateDetailsModal.vue";
+import AddClaimSourceModal from "@/views/patients/modals/AddClaimSourceModal.vue";
+import UpdateClaimSourceModal from "@/views/patients/modals/UpdateClaimSourceModal.vue";
+import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
+import { Modal } from "bootstrap";
+import PatientBillingTypes from "@/core/data/patient-billing-types";
+
+export default defineComponent({
+  name: "patient-claim-sources",
+  components: {
+    MedicareUpdateDetailsModal,
+    AddClaimSourceModal,
+    UpdateClaimSourceModal,
+    IconButton,
+    Datatable,
+  },
+  data: function () {
+    return {
+      colString: "col-12 col-sm-6 ",
+    };
+  },
+  setup() {
+    const store = useStore();
+    const route = useRoute();
+    const healthFundsList = computed(() => store.getters.healthFundsList);
+    const selectedPatient = computed(() => store.getters.selectedPatient);
+    const minorId = computed(() => store.getters.latestMinorId);
+    const loading = ref(null);
+    const tableHeader = ref([
+      {
+        name: "Source Type",
+        key: "billing_type",
+        sortable: true,
+      },
+      {
+        name: "Member Number",
+        key: "member_number",
+        sortable: false,
+      },
+      {
+        name: "Reference Number",
+        key: "ref_number",
+        sortable: false,
+      },
+      {
+        name: "Last Validated",
+        key: "validated",
+        sortable: false,
+      },
+      {
+        name: "Actions",
+        key: "actions",
+        sortable: false,
+      },
+    ]);
+    const tableData = ref([]);
+    const tableKey = ref(0);
+    const updateDetails = ref({});
+    const updatingSource = ref(null);
+
+    const renderTable = () => tableKey.value++;
+
+    const getBillingType = (type) => {
+      const foundType = PatientBillingTypes.find(
+        (billing) => billing.value == type
+      );
+
+      return foundType?.label ?? null;
+    };
+
+    const getHealthFund = (id) => {
+      const foundFund = healthFundsList.value.find((fund) => fund.id == id);
+
+      return foundFund?.name ?? null;
+    };
+
+    const handleAddClaimSource = () => {
+      const modal = new Modal(
+        document.getElementById("modal_add_claim_source")
+      );
+      modal.show();
+    };
+
+    const handleUpdateClaimSource = (source) => {
+      updatingSource.value = source;
+      console.log(document.getElementById("modal_update_claim_source"));
+      const modal = new Modal(
+        document.getElementById("modal_update_claim_source")
+      );
+      modal.show();
+    };
+
+    const handleDeleteSource = (item) => {
+      Swal.fire({
+        text: `Are you sure you want to delete this ${getBillingType(
+          item.billing_type
+        )}?`,
+        icon: "question",
+        buttonsStyling: false,
+        confirmButtonText: "Yes",
+        showCancelButton: true,
+        cancelButtonText: "No",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-secondary",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          deleteSource(item);
+        }
+      });
+    };
+
+    const deleteSource = (item) => {
+      store.dispatch(PatientActions.CLAIM_SOURCE.DELETE, item);
+    };
+
+    const doValidation = (endpoint, data, item, isConcession = false) => {
+      loading.value = isConcession ? `${item.id}-Con` : item.id;
+      updateDetails.value = {};
+
+      store
+        .dispatch(endpoint, data)
+        .then(() => {
+          const validation = store.getters.validationResponse;
+
+          if (validation.data.verified) {
+            if (isConcession) {
+              item.has_medicare_concession = true;
+            } else {
+              item.is_valid = true;
+            }
+
+            Swal.fire({
+              title: "Verification successful!",
+              icon: "success",
+              buttonsStyling: true,
+              confirmButtonText: "Okay",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+            });
+          }
+
+          if (!validation.data.verified) {
+            if (isConcession) {
+              item.has_medicare_concession = false;
+            } else {
+              item.is_valid = false;
+            }
+
+            Swal.fire({
+              title: "Verification unsuccessful",
+              text: `Reason: ${validation.data.message}`,
+              icon: "error",
+              buttonsStyling: true,
+              confirmButtonText: "Okay",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+            });
+          }
+
+          store.dispatch(PatientActions.CLAIM_SOURCE.UPDATE, item);
+
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              validation.data,
+              "update_details"
+            )
+          ) {
+            for (const detailName in validation.data.update_details) {
+              switch (detailName) {
+                case "givenName":
+                  updateDetails.value.first_name =
+                    validation.data.update_details[detailName];
+                  break;
+                case "familyName":
+                  updateDetails.value.last_name =
+                    validation.data.update_details[detailName];
+                  break;
+                case "memberRefNumber":
+                  updateDetails.value.member_reference_number =
+                    validation.data.update_details[detailName];
+                  break;
+              }
+            }
+
+            const modal = new Modal(
+              document.getElementById("modal_update_patient_details")
+            );
+            modal.show();
+          }
+        })
+        .catch((e) => {
+          const errors = store.getters.getErrors;
+          let message;
+          console.log(e);
+          if (
+            Object.prototype.hasOwnProperty.call(errors, "errors") &&
+            errors.errors.length >= 1
+          ) {
+            message = errors.errors[0];
+          } else {
+            message = "Unknown Error. Please try again.";
+          }
+
+          Swal.fire({
+            title: "Verification unsuccessful",
+            text: message,
+            icon: "error",
+            buttonsStyling: true,
+            confirmButtonText: "Okay",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          });
+        })
+        .finally(() => {
+          loading.value = null;
+        });
+    };
+
+    const revalidateSource = (item) => {
+      let validationData = {};
+      let endpoint;
+
+      if (minorId.value.minorId == null) {
+        Swal.fire({
+          text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
+          icon: "error",
+          buttonsStyling: true,
+          confirmButtonText: "Okay",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+        }).then(() => {
+          return;
+        });
+      }
+
+      switch (item.billing_type) {
+        case 1:
+          // Medicare card
+          validationData = {
+            first_name: selectedPatient.value.first_name,
+            last_name: selectedPatient.value.last_name,
+            date_of_birth: selectedPatient.value.date_of_birth,
+            sex: selectedPatient.value.gender,
+            medicare_number: item.member_number,
+            medicare_reference_number: item.member_reference_number,
+            minor_id: minorId.value.minorId,
+          };
+          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_MEDICARE;
+          break;
+        case 2: {
+          // Health Fund
+          const healthFund = healthFundsList.value.find(
+            (fund) => fund.id === item.value.health_fund_id
+          );
+
+          validationData = {
+            first_name: selectedPatient.value.first_name,
+            last_name: selectedPatient.value.last_name,
+            date_of_birth: selectedPatient.value.date_of_birth,
+            sex: selectedPatient.value.gender,
+            fund_member_number: item.member_number,
+            fund_reference_number: item.member_reference_number,
+            fund_organisation_code: healthFund?.code,
+            minor_id: minorId.value.minorId,
+          };
+          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND;
+          break;
+        }
+        case 3:
+          // DVA
+          validationData = {
+            first_name: selectedPatient.value.first_name,
+            last_name: selectedPatient.value.last_name,
+            date_of_birth: selectedPatient.value.date_of_birth,
+            sex: selectedPatient.value.gender,
+            veteran_number: item.member_number,
+            minor_id: minorId.value.minorId,
+          };
+          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_DVA;
+          break;
+      }
+
+      doValidation(endpoint, validationData, item);
+    };
+
+    const handleCheckConcession = (item) => {
+      const validationData = {
+        first_name: selectedPatient.value.first_name,
+        last_name: selectedPatient.value.last_name,
+        date_of_birth: selectedPatient.value.date_of_birth,
+        medicare_number: item.member_number,
+        medicare_reference_number: item.member_reference_number,
+        minor_id: minorId.value.minorId,
+      };
+      const endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_CONCESSION;
+
+      doValidation(endpoint, validationData, item, true);
+    };
+
+    onMounted(() => {
+      const id = route.params.id;
+      store.dispatch(PatientActions.VIEW, id);
+      setCurrentPageBreadcrumbs("Billing", ["Patients"]);
+      store.dispatch(Actions.HEALTH_FUND.LIST);
+
+      const updateModal = document.getElementById("modal_update_claim_source");
+      updateModal.addEventListener("hidden.bs.modal", function () {
+        updatingSource.value = null;
+        renderTable();
+      });
+    });
+
+    watchEffect(() => {
+      tableData.value = selectedPatient.value?.billing ?? [];
+      renderTable();
+    });
+
+    return {
+      healthFundsList,
+      selectedPatient,
+      loading,
+      tableHeader,
+      tableData,
+      tableKey,
+      PatientBillingTypes,
+      getBillingType,
+      moment,
+      revalidateSource,
+      handleDeleteSource,
+      handleCheckConcession,
+      updateDetails,
+      handleAddClaimSource,
+      getHealthFund,
+      updatingSource,
+      handleUpdateClaimSource,
+    };
+  },
+});
+</script>

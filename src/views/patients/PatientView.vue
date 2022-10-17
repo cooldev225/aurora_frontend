@@ -134,10 +134,10 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              :to="'/patients/' + patientData.id + '/billing'"
+              :to="'/patients/' + patientData.id + '/claim-sources'"
               active-class="active"
             >
-              Billing
+              Claim Sources
             </router-link>
           </li>
           <!--end::Nav item-->

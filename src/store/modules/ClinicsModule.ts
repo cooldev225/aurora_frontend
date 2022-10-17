@@ -6,6 +6,7 @@ import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
 export interface IClinics {
   id: number;
+  minor_id: string;
 }
 
 export interface IRooms {
