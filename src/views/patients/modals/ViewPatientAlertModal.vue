@@ -1,6 +1,6 @@
 <template>
   <div
-    class="modal fade"
+    class="modal fade patient-alert"
     :id="'modal_patient_alert_' + alertData.id"
     tabindex="-1"
     aria-hidden="true"

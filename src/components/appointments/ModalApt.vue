@@ -382,7 +382,7 @@
                     class="w-100"
                     @submit.prevent=""
                   >
-                    <div class="row scroll h-500px">
+                    <div class="row scroll h-300px">
                       <Datatable
                         :table-header="patientTableHeader"
                         :table-data="patientTableData"
@@ -426,6 +426,21 @@
                         </template>
                       </Datatable>
                     </div>
+                    <span v-if="patientInfoData.is_ok === false">
+                      This patient is blacklisted and cannot be booked in.
+                      Please speak to your organization manager to resolve.
+                    </span>
+                    <div class="special-patient-alerts d-flex gap-2 flex-row">
+                      <template
+                        v-for="alert in patientInfoData.alerts"
+                        :key="alert.id"
+                      >
+                        <template v-if="!alert.is_dismissed">
+                          <PatientAlert :alert="alert" />
+                          <ViewPatientAlertModal :alert="alert" />
+                        </template>
+                      </template>
+                    </div>
                     <div class="d-flex justify-content-between">
                       <button
                         type="button"
@@ -439,6 +454,19 @@
                           />
                         </span>
                         Back
+                      </button>
+                      <button
+                        type="button"
+                        v-if="patientInfoData.is_ok"
+                        class="btn btn-lg btn-primary align-self-end"
+                        @click="afterSelectPatient"
+                      >
+                        Continue
+                        <span class="svg-icon svg-icon-4 ms-1 me-0">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr064.svg"
+                          />
+                        </span>
                       </button>
                     </div>
                   </el-form>
@@ -460,6 +488,7 @@
                         <el-input
                           type="text"
                           v-model="patientInfoData.first_name"
+                          @keyup="matchExistPatientHandle(event)"
                           placeholder="Enter First Name"
                         />
                       </InputWrapper>
@@ -472,6 +501,7 @@
                         <el-input
                           type="text"
                           v-model="patientInfoData.last_name"
+                          @keyup="matchExistPatientHandle(event)"
                           placeholder="Enter Last Name"
                         />
                       </InputWrapper>
@@ -487,6 +517,7 @@
                           class="w-100"
                           format="DD-MM-YYYY"
                           v-model="patientInfoData.date_of_birth"
+                          @change="matchExistPatientHandle(event)"
                           placeholder=""
                         />
                       </InputWrapper>
@@ -503,6 +534,22 @@
                           placeholder="Enter Contact Number"
                         />
                       </InputWrapper>
+
+                      <div
+                        class="exist-message px-7 mt-2 mb-2"
+                        v-if="patientInfoData.is_exist"
+                      >
+                        <label class="mb-2">
+                          A patient matching these details already exists
+                        </label>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-primary w-100 mb-5"
+                          @click="showMatchPatientsHandle"
+                        >
+                          Show match patients
+                        </button>
+                      </div>
 
                       <InputWrapper label="Address" prop="address">
                         <GMapAutocomplete
@@ -1064,10 +1111,25 @@
                       </div>
                       <!--end::Referral Information-->
                       <!--start::Appointment History-->
-                      <div class="card-info">
+                      <div class="card-info" v-if="patientStatus === 'exist'">
                         <span class="fs-3 fw-bold text-muted"
                           >Appointment History</span
                         >
+
+                        <div style="color: grey">
+                          <span class="me-2"
+                            >Total Appointments:
+                            {{ patientAptData.appointment_count }}
+                          </span>
+                          <span class="me-2">
+                            <span class="me-2">/</span>Cancelled:
+                            {{ patientAptData.cancelled_appointment_count }}
+                          </span>
+                          <span class="me-2">
+                            <span class="me-2">/</span>Missed:
+                            {{ patientAptData.missed_appointment_count }}
+                          </span>
+                        </div>
 
                         <AppointmentHistory
                           :pastAppointments="patientAptData.pastAppointments"
@@ -1134,6 +1196,16 @@
   <!--end::Modal - Create App-->
 </template>
 
+<style lang="scss">
+.modal.patient-alert .modal-footer {
+  display: none;
+}
+.exist-message {
+  label {
+    color: grey;
+  }
+}
+</style>
 <script>
 import {
   defineComponent,
@@ -1165,6 +1237,8 @@ import AppointmentHistory from "@/components/presets/PatientElements/Appointment
 import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
+import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue";
+import ViewPatientAlertModal from "@/views/patients/modals/ViewPatientAlertModal.vue";
 
 export default defineComponent({
   props: {
@@ -1182,6 +1256,8 @@ export default defineComponent({
     InputWrapper,
     AlertBadge,
     AptOverview,
+    PatientAlert,
+    ViewPatientAlertModal,
   },
 
   setup(props) {
@@ -1220,6 +1296,7 @@ export default defineComponent({
       appointment_confirm_method: "",
       allergies: "",
       clinical_alerts: "",
+      is_exist: false,
     });
 
     const billingInfoData = ref({
@@ -1600,7 +1677,12 @@ export default defineComponent({
 
     watch(patientStatus, () => {
       if (patientStatus.value === "new") patientStep.value = 3;
-      else patientStep.value = 1;
+      else {
+        patientStep.value = 1;
+        filterPatient.first_name = "";
+        filterPatient.last_name = "";
+        filterPatient.date_of_birth = "";
+      }
     });
 
     const renderTable = () => tableKey.value++;
@@ -1623,6 +1705,28 @@ export default defineComponent({
         }
       }
       otherInfoData.value.procedure_answers = temp;
+    };
+
+    const matchExistPatientHandle = () => {
+      let filtered_patients = patientList.value.filter(
+        (p) =>
+          p.first_name === patientInfoData.value.first_name &&
+          p.last_name === patientInfoData.value.last_name &&
+          moment(p.date_of_birth).format("DD/MM/YYYY") ===
+            moment(patientInfoData.value.date_of_birth).format("DD/MM/YYYY")
+      );
+      if (filtered_patients.length) {
+        patientInfoData.value.is_exist = true;
+      }
+    };
+
+    const showMatchPatientsHandle = () => {
+      patientStep.value = 1;
+      filterPatient.first_name = patientInfoData.value.first_name;
+      filterPatient.last_name = patientInfoData.value.last_name;
+      filterPatient.date_of_birth = patientInfoData.value.date_of_birth;
+      patientStep_1();
+      patientInfoData.value.is_exist = false;
     };
 
     watch(patientList, () => {
@@ -1726,6 +1830,13 @@ export default defineComponent({
         return;
       }
 
+      //custom
+      if (patientStatus.value === "new") {
+        patientStep.value = 3;
+      } else {
+        patientStep.value = 1;
+      }
+
       if (props.modalId == "modal_create_apt") {
         patientInfoData.value = {
           first_name: "",
@@ -1747,6 +1858,7 @@ export default defineComponent({
           if (!_stepperObj.value) {
             return;
           }
+          store.dispatch(PatientActions.LIST);
           _stepperObj.value.goNext();
         }
       });
@@ -1831,6 +1943,8 @@ export default defineComponent({
         cur_appointment_type_id.value = "";
         for (let key in patientInfoData.value) patientInfoData.value[key] = "";
         for (let key in billingInfoData.value) billingInfoData.value[key] = "";
+        patientStatus.value = "new";
+        patientStep.value = 3;
       } else {
         // Edit modal
         store.dispatch(PatientActions.LIST);
@@ -1843,6 +1957,7 @@ export default defineComponent({
     };
 
     const handleCancel = () => {
+      _stepperObj.value = StepperComponent.createInstance(createAptRef.value);
       resetCreateModal();
     };
 
@@ -1956,6 +2071,11 @@ export default defineComponent({
 
     const patientStep_1 = () => {
       patientTableData.value = [];
+      for (let key in patientInfoData.value) patientInfoData.value[key] = "";
+      if (filterPatient.date_of_birth != "")
+        filterPatient.date_of_birth = moment(
+          filterPatient.date_of_birth
+        ).format("YYYY-MM-DD");
       store.dispatch(PatientActions.LIST, filterPatient);
       patientStep.value++;
     };
@@ -1963,7 +2083,10 @@ export default defineComponent({
     const selectPatient = (item) => {
       store.dispatch(PatientActions.APPOINTMENTS, item.id);
       store.dispatch(PatientActions.VIEW, item.id);
-      patientInfoData.value = item;
+      //patientInfoData.value = item;
+      for (let key in patientInfoData.value)
+        patientInfoData.value[key] = item[key];
+      patientInfoData.value.alerts = item.alerts;
       aptInfoData.value.patient_id = item.id;
 
       for (let key in billingInfoData.value) {
@@ -1974,6 +2097,16 @@ export default defineComponent({
         billingInfoData.value[key] = item[key];
       }
 
+      patientInfoData.value.is_ok = true;
+      let blocklist = patientInfoData.value.alerts.filter(
+        (a) => a.alert_level == "BLACKLISTED" && !a.is_dismissed
+      );
+      console.log(["selectPatient=", item, patientInfoData.value]);
+      if (blocklist.length) patientInfoData.value.is_ok = false;
+      // patientStep.value++;
+    };
+
+    const afterSelectPatient = () => {
       patientStep.value++;
     };
 
@@ -1987,6 +2120,7 @@ export default defineComponent({
     const patientPrevStep = () => {
       if (patientStatus.value === "new") previousStep();
       else patientStep.value--;
+      console.log(["patientAptData", patientAptData.value]);
     };
 
     const handleSelectReferringDoctor = (item) => {
@@ -2076,6 +2210,7 @@ export default defineComponent({
       patientTableHeader,
       patientTableData,
       selectPatient,
+      afterSelectPatient,
       patientPrevStep,
       aptInfoData,
       patientInfoData,
@@ -2095,6 +2230,8 @@ export default defineComponent({
       cur_specialist_id,
       title,
       refName,
+      matchExistPatientHandle,
+      showMatchPatientsHandle,
     };
   },
 });
