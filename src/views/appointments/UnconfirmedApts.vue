@@ -53,18 +53,50 @@ export default defineComponent({
               confirmed: true,
             })
             .then(() => {
-              // store.dispatch(
-              //   AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
-              //   searchVal.value
-              // );
-              // DrawerComponent?.getInstance("appointment-drawer")?.hide();
+              store.dispatch(AppointmentActions.LIST, {
+                confirmation_status: "PENDING",
+              });
             });
         },
       });
     };
 
     const handleCancelAppointment = (appointmentId) => {
-      console.log(appointmentId);
+      const html =
+        "<h3>Are you sure you want to cancel?</h3><br/>" +
+        '<h4><input type="checkbox" id="chkMissed"> ' +
+        '<label for="chkMissed">Mark as Missed</label></h4>';
+      Swal.fire({
+        input: "text",
+        inputAttributes: {
+          autocapitalize: "off",
+          placeholder: "Enter the Reason",
+        },
+        html: html,
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async (data) => {
+          var missed = Swal.getPopup().querySelector("#chkMissed").checked;
+
+          await store
+            .dispatch(AppointmentActions.CONFIRMATION_STATUS.UPDATE, {
+              id: appointmentId,
+              missed: missed,
+              reason: data,
+            })
+            .then(() => {
+              store.dispatch(AppointmentActions.LIST, {
+                confirmation_status: "PENDING",
+              });
+            });
+        },
+      });
     };
 
     return {
