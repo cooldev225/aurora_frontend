@@ -7,7 +7,7 @@
     ref="editScheduleModalRef"
   >
     <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-650px">
+    <div class="modal-dialog modal-dialog-centered mw-1000px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
@@ -98,7 +98,7 @@
                   >
                     <div class="card d-flex flex-row time-slots-view">
                       <InputWrapper
-                        class="col-3 px-1"
+                        class="col px-1"
                         label="Start Time"
                         :prop="'timeslot-' + index"
                       >
@@ -116,7 +116,7 @@
                       </InputWrapper>
                       <div class="gap">:</div>
                       <InputWrapper
-                        class="px-1 col-3"
+                        class="px-1 col"
                         label="End Time"
                         :prop="'timeslot-' + index"
                       >
@@ -133,7 +133,7 @@
                         />
                       </InputWrapper>
                       <InputWrapper
-                        class="col-3"
+                        class="col"
                         label="Type"
                         :prop="'category-' + index"
                       >
@@ -152,7 +152,7 @@
                         </el-select>
                       </InputWrapper>
                       <InputWrapper
-                        class="col-3"
+                        class="col"
                         label="Restriction"
                         :prop="'restriction-' + index"
                       >
@@ -167,6 +167,26 @@
                             :value="item"
                             :label="item"
                             :key="item"
+                          />
+                        </el-select>
+                      </InputWrapper>
+                      <InputWrapper
+                        class="col"
+                        label="Anesthetist"
+                        :prop="'restriction-' + index"
+                        v-if="day.restriction == 'PROCEDURE'"
+                      >
+                        <el-select
+                          class="w-100"
+                          type="text"
+                          v-model="day.anesthetist_id"
+                          :prop="'restriction-select-' + index"
+                        >
+                          <el-option
+                            v-for="item in anesthetists"
+                            :value="item.id"
+                            :label="item.first_name"
+                            :key="item.id"
                           />
                         </el-select>
                       </InputWrapper>
@@ -288,6 +308,7 @@ import weekdays from "@/core/data/weekdays";
 import restrictionsTypes from "@/core/data/apt-restriction";
 import schCategories from "@/core/data/schedule-category";
 import { ElMessage } from "element-plus";
+import allEmployees from "quill";
 
 export default defineComponent({
   name: "edit-admin-modal",
@@ -322,6 +343,11 @@ export default defineComponent({
     const employeeList = computed(() => store.getters.employeeList);
     const schedule = computed(() => store.getters.hrmScheduleSelected);
     const timeslots = computed(() => store.getters.hrmTimeslotSelected);
+    const anesthetists = computed(() => {
+      return store.getters.employeeList.filter((employee) => {
+        if (employee.role_id === 9) return employee;
+      });
+    });
 
     watch([schedule, timeslots], () => {
       formData.value.id = schedule.value.id;
@@ -453,6 +479,7 @@ export default defineComponent({
       loading,
       editScheduleModalRef,
       employeeList,
+      anesthetists,
       employeeTypes,
       employeeRoles,
       schedule,

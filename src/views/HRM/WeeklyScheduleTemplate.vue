@@ -10,6 +10,29 @@
       </el-option>
     </template>
   </el-select>
+  <div class="hrm-filter-container">
+    <el-checkbox
+      label="Show Specialists Only"
+      v-model="isShowOnlySpecialists"
+    />
+    <div class="filter-selector">
+      <p>Filter</p>
+      <el-select
+        v-model="selectedFilters"
+        multiple
+        collapse-tags
+        placeholder="Select Filters"
+        style="width: 240px"
+      >
+        <el-option
+          v-for="item in filterOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </div>
+  </div>
   <CardSection>
     <table class="w-100">
       <thead>
@@ -61,10 +84,23 @@
                       : ''
                   "
                 >
-                  {{ moment(timeslot.start_time, "hh:ss").format("hh:ss") }} -
-                  {{ moment(timeslot.end_time, "hh:ss").format("hh:ss") }}
-                  <span> ({{ timeslotClinicName(timeslot) }})</span></span
-                >
+                  <template v-if="selectedFilters.includes('time')">
+                    {{ moment(timeslot.start_time, "hh:ss").format("hh:ss") }} -
+                    {{ moment(timeslot.end_time, "hh:ss").format("hh:ss") }}
+                  </template>
+
+                  <span v-if="selectedFilters.includes('clinic')">
+                    ({{ timeslotClinicName(timeslot) }})
+                  </span>
+                  <span
+                    v-if="
+                      selectedFilters.includes('anesthetist') &&
+                      timeslot.restriction === 'PROCEDURE'
+                    "
+                  >
+                    ({{ anesthetistName(timeslot.anesthetist_id) }})
+                  </span>
+                </span>
               </template>
             </div>
           </td>
@@ -105,11 +141,36 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const scheduleTemplates = computed(() => store.getters.hrmScheduleList);
-    const employeeList = computed(() => store.getters.employeeList);
-    const clinics = computed(() => store.getters.clinicsList);
+
     const clinicFilter = ref();
     const tableData = ref();
+    const isShowOnlySpecialists = ref(false);
+    const selectedFilters = ref(["time"]);
+    const filterOptions = ref([
+      {
+        value: "time",
+        label: "Time",
+      },
+      {
+        value: "clinic",
+        label: "Clinic",
+      },
+      {
+        value: "anesthetist",
+        label: "Anesthetist",
+      },
+    ]);
+    const clinics = computed(() => store.getters.clinicsList);
+    const scheduleTemplates = computed(() => store.getters.hrmScheduleList);
+    const employeeList = computed(() => {
+      const allEmployees = store.getters.employeeList;
+      if (isShowOnlySpecialists.value) {
+        return allEmployees.filter((employee) => {
+          if (employee.role_id === 5) return employee;
+        });
+      } else return allEmployees;
+    });
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("Weekly Schedule Template", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
@@ -184,6 +245,14 @@ export default defineComponent({
       return clinicName;
     };
 
+    const anesthetistName = (id) => {
+      let result = "Anesthetist - Not Set";
+      employeeList.value.filter((employee) => {
+        if (employee.id === id) result = "Anesthetist - " + employee.first_name;
+      });
+      return result;
+    };
+
     return {
       scheduleTemplates,
       weekdays,
@@ -197,6 +266,10 @@ export default defineComponent({
       tableData,
       employeeList,
       timeslotClinicName,
+      isShowOnlySpecialists,
+      filterOptions,
+      selectedFilters,
+      anesthetistName,
     };
   },
 });

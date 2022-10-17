@@ -1,6 +1,7 @@
 .pac-container {
   z-index: 10000 !important;
 }
+
 .pac-target-input {
   -webkit-appearance: none;
   background-color: var(--el-input-bg-color, var(--el-color-white));
@@ -17,4 +18,24 @@
   padding: 0 15px;
   transition: var(--el-transition-border);
   width: 100%;
+}
+
+.hrm-filter-container {
+  padding: 10px;
+  background-color: white;
+  margin: 10px 0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+
+  .filter-selector {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+
+    p {
+      margin: 0 16px;
+    }
+  }
+
 }
