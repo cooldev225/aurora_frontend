@@ -244,6 +244,23 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
+  [PatientActions.CLAIM_SOURCE.ADD](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.put("patients/billing", data)
+        .then(({ data }) => {
+          return data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
   [PatientActions.CLAIM_SOURCE.UPDATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();

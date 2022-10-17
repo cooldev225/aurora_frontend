@@ -93,7 +93,7 @@
             <button
               class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
               :disabled="loading != null"
-              @click="handleCollectingPerson(item)"
+              @click="handleUpdateClaimSource(item)"
             >
               Update Details
             </button>
@@ -115,6 +115,10 @@
       />
 
       <AddClaimSourceModal :patient="selectedPatient" />
+      <UpdateClaimSourceModal
+        :patient="selectedPatient"
+        :claimSource="updatingSource"
+      />
     </template>
   </CardSection>
 </template>
@@ -138,6 +142,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import MedicareUpdateDetailsModal from "@/views/patients/modals/MedicareUpdateDetailsModal.vue";
 import AddClaimSourceModal from "@/views/patients/modals/AddClaimSourceModal.vue";
+import UpdateClaimSourceModal from "@/views/patients/modals/UpdateClaimSourceModal.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import { Modal } from "bootstrap";
 import PatientBillingTypes from "@/core/data/patient-billing-types";
@@ -147,6 +152,7 @@ export default defineComponent({
   components: {
     MedicareUpdateDetailsModal,
     AddClaimSourceModal,
+    UpdateClaimSourceModal,
     IconButton,
     Datatable,
   },
@@ -192,6 +198,7 @@ export default defineComponent({
     const tableData = ref([]);
     const tableKey = ref(0);
     const updateDetails = ref({});
+    const updatingSource = ref(null);
 
     const renderTable = () => tableKey.value++;
 
@@ -212,6 +219,15 @@ export default defineComponent({
     const handleAddClaimSource = () => {
       const modal = new Modal(
         document.getElementById("modal_add_claim_source")
+      );
+      modal.show();
+    };
+
+    const handleUpdateClaimSource = (source) => {
+      updatingSource.value = source;
+      console.log(document.getElementById("modal_update_claim_source"));
+      const modal = new Modal(
+        document.getElementById("modal_update_claim_source")
       );
       modal.show();
     };
@@ -351,19 +367,19 @@ export default defineComponent({
       let validationData = {};
       let endpoint;
 
-      // if (minorId.value.minorId == null) {
-      //   Swal.fire({
-      //     text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
-      //     icon: "error",
-      //     buttonsStyling: true,
-      //     confirmButtonText: "Okay",
-      //     customClass: {
-      //       confirmButton: "btn btn-primary",
-      //     },
-      //   }).then(() => {
-      //     return;
-      //   });
-      // }
+      if (minorId.value.minorId == null) {
+        Swal.fire({
+          text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
+          icon: "error",
+          buttonsStyling: true,
+          confirmButtonText: "Okay",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+        }).then(() => {
+          return;
+        });
+      }
 
       switch (item.billing_type) {
         case 1:
@@ -375,12 +391,16 @@ export default defineComponent({
             sex: selectedPatient.value.gender,
             medicare_number: item.member_number,
             medicare_reference_number: item.member_reference_number,
-            minor_id: "AUA00000",
+            minor_id: minorId.value.minorId,
           };
           endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_MEDICARE;
           break;
-        case 2:
+        case 2: {
           // Health Fund
+          const healthFund = healthFundsList.value.find(
+            (fund) => fund.id === item.value.health_fund_id
+          );
+
           validationData = {
             first_name: selectedPatient.value.first_name,
             last_name: selectedPatient.value.last_name,
@@ -388,11 +408,12 @@ export default defineComponent({
             sex: selectedPatient.value.gender,
             fund_member_number: item.member_number,
             fund_reference_number: item.member_reference_number,
-            fund_organisation_code: "TST", //item.health_fund.code
-            minor_id: "AUA00000",
+            fund_organisation_code: healthFund?.code,
+            minor_id: minorId.value.minorId,
           };
           endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND;
           break;
+        }
         case 3:
           // DVA
           validationData = {
@@ -401,7 +422,7 @@ export default defineComponent({
             date_of_birth: selectedPatient.value.date_of_birth,
             sex: selectedPatient.value.gender,
             veteran_number: item.member_number,
-            minor_id: "AUA00000",
+            minor_id: minorId.value.minorId,
           };
           endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_DVA;
           break;
@@ -417,7 +438,7 @@ export default defineComponent({
         date_of_birth: selectedPatient.value.date_of_birth,
         medicare_number: item.member_number,
         medicare_reference_number: item.member_reference_number,
-        minor_id: "AUA00000",
+        minor_id: minorId.value.minorId,
       };
       const endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_CONCESSION;
 
@@ -429,6 +450,12 @@ export default defineComponent({
       store.dispatch(PatientActions.VIEW, id);
       setCurrentPageBreadcrumbs("Billing", ["Patients"]);
       store.dispatch(Actions.HEALTH_FUND.LIST);
+
+      const updateModal = document.getElementById("modal_update_claim_source");
+      updateModal.addEventListener("hidden.bs.modal", function () {
+        updatingSource.value = null;
+        renderTable();
+      });
     });
 
     watchEffect(() => {
@@ -452,6 +479,8 @@ export default defineComponent({
       updateDetails,
       handleAddClaimSource,
       getHealthFund,
+      updatingSource,
+      handleUpdateClaimSource,
     };
   },
 });

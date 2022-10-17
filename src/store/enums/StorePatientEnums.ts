@@ -28,6 +28,7 @@ const PatientActions = {
     VALIDATE_CONCESSION: "validatePatientsBillingConcession",
     VALIDATE_HEALTH_FUND: "validatePatientsBillingHealthFund",
     VALIDATE_DVA: "validatePatientsBillingDva",
+    ADD: "addPatientsBilling",
     UPDATE: "updatePatientsBilling",
     DELETE: "deletePatientsBilling",
   },

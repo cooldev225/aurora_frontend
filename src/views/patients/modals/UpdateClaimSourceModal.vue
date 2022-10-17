@@ -1,14 +1,14 @@
 <template>
   <ModalWrapper
-    title="Add New Claim Source"
-    modalId="add_claim_source"
-    modalRef="addClaimSourceRef"
+    title="Update Claim Source"
+    modalId="update_claim_source"
+    modalRef="updateClaimSourceRef"
   >
     <el-form
       @submit.prevent
       :model="formData"
       :rules="rules"
-      ref="addClaimSourceFormRef"
+      ref="updateClaimSourceFormRef"
     >
       <HeadingText text="Details" />
 
@@ -121,9 +121,9 @@
         :data-kt-indicator="loading ? 'on' : null"
         class="btn btn-lg btn-primary me-2"
         :disabled="loading"
-        @click="addNewClaimSource"
+        @click="updateClaimSource"
       >
-        <span v-if="!loading" class="indicator-label">Add Claim Source</span>
+        <span v-if="!loading" class="indicator-label">Update Claim Source</span>
         <span v-if="loading" class="indicator-progress">
           Please wait...
           <span
@@ -162,11 +162,10 @@ import PatientBillingTypes from "@/core/data/patient-billing-types";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 
 export default defineComponent({
-  name: "add-claim-source-modal",
+  name: "update-claim-source-modal",
   props: {
     patient: { required: true },
     claimSource: { type: Object },
-    isUpdate: { type: Boolean, default: false },
   },
   components: {
     AlertBadge,
@@ -175,7 +174,7 @@ export default defineComponent({
     const store = useStore();
     const claimSource = computed(() => props.claimSource);
     const parentModal = ref(null);
-    const addClaimSourceFormRef = ref(null);
+    const updateClaimSourceFormRef = ref(null);
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const minorId = computed(() => store.getters.latestMinorId);
     const loading = ref(false);
@@ -346,6 +345,7 @@ export default defineComponent({
           const healthFund = healthFundsList.value.find(
             (fund) => fund.id === formData.value.health_fund_id
           );
+
           validationData.fund_member_number = formData.value.member_number;
           validationData.fund_reference_number =
             formData.value.member_reference_number;
@@ -377,10 +377,16 @@ export default defineComponent({
       doValidation(endpoint, validationData, true);
     };
 
-    const addNewClaimSource = () => {
+    const updateClaimSource = () => {
       loading.value = true;
+      const data = {
+        id: claimSource.value.id,
+        is_valid: true,
+        ...formData.value,
+      };
+
       store
-        .dispatch(PatientActions.CLAIM_SOURCE.ADD, formData)
+        .dispatch(PatientActions.CLAIM_SOURCE.UPDATE, data)
         .then(() => {
           parentModal.value.hide();
         })
@@ -390,7 +396,7 @@ export default defineComponent({
     };
 
     const resetForm = () => {
-      addClaimSourceFormRef.value.resetFields();
+      updateClaimSourceFormRef.value.resetFields();
     };
 
     watch(
@@ -404,8 +410,23 @@ export default defineComponent({
       { deep: true }
     );
 
+    watch(
+      () => claimSource,
+      () => {
+        resetForm();
+
+        formData.value.billing_type = claimSource.value?.billing_type;
+        formData.value.member_number = claimSource.value?.member_number;
+        formData.value.member_reference_number =
+          claimSource.value?.member_reference_number;
+        formData.value.health_fund_id = claimSource.value?.health_fund_id;
+      },
+      { deep: true }
+    );
+
     onMounted(() => {
-      parentModal.value = document.getElementById("modal_add_claim_source");
+      parentModal.value = document.getElementById("modal_update_claim_source");
+
       parentModal.value.addEventListener("hidden.bs.modal", function () {
         resetForm();
       });
@@ -413,7 +434,7 @@ export default defineComponent({
 
     return {
       loading,
-      addClaimSourceFormRef,
+      updateClaimSourceFormRef,
       moment,
       validated,
       validationMessage,
@@ -427,7 +448,7 @@ export default defineComponent({
       validateSource,
       handleCheckConcession,
       rules,
-      addNewClaimSource,
+      updateClaimSource,
     };
   },
 });
