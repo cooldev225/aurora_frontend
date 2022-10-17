@@ -22,12 +22,23 @@
       <template v-slot:cell-cancel_reason="{ row: item }">
         {{ item.confirmation_status_reason }}
       </template>
-      <template v-if="actionTitle" v-slot:cell-actions="{ row: item }">
+      <template
+        v-if="actionConfirmTitle || actionCancelTitle"
+        v-slot:cell-actions="{ row: item }"
+      >
         <button
-          @click="action(item.id)"
+          v-if="actionConfirmTitle"
+          @click="actionConfirm(item.id)"
           class="btn btn-bg-light btn-active-color-primary btn-sm me-1"
         >
-          {{ actionTitle }}
+          {{ actionConfirmTitle }}
+        </button>
+        <button
+          v-if="actionCancelTitle"
+          @click="actionCancel(item.id)"
+          class="btn btn-bg-light btn-active-color-primary btn-sm me-1"
+        >
+          {{ actionCancelTitle }}
         </button>
       </template>
     </Datatable>
@@ -48,8 +59,10 @@ export default defineComponent({
   },
   props: {
     params: { required: true },
-    actionTitle: { require: false },
-    action: { require: false },
+    actionConfirmTitle: { require: false },
+    actionConfirm: { require: false },
+    actionCancelTitle: { require: false },
+    actionCancel: { require: false },
   },
   setup(props) {
     const store = useStore();
@@ -85,7 +98,7 @@ export default defineComponent({
         loading.value = false;
       });
 
-      if (props.actionTitle) {
+      if (props.actionConfirmTitle || props.actionCancelTitle) {
         tableHeader.value.push({
           name: "Actions",
           key: "actions",

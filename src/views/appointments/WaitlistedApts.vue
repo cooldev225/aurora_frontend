@@ -3,8 +3,8 @@
     :params="{
       is_wait_listed: '1',
     }"
-    actionTitle="REMOVE FROM WAIT LIST"
-    :action="handleRemoveFromWaitList"
+    actionConfirmTitle="REMOVE FROM WAIT LIST"
+    :actionConfirm="handleRemoveFromWaitList"
   >
   </AppointmentList>
 </template>

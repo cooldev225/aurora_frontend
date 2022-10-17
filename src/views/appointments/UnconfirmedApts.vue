@@ -3,8 +3,10 @@
     :params="{
       confirmation_status: 'PENDING',
     }"
-    actionTitle="CONFIRM"
-    :action="handleConfirmAppointment"
+    actionConfirmTitle="CONFIRM"
+    :actionConfirm="handleConfirmAppointment"
+    actionCancelTitle="CANCEL"
+    :actionCancel="handleCancelAppointment"
   >
   </AppointmentList>
 </template>
@@ -25,9 +27,14 @@ export default defineComponent({
       console.log(appointmentId);
     };
 
+    const handleCancelAppointment = (appointmentId) => {
+      console.log(appointmentId);
+    };
+
     return {
       AppointmentList,
       handleConfirmAppointment,
+      handleCancelAppointment,
     };
   },
 });
