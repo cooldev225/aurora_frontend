@@ -18,7 +18,7 @@ const AppointmentActions = {
     UPLOAD: "uploadProcedureApproval",    //  (put)    '/appointment/procedure-approvals/upload/{appointment}'
   },
   CONFIRMATION_STATUS: {
-    UPDATE: "updateCancellationApt",      //  (put) '/appointments/confirmation-status/{appointment}'
+    UPDATE: "updateConfirmationApt",      //  (put) '/appointments/confirmation-status/{appointment}'
   },
   COLLECTING_PERSON:{
     UPDATE: "updateCancellationApt",      //  (put) '/appointments/collecting-person/{appointment}'
