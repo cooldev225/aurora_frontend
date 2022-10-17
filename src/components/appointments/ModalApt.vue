@@ -1116,6 +1116,27 @@
                           >Appointment History</span
                         >
 
+                        <div style="color: grey">
+                          <span class="me-2"
+                            >Total Appointments:
+                            {{ patientAptData.appointment_count }}
+                          </span>
+                          <span
+                            class="me-2"
+                            v-if="patientAptData.cancelled_appointment_count"
+                          >
+                            <span class="me-2">/</span>Cancelled:
+                            {{ patientAptData.cancelled_appointment_count }}
+                          </span>
+                          <span
+                            class="me-2"
+                            v-if="patientAptData.missed_appointment_count"
+                          >
+                            <span class="me-2">/</span>Missed:
+                            {{ patientAptData.missed_appointment_count }}
+                          </span>
+                        </div>
+
                         <AppointmentHistory
                           :pastAppointments="patientAptData.pastAppointments"
                           :futureAppointments="
