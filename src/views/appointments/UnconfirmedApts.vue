@@ -20,6 +20,7 @@ import {
   AppointmentActions,
   AppointmentMutations,
 } from "@/store/enums/StoreAppointmentEnums";
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
 
 export default defineComponent({
   name: "admin-main",
@@ -32,18 +33,34 @@ export default defineComponent({
 
     const handleConfirmAppointment = async (appointmentId) => {
       console.log(appointmentId);
-      await store
-        .dispatch(AppointmentActions.CONFIRMATION_STATUS.UPDATE, {
-          id: appointmentId,
-          confirmed: true,
-        })
-        .then(() => {
-          // store.dispatch(
-          //   AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
-          //   searchVal.value
-          // );
-          // DrawerComponent?.getInstance("appointment-drawer")?.hide();
-        });
+
+      const html =
+        "<h3>Are you sure you would like to confirm this appointment?</h3><br/>";
+      Swal.fire({
+        html: html,
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async (data) => {
+          await store
+            .dispatch(AppointmentActions.CONFIRMATION_STATUS.UPDATE, {
+              id: appointmentId,
+              confirmed: true,
+            })
+            .then(() => {
+              // store.dispatch(
+              //   AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
+              //   searchVal.value
+              // );
+              // DrawerComponent?.getInstance("appointment-drawer")?.hide();
+            });
+        },
+      });
     };
 
     const handleCancelAppointment = (appointmentId) => {
