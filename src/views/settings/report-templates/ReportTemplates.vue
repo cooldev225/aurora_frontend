@@ -96,7 +96,11 @@ export default defineComponent({
         sections: [],
       };
 
-      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, new_item);
+      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, {
+        template: new_item,
+        appointment: null,
+        headerFooter: null,
+      });
       const modal = new Modal(
         document.getElementById("modal_add_report_template")
       );
@@ -104,7 +108,12 @@ export default defineComponent({
     };
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, item);
+      console.log(["item", item]);
+      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, {
+        template: item,
+        appointment: null,
+        headerFooter: null,
+      });
       const modal = new Modal(
         document.getElementById("modal_add_report_template")
       );

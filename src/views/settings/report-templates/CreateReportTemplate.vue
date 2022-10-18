@@ -189,7 +189,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref, watchEffect, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -202,15 +202,10 @@ export default defineComponent({
     const store = useStore();
     const formRef = ref(null);
     const createReportTemplateModalRef = ref(null);
+    const formData = computed(() => store.getters.getReportTemplateSelected);
     const loading = ref(false);
 
     let is_create = false;
-
-    const formData = ref({
-      id: 0,
-      title: "",
-      sections: [],
-    });
 
     const modalTexts = ref({});
 
@@ -313,8 +308,6 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      formData.value = store.getters.getReportTemplateSelected;
-
       is_create = formData.value.id > 0 ? false : true;
 
       if (is_create) {
