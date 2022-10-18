@@ -10,6 +10,9 @@ const HRMActions = {
     CREATE: 'BulletinCreate',
     UPDATE: 'BulletinUpdate',
     DELETE: 'BulletinDelete',
+  },
+  ANESTHETIST : {
+    LIST: 'AnesthetistList'
   }
 };
 
@@ -22,6 +25,9 @@ const HRMMutations = {
   BULLETIN: {
     SET_LIST : "setBulletinList",
     SET_SELECT : "setBulletinSelect",
+  },
+  ANESTHETIST : {
+    SET_LIST: 'setAnesthetistList'
   }
 };
 

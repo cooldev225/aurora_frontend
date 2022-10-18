@@ -112,6 +112,7 @@
                           format="HH:mm"
                           v-model="day.start_time"
                           :prop="'starttime-' + index"
+                          @change="verifyAnesthetist(day)"
                         />
                       </InputWrapper>
                       <div class="gap">:</div>
@@ -130,6 +131,7 @@
                           format="HH:mm"
                           v-model="day.end_time"
                           :prop="'endtime-' + index"
+                          @change="verifyAnesthetist(day)"
                         />
                       </InputWrapper>
                       <InputWrapper
@@ -161,6 +163,7 @@
                           type="text"
                           v-model="day.restriction"
                           :prop="'restriction-select-' + index"
+                          @change="verifyAnesthetist(day)"
                         >
                           <el-option
                             v-for="item in restrictionsTypes"
@@ -174,19 +177,24 @@
                         class="col"
                         label="Anesthetist"
                         :prop="'restriction-' + index"
-                        v-if="day.restriction == 'PROCEDURE'"
+                        v-if="
+                          day.restriction == 'PROCEDURE' &&
+                          formData.role_id == 5
+                        "
                       >
                         <el-select
                           class="w-100"
                           type="text"
                           v-model="day.anesthetist_id"
+                          @visible-change="verifyAnesthetist(day)"
                           :prop="'restriction-select-' + index"
                         >
                           <el-option
-                            v-for="item in anesthetists"
-                            :value="item.id"
-                            :label="item.first_name"
-                            :key="item.id"
+                            v-for="Anesthetist in Anesthetists"
+                            :value="Anesthetist.id"
+                            :label="Anesthetist.first_name"
+                            :key="Anesthetist.id"
+                            :disabled="Anesthetist.isDisabled"
                           />
                         </el-select>
                       </InputWrapper>
@@ -268,14 +276,17 @@
 .time-slots-divider {
   margin-top: 0px !important;
 }
+
 .time-slots-box {
   margin-left: 0px !important;
   margin-right: 0px !important;
+
   .time-slots-view {
     & > div {
       padding-right: 0.5rem !important;
       padding-left: 0.5rem !important;
     }
+
     & > div.gap {
       align-items: center;
       display: flex;
@@ -283,12 +294,14 @@
       padding-left: 0px !important;
     }
   }
+
   .time-slots-delete {
     display: flex;
     align-items: center;
     margin-right: 0.5rem;
   }
 }
+
 .time-slots-add-box {
   justify-content: center;
   cursor: pointer;
@@ -343,12 +356,12 @@ export default defineComponent({
     const employeeList = computed(() => store.getters.employeeList);
     const schedule = computed(() => store.getters.hrmScheduleSelected);
     const timeslots = computed(() => store.getters.hrmTimeslotSelected);
+    const Anesthetists = computed(() => store.getters.hrmAnesthetist);
     const anesthetists = computed(() => {
       return store.getters.employeeList.filter((employee) => {
         if (employee.role_id === 9) return employee;
       });
     });
-
     watch([schedule, timeslots], () => {
       formData.value.id = schedule.value.id;
       formData.value.clinic_id = schedule.value.clinic_id;
@@ -467,6 +480,77 @@ export default defineComponent({
       });
     };
 
+    const verifyAnesthetist = (data) => {
+      let filteredAnesthetists = [];
+      if (data.restriction == "PROCEDURE") {
+        Anesthetists.value.forEach((anesthetist) => {
+          anesthetist.isDisabled = true;
+          anesthetist.schedule_timeslots.map((slot) => {
+            if (
+              slot.clinic_id == data.clinic_id &&
+              !filteredAnesthetists.includes(anesthetist) &&
+              slot.start_time <= data.start_time &&
+              slot.end_time >= data.end_time
+            ) {
+              let bookedSlots = existingAnesthetistBookings(
+                data.week_day,
+                anesthetist.id,
+                data.id
+              );
+              // if there are any existing bookings check bookings are clashing or not
+              if (bookedSlots.length > 0) {
+                bookedSlots.forEach((bookedSlot) => {
+                  if (
+                    bookedSlot.startTime <= data.start_time &&
+                    bookedSlot.endTime <= data.end_time
+                  ) {
+                    filteredAnesthetists.push(anesthetist);
+                    anesthetist.isDisabled = false;
+                  } else if (
+                    bookedSlot.startTime >= data.start_time &&
+                    bookedSlot.endTime >= data.end_time
+                  ) {
+                    filteredAnesthetists.push(anesthetist);
+                    anesthetist.isDisabled = false;
+                  }
+                });
+              } else {
+                filteredAnesthetists.push(anesthetist);
+                anesthetist.isDisabled = false;
+              }
+            }
+          });
+        });
+      } else {
+        data.anesthetist_id = null;
+        return;
+      }
+    };
+    // check filtered Anesthetist has booked by some other specialist
+    const existingAnesthetistBookings = (day, anesthetistId, slotId) => {
+      let filteredSpecialists = [];
+      let anesthetistBookedTimeSlots = [];
+      employeeList.value.forEach((specialist) => {
+        if (specialist.role_id === 5) {
+          specialist.schedule_timeslots.forEach((slot) => {
+            if (
+              slot.week_day === day &&
+              !filteredSpecialists.includes(specialist) &&
+              slot.id !== slotId
+            ) {
+              if (slot.anesthetist_id === anesthetistId) {
+                anesthetistBookedTimeSlots.push({
+                  startTime: slot.start_time,
+                  endTime: slot.end_time,
+                });
+              }
+              filteredSpecialists.push(specialist);
+            }
+          });
+        }
+      });
+      return anesthetistBookedTimeSlots;
+    };
     onMounted(() => {
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
@@ -487,6 +571,8 @@ export default defineComponent({
       schCategories,
       handleAddTimeslot,
       handleDeleteTimeslot,
+      verifyAnesthetist,
+      Anesthetists,
     };
   },
 });

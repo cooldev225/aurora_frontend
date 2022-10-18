@@ -95,7 +95,8 @@
                   <span
                     v-if="
                       selectedFilters.includes('anesthetist') &&
-                      timeslot.restriction === 'PROCEDURE'
+                      timeslot.restriction === 'PROCEDURE' &&
+                      employee.role_id === 5
                     "
                   >
                     ({{ anesthetistName(timeslot.anesthetist_id) }})
@@ -194,6 +195,9 @@ export default defineComponent({
       schedule._action = "edit_weekly_time";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
       schedule.clinic_id = clinicFilter.value;
+      store.dispatch(HRMActions.ANESTHETIST.LIST, {
+        day: day.value,
+      });
       if (schedule.id) schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
       schedule._day = day.value;
 
@@ -247,8 +251,11 @@ export default defineComponent({
 
     const anesthetistName = (id) => {
       let result = "Anesthetist - Not Set";
-      employeeList.value.filter((employee) => {
-        if (employee.id === id) result = "Anesthetist - " + employee.first_name;
+      const allEmployees = store.getters.employeeList;
+      allEmployees.filter((employee) => {
+        if (employee.id === id) {
+          result = "Anesthetist - " + employee.first_name;
+        }
       });
       return result;
     };
