@@ -99,14 +99,20 @@
                     ) in reportSection.auto_texts"
                     :key="autoTextIndex"
                   >
-                    <div class="d-flex flex-row col-9">
+                    <div class="d-flex flex-row col-11">
                       <el-input
                         v-model="autoText.text"
-                        class="flex-grow-1"
+                        class="flex-grow-1 me-2"
                         type="text"
                         placeholder="Enter Auto Text"
                       />
-                      <div class="ms-10">
+                      <el-input
+                        v-model="autoText.icd_10_code"
+                        class="flex-grow-1"
+                        type="text"
+                        placeholder="Enter Code"
+                      />
+                      <div class="ms-2">
                         <button
                           @click="
                             handleDeleteAutoText(sectionIndex, autoTextIndex)
@@ -122,7 +128,7 @@
                   </div>
 
                   <div
-                    class="cursor-pointer text-center text-nowrap col-9 border border-gray-300 h-40px d-flex flex-center"
+                    class="cursor-pointer text-center text-nowrap col-11 border border-gray-300 h-40px d-flex flex-center"
                     style="font-size: 1.2rem; line-height: 40px; color: #bd5"
                     @click="handleAddAutoText(sectionIndex)"
                   >
@@ -237,6 +243,7 @@ export default defineComponent({
       let new_auto_text = {};
 
       new_auto_text.text = "";
+      new_auto_text.icd_10_code = "";
 
       formData.value.sections[sectionIndex].auto_texts.push(new_auto_text);
     };

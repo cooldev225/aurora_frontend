@@ -54,7 +54,6 @@ export default class ReportTemplateModule
    * @returns reportTemplateSelectData
    */
   get getReportTemplateSelected(): IReportTemplate {
-    console.log(["getReportTempl====", this.reportTemplateSelectData]);
     return this.reportTemplateSelectData;
   }
 
