@@ -126,29 +126,32 @@
                       </div>
                     </div>
                   </div>
-
-                  <div
-                    class="cursor-pointer text-center text-nowrap col-11 border border-gray-300 h-40px d-flex flex-center"
-                    style="font-size: 1.2rem; line-height: 40px; color: #bd5"
+                  <LargeIconButton
                     @click="handleAddAutoText(sectionIndex)"
-                  >
-                    <span><span>+</span> Add Auto Text</span>
-                  </div>
-                  <div class="d-flex flex-row-reverse">
-                    <span
+                    heading="Add AutoText"
+                    iconPath="media/icons/duotune/arrows/arr024.svg"
+                    :color="'success'"
+                    iconSize="1"
+                  />
+
+                  <div class="d-flex mt-3 flex-row-reverse">
+                    <LargeIconButton
                       @click="handleDeleteSection(sectionIndex)"
-                      class="cursor-pointer text-nowrap text-danger text-right"
-                      >- Delete Section</span
-                    >
+                      heading="Delete Section"
+                      iconPath="media/icons/duotune/arrows/arr024.svg"
+                      :color="'danger'"
+                      iconSize="1"
+                    />
                   </div>
                 </div>
-                <div
-                  class="cursor-pointer text-center col-12 border border-5 border-muted"
-                  style="font-size: 2rem; color: #bd5; line-height: 70px"
+
+                <LargeIconButton
                   @click="handleAddSection()"
-                >
-                  <span><span>+</span> Add Section</span>
-                </div>
+                  :heading="'Add Section'"
+                  :iconPath="'media/icons/duotune/arrows/arr024.svg'"
+                  :color="'primary'"
+                  iconSize="3"
+                />
               </div>
             </div>
             <!--end::Scroll-->
