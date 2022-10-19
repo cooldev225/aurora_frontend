@@ -155,8 +155,29 @@
                       </InputWrapper>
                       <InputWrapper
                         class="col"
+                        label="Clinic"
+                        :prop="'restriction-' + index"
+                      >
+                        <el-select
+                          class="w-100"
+                          type="text"
+                          v-model="day.clinic_id"
+                          :prop="'restriction-select-' + index"
+                          @visible-change="verifyAnesthetist(day)"
+                        >
+                          <el-option
+                            v-for="item in clinics"
+                            :value="item.id"
+                            :label="item.name"
+                            :key="item.id"
+                          />
+                        </el-select>
+                      </InputWrapper>
+                      <InputWrapper
+                        class="col"
                         label="Restriction"
                         :prop="'restriction-' + index"
+                        v-if="formData.role_id == 5"
                       >
                         <el-select
                           class="w-100"
@@ -190,11 +211,11 @@
                           :prop="'restriction-select-' + index"
                         >
                           <el-option
-                            v-for="Anesthetist in Anesthetists"
-                            :value="Anesthetist.id"
-                            :label="Anesthetist.first_name"
-                            :key="Anesthetist.id"
-                            :disabled="Anesthetist.isDisabled"
+                            v-for="anesthetist in anesthetists"
+                            :value="anesthetist.id"
+                            :label="anesthetist.first_name"
+                            :key="anesthetist.id"
+                            :disabled="anesthetist.isDisabled"
                           />
                         </el-select>
                       </InputWrapper>
@@ -356,12 +377,8 @@ export default defineComponent({
     const employeeList = computed(() => store.getters.employeeList);
     const schedule = computed(() => store.getters.hrmScheduleSelected);
     const timeslots = computed(() => store.getters.hrmTimeslotSelected);
-    const Anesthetists = computed(() => store.getters.hrmAnesthetist);
-    const anesthetists = computed(() => {
-      return store.getters.employeeList.filter((employee) => {
-        if (employee.role_id === 9) return employee;
-      });
-    });
+    const anesthetists = computed(() => store.getters.hrmAnesthetist);
+    const clinics = computed(() => store.getters.clinicsList);
     watch([schedule, timeslots], () => {
       formData.value.id = schedule.value.id;
       formData.value.clinic_id = schedule.value.clinic_id;
@@ -483,7 +500,7 @@ export default defineComponent({
     const verifyAnesthetist = (data) => {
       let filteredAnesthetists = [];
       if (data.restriction == "PROCEDURE") {
-        Anesthetists.value.forEach((anesthetist) => {
+        anesthetists.value.forEach((anesthetist) => {
           anesthetist.isDisabled = true;
           anesthetist.schedule_timeslots.map((slot) => {
             if (
@@ -502,7 +519,7 @@ export default defineComponent({
                 bookedSlots.forEach((bookedSlot) => {
                   if (
                     bookedSlot.startTime <= data.start_time &&
-                    bookedSlot.endTime <= data.end_time
+                    bookedSlot.endTime <= data.start_time
                   ) {
                     filteredAnesthetists.push(anesthetist);
                     anesthetist.isDisabled = false;
@@ -523,8 +540,16 @@ export default defineComponent({
         });
       } else {
         data.anesthetist_id = null;
-        return;
       }
+      // verify selected anesthetist is in filtered anesthetists
+      let isFound = false;
+      filteredAnesthetists.map((anesthetist) => {
+        if (anesthetist.id === data.anesthetist_id) {
+          isFound = true;
+          return;
+        }
+      });
+      data.anesthetist_id = isFound ? data.anesthetist_id : null;
     };
     // check filtered Anesthetist has booked by some other specialist
     const existingAnesthetistBookings = (day, anesthetistId, slotId) => {
@@ -572,7 +597,7 @@ export default defineComponent({
       handleAddTimeslot,
       handleDeleteTimeslot,
       verifyAnesthetist,
-      Anesthetists,
+      clinics,
     };
   },
 });
