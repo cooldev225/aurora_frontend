@@ -23,32 +23,45 @@
           <div class="fv-row mb-10">
             <input
               class="w-100 h-50px p-3 fs-1 text-primary"
-              :value="templateData.title"
+              :value="templateData?.title"
             />
           </div>
           <!--end::Input group-->
+          <InputWrapper
+            claas="px-0"
+            label="Header/Footer Template"
+            prop="header_footer_templates"
+          >
+            <el-select
+              class="col-9"
+              v-model="formData.headerFooter"
+              placeholder="Select Header/Footer Template"
+            >
+              <el-option
+                v-for="(option, idx) in headerFooterList"
+                :key="option.id"
+                :value="idx"
+                :label="option.title"
+              />
+            </el-select>
+          </InputWrapper>
 
           <div class="d-flex flex-column gap-2 mb-6">
             <InfoSection heading="Patient"
-              >{{ patientData.title }} {{ patientData.first_name }}
-              {{ patientData.last_name }},
+              >{{ patientData?.title }} {{ patientData?.first_name }}
+              {{ patientData?.last_name }},
               {{
-                moment(patientData.date_of_birth)
+                moment(patientData?.date_of_birth)
                   .format("DD/MM/YYYY")
                   .toString()
               }}</InfoSection
             >
-
-            <InfoSection heading="Referring Doctor">{{
-              appointmentData.referral.referring_doctor_name
-            }}</InfoSection>
-
-            <InfoSection heading="Header Footer">{{
-              headerFooterData.title
-            }}</InfoSection>
+            <InfoSection heading="Referring Doctor">
+              {{ appointmentData?.referral?.referring_doctor_name }}
+            </InfoSection>
           </div>
           <div
-            v-for="section in templateData.sections"
+            v-for="section in templateData?.sections"
             class="d-flex flex-column gap-2"
             :key="section.id"
           >
@@ -108,39 +121,40 @@ import { useRouter } from "vue-router";
 import moment from "moment";
 import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
+import InputWrapper from "../../components/presets/FormElements/InputWrapper.vue";
+import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "patient-report",
-  components: { InfoSection },
+  components: { InfoSection, InputWrapper },
   setup() {
     const store = useStore();
     const router = useRouter();
     const formRef = ref(null);
-    const templateList = computed(
+    const templateData = computed(
       () => store.getters.getReportTemplateSelected
     );
     const patientList = computed(() => store.getters.selectedPatient);
-    const headerFooter = computed(
-      () => store.getters.getReportHeaderFooterSelected
+    const headerFooterList = computed(
+      () => store.getters.getHeaderFooterTemplateList
     );
-    const appointment = computed(
+    const appointmentData = computed(
       () => store.getters.getReportAppointmentSelected
     );
 
-    const templateData = ref({
-      id: "",
-      title: "",
-      organization_id: "",
-      sections: [],
-      created_at: "",
-      update_at: "",
-    });
+    // const templateData = ref({
+    //   id: "",
+    //   title: "",
+    //   organization_id: "",
+    //   sections: [],
+    //   created_at: "",
+    //   update_at: "",
+    // });
 
     const patientData = ref();
-    const appointmentData = ref();
-    const headerFooterData = ref();
     const formData = ref({
       section: {},
+      headerFooter: null,
     });
 
     const rules = ref({});
@@ -152,11 +166,9 @@ export default defineComponent({
         return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (formRef.value as any).validate(async (valid) => {
         if (valid) {
           const reportData: unknown[] = [];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (templateData.value.sections as any).forEach((data) => {
             reportData.push({
               sectionId: data.id,
@@ -177,7 +189,9 @@ export default defineComponent({
               appointmentId: appointmentData.value.id,
               specialistId: appointmentData.value.specialist_id,
               documentName: appointmentData.value.appointment_type_name,
-              header_footer_id: headerFooterData.value.id,
+              header_footer_id: formData.value.headerFooter
+                ? headerFooterList.value[formData.value.headerFooter].id
+                : null,
             })
             .then((data) => {
               console.log(data);
@@ -193,14 +207,15 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      templateData.value = templateList.value;
       patientData.value = patientList.value;
-      appointmentData.value = appointment.value;
-      headerFooterData.value = headerFooter.value;
     });
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Report", ["Patients"]);
+      loading.value = true;
+      store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST).then(() => {
+        loading.value = false;
+      });
     });
 
     return {
@@ -209,10 +224,10 @@ export default defineComponent({
       templateData,
       patientData,
       appointmentData,
-      headerFooterData,
       formData,
       moment,
       submit,
+      headerFooterList,
     };
   },
 });

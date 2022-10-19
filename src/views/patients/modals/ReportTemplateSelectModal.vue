@@ -22,7 +22,7 @@
         </el-select>
       </InputWrapper>
 
-      <InputWrapper label="Header/Footer Template">
+      <!-- <InputWrapper label="Header/Footer Template">
         <el-select
           class="w-100"
           v-model="headerFooter"
@@ -35,7 +35,7 @@
             :label="option.title"
           />
         </el-select>
-      </InputWrapper>
+      </InputWrapper> -->
 
       <InputWrapper label="Appointment">
         <el-select
@@ -85,43 +85,47 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const store = useStore();
-    const list = computed(() => store.getters.getReportTemplateList);
-    const headerFooterData = computed(
-      () => store.getters.getHeaderFooterTemplateList
+    const reportTemplatesData = computed(
+      () => store.getters.getReportTemplateList
     );
+    // const headerFooterData = computed(
+    //   () => store.getters.getHeaderFooterTemplateList
+    // );
     const patientData = computed(() => store.getters.selectedPatient);
     const loading = ref(false);
     const reportTemplate = ref();
-    const headerFooter = ref();
+    //const headerFooter = ref();
     const appointment = ref();
-    const reportTemplatesData = ref([]);
-    const headerFooterTemplatesData = ref([]);
+    //const reportTemplatesData = ref([]);
+    //const headerFooterTemplatesData = ref([]);
     const appointmentsData = ref([]);
     const reportModal = ref(null);
 
     onMounted(() => {
-      loading.value = true;
-      store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST).then(() => {
-        loading.value = false;
-      });
+      //loading.value = true;
+      // store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST).then(() => {
+      //   loading.value = false;
+      // });
     });
 
     watchEffect(() => {
-      reportTemplatesData.value = list.value;
-      headerFooterTemplatesData.value = headerFooterData.value;
+      //reportTemplatesData.value = list.value;
+      //headerFooterTemplatesData.value = headerFooterData.value;
       appointmentsData.value = patientData.value.appointments;
-      store.commit(
-        Mutations.SET_REPORT_APPOINTMENTS.LIST,
-        patientData.value.appointments
-      );
+      // store.commit(
+      //   Mutations.SET_REPORT_APPOINTMENTS.LIST,
+      //   patientData.value.appointments
+      // );
     });
 
     const submit = () => {
-      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, {
+      let selected_report = {
         template: reportTemplatesData.value[reportTemplate.value],
         appointment: appointmentsData.value[appointment.value],
-        headerFooter: headerFooterTemplatesData.value[headerFooter.value],
-      });
+        headerFooter: null, //headerFooterTemplatesData.value[headerFooter.value],
+      };
+      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, selected_report);
+      console.log(["selected_report=", selected_report]);
 
       // hideModal(reportModal.value);
       router.push({ name: "patients-report" });
@@ -131,10 +135,10 @@ export default defineComponent({
       loading,
       reportModal,
       reportTemplate,
-      headerFooter,
-      headerFooterData,
+      //headerFooter,
+      //headerFooterData,
       reportTemplatesData,
-      headerFooterTemplatesData,
+      //headerFooterTemplatesData,
       appointment,
       appointmentsData,
       submit,
