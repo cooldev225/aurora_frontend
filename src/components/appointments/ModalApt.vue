@@ -83,7 +83,7 @@
                 <AptOverview
                   :aptInfoData="aptInfoData"
                   :patientInfoData="patientInfoData"
-                  :specialistName="specialist_name"
+                  :specialist="cur_specialist"
                   :appointmentName="appointment_name"
                   :startTime="start_time"
                 />

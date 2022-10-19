@@ -2,11 +2,14 @@
   <div
     class="p-4 mb-4 card border border-dashed border-primary d-flex flex-column gap-2"
   >
-    <InfoSection heading="Appointment Type">{{ appointmentName }} </InfoSection>
+    <InfoSection heading="Appointment Type">{{ appointmentName }}</InfoSection>
 
-    <InfoSection heading="Specialist">{{ specialistName }} </InfoSection>
+    <InfoSection heading="Specialist">{{ specialist.full_name }}</InfoSection>
+    <InfoSection heading="Anesthetist" v-if="anesthetistName"
+      >{{ anesthetistName }}
+    </InfoSection>
 
-    <InfoSection heading="Clinic">{{ aptInfoData.clinic_name }} </InfoSection>
+    <InfoSection heading="Clinic">{{ aptInfoData.clinic_name }}</InfoSection>
 
     <InfoSection heading="Time">
       {{ startTime }}
@@ -27,15 +30,17 @@
 </template>
 <script setup>
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
-import { defineProps } from "vue";
-defineProps({
+import { defineProps, ref, watch } from "vue";
+
+const anesthetistName = ref(null);
+const props = defineProps({
   appointmentName: {
     required: true,
     type: String,
   },
-  specialistName: {
+  specialist: {
     required: true,
-    type: String,
+    type: Object,
   },
   startTime: {
     required: true,
@@ -50,4 +55,29 @@ defineProps({
     type: Object,
   },
 });
+const getAnesthetistName = () => {
+  anesthetistName.value = null;
+  props.specialist.schedule_timeslots.map((slot) => {
+    if (
+      slot.anesthetist_id &&
+      slot.clinic_id === props.aptInfoData.clinic_id &&
+      props.startTime >= slot.start_time &&
+      props.aptInfoData.time_slot[1] < slot.end_time
+    ) {
+      anesthetistName.value = slot.anesthetist.full_name;
+    }
+  });
+};
+watch(
+  () => props.appointmentName,
+  () => {
+    getAnesthetistName();
+  }
+);
+watch(
+  () => props.specialist,
+  () => {
+    getAnesthetistName();
+  }
+);
 </script>
