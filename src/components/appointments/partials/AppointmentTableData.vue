@@ -22,6 +22,9 @@
         <span
           v-if="appointment.patient.allergies"
           class="badge badge-light-danger opacity-50 mx-2"
+          data-bs-toggle="tooltip"
+          data-bs-html="true"
+          :title="getTootTip(appointment.patient.allergies)"
         >
           ALLERGY
         </span>
@@ -51,6 +54,19 @@
 export default {
   props: {
     appointment: { required: true, type: Object },
+  },
+  setup() {
+    const getTootTip = (allergies) => {
+      var html = "";
+      allergies.forEach((allergy) => {
+        html = html + allergy.symptoms + " ";
+      });
+      return html;
+    };
+
+    return {
+      getTootTip,
+    };
   },
 };
 </script>
