@@ -106,12 +106,21 @@
                         type="text"
                         placeholder="Enter Auto Text"
                       />
-                      <el-input
+                      <el-select
+                        class="w-100"
+                        remote
+                        filterable
                         v-model="autoText.icd_10_code"
-                        class="flex-grow-1"
-                        type="text"
-                        placeholder="Enter Code"
-                      />
+                        :remote-method="searchCodes"
+                        :loading="loadingICD"
+                      >
+                        <el-option
+                          v-for="item in codes"
+                          :key="item[0]"
+                          :label="item[0] + ' - ' + item[1]"
+                          :value="item[0]"
+                        />
+                      </el-select>
                       <div class="ms-2">
                         <button
                           @click="
@@ -203,7 +212,7 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
-
+import { CodingActions, CodingMutations } from "@/store/enums/StoreCodingEnums";
 export default defineComponent({
   name: "create-report-template-modal",
   components: {},
@@ -215,6 +224,10 @@ export default defineComponent({
     const loading = ref(false);
 
     let is_create = false;
+
+    // ICD-10 API seach
+    const codes = ref();
+    const loadingICD = ref(false);
 
     const modalTexts = ref({});
 
@@ -333,6 +346,25 @@ export default defineComponent({
       }
     });
 
+    const searchCodes = (query) => {
+      if (query) {
+        loadingICD.value = true;
+
+        store
+          .dispatch(CodingActions.SEARCH_DIAGNOSES, query)
+          .then((response) => {
+            codes.value = response.data[3];
+            loadingICD.value = false;
+            console.log(codes.value);
+          })
+          .catch((response) => {
+            console.log(response);
+          });
+      } else {
+        codes.value = [];
+      }
+    };
+
     return {
       formData,
       modalTexts,
@@ -345,6 +377,9 @@ export default defineComponent({
       handleDeleteSection,
       handleAddAutoText,
       handleDeleteAutoText,
+      searchCodes,
+      codes,
+      loadingICD,
     };
   },
 });
