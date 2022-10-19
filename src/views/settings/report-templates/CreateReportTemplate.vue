@@ -99,14 +99,20 @@
                     ) in reportSection.auto_texts"
                     :key="autoTextIndex"
                   >
-                    <div class="d-flex flex-row col-9">
+                    <div class="d-flex flex-row col-11">
                       <el-input
                         v-model="autoText.text"
-                        class="flex-grow-1"
+                        class="flex-grow-1 me-2"
                         type="text"
                         placeholder="Enter Auto Text"
                       />
-                      <div class="ms-10">
+                      <el-input
+                        v-model="autoText.icd_10_code"
+                        class="flex-grow-1"
+                        type="text"
+                        placeholder="Enter Code"
+                      />
+                      <div class="ms-2">
                         <button
                           @click="
                             handleDeleteAutoText(sectionIndex, autoTextIndex)
@@ -120,29 +126,32 @@
                       </div>
                     </div>
                   </div>
-
-                  <div
-                    class="cursor-pointer text-center text-nowrap col-9 border border-gray-300 h-40px d-flex flex-center"
-                    style="font-size: 1.2rem; line-height: 40px; color: #bd5"
+                  <LargeIconButton
                     @click="handleAddAutoText(sectionIndex)"
-                  >
-                    <span><span>+</span> Add Auto Text</span>
-                  </div>
-                  <div class="d-flex flex-row-reverse">
-                    <span
+                    heading="Add AutoText"
+                    iconPath="media/icons/duotune/arrows/arr024.svg"
+                    :color="'success'"
+                    iconSize="1"
+                  />
+
+                  <div class="d-flex mt-3 flex-row-reverse">
+                    <LargeIconButton
                       @click="handleDeleteSection(sectionIndex)"
-                      class="cursor-pointer text-nowrap text-danger text-right"
-                      >- Delete Section</span
-                    >
+                      heading="Delete Section"
+                      iconPath="media/icons/duotune/arrows/arr024.svg"
+                      :color="'danger'"
+                      iconSize="1"
+                    />
                   </div>
                 </div>
-                <div
-                  class="cursor-pointer text-center col-12 border border-5 border-muted"
-                  style="font-size: 2rem; color: #bd5; line-height: 70px"
+
+                <LargeIconButton
                   @click="handleAddSection()"
-                >
-                  <span><span>+</span> Add Section</span>
-                </div>
+                  :heading="'Add Section'"
+                  :iconPath="'media/icons/duotune/arrows/arr024.svg'"
+                  :color="'primary'"
+                  iconSize="3"
+                />
               </div>
             </div>
             <!--end::Scroll-->
@@ -189,7 +198,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref, watchEffect, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -202,15 +211,10 @@ export default defineComponent({
     const store = useStore();
     const formRef = ref(null);
     const createReportTemplateModalRef = ref(null);
+    const formData = computed(() => store.getters.getReportTemplateSelected);
     const loading = ref(false);
 
     let is_create = false;
-
-    const formData = ref({
-      id: 0,
-      title: "",
-      sections: [],
-    });
 
     const modalTexts = ref({});
 
@@ -242,6 +246,7 @@ export default defineComponent({
       let new_auto_text = {};
 
       new_auto_text.text = "";
+      new_auto_text.icd_10_code = "";
 
       formData.value.sections[sectionIndex].auto_texts.push(new_auto_text);
     };
@@ -313,8 +318,6 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      formData.value = store.getters.getReportTemplateSelected;
-
       is_create = formData.value.id > 0 ? false : true;
 
       if (is_create) {
