@@ -516,21 +516,29 @@ export default defineComponent({
               );
               // if there are any existing bookings check bookings are clashing or not
               if (bookedSlots.length > 0) {
+                let result = 0;
                 bookedSlots.forEach((bookedSlot) => {
                   if (
-                    bookedSlot.startTime <= data.start_time &&
-                    bookedSlot.endTime <= data.start_time
+                    bookedSlot.startTime <= data.start_time + ":00" &&
+                    bookedSlot.endTime > data.start_time + ":00"
                   ) {
-                    filteredAnesthetists.push(anesthetist);
-                    anesthetist.isDisabled = false;
+                    result = result + 1;
                   } else if (
-                    bookedSlot.startTime >= data.start_time &&
-                    bookedSlot.endTime >= data.end_time
+                    bookedSlot.startTime < data.end_time + ":00" &&
+                    bookedSlot.endTime >= data.end_time + ":00"
                   ) {
-                    filteredAnesthetists.push(anesthetist);
-                    anesthetist.isDisabled = false;
+                    result = result + 1;
+                  } else if (
+                    bookedSlot.startTime >= data.start_time + ":00" &&
+                    bookedSlot.endTime <= data.end_time + ":00"
+                  ) {
+                    result = result + 1;
                   }
                 });
+                if (result === 0) {
+                  filteredAnesthetists.push(anesthetist);
+                  anesthetist.isDisabled = false;
+                }
               } else {
                 filteredAnesthetists.push(anesthetist);
                 anesthetist.isDisabled = false;
@@ -553,23 +561,17 @@ export default defineComponent({
     };
     // check filtered Anesthetist has booked by some other specialist
     const existingAnesthetistBookings = (day, anesthetistId, slotId) => {
-      let filteredSpecialists = [];
       let anesthetistBookedTimeSlots = [];
       employeeList.value.forEach((specialist) => {
         if (specialist.role_id === 5) {
           specialist.schedule_timeslots.forEach((slot) => {
-            if (
-              slot.week_day === day &&
-              !filteredSpecialists.includes(specialist) &&
-              slot.id !== slotId
-            ) {
+            if (slot.week_day === day && slot.id !== slotId) {
               if (slot.anesthetist_id === anesthetistId) {
                 anesthetistBookedTimeSlots.push({
                   startTime: slot.start_time,
                   endTime: slot.end_time,
                 });
               }
-              filteredSpecialists.push(specialist);
             }
           });
         }
