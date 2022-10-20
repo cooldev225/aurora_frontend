@@ -10,6 +10,41 @@
       </el-option>
     </template>
   </el-select>
+  <div class="hrm-filter-container">
+    <div class="filter-selector">
+      <p>Employee Type</p>
+      <el-select
+        v-model="selectedEmployees"
+        multiple
+        placeholder="Select Employee"
+        style="width: 240px"
+      >
+        <el-option
+          v-for="type in employeeTypeList"
+          :key="type.id"
+          :label="type.name"
+          :value="type.id"
+        />
+      </el-select>
+    </div>
+
+    <div class="filter-selector">
+      <p>Display</p>
+      <el-select
+        v-model="selectedFilters"
+        multiple
+        placeholder="Select Filters"
+        style="width: 240px"
+      >
+        <el-option
+          v-for="item in filterOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </div>
+  </div>
   <CardSection>
     <table class="w-100">
       <thead>
@@ -25,12 +60,8 @@
           :key="employee"
         >
           <td
-            @click="handleEditTemplate(employee)"
             class="d-flex text-hover-primary cursor-pointer background-hover-light-primary flex-column"
           >
-            <span class="svg-icon absolute text-white svg-icon-4 me-1">
-              <InlineSVG icon="pencil" />
-            </span>
             {{ employee.full_name }}<br />
             ({{
               employeeRoles.filter((x) => x.value == employee.role_id)[0].label
@@ -61,23 +92,26 @@
                       : ''
                   "
                 >
-                  {{ moment(timeslot.start_time, "hh:ss").format("hh:ss") }} -
-                  {{ moment(timeslot.end_time, "hh:ss").format("hh:ss") }}
-                  <span> ({{ timeslotClinicName(timeslot) }})</span></span
-                >
+                  <template v-if="selectedFilters.includes('time')">
+                    {{ moment(timeslot.start_time, "hh:ss").format("hh:ss") }} -
+                    {{ moment(timeslot.end_time, "hh:ss").format("hh:ss") }}
+                  </template>
+
+                  <span v-if="selectedFilters.includes('clinic')">
+                    ({{ timeslotClinicName(timeslot) }})
+                  </span>
+                  <span
+                    v-if="
+                      selectedFilters.includes('anesthetist') &&
+                      timeslot.restriction === 'PROCEDURE' &&
+                      employee.role_id === 5
+                    "
+                  >
+                    ({{ anesthetistName(timeslot.anesthetist_id) }})
+                  </span>
+                </span>
               </template>
             </div>
-          </td>
-        </tr>
-        <tr>
-          <td rowspan="8">
-            <LargeIconButton
-              :heading="'Add new Schedule'"
-              :iconPath="'media/icons/duotune/abstract/abs011.svg'"
-              :color="'success'"
-              @click="handleAddTemplate()"
-              iconSize="3"
-            />
           </td>
         </tr>
       </tbody>
@@ -105,11 +139,61 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const scheduleTemplates = computed(() => store.getters.hrmScheduleList);
-    const employeeList = computed(() => store.getters.employeeList);
-    const clinics = computed(() => store.getters.clinicsList);
+
     const clinicFilter = ref();
     const tableData = ref();
+    const selectedFilters = ref(["time"]);
+    const selectedEmployees = ref();
+    const filterOptions = ref([
+      {
+        value: "time",
+        label: "Time",
+      },
+      {
+        value: "clinic",
+        label: "Clinic",
+      },
+      {
+        value: "anesthetist",
+        label: "Anesthetist",
+      },
+    ]);
+    const clinics = computed(() => store.getters.clinicsList);
+    const scheduleTemplates = computed(() => store.getters.hrmScheduleList);
+    const employeeList = computed(() => {
+      const allEmployees = store.getters.employeeList;
+      let filteredList = [];
+      if (selectedEmployees.value.length > 0) {
+        allEmployees.filter((employee) => {
+          selectedEmployees.value.map((role) => {
+            if (employee.role_id === role) {
+              filteredList.push(employee);
+              return employee;
+            }
+          });
+        });
+        return filteredList;
+      } else return allEmployees;
+    });
+
+    const employeeTypeList = computed(() => {
+      const allEmployees = store.getters.employeeList;
+      let list = [];
+      allEmployees.map((employee) => {
+        if (!list.includes(employee)) list.push(employee.role);
+      });
+      const uniqueArray = list.filter((value, index) => {
+        const _value = JSON.stringify(value);
+        return (
+          index ===
+          list.findIndex((obj) => {
+            return JSON.stringify(obj) === _value;
+          })
+        );
+      });
+      return uniqueArray;
+    });
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("Weekly Schedule Template", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
@@ -133,6 +217,9 @@ export default defineComponent({
       schedule._action = "edit_weekly_time";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
       schedule.clinic_id = clinicFilter.value;
+      store.dispatch(HRMActions.ANESTHETIST.LIST, {
+        day: day.value,
+      });
       if (schedule.id) schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
       schedule._day = day.value;
 
@@ -148,32 +235,6 @@ export default defineComponent({
       modal.show();
     };
 
-    const handleEditTemplate = (schedule) => {
-      schedule._title = "Edit Employee Type";
-      schedule._action = "edit_employee_type";
-      schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
-      if (schedule.id) schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
-      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
-      const modal = new Modal(document.getElementById("modal_edit_schedule"));
-      modal.show();
-    };
-
-    const handleAddTemplate = () => {
-      let schedule = {
-        clinic_id: clinicFilter.value,
-        role_id: "",
-        user_id: null,
-        timeslots: [],
-      };
-      /*schedule._title = "Add Schedule";
-      schedule._action = "add_schedule";
-      schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
-      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
-      const modal = new Modal(document.getElementById("modal_edit_schedule"));
-      modal.show();*/
-      tableData.value.push(schedule);
-    };
-
     const timeslotClinicName = (timeslot) => {
       let clinicName = null;
       if (timeslot) {
@@ -184,19 +245,33 @@ export default defineComponent({
       return clinicName;
     };
 
+    const anesthetistName = (id) => {
+      let result = "Anesthetist - Not Set";
+      const allEmployees = store.getters.employeeList;
+      allEmployees.filter((employee) => {
+        if (employee.id === id) {
+          result = "Anesthetist - " + employee.first_name;
+        }
+      });
+      return result;
+    };
+
     return {
       scheduleTemplates,
       weekdays,
       moment,
       handleEditTemplateTimeslots,
-      handleEditTemplate,
-      handleAddTemplate,
       clinics,
       clinicFilter,
       employeeRoles,
       tableData,
       employeeList,
       timeslotClinicName,
+      filterOptions,
+      selectedFilters,
+      anesthetistName,
+      selectedEmployees,
+      employeeTypeList,
     };
   },
 });

@@ -3,6 +3,11 @@ import JwtService from "@/core/services/JwtService";
 import { Mutations } from "@/store/enums/StoreEnums";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "@/store/enums/StoreAppointmentEnums";
+import { array } from "yup";
 
 export interface IHRMWeeklyScheduleTimeslot {
   id: number;
@@ -16,6 +21,7 @@ export interface IHRMWeeklyScheduleTemplates {
   hrmScheduleData: Array<IHRMWeeklyScheduleTemplate>;
   hrmScheduleSelectData: IHRMWeeklyScheduleTemplate;
   hrmTimeslotSelectData: Array<IHRMWeeklyScheduleTimeslot>;
+  hrmAnesthetists: Array<IHRMWeeklyScheduleTemplate>;
 }
 
 @Module
@@ -26,6 +32,7 @@ export default class HRMModule
   hrmScheduleData = [] as Array<IHRMWeeklyScheduleTemplate>;
   hrmScheduleSelectData = {} as IHRMWeeklyScheduleTemplate;
   hrmTimeslotSelectData = [] as Array<IHRMWeeklyScheduleTimeslot>;
+  hrmAnesthetists = [] as Array<IHRMWeeklyScheduleTemplate>;
 
   get hrmScheduleList(): Array<IHRMWeeklyScheduleTemplate> {
     return this.hrmScheduleData;
@@ -35,8 +42,12 @@ export default class HRMModule
     return this.hrmScheduleSelectData;
   }
 
-  get hrmTimeslotSelected(): Array<IHRMWeeklyScheduleTimeslot> {
+  get hrmTimeslotSelected(): Array<IHRMWeeklyScheduleTemplate> {
     return this.hrmTimeslotSelectData;
+  }
+
+  get hrmAnesthetist(): Array<IHRMWeeklyScheduleTimeslot> {
+    return this.hrmAnesthetists;
   }
 
   @Mutation
@@ -52,6 +63,11 @@ export default class HRMModule
   @Mutation
   [HRMMutations.SCHEDULE_TEMPLATE.SET_TIMESLOT](data) {
     this.hrmTimeslotSelectData = data;
+  }
+
+  @Mutation
+  [HRMMutations.ANESTHETIST.SET_LIST](data) {
+    this.hrmAnesthetists = data;
   }
 
   @Action
@@ -105,6 +121,22 @@ export default class HRMModule
         .catch(({ response }) => {
           console.log(response.data.error);
           // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [HRMActions.ANESTHETIST.LIST](payload) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.query("hrm/anesthetists", { params: payload })
+        .then(({ data }) => {
+          this.context.commit(HRMMutations.ANESTHETIST.SET_LIST, data.data);
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
