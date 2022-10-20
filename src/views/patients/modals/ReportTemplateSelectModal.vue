@@ -22,21 +22,6 @@
         </el-select>
       </InputWrapper>
 
-      <!-- <InputWrapper label="Header/Footer Template">
-        <el-select
-          class="w-100"
-          v-model="headerFooter"
-          placeholder="Select Header/Footer Template"
-        >
-          <el-option
-            v-for="(option, idx) in headerFooterTemplatesData"
-            :key="option.id"
-            :value="idx"
-            :label="option.title"
-          />
-        </el-select>
-      </InputWrapper> -->
-
       <InputWrapper label="Appointment">
         <el-select
           class="w-100"
@@ -71,12 +56,10 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect, computed, onMounted } from "vue";
+import { defineComponent, ref, watchEffect, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { Mutations, Actions } from "@/store/enums/StoreEnums";
-import { hideModal } from "@/core/helpers/dom";
-import Swal from "sweetalert2/dist/sweetalert2.js";
+import { Mutations } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
   name: "report-modal",
@@ -88,46 +71,25 @@ export default defineComponent({
     const reportTemplatesData = computed(
       () => store.getters.getReportTemplateList
     );
-    // const headerFooterData = computed(
-    //   () => store.getters.getHeaderFooterTemplateList
-    // );
     const patientData = computed(() => store.getters.selectedPatient);
     const loading = ref(false);
     const reportTemplate = ref();
-    //const headerFooter = ref();
     const appointment = ref();
-    //const reportTemplatesData = ref([]);
-    //const headerFooterTemplatesData = ref([]);
     const appointmentsData = ref([]);
     const reportModal = ref(null);
 
-    onMounted(() => {
-      //loading.value = true;
-      // store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST).then(() => {
-      //   loading.value = false;
-      // });
-    });
-
     watchEffect(() => {
-      //reportTemplatesData.value = list.value;
-      //headerFooterTemplatesData.value = headerFooterData.value;
       appointmentsData.value = patientData.value.appointments;
-      // store.commit(
-      //   Mutations.SET_REPORT_APPOINTMENTS.LIST,
-      //   patientData.value.appointments
-      // );
     });
 
     const submit = () => {
       let selected_report = {
         template: reportTemplatesData.value[reportTemplate.value],
         appointment: appointmentsData.value[appointment.value],
-        headerFooter: null, //headerFooterTemplatesData.value[headerFooter.value],
+        headerFooter: null,
       };
       store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, selected_report);
-      console.log(["selected_report=", selected_report]);
 
-      // hideModal(reportModal.value);
       router.push({ name: "patients-report" });
     };
 
@@ -135,10 +97,7 @@ export default defineComponent({
       loading,
       reportModal,
       reportTemplate,
-      //headerFooter,
-      //headerFooterData,
       reportTemplatesData,
-      //headerFooterTemplatesData,
       appointment,
       appointmentsData,
       submit,

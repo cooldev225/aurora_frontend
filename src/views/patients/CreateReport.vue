@@ -156,7 +156,19 @@
           </div>
         </div>
         <div class="d-flex ms-auto justify-content-end">
-          <button type="submit" class="btn btn-primary">Create</button>
+          <button
+            :data-kt-indicator="loading ? 'on' : null"
+            class="btn btn-lg btn-primary"
+            type="submit"
+          >
+            <span v-if="!loading" class="indicator-label"> Create </span>
+            <span v-if="loading" class="indicator-progress">
+              Please wait...
+              <span
+                class="spinner-border spinner-border-sm align-middle ms-2"
+              ></span>
+            </span>
+          </button>
           <button type="reset" class="btn btn-light-primary ms-2">
             Cancel
           </button>
@@ -299,11 +311,15 @@ export default defineComponent({
       (formRef.value as any).validate(async (valid) => {
         if (valid) {
           const reportData: unknown[] = [];
+          const icd_10_code: string[] = [];
           (templateData.value.sections as any).forEach((data) => {
             reportData.push({
               sectionId: data.id,
               free_text_default: data.free_text_default,
               value: formData.value.section["section" + data.id],
+            });
+            data.auto_texts.forEach((auto) => {
+              icd_10_code.push(auto.icd_10_code);
             });
           });
           const data = {
@@ -323,12 +339,11 @@ export default defineComponent({
                 : null,
             procedures_undertaken: formData.value.procedures_undertaken,
             extra_items_used: formData.value.extra_items_used,
+            icd_10_code: icd_10_code,
           };
-          console.log("submit data", data, formData.value.headerFooter);
           store
             .dispatch(StoreReportActions.REPORT.PATIENT, data)
             .then((data) => {
-              console.log(data);
               store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
                 id: data,
               });
@@ -343,7 +358,6 @@ export default defineComponent({
     watchEffect(() => {
       patientData.value = patientList.value;
       formData.value.title = templateData.value.title;
-      // console.log(["appointmentData", appointmentData.value]);
       proceduresUndertakenData.value = _proceduresUndertakenData.value;
       extraItemsUsedData.value = _extraItemsUsedData.value;
     });
@@ -353,7 +367,6 @@ export default defineComponent({
       loading.value = true;
       store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST).then(() => {
         loading.value = false;
-        console.log(["HEADER_FOOTER_TEMPLATE", headerFooterList.value]);
       });
     });
 
