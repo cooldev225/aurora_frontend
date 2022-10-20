@@ -124,7 +124,6 @@ export default defineComponent({
     watch(scheduleTemplates, () => {
       tableData.value = scheduleTemplates.value;
     });
-
     const handleEditTemplateTimeslots = (schedule, day) => {
       schedule._title = "Edit Time Slot - " + day.label;
       schedule._action = "edit_weekly_time";

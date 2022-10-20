@@ -473,6 +473,7 @@ export default defineComponent({
               store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
                 clinic_id: formData.value.clinic_id,
               });
+              store.dispatch(Actions.EMPLOYEE.LIST);
             })
             .catch(({ response }) => {
               loading.value = false;
