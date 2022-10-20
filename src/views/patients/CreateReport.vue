@@ -19,16 +19,24 @@
         ref="formRef"
       >
         <div class="report-template-wrapper">
-          <!--begin::Input group-->
-          <div class="fv-row mb-10">
-            <input
-              class="w-100 h-50px p-3 fs-1 text-primary"
-              :value="templateData?.title"
-            />
-          </div>
-          <!--end::Input group-->
           <InputWrapper
-            claas="px-0"
+            style="
+              padding-right: 0px !important;
+              padding-left: 0px !important;
+              margin-bottom: 50px;
+            "
+            class="title-input-wrapper"
+            prop="title"
+          >
+            <el-input
+              v-model="formData.title"
+              type="text"
+              placeholder="Title"
+            />
+          </InputWrapper>
+          <InputWrapper
+            required
+            style="padding-right: 0px !important; padding-left: 0px !important"
             label="Header/Footer Template"
             prop="header_footer_templates"
           >
@@ -36,6 +44,7 @@
               class="col-9"
               v-model="formData.headerFooter"
               placeholder="Select Header/Footer Template"
+              props="header_footer_templates_select"
             >
               <el-option
                 v-for="(option, idx) in headerFooterList"
@@ -111,11 +120,19 @@
   <!--end::details View-->
 </template>
 
+<style lang="scss">
+.title-input-wrapper {
+  input {
+    height: 50px;
+    font-weight: bold;
+  }
+}
+</style>
+
 <script lang="ts">
 import { defineComponent, watchEffect, ref, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { StoreReportActions } from "@/store/enums/StoreReportEnums";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import moment from "moment";
@@ -123,6 +140,7 @@ import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import InputWrapper from "../../components/presets/FormElements/InputWrapper.vue";
 import { Actions } from "@/store/enums/StoreEnums";
+import { ElMessage } from "element-plus";
 
 export default defineComponent({
   name: "patient-report",
@@ -145,23 +163,42 @@ export default defineComponent({
     // const templateData = ref({
     //   id: "",
     //   title: "",
-    //   organization_id: "",
     //   sections: [],
-    //   created_at: "",
-    //   update_at: "",
     // });
 
     const patientData = ref();
     const formData = ref({
+      title: "",
       section: {},
       headerFooter: null,
     });
 
-    const rules = ref({});
+    const rules = ref({
+      title: [
+        {
+          required: true,
+          message: "Title cannot be blank",
+          trigger: "change",
+        },
+      ],
+      headerFooter: [
+        {
+          required: true,
+          message: "Header/Footer Template cannot be blank",
+          trigger: "change",
+        },
+      ],
+    });
     const loading = ref(false);
     const submit = () => {
       loading.value = true;
       if (!formRef.value) {
+        loading.value = false;
+        return;
+      }
+
+      if (formData.value.headerFooter == null) {
+        ElMessage.error("Header/Footer Template cannot be blank");
         loading.value = false;
         return;
       }
@@ -176,23 +213,25 @@ export default defineComponent({
               value: formData.value.section["section" + data.id],
             });
           });
-          store
-            .dispatch(StoreReportActions.REPORT.PATIENT, {
-              patient_id: patientList.value.id,
-              reportData: reportData,
-              referringDoctor:
-                appointmentData.value.referral.referring_doctor_name,
-              patientName:
-                patientData.value.first_name +
-                " " +
-                patientData.value.last_name,
-              appointmentId: appointmentData.value.id,
-              specialistId: appointmentData.value.specialist_id,
-              documentName: appointmentData.value.appointment_type_name,
-              header_footer_id: formData.value.headerFooter
+          const data = {
+            title: formData.value.title,
+            patient_id: patientList.value.id,
+            reportData: reportData,
+            referringDoctor:
+              appointmentData.value.referral.referring_doctor_name,
+            patientName:
+              patientData.value.first_name + " " + patientData.value.last_name,
+            appointmentId: appointmentData.value.id,
+            specialistId: appointmentData.value.specialist_id,
+            documentName: appointmentData.value.appointment_type_name,
+            header_footer_id:
+              formData.value.headerFooter != null
                 ? headerFooterList.value[formData.value.headerFooter].id
                 : null,
-            })
+          };
+          console.log("submit data", data, formData.value.headerFooter);
+          store
+            .dispatch(StoreReportActions.REPORT.PATIENT, data)
             .then((data) => {
               console.log(data);
               store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
@@ -208,6 +247,7 @@ export default defineComponent({
 
     watchEffect(() => {
       patientData.value = patientList.value;
+      formData.value.title = templateData.value.title;
     });
 
     onMounted(() => {
@@ -215,6 +255,7 @@ export default defineComponent({
       loading.value = true;
       store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST).then(() => {
         loading.value = false;
+        console.log(["HEADER_FOOTER_TEMPLATE", headerFooterList.value]);
       });
     });
 
