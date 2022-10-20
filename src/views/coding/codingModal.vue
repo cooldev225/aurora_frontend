@@ -13,7 +13,11 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_coding_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Coding Update</h2>
+          <h2 class="fw-bolder">
+            Coding: {{ formData.aus_formatted_date }},
+            {{ formData.formatted_appointment_time }}
+            {{ formData.appointment_type_name }}
+          </h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -51,21 +55,10 @@
             >
               <div class="d-flex flex-row">
                 <div class="col-6">
-                  <InfoSection heading="Patient Name">{{
-                    formData.patient_name.full
-                  }}</InfoSection
-                  ><br />
-                  <InfoSection heading="Patient DOB">{{
-                    formData.patient_details.date_of_birth
-                  }}</InfoSection
-                  ><br />
-                  <InfoSection heading="Patient gender">{{
-                    formData.patient.gender_name
-                  }}</InfoSection
-                  ><br /><InfoSection heading="Appointment">
-                    {{ formData.date }},
-                    {{ formData.formatted_appointment_time }}
-                    {{ formData.appointment_type_name }} </InfoSection
+                  <InfoSection heading="Patient"
+                    >{{ formData.patient_name.full }} ({{
+                      formData.patient_details.date_of_birth
+                    }}) </InfoSection
                   ><br />
                   <InfoSection heading="Specialist">
                     {{ formData.specialist_name }} </InfoSection
