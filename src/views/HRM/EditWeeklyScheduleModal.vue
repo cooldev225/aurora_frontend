@@ -333,16 +333,13 @@
 import { defineComponent, computed, ref, watch, onMounted } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import employeeTypes from "@/core/data/employee-schedule-types";
 import employeeRoles from "@/core/data/employee-roles";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
-import weekdays from "@/core/data/weekdays";
 import restrictionsTypes from "@/core/data/apt-restriction";
 import schCategories from "@/core/data/schedule-category";
 import { ElMessage } from "element-plus";
-import allEmployees from "quill";
 
 export default defineComponent({
   name: "edit-admin-modal",
@@ -474,17 +471,6 @@ export default defineComponent({
               loading.value = false;
               store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
                 clinic_id: formData.value.clinic_id,
-              });
-              Swal.fire({
-                text: "Successfully Updated!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                //
               });
             })
             .catch(({ response }) => {
