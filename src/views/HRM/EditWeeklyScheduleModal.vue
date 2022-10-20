@@ -390,7 +390,8 @@ export default defineComponent({
         start_time: null,
         end_time: null,
         category: null,
-        restriction: null,
+        restriction: "NONE",
+        anesthetist_id: null,
         hrm_weekly_schedule_template_id: schedule.value.id,
         week_day: schedule.value._day,
       });
