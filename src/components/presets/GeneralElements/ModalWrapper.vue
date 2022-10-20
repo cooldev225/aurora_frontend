@@ -37,7 +37,6 @@
 
 <script lang="ts">
 import { ref, onMounted } from "vue";
-import { boolean } from "yup";
 
 export default {
   props: {
@@ -45,7 +44,7 @@ export default {
     modalId: { type: String, required: true },
     modalRef: { type: Object, required: false },
     updateRef: { type: Function, required: false },
-    static: { type: boolean, required: false },
+    static: { type: Boolean, required: false },
   },
   setup(props) {
     const bModalRef = ref(null);

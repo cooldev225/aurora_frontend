@@ -698,124 +698,74 @@
 
                       <el-divider />
 
-                      <InputWrapper
-                        class="col-6"
-                        label="Medicare Number"
-                        prop="medicare_number"
-                      >
-                        <el-input
-                          type="text"
-                          v-model="billingInfoData.medicare_number"
-                          placeholder="Enter Medicare Number"
-                        />
-                      </InputWrapper>
-                      <InputWrapper
-                        class="col-6"
-                        label="Medicare Reference Number"
-                        prop="medicare_reference_number"
-                      >
-                        <el-input
-                          type="text"
-                          v-model="billingInfoData.medicare_reference_number"
-                          placeholder=""
-                        />
-                      </InputWrapper>
-                      <InputWrapper
-                        class="col-6"
-                        label="Medicare Expiry Date"
-                        prop="medicare_expiry_date"
-                      >
-                        <el-date-picker
-                          editable
-                          class="w-100"
-                          v-model="billingInfoData.medicare_expiry_date"
-                          format="MM-YYYY"
-                          placeholder="Enter Expiry Date"
-                        />
-                      </InputWrapper>
-                      <el-divider />
-
-                      <div
-                        class="row"
-                        v-if="
-                          billingInfoData.charge_type ===
-                            'private-health-excess' ||
-                          billingInfoData.charge_type ===
-                            'private-health-excess-0'
-                        "
-                      >
-                        <InputWrapper
-                          class="col-6"
-                          label="Health Fund"
-                          prop="health_fund_id"
+                      <div>
+                        <button
+                          type="button"
+                          class="btn btn-light btn-icon-primary me-3 mb-3"
+                          @click="showAddClaimSourceModal"
                         >
-                          <el-select
-                            class="w-100"
-                            v-model="billingInfoData.health_fund_id"
+                          Add Claim Source
+                        </button>
+
+                        <div
+                          v-for="(item, index) in billingInfoData.claim_sources"
+                          :key="`new-claim-source-${index}`"
+                          class="d-flex flex-row align-items-center justify-content-between p-3 mb-3 card border border-dashed border-primary gap-4"
+                        >
+                          <div>
+                            <label class="fs-5 text-primary">
+                              {{ getBillingType(item.billing_type) }}:
+
+                              <span class="text-black fs-5">
+                                {{ item.member_number }}
+                              </span>
+                            </label>
+
+                            <div
+                              v-if="item.billing_type != 3"
+                              class="d-flex gap-3"
+                            >
+                              <label class="text-primary">
+                                Reference:
+
+                                <span class="text-black">
+                                  {{ item.member_ref_number ?? "N/A" }}
+                                </span>
+                              </label>
+
+                              <label
+                                v-if="item.billing_type == 2"
+                                class="text-primary"
+                              >
+                                Fund:
+
+                                <span class="text-black">
+                                  {{ getHealthFund(item.health_fund_id) }}
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                            @click="deleteClaimSource(item)"
                           >
-                            <el-option
-                              v-for="item in healthFundsList"
-                              :value="item.id"
-                              :label="item.code + '-' + item.name"
-                              :key="item.id"
-                            />
-                          </el-select>
-                        </InputWrapper>
-                        <InputWrapper
-                          class="col-6"
-                          label="Health Fund Membership Number"
-                          prop="health_fund_membership_number"
-                        >
-                          <el-input
-                            type="text"
-                            v-model="
-                              billingInfoData.health_fund_membership_number
-                            "
-                            placeholder="12345678"
-                          />
-                        </InputWrapper>
-                        <InputWrapper
-                          class="col-6"
-                          label="Health Fund Reference Number"
-                          prop="health_fund_reference_number"
-                        >
-                          <el-input
-                            type="text"
-                            v-model="
-                              billingInfoData.health_fund_reference_number
-                            "
-                            placeholder="00"
-                          />
-                        </InputWrapper>
+                            <span class="svg-icon svg-icon-3">
+                              <InlineSVG icon="bin" />
+                            </span>
+                          </button>
+                        </div>
 
-                        <InputWrapper
-                          class="col-6"
-                          label="Health Fund Expiry Date"
-                          prop="health_fund_expiry_date"
-                        >
-                          <el-date-picker
-                            editable
-                            class="w-100"
-                            v-model="billingInfoData.health_fund_expiry_date"
-                            format="MM-YYYY"
-                          />
-                        </InputWrapper>
-
-                        <InputWrapper
-                          v-if="
-                            billingInfoData.charge_type ===
-                            'private-health-excess'
-                          "
-                          class="col-6"
-                          label="Fund Excess"
-                          prop="fund_excess"
-                        >
-                          <el-input
-                            type="text"
-                            v-model.number="billingInfoData.fund_excess"
-                          />
-                        </InputWrapper>
+                        <AddClaimSourceModal
+                          :patient="patientInfoData"
+                          v-on:addClaimSource="addNewClaimSource"
+                          v-on:closeModal="closeAddClaimSourceModal"
+                          shouldEmit
+                        />
                       </div>
+
+                      <el-divider />
 
                       <InputWrapper
                         v-if="billingInfoData.charge_type === 'pension-card'"
@@ -854,50 +804,6 @@
                           v-model="billingInfoData.healthcare_card_number"
                         />
                       </InputWrapper>
-
-                      <div
-                        class="row"
-                        v-if="
-                          billingInfoData.charge_type === 'department-veteran'
-                        "
-                      >
-                        <InputWrapper
-                          class="col-6"
-                          label="DVA Number"
-                          prop="dva_number"
-                        >
-                          <el-input
-                            class="w-100"
-                            v-model="billingInfoData.dva_number"
-                          />
-                        </InputWrapper>
-                        <InputWrapper
-                          class="col-6"
-                          label="DVA Type"
-                          prop="dva_expiry_date"
-                        >
-                          <el-date-picker
-                            editable
-                            class="w-100"
-                            format="MM-YYYY"
-                            v-model="billingInfoData.dva_expiry_date"
-                          />
-                        </InputWrapper>
-                        <InputWrapper
-                          class="col-6"
-                          label="DVA Expiry Date"
-                          prop="dva_type"
-                        >
-                          <el-select
-                            class="w-100"
-                            v-model="billingInfoData.dva_type"
-                          >
-                            <el-option value="white" label="White" />
-                            <el-option value="gold" label="Gold" />
-                            <el-option value="orange" label="Orange" />
-                          </el-select>
-                        </InputWrapper>
-                      </div>
 
                       <div
                         class="col-sm-6 d-flex align-items-center justify-content-center"
@@ -1239,6 +1145,9 @@ import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue";
 import ViewPatientAlertModal from "@/views/patients/modals/ViewPatientAlertModal.vue";
+import PatientBillingTypes from "@/core/data/patient-billing-types";
+import AddClaimSourceModal from "@/views/patients/modals/AddClaimSourceModal.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   props: {
@@ -1258,6 +1167,7 @@ export default defineComponent({
     AptOverview,
     PatientAlert,
     ViewPatientAlertModal,
+    AddClaimSourceModal,
   },
 
   setup(props) {
@@ -1270,6 +1180,7 @@ export default defineComponent({
     const tableKey = ref(0);
     const referralDoctors = computed(() => store.getters.getReferralDoctorList);
     const router = useRouter();
+    const claimSourceModal = ref(null);
 
     const aptInfoData = ref({
       clinic_name: "",
@@ -1301,20 +1212,7 @@ export default defineComponent({
 
     const billingInfoData = ref({
       charge_type: chargeTypes[0].value,
-      medicare_number: "",
-      medicare_reference_number: "",
-      medicare_expiry_date: "",
-      health_fund_id: "",
-      health_fund_membership_number: "",
-      health_fund_reference_number: "",
-      health_fund_expiry_date: "",
-      fund_excess: "",
-      pension_card_number: "",
-      healthcare_card_number: "",
-      expiry_date: "",
-      dva_number: "",
-      dva_expiry: "",
-      dva_type: "",
+      claim_sources: [],
       procedure_price: "",
       add_other_account_holder: false,
     });
@@ -1399,33 +1297,6 @@ export default defineComponent({
         {
           type: "number",
           message: "Procedure price must be a number",
-        },
-      ],
-      fund_excess: [
-        {
-          type: "number",
-          message: "Fund excess must be a number",
-        },
-      ],
-      medicare_number: [
-        {
-          required: false,
-          message: "Medicare number cannot be blank.",
-          trigger: "blur",
-        },
-      ],
-      medicare_reference_number: [
-        {
-          required: false,
-          message: "Medicare Reference Number cannot be blank.",
-          trigger: "blur",
-        },
-      ],
-      medicare_expiry_date: [
-        {
-          required: false,
-          message: "Medicare expiry date cannot be blank.",
-          trigger: "blur",
         },
       ],
       appointment_confirm_method: [
@@ -1538,6 +1409,46 @@ export default defineComponent({
 
     const formatDate = (date) => {
       return moment(date).format("DD-MM-YYYY").toString();
+    };
+
+    const getBillingType = (type) => {
+      const foundType = PatientBillingTypes.find(
+        (billing) => billing.value == type
+      );
+
+      return foundType?.label ?? null;
+    };
+
+    const getHealthFund = (id) => {
+      const foundFund = healthFundsList.value.find((fund) => fund.id == id);
+
+      return foundFund?.name ?? null;
+    };
+
+    const showAddClaimSourceModal = () => {
+      if (!claimSourceModal.value) {
+        claimSourceModal.value = new Modal(
+          document.getElementById("modal_add_claim_source")
+        );
+      }
+
+      claimSourceModal.value.show();
+    };
+
+    const closeAddClaimSourceModal = () => {
+      claimSourceModal.value.hide();
+    };
+
+    const addNewClaimSource = (event) => {
+      const claimSource = event._value;
+
+      billingInfoData.value.claim_sources.push(claimSource);
+    };
+
+    const deleteClaimSource = (source) => {
+      const index = billingInfoData.value.claim_sources.indexOf(source);
+
+      billingInfoData.value.claim_sources.splice(index, 1);
     };
 
     const updateAptTime = (startTime, endTime) => {
@@ -1943,6 +1854,7 @@ export default defineComponent({
         cur_appointment_type_id.value = "";
         for (let key in patientInfoData.value) patientInfoData.value[key] = "";
         for (let key in billingInfoData.value) billingInfoData.value[key] = "";
+        billingInfoData.value.claim_sources = [];
         patientStatus.value = "new";
         patientStep.value = 3;
       } else {
@@ -2094,6 +2006,11 @@ export default defineComponent({
           continue;
         }
 
+        if (key === "claim_sources") {
+          billingInfoData.value.claim_sources = [];
+          continue;
+        }
+
         billingInfoData.value[key] = item[key];
       }
 
@@ -2232,6 +2149,13 @@ export default defineComponent({
       refName,
       matchExistPatientHandle,
       showMatchPatientsHandle,
+      PatientBillingTypes,
+      showAddClaimSourceModal,
+      addNewClaimSource,
+      closeAddClaimSourceModal,
+      deleteClaimSource,
+      getBillingType,
+      getHealthFund,
     };
   },
 });

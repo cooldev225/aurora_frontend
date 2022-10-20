@@ -156,25 +156,27 @@ import {
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
-import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
 import PatientBillingTypes from "@/core/data/patient-billing-types";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "add-claim-source-modal",
   props: {
     patient: { required: true },
     claimSource: { type: Object },
-    isUpdate: { type: Boolean, default: false },
+    shouldEmit: { type: Boolean, default: false },
   },
+  emits: ["addClaimSource", "closeModal"],
   components: {
     AlertBadge,
   },
-  setup(props) {
+  setup(props, { emit }) {
     const store = useStore();
     const claimSource = computed(() => props.claimSource);
+    const shouldEmit = computed(() => props.shouldEmit);
     const parentModal = ref(null);
     const addClaimSourceFormRef = ref(null);
     const healthFundsList = computed(() => store.getters.healthFundsList);
@@ -311,23 +313,21 @@ export default defineComponent({
     };
 
     const validateSource = () => {
-      console.log(["minorId.value", minorId.value]);
-
-      if (minorId.value.minorId == null) {
-        Swal.fire({
-          text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
-          icon: "error",
-          buttonsStyling: true,
-          confirmButtonText: "Okay",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-        }).then(() => {
-          loading.value = false;
-          hideModal(addClaimSourceFormRef.value);
-          return;
-        });
-      }
+      // if (minorId.value.minorId == null) {
+      //   Swal.fire({
+      //     text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
+      //     icon: "error",
+      //     buttonsStyling: true,
+      //     confirmButtonText: "Okay",
+      //     customClass: {
+      //       confirmButton: "btn btn-primary",
+      //     },
+      //   }).then(() => {
+      //     loading.value = false;
+      //     closeModal();
+      //     return;
+      //   });
+      // }
 
       if (!addClaimSourceFormRef.value) {
         return;
@@ -339,8 +339,9 @@ export default defineComponent({
             first_name: patient.value.first_name,
             last_name: patient.value.last_name,
             date_of_birth: patient.value.date_of_birth,
-            sex: patient.value.gender,
-            minor_id: minorId.value.minorId,
+            sex: patient.value.gender ?? 9, // If provided, use gender. Otherwise, use "unspecified" value: 9
+            // minor_id: minorId.value.minorId,
+            minor_id: "AUA00000",
           };
           let endpoint;
 
@@ -360,7 +361,8 @@ export default defineComponent({
               validationData.fund_member_number = formData.value.member_number;
               validationData.fund_reference_number =
                 formData.value.member_reference_number;
-              validationData.fund_organisation_code = healthFund?.code;
+              // validationData.fund_organisation_code = healthFund?.code;
+              validationData.fund_organisation_code = "TST";
               endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND;
               break;
             }
@@ -390,16 +392,28 @@ export default defineComponent({
       doValidation(endpoint, validationData, true);
     };
 
+    const closeModal = () => {
+      emit("closeModal");
+    };
+
     const addNewClaimSource = () => {
-      loading.value = true;
-      store
-        .dispatch(PatientActions.CLAIM_SOURCE.ADD, formData)
-        .then(() => {
-          parentModal.value.hide();
-        })
-        .finally(() => {
-          loading.value = false;
-        });
+      const claimSource = JSON.parse(JSON.stringify(formData));
+      claimSource.has_medicare_concession = concessionValidated.value;
+
+      if (shouldEmit.value) {
+        emit("addClaimSource", claimSource);
+        closeModal();
+      } else {
+        loading.value = true;
+        store
+          .dispatch(PatientActions.CLAIM_SOURCE.ADD, claimSource)
+          .then(() => {
+            closeModal();
+          })
+          .finally(() => {
+            loading.value = false;
+          });
+      }
     };
 
     const resetForm = () => {
