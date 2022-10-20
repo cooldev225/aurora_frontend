@@ -392,6 +392,7 @@ export default defineComponent({
         category: null,
         restriction: "NONE",
         anesthetist_id: null,
+        clinic_id: null,
         hrm_weekly_schedule_template_id: schedule.value.id,
         week_day: schedule.value._day,
       });
@@ -444,7 +445,6 @@ export default defineComponent({
             ) {
               if (t.user_id == null) {
                 t.organization_id = formData.value.organization_id;
-                t.clinic_id = formData.value.clinic_id;
                 t.user_id = formData.value.user_id;
                 t.is_template = 1;
               }
