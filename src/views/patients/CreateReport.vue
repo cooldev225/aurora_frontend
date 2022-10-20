@@ -19,36 +19,106 @@
         ref="formRef"
       >
         <div class="report-template-wrapper">
-          <!--begin::Input group-->
-          <div class="fv-row mb-10">
-            <input
-              class="w-100 h-50px p-3 fs-1 text-primary"
-              :value="templateData.title"
+          <InputWrapper class="title-input-wrapper fill-out" prop="title">
+            <el-input
+              v-model="formData.title"
+              type="text"
+              placeholder="Title"
             />
-          </div>
-          <!--end::Input group-->
+          </InputWrapper>
+          <InputWrapper
+            required
+            class="fill-out"
+            label="Header/Footer Template"
+            prop="header_footer_templates"
+          >
+            <el-select
+              class="col-9"
+              v-model="formData.headerFooter"
+              placeholder="Select Header/Footer Template"
+              props="header_footer_templates_select"
+            >
+              <el-option
+                v-for="(option, idx) in headerFooterList"
+                :key="option.id"
+                :value="idx"
+                :label="option.title"
+              />
+            </el-select>
+          </InputWrapper>
+
+          <InputWrapper
+            required
+            class="fill-out"
+            label="Procedures Undertaken"
+            prop="procedures_undertaken"
+          >
+            <el-select
+              class="col-9"
+              v-model="formData.procedures_undertaken"
+              placeholder="Please enter a keyword"
+              props="procedures_undertaken_select"
+              multiple
+              filterable
+              remote
+              reserve-keyword
+              :remote-method="filterProceduresHandle"
+              :loading="loading"
+            >
+              <el-option
+                v-for="(taken, idx) in proceduresUndertakenData"
+                :key="idx"
+                :value="taken"
+                :label="taken"
+              />
+            </el-select>
+          </InputWrapper>
+
+          <InputWrapper
+            required
+            class="fill-out"
+            label="Extra items used"
+            prop="extra_items_used"
+          >
+            <el-form-item>
+              <el-select
+                class="col-9"
+                v-model="formData.extra_items_used"
+                placeholder="Select Extra items used"
+                props="extra_items_used_select"
+                multiple
+                filterable
+                remote
+                reserve-keyword
+                :remote-method="filterExtraHandle"
+                :loading="loading"
+              >
+                <el-option
+                  v-for="(extra, idx) in extraItemsUsedData"
+                  :key="idx"
+                  :value="extra"
+                  :label="extra"
+                />
+              </el-select>
+            </el-form-item>
+          </InputWrapper>
 
           <div class="d-flex flex-column gap-2 mb-6">
             <InfoSection heading="Patient"
-              >{{ patientData.title }} {{ patientData.first_name }}
-              {{ patientData.last_name }},
+              >{{ patientData?.title }} {{ patientData?.first_name }}
+              {{ patientData?.last_name }},
               {{
-                moment(patientData.date_of_birth)
+                moment(patientData?.date_of_birth)
                   .format("DD/MM/YYYY")
                   .toString()
               }}</InfoSection
             >
-
-            <InfoSection heading="Referring Doctor">{{
-              appointmentData.referral.referring_doctor_name
-            }}</InfoSection>
-
-            <InfoSection heading="Header Footer">{{
-              headerFooterData.title
-            }}</InfoSection>
+            <InfoSection heading="Referring Doctor">
+              {{ appointmentData?.referral?.referring_doctor_name }}
+            </InfoSection>
           </div>
           <div
-            v-for="section in templateData.sections"
+            v-for="section in templateData?.sections"
             class="d-flex flex-column gap-2"
             :key="section.id"
           >
@@ -86,7 +156,19 @@
           </div>
         </div>
         <div class="d-flex ms-auto justify-content-end">
-          <button type="submit" class="btn btn-primary">Create</button>
+          <button
+            :data-kt-indicator="loading ? 'on' : null"
+            class="btn btn-lg btn-primary"
+            type="submit"
+          >
+            <span v-if="!loading" class="indicator-label"> Create </span>
+            <span v-if="loading" class="indicator-progress">
+              Please wait...
+              <span
+                class="spinner-border spinner-border-sm align-middle ms-2"
+              ></span>
+            </span>
+          </button>
           <button type="reset" class="btn btn-light-primary ms-2">
             Cancel
           </button>
@@ -98,53 +180,121 @@
   <!--end::details View-->
 </template>
 
+<style lang="scss">
+.report-template-wrapper {
+  .fill-out {
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+  }
+  .title-input-wrapper {
+    input {
+      height: 50px;
+      font-weight: bold;
+    }
+  }
+}
+</style>
+
 <script lang="ts">
 import { defineComponent, watchEffect, ref, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { StoreReportActions } from "@/store/enums/StoreReportEnums";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import moment from "moment";
 import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
+import InputWrapper from "../../components/presets/FormElements/InputWrapper.vue";
+import { Actions } from "@/store/enums/StoreEnums";
+import { ElMessage } from "element-plus";
 
 export default defineComponent({
   name: "patient-report",
-  components: { InfoSection },
+  components: { InfoSection, InputWrapper },
   setup() {
     const store = useStore();
     const router = useRouter();
     const formRef = ref(null);
-    const templateList = computed(
+    const templateData = computed(
       () => store.getters.getReportTemplateSelected
     );
     const patientList = computed(() => store.getters.selectedPatient);
-    const headerFooter = computed(
-      () => store.getters.getReportHeaderFooterSelected
+    const headerFooterList = computed(
+      () => store.getters.getHeaderFooterTemplateList
     );
-    const appointment = computed(
+    const appointmentData = computed(
       () => store.getters.getReportAppointmentSelected
     );
-
-    const templateData = ref({
-      id: "",
-      title: "",
-      organization_id: "",
-      sections: [],
-      created_at: "",
-      update_at: "",
-    });
-
+    const _proceduresUndertakenData = ref([
+      "66500 - Gamete intra-fallopian transfer",
+      "39109 - Gangliectomy, radiofrequency trigeminal",
+      "30473 - Gastro-camera investigation",
+    ]);
+    const _extraItemsUsedData = ref([
+      "66500 - Gamete intra-fallopian transfer",
+      "39109 - Gangliectomy, radiofrequency trigeminal",
+      "30473 - Gastro-camera investigation",
+    ]);
+    const proceduresUndertakenData = ref();
+    const extraItemsUsedData = ref();
     const patientData = ref();
-    const appointmentData = ref();
-    const headerFooterData = ref();
     const formData = ref({
+      title: "",
       section: {},
+      headerFooter: null,
+      procedures_undertaken: null,
+      extra_items_used: null,
     });
 
-    const rules = ref({});
+    const rules = ref({
+      title: [
+        {
+          required: true,
+          message: "Title cannot be blank",
+          trigger: "change",
+        },
+      ],
+      headerFooter: [
+        {
+          required: true,
+          message: "Header/Footer Template cannot be blank",
+          trigger: "change",
+        },
+      ],
+    });
     const loading = ref(false);
+
+    const filterProceduresHandle = (query: string) => {
+      if (query) {
+        loading.value = true;
+        setTimeout(() => {
+          loading.value = false;
+          proceduresUndertakenData.value =
+            _proceduresUndertakenData.value.filter((item) => {
+              return item.toLowerCase().includes(query.toLowerCase());
+            });
+        }, 200);
+      } else {
+        proceduresUndertakenData.value = [];
+      }
+    };
+
+    const filterExtraHandle = (query: string) => {
+      if (query) {
+        loading.value = true;
+        setTimeout(() => {
+          loading.value = false;
+          extraItemsUsedData.value = _extraItemsUsedData.value.filter(
+            (item) => {
+              return item.toLowerCase().includes(query.toLowerCase());
+            }
+          );
+        }, 200);
+      } else {
+        extraItemsUsedData.value = [];
+      }
+    };
+
     const submit = () => {
       loading.value = true;
       if (!formRef.value) {
@@ -152,35 +302,48 @@ export default defineComponent({
         return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (formData.value.headerFooter == null) {
+        ElMessage.error("Header/Footer Template cannot be blank");
+        loading.value = false;
+        return;
+      }
+
       (formRef.value as any).validate(async (valid) => {
         if (valid) {
           const reportData: unknown[] = [];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const icd_10_code: string[] = [];
           (templateData.value.sections as any).forEach((data) => {
             reportData.push({
               sectionId: data.id,
               free_text_default: data.free_text_default,
               value: formData.value.section["section" + data.id],
             });
+            data.auto_texts.forEach((auto) => {
+              icd_10_code.push(auto.icd_10_code);
+            });
           });
+          const data = {
+            title: formData.value.title,
+            patient_id: patientList.value.id,
+            reportData: reportData,
+            referringDoctor:
+              appointmentData.value.referral.referring_doctor_name,
+            patientName:
+              patientData.value.first_name + " " + patientData.value.last_name,
+            appointmentId: appointmentData.value.id,
+            specialistId: appointmentData.value.specialist_id,
+            documentName: appointmentData.value.appointment_type_name,
+            header_footer_id:
+              formData.value.headerFooter != null
+                ? headerFooterList.value[formData.value.headerFooter].id
+                : null,
+            procedures_undertaken: formData.value.procedures_undertaken,
+            extra_items_used: formData.value.extra_items_used,
+            icd_10_code: icd_10_code,
+          };
           store
-            .dispatch(StoreReportActions.REPORT.PATIENT, {
-              patient_id: patientList.value.id,
-              reportData: reportData,
-              referringDoctor:
-                appointmentData.value.referral.referring_doctor_name,
-              patientName:
-                patientData.value.first_name +
-                " " +
-                patientData.value.last_name,
-              appointmentId: appointmentData.value.id,
-              specialistId: appointmentData.value.specialist_id,
-              documentName: appointmentData.value.appointment_type_name,
-              header_footer_id: headerFooterData.value.id,
-            })
+            .dispatch(StoreReportActions.REPORT.PATIENT, data)
             .then((data) => {
-              console.log(data);
               store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
                 id: data,
               });
@@ -193,14 +356,18 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      templateData.value = templateList.value;
       patientData.value = patientList.value;
-      appointmentData.value = appointment.value;
-      headerFooterData.value = headerFooter.value;
+      formData.value.title = templateData.value.title;
+      proceduresUndertakenData.value = _proceduresUndertakenData.value;
+      extraItemsUsedData.value = _extraItemsUsedData.value;
     });
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Report", ["Patients"]);
+      loading.value = true;
+      store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST).then(() => {
+        loading.value = false;
+      });
     });
 
     return {
@@ -209,10 +376,15 @@ export default defineComponent({
       templateData,
       patientData,
       appointmentData,
-      headerFooterData,
       formData,
       moment,
       submit,
+      headerFooterList,
+      proceduresUndertakenData,
+      extraItemsUsedData,
+      loading,
+      filterProceduresHandle,
+      filterExtraHandle,
     };
   },
 });
