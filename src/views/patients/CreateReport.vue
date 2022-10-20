@@ -19,15 +19,7 @@
         ref="formRef"
       >
         <div class="report-template-wrapper">
-          <InputWrapper
-            style="
-              padding-right: 0px !important;
-              padding-left: 0px !important;
-              margin-bottom: 50px;
-            "
-            class="title-input-wrapper"
-            prop="title"
-          >
+          <InputWrapper class="title-input-wrapper fill-out" prop="title">
             <el-input
               v-model="formData.title"
               type="text"
@@ -36,7 +28,7 @@
           </InputWrapper>
           <InputWrapper
             required
-            style="padding-right: 0px !important; padding-left: 0px !important"
+            class="fill-out"
             label="Header/Footer Template"
             prop="header_footer_templates"
           >
@@ -53,6 +45,62 @@
                 :label="option.title"
               />
             </el-select>
+          </InputWrapper>
+
+          <InputWrapper
+            required
+            class="fill-out"
+            label="Procedures Undertaken"
+            prop="procedures_undertaken"
+          >
+            <el-select
+              class="col-9"
+              v-model="formData.procedures_undertaken"
+              placeholder="Please enter a keyword"
+              props="procedures_undertaken_select"
+              multiple
+              filterable
+              remote
+              reserve-keyword
+              :remote-method="filterProceduresHandle"
+              :loading="loading"
+            >
+              <el-option
+                v-for="(taken, idx) in proceduresUndertakenData"
+                :key="idx"
+                :value="taken"
+                :label="taken"
+              />
+            </el-select>
+          </InputWrapper>
+
+          <InputWrapper
+            required
+            class="fill-out"
+            label="Extra items used"
+            prop="extra_items_used"
+          >
+            <el-form-item>
+              <el-select
+                class="col-9"
+                v-model="formData.extra_items_used"
+                placeholder="Select Extra items used"
+                props="extra_items_used_select"
+                multiple
+                filterable
+                remote
+                reserve-keyword
+                :remote-method="filterExtraHandle"
+                :loading="loading"
+              >
+                <el-option
+                  v-for="(extra, idx) in extraItemsUsedData"
+                  :key="idx"
+                  :value="extra"
+                  :label="extra"
+                />
+              </el-select>
+            </el-form-item>
           </InputWrapper>
 
           <div class="d-flex flex-column gap-2 mb-6">
@@ -121,10 +169,16 @@
 </template>
 
 <style lang="scss">
-.title-input-wrapper {
-  input {
-    height: 50px;
-    font-weight: bold;
+.report-template-wrapper {
+  .fill-out {
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+  }
+  .title-input-wrapper {
+    input {
+      height: 50px;
+      font-weight: bold;
+    }
   }
 }
 </style>
@@ -159,18 +213,25 @@ export default defineComponent({
     const appointmentData = computed(
       () => store.getters.getReportAppointmentSelected
     );
-
-    // const templateData = ref({
-    //   id: "",
-    //   title: "",
-    //   sections: [],
-    // });
-
+    const _proceduresUndertakenData = ref([
+      "66500 - Gamete intra-fallopian transfer",
+      "39109 - Gangliectomy, radiofrequency trigeminal",
+      "30473 - Gastro-camera investigation",
+    ]);
+    const _extraItemsUsedData = ref([
+      "66500 - Gamete intra-fallopian transfer",
+      "39109 - Gangliectomy, radiofrequency trigeminal",
+      "30473 - Gastro-camera investigation",
+    ]);
+    const proceduresUndertakenData = ref();
+    const extraItemsUsedData = ref();
     const patientData = ref();
     const formData = ref({
       title: "",
       section: {},
       headerFooter: null,
+      procedures_undertaken: null,
+      extra_items_used: null,
     });
 
     const rules = ref({
@@ -190,6 +251,38 @@ export default defineComponent({
       ],
     });
     const loading = ref(false);
+
+    const filterProceduresHandle = (query: string) => {
+      if (query) {
+        loading.value = true;
+        setTimeout(() => {
+          loading.value = false;
+          proceduresUndertakenData.value =
+            _proceduresUndertakenData.value.filter((item) => {
+              return item.toLowerCase().includes(query.toLowerCase());
+            });
+        }, 200);
+      } else {
+        proceduresUndertakenData.value = [];
+      }
+    };
+
+    const filterExtraHandle = (query: string) => {
+      if (query) {
+        loading.value = true;
+        setTimeout(() => {
+          loading.value = false;
+          extraItemsUsedData.value = _extraItemsUsedData.value.filter(
+            (item) => {
+              return item.toLowerCase().includes(query.toLowerCase());
+            }
+          );
+        }, 200);
+      } else {
+        extraItemsUsedData.value = [];
+      }
+    };
+
     const submit = () => {
       loading.value = true;
       if (!formRef.value) {
@@ -228,6 +321,8 @@ export default defineComponent({
               formData.value.headerFooter != null
                 ? headerFooterList.value[formData.value.headerFooter].id
                 : null,
+            procedures_undertaken: formData.value.procedures_undertaken,
+            extra_items_used: formData.value.extra_items_used,
           };
           console.log("submit data", data, formData.value.headerFooter);
           store
@@ -248,6 +343,9 @@ export default defineComponent({
     watchEffect(() => {
       patientData.value = patientList.value;
       formData.value.title = templateData.value.title;
+      // console.log(["appointmentData", appointmentData.value]);
+      proceduresUndertakenData.value = _proceduresUndertakenData.value;
+      extraItemsUsedData.value = _extraItemsUsedData.value;
     });
 
     onMounted(() => {
@@ -269,6 +367,11 @@ export default defineComponent({
       moment,
       submit,
       headerFooterList,
+      proceduresUndertakenData,
+      extraItemsUsedData,
+      loading,
+      filterProceduresHandle,
+      filterExtraHandle,
     };
   },
 });
