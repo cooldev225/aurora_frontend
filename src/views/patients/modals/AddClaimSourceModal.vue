@@ -3,6 +3,7 @@
     title="Add New Claim Source"
     modalId="add_claim_source"
     modalRef="addClaimSourceRef"
+    :static="true"
   >
     <el-form
       @submit.prevent
@@ -230,7 +231,7 @@ export default defineComponent({
       member_ref_number: [
         {
           required: true,
-          message: "",
+          message: "Member reference number cannot be blank",
           trigger: "change",
         },
       ],
@@ -310,6 +311,8 @@ export default defineComponent({
     };
 
     const validateSource = () => {
+      console.log(["minorId.value", minorId.value]);
+
       if (minorId.value.minorId == null) {
         Swal.fire({
           text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
@@ -320,47 +323,57 @@ export default defineComponent({
             confirmButton: "btn btn-primary",
           },
         }).then(() => {
+          loading.value = false;
+          hideModal(addClaimSourceFormRef.value);
           return;
         });
       }
 
-      let validationData = {
-        first_name: patient.value.first_name,
-        last_name: patient.value.last_name,
-        date_of_birth: patient.value.date_of_birth,
-        sex: patient.value.gender,
-        minor_id: minorId.value.minorId,
-      };
-      let endpoint;
-
-      switch (formData.value.billing_type) {
-        case 1:
-          // Medicare card
-          validationData.medicare_number = formData.value.member_number;
-          validationData.medicare_reference_number =
-            formData.value.member_reference_number;
-          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_MEDICARE;
-          break;
-        case 2: {
-          // Health Fund
-          const healthFund = healthFundsList.value.find(
-            (fund) => fund.id === formData.value.health_fund_id
-          );
-          validationData.fund_member_number = formData.value.member_number;
-          validationData.fund_reference_number =
-            formData.value.member_reference_number;
-          validationData.fund_organisation_code = healthFund?.code;
-          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND;
-          break;
-        }
-        case 3:
-          // DVA
-          validationData.veteran_number = formData.value.member_number;
-          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_DVA;
-          break;
+      if (!addClaimSourceFormRef.value) {
+        return;
       }
 
-      doValidation(endpoint, validationData);
+      addClaimSourceFormRef.value.validate((valid) => {
+        if (valid) {
+          let validationData = {
+            first_name: patient.value.first_name,
+            last_name: patient.value.last_name,
+            date_of_birth: patient.value.date_of_birth,
+            sex: patient.value.gender,
+            minor_id: minorId.value.minorId,
+          };
+          let endpoint;
+
+          switch (formData.value.billing_type) {
+            case 1:
+              // Medicare card
+              validationData.medicare_number = formData.value.member_number;
+              validationData.medicare_reference_number =
+                formData.value.member_reference_number;
+              endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_MEDICARE;
+              break;
+            case 2: {
+              // Health Fund
+              const healthFund = healthFundsList.value.find(
+                (fund) => fund.id === formData.value.health_fund_id
+              );
+              validationData.fund_member_number = formData.value.member_number;
+              validationData.fund_reference_number =
+                formData.value.member_reference_number;
+              validationData.fund_organisation_code = healthFund?.code;
+              endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND;
+              break;
+            }
+            case 3:
+              // DVA
+              validationData.veteran_number = formData.value.member_number;
+              endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_DVA;
+              break;
+          }
+
+          doValidation(endpoint, validationData);
+        }
+      });
     };
 
     const handleCheckConcession = () => {
