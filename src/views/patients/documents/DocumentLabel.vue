@@ -3,6 +3,8 @@
     class="btn btn-outline btn-outline-dashed btn-outline-default mb-1 py-1 d-flex align-items-center"
     :for="document.id"
   >
+    <i v-if="document.is_urgent" class="bi bi-exclamation text-danger fs-1"></i>
+    <i v-if="!document.is_urgent" class="bi bi-exclamation fs-1 opacity-0"></i>
     <span class="svg-icon svg-icon-2x me-2">
       <inline-svg
         :src="
@@ -14,7 +16,16 @@
     </span>
 
     <span class="fw-bold text-start">
-      <span class="text-dark d-block fs-6 mb-1">
+      <span
+        class="text-dark d-block fs-6 mb-1"
+        :style="
+          document.is_read
+            ? {}
+            : {
+                fontWeight: '700 !important',
+              }
+        "
+      >
         {{ document.document_name }}
       </span>
       <span class="text-gray-400">{{
@@ -30,7 +41,8 @@ export default {
   props: {
     document: { required: true, type: Object },
   },
-  setup: () => {
+  setup: (props) => {
+    console.log("document", props.document.is_urgent);
     return { patientDocumentTypes, moment };
   },
 };
