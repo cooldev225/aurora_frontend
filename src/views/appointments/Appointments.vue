@@ -314,6 +314,7 @@
     </div>
     <div :class="{ 'col-8': toggleLayout }">
       <AppointmentTable
+        :organization="organization"
         :visibleDate="visibleDate"
         :visibleSpecialists="visibleSpecialists"
       />
@@ -370,22 +371,15 @@ export default defineComponent({
   setup: function () {
     const store = useStore();
     const format = ref("YYYY-MM-DD");
-
+    const organization = computed(() => store.getters.userOrganization);
     // Data calender is showing
     const date_search = reactive({
       date: new Date(),
     });
-
     const visibleDate = ref(date_search);
 
     // The specialist that will be show in calender
-    const visibleSpecialists = ref([
-      { id: "6", title: "Dr A" },
-      { id: "19", title: "Dr B" },
-      { id: "28", title: "Dr C" },
-      { id: "40", title: "Dr D" },
-      { id: "50", title: "Dr E" },
-    ]);
+    const visibleSpecialists = ref();
 
     const isShowAllSpecialist = ref(false);
     const toggleLayout = ref(false);
@@ -434,7 +428,6 @@ export default defineComponent({
       specialist_ids: [],
     });
 
-    const tableTitle = ref("");
     const x_weeks_list = ref({
       0: "This week",
       1: "Next Week",
@@ -454,10 +447,7 @@ export default defineComponent({
     const clinicOptions = ref([]);
     const clinicsData = ref([]);
 
-    const filtered_specialists = computed(
-      () => store.getters.getAvailableSPTData
-    );
-    const specialists = computed(() => store.getters.getFilteredData);
+    const specialists = computed(() => store.getters.getSpecialistList);
 
     const available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
@@ -471,13 +461,11 @@ export default defineComponent({
 
     onMounted(() => {
       toggleLayout.value = false;
-      store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
-        ...date_search,
-      });
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
+      store.dispatch(Actions.EMPLOYEE.LIST);
     });
 
     const selectedClinicIds = computed(() => {
@@ -547,9 +535,6 @@ export default defineComponent({
     });
 
     watch(date_search, () => {
-      store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
-        ...date_search,
-      });
       visibleDate.value = date_search;
     });
 
@@ -558,9 +543,11 @@ export default defineComponent({
         return {
           value: specialist.id,
           label: `Dr.${specialist.first_name} ${specialist.last_name}`,
+          id: specialist.id,
+          title: `Dr.${specialist.first_name} ${specialist.last_name}`,
         };
       });
-      console.log(specialistsList.value);
+      visibleSpecialists.value = specialistsList.value; //This should be filtered!
       getFilterSpecialists();
     });
 
@@ -726,7 +713,6 @@ export default defineComponent({
       format,
       date_search,
       specialists_search,
-      filtered_specialists,
       specialists,
       available_slots_by_date,
       aptTypelist,
@@ -738,7 +724,6 @@ export default defineComponent({
       search_next_apts,
       x_weeks_list,
       clinic_list,
-      tableTitle,
       aptTimeList,
       moment,
       handleSearch,
@@ -758,7 +743,7 @@ export default defineComponent({
       clinicOptions,
       clinicsData,
       selectedClinicIds,
-
+      organization,
       visibleSpecialists, // FOR APPOINTMENT TABLE
       visibleDate, // FOR APPOINTMENT TABLE
     };

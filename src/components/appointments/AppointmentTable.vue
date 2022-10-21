@@ -27,14 +27,17 @@ import {
 } from "vue";
 import { useStore } from "vuex";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
-
+import moment from "moment";
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import resourceTimeGridPlugin from "@fullcalendar/resource-timegrid";
-import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "@/store/enums/StoreAppointmentEnums";
 import AppointmentTableData from "./partials/AppointmentTableData.vue";
 
 export default defineComponent({
@@ -46,42 +49,30 @@ export default defineComponent({
     visibleDate: { type: String, required: true },
     visibleSpecialists: { type: Object, required: true },
     filteredClinics: { type: Array, required: true },
+    organization: { type: Object, required: true },
   },
   setup(props) {
     const store = useStore();
 
-    const currentUser = computed(() => store.getters.currentUser);
     const calendarOptions = ref(null);
     const appointmentCalendarRef = ref(null); //this.$refs.refAppointmentCalendar.getApi();
     const appointmentsRaw = computed(() => store.getters.getAptList);
     const appointments = ref([]);
+
     watch(props, () => {
       let date = props.visibleDate.date;
       let specialists = props.visibleSpecialists;
 
       //Change Calender View to correct date
-      let calendarApi = appointmentCalendarRef.value.getApi();
-      calendarApi.gotoDate = date;
+      // let calendarApi = appointmentCalendarRef.value.getApi();
+      //calendarApi.gotoDate = date;
       store.dispatch(AppointmentActions.LIST, { date: date });
     });
 
     onMounted(() => {
       store.dispatch(AppointmentActions.LIST, { date: props.visibleDate.date });
     });
-
-    watch(appointmentsRaw, () => {
-      appointments.value = [];
-      appointmentsRaw.value.forEach((appointment) => {
-        appointments.value.push({
-          id: appointment.id,
-          resourceId: appointment.specialist_id,
-          start: appointment.date + "T" + appointment.start_time,
-          end: appointment.date + "T" + appointment.end_time,
-          appointment: appointment,
-        });
-      });
-    });
-    watch(currentUser, () => {
+    watch(appointments, () => {
       calendarOptions.value = {
         schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
         plugins: [
@@ -94,7 +85,7 @@ export default defineComponent({
         headerToolbar: {
           left: "prev,next today",
           center: "title",
-          right: "timeGridWeek,timeGridDay",
+          right: "",
         },
         nowIndicator: true,
         slotEventOverlap: false,
@@ -104,17 +95,32 @@ export default defineComponent({
         selectable: true,
         selectMirror: false,
         allDaySlot: false,
-        slotMinTime: currentUser.value.organization.start_time,
-        slotMaxTime: currentUser.value.organization.end_time,
+        slotMinTime: props.organization.start_time,
+        slotMaxTime: props.organization.end_time,
+        slotDuration: "00:15:00",
         views: {
           timeGridDay: { buttonText: "day" },
         },
-
         editable: false,
         dayMaxEvents: false,
         events: appointments,
         eventClick: handleShowAppointmentDrawer,
+        dateClick: handleCreateAppointment,
       };
+    });
+
+    watch(appointmentsRaw, () => {
+      console.log(props.visibleSpecialists);
+      appointments.value = [];
+      appointmentsRaw.value.forEach((appointment) => {
+        appointments.value.push({
+          id: appointment.id,
+          resourceId: appointment.specialist_id,
+          start: appointment.date + "T" + appointment.start_time,
+          end: appointment.date + "T" + appointment.end_time,
+          appointment: appointment,
+        });
+      });
     });
 
     watchEffect(() => {
@@ -127,10 +133,33 @@ export default defineComponent({
       }
     });
 
-    const handleShowAppointmentDrawer = (item) => {
-      console.log("SHOW APT DRAWER");
-      //store.commit(AppointmentMutations.SET_APT.SELECT, item);
-      //DrawerComponent?.getInstance("appointment-drawer")?.toggle();
+    const handleShowAppointmentDrawer = (info) => {
+      info.jsEvent.preventDefault();
+      let appointment = info.event.extendedProps.appointment;
+      store.commit(AppointmentMutations.SET_APT.SELECT, appointment);
+      DrawerComponent?.getInstance("appointment-drawer")?.toggle();
+    };
+
+    const handleCreateAppointment = (info) => {
+      info.jsEvent.preventDefault();
+      console.log(info.event.extendedProps.appointment);
+      /*
+      let timeSlot = getTimeSlot();
+      const date = moment(_apt_date.value).format("YYYY-MM-DD").toString();
+      const item = {
+        time_slot: [date + "T" + props.startTime],
+        date: date,
+        selected_specialist: props.specialist,
+        restriction: timeSlot.restriction,
+      };
+      store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
+      store.commit(
+        AppointmentMutations.SET_APT.SELECT_SPECIALIST,
+        props.specialist
+      );
+
+      const modal = new Modal(document.getElementById("modal_create_apt"));
+      modal.show();*/
     };
 
     //Check specialist clinic is selected one in filter or not

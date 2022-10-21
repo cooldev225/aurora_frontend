@@ -35,6 +35,14 @@ export default class EmployeeModule extends VuexModule implements EmployeeInfo {
   }
 
   /**
+   * Get current speciaslist user object
+   * @returns Speciaslit List
+   */
+  get specialistList(): Array<IEmployee> {
+    return this.employeeData.filter((e) => e.role_id === 5);
+  }
+
+  /**
    * Get current user object
    * @returns SelectedEmplyee
    */
