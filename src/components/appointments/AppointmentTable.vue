@@ -60,12 +60,8 @@ export default defineComponent({
     const appointments = ref([]);
 
     watch(props, () => {
-      let date = props.visibleDate.date;
+      let date = moment(props.visibleDate.date).format("YYYY-MM-DD");
       let specialists = props.visibleSpecialists;
-
-      //Change Calender View to correct date
-      // let calendarApi = appointmentCalendarRef.value.getApi();
-      //calendarApi.gotoDate = date;
       store.dispatch(AppointmentActions.LIST, { date: date });
     });
 
@@ -87,10 +83,10 @@ export default defineComponent({
           center: "title",
           right: "",
         },
+        resources: props.visibleSpecialists,
         nowIndicator: true,
         slotEventOverlap: false,
         initialView: "resourceTimeGridDay",
-        resources: props.visibleSpecialists,
         navLinks: false, // can click day/week names to navigate views
         selectable: true,
         selectMirror: false,
@@ -107,10 +103,15 @@ export default defineComponent({
         eventClick: handleShowAppointmentDrawer,
         dateClick: handleCreateAppointment,
       };
+
+      if (appointmentCalendarRef.value) {
+        appointmentCalendarRef.value
+          .getApi()
+          .gotoDate(moment(props.visibleDate.date).format("YYYY-MM-DD"));
+      }
     });
 
     watch(appointmentsRaw, () => {
-      console.log(props.visibleSpecialists);
       appointments.value = [];
       appointmentsRaw.value.forEach((appointment) => {
         appointments.value.push({
@@ -141,8 +142,7 @@ export default defineComponent({
     };
 
     const handleCreateAppointment = (info) => {
-      info.jsEvent.preventDefault();
-      console.log(info.event.extendedProps.appointment);
+      console.log(info);
       /*
       let timeSlot = getTimeSlot();
       const date = moment(_apt_date.value).format("YYYY-MM-DD").toString();
