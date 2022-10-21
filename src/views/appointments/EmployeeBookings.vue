@@ -4,22 +4,26 @@
     <!--begin::Card body-->
     <div class="card-body">
       <!--begin::Calendar-->
-      <FullCalendar
-        ref="refCalendar"
-        class="demo-app-calendar"
-        :key="calendarKey"
-        :options="calendarOptions"
-      >
-        <template v-slot:eventContent="arg">
-          <div v-if="arg.event.extendedProps.attendance_status == 'CHECKED_IN'">
-            <span class="badge badge-success"> CHECKED IN </span>
-            <br />
-          </div>
-          {{ arg.event.title }}<br />
-          {{ arg.event.extendedProps.start_time }} -
-          {{ arg.event.extendedProps.end_time }}
-        </template>
-      </FullCalendar>
+      <template v-if="calendarOptions">
+        <FullCalendar
+          ref="refCalendar"
+          class="demo-app-calendar"
+          :key="calendarKey"
+          :options="calendarOptions"
+        >
+          <template v-slot:eventContent="arg">
+            <div
+              v-if="arg.event.extendedProps.attendance_status == 'CHECKED_IN'"
+            >
+              <span class="badge badge-success"> CHECKED IN </span>
+              <br />
+            </div>
+            {{ arg.event.title }}<br />
+            {{ arg.event.extendedProps.start_time }} -
+            {{ arg.event.extendedProps.end_time }}
+          </template>
+        </FullCalendar>
+      </template>
       <!--end::Calendar-->
     </div>
     <!--end::Card body-->
@@ -60,7 +64,7 @@ export default defineComponent({
     const calendarKey = ref(0);
     const userProfile = computed(() => store.getters.userProfile);
     let appointments = [];
-
+    const currentUser = computed(() => store.getters.currentUser);
     const handleEventClick = (e) => {
       const appointment_id = e.event.extendedProps.appointment_id;
       const aptSelected = userAptList.value.find(
@@ -75,28 +79,7 @@ export default defineComponent({
       console.log();
     };
 
-    const calendarOptions = {
-      plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
-      headerToolbar: {
-        left: "prev,next today",
-        center: "title",
-        right: "timeGridWeek,timeGridDay",
-      },
-      initialView: "timeGridWeek",
-      navLinks: true, // can click day/week names to navigate views
-      selectable: true,
-      selectMirror: false,
-
-      views: {
-        timeGridWeek: { buttonText: "week" },
-        timeGridDay: { buttonText: "day" },
-      },
-
-      editable: false,
-      dayMaxEvents: false, // allow "more" link when too many events
-      events: appointments,
-      eventClick: handleEventClick,
-    };
+    const calendarOptions = ref(null);
 
     watch(userProfile, () => {
       let specialist_id =
@@ -108,6 +91,31 @@ export default defineComponent({
         specialist_id: specialist_id,
         anesthetist_id: anesthetist_id,
       });
+
+      calendarOptions.value = {
+        plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
+        headerToolbar: {
+          left: "prev,next today",
+          center: "title",
+          right: "timeGridWeek,timeGridDay",
+        },
+        initialView: "timeGridWeek",
+        navLinks: true, // can click day/week names to navigate views
+        selectable: true,
+        selectMirror: false,
+        allDaySlot: false,
+        slotMinTime: currentUser.value.organization.start_time,
+        slotMaxTime: currentUser.value.organization.end_time,
+        views: {
+          timeGridWeek: { buttonText: "week" },
+          timeGridDay: { buttonText: "day" },
+        },
+
+        editable: false,
+        dayMaxEvents: false, // allow "more" link when too many events
+        events: appointments,
+        eventClick: handleEventClick,
+      };
     });
 
     watch(userAptList, () => {
