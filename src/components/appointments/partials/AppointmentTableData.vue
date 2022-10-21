@@ -1,6 +1,6 @@
 <template>
-  <td
-    class="py-2 px-4 cursor-pointer"
+  <div
+    class="py-2 px-4 cursor-pointer h-100 justify-content-center"
     :style="{
       'background-color':
         appointment.confirmation_status == 'MISSED' ||
@@ -8,17 +8,15 @@
           ? '#cccccc'
           : appointment.appointment_type.color,
     }"
-    :rowSpan="appointment.appointment_type.appointment_length_as_number"
   >
     <div
       class="fw-bold d-flex flex-column justify-content-center align-items-center"
     >
       <span class="">
         {{ appointment.patient.first_name }}
-        {{ appointment.patient.last_name }} <br />
+        {{ appointment.patient.last_name }}
         ({{ appointment.patient.contact_number }})
-      </span>
-      <span>
+
         <span
           v-if="appointment.patient.allergies"
           class="badge badge-light-danger opacity-50 mx-2"
@@ -48,7 +46,7 @@
         </span>
       </span>
     </div>
-  </td>
+  </div>
 </template>
 <script lang="ts">
 export default {

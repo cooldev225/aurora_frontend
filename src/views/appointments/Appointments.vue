@@ -313,16 +313,10 @@
       </div>
     </div>
     <div :class="{ 'col-8': toggleLayout }">
-      <div class="card-body">
-        <div class="scroll" :class="{ 'h-500px': !toggleLayout }">
-          <div class="d-flex flex-column">
-            <AppointmentTable
-              :date="moment(date_search.date.toString()).format('MM-DD-YYYY')"
-              :filteredClinics="selectedClinicIds"
-            />
-          </div>
-        </div>
-      </div>
+      <AppointmentTable
+        :visibleDate="visibleDate"
+        :visibleSpecialists="visibleSpecialists"
+      />
     </div>
   </div>
 
@@ -355,12 +349,8 @@ import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
 import moment from "moment";
 import { aptTimeList } from "@/core/data/apt-time";
 import { Actions } from "@/store/enums/StoreEnums";
-import {
-  AppointmentActions,
-  AppointmentMutations,
-} from "@/store/enums/StoreAppointmentEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { Modal } from "bootstrap";
-import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 export default defineComponent({
@@ -380,9 +370,22 @@ export default defineComponent({
   setup: function () {
     const store = useStore();
     const format = ref("YYYY-MM-DD");
+
+    // Data calender is showing
     const date_search = reactive({
       date: new Date(),
     });
+
+    const visibleDate = ref(date_search);
+
+    // The specialist that will be show in calender
+    const visibleSpecialists = ref([
+      { id: "6", title: "Dr A" },
+      { id: "19", title: "Dr B" },
+      { id: "28", title: "Dr C" },
+      { id: "40", title: "Dr D" },
+      { id: "50", title: "Dr E" },
+    ]);
 
     const isShowAllSpecialist = ref(false);
     const toggleLayout = ref(false);
@@ -542,11 +545,14 @@ export default defineComponent({
         }, 200);
       }
     });
+
     watch(date_search, () => {
       store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
         ...date_search,
       });
+      visibleDate.value = date_search;
     });
+
     watch(specialists, () => {
       specialistsList.value = specialists.value.map((specialist) => {
         return {
@@ -554,6 +560,7 @@ export default defineComponent({
           label: `Dr.${specialist.first_name} ${specialist.last_name}`,
         };
       });
+      console.log(specialistsList.value);
       getFilterSpecialists();
     });
 
@@ -751,6 +758,9 @@ export default defineComponent({
       clinicOptions,
       clinicsData,
       selectedClinicIds,
+
+      visibleSpecialists, // FOR APPOINTMENT TABLE
+      visibleDate, // FOR APPOINTMENT TABLE
     };
   },
 });
