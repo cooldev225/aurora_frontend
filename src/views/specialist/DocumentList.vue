@@ -381,6 +381,13 @@ export default defineComponent({
               (doc) => doc.id === selectedDocument.value.id
             );
           }
+        } else {
+          const tempId = selectedDocumentId.value;
+          selectedDocumentId.value = null;
+          // selectedDocument.value = null;
+          setTimeout(() => {
+            selectedDocumentId.value = tempId;
+          }, 500);
         }
       }
     };
@@ -416,7 +423,7 @@ export default defineComponent({
                 })
                 .then(() => {
                   setTimeout(() => {
-                    // handleSetSelectedDocument("SPECIALIST");
+                    handleSetSelectedDocument();
                   }, 200);
                 });
             });
