@@ -91,9 +91,10 @@ export default defineComponent({
         selectable: true,
         selectMirror: false,
         allDaySlot: false,
+        height: 500,
         slotMinTime: props.organization.start_time,
         slotMaxTime: props.organization.end_time,
-        slotDuration: "00:15:00",
+        slotDuration: "00:30:00",
         views: {
           timeGridDay: { buttonText: "day" },
         },
@@ -177,7 +178,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss">
-@import "../../assets/sass/components/booking/appointmentTable.scss";
-</style>
