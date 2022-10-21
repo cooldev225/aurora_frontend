@@ -126,14 +126,30 @@
               @click="handleMarkRead(false)"
             />
             <IconButton
-              v-if="userRole == 'specialist'"
+              v-if="userRole == 'specialist' && !selectedDocument.is_urgent"
               label="Mark Urgent"
-              @click="handleMarkUrgent"
+              @click="handleMarkUrgent(true)"
             />
             <IconButton
-              v-if="userRole == 'specialist'"
-              label="Flag Incorrectly assigned"
-              @click="handleMarkUrgent"
+              v-if="userRole == 'specialist' && selectedDocument.is_urgent"
+              label="Mark Not Urgent"
+              @click="handleMarkUrgent(false)"
+            />
+            <IconButton
+              v-if="
+                userRole == 'specialist' &&
+                !selectedDocument.is_incorrectly_assigned
+              "
+              label="Mark Incorrectly assigned"
+              @click="handleMarkCorrect(true)"
+            />
+            <IconButton
+              v-if="
+                userRole == 'specialist' &&
+                selectedDocument.is_incorrectly_assigned
+              "
+              label="Mark correctly assigned"
+              @click="handleMarkCorrect(false)"
             />
           </div>
           <!-- DOCUMENT VIEW DIV -->
@@ -431,6 +447,84 @@ export default defineComponent({
       });
     };
 
+    const handleMarkUrgent = (flag) => {
+      const html =
+        "<h3>Are you sure you want to mark as " +
+        (flag ? '"Urgent"' : '"Not Urgent"') +
+        "?</h3>";
+      Swal.fire({
+        html: html,
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async () => {
+          store
+            .dispatch(DocumentActions.UPDATE, {
+              is_urgent: flag ? 1 : 0,
+              document_id: selectedDocument.value.id,
+              document_type: selectedDocument.value.document_type,
+              document_name: selectedDocument.value.document_name,
+            })
+            .then(() => {
+              store
+                .dispatch(DocumentActions.LIST, {
+                  is_missing_information: 1,
+                  origin: "RECEIVED",
+                })
+                .then(() => {
+                  setTimeout(() => {
+                    handleSetSelectedDocument();
+                  }, 200);
+                });
+            });
+        },
+      });
+    };
+
+    const handleMarkCorrect = (flag) => {
+      const html =
+        "<h3>Are you sure you want to mark as " +
+        (flag ? '"Incorrectly Assigned"' : '"Correctly Assigned"') +
+        "?</h3>";
+      Swal.fire({
+        html: html,
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async () => {
+          store
+            .dispatch(DocumentActions.UPDATE, {
+              is_incorrectly_assigned: flag ? 1 : 0,
+              document_id: selectedDocument.value.id,
+              document_type: selectedDocument.value.document_type,
+              document_name: selectedDocument.value.document_name,
+            })
+            .then(() => {
+              store
+                .dispatch(DocumentActions.LIST, {
+                  is_missing_information: 1,
+                  origin: "RECEIVED",
+                })
+                .then(() => {
+                  setTimeout(() => {
+                    handleSetSelectedDocument();
+                  }, 200);
+                });
+            });
+        },
+      });
+    };
+
     return {
       patientDocumentTypes,
       DocumentLabel,
@@ -450,6 +544,8 @@ export default defineComponent({
       userRole,
 
       handleMarkRead,
+      handleMarkUrgent,
+      handleMarkCorrect,
     };
   },
 });
