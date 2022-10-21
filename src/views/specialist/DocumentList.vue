@@ -116,9 +116,14 @@
             <IconButton label="Print" @click="handlePrint" />
             <IconButton label="Email" @click="handleSendEmail" />
             <IconButton
-              v-if="userRole == 'specialist'"
+              v-if="userRole == 'specialist' && !selectedDocument.is_read"
               label="Mark Read"
-              @click="handleMarkRead"
+              @click="handleMarkRead(true)"
+            />
+            <IconButton
+              v-if="userRole == 'specialist' && selectedDocument.is_read"
+              label="Mark UnRead"
+              @click="handleMarkRead(false)"
             />
             <IconButton
               v-if="userRole == 'specialist'"
@@ -184,6 +189,7 @@ import { Modal } from "bootstrap";
 import AssignPatientModal from "@/views/specialist/modals/AssignPatientModal.vue";
 import AssignSpecialistModal from "@/views/specialist/modals/AssignSpecialistModal.vue";
 import AssignAppointmentModal from "@/views/specialist/modals/AssignAppointmentModal.vue";
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
 
 export default defineComponent({
   name: "admin-main",
@@ -379,6 +385,45 @@ export default defineComponent({
       }
     };
 
+    const handleMarkRead = (flag) => {
+      const html =
+        "<h3>Are you sure you want to mark as " +
+        (flag ? '"Read"' : '"UnRead"') +
+        "?</h3>";
+      Swal.fire({
+        html: html,
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async () => {
+          store
+            .dispatch(DocumentActions.UPDATE, {
+              is_read: flag ? 1 : 0,
+              document_id: selectedDocument.value.id,
+              document_type: selectedDocument.value.document_type,
+              document_name: selectedDocument.value.document_name,
+            })
+            .then(() => {
+              store
+                .dispatch(DocumentActions.LIST, {
+                  is_missing_information: 1,
+                  origin: "RECEIVED",
+                })
+                .then(() => {
+                  setTimeout(() => {
+                    // handleSetSelectedDocument("SPECIALIST");
+                  }, 200);
+                });
+            });
+        },
+      });
+    };
+
     return {
       patientDocumentTypes,
       DocumentLabel,
@@ -396,6 +441,8 @@ export default defineComponent({
       selectedDocumentId,
       showDocumentDetail,
       userRole,
+
+      handleMarkRead,
     };
   },
 });
