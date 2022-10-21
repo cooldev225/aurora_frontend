@@ -194,7 +194,7 @@
     </div>
   </div>
   <EditModal modalId="modal_edit_apt" />
-  <MoveModal :isDisableAptTypeList="true" />
+  <MoveModal :isDisableAptTypeList="true" :aptData="aptData.value" />
   <CheckInModal></CheckInModal>
 </template>
 

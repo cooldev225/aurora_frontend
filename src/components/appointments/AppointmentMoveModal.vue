@@ -7,7 +7,7 @@
     ref="MoveAptModalRef"
   >
     <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-650px">
+    <div class="modal-dialog modal-dialog-centered mw-500px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
@@ -33,7 +33,7 @@
         </div>
         <!--end::Modal header-->
         <!--begin::Modal body-->
-        <div class="modal-body py-10 px-lg-17">
+        <div class="modal-body py-10 px-lg-8">
           <!--begin::Scroll-->
           <div
             class="scroll-y me-n7 pe-7"
@@ -45,31 +45,29 @@
             data-kt-scroll-wrappers="#kt_modal_move_appointment_scroll"
             data-kt-scroll-offset="300px"
           >
-            <el-form
-              @submit.prevent="submit()"
-              :model="formData"
-              :rules="rules"
-              ref="formRef"
-            >
-              <InputWrapper prop="appointment_type_id">
-                <el-select
-                  :disabled="props.isDisableAptTypeList"
-                  class="w-100"
-                  placeholder="Select Appointment Type"
-                  v-model="formData.appointment_type_id"
-                >
-                  <el-option
-                    v-for="item in aptTypelist"
-                    :value="item.id"
-                    :label="item.name"
-                    :key="item.id"
-                  />
-                </el-select>
-              </InputWrapper>
-              <el-divider />
-              <div>
-                <InputWrapper class="w-50 p-2">
+            <el-form :model="formData" ref="formRef">
+              <div class="row">
+                <InputWrapper prop="appointment_type_id">
                   <el-select
+                    :disabled="props.isDisableAptTypeList"
+                    class="w-100"
+                    placeholder="Select Appointment Type"
+                    v-model="formData.appointment_type_id"
+                  >
+                    <el-option
+                      v-for="item in aptTypelist"
+                      :value="item.id"
+                      :label="item.name"
+                      :key="item.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+              </div>
+              <el-divider />
+              <div class="row">
+                <InputWrapper class="col-6">
+                  <el-select
+                    class="w-100"
                     placeholder="Select Clinic"
                     v-model="formData.clinic_id"
                   >
@@ -82,9 +80,9 @@
                     />
                   </el-select>
                 </InputWrapper>
-                <InputWrapper>
+                <InputWrapper class="col-6">
                   <el-select
-                    class="w-50 p-2"
+                    class="w-100"
                     placeholder="Select Specialist"
                     v-model="formData.specialist_id"
                     filterable
@@ -100,35 +98,37 @@
                 </InputWrapper>
               </div>
               <el-divider />
-              <InputWrapper>
-                <el-select
-                  class="w-50 p-2"
-                  placeholder="Select Appointment Time Requirement"
-                  v-model="formData.time_requirement"
-                >
-                  <el-option :value="0" label="Any time" :key="0" />
-                  <el-option
-                    v-for="item in aptTimeRequirelist"
-                    :value="item.id"
-                    :label="item.title"
-                    :key="item.id"
-                  />
-                </el-select>
-              </InputWrapper>
-              <InputWrapper>
-                <el-select
-                  class="w-50 p-2"
-                  placeholder="Select Time frame"
-                  v-model="formData.x_weeks"
-                >
-                  <el-option
-                    v-for="(item, index) in weekslist"
-                    :value="index"
-                    :label="item"
-                    :key="item.id"
-                  />
-                </el-select>
-              </InputWrapper>
+              <div class="row">
+                <InputWrapper class="col-6">
+                  <el-select
+                    class="w-100"
+                    placeholder="Select Appointment Time Requirement"
+                    v-model="formData.time_requirement"
+                  >
+                    <el-option :value="0" label="Any time" :key="0" />
+                    <el-option
+                      v-for="item in aptTimeRequirelist"
+                      :value="item.id"
+                      :label="item.title"
+                      :key="item.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+                <InputWrapper class="col-6">
+                  <el-select
+                    class="w-100"
+                    placeholder="Select Time frame"
+                    v-model="formData.x_weeks"
+                  >
+                    <el-option
+                      v-for="(item, index) in aptWeeksList"
+                      :value="index"
+                      :label="item"
+                      :key="item.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+              </div>
               <button
                 class="btn btn-primary mt-3 w-100"
                 @click.prevent="handleSearch"
@@ -140,53 +140,25 @@
           <!--end::Scroll-->
         </div>
         <!--end::Modal body-->
-
-        <!--begin::Modal footer-->
-        <div class="modal-footer flex-center">
-          <!--begin::Button-->
-          <button
-            :data-kt-indicator="loading ? 'on' : null"
-            class="btn btn-lg btn-primary"
-            @click="handleCheckIn(true)"
-          >
-            <span v-if="!loading" class="indicator-label">
-              Make Payment and Check In
-            </span>
-            <span v-if="loading" class="indicator-progress">
-              Please wait...
-              <span
-                class="spinner-border spinner-border-sm align-middle ms-2"
-              ></span>
-            </span>
-          </button>
-
-          <button
-            :data-kt-indicator="loading ? 'on' : null"
-            class="btn btn-lg btn-primary"
-            @click="handleCheckIn"
-          >
-            <span v-if="!loading" class="indicator-label"> Check In Only </span>
-            <span v-if="loading" class="indicator-progress">
-              Please wait...
-              <span
-                class="spinner-border spinner-border-sm align-middle ms-2"
-              ></span>
-            </span>
-          </button>
-          <!--end::Button-->
-        </div>
-        <!--end::Modal footer-->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, computed, ref, onMounted, watch } from "vue";
+import {
+  defineComponent,
+  computed,
+  ref,
+  onMounted,
+  watch,
+  watchEffect,
+} from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
+import aptWeeksList from "@/core/data/apt-weeks";
 
 export default defineComponent({
   name: "move-apt-modal",
@@ -196,7 +168,7 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const checkInAptModalRef = ref(null);
+    const formRef = ref(null);
     const loading = ref(false);
     const aptData = computed(() => store.getters.getAptSelected);
     const aptTypelist = computed(() => store.getters.getAptTypesList);
@@ -205,31 +177,38 @@ export default defineComponent({
     const aptTimeRequirelist = computed(
       () => store.getters.getAptTimeRequireList
     );
-    const weekslist = ref({
-      0: "This week",
-      1: "Next Week",
-      2: "In 2 weeks",
-      4: "In 4 weeks",
-      6: "In 6 weeks",
-      8: "In 2 months",
-      12: "In 3 months",
-      24: "In 6 months",
-    });
     const formData = ref({
       appointment_type_id: null,
+      clinic_id: null,
+      specialist_id: null,
+      time_requirement: null,
+      x_weeks: null,
     });
-    const rules = ref({
-      //
-    });
+
     watch(aptData, () => {
       console.log(["aptData", aptData.value]);
     });
+
+    watch(aptData, () => {
+      console.log(["cliniclist", cliniclist.value]);
+    });
+
+    watchEffect(() => {
+      formData.value.appointment_type_id = aptData.value.appointment_type?.id;
+      formData.value.clinic_id = aptData.value.clinic_id;
+      formData.value.specialist_id = aptData.value.specialist_id;
+    });
+
     onMounted(() => {
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
     });
+
+    const handleSearch = () => {
+      //
+    };
 
     return {
       props,
@@ -238,11 +217,11 @@ export default defineComponent({
       cliniclist,
       allSpecialist,
       aptTimeRequirelist,
-      weekslist,
+      aptWeeksList,
       formData,
-      rules,
-      checkInAptModalRef,
+      formRef,
       loading,
+      handleSearch,
     };
   },
 });
