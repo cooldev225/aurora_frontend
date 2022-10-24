@@ -145,42 +145,43 @@
               v-if="aptData.step === 1"
             >
               <div>
-                <div>
-                  <span class="me-1">Clinic:</span>
-                  <span class="caption-content me-2">
-                    {{
-                      cliniclist.filter((c) => c.id === formData.clinic_id)[0]
-                        ?.name
-                    }}
-                  </span>
-                  <span class="me-1">Specialist:</span>
-                  <span class="caption-content me-2">
-                    {{
-                      allSpecialist.filter(
-                        (c) => c.id === formData.specialist_id
-                      )[0].full_name
-                    }}
-                  </span>
-                  <span class="me-1">Time Requirement:</span>
-                  <span class="caption-content me-2">
-                    {{
-                      formData.time_requirement
-                        ? aptTimeRequirelist.filter(
-                            (c) => c.id === formData.time_requirement
-                          )[0].title
-                        : "Any"
-                    }}
-                  </span>
-                  <span class="me-1">Time Frame:</span>
-                  <span class="caption-content me-2">
-                    {{ aptWeeksList[formData.x_weeks] }}
-                  </span>
-                  <span class="me-1">Appointment Type:</span>
-                  <span class="caption-content me-2">
-                    {{ aptData.appointment_type_name }}
-                  </span>
-                </div>
+                <span class="me-1">Clinic:</span>
+                <span class="caption-content me-2">
+                  {{
+                    cliniclist.filter((c) => c.id === formData.clinic_id)[0]
+                      ?.name
+                  }}
+                </span>
+                <span class="me-1">Specialist:</span>
+                <span class="caption-content me-2">
+                  {{
+                    allSpecialist.filter(
+                      (c) => c.id === formData.specialist_id
+                    )[0].full_name
+                  }}
+                </span>
+                <span class="me-1">Time Requirement:</span>
+                <span class="caption-content me-2">
+                  {{
+                    formData.time_requirement
+                      ? aptTimeRequirelist.filter(
+                          (c) => c.id === formData.time_requirement
+                        )[0].title
+                      : "Any"
+                  }}
+                </span>
+                <span class="me-1">Time Frame:</span>
+                <span class="caption-content me-2">
+                  {{ aptWeeksList[formData.x_weeks] }}
+                </span>
+                <span class="me-1">Appointment Type:</span>
+                <span class="caption-content me-2">
+                  {{ aptData.appointment_type_name }}
+                </span>
               </div>
+              <WeeklyTimeSlotsTable
+                :weeks="formData.x_weeks"
+              ></WeeklyTimeSlotsTable>
             </el-form>
           </div>
         </div>
@@ -222,10 +223,13 @@ import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import aptWeeksList from "@/core/data/apt-weeks";
+import WeeklyTimeSlotsTable from "@/components/appointments/partials/WeeklyTimeSlotsTable";
 
 export default defineComponent({
   name: "move-apt-modal",
-  components: {},
+  components: {
+    WeeklyTimeSlotsTable,
+  },
   props: {
     isDisableAptTypeList: { type: Boolean },
   },
@@ -245,7 +249,7 @@ export default defineComponent({
       clinic_id: null,
       specialist_id: null,
       time_requirement: 0,
-      x_weeks: 0,
+      x_weeks: "0",
     });
 
     watch(formData.value.x_weeks, () => {
