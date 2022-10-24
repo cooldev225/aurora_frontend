@@ -536,21 +536,36 @@ export default defineComponent({
 
     watch(date_search, () => {
       visibleDate.value = date_search;
+      updateSpecialistsList();
     });
 
     watch(specialists, () => {
-      specialistsList.value = specialists.value.map((specialist) => {
-        return {
-          value: specialist.id,
-          label: `Dr.${specialist.first_name} ${specialist.last_name}`,
-          id: specialist.id,
-          title: `Dr.${specialist.first_name} ${specialist.last_name}`,
-          businessHours: getBusinessHours(specialist.schedule_timeslots),
-        };
+      updateSpecialistsList();
+      getFilterSpecialists(); // add the filter later
+    });
+
+    const updateSpecialistsList = () => {
+      specialistsList.value = [];
+      specialists.value.map((specialist) => {
+        specialist.schedule_timeslots.map((slot) => {
+          if (
+            slot.week_day ==
+              moment(date_search.date).format("ddd").toUpperCase() &&
+            !specialistsList.value.includes(specialist)
+          ) {
+            specialistsList.value.push({
+              value: specialist.id,
+              label: `Dr.${specialist.first_name} ${specialist.last_name}`,
+              id: specialist.id,
+              title: `Dr.${specialist.first_name} ${specialist.last_name}`,
+              businessHours: getBusinessHours(specialist.schedule_timeslots),
+            });
+          }
+        });
       });
       visibleSpecialists.value = specialistsList.value; //This should be filtered!
       getFilterSpecialists();
-    });
+    };
     const getBusinessHours = (data) => {
       const weekDays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
       let businessHours = [];
