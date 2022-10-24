@@ -6,20 +6,15 @@
     aria-hidden="true"
     ref="MoveAptModalRef"
   >
-    <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-500px">
-      <!--begin::Modal content-->
       <div class="modal-content">
-        <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_move_appointment_header">
-          <!--begin::Modal title-->
           <h2 class="fw-bolder">Moving Appointment:</h2>
-          <div>
-            <span>{{ aptData.patient_name?.full }}</span>
-            <span>{{ aptData.formatted_appointment_time }}</span>
+          <div class="d-blokk">
+            <span>{{ aptData?.patient_name?.full }}</span>
+            <span>{{ aptData?.formatted_appointment_time }}</span>
+            {{ formData.appointment_type_id }}
           </div>
-          <!--end::Modal title-->
-          <!--begin::Close-->
           <div
             id="kt_modal_add_customer_close"
             data-bs-dismiss="modal"
@@ -29,12 +24,8 @@
               <InlineSVG icon="cross" />
             </span>
           </div>
-          <!--end::Close-->
         </div>
-        <!--end::Modal header-->
-        <!--begin::Modal body-->
         <div class="modal-body py-10 px-lg-8">
-          <!--begin::Scroll-->
           <div
             class="scroll-y me-n7 pe-7"
             id="kt_modal_move_appointment_scroll"
@@ -73,7 +64,7 @@
                   >
                     <el-option value="" label="Any Clinic" />
                     <el-option
-                      v-for="item in clinic_list"
+                      v-for="item in cliniclist"
                       :value="item.id"
                       :label="item.name"
                       :key="item.id"
@@ -89,7 +80,7 @@
                   >
                     <el-option value="" label="Any Specialist" />
                     <el-option
-                      v-for="specialist in allSpecialists"
+                      v-for="specialist in allSpecialist"
                       :value="specialist.id"
                       :label="specialist.full_name"
                       :key="specialist.id"
@@ -137,9 +128,7 @@
               </button>
             </el-form>
           </div>
-          <!--end::Scroll-->
         </div>
-        <!--end::Modal body-->
       </div>
     </div>
   </div>
@@ -186,23 +175,19 @@ export default defineComponent({
     });
 
     watch(aptData, () => {
-      console.log(["aptData", aptData.value]);
-    });
-
-    watch(aptData, () => {
-      console.log(["cliniclist", cliniclist.value]);
-    });
-
-    watchEffect(() => {
-      formData.value.appointment_type_id = aptData.value.appointment_type?.id;
-      formData.value.clinic_id = aptData.value.clinic_id;
-      formData.value.specialist_id = aptData.value.specialist_id;
+      store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST).then(() => {
+        formData.value.appointment_type_id = aptData.value.appointment_type?.id;
+      });
+      store.dispatch(Actions.CLINICS.LIST).then(() => {
+        console.log();
+        formData.value.clinic_id = aptData.value.clinic_id;
+      });
+      store.dispatch(Actions.SPECIALIST.LIST).then(() => {
+        formData.value.specialist_id = aptData.value.specialist_id;
+      });
     });
 
     onMounted(() => {
-      store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
-      store.dispatch(Actions.CLINICS.LIST);
-      store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
     });
 

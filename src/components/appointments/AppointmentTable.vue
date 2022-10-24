@@ -90,6 +90,7 @@
       </tr>
     </tbody>
   </table>
+  <MoveModal :isDisableAptTypeList="false" />
 </template>
 
 <script lang="ts">
@@ -107,10 +108,14 @@ import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import CreateAppointmentTableData from "@/components/appointments/partials/CreateAppointmentTableData.vue";
 import AppointmentTableData from "@/components/appointments/partials/AppointmentTableData.vue";
-import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
+import {
+  AppointmentMutations,
+  AppointmentActions,
+} from "@/store/enums/StoreAppointmentEnums";
+import MoveModal from "@/components/appointments/AppointmentMoveModal.vue";
 
 export default defineComponent({
-  components: { CreateAppointmentTableData, AppointmentTableData },
+  components: { CreateAppointmentTableData, AppointmentTableData, MoveModal },
   props: {
     date: { type: String, required: true },
     filteredClinics: { type: Array, required: true },

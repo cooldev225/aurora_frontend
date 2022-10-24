@@ -194,7 +194,6 @@
     </div>
   </div>
   <EditModal modalId="modal_edit_apt" />
-  <MoveModal :isDisableAptTypeList="true" :aptData="aptData.value" />
   <CheckInModal></CheckInModal>
 </template>
 
@@ -215,7 +214,6 @@ import { Modal } from "bootstrap";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
-import MoveModal from "@/components/appointments/AppointmentMoveModal.vue";
 
 export default defineComponent({
   name: "booing-drawer",
@@ -225,7 +223,6 @@ export default defineComponent({
     LargeIconButton,
     AlertBadge,
     InfoSection,
-    MoveModal,
   },
   setup() {
     const store = useStore();
@@ -263,9 +260,7 @@ export default defineComponent({
       DrawerComponent?.getInstance("appointment-drawer")?.hide();
     };
 
-    const handleMove = () => {
-      store.dispatch(PatientActions.APPOINTMENTS, aptData.value.patient_id);
-      store.commit(AppointmentMutations.SET_APT.SELECT, aptData.value);
+    const handleMove = async () => {
       const modal = new Modal(document.getElementById("modal_move_apt"));
       modal.show();
       DrawerComponent?.getInstance("appointment-drawer")?.hide();
