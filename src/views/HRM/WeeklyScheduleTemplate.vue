@@ -45,105 +45,31 @@
       </el-select>
     </div>
   </div>
-  <CardSection>
-    <table class="w-100">
-      <thead>
-        <th>Employee Type</th>
-        <th v-for="day in weekdays" :key="day.value">
-          {{ day.label }}
-        </th>
-      </thead>
-      <tbody>
-        <tr
-          class="min-h-100px"
-          v-for="employee in employeeList"
-          :key="employee"
-        >
-          <td
-            class="d-flex text-hover-primary cursor-pointer background-hover-light-primary flex-column"
-          >
-            {{ employee.full_name }}<br />
-            ({{
-              employeeRoles.filter((x) => x.value == employee.role_id)[0].label
-            }})
-          </td>
-
-          <td v-for="day in weekdays" :key="day.id">
-            <div
-              @click="handleEditTemplateTimeslots(employee, day)"
-              class="d-flex flex-column rounded min-h-150px min-w-100px cursor-pointer bg-hover-primary bg-light-primary p-3"
-            >
-              <span
-                class="svg-icon absolute text-light-primary svg-icon-4 me-1"
-              >
-                <InlineSVG icon="pencil" />
-              </span>
-              <template
-                v-for="timeslot in employee.schedule_timeslots.filter(
-                  (x) => x.week_day == day.value
-                )"
-                :key="timeslot.id"
-              >
-                <span
-                  class="p-2"
-                  :class="
-                    clinicFilter == timeslot.clinic_id
-                      ? 'bg-primary text-light'
-                      : ''
-                  "
-                >
-                  <template v-if="selectedFilters.includes('time')">
-                    {{ moment(timeslot.start_time, "hh:ss").format("hh:ss") }} -
-                    {{ moment(timeslot.end_time, "hh:ss").format("hh:ss") }}
-                  </template>
-
-                  <span v-if="selectedFilters.includes('clinic')">
-                    ({{ timeslotClinicName(timeslot) }})
-                  </span>
-                  <span
-                    v-if="
-                      selectedFilters.includes('anesthetist') &&
-                      timeslot.restriction === 'PROCEDURE' &&
-                      employee.role_id === 5
-                    "
-                  >
-                    ({{ anesthetistName(timeslot.anesthetist_id) }})
-                  </span>
-                </span>
-              </template>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </CardSection>
-  <EditModal></EditModal>
+  <HRMTimeScheduleTable
+    :selectedFilters="selectedFilters"
+    :employeeList="employeeList"
+    :clinicFilter="clinicFilter"
+  />
 </template>
 
 <script>
 import { defineComponent, onMounted, computed, watch, ref } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
-import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import { Actions } from "@/store/enums/StoreEnums";
-import weekdays from "@/core/data/weekdays";
-import employeeRoles from "@/core/data/employee-roles";
-import moment from "moment";
-import { Modal } from "bootstrap";
-import EditModal from "@/views/HRM/EditWeeklyScheduleModal.vue";
+import HRMTimeScheduleTable from "@/components/HRM/HRMTimeScheduleTable";
 
 export default defineComponent({
   name: "hrm-weekly-schedule-template",
   components: {
-    EditModal,
+    HRMTimeScheduleTable,
   },
   setup() {
     const store = useStore();
 
     const clinicFilter = ref();
-    const tableData = ref();
     const selectedFilters = ref(["time"]);
-    const selectedEmployees = ref();
+    const selectedEmployees = ref([]);
     const filterOptions = ref([
       {
         value: "time",
@@ -159,7 +85,6 @@ export default defineComponent({
       },
     ]);
     const clinics = computed(() => store.getters.clinicsList);
-    const scheduleTemplates = computed(() => store.getters.hrmScheduleList);
     const employeeList = computed(() => {
       const allEmployees = store.getters.employeeList;
       let filteredList = [];
@@ -206,70 +131,12 @@ export default defineComponent({
       }
     });
 
-    watch(scheduleTemplates, () => {
-      //let add_data = tableData.value?.filter((t) => t.id == -1);
-      tableData.value = scheduleTemplates.value;
-      //if (add_data?.length) tableData.value.push(add_data);
-    });
-
-    const handleEditTemplateTimeslots = (schedule, day) => {
-      schedule._title = "Edit Time Slot - " + day.label;
-      schedule._action = "edit_weekly_time";
-      schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
-      schedule.clinic_id = clinicFilter.value;
-      store.dispatch(HRMActions.ANESTHETIST.LIST, {
-        day: day.value,
-      });
-      if (schedule.id) schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
-      schedule._day = day.value;
-
-      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
-      let timeslots = schedule.schedule_timeslots.filter(
-        (t) => t.week_day == schedule._day
-      );
-      if (!timeslots.length) {
-        timeslots = [];
-      }
-      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_TIMESLOT, timeslots);
-      const modal = new Modal(document.getElementById("modal_edit_schedule"));
-      modal.show();
-    };
-
-    const timeslotClinicName = (timeslot) => {
-      let clinicName = null;
-      if (timeslot) {
-        clinicName = clinics.value
-          .filter((x) => x.id == timeslot.clinic_id)[0]
-          .name.split(" ")[0];
-      }
-      return clinicName;
-    };
-
-    const anesthetistName = (id) => {
-      let result = "Anesthetist - Not Set";
-      const allEmployees = store.getters.employeeList;
-      allEmployees.filter((employee) => {
-        if (employee.id === id) {
-          result = "Anesthetist - " + employee.first_name;
-        }
-      });
-      return result;
-    };
-
     return {
-      scheduleTemplates,
-      weekdays,
-      moment,
-      handleEditTemplateTimeslots,
       clinics,
       clinicFilter,
-      employeeRoles,
-      tableData,
       employeeList,
-      timeslotClinicName,
       filterOptions,
       selectedFilters,
-      anesthetistName,
       selectedEmployees,
       employeeTypeList,
     };

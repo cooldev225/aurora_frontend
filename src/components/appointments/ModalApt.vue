@@ -552,18 +552,20 @@
                       </div>
 
                       <InputWrapper label="Address" prop="address">
-                        <GMapAutocomplete
-                          :value="patientInfoData.address"
-                          ref="addressRef"
-                          placeholder="Enter the Address"
-                          @place_changed="handleAddressChange"
-                          :options="{
-                            componentRestrictions: {
-                              country: 'au',
-                            },
-                          }"
-                        >
-                        </GMapAutocomplete>
+                        <div class="el-input">
+                          <GMapAutocomplete
+                            :value="patientInfoData.address"
+                            ref="addressRef"
+                            placeholder="Enter the Address"
+                            @place_changed="handleAddressChange"
+                            :options="{
+                              componentRestrictions: {
+                                country: 'au',
+                              },
+                            }"
+                          >
+                          </GMapAutocomplete>
+                        </div>
                       </InputWrapper>
 
                       <InputWrapper class="col-6" label="Email" prop="email">

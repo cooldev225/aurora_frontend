@@ -59,11 +59,20 @@
               label="Address"
               prop="address"
             >
-              <el-input
-                v-model="formData.address"
-                type="address"
-                placeholder="Address"
-              />
+              <div class="el-input">
+                <GMapAutocomplete
+                  :value="formData.address"
+                  ref="addressRef"
+                  placeholder="Enter the Address"
+                  @place_changed="handleAddressChange"
+                  :options="{
+                    componentRestrictions: {
+                      country: 'au',
+                    },
+                  }"
+                >
+                </GMapAutocomplete>
+              </div>
             </InputWrapper>
           </div>
           <el-divider />
@@ -144,132 +153,6 @@
             </div>
           </div>
           <el-divider />
-          <HeadingText text="Employee Hours" />
-          <div
-            v-for="(hour_schedule, hourIndex) in formData.schedule_timeslots"
-            :key="hourIndex"
-          >
-            <div class="border border-dashed border-primary pt-3 m-3">
-              <div class="card d-flex flex-row">
-                <InputWrapper
-                  :class="formData.role_id === 5 ? 'col-2' : 'col-3'"
-                  label="Day"
-                  :prop="'weekday-' + hourIndex"
-                >
-                  <el-select
-                    class="w-100"
-                    type="text"
-                    v-model="hour_schedule.week_day"
-                  >
-                    <el-option
-                      v-for="weekday in weekdays"
-                      :value="weekday.value"
-                      :label="weekday.label"
-                      :key="weekday.value"
-                    />
-                  </el-select>
-                </InputWrapper>
-                <InputWrapper
-                  :class="formData.role_id === 5 ? 'col-3' : 'col-6'"
-                  label="Location"
-                  :prop="'location-' + hourIndex"
-                >
-                  <el-select
-                    class="w-100"
-                    type="text"
-                    v-model="hour_schedule.clinic_id"
-                    :prop="'location-select-' + hourIndex"
-                  >
-                    <el-option
-                      v-for="clinic in clinicsList"
-                      :value="clinic.id"
-                      :label="clinic.name"
-                      :key="clinic.id"
-                    />
-                  </el-select>
-                </InputWrapper>
-                <InputWrapper
-                  class="col-3"
-                  label="Time Slot"
-                  :prop="'timeslot-' + hourIndex"
-                >
-                  <div class="d-flex">
-                    <el-time-select
-                      class="w-50 pe-2"
-                      placeholder="Start time"
-                      start="07:00"
-                      step="00:15"
-                      end="18:30"
-                      format="HH:mm"
-                      v-model="hour_schedule.start_time"
-                      :prop="'starttime-' + hourIndex"
-                    />
-                    <el-time-select
-                      class="w-50 ps-2"
-                      placeholder="End time"
-                      start="07:00"
-                      step="00:15"
-                      end="18:30"
-                      format="HH:mm"
-                      v-model="hour_schedule.end_time"
-                      :prop="'endtime-' + hourIndex"
-                    />
-                  </div>
-                </InputWrapper>
-                <InputWrapper
-                  v-if="formData.role_id === 5"
-                  class="col-2"
-                  label="Restriction"
-                  :prop="'restriction-' + hourIndex"
-                >
-                  <el-select
-                    class="w-100"
-                    v-model="hour_schedule.appointment_type_restriction"
-                    :prop="'restriction-select-' + hourIndex"
-                  >
-                    <el-option
-                      v-for="item in restrictionsTypes"
-                      :value="item"
-                      :label="item"
-                      :key="item"
-                    />
-                  </el-select>
-                </InputWrapper>
-                <InputWrapper
-                  v-if="formData.role_id === 5"
-                  class="col-2"
-                  label="Anesthetist"
-                  :prop="'anesthetist-' + hourIndex"
-                >
-                  <el-select
-                    class="w-100"
-                    v-model="hour_schedule.anesthetist_id"
-                    :prop="'anesthetist-select-' + hourIndex"
-                  >
-                    <el-option
-                      v-for="item in anesthetistList"
-                      :value="item.id"
-                      :label="item.first_name + ' ' + item.last_name"
-                      :key="item.id"
-                    />
-                  </el-select>
-                </InputWrapper>
-              </div>
-              <div class="d-flex flex-row-reverse">
-                <span
-                  class="cursor-pointer text-nowrap text-danger text-right delete-schedual"
-                  @click="deleteSchedualHandle(hourIndex)"
-                  >- Delete Schedual</span
-                >
-              </div>
-            </div>
-          </div>
-          <div
-            class="card d-flex flex-row border border-dashed border-primary cursor-pointer pt-3 m-3 add-schedual"
-            @click="addSchedualHandle()"
-          >
-            <span><span>+</span> Add Schedual</span>
-          </div>
           <div class="d-flex justify-content-end">
             <button
               type="button"
@@ -294,6 +177,11 @@
       </div>
     </div>
   </div>
+  <HRMTimeScheduleTable
+    :selectedFilters="selectedFilters"
+    :employeeList="filteredEmployee"
+    clinicFilter="1"
+  />
 </template>
 <style lang="scss">
 .add-schedual {
@@ -304,6 +192,7 @@
   margin-top: 20px !important;
   margin-bottom: 20px !important;
 }
+
 .delete-schedual {
   margin-right: 20px;
   margin-bottom: 10px;
@@ -319,6 +208,7 @@ import {
   watch,
 } from "vue";
 import { useStore } from "vuex";
+
 import { useRouter, useRoute } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -328,12 +218,12 @@ import employeeRoles from "@/core/data/employee-roles";
 import weekdays from "@/core/data/weekdays";
 import restrictionsTypes from "@/core/data/apt-restriction";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
-import { ElMessage } from "element-plus";
 import { mask } from "vue-the-mask";
+import HRMTimeScheduleTable from "@/components/HRM/HRMTimeScheduleTable.vue";
 
 export default defineComponent({
   name: "create-employee",
-  components: { InputWrapper },
+  components: { InputWrapper, HRMTimeScheduleTable },
   directives: {
     mask,
   },
@@ -341,7 +231,9 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const route = useRoute();
+    const selectedFilters = ref(["time", "clinic"]);
     const loading = ref<boolean>(false);
+    const filteredEmployee = ref([]);
 
     const employeeList = computed(() => store.getters.employeeList);
     const clinicsList = computed(() => store.getters.clinicsList);
@@ -368,17 +260,7 @@ export default defineComponent({
       address: "",
       role_id: 4,
       type: "full-time",
-      schedule_timeslots: [
-        {
-          id: null,
-          week_day: null,
-          clinic_id: null,
-          start_time: null,
-          end_time: null,
-          anesthetist_id: null,
-          appointment_type_restriction: null,
-        },
-      ],
+      schedule_timeslots: [],
       specialist_clinic_relations: [
         {
           clinic_id: null,
@@ -435,26 +317,6 @@ export default defineComponent({
 
     const rules = ref(commonRoles);
 
-    const addSchedualHandle = () => {
-      formData.value.schedule_timeslots.push({
-        id: null,
-        week_day: null,
-        clinic_id: null,
-        start_time: null,
-        end_time: null,
-        anesthetist_id: null,
-        appointment_type_restriction: null,
-      });
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth",
-      });
-    };
-
-    const deleteSchedualHandle = (hourIndex) => {
-      formData.value.schedule_timeslots.splice(hourIndex, 1);
-    };
-
     const currentStepIndex = ref(0);
 
     watch(employeeList, () => {
@@ -462,7 +324,9 @@ export default defineComponent({
       if (id != undefined) {
         let employees = employeeList.value.filter((e) => e.id == id);
         if (employees && employees.length) {
+          filteredEmployee.value = [];
           let employee = employees[0];
+          filteredEmployee.value = employees;
           formData.value.id = employee.id;
           formData.value.username = employee.username;
           formData.value.email = employee.email;
@@ -473,7 +337,7 @@ export default defineComponent({
           formData.value.role_id = employee.role_id;
           formData.value.type = employee.type;
           if (employee.schedule_timeslots?.length) {
-            formData.value.schedule_timeslots = employee.schedule_timeslots;
+            // formData.value.schedule_timeslots = employee.schedule_timeslots;
           }
           if (employee.specialist_clinic_relations?.length) {
             formData.value.specialist_clinic_relations =
@@ -484,19 +348,13 @@ export default defineComponent({
     });
 
     watch(formData.value, () => {
-      console.log(["schedule_timeslots", formData.value.schedule_timeslots]);
+      // console.log(["schedule_timeslots", formData.value.sedule_timeslots]);
     });
 
     onMounted(() => {
       let id = route.params.id;
       if (id != undefined) {
-        formInfo.title = "Edit";
-        formInfo.isCreate = false;
-        formInfo.submitAction = Actions.EMPLOYEE.UPDATE;
-        formInfo.submitButtonName = "Update";
-        formInfo.submittedText = "Employee Updated";
-
-        store.dispatch(Actions.EMPLOYEE.LIST);
+        setForUpdateEmployee();
       }
       setCurrentPageBreadcrumbs(formInfo.title, ["Employee"]);
       store.dispatch(Actions.CLINICS.LIST);
@@ -519,19 +377,6 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
-          let null_schedules = formData.value.schedule_timeslots.filter(
-            (schedule) =>
-              schedule.week_day == null ||
-              schedule.clinic_id == null ||
-              schedule.start_time == null ||
-              schedule.end_time == null ||
-              schedule.anesthetist_id == null
-          );
-          if (null_schedules.length) {
-            valid = false;
-            ElMessage.error("Please fill employee hours fields!");
-            return false;
-          }
           loading.value = true;
 
           let provideres = formData.value.specialist_clinic_relations.filter(
@@ -544,7 +389,6 @@ export default defineComponent({
           store
             .dispatch(formInfo.submitAction, formData.value)
             .then((res) => {
-              console.log(["save response", res]);
               loading.value = false;
               store.dispatch(Actions.EMPLOYEE.LIST);
               Swal.fire({
@@ -556,7 +400,16 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                router.push({ name: "employees" });
+                let id = route.params.id;
+                if (id != undefined) {
+                  router.push({ name: "employees" });
+                } else {
+                  router.push({
+                    name: "employees-edit",
+                    params: { id: res.id },
+                  });
+                  setForUpdateEmployee();
+                }
               });
             })
             .catch(({ response }) => {
@@ -569,6 +422,18 @@ export default defineComponent({
       });
     };
 
+    const setForUpdateEmployee = () => {
+      store.dispatch(Actions.USER_LIST);
+      formInfo.title = "Edit";
+      formInfo.isCreate = false;
+      formInfo.submitAction = Actions.EMPLOYEE.UPDATE;
+      formInfo.submitButtonName = "Update";
+      formInfo.submittedText = "Employee Updated";
+      store.dispatch(Actions.EMPLOYEE.LIST);
+    };
+    const handleAddressChange = (e) => {
+      formData.value.address = e.formatted_address;
+    };
     return {
       formData,
       formInfo,
@@ -583,9 +448,10 @@ export default defineComponent({
       employeeRoles,
       weekdays,
       anesthetistList,
-      addSchedualHandle,
-      deleteSchedualHandle,
       handleAddOtherNumber,
+      filteredEmployee,
+      selectedFilters,
+      handleAddressChange,
     };
   },
 });
