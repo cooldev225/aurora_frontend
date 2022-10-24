@@ -6,14 +6,26 @@
     aria-hidden="true"
     ref="MoveAptModalRef"
   >
-    <div class="modal-dialog modal-dialog-centered mw-500px">
+    <div
+      :class="
+        'modal-dialog modal-dialog-centered ' +
+        (aptData.step === 0 ? 'mw-500px' : 'mw-650px')
+      "
+    >
       <div class="modal-content">
         <div class="modal-header" id="kt_modal_move_appointment_header">
-          <h2 class="fw-bolder">Moving Appointment:</h2>
-          <div class="d-blokk">
-            <span>{{ aptData?.patient_name?.full }}</span>
-            <span>{{ aptData?.formatted_appointment_time }}</span>
-            {{ formData.appointment_type_id }}
+          <div class="d-block">
+            <h2 class="fw-bolder">Moving Appointment:</h2>
+            <div class="mt-1">
+              <span class="me-1">{{ aptData?.patient_name?.full }},</span>
+              <span class="me-1">{{ aptData?.aus_formatted_date }},</span>
+              <span class="me-1">
+                {{ aptData?.formatted_appointment_time }}
+              </span>
+            </div>
+          </div>
+          <div class="select-new-apt-caption" v-if="aptData.step === 1">
+            Select New Appointment Time
           </div>
           <div
             id="kt_modal_add_customer_close"
@@ -36,8 +48,8 @@
             data-kt-scroll-wrappers="#kt_modal_move_appointment_scroll"
             data-kt-scroll-offset="300px"
           >
-            <el-form :model="formData" ref="formRef">
-              <div class="row">
+            <el-form :model="formData" ref="formRef" v-if="aptData.step === 0">
+              <div class="appointment-type">
                 <InputWrapper prop="appointment_type_id">
                   <el-select
                     :disabled="props.isDisableAptTypeList"
@@ -115,7 +127,7 @@
                       v-for="(item, index) in aptWeeksList"
                       :value="index"
                       :label="item"
-                      :key="item.id"
+                      :key="index"
                     />
                   </el-select>
                 </InputWrapper>
@@ -127,6 +139,49 @@
                 SEARCH
               </button>
             </el-form>
+            <el-form
+              :model="formData"
+              ref="timeslotsformRef"
+              v-if="aptData.step === 1"
+            >
+              <div>
+                <div>
+                  <span class="me-1">Clinic:</span>
+                  <span class="caption-content me-2">
+                    {{
+                      cliniclist.filter((c) => c.id === formData.clinic_id)[0]
+                        ?.name
+                    }}
+                  </span>
+                  <span class="me-1">Specialist:</span>
+                  <span class="caption-content me-2">
+                    {{
+                      allSpecialist.filter(
+                        (c) => c.id === formData.specialist_id
+                      )[0].full_name
+                    }}
+                  </span>
+                  <span class="me-1">Time Requirement:</span>
+                  <span class="caption-content me-2">
+                    {{
+                      formData.time_requirement
+                        ? aptTimeRequirelist.filter(
+                            (c) => c.id === formData.time_requirement
+                          )[0].title
+                        : "Any"
+                    }}
+                  </span>
+                  <span class="me-1">Time Frame:</span>
+                  <span class="caption-content me-2">
+                    {{ aptWeeksList[formData.x_weeks] }}
+                  </span>
+                  <span class="me-1">Appointment Type:</span>
+                  <span class="caption-content me-2">
+                    {{ aptData.appointment_type_name }}
+                  </span>
+                </div>
+              </div>
+            </el-form>
           </div>
         </div>
       </div>
@@ -134,6 +189,25 @@
   </div>
 </template>
 
+<style lang="scss">
+#modal_move_apt {
+  .el-divider--horizontal {
+    margin: 0px;
+  }
+  .appointment-type label {
+    display: none;
+  }
+  .select-new-apt-caption {
+    color: red;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  .caption-content {
+    color: #3e7ba0;
+    font-weight: 700;
+  }
+}
+</style>
 <script>
 import {
   defineComponent,
@@ -170,11 +244,16 @@ export default defineComponent({
       appointment_type_id: null,
       clinic_id: null,
       specialist_id: null,
-      time_requirement: null,
-      x_weeks: null,
+      time_requirement: 0,
+      x_weeks: 0,
+    });
+
+    watch(formData.value.x_weeks, () => {
+      console.log(formData.value);
     });
 
     watch(aptData, () => {
+      //formData.value.step = 0;
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST).then(() => {
         formData.value.appointment_type_id = aptData.value.appointment_type?.id;
       });
@@ -192,7 +271,7 @@ export default defineComponent({
     });
 
     const handleSearch = () => {
-      //
+      aptData.value.step = 1;
     };
 
     return {

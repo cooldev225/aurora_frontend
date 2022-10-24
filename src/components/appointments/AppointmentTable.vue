@@ -90,7 +90,7 @@
       </tr>
     </tbody>
   </table>
-  <MoveModal :isDisableAptTypeList="false" />
+  <MoveModal :isDisableAptTypeList="true" />
 </template>
 
 <script lang="ts">
