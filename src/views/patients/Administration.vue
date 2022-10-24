@@ -119,18 +119,14 @@
           />
         </InputWrapper>
 
-        <InputWrapper
-          :class="colString"
-          label="Aboriginal or Torres Strait Islander?"
-          prop="aborginality"
-        >
-          <el-select
-            class="w-100"
-            v-model="formData.aborginality"
-            placeholder="Aborginality"
-          >
-            <el-option :value="0" label="No" />
-            <el-option :value="1" label="Yes" />
+        <InputWrapper :class="colString" label="Race" prop="race">
+          <el-select class="w-100" v-model="formData.race" placeholder="Race">
+            <el-option
+              v-for="item in race"
+              :key="item.value"
+              :value="item.value"
+              :label="item.label"
+            />
           </el-select>
         </InputWrapper>
         <span :class="colString"></span>
@@ -209,6 +205,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import maritalStatus from "@/core/data/marital-status";
 import titles from "@/core/data/titles";
 import genders from "@/core/data/genders";
+import race from "@/core/data/race";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 import { mask } from "vue-the-mask";
@@ -237,7 +234,7 @@ export default defineComponent({
       email: "",
       address: "",
       gender: "",
-      aborginality: "",
+      race: "",
       occupation: "",
       marital_status: "",
       kin_name: "",
@@ -371,6 +368,7 @@ export default defineComponent({
       rules,
       titles,
       genders,
+      race,
       maritalStatus,
       submit,
     };
