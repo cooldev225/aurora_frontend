@@ -536,23 +536,26 @@ export default defineComponent({
 
     watch(date_search, () => {
       visibleDate.value = date_search;
-      updateSpecialistsList();
+      getFilterSpecialists();
+      filterSpecialists();
     });
 
     watch(specialists, () => {
-      updateSpecialistsList();
-      getFilterSpecialists(); // add the filter later
+      getFilterSpecialists();
+      filterSpecialists();
     });
 
-    const updateSpecialistsList = () => {
+    const filterSpecialists = () => {
       specialistsList.value = [];
       specialists.value.map((specialist) => {
+        let i = true;
         specialist.schedule_timeslots.map((slot) => {
           if (
-            slot.week_day ==
+            slot.week_day ===
               moment(date_search.date).format("ddd").toUpperCase() &&
-            !specialistsList.value.includes(specialist)
+            i
           ) {
+            i = false;
             specialistsList.value.push({
               value: specialist.id,
               label: `Dr.${specialist.first_name} ${specialist.last_name}`,
@@ -563,8 +566,13 @@ export default defineComponent({
           }
         });
       });
-      visibleSpecialists.value = specialistsList.value; //This should be filtered!
-      getFilterSpecialists();
+      // check user selected specialist or show all specialist
+      if (!isShowAllSpecialist.value) {
+        specialistsList.value = specialistsList.value.filter((specialist) => {
+          if (specialistsData.value.includes(specialist.id)) return specialist;
+        });
+      }
+      visibleSpecialists.value = specialistsList.value;
     };
     const getBusinessHours = (data) => {
       const weekDays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
@@ -612,13 +620,10 @@ export default defineComponent({
     watch(specialistsData, () => {
       let newArray = [];
       specialistsData.value.forEach(function (data) {
-        if (data.value) {
-          newArray.push(parseInt(data.value));
-        } else {
-          newArray.push(data);
-        }
+        newArray.push(data);
       });
       localStorage.setItem("selectedSpecialist", JSON.stringify(newArray));
+      getFilterSpecialists();
     });
 
     watch(clinicsData, () => {
@@ -642,12 +647,14 @@ export default defineComponent({
         loading.value = true;
         setTimeout(() => {
           loading.value = false;
-          options.value = specialistsList.value.filter((item) => {
+          options.value = specialists.value.filter((item) => {
             return item.label.toLowerCase().includes(query.toLowerCase());
           });
         }, 200);
       } else {
-        options.value = [];
+        options.value = specialists.value.filter((item) => {
+          return item;
+        });
       }
     };
 
@@ -675,22 +682,7 @@ export default defineComponent({
       });
       return isSpecialistSelected;
     };
-    const filterSpecialists = () => {
-      specialists.value.forEach(function (specialist) {
-        if (isShowAllSpecialist.value) {
-          specialist.checked = true;
-        } else {
-          let track = false;
-          specialistsData.value.forEach(function (val) {
-            if (val == specialist.id) {
-              track = true;
-              specialist.checked = true;
-            }
-          });
-          if (!track) specialist.checked = false;
-        }
-      });
-    };
+
     //Getting selected specialists from localstorage
     const getFilterSpecialists = () => {
       let localSpecialistCodes = null;
