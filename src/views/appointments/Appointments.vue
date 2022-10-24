@@ -193,6 +193,7 @@
                       :remote-method="remoteMethodClinic"
                       :loading="loading"
                       :disabled="isShowAllClinics"
+                      @change="filterSpecialists"
                     >
                       <el-option
                         v-for="item in clinicOptions"
@@ -566,10 +567,26 @@ export default defineComponent({
           }
         });
       });
-      // check user selected specialist or show all specialist
+      // check user's selected specialist or show all specialist
       if (!isShowAllSpecialist.value) {
         specialistsList.value = specialistsList.value.filter((specialist) => {
           if (specialistsData.value.includes(specialist.id)) return specialist;
+        });
+      }
+      // Check user's selected clinics or show all clinics
+      if (!isShowAllClinics.value) {
+        const result = [];
+        specialists.value.map((specialist) => {
+          specialist.schedule_timeslots.map((slot) => {
+            clinicsData.value.map((clinic) => {
+              if (clinic == slot.clinic_id && !result.includes(specialist.id)) {
+                result.push(specialist.id);
+              }
+            });
+          });
+        });
+        specialistsList.value = specialistsList.value.filter((specialist) => {
+          if (result.includes(specialist.id)) return specialist;
         });
       }
       visibleSpecialists.value = specialistsList.value;
@@ -638,7 +655,7 @@ export default defineComponent({
       localStorage.setItem("selectedClinics", JSON.stringify(newArray));
     });
 
-    watch(isShowAllSpecialist, () => {
+    watch([isShowAllSpecialist, isShowAllClinics], () => {
       filterSpecialists();
     });
 
