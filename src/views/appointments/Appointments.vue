@@ -545,12 +545,26 @@ export default defineComponent({
           label: `Dr.${specialist.first_name} ${specialist.last_name}`,
           id: specialist.id,
           title: `Dr.${specialist.first_name} ${specialist.last_name}`,
+          businessHours: getBusinessHours(specialist.schedule_timeslots),
         };
       });
       visibleSpecialists.value = specialistsList.value; //This should be filtered!
       getFilterSpecialists();
     });
-
+    const getBusinessHours = (data) => {
+      const weekDays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+      let businessHours = [];
+      data.forEach((slot) => {
+        let daysOfWork = [];
+        daysOfWork.push(weekDays.indexOf(slot.week_day) + 1);
+        businessHours.push({
+          startTime: slot.start_time,
+          endTime: slot.end_time,
+          daysOfWeek: daysOfWork,
+        });
+      });
+      return businessHours;
+    };
     watch(clinic_list, () => {
       getSelectedClinics();
     });
