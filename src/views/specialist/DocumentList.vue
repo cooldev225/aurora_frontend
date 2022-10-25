@@ -50,7 +50,39 @@
             </el-option>
           </template>
         </el-select>
-
+        <!-- SPECIALIST FILTER SELECT-->
+        <el-select
+          v-if="specialists"
+          class="filter-appointment w-100 pb-6"
+          placeholder="Select Specialist"
+          v-model="specialistFilter"
+        >
+          <el-option value="ALL" label="ALL SPECIALISTS">
+            ALL Specialists
+          </el-option>
+          <template v-for="specialist in specialists" :key="specialist.id">
+            <el-option
+              :value="specialist.id"
+              :label="specialist.first_name + ' ' + specialist.last_name"
+            >
+            </el-option>
+          </template>
+        </el-select>
+        <div class="pb-5">
+          <el-switch
+            v-model="showUrgentOnly"
+            size="large"
+            active-text="Show Urgent Only"
+            inactive-text=""
+          />
+          <el-switch
+            class="mx-4"
+            v-model="showUnReadOnly"
+            size="large"
+            active-text="Show UnRead Only"
+            inactive-text=""
+          />
+        </div>
         <div
           v-if="documentList?.length === 0"
           class="d-flex justify-content-center align-items-center fs-3"
@@ -231,31 +263,64 @@ export default defineComponent({
       () => store.getters.getSelectedDocument
     );
     const userRole = computed(() => store.getters.userRole);
+    const specialists = computed(() => store.getters.getSpecialistList);
+
     const filteredDocuments = ref();
     const documentTypeFilter = ref("ALL");
     const appointmentFilter = ref("ALL");
+    const specialistFilter = ref("ALL");
+
     const tempFile = ref();
     var selectedDocument = ref(null);
     var selectedDocumentId = ref(null);
     const showDocumentDetail = ref(true);
+
+    var showUrgentOnly = ref(false);
+    var showUnReadOnly = ref(false);
+
     // Filters the documents by appointment and document type.
-    watch([documentTypeFilter, appointmentFilter, documents], () => {
-      document.getElementById("document-view").innerHTML = "";
+    watch(
+      [
+        documentTypeFilter,
+        appointmentFilter,
+        specialistFilter,
+        showUrgentOnly,
+        showUnReadOnly,
+        documents,
+      ],
+      () => {
+        document.getElementById("document-view").innerHTML = "";
 
-      let temp = documents.value;
-      if (documentTypeFilter.value !== "ALL") {
-        temp = documents.value.filter(
-          (item) => item.document_type === documentTypeFilter.value
-        );
-      }
+        let temp = documents.value;
+        if (documentTypeFilter.value !== "ALL") {
+          temp = documents.value.filter(
+            (item) => item.document_type === documentTypeFilter.value
+          );
+        }
 
-      if (appointmentFilter.value !== "ALL") {
-        temp = temp?.filter(
-          (item) => item.appointment_id === appointmentFilter.value
-        );
+        if (appointmentFilter.value !== "ALL") {
+          temp = temp?.filter(
+            (item) => item.appointment_id === appointmentFilter.value
+          );
+        }
+
+        if (specialistFilter.value !== "ALL") {
+          temp = temp?.filter(
+            (item) => item.specialist_id === specialistFilter.value
+          );
+        }
+
+        if (showUrgentOnly.value) {
+          temp = temp?.filter((item) => item.is_urgent === 1);
+        }
+
+        if (showUnReadOnly.value) {
+          temp = temp?.filter((item) => item.is_read === 0);
+        }
+
+        filteredDocuments.value = temp;
       }
-      filteredDocuments.value = temp;
-    });
+    );
 
     const setSelectedDocument = () => {
       const temp = documents.value.filter(
@@ -525,6 +590,12 @@ export default defineComponent({
       });
     };
 
+    watchEffect(() => {
+      if (specialists.value.length === 0) {
+        store.dispatch(Actions.SPECIALIST.LIST);
+      }
+    });
+
     return {
       patientDocumentTypes,
       DocumentLabel,
@@ -546,6 +617,11 @@ export default defineComponent({
       handleMarkRead,
       handleMarkUrgent,
       handleMarkCorrect,
+
+      showUrgentOnly,
+      showUnReadOnly,
+      specialists,
+      specialistFilter,
     };
   },
 });

@@ -41,8 +41,7 @@ export default {
   props: {
     document: { required: true, type: Object },
   },
-  setup: (props) => {
-    console.log("document", props.document.is_urgent);
+  setup: () => {
     return { patientDocumentTypes, moment };
   },
 };
