@@ -39,6 +39,7 @@ import {
   AppointmentMutations,
 } from "@/store/enums/StoreAppointmentEnums";
 import AppointmentTableData from "./partials/AppointmentTableData.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   components: {
@@ -58,6 +59,7 @@ export default defineComponent({
     const appointmentCalendarRef = ref(null); //this.$refs.refAppointmentCalendar.getApi();
     const appointmentsRaw = computed(() => store.getters.getAptList);
     const appointments = ref([]);
+    const allSpecialists = computed(() => store.getters.getSpecialistList);
 
     watch(props, () => {
       let date = moment(props.visibleDate.date).format("YYYY-MM-DD");
@@ -115,12 +117,16 @@ export default defineComponent({
     watch(appointmentsRaw, () => {
       appointments.value = [];
       appointmentsRaw.value.forEach((appointment) => {
-        appointments.value.push({
-          id: appointment.id,
-          resourceId: appointment.specialist_id,
-          start: appointment.date + "T" + appointment.start_time,
-          end: appointment.date + "T" + appointment.end_time,
-          appointment: appointment,
+        props.visibleSpecialists.map((specialist) => {
+          if (specialist.id === appointment.specialist.id) {
+            appointments.value.push({
+              id: appointment.id,
+              resourceId: appointment.specialist_id,
+              start: appointment.date + "T" + appointment.start_time,
+              end: appointment.date + "T" + appointment.end_time,
+              appointment: appointment,
+            });
+          }
         });
       });
     });
@@ -136,6 +142,7 @@ export default defineComponent({
     });
 
     const handleShowAppointmentDrawer = (info) => {
+      console.log(info);
       info.jsEvent.preventDefault();
       let appointment = info.event.extendedProps.appointment;
       store.commit(AppointmentMutations.SET_APT.SELECT, appointment);
@@ -143,24 +150,37 @@ export default defineComponent({
     };
 
     const handleCreateAppointment = (info) => {
-      console.log(info);
-      /*
-      let timeSlot = getTimeSlot();
-      const date = moment(_apt_date.value).format("YYYY-MM-DD").toString();
+      console.log("create trigger");
+      const date = moment(info.date).format("YYYY-MM-DD").toString();
+      const time = moment(info.date).format("HH:MM").toString();
+      const weekDay = moment(info.date).format("ddd").toUpperCase();
+      // filter correct specialist base on info
+      const specialists = allSpecialists.value.filter((specialist) => {
+        if (specialist.id == info.resource.id) return specialist;
+      });
+      const selectedSpecialist = specialists[0];
+      let restriction = null;
+      selectedSpecialist.schedule_timeslots =
+        selectedSpecialist.schedule_timeslots.filter((slot) => {
+          //make this more accurate filter this by clinic ID as well
+          if (slot.week_day == weekDay) {
+            restriction = slot.restriction;
+            return slot;
+          }
+        });
       const item = {
-        time_slot: [date + "T" + props.startTime],
+        time_slot: [date + "T" + time],
         date: date,
-        selected_specialist: props.specialist,
-        restriction: timeSlot.restriction,
+        selected_specialist: selectedSpecialist,
+        restriction: restriction,
       };
       store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
       store.commit(
         AppointmentMutations.SET_APT.SELECT_SPECIALIST,
-        props.specialist
+        specialists[0]
       );
-
       const modal = new Modal(document.getElementById("modal_create_apt"));
-      modal.show();*/
+      modal.show();
     };
 
     //Check specialist clinic is selected one in filter or not

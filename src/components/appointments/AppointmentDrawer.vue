@@ -104,13 +104,16 @@
               }}</span></label
             >
             <el-divider v-if="displayData.allergies" />
-            <div v-if="displayData.allergies">
+            <div>
               <label class="fs-5 text-danger"
                 >Allergies:
-                <span class="text-black fs-5">{{
-                  displayData.allergies
-                }}</span></label
-              >
+                <template
+                  v-for="allergie in displayData.allergies"
+                  :key="allergie.id"
+                >
+                  <span class="text-black fs-5">{{ allergie.name + " " }}</span>
+                </template>
+              </label>
             </div>
             <el-divider />
           </div>

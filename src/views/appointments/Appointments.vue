@@ -382,7 +382,7 @@ export default defineComponent({
     // The specialist that will be show in calender
     const visibleSpecialists = ref();
 
-    const isShowAllSpecialist = ref(false);
+    const isShowAllSpecialist = ref(true);
     const toggleLayout = ref(false);
 
     const validateAppointmentTypeId = (rule, value, callback) => {
@@ -444,7 +444,7 @@ export default defineComponent({
     const options = ref([]);
     const specialistsData = ref([]);
     const loading = ref(false);
-    const isShowAllClinics = ref(false);
+    const isShowAllClinics = ref(true);
     const clinicOptions = ref([]);
     const clinicsData = ref([]);
 
@@ -579,7 +579,12 @@ export default defineComponent({
         specialists.value.map((specialist) => {
           specialist.schedule_timeslots.map((slot) => {
             clinicsData.value.map((clinic) => {
-              if (clinic == slot.clinic_id && !result.includes(specialist.id)) {
+              if (
+                clinic == slot.clinic_id &&
+                !result.includes(specialist.id) &&
+                slot.week_day ==
+                  moment(date_search.date).format("ddd").toUpperCase()
+              ) {
                 result.push(specialist.id);
               }
             });

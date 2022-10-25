@@ -1154,7 +1154,7 @@ export default defineComponent({
     modalId: { type: String, required: true },
   },
 
-  name: "create-apt-modal",
+  name: "Apt-Modal",
   directives: {
     mask,
   },
@@ -1469,12 +1469,19 @@ export default defineComponent({
         for (let key in aptInfoData.value)
           aptInfoData.value[key] = aptData.value[key];
         cur_appointment_type_id.value = aptData.value.appointment_type_id;
+        cur_specialist.value = aptData.value.specialist;
+        console.log("apt info data");
+        console.log(aptData.value.specialist);
         for (let key in patientInfoData.value)
           patientInfoData.value[key] = aptData.value.patient[key];
-        for (let key in billingInfoData.value)
-          billingInfoData.value[key] = aptData.value.patient.billing[0][key];
-        for (let key in otherInfoData.value)
-          otherInfoData.value[key] = aptData.value[key];
+
+        // console.log(patientInfoData.value);
+
+        //for (let key in billingInfoData.value)
+        // billingInfoData.value[key] = aptData.value.patient.billing[0][key];
+        // for (let key in otherInfoData.value)
+        // otherInfoData.value[key] = aptData.value[key];
+        // for (let key in patientInfoData.value)
         aptInfoData.value.clinic_id = aptData.value.clinic_id;
         aptInfoData.value.clinic_name = aptData.value.clinic.name;
         specialist_name.value = aptData.value.specialist.full_name;
@@ -1488,37 +1495,37 @@ export default defineComponent({
     });
 
     watch(cur_appointment_type_id, () => {
-      aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
-      const _selected = aptTypeList.value.filter(
-        (aptType) => aptType.id === cur_appointment_type_id.value
-      )[0];
-
-      if (typeof _selected === "undefined") {
-        appointment_name.value = "";
-        _appointment_time.value = Number(appointment_time.value);
-        arrival_time.value = 30;
-
-        aptInfoData.value.clinical_code = "";
-        aptInfoData.value.mbs_code = "";
-        apt_type.value = "";
-      } else {
-        appointment_name.value = _selected.name;
-        appointmentType.value = _selected.type;
-        _appointment_time.value = Number(
-          appointment_length[_selected.appointment_time] *
-            appointment_time.value
-        );
-        arrival_time.value = Number(_selected.arrival_time);
-        aptInfoData.value.clinical_code = _selected.clinical_code;
-        aptInfoData.value.mbs_code = _selected.mbs_code;
-        apt_type.value = _selected.type;
-      }
-
-      end_time.value = moment(start_time.value, "HH:mm")
-        .add(_appointment_time.value, "minutes")
-        .format("HH:mm")
-        .toString();
       if (props.modalId == "modal_create_apt") {
+        aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
+        const _selected = aptTypeList.value.filter(
+          (aptType) => aptType.id === cur_appointment_type_id.value
+        )[0];
+
+        if (typeof _selected === "undefined") {
+          appointment_name.value = "";
+          _appointment_time.value = Number(appointment_time.value);
+          arrival_time.value = 30;
+
+          aptInfoData.value.clinical_code = "";
+          aptInfoData.value.mbs_code = "";
+          apt_type.value = "";
+        } else {
+          appointment_name.value = _selected.name;
+          appointmentType.value = _selected.type;
+          _appointment_time.value = Number(
+            appointment_length[_selected.appointment_time] *
+              appointment_time.value
+          );
+          arrival_time.value = Number(_selected.arrival_time);
+          aptInfoData.value.clinical_code = _selected.clinical_code;
+          aptInfoData.value.mbs_code = _selected.mbs_code;
+          apt_type.value = _selected.type;
+        }
+
+        end_time.value = moment(start_time.value, "HH:mm")
+          .add(_appointment_time.value, "minutes")
+          .format("HH:mm")
+          .toString();
         updateAptTime(start_time.value, end_time.value);
         aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
           .subtract(arrival_time.value, "minutes")
@@ -1555,22 +1562,23 @@ export default defineComponent({
     });
 
     // Make sure this watch runs only edit
-    watch(cur_specialist_id, () => {
-      aptInfoData.value.specialist_id = cur_specialist_id.value;
-      const _selected = ava_specialist.value.filter(
-        (item) => item.id === cur_specialist_id.value
-      )[0];
-      specialist_name.value = _selected.name;
-      anesthetist.value = _selected.anesthetist;
-      aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
-    });
+    // watch(cur_specialist_id, () => {
+    //   // aptInfoData.value.specialist_id = cur_specialist_id.value;
+    //   const specialist = store.getters.getSelectedSpecialist;
+    //   const _selected = specialist.filter(
+    //     (item) => item.id === cur_specialist_id.value
+    //   )[0];
+    //   specialist_name.value = _selected.name;
+    //   anesthetist.value = _selected.anesthetist;
+    //   aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
+    // });
 
-    watch(cur_specialist, () => {
-      aptInfoData.value.specialist_id = cur_specialist.value.id;
-      specialist_name.value = cur_specialist.value.full_name;
-      //anesthetist.value = _selected.anesthetist;
-      //aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
-    });
+    // watch(cur_specialist, () => {
+    //   aptInfoData.value.specialist_id = cur_specialist.value.id;
+    //   specialist_name.value = cur_specialist.value.full_name;
+    //   //anesthetist.value = _selected.anesthetist;
+    //   //aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
+    // });
 
     watch(start_time, () => {
       aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
@@ -1910,7 +1918,9 @@ export default defineComponent({
         })
         .then(() => {
           loading.value = false;
-          store.dispatch(AppointmentActions.LIST);
+          store.dispatch(AppointmentActions.LIST, {
+            date: bookingData.value.date,
+          });
           handleCancel();
           Swal.fire({
             text: "Successfully Created!",
@@ -1950,6 +1960,7 @@ export default defineComponent({
     };
 
     const updateApt = () => {
+      console.log("updateAPt");
       store
         .dispatch(Actions.APT.UPDATE, {
           id: aptData.value.id,
@@ -2144,7 +2155,6 @@ export default defineComponent({
       editAptModalRef,
       handleSave,
       aptTypeList,
-      cur_specialist_id,
       title,
       refName,
       matchExistPatientHandle,
