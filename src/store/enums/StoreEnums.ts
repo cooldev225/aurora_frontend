@@ -179,6 +179,10 @@ const Actions = {
     UPDATE: "updateHeaderFooterTemplate",
     DELETE: "deleteHeaderFooterTemplate",
   },
+
+  MBS: {
+    LIST: "listMbsItems",
+  },
 };
 
 const Mutations = {
@@ -303,6 +307,10 @@ const Mutations = {
   SET_HEADER_FOOTER_TEMPLATE: {
     LIST: "setHeaderFootersTemplate",
     SELECT: "setHeaderFooterTemplateSelect",
+  },
+
+  SET_MBS: {
+    LIST: "setMbsItems",
   },
 };
 
