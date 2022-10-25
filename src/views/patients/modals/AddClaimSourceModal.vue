@@ -395,7 +395,8 @@ export default defineComponent({
     };
 
     const addNewClaimSource = () => {
-      const claimSource = JSON.parse(JSON.stringify(formData));
+      const data = JSON.parse(JSON.stringify(formData));
+      const claimSource = data._value;
       claimSource.has_medicare_concession = concessionValidated.value;
 
       if (shouldEmit.value) {
@@ -403,6 +404,7 @@ export default defineComponent({
         closeModal();
       } else {
         loading.value = true;
+        claimSource.patient_id = patient.value.id;
         store
           .dispatch(PatientActions.CLAIM_SOURCE.ADD, claimSource)
           .then(() => {

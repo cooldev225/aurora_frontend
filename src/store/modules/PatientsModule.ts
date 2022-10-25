@@ -244,11 +244,12 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.CLAIM_SOURCE.ADD](data) {
+  [PatientActions.CLAIM_SOURCE.ADD](source) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.put("patients/billing", data)
+      ApiService.put("patients/billing", source)
         .then(({ data }) => {
+          this.context.dispatch(PatientActions.VIEW, source.patient_id);
           return data;
         })
         .catch(({ response }) => {
@@ -261,11 +262,12 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.CLAIM_SOURCE.UPDATE](data) {
+  [PatientActions.CLAIM_SOURCE.UPDATE](source) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("patients/billing", data.id, data)
+      ApiService.update("patients/billing", source.id, source)
         .then(({ data }) => {
+          this.context.dispatch(PatientActions.VIEW, source.patient_id);
           return data;
         })
         .catch(({ response }) => {
