@@ -313,21 +313,21 @@ export default defineComponent({
     };
 
     const validateSource = () => {
-      // if (minorId.value.minorId == null) {
-      //   Swal.fire({
-      //     text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
-      //     icon: "error",
-      //     buttonsStyling: true,
-      //     confirmButtonText: "Okay",
-      //     customClass: {
-      //       confirmButton: "btn btn-primary",
-      //     },
-      //   }).then(() => {
-      //     loading.value = false;
-      //     closeModal();
-      //     return;
-      //   });
-      // }
+      if (minorId.value.minorId == null) {
+        Swal.fire({
+          text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
+          icon: "error",
+          buttonsStyling: true,
+          confirmButtonText: "Okay",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+        }).then(() => {
+          loading.value = false;
+          closeModal();
+          return;
+        });
+      }
 
       if (!addClaimSourceFormRef.value) {
         return;
@@ -340,8 +340,7 @@ export default defineComponent({
             last_name: patient.value.last_name,
             date_of_birth: patient.value.date_of_birth,
             sex: patient.value.gender ?? 9, // If provided, use gender. Otherwise, use "unspecified" value: 9
-            // minor_id: minorId.value.minorId,
-            minor_id: "AUA00000",
+            minor_id: minorId.value.minorId,
           };
           let endpoint;
 
@@ -361,8 +360,7 @@ export default defineComponent({
               validationData.fund_member_number = formData.value.member_number;
               validationData.fund_reference_number =
                 formData.value.member_reference_number;
-              // validationData.fund_organisation_code = healthFund?.code;
-              validationData.fund_organisation_code = "TST";
+              validationData.fund_organisation_code = healthFund?.code;
               endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND;
               break;
             }
