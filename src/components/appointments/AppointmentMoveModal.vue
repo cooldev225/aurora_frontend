@@ -9,7 +9,7 @@
     <div
       :class="
         'modal-dialog modal-dialog-centered ' +
-        (aptData.step === 0 ? 'mw-500px' : 'mw-650px')
+        (aptData.step === 0 ? 'mw-500px' : 'mw-800px')
       "
     >
       <div class="modal-content">
@@ -24,9 +24,9 @@
               </span>
             </div>
           </div>
-          <div class="select-new-apt-caption" v-if="aptData.step === 1">
+          <h2 class="select-new-apt-caption" v-if="aptData.step === 1">
             Select New Appointment Time
-          </div>
+          </h2>
           <div
             id="kt_modal_add_customer_close"
             data-bs-dismiss="modal"
@@ -94,7 +94,7 @@
                     <el-option
                       v-for="specialist in allSpecialist"
                       :value="specialist.id"
-                      :label="specialist.full_name"
+                      :label="specialist?.full_name"
                       :key="specialist.id"
                     />
                   </el-select>
@@ -144,7 +144,7 @@
               ref="timeslotsformRef"
               v-if="aptData.step === 1"
             >
-              <div>
+              <div class="apt-description">
                 <span class="me-1">Clinic:</span>
                 <span class="caption-content me-2">
                   {{
@@ -179,9 +179,7 @@
                   {{ aptData.appointment_type_name }}
                 </span>
               </div>
-              <WeeklyTimeSlotsTable
-                :weeks="formData.x_weeks"
-              ></WeeklyTimeSlotsTable>
+              <WeeklyTimeSlotsTable :search="formData"></WeeklyTimeSlotsTable>
             </el-form>
           </div>
         </div>
@@ -202,6 +200,11 @@
     color: red;
     text-transform: uppercase;
     font-weight: bold;
+  }
+  .apt-description {
+    font-size: 16px;
+    padding-left: 25px;
+    padding-right: 25px;
   }
   .caption-content {
     color: #3e7ba0;
@@ -250,6 +253,7 @@ export default defineComponent({
       specialist_id: null,
       time_requirement: 0,
       x_weeks: "0",
+      date: null,
     });
 
     watch(formData.value.x_weeks, () => {
