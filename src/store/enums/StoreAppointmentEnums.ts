@@ -67,7 +67,6 @@ const AppointmentMutations = {
     LIST: "setApt",
     LISTBYID: "setAptById",
     SELECT: "setSelectApt",
-    OTHER_SELECT: "setOtherSelectApt",
     SELECT_SPECIALIST: "setSelectedSpecialist",
     TYPES: {
       LIST: "setAptType",

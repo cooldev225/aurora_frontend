@@ -18,7 +18,6 @@ export interface IApt {
 export interface AptInfo {
   aptData: Array<IApt>;
   aptSelectData: IApt;
-  aptOtherSelectData: IApt;
   aptPreAdmissionOrgData: IApt;
   aptPreAdmissionValidateData: IApt;
   aptPreAdmissionValidateMsg: string;
@@ -31,7 +30,6 @@ export interface AptInfo {
 export default class AppointmentModule extends VuexModule implements AptInfo {
   aptData = [] as Array<IApt>;
   aptSelectData = {} as IApt;
-  aptOtherSelectData = {} as IApt;
   aptPreAdmissionOrgData = {} as IApt;
   aptPreAdmissionValidateData = {} as IApt;
   aptPreAdmissionValidateMsg = "" as string;
@@ -52,14 +50,6 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
    */
   get getAptSelected(): IApt {
     return this.aptSelectData;
-  }
-
-  /**
-   * Get current user object
-   * @returns SelectedaptData
-   */
-  get getOtherAptSelected(): IApt {
-    return this.aptOtherSelectData;
   }
 
   /**
@@ -118,11 +108,6 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   @Mutation
   [AppointmentMutations.SET_APT.SELECT](data) {
     this.aptSelectData = data;
-  }
-
-  @Mutation
-  [AppointmentMutations.SET_APT.OTHER_SELECT](data) {
-    this.aptOtherSelectData = data;
   }
 
   @Mutation

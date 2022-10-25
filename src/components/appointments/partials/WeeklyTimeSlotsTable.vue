@@ -126,6 +126,8 @@ export default defineComponent({
   components: {},
   props: {
     search: { type: Object, required: true },
+    aptData: { type: Object, required: true },
+    allSpecialists: { type: Object, required: true },
   },
   setup(props) {
     const store = useStore();
@@ -172,9 +174,9 @@ export default defineComponent({
       tableData.value.header = header;
 
       console.log(search_params.value);
-      search_params.value.date = "12/10/2022"; //moment(tableData.value.cur_date).format(
-      //     "DD/MM/YYYY"
-      //   );
+      search_params.value.date = moment(tableData.value.cur_date).format(
+        "DD/MM/YYYY"
+      );
       await store
         .dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
           ...search_params.value,
@@ -195,9 +197,61 @@ export default defineComponent({
     };
 
     const handleAddApt = (specialist_ids, date, startTime) => {
-      let apt = {
-        //
+      let apt = { ...props.aptData };
+
+      const _date = moment(date).format("YYYY-MM-DD").toString();
+      let available_specialists = [];
+      for (let specialist of props.allSpecialists) {
+        if (Object.values(specialist_ids).includes(specialist.id)) {
+          let temp_specialist = Object.assign({}, specialist);
+
+          temp_specialist.anesthetist = {
+            id: temp_specialist.anesthetist_id,
+            name: temp_specialist.anesthetist_name,
+          };
+
+          let dayOfWeek = moment(date).format("dddd").toString();
+
+          dayOfWeek = dayOfWeek.toLowerCase();
+
+          const work_hours = JSON.parse(temp_specialist.work_hours);
+
+          temp_specialist.work_hours = work_hours[dayOfWeek];
+
+          available_specialists.push(temp_specialist);
+        }
+      }
+      const selected_specialist = props.allSpecialists.find(
+        ({ id }) => id == specialist_ids
+      );
+      let $restriction;
+      selected_specialist.schedule_timeslots.forEach(function (slot) {
+        let $weekDay = moment(date).format("ddd").toString().toUpperCase();
+        if (slot.week_day == $weekDay) $restriction = slot.restriction;
+      });
+
+      const diff =
+        moment(apt.date + "T" + apt.end_time).unix() -
+        moment(apt.date + "T" + apt.start_time).unix();
+
+      const endTime = moment(_date + "T" + startTime)
+        .add(diff, "seconds")
+        .format("HH:mm");
+      const item = {
+        time_slot: [_date + "T" + startTime, _date + "T" + endTime],
+        date: _date,
+        ava_specialist: available_specialists,
+        selected_specialist: selected_specialist,
+        restriction: $restriction,
+        appointment_type: {
+          id: props.search.appointment_type_id,
+          name: apt.appointment_type_name,
+        },
       };
+      store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
+
+      console.log(["apt", apt, item]);
+      apt.step = 2;
       store.commit(AppointmentMutations.SET_APT.SELECT, apt);
     };
 

@@ -18,7 +18,7 @@ export const icons = {
   save: "media/icons/duotune/files/fil013.svg", // Save
   left: "media/icons/duotune/arrows/arr022.svg", // Left
   right: "media/icons/duotune/arrows/arr023.svg", // Right
-
+  next: "media/icons/duotune/arrows/arr064.svg", // Next
 };
 
 export default icons;

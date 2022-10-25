@@ -179,7 +179,85 @@
                   {{ aptData.appointment_type_name }}
                 </span>
               </div>
-              <WeeklyTimeSlotsTable :search="formData"></WeeklyTimeSlotsTable>
+              <WeeklyTimeSlotsTable
+                :search="formData"
+                :aptData="aptData"
+                :allSpecialists="allSpecialist"
+              ></WeeklyTimeSlotsTable>
+            </el-form>
+            <el-form
+              :model="formData"
+              ref="confirmformRef"
+              v-if="aptData.step === 2"
+              v-loading="loading"
+            >
+              <div class="">
+                <h3>Please confirm:</h3>
+              </div>
+              <div class="d-flex mt-5 mb-5">
+                <div class="apt-card d-flex flex-column gap-3">
+                  <InfoSection :heading="'Patient'"
+                    >{{ aptData.patient_name?.full }} ({{
+                      aptData.patient_details?.contact_number
+                    }})
+                  </InfoSection>
+                  <InfoSection :heading="'Clinic'">{{
+                    aptData.clinic_details?.name
+                  }}</InfoSection>
+
+                  <InfoSection :heading="'Date'">
+                    {{ aptData.aus_formatted_date }}
+                  </InfoSection>
+
+                  <InfoSection :heading="'Time'">
+                    {{ aptData.formatted_appointment_time }}
+                  </InfoSection>
+
+                  <InfoSection :heading="'Type'">{{
+                    aptData.appointment_type?.name
+                  }}</InfoSection>
+
+                  <InfoSection :heading="'Specialist'">{{
+                    aptData.specialist_name
+                  }}</InfoSection>
+                </div>
+                <div class="d-flex align-items-center me-2 ms-2">
+                  <InlineSVG icon="next" />
+                </div>
+                <div class="apt-card d-flex flex-column gap-3">
+                  <InfoSection :heading="'Patient'"
+                    >{{ aptData.patient_name?.full }} ({{
+                      aptData.patient_details?.contact_number
+                    }})
+                  </InfoSection>
+                  <InfoSection :heading="'Clinic'">{{
+                    aptData.clinic_details?.name
+                  }}</InfoSection>
+
+                  <InfoSection :heading="'Date'">
+                    {{ moment(bookingData.date).format("DD/MM/YYYY") }}
+                  </InfoSection>
+
+                  <InfoSection :heading="'Time'">
+                    {{ moment(bookingData.time_slot[0]).format("HH:mm") }}-
+                    {{ moment(bookingData.time_slot[1]).format("HH:mm") }}
+                  </InfoSection>
+
+                  <InfoSection :heading="'Type'">{{
+                    aptData.appointment_type?.name
+                  }}</InfoSection>
+
+                  <InfoSection :heading="'Specialist'">{{
+                    aptData.specialist_name
+                  }}</InfoSection>
+                </div>
+              </div>
+              <button
+                class="btn btn-primary mt-3 w-100"
+                @click.prevent="handleConfirm"
+              >
+                MOVE APPOINTMENT
+              </button>
             </el-form>
           </div>
         </div>
@@ -210,6 +288,13 @@
     color: #3e7ba0;
     font-weight: 700;
   }
+  .apt-card {
+    border-style: solid;
+    border-radius: 10px;
+    padding: 20px;
+    border-color: #3e7ba0;
+    border-width: 2px;
+  }
 }
 </style>
 <script>
@@ -224,9 +309,15 @@ import {
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
-import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import aptWeeksList from "@/core/data/apt-weeks";
 import WeeklyTimeSlotsTable from "@/components/appointments/partials/WeeklyTimeSlotsTable";
+import {
+  AppointmentMutations,
+  AppointmentActions,
+} from "@/store/enums/StoreAppointmentEnums";
+import moment from "moment";
+import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
+import chargeTypes from "@/core/data/charge-types";
 
 export default defineComponent({
   name: "move-apt-modal",
@@ -238,7 +329,7 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const formRef = ref(null);
+    const MoveAptModalRef = ref(null);
     const loading = ref(false);
     const aptData = computed(() => store.getters.getAptSelected);
     const aptTypelist = computed(() => store.getters.getAptTypesList);
@@ -247,6 +338,7 @@ export default defineComponent({
     const aptTimeRequirelist = computed(
       () => store.getters.getAptTimeRequireList
     );
+    const bookingData = computed(() => store.getters.bookingDatas);
     const formData = ref({
       appointment_type_id: null,
       clinic_id: null,
@@ -254,6 +346,49 @@ export default defineComponent({
       time_requirement: 0,
       x_weeks: "0",
       date: null,
+    });
+    const aptInfoData = ref({
+      clinic_name: "",
+      clinic_id: "",
+      send_forms: true,
+      date: "",
+      arrival_time: "",
+      time_slot: ["2022-06-20T09:00", "2022-06-20T17:00"],
+      appointment_type_id: "",
+      specialist_id: "",
+      room_id: "",
+      note: "",
+      patient_id: null,
+      start_time: null,
+    });
+    const patientInfoData = ref({
+      first_name: "",
+      last_name: "",
+      date_of_birth: "",
+      email: "",
+      address: "",
+      contact_number: "",
+      appointment_confirm_method: "",
+      allergies: "",
+      clinical_alerts: "",
+    });
+
+    const billingInfoData = ref({
+      charge_type: chargeTypes[0].value,
+      claim_sources: [],
+      procedure_price: "",
+      add_other_account_holder: false,
+    });
+
+    const otherInfoData = ref({
+      anesthetic_questions: false,
+      anesthetic_answers: [],
+      referring_doctor_name: "",
+      referring_doctor_id: "",
+      referral_duration: "",
+      referral_date: "",
+      no_referral: false,
+      no_referral_reason: "",
     });
 
     watch(formData.value.x_weeks, () => {
@@ -280,6 +415,61 @@ export default defineComponent({
 
     const handleSearch = () => {
       aptData.value.step = 1;
+      //store.commit(AppointmentMutations.SET_APT.OTHER_SELECT, aptData.value);
+    };
+
+    const handleConfirm = () => {
+      loading.value = true;
+
+      for (let key in aptInfoData.value)
+        aptInfoData.value[key] = aptData.value[key];
+      for (let key in patientInfoData.value)
+        patientInfoData.value[key] = aptData.value.patient[key];
+      for (let key in billingInfoData.value)
+        if (aptData.value.patient.billing.length)
+          billingInfoData.value[key] = aptData.value.patient.billing[0][key];
+      for (let key in otherInfoData.value)
+        otherInfoData.value[key] = aptData.value[key];
+      aptInfoData.value.date = moment(bookingData.value.date)
+        .format("DD-MM-YYYY")
+        .toString();
+      aptInfoData.value.time_slot = bookingData.value.time_slot;
+      const _selected = aptTypelist.value.filter(
+        (aptType) => aptType.id === aptData.value.appointment_type_id
+      )[0];
+      let arrival_time = 30;
+      if (typeof _selected !== "undefined") {
+        arrival_time = Number(_selected.arrival_time);
+      }
+      aptInfoData.value.arrival_time = moment(
+        bookingData.value.time_slot[0],
+        "HH:mm"
+      )
+        .subtract(arrival_time, "minutes")
+        .format("HH:mm")
+        .toString();
+      aptInfoData.value.start_time = moment(
+        bookingData.value.time_slot[0]
+      ).format("HH:mm");
+      store
+        .dispatch(AppointmentActions.APT.UPDATE, {
+          id: aptData.value.id,
+          ...aptInfoData.value,
+          ...patientInfoData.value,
+          ...billingInfoData.value,
+          ...otherInfoData.value,
+        })
+        .then(() => {
+          loading.value = false;
+          store.dispatch(AppointmentActions.LIST).then(() => {
+            hideModal(MoveAptModalRef.value);
+            DrawerComponent?.getInstance("appointment-drawer")?.toggle();
+          });
+        })
+        .catch(({ response }) => {
+          loading.value = false;
+          console.log(response.data.errors);
+        });
     };
 
     return {
@@ -291,9 +481,12 @@ export default defineComponent({
       aptTimeRequirelist,
       aptWeeksList,
       formData,
-      formRef,
+      MoveAptModalRef,
       loading,
       handleSearch,
+      handleConfirm,
+      bookingData,
+      moment,
     };
   },
 });
