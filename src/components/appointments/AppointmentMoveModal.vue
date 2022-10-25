@@ -461,8 +461,12 @@ export default defineComponent({
         })
         .then(() => {
           loading.value = false;
-          store.dispatch(AppointmentActions.LIST).then(() => {
+          store.dispatch(AppointmentActions.LIST).then((data) => {
             hideModal(MoveAptModalRef.value);
+            console.log(["updaed list", data]);
+            let updatedApt = data.filter((a) => a.id == aptData.value.id);
+            if (updatedApt.length)
+              store.commit(AppointmentMutations.SET_APT.SELECT, updatedApt[0]);
             DrawerComponent?.getInstance("appointment-drawer")?.toggle();
           });
         })
