@@ -33,7 +33,7 @@
             prop="header_footer_templates"
           >
             <el-select
-              class="col-9"
+              class="col-12"
               v-model="formData.headerFooter"
               placeholder="Select Header/Footer Template"
               props="header_footer_templates_select"
@@ -53,25 +53,93 @@
             label="Procedures Undertaken"
             prop="procedures_undertaken"
           >
+            <div
+              class="d-flex flex-column flex-md-row align-items-center w-100 gap-3"
+            >
+              <div
+                class="d-flex flex-column flex-md-row gap-3 flex-grow-1 w-100"
+              >
+                <el-input
+                  class="w-100 w-md-50"
+                  type="text"
+                  v-model="proceduresUndertakenSearch.item_number"
+                  placeholder="Search by MBS item number"
+                  :disabled="proceduresLoading"
+                />
+
+                <el-input
+                  class="w-100 w-md-50"
+                  type="text"
+                  v-model="proceduresUndertakenSearch.description"
+                  placeholder="Search by MBS description"
+                  :disabled="proceduresLoading"
+                />
+              </div>
+
+              <button
+                :data-kt-indicator="proceduresLoading ? 'on' : null"
+                class="btn btn-lg btn-primary text-nowrap"
+                :disabled="
+                  proceduresLoading ||
+                  (!proceduresUndertakenSearch.item_number &&
+                    !proceduresUndertakenSearch.description)
+                "
+                @click="handleProceduresUndertakenSearch"
+              >
+                <span v-if="!proceduresLoading" class="indicator-label">
+                  Search
+                </span>
+
+                <span v-if="proceduresLoading" class="indicator-progress">
+                  Searching...
+                  <span
+                    class="spinner-border spinner-border-sm align-middle ms-2"
+                  ></span>
+                </span>
+              </button>
+            </div>
+
             <el-select
-              class="col-9"
-              v-model="formData.procedures_undertaken"
-              placeholder="Please enter a keyword"
+              class="col-12 mt-3"
+              placeholder="Select MBS item"
               props="procedures_undertaken_select"
-              multiple
               filterable
               remote
               reserve-keyword
               :remote-method="filterProceduresHandle"
               :loading="loading"
+              :disabled="proceduresUndertakenDataFiltered.length === 0"
+              @change="selectNewProceduresUndertaken"
             >
               <el-option
-                v-for="(taken, idx) in proceduresUndertakenData"
+                v-for="(taken, idx) in proceduresUndertakenDataFiltered"
                 :key="idx"
                 :value="taken"
                 :label="taken"
               />
             </el-select>
+
+            <div
+              v-for="(item, index) in formData.procedures_undertaken"
+              :key="`procedures-undertaken-${index}`"
+              class="w-100 d-flex flex-row align-items-center p-3 card border border-dashed border-primary mt-3"
+            >
+              <div class="col-11 text-truncate">
+                {{ item }}
+              </div>
+
+              <div class="col-1 d-flex justify-content-end">
+                <button
+                  type="button"
+                  class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                  @click="deleteProcedureUndertaken(index)"
+                >
+                  <span class="svg-icon svg-icon-3">
+                    <InlineSVG icon="bin" />
+                  </span>
+                </button>
+              </div>
+            </div>
           </InputWrapper>
 
           <InputWrapper
@@ -80,27 +148,93 @@
             label="Extra items used"
             prop="extra_items_used"
           >
-            <el-form-item>
-              <el-select
-                class="col-9"
-                v-model="formData.extra_items_used"
-                placeholder="Select Extra items used"
-                props="extra_items_used_select"
-                multiple
-                filterable
-                remote
-                reserve-keyword
-                :remote-method="filterExtraHandle"
-                :loading="loading"
+            <div
+              class="d-flex flex-column flex-md-row align-items-center w-100 gap-3"
+            >
+              <div
+                class="d-flex flex-column flex-md-row gap-3 flex-grow-1 w-100"
               >
-                <el-option
-                  v-for="(extra, idx) in extraItemsUsedData"
-                  :key="idx"
-                  :value="extra"
-                  :label="extra"
+                <el-input
+                  class="w-100 w-md-50"
+                  type="text"
+                  v-model="extraItemsUsedSearch.item_number"
+                  placeholder="Search by MBS item number"
+                  :disabled="extraItemsLoading"
                 />
-              </el-select>
-            </el-form-item>
+
+                <el-input
+                  class="w-100 w-md-50"
+                  type="text"
+                  v-model="extraItemsUsedSearch.description"
+                  placeholder="Search by MBS description"
+                  :disabled="extraItemsLoading"
+                />
+              </div>
+
+              <button
+                :data-kt-indicator="extraItemsLoading ? 'on' : null"
+                class="btn btn-lg btn-primary text-nowrap"
+                :disabled="
+                  extraItemsLoading ||
+                  (!extraItemsUsedSearch.item_number &&
+                    !extraItemsUsedSearch.description)
+                "
+                @click="handleExtraItemsSearch"
+              >
+                <span v-if="!extraItemsLoading" class="indicator-label">
+                  Search
+                </span>
+
+                <span v-if="extraItemsLoading" class="indicator-progress">
+                  Searching...
+                  <span
+                    class="spinner-border spinner-border-sm align-middle ms-2"
+                  ></span>
+                </span>
+              </button>
+            </div>
+
+            <el-select
+              class="col-12 mt-3"
+              placeholder="Select MBS item"
+              props="extra_items_select"
+              filterable
+              remote
+              reserve-keyword
+              :remote-method="filterExtraHandle"
+              :loading="loading"
+              :disabled="extraItemsUsedDataFiltered.length === 0"
+              @change="selectNewExtraItems"
+            >
+              <el-option
+                v-for="(taken, idx) in extraItemsUsedDataFiltered"
+                :key="idx"
+                :value="taken"
+                :label="taken"
+              />
+            </el-select>
+
+            <div
+              v-for="(item, index) in formData.extra_items_used"
+              :key="`extra-items-${index}`"
+              class="w-100 d-flex flex-row align-items-center p-3 card border border-dashed border-primary mt-3"
+            >
+              <div class="col-11 text-truncate">
+                {{ item }}
+              </div>
+
+              <div class="col-1 d-flex justify-content-end">
+                <button
+                  type="button"
+                  class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                  @click="deleteExtraItems(index)"
+                >
+                  <span class="svg-icon svg-icon-3">
+                    <InlineSVG icon="bin" />
+                  </span>
+                </button>
+              </div>
+            </div>
           </InputWrapper>
 
           <div class="d-flex flex-column gap-2 mb-6">
@@ -225,25 +359,25 @@ export default defineComponent({
     const appointmentData = computed(
       () => store.getters.getReportAppointmentSelected
     );
-    const _proceduresUndertakenData = ref([
-      "66500 - Gamete intra-fallopian transfer",
-      "39109 - Gangliectomy, radiofrequency trigeminal",
-      "30473 - Gastro-camera investigation",
-    ]);
-    const _extraItemsUsedData = ref([
-      "66500 - Gamete intra-fallopian transfer",
-      "39109 - Gangliectomy, radiofrequency trigeminal",
-      "30473 - Gastro-camera investigation",
-    ]);
-    const proceduresUndertakenData = ref();
-    const extraItemsUsedData = ref();
+    const proceduresUndertakenData = ref<Array<string>>([]);
+    const proceduresUndertakenDataFiltered = ref<Array<string>>([]);
+    const extraItemsUsedData = ref<Array<string>>([]);
+    const extraItemsUsedDataFiltered = ref<Array<string>>([]);
+    const proceduresUndertakenSearch = ref({
+      item_number: null,
+      description: null,
+    });
+    const extraItemsUsedSearch = ref({
+      item_number: null,
+      description: null,
+    });
     const patientData = ref();
     const formData = ref({
       title: "",
       section: {},
       headerFooter: null,
-      procedures_undertaken: null,
-      extra_items_used: null,
+      procedures_undertaken: [] as Array<string>,
+      extra_items_used: [] as Array<string>,
     });
 
     const rules = ref({
@@ -263,19 +397,21 @@ export default defineComponent({
       ],
     });
     const loading = ref(false);
+    const proceduresLoading = ref(false);
+    const extraItemsLoading = ref(false);
 
     const filterProceduresHandle = (query: string) => {
       if (query) {
         loading.value = true;
         setTimeout(() => {
           loading.value = false;
-          proceduresUndertakenData.value =
-            _proceduresUndertakenData.value.filter((item) => {
+          proceduresUndertakenDataFiltered.value =
+            proceduresUndertakenData.value.filter((item) => {
               return item.toLowerCase().includes(query.toLowerCase());
             });
         }, 200);
       } else {
-        proceduresUndertakenData.value = [];
+        proceduresUndertakenDataFiltered.value = [];
       }
     };
 
@@ -284,15 +420,70 @@ export default defineComponent({
         loading.value = true;
         setTimeout(() => {
           loading.value = false;
-          extraItemsUsedData.value = _extraItemsUsedData.value.filter(
+          extraItemsUsedDataFiltered.value = extraItemsUsedData.value.filter(
             (item) => {
               return item.toLowerCase().includes(query.toLowerCase());
             }
           );
         }, 200);
       } else {
-        extraItemsUsedData.value = [];
+        extraItemsUsedDataFiltered.value = [];
       }
+    };
+
+    const handleProceduresUndertakenSearch = () => {
+      searchMbs(
+        proceduresUndertakenSearch,
+        proceduresUndertakenData,
+        proceduresUndertakenDataFiltered,
+        proceduresLoading
+      );
+    };
+
+    const handleExtraItemsSearch = () => {
+      searchMbs(
+        extraItemsUsedSearch,
+        extraItemsUsedData,
+        extraItemsUsedDataFiltered,
+        extraItemsLoading
+      );
+    };
+
+    const searchMbs = (search, destination, filter, loader) => {
+      loader.value = true;
+
+      store
+        .dispatch(Actions.MBS.LIST, search.value)
+        .then(() => {
+          const items = store.getters.mbsItems.items;
+          let itemList = [] as Array<string>;
+
+          items.forEach((item) => {
+            itemList.push(item.label_name);
+          });
+
+          destination.value = itemList;
+          filter.value = itemList;
+        })
+        .finally(() => {
+          loader.value = false;
+        });
+    };
+
+    const selectNewProceduresUndertaken = (event) => {
+      formData.value.procedures_undertaken.push(event);
+    };
+
+    const selectNewExtraItems = (event) => {
+      formData.value.extra_items_used.push(event);
+    };
+
+    const deleteProcedureUndertaken = (index) => {
+      formData.value.procedures_undertaken.splice(index, 1);
+    };
+
+    const deleteExtraItems = (index) => {
+      formData.value.extra_items_used.splice(index, 1);
     };
 
     const submit = () => {
@@ -358,8 +549,6 @@ export default defineComponent({
     watchEffect(() => {
       patientData.value = patientList.value;
       formData.value.title = templateData.value.title;
-      proceduresUndertakenData.value = _proceduresUndertakenData.value;
-      extraItemsUsedData.value = _extraItemsUsedData.value;
     });
 
     onMounted(() => {
@@ -380,11 +569,21 @@ export default defineComponent({
       moment,
       submit,
       headerFooterList,
-      proceduresUndertakenData,
-      extraItemsUsedData,
+      proceduresUndertakenDataFiltered,
+      extraItemsUsedDataFiltered,
+      proceduresUndertakenSearch,
+      extraItemsUsedSearch,
       loading,
+      proceduresLoading,
+      extraItemsLoading,
       filterProceduresHandle,
       filterExtraHandle,
+      handleProceduresUndertakenSearch,
+      handleExtraItemsSearch,
+      selectNewProceduresUndertaken,
+      selectNewExtraItems,
+      deleteProcedureUndertaken,
+      deleteExtraItems,
     };
   },
 });
