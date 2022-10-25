@@ -1106,6 +1106,7 @@
 .modal.patient-alert .modal-footer {
   display: none;
 }
+
 .exist-message {
   label {
     color: grey;
@@ -1463,15 +1464,24 @@ export default defineComponent({
       aptInfoData.value.start_time = moment(startTime, "HH:mm").format("HH:mm");
     };
 
+    const getAptTypeName = (id) => {
+      if (id) {
+        const _selected = aptTypeList.value.filter(
+          (aptType) => aptType.id === id
+        )[0];
+        if (_selected.name) {
+          appointment_name.value = _selected.name;
+        }
+      }
+    };
     // Get Selected APT data when user edit appointments
     watch(aptData, () => {
       if (props.modalId == "modal_edit_apt") {
         for (let key in aptInfoData.value)
           aptInfoData.value[key] = aptData.value[key];
         cur_appointment_type_id.value = aptData.value.appointment_type_id;
+        getAptTypeName(aptData.value.appointment_type_id);
         cur_specialist.value = aptData.value.specialist;
-        console.log("apt info data");
-        console.log(aptData.value.specialist);
         for (let key in patientInfoData.value)
           patientInfoData.value[key] = aptData.value.patient[key];
 
@@ -1495,7 +1505,9 @@ export default defineComponent({
     });
 
     watch(cur_appointment_type_id, () => {
+      getAptTypeName(cur_appointment_type_id.value);
       if (props.modalId == "modal_create_apt") {
+        // setting up selected appointment type
         aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
         const _selected = aptTypeList.value.filter(
           (aptType) => aptType.id === cur_appointment_type_id.value
@@ -1531,34 +1543,31 @@ export default defineComponent({
           .subtract(arrival_time.value, "minutes")
           .format("HH:mm")
           .toString();
-      }
 
-      if (apt_type.value === "Consultation") {
-        otherInfoData.value.anesthetic_questions = false;
-      }
-
-      const specialist = store.getters.getSelectedSpecialist;
-
-      let cnt = 0;
-      if (specialist) {
-        for (let i in specialist.appointments) {
-          let _apt_temp = specialist.appointments[i];
-          if (
-            (timeStr2Number(start_time.value) <=
-              timeStr2Number(_apt_temp.start_time) &&
-              timeStr2Number(_apt_temp.start_time) <
-                timeStr2Number(end_time.value)) ||
-            (timeStr2Number(_apt_temp.start_time) <=
-              timeStr2Number(start_time.value) &&
-              timeStr2Number(start_time.value) <
-                timeStr2Number(_apt_temp.end_time))
-          ) {
-            cnt++;
+        const specialist = store.getters.getSelectedSpecialist;
+        if (apt_type.value === "Consultation") {
+          otherInfoData.value.anesthetic_questions = false;
+        }
+        let cnt = 0;
+        if (specialist) {
+          for (let i in specialist.appointments) {
+            let _apt_temp = specialist.appointments[i];
+            if (
+              (timeStr2Number(start_time.value) <=
+                timeStr2Number(_apt_temp.start_time) &&
+                timeStr2Number(_apt_temp.start_time) <
+                  timeStr2Number(end_time.value)) ||
+              (timeStr2Number(_apt_temp.start_time) <=
+                timeStr2Number(start_time.value) &&
+                timeStr2Number(start_time.value) <
+                  timeStr2Number(_apt_temp.end_time))
+            ) {
+              cnt++;
+            }
           }
         }
+        overlapping_cnt.value = cnt;
       }
-
-      overlapping_cnt.value = cnt;
     });
 
     // Make sure this watch runs only edit
@@ -1573,12 +1582,14 @@ export default defineComponent({
     //   aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
     // });
 
-    // watch(cur_specialist, () => {
-    //   aptInfoData.value.specialist_id = cur_specialist.value.id;
-    //   specialist_name.value = cur_specialist.value.full_name;
-    //   //anesthetist.value = _selected.anesthetist;
-    //   //aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
-    // });
+    watch(cur_specialist, () => {
+      // console.log("CUR SPECIALIST");
+      // console.log(cur_specialist.value);
+      // aptInfoData.value.specialist_id = cur_specialist.value.id;
+      // specialist_name.value = cur_specialist.value.full_name;
+      //anesthetist.value = _selected.anesthetist;
+      //aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
+    });
 
     watch(start_time, () => {
       aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
@@ -1661,10 +1672,9 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      appointment_time.value = 30; // Create api for this
+      appointment_time.value = 30;
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
-
       let specialistRestriction = bookingData.restriction;
       if (
         specialistRestriction === "NONE" ||
@@ -1737,7 +1747,6 @@ export default defineComponent({
           })
           .catch(({ response }) => {
             console.log(response.data.errors);
-            // this.context.commit(Mutations.PURGE_AUTH);
           });
       } else {
         // this.context.commit(Mutations.PURGE_AUTH);
@@ -1960,7 +1969,6 @@ export default defineComponent({
     };
 
     const updateApt = () => {
-      console.log("updateAPt");
       store
         .dispatch(Actions.APT.UPDATE, {
           id: aptData.value.id,
@@ -2029,7 +2037,6 @@ export default defineComponent({
       let blocklist = patientInfoData.value.alerts.filter(
         (a) => a.alert_level == "BLACKLISTED" && !a.is_dismissed
       );
-      console.log(["selectPatient=", item, patientInfoData.value]);
       if (blocklist.length) patientInfoData.value.is_ok = false;
       // patientStep.value++;
     };
@@ -2048,7 +2055,6 @@ export default defineComponent({
     const patientPrevStep = () => {
       if (patientStatus.value === "new") previousStep();
       else patientStep.value--;
-      console.log(["patientAptData", patientAptData.value]);
     };
 
     const handleSelectReferringDoctor = (item) => {
