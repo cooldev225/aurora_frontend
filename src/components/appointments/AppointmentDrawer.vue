@@ -293,7 +293,6 @@ export default defineComponent({
         },
         preConfirm: async (data) => {
           var missed = Swal.getPopup().querySelector("#chkMissed").checked;
-
           await store
             .dispatch(AppointmentActions.CONFIRMATION_STATUS.UPDATE, {
               id: aptData.value.id,
@@ -343,7 +342,6 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      console.log(aptData.value);
       displayData.clinic_name = aptData.value.clinic_details?.name;
       displayData.appointment_type_name = aptData.value.appointment_type?.name;
       displayData.specialist_name = aptData.value.specialist_name;

@@ -1483,13 +1483,14 @@ export default defineComponent({
         cur_specialist.value = aptData.value.specialist;
         for (let key in patientInfoData.value)
           patientInfoData.value[key] = aptData.value.patient[key];
+        /*
 
-        // console.log(patientInfoData.value);
-
+         Set Billing options here when user edit
+         */
         //for (let key in billingInfoData.value)
         // billingInfoData.value[key] = aptData.value.patient.billing[0][key];
-        // for (let key in otherInfoData.value)
-        // otherInfoData.value[key] = aptData.value[key];
+        for (let key in otherInfoData.value)
+          otherInfoData.value[key] = aptData.value.referral[key];
         // for (let key in patientInfoData.value)
         aptInfoData.value.clinic_id = aptData.value.clinic_id;
         aptInfoData.value.clinic_name = aptData.value.clinic.name;
@@ -1673,6 +1674,7 @@ export default defineComponent({
       const bookingData = store.getters.bookingDatas;
       ava_specialist.value = bookingData.ava_specialist;
       let specialistRestriction = bookingData.restriction;
+      // Setting appointment types base on apt create or edit
       if (
         specialistRestriction === "NONE" ||
         props.modalId === "modal_edit_apt"
@@ -1689,6 +1691,7 @@ export default defineComponent({
         start_time.value = moment(bookingData.time_slot[0]).format("HH:mm");
         end_time.value = moment(bookingData.time_slot[1]).format("HH:mm");
       }
+
       if (cur_appointment_type_id.value == "") {
         overlapping_cnt.value = bookingData.overlapping_cnt;
       }

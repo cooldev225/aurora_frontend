@@ -65,7 +65,6 @@ export default defineComponent({
 
     watch(props, () => {
       let date = moment(props.visibleDate.date).format("YYYY-MM-DD");
-      let specialists = props.visibleSpecialists;
       store.dispatch(AppointmentActions.LIST, { date: date });
     });
 
@@ -119,16 +118,12 @@ export default defineComponent({
     watch(appointmentsRaw, () => {
       appointments.value = [];
       appointmentsRaw.value.forEach((appointment) => {
-        props.visibleSpecialists.map((specialist) => {
-          if (specialist.id === appointment.specialist.id) {
-            appointments.value.push({
-              id: appointment.id,
-              resourceId: appointment.specialist_id,
-              start: appointment.date + "T" + appointment.start_time,
-              end: appointment.date + "T" + appointment.end_time,
-              appointment: appointment,
-            });
-          }
+        appointments.value.push({
+          id: appointment.id,
+          resourceId: appointment.specialist_id,
+          start: appointment.date + "T" + appointment.start_time,
+          end: appointment.date + "T" + appointment.end_time,
+          appointment: appointment,
         });
       });
     });

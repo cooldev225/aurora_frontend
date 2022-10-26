@@ -44,7 +44,7 @@
         >
           CHECKED OUT
         </span>
-        <span>{{ appointment.clinic.nickname_code }}</span>
+        <span>-{{ appointment.clinic.nickname_code }}</span>
       </span>
     </div>
   </div>
