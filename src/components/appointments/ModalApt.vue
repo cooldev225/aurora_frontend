@@ -1210,6 +1210,7 @@ export default defineComponent({
       appointment_confirm_method: "",
       allergies: "",
       clinical_alerts: "",
+      also_known_as: [],
       is_exist: false,
     });
 
@@ -1860,6 +1861,7 @@ export default defineComponent({
         for (let key in patientInfoData.value) patientInfoData.value[key] = "";
         for (let key in billingInfoData.value) billingInfoData.value[key] = "";
         billingInfoData.value.claim_sources = [];
+        patientInfoData.value.also_known_as = [];
         patientStatus.value = "new";
         patientStep.value = 3;
       } else {
@@ -1907,15 +1909,20 @@ export default defineComponent({
 
     const createApt = () => {
       const billingInfo = billingInfoData.value;
+      const patientInfo = patientInfoData.value;
 
       billingInfo.claim_sources = billingInfo.claim_sources.filter((source) => {
+        return !Object.prototype.hasOwnProperty.call(source, "id");
+      });
+
+      patientInfo.also_known_as = patientInfo.also_known_as.filter((source) => {
         return !Object.prototype.hasOwnProperty.call(source, "id");
       });
 
       store
         .dispatch(AppointmentActions.APT.CREATE, {
           ...aptInfoData.value,
-          ...patientInfoData.value,
+          ...patientInfo,
           ...billingInfo,
           ...otherInfoData.value,
         })
@@ -1962,8 +1969,13 @@ export default defineComponent({
 
     const updateApt = () => {
       const billingInfo = billingInfoData.value;
+      const patientInfo = patientInfoData.value;
 
       billingInfo.claim_sources = billingInfo.claim_sources.filter((source) => {
+        return !Object.prototype.hasOwnProperty.call(source, "id");
+      });
+
+      patientInfo.also_known_as = patientInfo.also_known_as.filter((source) => {
         return !Object.prototype.hasOwnProperty.call(source, "id");
       });
 
@@ -1971,7 +1983,7 @@ export default defineComponent({
         .dispatch(Actions.APT.UPDATE, {
           id: aptData.value.id,
           ...aptInfoData.value,
-          ...patientInfoData.value,
+          ...patientInfo,
           ...billingInfo,
           ...otherInfoData.value,
         })
@@ -2031,6 +2043,8 @@ export default defineComponent({
       }
 
       billingInfoData.value.claim_sources = item.billing;
+
+      patientInfoData.value.also_known_as = item.also_known_as;
 
       patientInfoData.value.is_ok = true;
       let blocklist = patientInfoData.value.alerts.filter(
@@ -2098,9 +2112,16 @@ export default defineComponent({
     };
 
     const updatePatientDetails = (details) => {
+      const previousData = {
+        first_name: patientInfoData.value.first_name,
+        last_name: patientInfoData.value.last_name,
+      };
+
       for (const detailName in details) {
         patientInfoData.value[detailName] = details[detailName];
       }
+
+      patientInfoData.value.also_known_as.push(previousData);
     };
 
     return {

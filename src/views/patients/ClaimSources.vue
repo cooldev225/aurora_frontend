@@ -420,6 +420,12 @@ export default defineComponent({
     };
 
     const updatePatientDetails = (details) => {
+      const previousData = {
+        patient_id: selectedPatient.value.id,
+        first_name: selectedPatient.value.first_name,
+        last_name: selectedPatient.value.last_name,
+      };
+
       const updateData = {
         id: selectedPatient.value.id,
         first_name: selectedPatient.value.first_name,
@@ -433,6 +439,18 @@ export default defineComponent({
 
       store
         .dispatch(PatientActions.UPDATE, updateData)
+        .then(() => {
+          store.dispatch(PatientActions.LIST);
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        })
+        .finally(() => {
+          loading.value = null;
+        });
+
+      store
+        .dispatch(PatientActions.ALSO_KNOWN_AS.CREATE, previousData)
         .then(() => {
           store.dispatch(PatientActions.LIST);
         })
