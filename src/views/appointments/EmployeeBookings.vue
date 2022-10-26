@@ -1,5 +1,5 @@
 <template>
-  <SignatureAlert></SignatureAlert>
+  <SignatureAlert v-if="isNoSignature"></SignatureAlert>
   <!--begin::Card-->
   <div class="card">
     <!--begin::Card body-->

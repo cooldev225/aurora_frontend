@@ -1,9 +1,17 @@
 <template>
   <div class="card mb-2">
-    <div class="card-body text-warning">
+    <div class="card-body text-warning d-flex flex-row align-items-center">
       WARNING: You don't have a signature set. Any correspondence sent will not
       have a signature attached
-      <el-button text type="">Click here to set</el-button>
+      <router-link
+        class="nav-link text-active-primary me-6"
+        to="/profile/signature"
+        active-class="active"
+      >
+        <el-button class="mx-2" link type="" size="small"
+          >Click here to set</el-button
+        >
+      </router-link>
     </div>
   </div>
 </template>
