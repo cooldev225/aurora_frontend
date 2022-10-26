@@ -1442,9 +1442,7 @@ export default defineComponent({
     };
 
     const addNewClaimSource = (event) => {
-      const claimSource = event._value;
-
-      billingInfoData.value.claim_sources.push(claimSource);
+      billingInfoData.value.claim_sources.push(event);
     };
 
     const deleteClaimSource = (source) => {

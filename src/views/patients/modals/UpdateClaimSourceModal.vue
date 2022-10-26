@@ -382,6 +382,7 @@ export default defineComponent({
       const data = {
         id: claimSource.value.id,
         is_valid: true,
+        patient_id: patient.value.id,
         ...formData.value,
       };
 

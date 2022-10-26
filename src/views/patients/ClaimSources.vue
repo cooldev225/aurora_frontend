@@ -114,7 +114,11 @@
         :updateDetails="updateDetails"
       />
 
-      <AddClaimSourceModal :patient="selectedPatient" />
+      <AddClaimSourceModal
+        :patient="selectedPatient"
+        v-on:closeModal="closeAddClaimSourceModal"
+      />
+
       <UpdateClaimSourceModal
         :patient="selectedPatient"
         :claimSource="updatingSource"
@@ -199,6 +203,7 @@ export default defineComponent({
     const tableKey = ref(0);
     const updateDetails = ref({});
     const updatingSource = ref(null);
+    const addClaimSourceModal = ref(null);
 
     const renderTable = () => tableKey.value++;
 
@@ -217,10 +222,13 @@ export default defineComponent({
     };
 
     const handleAddClaimSource = () => {
-      const modal = new Modal(
-        document.getElementById("modal_add_claim_source")
-      );
-      modal.show();
+      if (!addClaimSourceModal.value) {
+        addClaimSourceModal.value = new Modal(
+          document.getElementById("modal_add_claim_source")
+        );
+      }
+
+      addClaimSourceModal.value.show();
     };
 
     const handleUpdateClaimSource = (source) => {
@@ -445,6 +453,11 @@ export default defineComponent({
       doValidation(endpoint, validationData, item, true);
     };
 
+    const closeAddClaimSourceModal = () => {
+      renderTable();
+      addClaimSourceModal.value.hide();
+    };
+
     onMounted(() => {
       const id = route.params.id;
       store.dispatch(PatientActions.VIEW, id);
@@ -481,6 +494,7 @@ export default defineComponent({
       getHealthFund,
       updatingSource,
       handleUpdateClaimSource,
+      closeAddClaimSourceModal,
     };
   },
 });

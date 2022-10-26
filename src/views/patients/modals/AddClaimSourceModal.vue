@@ -482,6 +482,7 @@ export default defineComponent({
         closeModal();
       } else {
         loading.value = true;
+        claimSource.patient_id = patient.value.id;
         store
           .dispatch(PatientActions.CLAIM_SOURCE.ADD, claimSource)
           .then(() => {
