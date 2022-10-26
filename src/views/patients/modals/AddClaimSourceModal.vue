@@ -100,7 +100,7 @@
       <div
         v-for="(item, index) in updateDetails"
         :key="`update-details-item-${index}`"
-        class="px-6 mt-3"
+        class="px-6"
       >
         <el-checkbox
           type="checkbox"
