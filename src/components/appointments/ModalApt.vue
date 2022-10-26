@@ -1583,12 +1583,10 @@ export default defineComponent({
     // });
 
     watch(cur_specialist, () => {
-      // console.log("CUR SPECIALIST");
-      // console.log(cur_specialist.value);
-      // aptInfoData.value.specialist_id = cur_specialist.value.id;
-      // specialist_name.value = cur_specialist.value.full_name;
-      //anesthetist.value = _selected.anesthetist;
-      //aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
+      aptInfoData.value.specialist_id = cur_specialist.value.id;
+      specialist_name.value = cur_specialist.value.full_name;
+      // anesthetist.value = _selected.anesthetist;
+      // aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
     });
 
     watch(start_time, () => {

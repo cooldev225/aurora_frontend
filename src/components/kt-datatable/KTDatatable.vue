@@ -168,7 +168,7 @@ export default defineComponent({
   emit: ["current-change", "sort", "items-per-page-change"],
   props: {
     tableHeader: {
-      type: Array as () => Array<IHeaderConfiguration>,
+      type: Object as () => Array<IHeaderConfiguration>,
       required: true,
     },
     tableData: { type: Array, required: true },

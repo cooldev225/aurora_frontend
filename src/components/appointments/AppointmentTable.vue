@@ -49,7 +49,6 @@ export default defineComponent({
   props: {
     visibleDate: { type: String, required: true },
     visibleSpecialists: { type: Object, required: true },
-    filteredClinics: { type: Array, required: true },
     organization: { type: Object, required: true },
   },
   setup(props) {
