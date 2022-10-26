@@ -347,7 +347,6 @@ export default defineComponent({
             )
           ) {
             for (const detailName in validation.data.update_details) {
-              console.log(detailName);
               switch (detailName) {
                 case "givenName":
                   updateDetails.value.first_name = {

@@ -117,11 +117,13 @@
       <AddClaimSourceModal
         :patient="selectedPatient"
         v-on:closeModal="closeAddClaimSourceModal"
+        v-on:updateDetails="updatePatientDetails"
       />
 
       <UpdateClaimSourceModal
         :patient="selectedPatient"
         :claimSource="updatingSource"
+        v-on:updateDetails="updatePatientDetails"
       />
     </template>
   </CardSection>
@@ -453,6 +455,31 @@ export default defineComponent({
       doValidation(endpoint, validationData, item, true);
     };
 
+    const updatePatientDetails = (details) => {
+      const updateData = {
+        id: selectedPatient.value.id,
+        first_name: selectedPatient.value.first_name,
+        last_name: selectedPatient.value.last_name,
+        date_of_birth: selectedPatient.value.date_of_birth,
+      };
+
+      for (const detailName in details) {
+        updateData[detailName] = details[detailName];
+      }
+
+      store
+        .dispatch(PatientActions.UPDATE, updateData)
+        .then(() => {
+          store.dispatch(PatientActions.LIST);
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        })
+        .finally(() => {
+          loading.value = null;
+        });
+    };
+
     const closeAddClaimSourceModal = () => {
       renderTable();
       addClaimSourceModal.value.hide();
@@ -495,6 +522,7 @@ export default defineComponent({
       updatingSource,
       handleUpdateClaimSource,
       closeAddClaimSourceModal,
+      updatePatientDetails,
     };
   },
 });

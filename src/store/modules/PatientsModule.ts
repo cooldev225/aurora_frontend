@@ -125,11 +125,13 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.UPDATE](data) {
+  [PatientActions.UPDATE](patient) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("patients", data.id, data)
+      ApiService.update("patients", patient.id, patient)
         .then(({ data }) => {
+          console.log(patient.patient_id);
+          this.context.dispatch(PatientActions.VIEW, patient.id);
           return data.data;
         })
         .catch(({ response }) => {
