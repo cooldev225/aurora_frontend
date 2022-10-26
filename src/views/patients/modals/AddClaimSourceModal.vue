@@ -203,7 +203,7 @@ export default defineComponent({
     claimSource: { type: Object },
     shouldEmit: { type: Boolean, default: false },
   },
-  emits: ["addClaimSource", "closeModal"],
+  emits: ["addClaimSource", "closeModal", "updateDetails"],
   components: {
     AlertBadge,
   },
@@ -285,20 +285,27 @@ export default defineComponent({
 
     const handleUpdateDetails = () => {
       let detailsToEmit = {};
+      let shouldEmit = false;
 
       for (const detailName in updateDetails.value) {
         switch (detailName) {
           case "first_name":
             detailsToEmit.first_name = updateDetails.value[detailName].newVal;
+            shouldEmit = true;
             break;
           case "last_name":
             detailsToEmit.last_name = updateDetails.value[detailName].newVal;
+            shouldEmit = true;
             break;
           case "member_reference_number":
             formData.value.member_reference_number =
               updateDetails.value[detailName].newVal;
             break;
         }
+      }
+
+      if (shouldEmit) {
+        emit("updateDetails", detailsToEmit);
       }
 
       updateDetails.value = {};
