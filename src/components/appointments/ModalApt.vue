@@ -763,6 +763,7 @@
                           :patient="patientInfoData"
                           v-on:addClaimSource="addNewClaimSource"
                           v-on:closeModal="closeAddClaimSourceModal"
+                          v-on:updateDetails="updatePatientDetails"
                           shouldEmit
                         />
                       </div>
@@ -1449,6 +1450,10 @@ export default defineComponent({
       const index = billingInfoData.value.claim_sources.indexOf(source);
 
       billingInfoData.value.claim_sources.splice(index, 1);
+
+      if (Object.prototype.hasOwnProperty.call(source, "id")) {
+        store.dispatch(PatientActions.CLAIM_SOURCE.DELETE, source);
+      }
     };
 
     const updateAptTime = (startTime, endTime) => {
@@ -1901,11 +1906,17 @@ export default defineComponent({
     };
 
     const createApt = () => {
+      const billingInfo = billingInfoData.value;
+
+      billingInfo.claim_sources = billingInfo.claim_sources.filter((source) => {
+        return !Object.prototype.hasOwnProperty.call(source, "id");
+      });
+
       store
         .dispatch(AppointmentActions.APT.CREATE, {
           ...aptInfoData.value,
           ...patientInfoData.value,
-          ...billingInfoData.value,
+          ...billingInfo,
           ...otherInfoData.value,
         })
         .then(() => {
@@ -1950,12 +1961,18 @@ export default defineComponent({
     };
 
     const updateApt = () => {
+      const billingInfo = billingInfoData.value;
+
+      billingInfo.claim_sources = billingInfo.claim_sources.filter((source) => {
+        return !Object.prototype.hasOwnProperty.call(source, "id");
+      });
+
       store
         .dispatch(Actions.APT.UPDATE, {
           id: aptData.value.id,
           ...aptInfoData.value,
           ...patientInfoData.value,
-          ...billingInfoData.value,
+          ...billingInfo,
           ...otherInfoData.value,
         })
         .then(() => {
@@ -2002,17 +2019,18 @@ export default defineComponent({
       aptInfoData.value.patient_id = item.id;
 
       for (let key in billingInfoData.value) {
-        if (key === "charge_type" || key === "procedure_price") {
-          continue;
-        }
-
-        if (key === "claim_sources") {
-          billingInfoData.value.claim_sources = [];
+        if (
+          key === "charge_type" ||
+          key === "procedure_price" ||
+          key === "claim_sources"
+        ) {
           continue;
         }
 
         billingInfoData.value[key] = item[key];
       }
+
+      billingInfoData.value.claim_sources = item.billing;
 
       patientInfoData.value.is_ok = true;
       let blocklist = patientInfoData.value.alerts.filter(
@@ -2077,6 +2095,12 @@ export default defineComponent({
 
     const timeStr2Number = (time) => {
       return Number(time.split(":")[0] + time.split(":")[1]);
+    };
+
+    const updatePatientDetails = (details) => {
+      for (const detailName in details) {
+        patientInfoData.value[detailName] = details[detailName];
+      }
     };
 
     return {
@@ -2156,6 +2180,7 @@ export default defineComponent({
       deleteClaimSource,
       getBillingType,
       getHealthFund,
+      updatePatientDetails,
     };
   },
 });
