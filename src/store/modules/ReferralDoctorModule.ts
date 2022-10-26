@@ -35,7 +35,7 @@ export default class ReferralDoctorModule
   [Actions.REFERRAL_DOCTOR.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("referring-doctors")
+      ApiService.get("doctor-address-book")
         .then(({ data }) => {
           this.context.commit(Mutations.SET_REFERRAL_DOCTOR.LIST, data.data);
           return data.data;
@@ -52,7 +52,7 @@ export default class ReferralDoctorModule
   [Actions.REFERRAL_DOCTOR.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("referring-doctors", item)
+      ApiService.post("doctor-address-book", item)
         .then(({ data }) => {
           return data.data;
         })
@@ -68,7 +68,7 @@ export default class ReferralDoctorModule
   [Actions.REFERRAL_DOCTOR.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("referring-doctors", item.id, item)
+      ApiService.update("doctor-address-book", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
@@ -84,7 +84,7 @@ export default class ReferralDoctorModule
   [Actions.REFERRAL_DOCTOR.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.delete("referring-doctors/" + id)
+      ApiService.delete("doctor-address-book/" + id)
         .then(({ data }) => {
           return data.data;
         })
