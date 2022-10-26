@@ -1179,7 +1179,6 @@ export default defineComponent({
     const formRef_4 = ref(null);
     const loading = ref(false);
     const tableKey = ref(0);
-    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
     const router = useRouter();
     const claimSourceModal = ref(null);
 
@@ -1389,11 +1388,11 @@ export default defineComponent({
     const aptTypeList = computed(() => store.getters.getAptTypesList);
     const aptTypeListWithRestriction = ref();
     const searchVal = computed(() => store.getters.getSearchVariable);
-    const organisation = computed(() => store.getters.orgList);
     const patientList = computed(() => store.getters.patientsList);
     const patientAptData = computed(() => store.getters.getPatientAppointments);
     const aptData = computed(() => store.getters.getAptSelected);
     const bookingData = computed(() => store.getters.bookingDatas);
+    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
 
     // Setting modal Heading and Ids
     const setTitle = () => {

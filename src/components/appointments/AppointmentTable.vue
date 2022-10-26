@@ -144,7 +144,6 @@ export default defineComponent({
     });
 
     const handleShowAppointmentDrawer = (info) => {
-      console.log(info);
       info.jsEvent.preventDefault();
       let appointment = info.event.extendedProps.appointment;
       store.commit(AppointmentMutations.SET_APT.SELECT, appointment);
@@ -152,7 +151,7 @@ export default defineComponent({
     };
 
     const handleCreateAppointment = (info) => {
-      console.log("create trigger");
+      info.jsEvent.preventDefault();
       const date = moment(info.date).format("YYYY-MM-DD").toString();
       const time = moment(info.date).format("HH:MM").toString();
       const weekDay = moment(info.date).format("ddd").toUpperCase();
@@ -160,20 +159,18 @@ export default defineComponent({
       const specialists = allSpecialists.value.filter((specialist) => {
         if (specialist.id == info.resource.id) return specialist;
       });
-      const selectedSpecialist = specialists[0];
       let restriction = null;
-      selectedSpecialist.schedule_timeslots =
-        selectedSpecialist.schedule_timeslots.filter((slot) => {
-          //make this more accurate filter this by clinic ID as well
-          if (slot.week_day == weekDay) {
-            restriction = slot.restriction;
-            return slot;
-          }
-        });
+      specialists[0].schedule_timeslots.filter((slot) => {
+        //make this more accurate filter this by clinic ID as well
+        if (slot.week_day == weekDay) {
+          restriction = slot.restriction;
+          return slot;
+        }
+      });
       const item = {
         time_slot: [date + "T" + time],
         date: date,
-        selected_specialist: selectedSpecialist,
+        selected_specialist: specialists[0],
         restriction: restriction,
       };
       store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);

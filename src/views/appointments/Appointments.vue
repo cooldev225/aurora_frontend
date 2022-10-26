@@ -330,6 +330,7 @@
     :clinic-list="clinic_list"
     :apt-time-require-list="aptTimeRequireList"
     :x-weeks="aptWeeksList"
+    v-if="visibleSpecialists"
   />
 </template>
 <script>
@@ -455,7 +456,10 @@ export default defineComponent({
     onMounted(() => {
       toggleLayout.value = false;
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
-      store.dispatch(Actions.SPECIALIST.LIST);
+      store.dispatch(
+        Actions.SPECIALIST.LIST,
+        moment().format("YYYY-MM-DD").toString()
+      );
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
@@ -529,6 +533,10 @@ export default defineComponent({
 
     watch(date_search, () => {
       visibleDate.value = date_search;
+      const formattedDate = moment(date_search.date)
+        .format("Y-MM-DD")
+        .toString();
+      store.dispatch(Actions.SPECIALIST.LIST, formattedDate);
       getFilterSpecialists();
       filterSpecialists();
     });
