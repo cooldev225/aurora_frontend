@@ -84,7 +84,41 @@
       icon=""
     />
 
+    <div
+      v-if="Object.keys(updateDetails).length !== 0"
+      class="p-3 m-3 card border border-dashed border-primary"
+    >
+      <p>
+        The following patient details can be updated to match Medicare records.
+        Please select which details you would like to update.
+      </p>
+      <p>
+        Any previous name(s) will be stored as an alternative name on the
+        Demographics page.
+      </p>
+
+      <div
+        v-for="(item, index) in updateDetails"
+        :key="`update-details-item-${index}`"
+        class="px-6 mt-3"
+      >
+        <el-checkbox
+          type="checkbox"
+          v-model="item.update"
+          :label="`${item.label}: ${item.oldVal} → ${item.newVal}`"
+        />
+      </div>
+    </div>
+
     <div class="d-flex justify-content-end">
+      <button
+        v-if="detailsToUpdateExist"
+        class="btn btn-lg btn-primary me-2"
+        @click="handleUpdateDetails"
+      >
+        Update Details
+      </button>
+
       <button
         v-if="!validated"
         :data-kt-indicator="loading ? 'on' : null"
@@ -230,14 +264,45 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      member_ref_number: [
+      member_reference_number: [
         {
-          required: true,
+          required: false,
           message: "Member reference number cannot be blank",
           trigger: "change",
         },
       ],
     });
+
+    const detailsToUpdateExist = computed(() => {
+      for (const detailName in updateDetails.value) {
+        if (updateDetails.value[detailName].update) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    const handleUpdateDetails = () => {
+      let detailsToEmit = {};
+
+      for (const detailName in updateDetails.value) {
+        switch (detailName) {
+          case "first_name":
+            detailsToEmit.first_name = updateDetails.value[detailName].newVal;
+            break;
+          case "last_name":
+            detailsToEmit.last_name = updateDetails.value[detailName].newVal;
+            break;
+          case "member_reference_number":
+            formData.value.member_reference_number =
+              updateDetails.value[detailName].newVal;
+            break;
+        }
+      }
+
+      updateDetails.value = {};
+    };
 
     const doValidation = (endpoint, data, isConcession = false) => {
       loading.value = true;
@@ -269,24 +334,37 @@ export default defineComponent({
           }
 
           if (
-            !Object.prototype.hasOwnProperty.call(
+            Object.prototype.hasOwnProperty.call(
               validation.data,
               "update_details"
             )
           ) {
             for (const detailName in validation.data.update_details) {
+              console.log(detailName);
               switch (detailName) {
                 case "givenName":
-                  updateDetails.value.first_name =
-                    validation.data.update_details[detailName];
+                  updateDetails.value.first_name = {
+                    label: "First Name",
+                    oldVal: patient.value.first_name,
+                    newVal: validation.data.update_details[detailName],
+                    update: false,
+                  };
                   break;
                 case "familyName":
-                  updateDetails.value.last_name =
-                    validation.data.update_details[detailName];
+                  updateDetails.value.last_name = {
+                    label: "Last Name",
+                    oldVal: patient.value.last_name,
+                    newVal: validation.data.update_details[detailName],
+                    update: false,
+                  };
                   break;
                 case "memberRefNumber":
-                  updateDetails.value.member_reference_number =
-                    validation.data.update_details[detailName];
+                  updateDetails.value.member_reference_number = {
+                    label: "Reference Number",
+                    oldVal: formData.value.member_reference_number,
+                    newVal: validation.data.update_details[detailName],
+                    update: false,
+                  };
                   break;
               }
             }
@@ -313,21 +391,21 @@ export default defineComponent({
     };
 
     const validateSource = () => {
-      if (minorId.value.minorId == null) {
-        Swal.fire({
-          text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
-          icon: "error",
-          buttonsStyling: true,
-          confirmButtonText: "Okay",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-        }).then(() => {
-          loading.value = false;
-          closeModal();
-          return;
-        });
-      }
+      // if (minorId.value.minorId == null) {
+      //   Swal.fire({
+      //     text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
+      //     icon: "error",
+      //     buttonsStyling: true,
+      //     confirmButtonText: "Okay",
+      //     customClass: {
+      //       confirmButton: "btn btn-primary",
+      //     },
+      //   }).then(() => {
+      //     loading.value = false;
+      //     closeModal();
+      //     return;
+      //   });
+      // }
 
       if (!addClaimSourceFormRef.value) {
         return;
@@ -340,7 +418,8 @@ export default defineComponent({
             last_name: patient.value.last_name,
             date_of_birth: patient.value.date_of_birth,
             sex: patient.value.gender ?? 9, // If provided, use gender. Otherwise, use "unspecified" value: 9
-            minor_id: minorId.value.minorId,
+            minor_id: "AUA00000",
+            // minor_id: minorId.value.minorId,
           };
           let endpoint;
 
@@ -395,7 +474,7 @@ export default defineComponent({
     };
 
     const addNewClaimSource = () => {
-      const claimSource = JSON.parse(JSON.stringify(formData));
+      const claimSource = JSON.parse(JSON.stringify(formData))._value;
       claimSource.has_medicare_concession = concessionValidated.value;
 
       if (shouldEmit.value) {
@@ -453,6 +532,9 @@ export default defineComponent({
       handleCheckConcession,
       rules,
       addNewClaimSource,
+      updateDetails,
+      detailsToUpdateExist,
+      handleUpdateDetails,
     };
   },
 });
