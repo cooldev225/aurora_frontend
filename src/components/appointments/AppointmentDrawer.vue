@@ -174,6 +174,7 @@
           />
           <!--Move Appointment-->
           <LargeIconButton
+            @click="handleMove"
             :heading="'Move'"
             :iconPath="'media/icons/duotune/arrows/arr035.svg'"
             :color="'success'"
@@ -262,6 +263,14 @@ export default defineComponent({
       DrawerComponent?.getInstance("appointment-drawer")?.hide();
     };
 
+    const handleMove = async () => {
+      aptData.value.step = 0;
+      store.commit(AppointmentMutations.SET_APT.SELECT, aptData.value);
+      const modal = new Modal(document.getElementById("modal_move_apt"));
+      modal.show();
+      DrawerComponent?.getInstance("appointment-drawer")?.hide();
+    };
+
     const handleCancel = () => {
       const html =
         "<h3>Are you sure you want to cancel?</h3><br/>" +
@@ -334,6 +343,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
+      console.log(aptData.value);
       displayData.clinic_name = aptData.value.clinic_details?.name;
       displayData.appointment_type_name = aptData.value.appointment_type?.name;
       displayData.specialist_name = aptData.value.specialist_name;
@@ -357,6 +367,7 @@ export default defineComponent({
       handleCancel,
       handleCheckIn,
       handleCheckOut,
+      handleMove,
     };
   },
 });

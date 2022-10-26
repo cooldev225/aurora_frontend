@@ -14,6 +14,7 @@
       </FullCalendar>
     </template>
   </CardSection>
+  <MoveModal :isDisableAptTypeList="true" />
 </template>
 
 <script>
@@ -40,11 +41,13 @@ import {
 } from "@/store/enums/StoreAppointmentEnums";
 import AppointmentTableData from "./partials/AppointmentTableData.vue";
 import { Modal } from "bootstrap";
+import MoveModal from "@/components/appointments/AppointmentMoveModal.vue";
 
 export default defineComponent({
   components: {
     FullCalendar,
     AppointmentTableData,
+    MoveModal,
   },
   props: {
     visibleDate: { type: String, required: true },

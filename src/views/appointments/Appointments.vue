@@ -291,7 +291,7 @@
                           v-model="searchAppointmentForm.x_weeks"
                         >
                           <el-option
-                            v-for="(item, index) in x_weeks_list"
+                            v-for="(item, index) in aptWeeksList"
                             :value="index"
                             :label="item"
                             :key="item.id"
@@ -329,7 +329,7 @@
     :apt-type-list="aptTypelist"
     :clinic-list="clinic_list"
     :apt-time-require-list="aptTimeRequireList"
-    :x-weeks="x_weeks_list"
+    :x-weeks="aptWeeksList"
   />
 </template>
 <script>
@@ -354,6 +354,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { Modal } from "bootstrap";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
+import aptWeeksList from "@/core/data/apt-weeks";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -429,16 +430,7 @@ export default defineComponent({
       specialist_ids: [],
     });
 
-    const x_weeks_list = ref({
-      0: "This week",
-      1: "Next Week",
-      2: "In 2 weeks",
-      4: "In 4 weeks",
-      6: "In 6 weeks",
-      8: "In 2 months",
-      12: "In 3 months",
-      24: "In 6 months",
-    });
+    const tableTitle = ref("");
 
     const specialistsList = ref([]);
     const options = ref([]);
@@ -765,7 +757,7 @@ export default defineComponent({
       searchAppointmentForm,
       searchAppointmentRules,
       search_next_apts,
-      x_weeks_list,
+      aptWeeksList,
       clinic_list,
       aptTimeList,
       moment,
