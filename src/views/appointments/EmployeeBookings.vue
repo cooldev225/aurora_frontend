@@ -1,4 +1,5 @@
 <template>
+  <SignatureAlert></SignatureAlert>
   <!--begin::Card-->
   <div class="card">
     <!--begin::Card body-->
@@ -41,8 +42,10 @@ import {
   AppointmentActions,
   AppointmentMutations,
 } from "@/store/enums/StoreAppointmentEnums";
+import { Mutations, Actions } from "@/store/enums/StoreEnums";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import AppointmentDrawer from "@/components/specialist/AppointmentDrawer.vue";
+import SignatureAlert from "@/components/specialist/SignatureAlert.vue";
 
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -50,17 +53,20 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import moment from "moment";
+import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "employee-bookings-dashboard",
   components: {
     FullCalendar,
     AppointmentDrawer,
+    SignatureAlert,
   },
   setup() {
     const store = useStore();
     const userAptList = computed(() => store.getters.getAptList);
     const refCalendar = ref(null);
+    const isNoSignature = ref(false);
     const calendarKey = ref(0);
     const userProfile = computed(() => store.getters.userProfile);
     let appointments = [];
@@ -149,6 +155,19 @@ export default defineComponent({
       calendarKey.value++;
     });
 
+    watch(currentUser, () => {
+      if (!currentUser.value) {
+        store.dispatch(Actions.VERIFY_AUTH, {
+          api_token: JwtService.getToken(),
+        });
+      } else {
+        const role_id = currentUser.value.profile.role_id;
+        const signature = currentUser.value.profile.signature;
+        if (role_id === 5 && !signature) isNoSignature.value = true;
+        else isNoSignature.value = false;
+      }
+    });
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("My Bookings", ["Booking Dashboard"]);
     });
@@ -158,6 +177,7 @@ export default defineComponent({
       handleEventClick,
       refCalendar,
       calendarKey,
+      isNoSignature,
     };
   },
 });
