@@ -32,6 +32,10 @@ const PatientActions = {
     UPDATE: "updatePatientsBilling",
     DELETE: "deletePatientsBilling",
   },
+  ALSO_KNOWN_AS: {
+    CREATE: "createPatientAlsoKnownAs",
+    UPDATE: "updatePatientAlsoKnownAs",
+  },
 };
 
 const PatientMutations = {
