@@ -257,6 +257,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
+    const currentUser = computed(() => store.getters.currentUser);
     const selectedPatient = computed(() => store.getters.selectedPatient);
     const documents = computed(() => store.getters.documentsList);
     const selectedDocumentData = computed(
@@ -353,6 +354,12 @@ export default defineComponent({
           .then(() => {
             setSelectedDocumentId();
           });
+      }
+    });
+
+    watch(currentUser, () => {
+      if (currentUser.value) {
+        specialistFilter.value = currentUser.value.profile.id;
       }
     });
 
