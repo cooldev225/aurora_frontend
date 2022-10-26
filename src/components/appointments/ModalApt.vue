@@ -1105,7 +1105,7 @@
 </template>
 
 <style lang="scss">
-.modal.patient-alert .modal-footer {
+.special-patient-alerts .modal.patient-alert .modal-footer {
   display: none;
 }
 .exist-message {
