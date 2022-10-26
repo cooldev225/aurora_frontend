@@ -342,4 +342,30 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [PatientActions.ALSO_KNOWN_AS.DELETE](details) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.delete(`patients/also-known-as/${details.id}`)
+        .then(({ data }) => {
+          this.context.dispatch(PatientActions.VIEW, details.patient_id);
+          Swal.fire({
+            text: "Successfully Deleted!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-secondary",
+            },
+          });
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }
