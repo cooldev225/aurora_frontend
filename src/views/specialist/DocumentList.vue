@@ -50,7 +50,39 @@
             </el-option>
           </template>
         </el-select>
-
+        <!-- SPECIALIST FILTER SELECT-->
+        <el-select
+          v-if="specialists"
+          class="filter-appointment w-100 pb-6"
+          placeholder="Select Specialist"
+          v-model="specialistFilter"
+        >
+          <el-option value="ALL" label="ALL SPECIALISTS">
+            ALL Specialists
+          </el-option>
+          <template v-for="specialist in specialists" :key="specialist.id">
+            <el-option
+              :value="specialist.id"
+              :label="specialist.first_name + ' ' + specialist.last_name"
+            >
+            </el-option>
+          </template>
+        </el-select>
+        <div class="pb-5">
+          <el-switch
+            v-model="showUrgentOnly"
+            size="large"
+            active-text="Show Urgent Only"
+            inactive-text=""
+          />
+          <el-switch
+            class="mx-4"
+            v-model="showUnReadOnly"
+            size="large"
+            active-text="Show UnRead Only"
+            inactive-text=""
+          />
+        </div>
         <div
           v-if="documentList?.length === 0"
           class="d-flex justify-content-center align-items-center fs-3"
@@ -116,19 +148,40 @@
             <IconButton label="Print" @click="handlePrint" />
             <IconButton label="Email" @click="handleSendEmail" />
             <IconButton
-              v-if="userRole == 'specialist'"
+              v-if="userRole == 'specialist' && !selectedDocument.is_read"
               label="Mark Read"
-              @click="handleMarkRead"
+              @click="handleMarkRead(true)"
             />
             <IconButton
-              v-if="userRole == 'specialist'"
+              v-if="userRole == 'specialist' && selectedDocument.is_read"
+              label="Mark UnRead"
+              @click="handleMarkRead(false)"
+            />
+            <IconButton
+              v-if="userRole == 'specialist' && !selectedDocument.is_urgent"
               label="Mark Urgent"
-              @click="handleMarkUrgent"
+              @click="handleMarkUrgent(true)"
             />
             <IconButton
-              v-if="userRole == 'specialist'"
-              label="Flag Incorrectly assigned"
-              @click="handleMarkUrgent"
+              v-if="userRole == 'specialist' && selectedDocument.is_urgent"
+              label="Mark Not Urgent"
+              @click="handleMarkUrgent(false)"
+            />
+            <IconButton
+              v-if="
+                userRole == 'specialist' &&
+                !selectedDocument.is_incorrectly_assigned
+              "
+              label="Mark Incorrectly assigned"
+              @click="handleMarkCorrect(true)"
+            />
+            <IconButton
+              v-if="
+                userRole == 'specialist' &&
+                selectedDocument.is_incorrectly_assigned
+              "
+              label="Mark correctly assigned"
+              @click="handleMarkCorrect(false)"
             />
           </div>
           <!-- DOCUMENT VIEW DIV -->
@@ -184,6 +237,7 @@ import { Modal } from "bootstrap";
 import AssignPatientModal from "@/views/specialist/modals/AssignPatientModal.vue";
 import AssignSpecialistModal from "@/views/specialist/modals/AssignSpecialistModal.vue";
 import AssignAppointmentModal from "@/views/specialist/modals/AssignAppointmentModal.vue";
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
 
 export default defineComponent({
   name: "admin-main",
@@ -203,37 +257,71 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
+    const currentUser = computed(() => store.getters.currentUser);
     const selectedPatient = computed(() => store.getters.selectedPatient);
     const documents = computed(() => store.getters.documentsList);
     const selectedDocumentData = computed(
       () => store.getters.getSelectedDocument
     );
     const userRole = computed(() => store.getters.userRole);
+    const specialists = computed(() => store.getters.getSpecialistList);
+
     const filteredDocuments = ref();
     const documentTypeFilter = ref("ALL");
     const appointmentFilter = ref("ALL");
+    const specialistFilter = ref("ALL");
+
     const tempFile = ref();
     var selectedDocument = ref(null);
     var selectedDocumentId = ref(null);
     const showDocumentDetail = ref(true);
+
+    var showUrgentOnly = ref(false);
+    var showUnReadOnly = ref(false);
+
     // Filters the documents by appointment and document type.
-    watch([documentTypeFilter, appointmentFilter, documents], () => {
-      document.getElementById("document-view").innerHTML = "";
+    watch(
+      [
+        documentTypeFilter,
+        appointmentFilter,
+        specialistFilter,
+        showUrgentOnly,
+        showUnReadOnly,
+        documents,
+      ],
+      () => {
+        document.getElementById("document-view").innerHTML = "";
 
-      let temp = documents.value;
-      if (documentTypeFilter.value !== "ALL") {
-        temp = documents.value.filter(
-          (item) => item.document_type === documentTypeFilter.value
-        );
-      }
+        let temp = documents.value;
+        if (documentTypeFilter.value !== "ALL") {
+          temp = documents.value.filter(
+            (item) => item.document_type === documentTypeFilter.value
+          );
+        }
 
-      if (appointmentFilter.value !== "ALL") {
-        temp = temp?.filter(
-          (item) => item.appointment_id === appointmentFilter.value
-        );
+        if (appointmentFilter.value !== "ALL") {
+          temp = temp?.filter(
+            (item) => item.appointment_id === appointmentFilter.value
+          );
+        }
+
+        if (specialistFilter.value !== "ALL") {
+          temp = temp?.filter(
+            (item) => item.specialist_id === specialistFilter.value
+          );
+        }
+
+        if (showUrgentOnly.value) {
+          temp = temp?.filter((item) => item.is_urgent === 1);
+        }
+
+        if (showUnReadOnly.value) {
+          temp = temp?.filter((item) => item.is_read === 0);
+        }
+
+        filteredDocuments.value = temp;
       }
-      filteredDocuments.value = temp;
-    });
+    );
 
     const setSelectedDocument = () => {
       const temp = documents.value.filter(
@@ -266,6 +354,12 @@ export default defineComponent({
           .then(() => {
             setSelectedDocumentId();
           });
+      }
+    });
+
+    watch(currentUser, () => {
+      if (currentUser.value) {
+        specialistFilter.value = currentUser.value.profile.id;
       }
     });
 
@@ -375,9 +469,139 @@ export default defineComponent({
               (doc) => doc.id === selectedDocument.value.id
             );
           }
+        } else {
+          const tempId = selectedDocumentId.value;
+          selectedDocumentId.value = null;
+          // selectedDocument.value = null;
+          setTimeout(() => {
+            selectedDocumentId.value = tempId;
+          }, 500);
         }
       }
     };
+
+    const handleMarkRead = (flag) => {
+      const html =
+        "<h3>Are you sure you want to mark as " +
+        (flag ? '"Read"' : '"UnRead"') +
+        "?</h3>";
+      Swal.fire({
+        html: html,
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async () => {
+          store
+            .dispatch(DocumentActions.UPDATE, {
+              is_read: flag ? 1 : 0,
+              document_id: selectedDocument.value.id,
+              document_type: selectedDocument.value.document_type,
+              document_name: selectedDocument.value.document_name,
+            })
+            .then(() => {
+              store
+                .dispatch(DocumentActions.LIST, {
+                  is_missing_information: 1,
+                  origin: "RECEIVED",
+                })
+                .then(() => {
+                  setTimeout(() => {
+                    handleSetSelectedDocument();
+                  }, 200);
+                });
+            });
+        },
+      });
+    };
+
+    const handleMarkUrgent = (flag) => {
+      const html =
+        "<h3>Are you sure you want to mark as " +
+        (flag ? '"Urgent"' : '"Not Urgent"') +
+        "?</h3>";
+      Swal.fire({
+        html: html,
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async () => {
+          store
+            .dispatch(DocumentActions.UPDATE, {
+              is_urgent: flag ? 1 : 0,
+              document_id: selectedDocument.value.id,
+              document_type: selectedDocument.value.document_type,
+              document_name: selectedDocument.value.document_name,
+            })
+            .then(() => {
+              store
+                .dispatch(DocumentActions.LIST, {
+                  is_missing_information: 1,
+                  origin: "RECEIVED",
+                })
+                .then(() => {
+                  setTimeout(() => {
+                    handleSetSelectedDocument();
+                  }, 200);
+                });
+            });
+        },
+      });
+    };
+
+    const handleMarkCorrect = (flag) => {
+      const html =
+        "<h3>Are you sure you want to mark as " +
+        (flag ? '"Incorrectly Assigned"' : '"Correctly Assigned"') +
+        "?</h3>";
+      Swal.fire({
+        html: html,
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async () => {
+          store
+            .dispatch(DocumentActions.UPDATE, {
+              is_incorrectly_assigned: flag ? 1 : 0,
+              document_id: selectedDocument.value.id,
+              document_type: selectedDocument.value.document_type,
+              document_name: selectedDocument.value.document_name,
+            })
+            .then(() => {
+              store
+                .dispatch(DocumentActions.LIST, {
+                  is_missing_information: 1,
+                  origin: "RECEIVED",
+                })
+                .then(() => {
+                  setTimeout(() => {
+                    handleSetSelectedDocument();
+                  }, 200);
+                });
+            });
+        },
+      });
+    };
+
+    watchEffect(() => {
+      if (specialists.value.length === 0) {
+        store.dispatch(Actions.SPECIALIST.LIST);
+      }
+    });
 
     return {
       patientDocumentTypes,
@@ -396,6 +620,15 @@ export default defineComponent({
       selectedDocumentId,
       showDocumentDetail,
       userRole,
+
+      handleMarkRead,
+      handleMarkUrgent,
+      handleMarkCorrect,
+
+      showUrgentOnly,
+      showUnReadOnly,
+      specialists,
+      specialistFilter,
     };
   },
 });
