@@ -57,16 +57,18 @@ const props = defineProps({
 });
 const getAnesthetistName = () => {
   anesthetistName.value = null;
-  props.specialist.schedule_timeslots.map((slot) => {
-    if (
-      slot.anesthetist_id &&
-      slot.clinic_id === props.aptInfoData.clinic_id &&
-      props.startTime >= slot.start_time &&
-      props.aptInfoData.time_slot[1] < slot.end_time
-    ) {
-      anesthetistName.value = slot.anesthetist.full_name;
-    }
-  });
+  if (props.specialist.schedule_timeslots) {
+    props.specialist.schedule_timeslots.map((slot) => {
+      if (
+        slot.anesthetist_id &&
+        slot.clinic_id === props.aptInfoData.clinic_id &&
+        props.startTime >= slot.start_time &&
+        props.aptInfoData.time_slot[1] < slot.end_time
+      ) {
+        anesthetistName.value = slot.anesthetist.full_name;
+      }
+    });
+  }
 };
 watch(
   () => props.appointmentName,

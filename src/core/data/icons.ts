@@ -16,7 +16,9 @@ export const icons = {
   paper: "media/icons/duotune/general/gen005.svg", // Coding nav
   user: "media/icons/duotune/general/gen049.svg", // User Icon
   save: "media/icons/duotune/files/fil013.svg", // Save
-
+  left: "media/icons/duotune/arrows/arr022.svg", // Left
+  right: "media/icons/duotune/arrows/arr023.svg", // Right
+  next: "media/icons/duotune/arrows/arr064.svg", // Next
 };
 
 export default icons;
