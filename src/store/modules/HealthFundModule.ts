@@ -1,10 +1,11 @@
-import ApiService from "@/core/services/ApiService";
-import JwtService from "@/core/services/JwtService";
+import BillingApiService from "@/core/services/BillingApiService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
 export interface IHealthFunds {
   id: number;
+  name: string;
+  code: string;
 }
 
 export interface HealthFundsInfo {
@@ -32,20 +33,21 @@ export default class HealthFundsModule
   }
 
   @Action
-  [Actions.HEALTH_FUND.LIST]() {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.get("health-funds")
+  async [Actions.HEALTH_FUND.LIST]() {
+    if (await BillingApiService.setHeader()) {
+      return BillingApiService.get("api/health-funds")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_HEALTH_FUND.LIST, data.data);
-          return data.data;
+          if (data.success) {
+            this.context.commit(Mutations.SET_HEALTH_FUND.LIST, data.data.health_funds);
+          } else {
+            throw data;
+          }
         })
         .catch(({ response }) => {
           console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          // this.context.commit(Mutations.SET_ERROR, response.data.data);
+          return Promise.reject();
         });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
     }
   }
 }
