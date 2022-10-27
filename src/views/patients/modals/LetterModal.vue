@@ -109,7 +109,7 @@ export default defineComponent({
       document_type: "LETTER",
       patient_id: patientId.value,
       referring_doctor_name: "",
-      referring_doctor_id: "",
+      doctor_address_book_id: "",
       letter: "",
       title: "",
       body: "",
@@ -208,7 +208,7 @@ export default defineComponent({
     };
 
     const handleSelect = (item) => {
-      formData.value.referring_doctor_id = item.id;
+      formData.value.doctor_address_book_id = item.id;
     };
 
     onMounted(() => {

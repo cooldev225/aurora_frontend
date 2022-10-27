@@ -306,7 +306,7 @@ export default defineComponent({
     const loading = ref(false);
 
     const handleSelect = (item) => {
-      aptData.value.referring_doctor_id = item.id;
+      aptData.value.doctor_address_book_id = item.id;
     };
 
     let timeout;

@@ -275,10 +275,10 @@ export default defineComponent({
     const loading = ref(false);
 
     const formInfo = reactive({
-      title: "Create Referring Doctor",
+      title: "Create Doctor Address Book",
       submitAction: Actions.REFERRAL_DOCTOR.CREATE,
       submitButtonName: "CREATE",
-      submittedText: "New Referring Doctor Created",
+      submittedText: "New Doctor Address Book Created",
     });
 
     const formData = ref({
@@ -424,10 +424,10 @@ export default defineComponent({
         if (item.id == id) {
           formData.value = item;
 
-          formInfo.title = "Edit Referring Doctor";
+          formInfo.title = "Edit Doctor Address Book";
           formInfo.submitAction = Actions.REFERRAL_DOCTOR.UPDATE;
           formInfo.submitButtonName = "UPDATE";
-          formInfo.submittedText = "Referring Doctor Updated";
+          formInfo.submittedText = "Doctor Address Book Updated";
         }
       });
 

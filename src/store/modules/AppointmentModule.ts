@@ -303,7 +303,6 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [AppointmentActions.REFERRAL.UPDATE](data) {
-    console.log(data);
     return ApiService.post(
       "appointments/referral/" + data.appointment_id,
       data.submitData,

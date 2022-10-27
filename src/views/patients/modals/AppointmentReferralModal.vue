@@ -41,7 +41,7 @@
             <InputWrapper
               required
               class="col-6"
-              label="Referring Doctor"
+              label="Doctor Address Book"
               prop="referring_doctor"
             >
               <el-autocomplete
@@ -170,6 +170,7 @@ import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { mask } from "vue-the-mask";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import pdf from "pdfobject";
+import moment from "moment";
 
 export default defineComponent({
   name: "update-appointment-referral-modal",
@@ -196,17 +197,17 @@ export default defineComponent({
 
     const formData = ref({
       referring_doctor_name: "",
-      referring_doctor_id: "2",
+      doctor_address_book_id: "2",
       referral_date: "",
       referral_duration: "",
       file: [],
     });
 
     const rules = ref({
-      referring_doctor_id: [
+      doctor_address_book_id: [
         {
           required: true,
-          message: "Referring doctor cannot be blank",
+          message: "Doctor address book cannot be blank",
           trigger: "change",
         },
       ],
@@ -251,8 +252,8 @@ export default defineComponent({
             console.log("pdf error");
           });
       }
-      formData.value.referring_doctor_id =
-        appointmentData.value.referral.referring_doctor_id;
+      formData.value.doctor_address_book_id =
+        appointmentData.value.referral.doctor_address_book_id;
       formData.value.referring_doctor_name =
         appointmentData.value.referral.referring_doctor_name;
       formData.value.referral_duration =
@@ -289,10 +290,13 @@ export default defineComponent({
 
           submitData.append("file", formData.value.file[0]?.raw);
           submitData.append(
-            "referring_doctor_id",
-            formData.value.referring_doctor_id
+            "doctor_address_book_id",
+            formData.value.doctor_address_book_id
           );
-          submitData.append("referral_date", formData.value.referral_date);
+          submitData.append(
+            "referral_date",
+            moment(formData.value.referral_date).format("YYYY-MM-DD")
+          );
           submitData.append(
             "referral_duration",
             formData.value.referral_duration
@@ -333,8 +337,8 @@ export default defineComponent({
     };
 
     const handleReferringDoctorSelect = (item) => {
-      appointmentData.value.referring_doctor_id = item.id;
-      formData.value.referring_doctor_id = item.id;
+      appointmentData.value.doctor_address_book_id = item.id;
+      formData.value.doctor_address_book_id = item.id;
     };
 
     let timeout;

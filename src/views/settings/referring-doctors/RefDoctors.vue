@@ -9,8 +9,8 @@
           <input
             type="text"
             data-kt-subscription-table-filter="search"
-            class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Referring Doctors"
+            class="form-control form-control-solid w-350px ps-14"
+            placeholder="Search Doctor Address Books"
             v-model="filterAndSort.searchText"
           />
         </div>
@@ -162,7 +162,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Referring Doctors", ["Settings"]);
+      setCurrentPageBreadcrumbs("Doctor Address Books", ["Settings"]);
     });
 
     watchEffect(() => {

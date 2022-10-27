@@ -66,7 +66,7 @@
         to="/settings/referring-doctors"
         class="btn btn-light-primary m-2"
       >
-        Referring Doctors
+        Doctor Address Books
       </router-link>
       <router-link
         to="/settings/header-footer-templates"

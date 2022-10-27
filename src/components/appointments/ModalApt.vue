@@ -962,8 +962,8 @@
                           <template v-else>
                             <InputWrapper
                               class="col-6"
-                              label="Referring Doctor"
-                              prop="referring_doctor_id"
+                              label="Doctor Address Book"
+                              prop="doctor_address_book_id"
                             >
                               <el-autocomplete
                                 class="w-100"
@@ -1223,7 +1223,7 @@ export default defineComponent({
       anesthetic_questions: false,
       anesthetic_answers: [],
       referring_doctor_name: "",
-      referring_doctor_id: "",
+      doctor_address_book_id: "",
       referral_duration: "",
       referral_date: "",
       no_referral: false,
@@ -2041,7 +2041,7 @@ export default defineComponent({
     };
 
     const handleSelectReferringDoctor = (item) => {
-      otherInfoData.value.referring_doctor_id = item.id;
+      otherInfoData.value.doctor_address_book_id = item.id;
     };
 
     let timeout;
