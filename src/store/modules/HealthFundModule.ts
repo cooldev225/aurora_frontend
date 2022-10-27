@@ -38,7 +38,10 @@ export default class HealthFundsModule
       return BillingApiService.get("api/health-funds")
         .then(({ data }) => {
           if (data.success) {
-            this.context.commit(Mutations.SET_HEALTH_FUND.LIST, data.data.health_funds);
+            this.context.commit(
+              Mutations.SET_HEALTH_FUND.LIST,
+              data.data.health_funds
+            );
           } else {
             throw data;
           }
