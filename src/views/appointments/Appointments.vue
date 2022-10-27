@@ -342,6 +342,7 @@ import {
   onMounted,
   computed,
   watchEffect,
+  onUpdated,
 } from "vue";
 import { useStore } from "vuex";
 import AppointmentListPopup from "@/components/appointments/AppointmentListPopup.vue";
@@ -356,6 +357,7 @@ import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { Modal } from "bootstrap";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import aptWeeksList from "@/core/data/apt-weeks";
+import $ from "jquery";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -455,14 +457,38 @@ export default defineComponent({
 
     onMounted(() => {
       toggleLayout.value = false;
+      const formattedDate = moment().format("YYYY-MM-DD").toString();
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
-      store.dispatch(
-        Actions.SPECIALIST.LIST,
-        moment().format("YYYY-MM-DD").toString()
-      );
+      store.dispatch(Actions.SPECIALIST.LIST, formattedDate);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
+      store.dispatch(AppointmentActions.LIST, { date: formattedDate });
+    });
+
+    onUpdated(() => {
+      $(".fc-next-button")
+        .off()
+        .on("click", () => {
+          visibleDate.value.date = moment(visibleDate.value.date).add(
+            "days",
+            1
+          );
+        });
+      $(".fc-prev-button")
+        .off()
+        .on("click", () => {
+          visibleDate.value.date = moment(visibleDate.value.date).subtract(
+            "days",
+            1
+          );
+        });
+
+      $(".fc-today-button")
+        .off()
+        .on("click", () => {
+          visibleDate.value.date = moment();
+        });
     });
 
     const selectedClinicIds = computed(() => {
@@ -534,9 +560,10 @@ export default defineComponent({
     watch(date_search, () => {
       visibleDate.value = date_search;
       const formattedDate = moment(date_search.date)
-        .format("Y-MM-DD")
+        .format("YYYY-MM-DD")
         .toString();
       store.dispatch(Actions.SPECIALIST.LIST, formattedDate);
+      store.dispatch(AppointmentActions.LIST, { date: formattedDate });
       getFilterSpecialists();
       filterSpecialists();
     });
