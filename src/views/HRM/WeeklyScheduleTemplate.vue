@@ -51,7 +51,6 @@
     :clinicFilter="clinicFilter"
   />
 </template>
-
 <script>
 import { defineComponent, onMounted, computed, watch, ref } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
