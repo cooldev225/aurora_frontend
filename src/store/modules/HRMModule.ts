@@ -22,6 +22,7 @@ export interface IHRMWeeklyScheduleTemplates {
   hrmScheduleSelectData: IHRMWeeklyScheduleTemplate;
   hrmTimeslotSelectData: Array<IHRMWeeklyScheduleTimeslot>;
   hrmAnesthetists: Array<IHRMWeeklyScheduleTemplate>;
+  hrmWeeklyTemplateData: Array<IHRMWeeklyScheduleTemplate>;
 }
 
 @Module
@@ -33,6 +34,7 @@ export default class HRMModule
   hrmScheduleSelectData = {} as IHRMWeeklyScheduleTemplate;
   hrmTimeslotSelectData = [] as Array<IHRMWeeklyScheduleTimeslot>;
   hrmAnesthetists = [] as Array<IHRMWeeklyScheduleTemplate>;
+  hrmWeeklyTemplateData = [] as Array<IHRMWeeklyScheduleTemplate>;
 
   get hrmScheduleList(): Array<IHRMWeeklyScheduleTemplate> {
     return this.hrmScheduleData;
@@ -48,6 +50,10 @@ export default class HRMModule
 
   get hrmAnesthetist(): Array<IHRMWeeklyScheduleTimeslot> {
     return this.hrmAnesthetists;
+  }
+
+  get hrmWeeklyTemplatesData(): Array<IHRMWeeklyScheduleTemplate> {
+    return this.hrmWeeklyTemplateData;
   }
 
   @Mutation
@@ -70,11 +76,16 @@ export default class HRMModule
     this.hrmAnesthetists = data;
   }
 
+  @Mutation
+  [HRMMutations.WEEKLY_TEMPLATE.SET_LIST](data) {
+    this.hrmWeeklyTemplateData = data;
+  }
+
   @Action
   [HRMActions.SCHEDULE_TEMPLATE.LIST](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("hrm/hrm-schedule-timeslot", {
+      ApiService.query("hrm/schedule-template", {
         params: {
           clinic_id: data.clinic_id,
         },
@@ -98,7 +109,7 @@ export default class HRMModule
   [HRMActions.SCHEDULE_TEMPLATE.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("hrm/hrm-schedule-timeslot", item)
+      ApiService.post("hrm/schedule-template", item)
         .then(({ data }) => {
           return data.data;
         })
@@ -114,7 +125,7 @@ export default class HRMModule
   [HRMActions.SCHEDULE_TEMPLATE.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("hrm/hrm-schedule-timeslot", item.id, item)
+      ApiService.update("hrm/schedule-template", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
@@ -140,6 +151,27 @@ export default class HRMModule
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [HRMActions.WEEKLY_TEMPLATE.LIST](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.query("hrm/weekly-schedule", {
+        params: {
+          date: data.date,
+        },
+      })
+        .then(({ data }) => {
+          // this.context.commit(HRMMutations.WEEKLY_TEMPLATE.SET_LIST, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      // this.context.commit(Mutations.PURGE_AUTH);
     }
   }
 }
