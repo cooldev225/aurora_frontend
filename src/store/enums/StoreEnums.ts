@@ -70,7 +70,8 @@ const Actions = {
       CREATE: "createClinicsRooms",
       DELETE: "deleteClinicsRooms",
       UPDATE: "updateClinicsRooms",
-    }
+    },
+    MINOR_ID: "createClinicMinorId",
   },
 
 
@@ -238,6 +239,7 @@ const Mutations = {
     SELECT: "setSelectClinics",
     LISTROOMS: "setClinicsRoomsList",
     SELECTROOMS: "setSelectClinicsRooms",
+    MINOR_ID: "setClinicMinorId",
   },
 
   SET_BIRTH_CODE: {
