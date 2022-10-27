@@ -42,7 +42,6 @@ import {
 import AppointmentTableData from "./partials/AppointmentTableData.vue";
 import { Modal } from "bootstrap";
 import MoveModal from "@/components/appointments/AppointmentMoveModal.vue";
-
 export default defineComponent({
   components: {
     FullCalendar,
@@ -62,11 +61,6 @@ export default defineComponent({
     const appointmentsRaw = computed(() => store.getters.getAptList);
     const appointments = ref([]);
     const allSpecialists = computed(() => store.getters.getSpecialistList);
-
-    watch(props, () => {
-      let date = moment(props.visibleDate.date).format("YYYY-MM-DD");
-      store.dispatch(AppointmentActions.LIST, { date: date });
-    });
 
     onMounted(() => {
       store.dispatch(AppointmentActions.LIST, { date: props.visibleDate.date });
