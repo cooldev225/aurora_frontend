@@ -27,7 +27,7 @@ export default class PatientsAlertModule extends VuexModule {
     console.log(data);
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.put("patients/alerts/" + data.patient_alert_id, data)
+      return ApiService.put("patients/alerts/" + data.patient_alert_id, data)
         .then(({ data }) => {
           return data.data;
         })
