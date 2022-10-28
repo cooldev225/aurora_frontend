@@ -67,7 +67,7 @@
                           class="w-100"
                           v-model="aptData.referring_doctor_name"
                           value-key="full_name"
-                          :fetch-suggestions="searchReferralDoctor"
+                          :fetch-suggestions="searchDoctorAddressBook"
                           placeholder="Please input"
                           :trigger-on-focus="false"
                           @select="handleSelect"
@@ -300,7 +300,9 @@ export default defineComponent({
     const store = useStore();
     const aptData = computed(() => store.getters.getAptSelected);
     const searchVal = computed(() => store.getters.getSearchVariable);
-    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const doctorAddressBooks = computed(
+      () => store.getters.getReferralDoctorList
+    );
     const checkInAptModalRef = ref(null);
     const router = useRouter();
     const loading = ref(false);
@@ -310,10 +312,10 @@ export default defineComponent({
     };
 
     let timeout;
-    const searchReferralDoctor = (term, cb) => {
+    const searchDoctorAddressBook = (term, cb) => {
       const results = term
-        ? referralDoctors.value.filter(createFilter(term))
-        : referralDoctors.value;
+        ? doctorAddressBooks.value.filter(createFilter(term))
+        : doctorAddressBooks.value;
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -323,17 +325,17 @@ export default defineComponent({
 
     const createFilter = (term) => {
       const keyword = term.toString();
-      return (referralDoctor) => {
+      return (doctorAddressBook) => {
         const full_name =
-          referralDoctor.title +
+          doctorAddressBook.title +
           " " +
-          referralDoctor.first_name +
+          doctorAddressBook.first_name +
           " " +
-          referralDoctor.last_name;
+          doctorAddressBook.last_name;
         const full_name_pos = full_name
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
-        const address_pos = referralDoctor.address
+        const address_pos = doctorAddressBook.address
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
         return full_name_pos !== -1 || address_pos !== -1;
@@ -374,7 +376,7 @@ export default defineComponent({
       aptData,
       handleClickReferralFile,
       handleCheckIn,
-      searchReferralDoctor,
+      searchDoctorAddressBook,
       handleSelect,
       checkInAptModalRef,
       loading,

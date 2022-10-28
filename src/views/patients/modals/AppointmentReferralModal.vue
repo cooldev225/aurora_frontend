@@ -42,16 +42,16 @@
               required
               class="col-6"
               label="Doctor Address Book"
-              prop="referring_doctor"
+              prop="doctor_address_book"
             >
               <el-autocomplete
                 class="w-100"
                 v-model="formData.referring_doctor_name"
                 value-key="full_name"
-                :fetch-suggestions="searchReferringDoctor"
+                :fetch-suggestions="searchDoctorAddressBook"
                 placeholder="Please input"
                 :trigger-on-focus="false"
-                @select="handleReferringDoctorSelect"
+                @select="handledoctorAddressBookselect"
               >
                 <template #default="{ item }">
                   <div class="name">
@@ -191,7 +191,7 @@ export default defineComponent({
     const pdfType = "application/pdf";
 
     const appointmentData = computed(() => props.selectedApt);
-    const referringDoctors = computed(
+    const doctorAddressBooks = computed(
       () => store.getters.getReferralDoctorList
     );
 
@@ -336,16 +336,16 @@ export default defineComponent({
       });
     };
 
-    const handleReferringDoctorSelect = (item) => {
+    const handledoctorAddressBookselect = (item) => {
       appointmentData.value.doctor_address_book_id = item.id;
       formData.value.doctor_address_book_id = item.id;
     };
 
     let timeout;
-    const searchReferringDoctor = (term, cb) => {
+    const searchDoctorAddressBook = (term, cb) => {
       const results = term
-        ? referringDoctors.value.filter(createFilter(term))
-        : referringDoctors.value;
+        ? doctorAddressBooks.value.filter(createFilter(term))
+        : doctorAddressBooks.value;
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -355,17 +355,17 @@ export default defineComponent({
 
     const createFilter = (term) => {
       const keyword = term.toString();
-      return (referralDoctor) => {
+      return (doctorAddressBook) => {
         const full_name =
-          referralDoctor.title +
+          doctorAddressBook.title +
           " " +
-          referralDoctor.first_name +
+          doctorAddressBook.first_name +
           " " +
-          referralDoctor.last_name;
+          doctorAddressBook.last_name;
         const full_name_pos = full_name
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
-        const address_pos = referralDoctor.address
+        const address_pos = doctorAddressBook.address
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
         return full_name_pos !== -1 || address_pos !== -1;
@@ -396,8 +396,8 @@ export default defineComponent({
     return {
       handleUploadChange,
       handleUploadRemove,
-      handleReferringDoctorSelect,
-      searchReferringDoctor,
+      handledoctorAddressBookselect,
+      searchDoctorAddressBook,
       formData,
       rules,
       submit,

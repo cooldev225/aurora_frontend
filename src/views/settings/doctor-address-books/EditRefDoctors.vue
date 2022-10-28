@@ -192,7 +192,7 @@
           <!--begin::Button-->
           <router-link
             type="reset"
-            to="/settings/referring-doctors"
+            to="/settings/doctor-address-books"
             class="btn btn-light me-3"
           >
             Cancel
@@ -257,7 +257,7 @@ import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 
 export default defineComponent({
-  name: "edit-referring-doctors",
+  name: "edit-doctor-address-books",
   directives: {
     mask,
   },
@@ -269,7 +269,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const formRef = ref(null);
-    const referringDoctors = computed(
+    const doctorAddressBooks = computed(
       () => store.getters.getReferralDoctorList
     );
     const loading = ref(false);
@@ -417,10 +417,10 @@ export default defineComponent({
       ],
     });
 
-    watch(referringDoctors, () => {
+    watch(doctorAddressBooks, () => {
       const id = route.params.id;
 
-      referringDoctors.value.forEach((item) => {
+      doctorAddressBooks.value.forEach((item) => {
         if (item.id == id) {
           formData.value = item;
 

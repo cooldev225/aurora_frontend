@@ -247,7 +247,7 @@
                   .toString()
               }}</InfoSection
             >
-            <InfoSection heading="Referring Doctor">
+            <InfoSection heading="Doctor Address Book">
               {{ appointmentData?.referral?.referring_doctor_name }}
             </InfoSection>
           </div>
@@ -517,7 +517,7 @@ export default defineComponent({
             title: formData.value.title,
             patient_id: patientList.value.id,
             reportData: reportData,
-            referringDoctor:
+            doctorAddressBook:
               appointmentData.value.referral.referring_doctor_name,
             patientName:
               patientData.value.first_name + " " + patientData.value.last_name,

@@ -63,7 +63,7 @@
         <h3 class="card-title">General Settings</h3>
       </div>
       <router-link
-        to="/settings/referring-doctors"
+        to="/settings/doctor-address-books"
         class="btn btn-light-primary m-2"
       >
         Doctor Address Books

@@ -969,10 +969,10 @@
                                 class="w-100"
                                 v-model="otherInfoData.referring_doctor_name"
                                 value-key="full_name"
-                                :fetch-suggestions="searchReferralDoctor"
+                                :fetch-suggestions="searchDoctorAddressBook"
                                 placeholder="Please input"
                                 :trigger-on-focus="false"
-                                @select="handleSelectReferringDoctor"
+                                @select="handleSelectDoctorAddressBook"
                               >
                                 <template #default="{ item }">
                                   <div class="name">
@@ -1180,7 +1180,9 @@ export default defineComponent({
     const formRef_4 = ref(null);
     const loading = ref(false);
     const tableKey = ref(0);
-    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const doctorAddressBooks = computed(
+      () => store.getters.getReferralDoctorList
+    );
     const router = useRouter();
     const claimSourceModal = ref(null);
 
@@ -2040,15 +2042,15 @@ export default defineComponent({
       console.log(["patientAptData", patientAptData.value]);
     };
 
-    const handleSelectReferringDoctor = (item) => {
+    const handleSelectDoctorAddressBook = (item) => {
       otherInfoData.value.doctor_address_book_id = item.id;
     };
 
     let timeout;
-    const searchReferralDoctor = (term, cb) => {
+    const searchDoctorAddressBook = (term, cb) => {
       const results = term
-        ? referralDoctors.value.filter(createReferringDotorFilter(term))
-        : referralDoctors.value;
+        ? doctorAddressBooks.value.filter(createDotorAddressBookFilter(term))
+        : doctorAddressBooks.value;
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -2056,7 +2058,7 @@ export default defineComponent({
       }, 1000);
     };
 
-    const createReferringDotorFilter = (term) => {
+    const createDotorAddressBookFilter = (term) => {
       const keyword = term.toString();
       return (referralDoctor) => {
         const full_name =
@@ -2136,8 +2138,8 @@ export default defineComponent({
       formatDate,
       patientAptData,
       overlapping_cnt,
-      searchReferralDoctor,
-      handleSelectReferringDoctor,
+      searchDoctorAddressBook,
+      handleSelectDoctorAddressBook,
       tableKey,
       gotoPage,
       editAptRef,

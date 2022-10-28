@@ -85,7 +85,7 @@
                   class="w-100"
                   v-model="formData.referral_doctor_name"
                   value-key="full_name"
-                  :fetch-suggestions="searchReferralDoctor"
+                  :fetch-suggestions="searchDoctorAddressBook"
                   placeholder="Enter Doctor Name"
                   :trigger-on-focus="true"
                   @select="handleSelect"
@@ -197,7 +197,9 @@ export default defineComponent({
     const referralModalRef = ref(null);
     const loading = ref(false);
     const patientId = computed(() => props.patientId);
-    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const doctorAddressBooks = computed(
+      () => store.getters.getReferralDoctorList
+    );
     const appointments = computed(() => store.getters.getAptList);
 
     const formData = ref({
@@ -245,10 +247,10 @@ export default defineComponent({
     };
 
     let timeout;
-    const searchReferralDoctor = (term, cb) => {
+    const searchDoctorAddressBook = (term, cb) => {
       const results = term
-        ? referralDoctors.value.filter(createFilter(term))
-        : referralDoctors.value;
+        ? doctorAddressBooks.value.filter(createFilter(term))
+        : doctorAddressBooks.value;
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -258,17 +260,17 @@ export default defineComponent({
 
     const createFilter = (term) => {
       const keyword = term.toString();
-      return (referralDoctor) => {
+      return (doctorAddressBook) => {
         const full_name =
-          referralDoctor.title +
+          doctorAddressBook.title +
           " " +
-          referralDoctor.first_name +
+          doctorAddressBook.first_name +
           " " +
-          referralDoctor.last_name;
+          doctorAddressBook.last_name;
         const full_name_pos = full_name
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
-        const address_pos = referralDoctor.address
+        const address_pos = doctorAddressBook.address
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
         return full_name_pos !== -1 || address_pos !== -1;
@@ -292,9 +294,10 @@ export default defineComponent({
         (a) => a.id == formData.value.appointment_id
       );
       if (apt.length) {
-        formData.value.referral_doctor_id = apt[0].referral.referring_doctor.id;
+        formData.value.referral_doctor_id =
+          apt[0].referral.doctor_address_book.id;
         formData.value.referral_doctor_name =
-          apt[0].referral.referring_doctor.full_name;
+          apt[0].referral.doctor_address_book.full_name;
       }
     };
 
@@ -316,11 +319,11 @@ export default defineComponent({
       formRef,
       loading,
       ClassicEditor,
-      referralDoctors,
+      doctorAddressBooks,
       referralModalRef,
       submit,
       handleSelect,
-      searchReferralDoctor,
+      searchDoctorAddressBook,
       handleInvest,
       appointments,
       toggleLetterRferralHandle,

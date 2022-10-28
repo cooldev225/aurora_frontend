@@ -148,10 +148,10 @@ const Actions = {
 
 
   REFERRAL_DOCTOR: {
-    LIST: "searchReferralDoctor", // (get) 'referring-doctors'
-    CREATE: "createReferralDoctor",
-    DELETE: "deleteReferralDoctor",
-    UPDATE: "updateReferralDoctor",
+    LIST: "searchDoctorAddressBook", // (get) 'doctor-address-books'
+    CREATE: "createDoctorAddressBook",
+    DELETE: "deleteDoctorAddressBook",
+    UPDATE: "updateDoctorAddressBook",
   },
 
   LETTER_TEMPLATE: {
@@ -266,7 +266,7 @@ const Mutations = {
 
 
   SET_REFERRAL_DOCTOR: {
-    LIST: "setReferralDoctor",
+    LIST: "setDoctorAddressBook",
   },
 
   SET_LETTER_TEMPLATE: {

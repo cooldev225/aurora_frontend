@@ -18,7 +18,7 @@
       <!--begin::Add button-->
       <div class="card-toolbar">
         <router-link
-          to="/settings/referring-doctors/create"
+          to="/settings/doctor-address-books/create"
           type="button"
           class="text-nowrap btn btn-light-primary ms-auto"
         >
@@ -92,7 +92,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "referring-doctors",
+  name: "doctor-address-books",
 
   components: {
     Datatable,
@@ -133,7 +133,7 @@ export default defineComponent({
     const tableData = ref([]);
     const filteredData = ref([]);
     const loading = ref(true);
-    const referringDoctors = computed(
+    const doctorAddressBooks = computed(
       () => store.getters.getReferralDoctorList
     );
 
@@ -166,13 +166,13 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      tableData.value = referringDoctors;
+      tableData.value = doctorAddressBooks;
       loading.value = false;
     });
 
     const applyFilterAndSort = () => {
       if (filterAndSort.searchText != "") {
-        filteredData.value = referringDoctors.value.filter((org) => {
+        filteredData.value = doctorAddressBooks.value.filter((org) => {
           if (
             org.provider_no
               .toLowerCase()
@@ -192,7 +192,7 @@ export default defineComponent({
           return false;
         });
       } else {
-        filteredData.value = referringDoctors.value;
+        filteredData.value = doctorAddressBooks.value;
       }
       tableData.value = filteredData;
     };
