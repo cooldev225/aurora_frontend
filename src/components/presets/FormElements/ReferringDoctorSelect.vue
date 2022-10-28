@@ -26,7 +26,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const doctorAddressBooks = computed(
-      () => store.getters.getReferralDoctorList
+      () => store.getters.getDoctorAddressBookList
     );
 
     let timeout;

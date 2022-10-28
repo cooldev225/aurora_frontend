@@ -270,13 +270,13 @@ export default defineComponent({
     const route = useRoute();
     const formRef = ref(null);
     const doctorAddressBooks = computed(
-      () => store.getters.getReferralDoctorList
+      () => store.getters.getDoctorAddressBookList
     );
     const loading = ref(false);
 
     const formInfo = reactive({
       title: "Create Doctor Address Book",
-      submitAction: Actions.REFERRAL_DOCTOR.CREATE,
+      submitAction: Actions.DOCTOR_ADDRESS_BOOK.CREATE,
       submitButtonName: "CREATE",
       submittedText: "New Doctor Address Book Created",
     });
@@ -425,7 +425,7 @@ export default defineComponent({
           formData.value = item;
 
           formInfo.title = "Edit Doctor Address Book";
-          formInfo.submitAction = Actions.REFERRAL_DOCTOR.UPDATE;
+          formInfo.submitAction = Actions.DOCTOR_ADDRESS_BOOK.UPDATE;
           formInfo.submitButtonName = "UPDATE";
           formInfo.submittedText = "Doctor Address Book Updated";
         }
@@ -441,7 +441,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
     });
 
     const submit = () => {
@@ -466,7 +466,7 @@ export default defineComponent({
             .dispatch(formInfo.submitAction, Data)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+              store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
               Swal.fire({
                 text: formInfo.submittedText,
                 icon: "success",

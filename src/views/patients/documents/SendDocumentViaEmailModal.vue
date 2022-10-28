@@ -68,7 +68,7 @@ export default defineComponent({
     const documentId = computed(() => props.document.id);
     // const patientId = computed(() => props.patientId);
     const doctorAddressBooks = computed(
-      () => store.getters.getReferralDoctorList
+      () => store.getters.getDoctorAddressBookList
     );
     // const sendableUsers = computed(() => store.getters.getUserList);
 
@@ -85,7 +85,7 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      referral_doctor: [
+      doctor_address_book: [
         {
           required: true,
           message: "This field cannot be blank",
@@ -137,7 +137,7 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch(Actions.USER_LIST);
-      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
     });
 
     return {

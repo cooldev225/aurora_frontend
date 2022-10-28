@@ -134,7 +134,7 @@ export default defineComponent({
     const filteredData = ref([]);
     const loading = ref(true);
     const doctorAddressBooks = computed(
-      () => store.getters.getReferralDoctorList
+      () => store.getters.getDoctorAddressBookList
     );
 
     const handleEdit = (item) => {
@@ -143,9 +143,9 @@ export default defineComponent({
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.REFERRAL_DOCTOR.DELETE, id)
+        .dispatch(Actions.DOCTOR_ADDRESS_BOOK.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+          store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",

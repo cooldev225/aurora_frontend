@@ -192,7 +192,7 @@ export default defineComponent({
 
     const appointmentData = computed(() => props.selectedApt);
     const doctorAddressBooks = computed(
-      () => store.getters.getReferralDoctorList
+      () => store.getters.getDoctorAddressBookList
     );
 
     const formData = ref({

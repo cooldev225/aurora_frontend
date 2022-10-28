@@ -1181,7 +1181,7 @@ export default defineComponent({
     const loading = ref(false);
     const tableKey = ref(0);
     const doctorAddressBooks = computed(
-      () => store.getters.getReferralDoctorList
+      () => store.getters.getDoctorAddressBookList
     );
     const router = useRouter();
     const claimSourceModal = ref(null);
@@ -1715,7 +1715,7 @@ export default defineComponent({
       setTitle();
       _stepperObj.value = StepperComponent.createInstance(createAptRef.value);
       if (props.modalId === "modal_create_apt") {
-        store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+        store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
       }
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);

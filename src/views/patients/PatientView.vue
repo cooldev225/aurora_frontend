@@ -269,7 +269,7 @@ export default defineComponent({
     };
 
     const handleReferral = () => {
-      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
       const modal = new Modal(document.getElementById("modal_referral"));
       modal.show();
     };

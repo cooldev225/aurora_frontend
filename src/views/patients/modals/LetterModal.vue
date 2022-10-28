@@ -26,7 +26,7 @@
           </el-select>
         </InputWrapper>
 
-        <InputWrapper label="Referral Doctor" prop="referral_doctor">
+        <InputWrapper label="Doctor Address Book" prop="doctor_address_book">
           <el-autocomplete
             class="w-100"
             v-model="formData.referring_doctor_name"
@@ -101,7 +101,7 @@ export default defineComponent({
     const letter_template = ref("");
     const patientId = computed(() => props.patientId);
     const doctorAddressBooks = computed(
-      () => store.getters.getReferralDoctorList
+      () => store.getters.getDoctorAddressBookList
     );
     const letterTemplates = computed(() => store.getters.getLetterTemplateList);
 
@@ -125,7 +125,7 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      referral_doctor: [
+      doctor_address_book: [
         {
           required: true,
           message: "This field cannot be blank",
@@ -215,7 +215,7 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch(Actions.LETTER_TEMPLATE.LIST);
-      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
     });
 
     watch(letter_template, () => {

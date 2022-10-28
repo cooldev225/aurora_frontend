@@ -3,41 +3,44 @@ import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
-export interface IReferralDoctor {
+export interface IDoctorAddressBook {
   id: number;
 }
 
-export interface ReferralDoctorInfo {
-  referralDoctorData: Array<IReferralDoctor>;
+export interface DoctorAddressBookInfo {
+  doctorAddressBookData: Array<IDoctorAddressBook>;
 }
 
 @Module
-export default class ReferralDoctorModule
+export default class DoctorAddressBookModule
   extends VuexModule
-  implements ReferralDoctorInfo
+  implements DoctorAddressBookInfo
 {
-  referralDoctorData = [] as Array<IReferralDoctor>;
+  doctorAddressBookData = [] as Array<IDoctorAddressBook>;
 
   /**
    * Get current user object
    * @returns AdminList
    */
-  get getReferralDoctorList(): Array<IReferralDoctor> {
-    return this.referralDoctorData;
+  get getDoctorAddressBookList(): Array<IDoctorAddressBook> {
+    return this.doctorAddressBookData;
   }
 
   @Mutation
-  [Mutations.SET_REFERRAL_DOCTOR.LIST](referralDoctorData) {
-    this.referralDoctorData = referralDoctorData;
+  [Mutations.SET_DOCTOR_ADDRESS_BOOK.LIST](doctorAddressBookData) {
+    this.doctorAddressBookData = doctorAddressBookData;
   }
 
   @Action
-  [Actions.REFERRAL_DOCTOR.LIST]() {
+  [Actions.DOCTOR_ADDRESS_BOOK.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.get("doctor-address-book")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_REFERRAL_DOCTOR.LIST, data.data);
+          this.context.commit(
+            Mutations.SET_DOCTOR_ADDRESS_BOOK.LIST,
+            data.data
+          );
           return data.data;
         })
         .catch(({ response }) => {
@@ -49,7 +52,7 @@ export default class ReferralDoctorModule
   }
 
   @Action
-  [Actions.REFERRAL_DOCTOR.CREATE](item) {
+  [Actions.DOCTOR_ADDRESS_BOOK.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("doctor-address-book", item)
@@ -65,7 +68,7 @@ export default class ReferralDoctorModule
   }
 
   @Action
-  [Actions.REFERRAL_DOCTOR.UPDATE](item) {
+  [Actions.DOCTOR_ADDRESS_BOOK.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("doctor-address-book", item.id, item)
@@ -81,7 +84,7 @@ export default class ReferralDoctorModule
   }
 
   @Action
-  [Actions.REFERRAL_DOCTOR.DELETE](id) {
+  [Actions.DOCTOR_ADDRESS_BOOK.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("doctor-address-book/" + id)

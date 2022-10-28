@@ -59,10 +59,12 @@
                     <!--begin::Input group-->
                     <div class="fv-row mb-7">
                       <!--begin::Label-->
-                      <label class="fs-6 fw-bold mb-2">Referral Doctor</label>
+                      <label class="fs-6 fw-bold mb-2">
+                        Doctor Address Book
+                      </label>
                       <!--end::Label-->
                       <!--begin::Input-->
-                      <el-form-item prop="referral_doctor">
+                      <el-form-item prop="doctor_address_book">
                         <el-autocomplete
                           class="w-100"
                           v-model="aptData.referring_doctor_name"
@@ -301,7 +303,7 @@ export default defineComponent({
     const aptData = computed(() => store.getters.getAptSelected);
     const searchVal = computed(() => store.getters.getSearchVariable);
     const doctorAddressBooks = computed(
-      () => store.getters.getReferralDoctorList
+      () => store.getters.getDoctorAddressBookList
     );
     const checkInAptModalRef = ref(null);
     const router = useRouter();
@@ -369,7 +371,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
     });
 
     return {
