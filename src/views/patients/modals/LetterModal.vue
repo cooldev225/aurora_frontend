@@ -29,7 +29,7 @@
         <InputWrapper label="Doctor Address Book" prop="doctor_address_book">
           <el-autocomplete
             class="w-100"
-            v-model="formData.referring_doctor_name"
+            v-model="formData.doctor_address_book_name"
             value-key="full_name"
             :fetch-suggestions="searchDoctorAddressBook"
             placeholder="Enter Doctor Name"
@@ -110,7 +110,7 @@ export default defineComponent({
       to: 1,
       document_type: "LETTER",
       patient_id: patientId.value,
-      referring_doctor_name: "",
+      doctor_address_book_name: "",
       doctor_address_book_id: "",
       letter: "",
       title: "",

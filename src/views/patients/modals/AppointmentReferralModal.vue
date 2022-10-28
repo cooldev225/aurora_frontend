@@ -4,7 +4,7 @@
     id="modal_appointment_referral"
     tabindex="-1"
     aria-hidden="true"
-    ref="referralModalRef"
+    ref="doctorAddressBookModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -46,7 +46,7 @@
             >
               <el-autocomplete
                 class="w-100"
-                v-model="formData.referring_doctor_name"
+                v-model="formData.doctor_address_book_name"
                 value-key="full_name"
                 :fetch-suggestions="searchDoctorAddressBook"
                 placeholder="Please input"
@@ -184,7 +184,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const formRef = ref(null);
-    const referralModalRef = ref(null);
+    const doctorAddressBookModalRef = ref(null);
     const loading = ref(false);
 
     const uploadDisabled = ref(true);
@@ -196,7 +196,7 @@ export default defineComponent({
     );
 
     const formData = ref({
-      referring_doctor_name: "",
+      doctor_address_book_name: "",
       doctor_address_book_id: "2",
       referral_date: "",
       referral_duration: "",
@@ -254,8 +254,8 @@ export default defineComponent({
       }
       formData.value.doctor_address_book_id =
         appointmentData.value.referral.doctor_address_book_id;
-      formData.value.referring_doctor_name =
-        appointmentData.value.referral.referring_doctor_name;
+      formData.value.doctor_address_book_name =
+        appointmentData.value.referral.doctor_address_book_name;
       formData.value.referral_duration =
         appointmentData.value.referral.referral_duration;
       formData.value.referral_date =
@@ -322,7 +322,7 @@ export default defineComponent({
                   PatientActions.VIEW,
                   data.data.appointment.patient_id
                 );
-                hideModal(referralModalRef.value);
+                hideModal(doctorAddressBookModalRef.value);
               });
             })
             .catch(({ response }) => {
@@ -403,7 +403,7 @@ export default defineComponent({
       submit,
       formRef,
       loading,
-      referralModalRef,
+      doctorAddressBookModalRef,
     };
   },
 });

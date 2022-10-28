@@ -248,7 +248,7 @@
               }}</InfoSection
             >
             <InfoSection heading="Doctor Address Book">
-              {{ appointmentData?.referral?.referring_doctor_name }}
+              {{ appointmentData?.referral?.doctor_address_book_name }}
             </InfoSection>
           </div>
           <div
@@ -518,7 +518,7 @@ export default defineComponent({
             patient_id: patientList.value.id,
             reportData: reportData,
             doctorAddressBook:
-              appointmentData.value.referral.referring_doctor_name,
+              appointmentData.value.referral.doctor_address_book_name,
             patientName:
               patientData.value.first_name + " " + patientData.value.last_name,
             appointmentId: appointmentData.value.id,

@@ -77,7 +77,7 @@
                   dataStepperElement="nav"
                   stepperNumber="4"
                   stepperTitle="Other Info"
-                  stepperDescription="Referral information and Appointment history"
+                  stepperDescription="Doctor Address information and Appointment history"
                 />
                 <!--begin::Appointment Overview-->
                 <AptOverview
@@ -933,24 +933,24 @@
                           <el-divider />
                         </div>
                       </div>
-                      <!--start::Referral Information-->
+                      <!--start::Doctor Address Information-->
                       <div class="card-info">
                         <div class="mb-6 d-flex justify-content-between">
                           <span class="fs-3 fw-bold text-muted"
-                            >Referral Information</span
+                            >Doctor Address Information</span
                           >
                           <el-checkbox
                             type="checkbox"
                             v-model="otherInfoData.no_referral"
-                            label="No Referral"
+                            label="No Doctor Address"
                           />
                         </div>
                         <div class="row">
                           <template v-if="otherInfoData.no_referral">
                             <InputWrapper
                               class="col-6"
-                              label="No Referral Reason"
-                              prop="no_referral_reason"
+                              label="No Doctor Reason"
+                              prop="no_doctor_reason"
                             >
                               <el-input
                                 type="text"
@@ -967,7 +967,7 @@
                             >
                               <el-autocomplete
                                 class="w-100"
-                                v-model="otherInfoData.referring_doctor_name"
+                                v-model="otherInfoData.doctor_address_book_name"
                                 value-key="full_name"
                                 :fetch-suggestions="searchDoctorAddressBook"
                                 placeholder="Please input"
@@ -1224,7 +1224,7 @@ export default defineComponent({
     const otherInfoData = ref({
       anesthetic_questions: false,
       anesthetic_answers: [],
-      referring_doctor_name: "",
+      doctor_address_book_name: "",
       doctor_address_book_id: "",
       referral_duration: "",
       referral_date: "",

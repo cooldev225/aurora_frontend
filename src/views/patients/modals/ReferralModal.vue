@@ -4,7 +4,7 @@
     id="modal_referral"
     tabindex="-1"
     aria-hidden="true"
-    ref="referralModalRef"
+    ref="doctorAddressBookModalRef"
     data-bs-backdrop="static"
   >
     <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -197,7 +197,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const formRef = ref(null);
-    const referralModalRef = ref(null);
+    const doctorAddressBookModalRef = ref(null);
     const loading = ref(false);
     const patientId = computed(() => props.patientId);
     const doctorAddressBooks = computed(
@@ -323,7 +323,7 @@ export default defineComponent({
       loading,
       ClassicEditor,
       doctorAddressBooks,
-      referralModalRef,
+      doctorAddressBookModalRef,
       submit,
       handleSelect,
       searchDoctorAddressBook,
