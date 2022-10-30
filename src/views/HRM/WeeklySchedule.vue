@@ -28,25 +28,31 @@
       <el-button type="info" @click="setDate(1)" plain>Previous Week</el-button>
       <span class="date-caption"> {{ displayDateRange }} </span>
       <el-button type="info" @click="setDate(2)" plain>Next Week</el-button>
-      <el-button type="warning" @click="isShowFillFromTemplate = true" plain
-        >Fill From Template
-      </el-button>
-      <el-button type="warning" @click="PublishAllSlots" plain
-        >Mark All as Published
-      </el-button>
+      <el-button type="warning" plain>Fill The Template</el-button>
     </div>
+
+    <!--    <div class="filter-selector">-->
+    <!--      <p>Display</p>-->
+    <!--      <el-select-->
+    <!--        v-model="selectedFilters"-->
+    <!--        multiple-->
+    <!--        placeholder="Select Filters"-->
+    <!--        style="width: 240px"-->
+    <!--      >-->
+    <!--        <el-option-->
+    <!--          v-for="item in filterOptions"-->
+    <!--          :key="item.value"-->
+    <!--          :label="item.label"-->
+    <!--          :value="item.value"-->
+    <!--        /s>-->
+    <!--      </el-select>-->
+    <!--    </div>-->
   </div>
-  <div v-loading="loading">
-    <HRMTimeScheduleTable
-      :selectedFilters="selectedFilters"
-      :employeeList="employeeList"
-      :clinicFilter="clinicFilter"
-      :dateOptions="dateRange"
-    />
-  </div>
-  <FillFromTemplateModal
-    :dialogVisible="isShowFillFromTemplate"
-    @selectedData="processFillFromTemplate"
+  <HRMTimeScheduleTable
+    :selectedFilters="selectedFilters"
+    :employeeList="employeeList"
+    :clinicFilter="clinicFilter"
+    :dateOptions="dateRange"
   />
 </template>
 
@@ -56,15 +62,14 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import HRMTimeScheduleTable from "@/components/HRM/HRMWeeklyScheduleTable";
+import { Discount } from "@element-plus/icons-vue";
 import moment from "moment";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
-import FillFromTemplateModal from "@/views/HRM/FillFromTemplateModal";
 
 export default defineComponent({
   name: "hrm-weekly-schedule",
   components: {
     HRMTimeScheduleTable,
-    FillFromTemplateModal,
   },
 
   setup() {
@@ -72,8 +77,6 @@ export default defineComponent({
     const clinicFilter = ref();
     const selectedFilters = ref(["time", "anesthetist", "clinic"]);
     const selectedEmployees = ref([]);
-    const loading = ref(false);
-    const isShowFillFromTemplate = ref(false);
     const filterOptions = ref([
       {
         value: "time",
@@ -93,9 +96,7 @@ export default defineComponent({
       endDate: null,
       datesInWeek: [],
     });
-
     const clinics = computed(() => store.getters.clinicsList);
-    const schedule = computed(() => store.getters.hrmScheduleSelected);
     const employeeList = computed(() => {
       const allEmployees = store.getters.hrmWeeklyTemplatesData;
       let filteredList = [];
@@ -164,14 +165,9 @@ export default defineComponent({
             .add("days", 7);
           break;
       }
-      loading.value = true;
-      store
-        .dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
-          date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
-        })
-        .then(() => {
-          loading.value = false;
-        });
+      store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+        date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+      });
       let day = dateRange.value.startDate;
       dateRange.value.datesInWeek = [];
       if (day !== null) {
@@ -185,6 +181,7 @@ export default defineComponent({
           day = day.clone().add("days", 1);
         }
       }
+      console.log(dateRange.value);
     };
 
     const displayDateRange = computed(() => {
@@ -198,43 +195,6 @@ export default defineComponent({
         .toString();
       return result;
     });
-
-    const processFillFromTemplate = (data) => {
-      isShowFillFromTemplate.value = false;
-      if (data)
-        data.date = moment(dateRange.value.startDate)
-          .format("YYYY-MM-DD")
-          .toString();
-      store.dispatch(HRMActions.WEEKLY_TEMPLATE.CREATE, data).then(() => {
-        store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
-          date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
-        });
-      });
-    };
-
-    const PublishAllSlots = () => {
-      let publishSlots = {
-        id: 6,
-        timeslots: [],
-        deleteTimeslots: [],
-      };
-      employeeList.value.map((employee) => {
-        employee.hrm_weekly_schedule.map((slot) => {
-          if (slot.status == "UNPUBLISHED") {
-            slot.status = "PUBLISHED";
-            publishSlots.timeslots.push(slot);
-          }
-        });
-      });
-      store
-        .dispatch(HRMActions.WEEKLY_TEMPLATE.UPDATE, publishSlots)
-        .then(() => {
-          store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
-            date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
-          });
-        });
-    };
-
     return {
       clinics,
       clinicFilter,
@@ -246,10 +206,6 @@ export default defineComponent({
       displayDateRange,
       setDate,
       dateRange,
-      loading,
-      isShowFillFromTemplate,
-      processFillFromTemplate,
-      PublishAllSlots,
     };
   },
 });
@@ -257,7 +213,7 @@ export default defineComponent({
 <style lang="scss">
 .date-range-selector {
   display: flex;
-  width: 811px;
+  width: 711px;
   justify-content: space-around;
   align-items: center;
   padding: 10px;
@@ -266,13 +222,5 @@ export default defineComponent({
     font-size: 14px;
     font-weight: 600;
   }
-}
-
-.example-showcase .el-loading-mask {
-  z-index: 9;
-}
-
-.el-loading-spinner {
-  position: sticky;
 }
 </style>
