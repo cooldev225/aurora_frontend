@@ -35,6 +35,7 @@ export default class HRMModule
   hrmTimeslotSelectData = [] as Array<IHRMWeeklyScheduleTimeslot>;
   hrmAnesthetists = [] as Array<IHRMWeeklyScheduleTemplate>;
   hrmWeeklyTemplateData = [] as Array<IHRMWeeklyScheduleTemplate>;
+  hrmWeeklyTemplateSelectData = [] as Array<IHRMWeeklyScheduleTimeslot>;
 
   get hrmScheduleList(): Array<IHRMWeeklyScheduleTemplate> {
     return this.hrmScheduleData;
@@ -54,6 +55,10 @@ export default class HRMModule
 
   get hrmWeeklyTemplatesData(): Array<IHRMWeeklyScheduleTemplate> {
     return this.hrmWeeklyTemplateData;
+  }
+
+  get hrmWeeklyTemplateSelected(): Array<IHRMWeeklyScheduleTemplate> {
+    return this.hrmWeeklyTemplateSelectData;
   }
 
   @Mutation
@@ -81,6 +86,10 @@ export default class HRMModule
     this.hrmWeeklyTemplateData = data;
   }
 
+  @Mutation
+  [HRMMutations.WEEKLY_TEMPLATE.SET_TIMESLOT](data) {
+    this.hrmWeeklyTemplateSelectData = data;
+  }
   @Action
   [HRMActions.SCHEDULE_TEMPLATE.LIST](data) {
     if (JwtService.getToken()) {
@@ -164,7 +173,7 @@ export default class HRMModule
         },
       })
         .then(({ data }) => {
-          // this.context.commit(HRMMutations.WEEKLY_TEMPLATE.SET_LIST, data.data);
+          this.context.commit(HRMMutations.WEEKLY_TEMPLATE.SET_LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -172,6 +181,39 @@ export default class HRMModule
         });
     } else {
       // this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [HRMActions.WEEKLY_TEMPLATE.CREATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("hrm/weekly-schedule", item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [HRMActions.WEEKLY_TEMPLATE.UPDATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("hrm/weekly-schedule", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
     }
   }
 }
