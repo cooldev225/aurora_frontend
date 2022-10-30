@@ -3,7 +3,7 @@
     <table class="w-100">
       <thead>
         <th>Employee Type</th>
-        <th v-for="day in weekdays" :key="day.value">
+        <th v-for="day in props.dateOptions.datesInWeek" :key="day.value">
           {{ day.label }}
         </th>
       </thead>
@@ -22,7 +22,7 @@
             }})
           </td>
 
-          <td v-for="day in weekdays" :key="day.id">
+          <td v-for="day in props.dateOptions.datesInWeek" :key="day.id">
             <div
               @click="handleEditTemplateTimeslots(employee, day)"
               class="d-flex flex-column rounded min-h-150px min-w-100px cursor-pointer bg-hover-primary bg-light-primary p-3"
@@ -33,19 +33,12 @@
                 <InlineSVG icon="pencil" />
               </span>
               <template
-                v-for="timeslot in employee.schedule_timeslots.filter(
-                  (x) => x.week_day == day.value
+                v-for="timeslot in employee.hrm_weekly_schedule.filter(
+                  (x) => x.date == day.date
                 )"
                 :key="timeslot.id"
               >
-                <span
-                  class="p-2"
-                  :class="
-                    clinicFilter == timeslot.clinic_id
-                      ? 'bg-primary text-light'
-                      : ''
-                  "
-                >
+                <span class="p-2" :class="slotBgColor(timeslot.status)">
                   <template v-if="props.selectedFilters.includes('time')">
                     {{ moment(timeslot.start_time, "hh:ss").format("hh:ss") }} -
                     {{ moment(timeslot.end_time, "hh:ss").format("hh:ss") }}
@@ -62,6 +55,10 @@
                     "
                   >
                     ({{ anesthetistName(timeslot.anesthetist_id) }})
+                  </span>
+                  <span>
+                    {{ timeslot.date }}
+                    {{ timeslot.status }}
                   </span>
                 </span>
               </template>
@@ -83,7 +80,7 @@ import weekdays from "@/core/data/weekdays";
 import employeeRoles from "@/core/data/employee-roles";
 import moment from "moment";
 import { Modal } from "bootstrap";
-import EditModal from "@/views/HRM/EditWeeklyScheduleModal.vue";
+import EditModal from "@/views/HRM/EditModal.vue";
 export default defineComponent({
   name: "hrm-time-schedule-table",
   components: {
@@ -93,10 +90,10 @@ export default defineComponent({
     selectedFilters: Array,
     employeeList: Object,
     clinicFilter: Number,
+    dateOptions: { type: Object, required: true },
   },
   setup(props) {
     const store = useStore();
-    const tableData = ref();
     const selectedEmployees = ref([]);
     const filterOptions = ref([
       {
@@ -121,28 +118,26 @@ export default defineComponent({
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
 
-    watch(scheduleTemplates, () => {
-      tableData.value = scheduleTemplates.value;
-    });
     const handleEditTemplateTimeslots = (schedule, day) => {
       schedule._title = "Edit Time Slot - " + day.label;
       schedule._action = "edit_weekly_time";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
       schedule.clinic_id = props.clinicFilter.value;
+      schedule.dateOptions = day;
+      // should get anesthetist base on their weekly schedule
       store.dispatch(HRMActions.ANESTHETIST.LIST, {
-        day: day.value,
+        day: day.week_day,
       });
-      if (schedule.id) schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
-      schedule._day = day.value;
-
+      if (schedule.id) schedule._submit = HRMActions.WEEKLY_TEMPLATE.UPDATE;
+      schedule._day = day.week_day;
       store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
-      let timeslots = schedule.schedule_timeslots.filter(
+      let timeslots = schedule.hrm_weekly_schedule.filter(
         (t) => t.week_day == schedule._day
       );
       if (!timeslots.length) {
         timeslots = [];
       }
-      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_TIMESLOT, timeslots);
+      store.commit(HRMMutations.WEEKLY_TEMPLATE.SET_TIMESLOT, timeslots);
       const modal = new Modal(document.getElementById("modal_edit_schedule"));
       modal.show();
     };
@@ -168,6 +163,14 @@ export default defineComponent({
       return result;
     };
 
+    const slotBgColor = (status) => {
+      let result = null;
+      if (status === "PUBLISHED") result = "bg-success";
+      else if (status === "UNPUBLISHED") result = "bg-danger text-light";
+      else if (status === "CANCELED") result = "bg-warning";
+      else result = "";
+      return result;
+    };
     return {
       scheduleTemplates,
       weekdays,
@@ -175,12 +178,12 @@ export default defineComponent({
       handleEditTemplateTimeslots,
       clinics,
       employeeRoles,
-      tableData,
       timeslotClinicName,
       filterOptions,
       anesthetistName,
       selectedEmployees,
       props,
+      slotBgColor,
     };
   },
 });

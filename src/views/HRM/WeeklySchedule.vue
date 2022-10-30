@@ -24,11 +24,11 @@
         />
       </el-select>
     </div>
-    <div style="padding-left: 10px; display: flex">
-      <button @click="setDate(1)">Previous Week</button>
-      <span> {{ displayDateRange }} </span>
-      <button @click="setDate(2)">Next week</button>
-      <button>fill the template</button>
+    <div class="date-range-selector">
+      <el-button type="info" @click="setDate(1)" plain>Previous Week</el-button>
+      <span class="date-caption"> {{ displayDateRange }} </span>
+      <el-button type="info" @click="setDate(2)" plain>Next Week</el-button>
+      <el-button type="warning" plain>Fill The Template</el-button>
     </div>
 
     <!--    <div class="filter-selector">-->
@@ -52,6 +52,7 @@
     :selectedFilters="selectedFilters"
     :employeeList="employeeList"
     :clinicFilter="clinicFilter"
+    :dateOptions="dateRange"
   />
 </template>
 
@@ -93,10 +94,11 @@ export default defineComponent({
     const dateRange = ref({
       startDate: null,
       endDate: null,
+      datesInWeek: [],
     });
     const clinics = computed(() => store.getters.clinicsList);
     const employeeList = computed(() => {
-      const allEmployees = store.getters.employeeList;
+      const allEmployees = store.getters.hrmWeeklyTemplatesData;
       let filteredList = [];
       if (selectedEmployees.value.length > 0) {
         allEmployees.filter((employee) => {
@@ -111,7 +113,7 @@ export default defineComponent({
       } else return allEmployees;
     });
     const employeeTypeList = computed(() => {
-      const allEmployees = store.getters.employeeList;
+      const allEmployees = store.getters.hrmWeeklyTemplatesData;
       let list = [];
       allEmployees.map((employee) => {
         if (!list.includes(employee)) list.push(employee.role);
@@ -166,6 +168,19 @@ export default defineComponent({
       store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
         date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
       });
+      let day = dateRange.value.startDate;
+      dateRange.value.datesInWeek = [];
+      if (day !== null) {
+        while (day <= dateRange.value.endDate) {
+          dateRange.value.datesInWeek.push({
+            label: moment(day).format("dddd (DD-MM-YYYY)"),
+            date: moment(day).format("YYYY-MM-DD"),
+            value: day,
+            week_day: moment(day).format("ddd").toUpperCase(),
+          });
+          day = day.clone().add("days", 1);
+        }
+      }
       console.log(dateRange.value);
     };
 
@@ -190,7 +205,22 @@ export default defineComponent({
       employeeTypeList,
       displayDateRange,
       setDate,
+      dateRange,
     };
   },
 });
 </script>
+<style lang="scss">
+.date-range-selector {
+  display: flex;
+  width: 711px;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px;
+
+  .date-caption {
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+</style>
