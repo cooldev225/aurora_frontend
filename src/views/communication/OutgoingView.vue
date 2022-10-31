@@ -2,16 +2,44 @@
   <CardSection>
     <Datatable
       :table-header="tableHeader"
-      :table-data="outgoingLogs"
+      :table-data="tableData"
       :loading="loading"
       :rows-per-page="10"
       :enable-items-per-page-dropdown="true"
     >
-      <template v-slot:cell-appointment_details="{ row: item }">
-        {{ item.date }}
+      <template v-slot:cell-created_at="{ row: item }">
+        {{ moment(item.created_at).format("DD/MM/YYYY HH:mm").toString() }}
+      </template>
+      <template v-slot:cell-sending_doctor_name="{ row: item }">
+        {{ item.sending_doctor_name + ", " + item.sending_doctor_provider }}
+      </template>
+      <template v-slot:cell-receiving_doctor_name="{ row: item }">
+        {{ item.receiving_doctor_name + ", " + item.receiving_doctor_provider }}
+      </template>
+      <template v-slot:cell-send_method="{ row: item }">
+        {{ item.send_method + ", " + item.send_status }}
+      </template>
+      <template v-slot:cell-patient_id="{ row: item }">
+        {{
+          item.patient.full_name +
+          " (" +
+          moment(item.patient.date_of_birth).format("DD/MM/YYYY").toString() +
+          ")"
+        }}
+      </template>
+      <template v-slot:cell-actions="{ row: item }">
+        <button
+          @click="handleView(item)"
+          class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+        >
+          <span class="svg-icon svg-icon-3">
+            <i class="fas fa-eye"></i>
+          </span>
+        </button>
       </template>
     </Datatable>
   </CardSection>
+  <OutgoingModal />
 </template>
 
 <script>
@@ -24,9 +52,11 @@ import {
   ref,
 } from "vue";
 import { useStore } from "vuex";
+import moment from "moment";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import { Actions } from "@/store/enums/StoreEnums";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import OutgoingModal from "@/views/communication/OutgoingModal.vue";
 
 export default defineComponent({
   name: "communication-outgoing",
@@ -35,6 +65,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const tableData = ref([]);
     const outgoingLogs = computed(() => store.getters.getOutgoingList);
     const loading = ref(false);
     const tableHeader = ref([
@@ -59,11 +90,6 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "Date/Time",
-        key: "created_at",
-        sortable: true,
-      },
-      {
         name: "Patient",
         key: "patient_id",
         sortable: true,
@@ -76,10 +102,7 @@ export default defineComponent({
 
     watchEffect(() => {
       console.log(["watchEffect", outgoingLogs.value]);
-    });
-
-    watch(outgoingLogs, () => {
-      console.log(["watch", outgoingLogs.value]);
+      tableData.value = outgoingLogs;
     });
 
     onMounted(() => {
@@ -90,10 +113,16 @@ export default defineComponent({
       });
     });
 
+    const handleView = (item) => {
+      //
+    };
+
     return {
-      outgoingLogs,
+      tableData,
       tableHeader,
       loading,
+      handleView,
+      moment,
     };
   },
 });

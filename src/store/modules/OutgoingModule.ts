@@ -20,22 +20,22 @@ export default class OutgoingModule
 
   /**
    * Get current outgoing log List
-   * @returns Patients
+   * @returns Outgoing
    */
   get getOutgoingList(): Array<IOutgoing> {
     return this.outgoingData;
   }
 
   @Mutation
-  [Mutations.SET_OUTGOING.LIST](data) {
-    this.outgoingData = data;
+  [Mutations.SET_OUTGOING.LIST](outgoingData) {
+    this.outgoingData = outgoingData;
   }
 
   @Action
   [Actions.OUTGOING.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("communication/outgoing-log")
+      return ApiService.get("communication/outgoing-log")
         .then(({ data }) => {
           this.context.commit(Mutations.SET_OUTGOING.LIST, data.data);
           return data.data;

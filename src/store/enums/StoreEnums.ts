@@ -320,7 +320,7 @@ const Mutations = {
   },
 
   SET_OUTGOING: {
-    LIST: "getOutgoingLogs",
+    LIST: "setOutgoingLogs",
   },
 };
 
