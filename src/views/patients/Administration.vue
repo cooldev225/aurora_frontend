@@ -78,6 +78,14 @@
           />
         </InputWrapper>
 
+        <InputWrapper :class="colString" label="Post Code" prop="postcode">
+          <el-input
+            type="text"
+            v-model="formData.postcode"
+            placeholder="Post Code"
+          />
+        </InputWrapper>
+
         <InputWrapper :class="colString" label="Gender" prop="gender">
           <el-select
             class="w-100"
@@ -148,6 +156,7 @@
             />
           </el-select>
         </InputWrapper>
+        <span :class="colString"></span>
         <span :class="colString"></span>
       </div>
 
@@ -254,6 +263,7 @@ export default defineComponent({
       contact_number: "",
       email: "",
       address: "",
+      postcode: "",
       gender: "",
       race: "",
       occupation: "",
@@ -304,6 +314,13 @@ export default defineComponent({
         {
           required: true,
           message: "Address cannot be blank",
+          trigger: "change",
+        },
+      ],
+      postcode: [
+        {
+          required: true,
+          message: "Post code cannot be blank",
           trigger: "change",
         },
       ],
