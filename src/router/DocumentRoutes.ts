@@ -14,6 +14,11 @@ const DocumentRoutes = [
     name: "incoming-documents",
     component: () => import("@/views/specialist/IncomingDocuments.vue"),
   },
+  {
+    path: "/outgoing-log",
+    name: "outgoing-logs",
+    component: () => import("@/views/communication/OutgoingView.vue"),
+  },
 ];
 
 export default DocumentRoutes;

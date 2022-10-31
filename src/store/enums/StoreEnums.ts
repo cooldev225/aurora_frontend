@@ -184,6 +184,10 @@ const Actions = {
   MBS: {
     LIST: "listMbsItems",
   },
+
+  OUTGOING: {
+    LIST: "getOutgoingLogs",
+  }
 };
 
 const Mutations = {
@@ -313,6 +317,10 @@ const Mutations = {
 
   SET_MBS: {
     LIST: "setMbsItems",
+  },
+
+  SET_OUTGOING: {
+    LIST: "getOutgoingLogs",
   },
 };
 
