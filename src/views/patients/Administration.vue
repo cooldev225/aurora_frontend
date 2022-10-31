@@ -129,6 +129,25 @@
             />
           </el-select>
         </InputWrapper>
+
+        <InputWrapper
+          :class="colString"
+          label="Country Of Birth"
+          prop="country_of_birth"
+        >
+          <el-select
+            class="w-100"
+            v-model="formData.country_of_birth"
+            placeholder="Country Of Birth"
+          >
+            <el-option
+              v-for="item in country_of_birth"
+              :key="item.value"
+              :value="item.value"
+              :label="item.label"
+            />
+          </el-select>
+        </InputWrapper>
         <span :class="colString"></span>
       </div>
 
@@ -206,6 +225,7 @@ import maritalStatus from "@/core/data/marital-status";
 import titles from "@/core/data/titles";
 import genders from "@/core/data/genders";
 import race from "@/core/data/race";
+import country_of_birth from "@/core/data/patient-birth-country";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 import { mask } from "vue-the-mask";
@@ -230,6 +250,7 @@ export default defineComponent({
       first_name: "",
       last_name: "",
       date_of_birth: "",
+      country_of_birth: "0000",
       contact_number: "",
       email: "",
       address: "",
@@ -369,6 +390,7 @@ export default defineComponent({
       titles,
       genders,
       race,
+      country_of_birth,
       maritalStatus,
       submit,
     };
