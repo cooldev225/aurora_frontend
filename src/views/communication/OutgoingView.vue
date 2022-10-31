@@ -15,7 +15,14 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, computed, ref } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  watchEffect,
+  watch,
+  computed,
+  ref,
+} from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -32,11 +39,48 @@ export default defineComponent({
     const loading = ref(false);
     const tableHeader = ref([
       {
-        name: "Date",
-        key: "date",
+        name: "Date/Time",
+        key: "created_at",
         sortable: true,
       },
+      {
+        name: "Sending Doctor",
+        key: "sending_doctor_name",
+        sortable: true,
+      },
+      {
+        name: "Receiving doctor",
+        key: "receiving_doctor_name",
+        sortable: true,
+      },
+      {
+        name: "Status",
+        key: "send_method",
+        sortable: true,
+      },
+      {
+        name: "Date/Time",
+        key: "created_at",
+        sortable: true,
+      },
+      {
+        name: "Patient",
+        key: "patient_id",
+        sortable: true,
+      },
+      {
+        name: "Actions",
+        key: "actions",
+      },
     ]);
+
+    watchEffect(() => {
+      console.log(["watchEffect", outgoingLogs.value]);
+    });
+
+    watch(outgoingLogs, () => {
+      console.log(["watch", outgoingLogs.value]);
+    });
 
     onMounted(() => {
       loading.value = true;

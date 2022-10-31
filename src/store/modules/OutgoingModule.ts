@@ -41,7 +41,7 @@ export default class OutgoingModule
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          console.error(["error", response]);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
