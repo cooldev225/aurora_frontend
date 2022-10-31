@@ -321,6 +321,7 @@ const Mutations = {
 
   SET_OUTGOING: {
     LIST: "setOutgoingLogs",
+    SELECT: "setOutgoingSelectLog",
   },
 };
 

@@ -57,15 +57,18 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import OutgoingModal from "@/views/communication/OutgoingModal.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "communication-outgoing",
   components: {
     Datatable,
+    OutgoingModal,
   },
   setup() {
     const store = useStore();
     const tableData = ref([]);
+    const currentUser = computed(() => store.getters.currentUser);
     const outgoingLogs = computed(() => store.getters.getOutgoingList);
     const loading = ref(false);
     const tableHeader = ref([
@@ -101,20 +104,34 @@ export default defineComponent({
     ]);
 
     watchEffect(() => {
-      console.log(["watchEffect", outgoingLogs.value]);
+      //console.log(["outgoingLogs", outgoingLogs.value]);
       tableData.value = outgoingLogs;
     });
 
-    onMounted(() => {
+    watch(currentUser, () => {
+      let title = "Outgoing Log";
+      let params = {};
+      //console.log(["currentUser.value", currentUser.value]);
+      if (currentUser.value.profile.role_id === 5) {
+        title = "Outgoing";
+        params.sending_doctor_user = currentUser.value.profile.id;
+      }
+      setCurrentPageBreadcrumbs(title, ["Communication"]);
+
       loading.value = true;
-      setCurrentPageBreadcrumbs("Outgoing Log", ["Communication"]);
-      store.dispatch(Actions.OUTGOING.LIST).then(() => {
+      store.dispatch(Actions.OUTGOING.LIST, params).then(() => {
         loading.value = false;
       });
     });
 
-    const handleView = (item) => {
+    onMounted(() => {
       //
+    });
+
+    const handleView = (item) => {
+      store.commit(Mutations.SET_OUTGOING.SELECT, item);
+      const modal = new Modal(document.getElementById("modal_outgoing"));
+      modal.show();
     };
 
     return {

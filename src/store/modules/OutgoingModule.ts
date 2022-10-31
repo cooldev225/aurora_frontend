@@ -9,6 +9,7 @@ export interface IOutgoing {
 
 export interface IOutgoingInfo {
   outgoingData: Array<IOutgoing>;
+  outgoingSelectData: IOutgoing;
 }
 
 @Module
@@ -17,6 +18,7 @@ export default class OutgoingModule
   implements IOutgoingInfo
 {
   outgoingData = [] as Array<IOutgoing>;
+  outgoingSelectData = {} as IOutgoing;
 
   /**
    * Get current outgoing log List
@@ -26,16 +28,29 @@ export default class OutgoingModule
     return this.outgoingData;
   }
 
+  /**
+   * Get current outgoing log List
+   * @returns Outgoing
+   */
+  get getOutgoingSelectedList(): IOutgoing {
+    return this.outgoingSelectData;
+  }
+
   @Mutation
   [Mutations.SET_OUTGOING.LIST](outgoingData) {
     this.outgoingData = outgoingData;
   }
 
+  @Mutation
+  [Mutations.SET_OUTGOING.SELECT](outgoingData) {
+    this.outgoingSelectData = outgoingData;
+  }
+
   @Action
-  [Actions.OUTGOING.LIST]() {
+  [Actions.OUTGOING.LIST](params) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      return ApiService.get("communication/outgoing-log")
+      return ApiService.get("communication/outgoing-log", "", params)
         .then(({ data }) => {
           this.context.commit(Mutations.SET_OUTGOING.LIST, data.data);
           return data.data;
