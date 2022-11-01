@@ -66,6 +66,15 @@ export default defineComponent({
       store.dispatch(AppointmentActions.LIST, { date: props.visibleDate.date });
     });
     watch(appointments, () => {
+      console.log([
+        "Appointments in calendar",
+        appointments.value,
+        appointments.value.filter(
+          (a) =>
+            moment(a.appointment.date).format("YYYY-MM-DD").toString() ===
+            "2022-10-31"
+        ),
+      ]);
       calendarOptions.value = {
         schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
         plugins: [
