@@ -9,8 +9,8 @@
           <input
             type="text"
             data-kt-subscription-table-filter="search"
-            class="form-control form-control-solid w-250px ps-14"
-            placeholder="Search Referring Doctors"
+            class="form-control form-control-solid w-350px ps-14"
+            placeholder="Search Doctor Address Books"
             v-model="filterAndSort.searchText"
           />
         </div>
@@ -18,7 +18,7 @@
       <!--begin::Add button-->
       <div class="card-toolbar">
         <router-link
-          to="/settings/referring-doctors/create"
+          to="/settings/doctor-address-books/create"
           type="button"
           class="text-nowrap btn btn-light-primary ms-auto"
         >
@@ -92,7 +92,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "referring-doctors",
+  name: "doctor-address-books",
 
   components: {
     Datatable,
@@ -133,8 +133,8 @@ export default defineComponent({
     const tableData = ref([]);
     const filteredData = ref([]);
     const loading = ref(true);
-    const referringDoctors = computed(
-      () => store.getters.getReferralDoctorList
+    const doctorAddressBooks = computed(
+      () => store.getters.getDoctorAddressBookList
     );
 
     const handleEdit = (item) => {
@@ -143,9 +143,9 @@ export default defineComponent({
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.REFERRAL_DOCTOR.DELETE, id)
+        .dispatch(Actions.DOCTOR_ADDRESS_BOOK.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+          store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
           Swal.fire({
             text: "Successfully Deleted!",
             icon: "success",
@@ -162,17 +162,17 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Referring Doctors", ["Settings"]);
+      setCurrentPageBreadcrumbs("Doctor Address Books", ["Settings"]);
     });
 
     watchEffect(() => {
-      tableData.value = referringDoctors;
+      tableData.value = doctorAddressBooks;
       loading.value = false;
     });
 
     const applyFilterAndSort = () => {
       if (filterAndSort.searchText != "") {
-        filteredData.value = referringDoctors.value.filter((org) => {
+        filteredData.value = doctorAddressBooks.value.filter((org) => {
           if (
             org.provider_no
               .toLowerCase()
@@ -192,7 +192,7 @@ export default defineComponent({
           return false;
         });
       } else {
-        filteredData.value = referringDoctors.value;
+        filteredData.value = doctorAddressBooks.value;
       }
       tableData.value = filteredData;
     };

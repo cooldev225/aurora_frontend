@@ -1,7 +1,7 @@
 <template>
   <el-autocomplete
     class="w-100"
-    :fetch-suggestions="searchReferringDoctor"
+    :fetch-suggestions="searchDoctorAddressBook"
     placeholder="Please input"
     :trigger-on-focus="true"
     @select="onSelect"
@@ -25,16 +25,16 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const referringDoctors = computed(
-      () => store.getters.getReferralDoctorList
+    const doctorAddressBooks = computed(
+      () => store.getters.getDoctorAddressBookList
     );
 
     let timeout;
-    const searchReferringDoctor = (term, cb) => {
+    const searchDoctorAddressBook = (term, cb) => {
       console.log(term);
       const results = term
-        ? referringDoctors.value.filter(createFilter(term))
-        : referringDoctors.value;
+        ? doctorAddressBooks.value.filter(createFilter(term))
+        : doctorAddressBooks.value;
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -44,23 +44,23 @@ export default defineComponent({
 
     const createFilter = (term) => {
       const keyword = term.toString();
-      return (referralDoctor) => {
+      return (doctorAddressBook) => {
         const full_name =
-          referralDoctor.title +
+          doctorAddressBook.title +
           " " +
-          referralDoctor.first_name +
+          doctorAddressBook.first_name +
           " " +
-          referralDoctor.last_name;
+          doctorAddressBook.last_name;
         const full_name_pos = full_name
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
-        const address_pos = referralDoctor.address
+        const address_pos = doctorAddressBook.address
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
         return full_name_pos !== -1 || address_pos !== -1;
       };
     };
-    return { searchReferringDoctor };
+    return { searchDoctorAddressBook };
   },
 });
 </script>
