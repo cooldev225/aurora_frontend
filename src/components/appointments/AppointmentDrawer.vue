@@ -104,13 +104,16 @@
               }}</span></label
             >
             <el-divider v-if="displayData.allergies" />
-            <div v-if="displayData.allergies">
+            <div>
               <label class="fs-5 text-danger"
                 >Allergies:
-                <span class="text-black fs-5">{{
-                  displayData.allergies
-                }}</span></label
-              >
+                <template
+                  v-for="allergie in displayData.allergies"
+                  :key="allergie.id"
+                >
+                  <span class="text-black fs-5">{{ allergie.name + " " }}</span>
+                </template>
+              </label>
             </div>
             <el-divider />
           </div>
@@ -171,6 +174,7 @@
           />
           <!--Move Appointment-->
           <LargeIconButton
+            @click="handleMove"
             :heading="'Move'"
             :iconPath="'media/icons/duotune/arrows/arr035.svg'"
             :color="'success'"
@@ -259,6 +263,14 @@ export default defineComponent({
       DrawerComponent?.getInstance("appointment-drawer")?.hide();
     };
 
+    const handleMove = async () => {
+      aptData.value.step = 0;
+      store.commit(AppointmentMutations.SET_APT.SELECT, aptData.value);
+      const modal = new Modal(document.getElementById("modal_move_apt"));
+      modal.show();
+      DrawerComponent?.getInstance("appointment-drawer")?.hide();
+    };
+
     const handleCancel = () => {
       const html =
         "<h3>Are you sure you want to cancel?</h3><br/>" +
@@ -281,7 +293,6 @@ export default defineComponent({
         },
         preConfirm: async (data) => {
           var missed = Swal.getPopup().querySelector("#chkMissed").checked;
-
           await store
             .dispatch(AppointmentActions.CONFIRMATION_STATUS.UPDATE, {
               id: aptData.value.id,
@@ -354,6 +365,7 @@ export default defineComponent({
       handleCancel,
       handleCheckIn,
       handleCheckOut,
+      handleMove,
     };
   },
 });

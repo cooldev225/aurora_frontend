@@ -1,4 +1,5 @@
 import ApiService from "@/core/services/ApiService";
+import BillingApiService from "@/core/services/BillingApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { menuItemEmits } from "element-plus";
@@ -210,6 +211,24 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  async [Actions.CLINICS.MINOR_ID](clinic) {
+    if (await BillingApiService.setHeader()) {
+      return BillingApiService.post(
+        `api/locations/${clinic.organization_id}/create`,
+        clinic
+      )
+        .then(({ data }) => {
+          console.log("Module:", data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          this.context.commit(Mutations.SET_ERROR, response.data.data);
+          return Promise.reject();
+        });
     }
   }
 }

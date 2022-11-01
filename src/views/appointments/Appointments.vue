@@ -193,6 +193,7 @@
                       :remote-method="remoteMethodClinic"
                       :loading="loading"
                       :disabled="isShowAllClinics"
+                      @change="filterSpecialists"
                     >
                       <el-option
                         v-for="item in clinicOptions"
@@ -290,7 +291,7 @@
                           v-model="searchAppointmentForm.x_weeks"
                         >
                           <el-option
-                            v-for="(item, index) in x_weeks_list"
+                            v-for="(item, index) in aptWeeksList"
                             :value="index"
                             :label="item"
                             :key="item.id"
@@ -313,16 +314,11 @@
       </div>
     </div>
     <div :class="{ 'col-8': toggleLayout }">
-      <div class="card-body">
-        <div class="scroll" :class="{ 'h-500px': !toggleLayout }">
-          <div class="d-flex flex-column">
-            <AppointmentTable
-              :date="moment(date_search.date.toString()).format('MM-DD-YYYY')"
-              :filteredClinics="selectedClinicIds"
-            />
-          </div>
-        </div>
-      </div>
+      <AppointmentTable
+        :organization="organization"
+        :visibleDate="visibleDate"
+        :visibleSpecialists="visibleSpecialists"
+      />
     </div>
   </div>
 
@@ -333,7 +329,8 @@
     :apt-type-list="aptTypelist"
     :clinic-list="clinic_list"
     :apt-time-require-list="aptTimeRequireList"
-    :x-weeks="x_weeks_list"
+    :x-weeks="aptWeeksList"
+    v-if="visibleSpecialists"
   />
 </template>
 <script>
@@ -345,6 +342,7 @@ import {
   onMounted,
   computed,
   watchEffect,
+  onUpdated,
 } from "vue";
 import { useStore } from "vuex";
 import AppointmentListPopup from "@/components/appointments/AppointmentListPopup.vue";
@@ -355,13 +353,11 @@ import "vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css";
 import moment from "moment";
 import { aptTimeList } from "@/core/data/apt-time";
 import { Actions } from "@/store/enums/StoreEnums";
-import {
-  AppointmentActions,
-  AppointmentMutations,
-} from "@/store/enums/StoreAppointmentEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { Modal } from "bootstrap";
-import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
+import aptWeeksList from "@/core/data/apt-weeks";
+import $ from "jquery";
 
 export default defineComponent({
   name: "bookings-dashboard",
@@ -380,11 +376,17 @@ export default defineComponent({
   setup: function () {
     const store = useStore();
     const format = ref("YYYY-MM-DD");
+    const organization = computed(() => store.getters.userOrganization);
+    // Data calender is showing
     const date_search = reactive({
       date: new Date(),
     });
+    const visibleDate = ref(date_search);
 
-    const isShowAllSpecialist = ref(false);
+    // The specialist that will be show in calender
+    const visibleSpecialists = ref();
+
+    const isShowAllSpecialist = ref(true);
     const toggleLayout = ref(false);
 
     const validateAppointmentTypeId = (rule, value, callback) => {
@@ -432,29 +434,16 @@ export default defineComponent({
     });
 
     const tableTitle = ref("");
-    const x_weeks_list = ref({
-      0: "This week",
-      1: "Next Week",
-      2: "In 2 weeks",
-      4: "In 4 weeks",
-      6: "In 6 weeks",
-      8: "In 2 months",
-      12: "In 3 months",
-      24: "In 6 months",
-    });
 
     const specialistsList = ref([]);
     const options = ref([]);
     const specialistsData = ref([]);
     const loading = ref(false);
-    const isShowAllClinics = ref(false);
+    const isShowAllClinics = ref(true);
     const clinicOptions = ref([]);
     const clinicsData = ref([]);
 
-    const filtered_specialists = computed(
-      () => store.getters.getAvailableSPTData
-    );
-    const specialists = computed(() => store.getters.getFilteredData);
+    const specialists = computed(() => store.getters.getSpecialistList);
 
     const available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
@@ -468,13 +457,38 @@ export default defineComponent({
 
     onMounted(() => {
       toggleLayout.value = false;
-      store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
-        ...date_search,
-      });
+      const formattedDate = moment().format("YYYY-MM-DD").toString();
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
-      store.dispatch(Actions.SPECIALIST.LIST);
+      store.dispatch(Actions.SPECIALIST.LIST, formattedDate);
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
+      store.dispatch(Actions.EMPLOYEE.LIST);
+      store.dispatch(AppointmentActions.LIST, { date: formattedDate });
+    });
+
+    onUpdated(() => {
+      $(".fc-next-button")
+        .off()
+        .on("click", () => {
+          visibleDate.value.date = moment(visibleDate.value.date).add(
+            "days",
+            1
+          );
+        });
+      $(".fc-prev-button")
+        .off()
+        .on("click", () => {
+          visibleDate.value.date = moment(visibleDate.value.date).subtract(
+            "days",
+            1
+          );
+        });
+
+      $(".fc-today-button")
+        .off()
+        .on("click", () => {
+          visibleDate.value.date = moment();
+        });
     });
 
     const selectedClinicIds = computed(() => {
@@ -542,21 +556,87 @@ export default defineComponent({
         }, 200);
       }
     });
+
     watch(date_search, () => {
-      store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
-        ...date_search,
-      });
-    });
-    watch(specialists, () => {
-      specialistsList.value = specialists.value.map((specialist) => {
-        return {
-          value: specialist.id,
-          label: `Dr.${specialist.first_name} ${specialist.last_name}`,
-        };
-      });
+      visibleDate.value = date_search;
+      const formattedDate = moment(date_search.date)
+        .format("YYYY-MM-DD")
+        .toString();
+      store.dispatch(Actions.SPECIALIST.LIST, formattedDate);
+      store.dispatch(AppointmentActions.LIST, { date: formattedDate });
       getFilterSpecialists();
+      filterSpecialists();
     });
 
+    watch(specialists, () => {
+      getFilterSpecialists();
+      filterSpecialists();
+    });
+
+    const filterSpecialists = () => {
+      specialistsList.value = [];
+      specialists.value.map((specialist) => {
+        let i = true;
+        specialist.schedule_timeslots.map((slot) => {
+          if (
+            slot.week_day ===
+              moment(date_search.date).format("ddd").toUpperCase() &&
+            i
+          ) {
+            i = false;
+            specialistsList.value.push({
+              value: specialist.id,
+              label: `Dr.${specialist.first_name} ${specialist.last_name}`,
+              id: specialist.id,
+              title: `Dr.${specialist.first_name} ${specialist.last_name}`,
+              businessHours: getBusinessHours(specialist.schedule_timeslots),
+            });
+          }
+        });
+      });
+      // check user's selected specialist or show all specialist
+      if (!isShowAllSpecialist.value) {
+        specialistsList.value = specialistsList.value.filter((specialist) => {
+          if (specialistsData.value.includes(specialist.id)) return specialist;
+        });
+      }
+      // Check user's selected clinics or show all clinics
+      if (!isShowAllClinics.value) {
+        const result = [];
+        specialists.value.map((specialist) => {
+          specialist.schedule_timeslots.map((slot) => {
+            clinicsData.value.map((clinic) => {
+              if (
+                clinic == slot.clinic_id &&
+                !result.includes(specialist.id) &&
+                slot.week_day ==
+                  moment(date_search.date).format("ddd").toUpperCase()
+              ) {
+                result.push(specialist.id);
+              }
+            });
+          });
+        });
+        specialistsList.value = specialistsList.value.filter((specialist) => {
+          if (result.includes(specialist.id)) return specialist;
+        });
+      }
+      visibleSpecialists.value = specialistsList.value;
+    };
+    const getBusinessHours = (data) => {
+      const weekDays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+      let businessHours = [];
+      data.forEach((slot) => {
+        let daysOfWork = [];
+        daysOfWork.push(weekDays.indexOf(slot.week_day) + 1);
+        businessHours.push({
+          startTime: slot.start_time,
+          endTime: slot.end_time,
+          daysOfWeek: daysOfWork,
+        });
+      });
+      return businessHours;
+    };
     watch(clinic_list, () => {
       getSelectedClinics();
     });
@@ -589,13 +669,10 @@ export default defineComponent({
     watch(specialistsData, () => {
       let newArray = [];
       specialistsData.value.forEach(function (data) {
-        if (data.value) {
-          newArray.push(parseInt(data.value));
-        } else {
-          newArray.push(data);
-        }
+        newArray.push(data);
       });
       localStorage.setItem("selectedSpecialist", JSON.stringify(newArray));
+      getFilterSpecialists();
     });
 
     watch(clinicsData, () => {
@@ -610,7 +687,7 @@ export default defineComponent({
       localStorage.setItem("selectedClinics", JSON.stringify(newArray));
     });
 
-    watch(isShowAllSpecialist, () => {
+    watch([isShowAllSpecialist, isShowAllClinics], () => {
       filterSpecialists();
     });
 
@@ -619,12 +696,14 @@ export default defineComponent({
         loading.value = true;
         setTimeout(() => {
           loading.value = false;
-          options.value = specialistsList.value.filter((item) => {
+          options.value = specialists.value.filter((item) => {
             return item.label.toLowerCase().includes(query.toLowerCase());
           });
         }, 200);
       } else {
-        options.value = [];
+        options.value = specialists.value.filter((item) => {
+          return item;
+        });
       }
     };
 
@@ -652,22 +731,7 @@ export default defineComponent({
       });
       return isSpecialistSelected;
     };
-    const filterSpecialists = () => {
-      specialists.value.forEach(function (specialist) {
-        if (isShowAllSpecialist.value) {
-          specialist.checked = true;
-        } else {
-          let track = false;
-          specialistsData.value.forEach(function (val) {
-            if (val == specialist.id) {
-              track = true;
-              specialist.checked = true;
-            }
-          });
-          if (!track) specialist.checked = false;
-        }
-      });
-    };
+
     //Getting selected specialists from localstorage
     const getFilterSpecialists = () => {
       let localSpecialistCodes = null;
@@ -719,7 +783,6 @@ export default defineComponent({
       format,
       date_search,
       specialists_search,
-      filtered_specialists,
       specialists,
       available_slots_by_date,
       aptTypelist,
@@ -729,9 +792,8 @@ export default defineComponent({
       searchAppointmentForm,
       searchAppointmentRules,
       search_next_apts,
-      x_weeks_list,
+      aptWeeksList,
       clinic_list,
-      tableTitle,
       aptTimeList,
       moment,
       handleSearch,
@@ -751,6 +813,9 @@ export default defineComponent({
       clinicOptions,
       clinicsData,
       selectedClinicIds,
+      organization,
+      visibleSpecialists, // FOR APPOINTMENT TABLE
+      visibleDate, // FOR APPOINTMENT TABLE
     };
   },
 });

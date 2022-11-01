@@ -139,7 +139,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   [AppointmentActions.LIST](params) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("appointments", { params: params })
+      return ApiService.query("appointments", { params: params })
         .then(({ data }) => {
           this.context.commit(AppointmentMutations.SET_APT.LIST, data.data);
           return data.data;
@@ -205,7 +205,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   [AppointmentActions.APT.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("appointments", item.id, item)
+      return ApiService.update("appointments", item.id, item)
         .then(({ data }) => {
           return data.data;
         })

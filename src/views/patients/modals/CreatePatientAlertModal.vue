@@ -150,9 +150,13 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                formRef.value.resetFields();
-                loading.value = false;
-                hideModal(patientAlertModal.value);
+                store
+                  .dispatch(PatientActions.VIEW, formData.value.patient_id)
+                  .then(() => {
+                    formRef.value.resetFields();
+                    loading.value = false;
+                    hideModal(patientAlertModal.value);
+                  });
               });
             })
             .catch(({ response }) => {

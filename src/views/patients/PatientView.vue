@@ -244,7 +244,7 @@ export default defineComponent({
       email: "",
       date_of_birth: "",
       contact_number: "",
-      alerts: {},
+      alerts: [],
     });
 
     const handleRecallReminder = () => {

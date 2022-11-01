@@ -24,6 +24,7 @@ export default class SpecialistModule
   specialistsData = [] as Array<ISpecialist>;
   searchSpecialistsData = [] as Array<ISpecialist>;
   specialistsSelectData = {} as ISpecialist;
+  private specialistDate: any;
 
   /**
    * Get current user object
@@ -65,10 +66,12 @@ export default class SpecialistModule
   }
 
   @Action
-  [Actions.SPECIALIST.LIST]() {
+  [Actions.SPECIALIST.LIST](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("users", { params: { role_id: 5 } })
+      if (payload) this.specialistDate = { role_id: 5, date: payload };
+      else this.specialistDate = { role_id: 5 };
+      ApiService.query("users", { params: this.specialistDate })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_SPECIALIST.LIST, data.data);
           return data.data;

@@ -146,6 +146,32 @@
                   placeholder="Specimen Collection Point"
                 />
               </InputWrapper>
+
+              <InputWrapper :class="colString" label="Minor ID" prop="minor_id">
+                <el-input
+                  v-model="formData.minor_id"
+                  type="text"
+                  placeholder="Minor ID"
+                />
+              </InputWrapper>
+
+              <InputWrapper :class="colString">
+                <button
+                  type="button"
+                  class="btn btn-md btn-primary mt-1 w-100"
+                  :data-kt-indicator="loadingMinorId ? 'on' : null"
+                  :disabled="loadingMinorId"
+                  @click="getMinorId"
+                >
+                  <span class="indicator-label">Get Minor ID</span>
+                  <span class="indicator-progress">
+                    Please wait...
+                    <span
+                      class="spinner-border spinner-border-sm align-middle ms-2"
+                    ></span>
+                  </span>
+                </button>
+              </InputWrapper>
             </div>
             <el-divider />
             <button
@@ -215,12 +241,14 @@ export default defineComponent({
       submittedText: "New Clinic Created",
     });
     const loading = ref(false);
+    const loadingMinorId = ref(false);
     const formData = ref({
       name: "",
       email: "",
       phone_number: "",
       fax_number: "",
       VAED_number: "",
+      minor_id: "",
       hospital_provider_number: "",
       address: "",
       lspn_id: "",
@@ -283,6 +311,7 @@ export default defineComponent({
     const dialogImageUrl = ref("");
     const dialogVisible = ref(false);
     const clinicsList = computed(() => store.getters.clinicsList);
+    const currentUser = computed(() => store.getters.currentUser);
 
     const handleChange = (file, fileList) => {
       upload.value.clearFiles();
@@ -342,6 +371,28 @@ export default defineComponent({
       });
     };
 
+    const getMinorId = () => {
+      const clinicData = {
+        name: formData.value.name,
+        location_id: formData.value?.id ?? null,
+        organization_id: currentUser.value.profile.organization_id,
+      };
+
+      loadingMinorId.value = true;
+
+      store
+        .dispatch(Actions.CLINICS.MINOR_ID, clinicData)
+        .then(({ minor_id }) => {
+          formData.value.minor_id = minor_id;
+        })
+        .catch((error) => {
+          console.log("Error:", error);
+        })
+        .finally(() => {
+          loadingMinorId.value = false;
+        });
+    };
+
     watch(clinicsList, () => {
       const id = route.params.id;
 
@@ -386,6 +437,8 @@ export default defineComponent({
       dialogVisible,
       dialogImageUrl,
       handleAddressChange,
+      loadingMinorId,
+      getMinorId,
     };
   },
 });
