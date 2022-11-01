@@ -40,6 +40,7 @@ import BillingTokenModule from "@/store/modules/BillingTokenModule";
 import BillingValidationModule from "@/store/modules/BillingValidationModule";
 import FileModule from "@/store/modules/FileModule";
 import MbsModule from "@/store/modules/MbsModule";
+import OutgoingModule from "@/store/modules/OutgoingModule";
 
 config.rawError = true;
 
@@ -84,6 +85,7 @@ const store = createStore({
     BillingValidationModule,
     FileModule,
     MbsModule,
+    OutgoingModule,
   },
 });
 
