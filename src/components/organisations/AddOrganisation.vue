@@ -63,6 +63,22 @@
               placeholder=""
             />
           </InputWrapper>
+          <div class="d-flex flex-row">
+            <el-form-item class="px-6">
+              <el-checkbox
+                type="checkbox"
+                v-model="formData.has_billing"
+                label="Has billing"
+              />
+            </el-form-item>
+            <el-form-item class="px-6">
+              <el-checkbox
+                type="checkbox"
+                v-model="formData.has_coding"
+                label="Has coding"
+              />
+            </el-form-item>
+          </div>
         </CardSection>
 
         <!--begin::Modal footer-->
@@ -139,6 +155,8 @@ export default defineComponent({
       appointment_length: "30",
       max_clinics: "",
       max_employees: "",
+      has_billing: false,
+      has_coding: false,
     });
     const uploadDisabled = ref(false);
     const upload = ref(null);
@@ -265,7 +283,11 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           Object.keys(formData.value).forEach((key) => {
-            Data.append(key, formData.value[key]);
+            key !== "has_billing" &&
+              key !== "has_coding" &&
+              Data.append(key, formData.value[key]);
+            (key === "has_billing" || key == "has_coding") &&
+              Data.append(key, formData.value[key] ? 1 : 0);
           });
           store
             .dispatch(Actions.ORG.CREATE, Data)
