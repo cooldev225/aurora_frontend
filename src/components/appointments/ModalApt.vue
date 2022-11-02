@@ -592,6 +592,18 @@
                       </InputWrapper>
 
                       <InputWrapper
+                        class="col-12"
+                        label="Clinical Alerts"
+                        prop="clinical_alerts"
+                      >
+                        <el-input
+                          type="textarea"
+                          v-model="patientInfoData.clinical_alerts"
+                          placeholder="Enter Clinical Alerts"
+                        />
+                      </InputWrapper>
+
+                      <!-- <InputWrapper
                         class="col-6"
                         label="Allergies"
                         prop="allergies"
@@ -601,18 +613,24 @@
                           v-model="patientInfoData.allergies"
                           placeholder="Enter Allergies"
                         />
-                      </InputWrapper>
-
+                      </InputWrapper> -->
                       <InputWrapper
-                        class="col-6"
-                        label="Clinical Alerts"
-                        prop="clinical_alerts"
+                        class="col-12"
+                        label="Allergies"
+                        prop="allergies"
                       >
-                        <el-input
-                          type="textarea"
-                          v-model="patientInfoData.clinical_alerts"
-                          placeholder="Enter Clinical Alerts"
-                        />
+                        <el-select
+                          class="w-100"
+                          multiple
+                          v-model="patientInfoData.allergies"
+                        >
+                          <el-option
+                            v-for="item in allergiesList"
+                            :value="item.id"
+                            :label="item.name"
+                            :key="item.id"
+                          />
+                        </el-select>
                       </InputWrapper>
                     </div>
                     <div class="d-flex justify-content-between">
@@ -1354,6 +1372,7 @@ export default defineComponent({
     const title = ref(null);
     const refName = ref(null);
     const refCode = ref(null);
+    const allergiesList = ref([]);
 
     const patientTableData = ref([]);
     const patientTableHeader = ref([
@@ -1747,6 +1766,10 @@ export default defineComponent({
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
+      store.dispatch(PatientActions.ALLERGIES_LIST).then((data) => {
+        allergiesList.value = data;
+        console.log(["patient allergies list", allergiesList.value]);
+      });
     });
 
     const getAvailableRooms = () => {
@@ -2223,6 +2246,7 @@ export default defineComponent({
       getBillingType,
       getHealthFund,
       updatePatientDetails,
+      allergiesList,
     };
   },
 });
