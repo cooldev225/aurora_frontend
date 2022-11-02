@@ -62,6 +62,11 @@ export default defineComponent({
     const appointments = ref([]);
     const allSpecialists = computed(() => store.getters.getSpecialistList);
 
+    watch(props, () => {
+      let date = moment(props.visibleDate.date).format("YYYY-MM-DD");
+      store.dispatch(AppointmentActions.LIST, { date: date });
+    });
+
     onMounted(() => {
       store.dispatch(AppointmentActions.LIST, { date: props.visibleDate.date });
     });
