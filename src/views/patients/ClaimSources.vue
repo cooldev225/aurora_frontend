@@ -211,7 +211,7 @@ export default defineComponent({
     };
 
     const getHealthFund = (id) => {
-      const foundFund = healthFundsList.value.find((fund) => fund.id == id);
+      const foundFund = healthFundsList.value.find((fund) => fund.code == id);
 
       return foundFund?.name ?? null;
     };
@@ -371,10 +371,6 @@ export default defineComponent({
           break;
         case 2: {
           // Health Fund
-          const healthFund = healthFundsList.value.find(
-            (fund) => fund.id === item.value.health_fund_id
-          );
-
           validationData = {
             first_name: selectedPatient.value.first_name,
             last_name: selectedPatient.value.last_name,
@@ -382,7 +378,7 @@ export default defineComponent({
             sex: selectedPatient.value.gender,
             fund_member_number: item.member_number,
             fund_reference_number: item.member_reference_number,
-            fund_organisation_code: healthFund?.code,
+            fund_organisation_code: item.value.health_fund_id,
             minor_id: minorId.value.minorId,
           };
           endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND;

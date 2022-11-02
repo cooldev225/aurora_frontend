@@ -1429,7 +1429,7 @@ export default defineComponent({
     };
 
     const getHealthFund = (id) => {
-      const foundFund = healthFundsList.value.find((fund) => fund.id == id);
+      const foundFund = healthFundsList.value.find((fund) => fund.code == id);
 
       return foundFund?.name ?? null;
     };

@@ -96,10 +96,10 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
   }
 
   @Action
-  [Actions.ORG.UPDATE](item) {
+  [Actions.ORG.UPDATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("organizations", item.id, item)
+      ApiService.update("organizations", payload.id, payload.data)
         .then(({ data }) => {
           return data.data;
         })

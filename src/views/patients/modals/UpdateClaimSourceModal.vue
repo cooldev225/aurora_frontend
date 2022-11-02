@@ -60,8 +60,8 @@
           >
             <el-option
               v-for="item in healthFundsList"
-              :key="item.id"
-              :value="item.id"
+              :key="item.code"
+              :value="item.code"
               :label="item.name"
             />
           </el-select>
@@ -427,14 +427,10 @@ export default defineComponent({
           break;
         case 2: {
           // Health Fund
-          const healthFund = healthFundsList.value.find(
-            (fund) => fund.id === formData.value.health_fund_id
-          );
-
           validationData.fund_member_number = formData.value.member_number;
           validationData.fund_reference_number =
             formData.value.member_reference_number;
-          validationData.fund_organisation_code = healthFund?.code;
+          validationData.fund_organisation_code = formData.value.health_fund_id;
           endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND;
           break;
         }
