@@ -1787,6 +1787,7 @@ export default defineComponent({
           appointment_confirm_method: "sms",
           allergies: "",
           clinical_alerts: "",
+          also_known_as: [],
         };
         if (formRef_2.value) formRef_2.value.resetFields();
       }
@@ -1994,6 +1995,7 @@ export default defineComponent({
     const updateApt = () => {
       const billingInfo = billingInfoData.value;
       const patientInfo = patientInfoData.value;
+      aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
 
       billingInfo.claim_sources = billingInfo.claim_sources.filter((source) => {
         return !Object.prototype.hasOwnProperty.call(source, "id");
