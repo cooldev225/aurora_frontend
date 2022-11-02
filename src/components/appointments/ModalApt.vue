@@ -622,6 +622,10 @@
                         <el-select
                           class="w-100"
                           multiple
+                          filterable
+                          allow-create
+                          default-first-option
+                          :reserve-keyword="false"
                           v-model="patientInfoData.allergies"
                         >
                           <el-option
