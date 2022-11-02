@@ -14,17 +14,17 @@
           multiple
         >
           <el-option
-            v-for="referralDoctor in referralDoctors"
-            :value="referralDoctor.id"
+            v-for="doctorAddressBook in doctorAddressBooks"
+            :value="doctorAddressBook.id"
             :label="
-              referralDoctor.first_name +
+              doctorAddressBook.first_name +
               ' ' +
-              referralDoctor.last_name +
+              doctorAddressBook.last_name +
               ' <' +
-              referralDoctor.email +
+              doctorAddressBook.email +
               '>'
             "
-            :key="referralDoctor.id"
+            :key="doctorAddressBook.id"
           />
         </el-select>
       </InputWrapper>
@@ -67,7 +67,9 @@ export default defineComponent({
     const letter_template = ref("");
     const documentId = computed(() => props.document.id);
     // const patientId = computed(() => props.patientId);
-    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const doctorAddressBooks = computed(
+      () => store.getters.getDoctorAddressBookList
+    );
     // const sendableUsers = computed(() => store.getters.getUserList);
 
     const formData = ref({
@@ -83,7 +85,7 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      referral_doctor: [
+      doctor_address_book: [
         {
           required: true,
           message: "This field cannot be blank",
@@ -135,7 +137,7 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch(Actions.USER_LIST);
-      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
     });
 
     return {
@@ -144,7 +146,7 @@ export default defineComponent({
       formRef,
       loading,
       // sendableUsers,
-      referralDoctors,
+      doctorAddressBooks,
       sendEmailModalRef,
       letter_template,
       submit,

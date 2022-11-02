@@ -52,22 +52,24 @@
               <!--begin::Input group-->
               <div class="card-info">
                 <div class="fs-3 fw-bold text-muted mb-6">
-                  Referral Information
+                  Doctor Address Book Information
                 </div>
                 <div class="row">
                   <div class="col-sm-6">
                     <!--begin::Input group-->
                     <div class="fv-row mb-7">
                       <!--begin::Label-->
-                      <label class="fs-6 fw-bold mb-2">Referral Doctor</label>
+                      <label class="fs-6 fw-bold mb-2">
+                        Doctor Address Book
+                      </label>
                       <!--end::Label-->
                       <!--begin::Input-->
-                      <el-form-item prop="referral_doctor">
+                      <el-form-item prop="doctor_address_book">
                         <el-autocomplete
                           class="w-100"
-                          v-model="aptData.referring_doctor_name"
+                          v-model="aptData.doctor_address_book_name"
                           value-key="full_name"
-                          :fetch-suggestions="searchReferralDoctor"
+                          :fetch-suggestions="searchDoctorAddressBook"
                           placeholder="Please input"
                           :trigger-on-focus="false"
                           @select="handleSelect"
@@ -90,10 +92,10 @@
                     <!--begin::Input group-->
                     <div class="fv-row mb-7">
                       <!--begin::Label-->
-                      <label class="fs-6 fw-bold mb-2">Referral</label>
+                      <label class="fs-6 fw-bold mb-2">Doctor Address</label>
                       <!--end::Label-->
                       <!--begin::Input-->
-                      <el-form-item prop="referral_file">
+                      <el-form-item prop="doctor_address_file">
                         <el-space wrap>
                           <el-upload
                             action="#"
@@ -300,20 +302,22 @@ export default defineComponent({
     const store = useStore();
     const aptData = computed(() => store.getters.getAptSelected);
     const searchVal = computed(() => store.getters.getSearchVariable);
-    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const doctorAddressBooks = computed(
+      () => store.getters.getDoctorAddressBookList
+    );
     const checkInAptModalRef = ref(null);
     const router = useRouter();
     const loading = ref(false);
 
     const handleSelect = (item) => {
-      aptData.value.referring_doctor_id = item.id;
+      aptData.value.doctor_address_book_id = item.id;
     };
 
     let timeout;
-    const searchReferralDoctor = (term, cb) => {
+    const searchDoctorAddressBook = (term, cb) => {
       const results = term
-        ? referralDoctors.value.filter(createFilter(term))
-        : referralDoctors.value;
+        ? doctorAddressBooks.value.filter(createFilter(term))
+        : doctorAddressBooks.value;
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -323,17 +327,17 @@ export default defineComponent({
 
     const createFilter = (term) => {
       const keyword = term.toString();
-      return (referralDoctor) => {
+      return (doctorAddressBook) => {
         const full_name =
-          referralDoctor.title +
+          doctorAddressBook.title +
           " " +
-          referralDoctor.first_name +
+          doctorAddressBook.first_name +
           " " +
-          referralDoctor.last_name;
+          doctorAddressBook.last_name;
         const full_name_pos = full_name
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
-        const address_pos = referralDoctor.address
+        const address_pos = doctorAddressBook.address
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
         return full_name_pos !== -1 || address_pos !== -1;
@@ -367,14 +371,14 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
     });
 
     return {
       aptData,
       handleClickReferralFile,
       handleCheckIn,
-      searchReferralDoctor,
+      searchDoctorAddressBook,
       handleSelect,
       checkInAptModalRef,
       loading,

@@ -40,23 +40,23 @@
         </template>
         <template v-slot:cell-referral="{ row: item }">
           <div
-            v-if="item.referral.referring_doctor_name"
+            v-if="item.referral.doctor_address_book_name"
             class="d-flex flex-column"
           >
             <div v-if="!item.is_no_referral" class="d-flex flex-column">
-              <span>{{ item.referral.referring_doctor_name }}</span>
+              <span>{{ item.referral.doctor_address_book_name }}</span>
               <span>{{ item.referral.referral_date }}</span>
               <span>{{ item.referral.referral_duration }} months</span>
             </div>
             <div v-else-if="item.is_no_referral" class="d-flex flex-column">
-              <span> NO REFERRAL </span>
+              <span> NO DOCTOR ADDRESS </span>
               <span>{{ item.referral.no_referral_reason }}</span>
             </div>
           </div>
           <div v-else class="d-flex flex-column">No referral information</div>
           <button
             class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
-            @click="handleReferral(item)"
+            @click="handleDoctorAddressBook(item)"
           >
             Update Referral
           </button>
@@ -184,7 +184,7 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "Referral",
+        name: "Doctor Address",
         key: "referral",
         sortable: false,
       },
@@ -247,7 +247,7 @@ export default defineComponent({
       modal.show();
     };
 
-    const handleReferral = (item) => {
+    const handleDoctorAddressBook = (item) => {
       selectedApt.value = {
         patient_id: patient.value.id,
         ...item,
@@ -282,7 +282,7 @@ export default defineComponent({
       handlePay,
       handlePreAdmission,
       handlePreAdmissionTest,
-      handleReferral,
+      handleDoctorAddressBook,
       handleCollectingPerson,
       handlePrintHospitalCertificate,
       handleView,

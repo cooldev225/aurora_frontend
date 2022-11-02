@@ -4,7 +4,7 @@
     id="modal_appointment_referral"
     tabindex="-1"
     aria-hidden="true"
-    ref="referralModalRef"
+    ref="doctorAddressBookModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -41,17 +41,17 @@
             <InputWrapper
               required
               class="col-6"
-              label="Referring Doctor"
-              prop="referring_doctor"
+              label="Doctor Address Book"
+              prop="doctor_address_book"
             >
               <el-autocomplete
                 class="w-100"
-                v-model="formData.referring_doctor_name"
+                v-model="formData.doctor_address_book_name"
                 value-key="full_name"
-                :fetch-suggestions="searchReferringDoctor"
+                :fetch-suggestions="searchDoctorAddressBook"
                 placeholder="Please input"
                 :trigger-on-focus="false"
-                @select="handleReferringDoctorSelect"
+                @select="handledoctorAddressBookselect"
               >
                 <template #default="{ item }">
                   <div class="name">
@@ -170,6 +170,7 @@ import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { mask } from "vue-the-mask";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import pdf from "pdfobject";
+import moment from "moment";
 
 export default defineComponent({
   name: "update-appointment-referral-modal",
@@ -183,30 +184,30 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const formRef = ref(null);
-    const referralModalRef = ref(null);
+    const doctorAddressBookModalRef = ref(null);
     const loading = ref(false);
 
     const uploadDisabled = ref(true);
     const pdfType = "application/pdf";
 
     const appointmentData = computed(() => props.selectedApt);
-    const referringDoctors = computed(
-      () => store.getters.getReferralDoctorList
+    const doctorAddressBooks = computed(
+      () => store.getters.getDoctorAddressBookList
     );
 
     const formData = ref({
-      referring_doctor_name: "",
-      referring_doctor_id: "2",
+      doctor_address_book_name: "",
+      doctor_address_book_id: "2",
       referral_date: "",
       referral_duration: "",
       file: [],
     });
 
     const rules = ref({
-      referring_doctor_id: [
+      doctor_address_book_id: [
         {
           required: true,
-          message: "Referring doctor cannot be blank",
+          message: "Doctor address book cannot be blank",
           trigger: "change",
         },
       ],
@@ -251,10 +252,10 @@ export default defineComponent({
             console.log("pdf error");
           });
       }
-      formData.value.referring_doctor_id =
-        appointmentData.value.referral.referring_doctor_id;
-      formData.value.referring_doctor_name =
-        appointmentData.value.referral.referring_doctor_name;
+      formData.value.doctor_address_book_id =
+        appointmentData.value.referral.doctor_address_book_id;
+      formData.value.doctor_address_book_name =
+        appointmentData.value.referral.doctor_address_book_name;
       formData.value.referral_duration =
         appointmentData.value.referral.referral_duration;
       formData.value.referral_date =
@@ -289,10 +290,13 @@ export default defineComponent({
 
           submitData.append("file", formData.value.file[0]?.raw);
           submitData.append(
-            "referring_doctor_id",
-            formData.value.referring_doctor_id
+            "doctor_address_book_id",
+            formData.value.doctor_address_book_id
           );
-          submitData.append("referral_date", formData.value.referral_date);
+          submitData.append(
+            "referral_date",
+            moment(formData.value.referral_date).format("YYYY-MM-DD")
+          );
           submitData.append(
             "referral_duration",
             formData.value.referral_duration
@@ -318,7 +322,7 @@ export default defineComponent({
                   PatientActions.VIEW,
                   data.data.appointment.patient_id
                 );
-                hideModal(referralModalRef.value);
+                hideModal(doctorAddressBookModalRef.value);
               });
             })
             .catch(({ response }) => {
@@ -332,16 +336,16 @@ export default defineComponent({
       });
     };
 
-    const handleReferringDoctorSelect = (item) => {
-      appointmentData.value.referring_doctor_id = item.id;
-      formData.value.referring_doctor_id = item.id;
+    const handledoctorAddressBookselect = (item) => {
+      appointmentData.value.doctor_address_book_id = item.id;
+      formData.value.doctor_address_book_id = item.id;
     };
 
     let timeout;
-    const searchReferringDoctor = (term, cb) => {
+    const searchDoctorAddressBook = (term, cb) => {
       const results = term
-        ? referringDoctors.value.filter(createFilter(term))
-        : referringDoctors.value;
+        ? doctorAddressBooks.value.filter(createFilter(term))
+        : doctorAddressBooks.value;
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -351,17 +355,17 @@ export default defineComponent({
 
     const createFilter = (term) => {
       const keyword = term.toString();
-      return (referralDoctor) => {
+      return (doctorAddressBook) => {
         const full_name =
-          referralDoctor.title +
+          doctorAddressBook.title +
           " " +
-          referralDoctor.first_name +
+          doctorAddressBook.first_name +
           " " +
-          referralDoctor.last_name;
+          doctorAddressBook.last_name;
         const full_name_pos = full_name
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
-        const address_pos = referralDoctor.address
+        const address_pos = doctorAddressBook.address
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
         return full_name_pos !== -1 || address_pos !== -1;
@@ -392,14 +396,14 @@ export default defineComponent({
     return {
       handleUploadChange,
       handleUploadRemove,
-      handleReferringDoctorSelect,
-      searchReferringDoctor,
+      handledoctorAddressBookselect,
+      searchDoctorAddressBook,
       formData,
       rules,
       submit,
       formRef,
       loading,
-      referralModalRef,
+      doctorAddressBookModalRef,
     };
   },
 });

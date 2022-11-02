@@ -72,22 +72,22 @@ const SettingsRoutes = [
       import("@/views/settings/letter-templates/LetterTemplates.vue"),
   },
   {
-    path: "/settings/referring-doctors",
+    path: "/settings/doctor-address-books",
     name: "refDoctors",
     component: () =>
-      import("@/views/settings/referring-doctors/RefDoctors.vue"),
+      import("@/views/settings/doctor-address-books/RefDoctors.vue"),
   },
   {
-    path: "/settings/referring-doctors/create",
+    path: "/settings/doctor-address-books/create",
     name: "createRefDoctors",
     component: () =>
-      import("@/views/settings/referring-doctors/EditRefDoctors.vue"),
+      import("@/views/settings/doctor-address-books/EditRefDoctors.vue"),
   },
   {
-    path: "/settings/referring-doctors/edit/:id",
+    path: "/settings/doctor-address-books/edit/:id",
     name: "editRefDoctors",
     component: () =>
-      import("@/views/settings/referring-doctors/EditRefDoctors.vue"),
+      import("@/views/settings/doctor-address-books/EditRefDoctors.vue"),
   },
   {
     path: "/settings/header-footer-templates",

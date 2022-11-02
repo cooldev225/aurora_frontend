@@ -77,7 +77,7 @@
                   dataStepperElement="nav"
                   stepperNumber="4"
                   stepperTitle="Other Info"
-                  stepperDescription="Referral information and Appointment history"
+                  stepperDescription="Doctor Address information and Appointment history"
                 />
                 <!--begin::Appointment Overview-->
                 <AptOverview
@@ -934,24 +934,24 @@
                           <el-divider />
                         </div>
                       </div>
-                      <!--start::Referral Information-->
+                      <!--start::Doctor Address Information-->
                       <div class="card-info">
                         <div class="mb-6 d-flex justify-content-between">
                           <span class="fs-3 fw-bold text-muted"
-                            >Referral Information</span
+                            >Doctor Address Information</span
                           >
                           <el-checkbox
                             type="checkbox"
                             v-model="otherInfoData.no_referral"
-                            label="No Referral"
+                            label="No Doctor Address"
                           />
                         </div>
                         <div class="row">
                           <template v-if="otherInfoData.no_referral">
                             <InputWrapper
                               class="col-6"
-                              label="No Referral Reason"
-                              prop="no_referral_reason"
+                              label="No Doctor Reason"
+                              prop="no_doctor_reason"
                             >
                               <el-input
                                 type="text"
@@ -963,17 +963,17 @@
                           <template v-else>
                             <InputWrapper
                               class="col-6"
-                              label="Referring Doctor"
-                              prop="referring_doctor_id"
+                              label="Doctor Address Book"
+                              prop="doctor_address_book_id"
                             >
                               <el-autocomplete
                                 class="w-100"
-                                v-model="otherInfoData.referring_doctor_name"
+                                v-model="otherInfoData.doctor_address_book_name"
                                 value-key="full_name"
-                                :fetch-suggestions="searchReferralDoctor"
+                                :fetch-suggestions="searchDoctorAddressBook"
                                 placeholder="Please input"
                                 :trigger-on-focus="false"
-                                @select="handleSelectReferringDoctor"
+                                @select="handleSelectDoctorAddressBook"
                               >
                                 <template #default="{ item }">
                                   <div class="name">
@@ -1182,6 +1182,11 @@ export default defineComponent({
     const formRef_4 = ref(null);
     const loading = ref(false);
     const tableKey = ref(0);
+
+    const doctorAddressBooks = computed(
+      () => store.getters.getDoctorAddressBookList
+    );
+
     const router = useRouter();
     const claimSourceModal = ref(null);
 
@@ -1224,8 +1229,8 @@ export default defineComponent({
     const otherInfoData = ref({
       anesthetic_questions: false,
       anesthetic_answers: [],
-      referring_doctor_name: "",
-      referring_doctor_id: "",
+      doctor_address_book_name: "",
+      doctor_address_book_id: "",
       referral_duration: "",
       referral_date: "",
       no_referral: false,
@@ -1737,7 +1742,7 @@ export default defineComponent({
       setTitle();
       _stepperObj.value = StepperComponent.createInstance(createAptRef.value);
       if (props.modalId === "modal_create_apt") {
-        store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+        store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
       }
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
@@ -2089,15 +2094,15 @@ export default defineComponent({
       else patientStep.value--;
     };
 
-    const handleSelectReferringDoctor = (item) => {
-      otherInfoData.value.referring_doctor_id = item.id;
+    const handleSelectDoctorAddressBook = (item) => {
+      otherInfoData.value.doctor_address_book_id = item.id;
     };
 
     let timeout;
-    const searchReferralDoctor = (term, cb) => {
+    const searchDoctorAddressBook = (term, cb) => {
       const results = term
-        ? referralDoctors.value.filter(createReferringDotorFilter(term))
-        : referralDoctors.value;
+        ? doctorAddressBooks.value.filter(createDotorAddressBookFilter(term))
+        : doctorAddressBooks.value;
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -2105,19 +2110,19 @@ export default defineComponent({
       }, 1000);
     };
 
-    const createReferringDotorFilter = (term) => {
+    const createDotorAddressBookFilter = (term) => {
       const keyword = term.toString();
-      return (referralDoctor) => {
+      return (doctorAddressBook) => {
         const full_name =
-          referralDoctor.title +
+          doctorAddressBook.title +
           " " +
-          referralDoctor.first_name +
+          doctorAddressBook.first_name +
           " " +
-          referralDoctor.last_name;
+          doctorAddressBook.last_name;
         const full_name_pos = full_name
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
-        const address_pos = referralDoctor.address
+        const address_pos = doctorAddressBook.address
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
         return full_name_pos !== -1 || address_pos !== -1;
@@ -2198,8 +2203,8 @@ export default defineComponent({
       formatDate,
       patientAptData,
       overlapping_cnt,
-      searchReferralDoctor,
-      handleSelectReferringDoctor,
+      searchDoctorAddressBook,
+      handleSelectDoctorAddressBook,
       tableKey,
       gotoPage,
       editAptRef,

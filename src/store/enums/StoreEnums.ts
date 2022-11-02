@@ -148,11 +148,11 @@ const Actions = {
   },
 
 
-  REFERRAL_DOCTOR: {
-    LIST: "searchReferralDoctor", // (get) 'referring-doctors'
-    CREATE: "createReferralDoctor",
-    DELETE: "deleteReferralDoctor",
-    UPDATE: "updateReferralDoctor",
+  DOCTOR_ADDRESS_BOOK: {
+    LIST: "searchDoctorAddressBook", // (get) 'doctor-address-books'
+    CREATE: "createDoctorAddressBook",
+    DELETE: "deleteDoctorAddressBook",
+    UPDATE: "updateDoctorAddressBook",
   },
 
   LETTER_TEMPLATE: {
@@ -191,6 +191,10 @@ const Actions = {
     DELETE: "deleteScheduleFee",
     UPDATE: "updateScheduleFee",
   },
+
+  OUTGOING: {
+    LIST: "getOutgoingLogs",
+  }
 };
 
 const Mutations = {
@@ -274,8 +278,8 @@ const Mutations = {
 
 
 
-  SET_REFERRAL_DOCTOR: {
-    LIST: "setReferralDoctor",
+  SET_DOCTOR_ADDRESS_BOOK: {
+    LIST: "setDoctorAddressBook",
   },
 
   SET_LETTER_TEMPLATE: {
@@ -324,6 +328,11 @@ const Mutations = {
 
   SET_SCHEDULE_FEE: {
     LIST: "setScheduleFeeList",
+  },
+
+  SET_OUTGOING: {
+    LIST: "setOutgoingLogs",
+    SELECT: "setOutgoingSelectLog",
   },
 };
 

@@ -70,6 +70,10 @@ const OrgManagerMenu = [
         heading: "Patient Recall",
         route: "/recalls",
       },
+      {
+        heading: "Outgoing Message Log",
+        route: "/outgoing-log",
+      },
     ],
   },
   {

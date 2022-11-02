@@ -4,7 +4,7 @@
     id="modal_referral"
     tabindex="-1"
     aria-hidden="true"
-    ref="referralModalRef"
+    ref="doctorAddressBookModalRef"
     data-bs-backdrop="static"
   >
     <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -80,12 +80,15 @@
                   />
                 </el-select>
               </InputWrapper>
-              <InputWrapper label="Referral Doctor" prop="referral_doctor">
+              <InputWrapper
+                label="Doctor Address Book"
+                prop="doctor_address_book"
+              >
                 <el-autocomplete
                   class="w-100"
-                  v-model="formData.referral_doctor_name"
+                  v-model="formData.doctor_address_book_name"
                   value-key="full_name"
-                  :fetch-suggestions="searchReferralDoctor"
+                  :fetch-suggestions="searchDoctorAddressBook"
                   placeholder="Enter Doctor Name"
                   :trigger-on-focus="true"
                   @select="handleSelect"
@@ -194,15 +197,17 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const formRef = ref(null);
-    const referralModalRef = ref(null);
+    const doctorAddressBookModalRef = ref(null);
     const loading = ref(false);
     const patientId = computed(() => props.patientId);
-    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
+    const doctorAddressBooks = computed(
+      () => store.getters.getDoctorAddressBookList
+    );
     const appointments = computed(() => store.getters.getAptList);
 
     const formData = ref({
-      referral_doctor_name: "",
-      referral_doctor_id: null,
+      doctor_address_book_name: "",
+      doctor_address_book_id: null,
       patient_id: patientId.value,
       patient_demographic: null,
       patient_alergies: null,
@@ -214,7 +219,7 @@ export default defineComponent({
     });
 
     const rules = ref({
-      referral_doctor_name: [
+      doctor_address_book_name: [
         {
           required: true,
           message: "This field cannot be blank",
@@ -245,10 +250,10 @@ export default defineComponent({
     };
 
     let timeout;
-    const searchReferralDoctor = (term, cb) => {
+    const searchDoctorAddressBook = (term, cb) => {
       const results = term
-        ? referralDoctors.value.filter(createFilter(term))
-        : referralDoctors.value;
+        ? doctorAddressBooks.value.filter(createFilter(term))
+        : doctorAddressBooks.value;
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
@@ -258,17 +263,17 @@ export default defineComponent({
 
     const createFilter = (term) => {
       const keyword = term.toString();
-      return (referralDoctor) => {
+      return (doctorAddressBook) => {
         const full_name =
-          referralDoctor.title +
+          doctorAddressBook.title +
           " " +
-          referralDoctor.first_name +
+          doctorAddressBook.first_name +
           " " +
-          referralDoctor.last_name;
+          doctorAddressBook.last_name;
         const full_name_pos = full_name
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
-        const address_pos = referralDoctor.address
+        const address_pos = doctorAddressBook.address
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
         return full_name_pos !== -1 || address_pos !== -1;
@@ -276,7 +281,7 @@ export default defineComponent({
     };
 
     const handleSelect = (item) => {
-      formData.value.referral_doctor_id = item.id;
+      formData.value.doctor_address_book_id = item.id;
     };
 
     const handleInvest = () => {
@@ -292,15 +297,16 @@ export default defineComponent({
         (a) => a.id == formData.value.appointment_id
       );
       if (apt.length) {
-        formData.value.referral_doctor_id = apt[0].referral.referring_doctor.id;
-        formData.value.referral_doctor_name =
-          apt[0].referral.referring_doctor.full_name;
+        formData.value.doctor_address_book_id =
+          apt[0].referral.doctor_address_book.id;
+        formData.value.doctor_address_book_name =
+          apt[0].referral.doctor_address_book.full_name;
       }
     };
 
     onMounted(() => {
       store.dispatch(Actions.LETTER_TEMPLATE.LIST);
-      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
       store
         .dispatch(AppointmentActions.LIST, {
           //patient_id: patientId.value,
@@ -316,11 +322,11 @@ export default defineComponent({
       formRef,
       loading,
       ClassicEditor,
-      referralDoctors,
-      referralModalRef,
+      doctorAddressBooks,
+      doctorAddressBookModalRef,
       submit,
       handleSelect,
-      searchReferralDoctor,
+      searchDoctorAddressBook,
       handleInvest,
       appointments,
       toggleLetterRferralHandle,

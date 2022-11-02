@@ -22,7 +22,18 @@ const SpecialistMenu = [
     route: "/patients",
     svgIcon: icons.heart_pulse,
   },
-
+  {
+    heading: "Communication",
+    route: "/third-party-comms",
+    svgIcon: icons.paper_plane,
+    fontIcon: "bi-send",
+    pages: [
+      {
+        heading: "Outgoing",
+        route: "/outgoing-log",
+      },
+    ],
+  },
   {
     heading: "Incoming",
     route: "/specialist/incoming-documents",

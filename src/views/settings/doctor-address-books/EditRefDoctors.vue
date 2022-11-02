@@ -192,7 +192,7 @@
           <!--begin::Button-->
           <router-link
             type="reset"
-            to="/settings/referring-doctors"
+            to="/settings/doctor-address-books"
             class="btn btn-light me-3"
           >
             Cancel
@@ -257,7 +257,7 @@ import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 
 export default defineComponent({
-  name: "edit-referring-doctors",
+  name: "edit-doctor-address-books",
   directives: {
     mask,
   },
@@ -269,16 +269,16 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const formRef = ref(null);
-    const referringDoctors = computed(
-      () => store.getters.getReferralDoctorList
+    const doctorAddressBooks = computed(
+      () => store.getters.getDoctorAddressBookList
     );
     const loading = ref(false);
 
     const formInfo = reactive({
-      title: "Create Referring Doctor",
-      submitAction: Actions.REFERRAL_DOCTOR.CREATE,
+      title: "Create Doctor Address Book",
+      submitAction: Actions.DOCTOR_ADDRESS_BOOK.CREATE,
       submitButtonName: "CREATE",
-      submittedText: "New Referring Doctor Created",
+      submittedText: "New Doctor Address Book Created",
     });
 
     const formData = ref({
@@ -417,17 +417,17 @@ export default defineComponent({
       ],
     });
 
-    watch(referringDoctors, () => {
+    watch(doctorAddressBooks, () => {
       const id = route.params.id;
 
-      referringDoctors.value.forEach((item) => {
+      doctorAddressBooks.value.forEach((item) => {
         if (item.id == id) {
           formData.value = item;
 
-          formInfo.title = "Edit Referring Doctor";
-          formInfo.submitAction = Actions.REFERRAL_DOCTOR.UPDATE;
+          formInfo.title = "Edit Doctor Address Book";
+          formInfo.submitAction = Actions.DOCTOR_ADDRESS_BOOK.UPDATE;
           formInfo.submitButtonName = "UPDATE";
-          formInfo.submittedText = "Referring Doctor Updated";
+          formInfo.submittedText = "Doctor Address Book Updated";
         }
       });
 
@@ -441,7 +441,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
     });
 
     const submit = () => {
@@ -466,7 +466,7 @@ export default defineComponent({
             .dispatch(formInfo.submitAction, Data)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.REFERRAL_DOCTOR.LIST);
+              store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
               Swal.fire({
                 text: formInfo.submittedText,
                 icon: "success",
