@@ -223,7 +223,9 @@
                         <el-select
                           v-model="day.status"
                           class="m-2"
+                          label="Status"
                           placeholder="Select"
+                          :disabled="day.id"
                         >
                           <el-option
                             v-for="item in shiftStatusOptions"
@@ -375,11 +377,6 @@ export default defineComponent({
         value: "UNPUBLISHED",
         label: "UNPUBLISHED",
         id: 1,
-      },
-      {
-        value: "OTHER",
-        label: "OTHER",
-        id: 2,
       },
     ]);
     const formData = ref({
@@ -603,7 +600,6 @@ export default defineComponent({
     onMounted(() => {
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
-
     return {
       formData,
       rules,
