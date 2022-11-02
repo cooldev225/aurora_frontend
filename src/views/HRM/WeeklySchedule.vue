@@ -28,31 +28,22 @@
       <el-button type="info" @click="setDate(1)" plain>Previous Week</el-button>
       <span class="date-caption"> {{ displayDateRange }} </span>
       <el-button type="info" @click="setDate(2)" plain>Next Week</el-button>
-      <el-button type="warning" plain>Fill The Template</el-button>
+      <el-button type="warning" @click="isShowFillFromTemplate = true" plain
+        >Fill From Template</el-button
+      >
     </div>
-
-    <!--    <div class="filter-selector">-->
-    <!--      <p>Display</p>-->
-    <!--      <el-select-->
-    <!--        v-model="selectedFilters"-->
-    <!--        multiple-->
-    <!--        placeholder="Select Filters"-->
-    <!--        style="width: 240px"-->
-    <!--      >-->
-    <!--        <el-option-->
-    <!--          v-for="item in filterOptions"-->
-    <!--          :key="item.value"-->
-    <!--          :label="item.label"-->
-    <!--          :value="item.value"-->
-    <!--        /s>-->
-    <!--      </el-select>-->
-    <!--    </div>-->
   </div>
-  <HRMTimeScheduleTable
-    :selectedFilters="selectedFilters"
-    :employeeList="employeeList"
-    :clinicFilter="clinicFilter"
-    :dateOptions="dateRange"
+  <div v-loading="loading">
+    <HRMTimeScheduleTable
+      :selectedFilters="selectedFilters"
+      :employeeList="employeeList"
+      :clinicFilter="clinicFilter"
+      :dateOptions="dateRange"
+    />
+  </div>
+  <FillFromTemplateModal
+    :dialogVisible="isShowFillFromTemplate"
+    @selectedData="processFillFromTemplate"
   />
 </template>
 
@@ -62,14 +53,15 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import HRMTimeScheduleTable from "@/components/HRM/HRMWeeklyScheduleTable";
-import { Discount } from "@element-plus/icons-vue";
 import moment from "moment";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
+import FillFromTemplateModal from "@/views/HRM/FillFromTemplateModal";
 
 export default defineComponent({
   name: "hrm-weekly-schedule",
   components: {
     HRMTimeScheduleTable,
+    FillFromTemplateModal,
   },
 
   setup() {
@@ -77,6 +69,8 @@ export default defineComponent({
     const clinicFilter = ref();
     const selectedFilters = ref(["time", "anesthetist", "clinic"]);
     const selectedEmployees = ref([]);
+    const loading = ref(false);
+    const isShowFillFromTemplate = ref(false);
     const filterOptions = ref([
       {
         value: "time",
@@ -165,9 +159,14 @@ export default defineComponent({
             .add("days", 7);
           break;
       }
-      store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
-        date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
-      });
+      loading.value = true;
+      store
+        .dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+          date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+        })
+        .then(() => {
+          loading.value = false;
+        });
       let day = dateRange.value.startDate;
       dateRange.value.datesInWeek = [];
       if (day !== null) {
@@ -195,6 +194,19 @@ export default defineComponent({
         .toString();
       return result;
     });
+
+    const processFillFromTemplate = (data) => {
+      isShowFillFromTemplate.value = false;
+      if (data)
+        data.date = moment(dateRange.value.startDate)
+          .format("YYYY-MM-DD")
+          .toString();
+      store.dispatch(HRMActions.WEEKLY_TEMPLATE.CREATE, data).then(() => {
+        store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+          date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+        });
+      });
+    };
     return {
       clinics,
       clinicFilter,
@@ -206,6 +218,9 @@ export default defineComponent({
       displayDateRange,
       setDate,
       dateRange,
+      loading,
+      isShowFillFromTemplate,
+      processFillFromTemplate,
     };
   },
 });
@@ -222,5 +237,12 @@ export default defineComponent({
     font-size: 14px;
     font-weight: 600;
   }
+}
+.example-showcase .el-loading-mask {
+  z-index: 9;
+}
+
+.el-loading-spinner {
+  position: sticky;
 }
 </style>
