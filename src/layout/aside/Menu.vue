@@ -7,7 +7,13 @@
   >
     <template v-for="(item, i) in MainMenuConfig" :key="i">
       <template v-if="!item.pages">
-        <template v-if="item.heading">
+        <template
+          v-if="
+            item.heading &&
+            (item.heading !== 'Coding' ||
+              (item.heading === 'Coding' && hasCoding))
+          "
+        >
           <div
             :class="{ 'show here': currentActive(item.route) }"
             class="menu-item py-5"
@@ -33,7 +39,11 @@
       </template>
       <template v-if="item.pages">
         <div
-          v-if="item.heading"
+          v-if="
+            item.heading &&
+            (item.heading !== 'Coding' ||
+              (item.heading === 'Coding' && hasCoding))
+          "
           :class="{ 'show here': hasActiveChildren(item.route) }"
           data-kt-menu-trigger="click"
           data-kt-menu-placement="right-start"
@@ -90,7 +100,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  watchEffect,
+  computed,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
@@ -107,6 +124,12 @@ export default defineComponent({
     const store = useStore();
     const scrollElRef = ref<null | HTMLElement>(null);
     const MainMenuConfig = ref();
+    const currentUser = computed(() => store.getters.currentUser);
+    const hasCoding = ref(false);
+
+    watch(currentUser, () => {
+      hasCoding.value = currentUser.value.organization?.has_coding;
+    });
 
     onMounted(() => {
       if (scrollElRef.value) {
@@ -142,6 +165,7 @@ export default defineComponent({
       asideMenuIcons,
       version,
       translate,
+      hasCoding,
     };
   },
 });
