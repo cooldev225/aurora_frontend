@@ -184,6 +184,13 @@ const Actions = {
   MBS: {
     LIST: "listMbsItems",
   },
+
+  SCHEDULE_FEE: {
+    LIST: "listScheduleFee",
+    CREATE: "createScheduleFee",
+    DELETE: "deleteScheduleFee",
+    UPDATE: "updateScheduleFee",
+  },
 };
 
 const Mutations = {
@@ -313,6 +320,10 @@ const Mutations = {
 
   SET_MBS: {
     LIST: "setMbsItems",
+  },
+
+  SET_SCHEDULE_FEE: {
+    LIST: "setScheduleFeeList",
   },
 };
 
