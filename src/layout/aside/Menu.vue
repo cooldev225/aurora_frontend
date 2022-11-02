@@ -128,9 +128,7 @@ export default defineComponent({
     const hasCoding = ref(false);
 
     watch(currentUser, () => {
-      if (currentUser.value && currentUser.value.organization.has_coding) {
-        hasCoding.value = true;
-      } else hasCoding.value = false;
+      hasCoding.value = currentUser.value.organization?.has_coding;
     });
 
     onMounted(() => {
