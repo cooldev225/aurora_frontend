@@ -49,7 +49,7 @@ export default class PatientsRecallModule
   [PatientActions.RECALL.LIST](params) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("patients/recalls/", { params: params })
+      ApiService.get("patients/recalls", params.patient_id)
         .then(({ data }) => {
           this.context.commit(
             PatientMutations.SET_PATIENT_RECALL.LIST,

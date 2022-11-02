@@ -3,7 +3,7 @@
     <el-select
       class="w-100 mb-6"
       placeholder="Select Confirm State"
-      v-model="documentTypeFilter"
+      v-model="recallsFilter"
     >
       <el-option value="-1" label="All State"></el-option>
       <template v-for="(state, index) in confirmStateList" :key="index">
@@ -45,7 +45,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  watchEffect,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
@@ -90,21 +97,37 @@ export default defineComponent({
       },
     ]);
 
-    const tableData = ref([]);
+    let tableData = ref([]);
+    let filteredData = ref([]);
     const recalls = computed(() => store.getters.patientsRecallList);
     const patient = computed(() => store.getters.selectedPatient);
     const loading = ref(false);
     const route = useRoute();
+    const recallsFilter = ref("-1");
+    watch([recallsFilter, filteredData], () => {
+      let temp = filteredData.value;
+      if (recallsFilter.value !== "-1") {
+        temp = temp.filter(
+          (item: { confirmed: number }) =>
+            item.confirmed === Number(recallsFilter.value)
+        );
+      }
+      filteredData.value = temp;
+      tableData.value = filteredData.value;
+      console.log("----------------------", recalls.value);
+    });
 
     onMounted(() => {
       const id = route.params.id;
       store.dispatch(PatientActions.RECALL.LIST, { patient_id: id });
-      console.log(patient.value);
       setCurrentPageBreadcrumbs("Recalls", ["Patients"]);
     });
 
     watchEffect(() => {
-      tableData.value = recalls.value;
+      filteredData.value = recalls.value;
+      // setTimeout(() => {
+      //   tableData.value = [];
+      // }, 10000);
       loading.value = false;
       const id = route.params.id;
       store.dispatch(PatientActions.VIEW, id);
@@ -116,6 +139,9 @@ export default defineComponent({
       loading,
       moment,
       confirmStateList,
+      recalls,
+      recallsFilter,
+      filteredData,
     };
   },
 });
