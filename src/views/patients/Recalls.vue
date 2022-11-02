@@ -1,5 +1,15 @@
 <template>
   <CardSection heading="Recalls">
+    <el-select
+      class="w-100 mb-6"
+      placeholder="Select Confirm State"
+      v-model="documentTypeFilter"
+    >
+      <el-option value="-1" label="All State"></el-option>
+      <template v-for="(state, index) in confirmStateList" :key="index">
+        <el-option :value="index" :label="state"></el-option>
+      </template>
+    </el-select>
     <Datatable
       :table-header="tableHeader"
       :table-data="tableData"
@@ -42,6 +52,7 @@ import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import moment from "moment";
 import { useRoute } from "vue-router";
+import confirmStateList from "@/core/data/confirm-state";
 
 export default defineComponent({
   name: "patient-recalls-view",
@@ -104,6 +115,7 @@ export default defineComponent({
       tableData,
       loading,
       moment,
+      confirmStateList,
     };
   },
 });
