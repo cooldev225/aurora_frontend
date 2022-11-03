@@ -5,7 +5,7 @@ const BillingRoutes = [
     component: () => import("@/views/MakePayment.vue"),
   },
   {
-    path: "/billing/make-payment/pay",
+    path: "/billing/make-payment/pay/:id",
     name: "make-payment-pay",
     component: () => import("@/components/make-payment/Pay.vue"),
   },

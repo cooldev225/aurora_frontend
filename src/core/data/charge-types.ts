@@ -52,8 +52,9 @@ const payment_tier = {
 };
 
 export const getProcedurePrice = (data, charge_type) => {
-  const key = charge_type.replaceAll("-", "_");
-  return data[payment_tier[key]];
+  // const key = charge_type.replaceAll("-", "_");
+  // return data[payment_tier[key]];
+  return 0;
 };
 
 export default chargeTypes;

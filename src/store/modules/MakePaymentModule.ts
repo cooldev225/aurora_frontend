@@ -5,6 +5,11 @@ import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
 export interface IMPayment {
   id: number;
+  amount: number;
+  is_deposit: boolean;
+  payment_type: string;
+  confirmed_user_name: string;
+  created_at: string;
 }
 
 export interface MPaymentInfo {

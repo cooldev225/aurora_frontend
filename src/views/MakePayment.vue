@@ -170,8 +170,8 @@ export default defineComponent({
     const renderTable = () => tableKey.value++;
 
     const handlePay = (item) => {
-      router.push({ name: "make-payment-pay" });
-      store.dispatch(Actions.MAKE_PAYMENT.VIEW, item.id);
+      const id = item.id;
+      router.push({ name: "make-payment-pay", params: { id } });
     };
 
     watch(list, () => {
