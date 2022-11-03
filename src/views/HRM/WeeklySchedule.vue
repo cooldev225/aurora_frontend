@@ -29,8 +29,11 @@
       <span class="date-caption"> {{ displayDateRange }} </span>
       <el-button type="info" @click="setDate(2)" plain>Next Week</el-button>
       <el-button type="warning" @click="isShowFillFromTemplate = true" plain
-        >Fill From Template</el-button
-      >
+        >Fill From Template
+      </el-button>
+      <el-button type="warning" @click="PublishAllSlots" plain
+        >Mark All as Published
+      </el-button>
     </div>
   </div>
   <div v-loading="loading">
@@ -90,7 +93,9 @@ export default defineComponent({
       endDate: null,
       datesInWeek: [],
     });
+
     const clinics = computed(() => store.getters.clinicsList);
+    const schedule = computed(() => store.getters.hrmScheduleSelected);
     const employeeList = computed(() => {
       const allEmployees = store.getters.hrmWeeklyTemplatesData;
       let filteredList = [];
@@ -180,7 +185,6 @@ export default defineComponent({
           day = day.clone().add("days", 1);
         }
       }
-      console.log(dateRange.value);
     };
 
     const displayDateRange = computed(() => {
@@ -207,6 +211,30 @@ export default defineComponent({
         });
       });
     };
+
+    const PublishAllSlots = () => {
+      let publishSlots = {
+        id: 6,
+        timeslots: [],
+        deleteTimeslots: [],
+      };
+      employeeList.value.map((employee) => {
+        employee.hrm_weekly_schedule.map((slot) => {
+          if (slot.status == "UNPUBLISHED") {
+            slot.status = "PUBLISHED";
+            publishSlots.timeslots.push(slot);
+          }
+        });
+      });
+      store
+        .dispatch(HRMActions.WEEKLY_TEMPLATE.UPDATE, publishSlots)
+        .then(() => {
+          store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+            date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+          });
+        });
+    };
+
     return {
       clinics,
       clinicFilter,
@@ -221,6 +249,7 @@ export default defineComponent({
       loading,
       isShowFillFromTemplate,
       processFillFromTemplate,
+      PublishAllSlots,
     };
   },
 });
@@ -228,7 +257,7 @@ export default defineComponent({
 <style lang="scss">
 .date-range-selector {
   display: flex;
-  width: 711px;
+  width: 811px;
   justify-content: space-around;
   align-items: center;
   padding: 10px;
@@ -238,6 +267,7 @@ export default defineComponent({
     font-weight: 600;
   }
 }
+
 .example-showcase .el-loading-mask {
   z-index: 9;
 }
