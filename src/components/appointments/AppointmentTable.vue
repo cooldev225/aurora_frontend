@@ -7,16 +7,26 @@
         :options="calendarOptions"
       >
         <template v-slot:eventContent="event">
-          <AppointmentTableData
-            :appointment="event.event.extendedProps.appointment"
-          />
+          <template v-if="event.event.display != 'background'">
+            <AppointmentTableData
+              :appointment="event.event.extendedProps.appointment"
+            />
+          </template>
         </template>
       </FullCalendar>
     </template>
   </CardSection>
   <MoveModal :isDisableAptTypeList="true" />
 </template>
+<style>
+.fc-non-business {
+  background-color: #7d7d7d !important;
+}
 
+.fc .fc-timegrid-slot {
+  height: 3em !important;
+}
+</style>
 <script>
 import {
   defineComponent,
@@ -55,7 +65,6 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-
     const calendarOptions = ref(null);
     const appointmentCalendarRef = ref(null); //this.$refs.refAppointmentCalendar.getApi();
     const appointmentsRaw = computed(() => store.getters.getAptList);
@@ -67,10 +76,42 @@ export default defineComponent({
       store.dispatch(AppointmentActions.LIST, { date: date });
     });
 
-    onMounted(() => {
-      store.dispatch(AppointmentActions.LIST, { date: props.visibleDate.date });
-    });
     watch(appointments, () => {
+      console.log("load appointments");
+      var check = moment(props.visibleDate.date, "YYYY/MM/DD");
+      var day = check.format("ddd").toUpperCase();
+      allSpecialists.value.forEach((specialist) => {
+        specialist.schedule_timeslots.forEach((timeslot) => {
+          if (timeslot.week_day == day) {
+            //  console.log(timeslot.restriction);
+            let date = moment(props.visibleDate.date, "YYYY/MM/DD").format(
+              "YYYY-MM-DD"
+            );
+            let start_time = date + "T" + timeslot.start_time;
+            let end_time = date + "T" + timeslot.end_time;
+
+            let color = "";
+            if (timeslot.restriction == "CONSULTATION") {
+              color = "#DDC1F0";
+            } else if (timeslot.restriction == "PROCEDURE") {
+              color = "#F0E9C1";
+            } else {
+              color = "#C1F0C1";
+            }
+
+            //console.log(color);
+            appointments.value.push({
+              id: appointments.value.length,
+              resourceId: specialist.id,
+              start: start_time,
+              end: end_time,
+              display: "background",
+              backgroundColor: color,
+            });
+          }
+        });
+      });
+
       const duration = moment()
         .startOf("day")
         .add(props.organization.appointment_length, "minutes")
@@ -98,7 +139,9 @@ export default defineComponent({
         selectable: true,
         selectMirror: false,
         allDaySlot: false,
-        height: 500,
+        height: 700,
+        contentHeight: 700,
+        expandRows: true,
         slotMinTime: props.organization.start_time,
         slotMaxTime: props.organization.end_time,
         slotDuration: duration,
