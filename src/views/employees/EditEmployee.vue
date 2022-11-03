@@ -254,7 +254,6 @@ export default defineComponent({
       username: "",
       email: "",
       mobile_number: "0",
-      password: "",
       first_name: "",
       last_name: "",
       address: "",

@@ -79,6 +79,7 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import ProfileNavigation from "@/components/auth/ProfileNavigation";
+import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
 
 export default defineComponent({
   name: "password-change",
