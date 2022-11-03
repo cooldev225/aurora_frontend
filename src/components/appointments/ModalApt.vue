@@ -1772,7 +1772,6 @@ export default defineComponent({
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
       store.dispatch(PatientActions.ALLERGIES_LIST).then((data) => {
         allergiesList.value = data;
-        console.log(["patient allergies list", allergiesList.value]);
       });
     });
 
@@ -1865,6 +1864,7 @@ export default defineComponent({
     // Send request to update exiting appointment
     const handleSave = () => {
       loading.value = true;
+      aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
       store
         .dispatch(AppointmentActions.APT.UPDATE, {
           id: aptData.value.id,
