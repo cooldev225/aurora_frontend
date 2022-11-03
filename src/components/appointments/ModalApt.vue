@@ -1850,15 +1850,6 @@ export default defineComponent({
           loading.value = false;
           store.dispatch(AppointmentActions.LIST);
           hideModal(createAptModalRef.value);
-          if (searchVal.value.date) {
-            store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
-              ...searchVal.value,
-            });
-          } else {
-            store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
-              ...searchVal.value,
-            });
-          }
           resetCreateModal();
         })
         .catch(({ response }) => {
@@ -1969,18 +1960,6 @@ export default defineComponent({
           }).then((result) => {
             hideModal(createAptModalRef.value);
             resetCreateModal();
-            if (searchVal.value.date) {
-              store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
-                ...searchVal.value,
-              });
-            } else {
-              store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
-                ...searchVal.value,
-              });
-            }
-
-            resetCreateModal();
-
             if (result.dismiss === "cancel") {
               router.push({ name: "make-payment-pay" });
             }
@@ -2017,18 +1996,6 @@ export default defineComponent({
           loading.value = false;
           store.dispatch(Actions.APT.LIST);
           hideModal(editAptModalRef.value);
-          if (searchVal.value.date) {
-            store.dispatch(Actions.BOOKING.SEARCH.SPECIALIST, {
-              ...searchVal.value,
-            });
-            store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-              ...searchVal.value,
-            });
-          } else {
-            store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
-              ...searchVal.value,
-            });
-          }
         })
         .catch(({ response }) => {
           loading.value = false;
