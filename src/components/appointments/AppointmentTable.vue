@@ -71,6 +71,11 @@ export default defineComponent({
       store.dispatch(AppointmentActions.LIST, { date: props.visibleDate.date });
     });
     watch(appointments, () => {
+      const duration = moment()
+        .startOf("day")
+        .add(props.organization.appointment_length, "minutes")
+        .format("HH:mm:ss")
+        .toString();
       calendarOptions.value = {
         schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
         plugins: [
@@ -96,7 +101,7 @@ export default defineComponent({
         height: 500,
         slotMinTime: props.organization.start_time,
         slotMaxTime: props.organization.end_time,
-        slotDuration: "00:30:00",
+        slotDuration: duration,
         views: {
           timeGridDay: { buttonText: "day" },
         },
@@ -148,7 +153,7 @@ export default defineComponent({
     const handleCreateAppointment = (info) => {
       info.jsEvent.preventDefault();
       const date = moment(info.start).format("YYYY-MM-DD").toString();
-      const time = moment(info.start).format("HH:MM").toString();
+      const time = moment(info.start).format("HH:mm").toString();
       const weekDay = moment(info.start).format("ddd").toUpperCase();
       // filter correct specialist base on info
       const specialists = allSpecialists.value.filter((specialist) => {
