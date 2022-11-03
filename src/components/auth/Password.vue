@@ -29,7 +29,7 @@
             </div>
           </div>
           <div class="col-sm-6">
-            <div class="fv-row mb-7">
+            <div class="fv-row mb-7" data-kt-password-meter="true">
               <label class="text-muted fs-6 fw-bold mb-2 d-block"
                 >New Password</label
               >
@@ -40,7 +40,31 @@
                   v-model="formData.new_password"
                   placeholder="New Password"
                 />
+                <span
+                  class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2"
+                  data-kt-password-meter-control="visibility"
+                >
+                  <i class="bi bi-eye-slash fs-2"></i>
+                  <i class="bi bi-eye fs-2 d-none"></i>
+                </span>
               </el-form-item>
+              <div
+                class="d-flex align-items-center mb-3"
+                data-kt-password-meter-control="highlight"
+              >
+                <div
+                  class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                ></div>
+                <div
+                  class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                ></div>
+                <div
+                  class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                ></div>
+                <div
+                  class="flex-grow-1 bg-secondary bg-active-success rounded h-5px"
+                ></div>
+              </div>
             </div>
           </div>
           <div class="col-sm-6">
@@ -131,7 +155,7 @@ export default defineComponent({
           message: "Password cannot be blank",
           trigger: "change",
         },
-        { min: 6, message: "The password must be at least 6 characters" },
+        //{ min: 6, message: "The password must be at least 6 characters" },
       ],
       confirm_password: [
         { validator: validatePass2, trigger: "blur" },
@@ -140,7 +164,7 @@ export default defineComponent({
           message: "Confirm Password cannot be blank.",
           trigger: "change",
         },
-        { min: 6, message: "The password must be at least 6 characters" },
+        //{ min: 6, message: "The password must be at least 6 characters" },
       ],
     });
 
@@ -150,6 +174,7 @@ export default defineComponent({
       }
 
       formRef.value.validate((valid) => {
+        valid = false;
         if (valid) {
           loading.value = true;
           store
@@ -179,6 +204,9 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Password", ["Profile"]);
+      PasswordMeterComponent.createInstances();
+      // var el = document.querySelector("#kt_password_meter_control");
+      // var passwordMeter = PasswordMeterComponent.createInstance(el);
     });
 
     return {

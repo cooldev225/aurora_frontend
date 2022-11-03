@@ -28,19 +28,18 @@
           ref="formRef"
         >
           <div class="modal-body py-10 px-lg-17">
-            <div class="row">
-              <InputWrapper
-                required
-                label="Current your password"
-                prop="current_password"
-              >
-                <el-input
-                  v-model="formData.current_password"
-                  type="password"
-                  placeholder="Enter current your password"
-                />
-              </InputWrapper>
-
+            <InputWrapper
+              required
+              label="Current your password"
+              prop="current_password"
+            >
+              <el-input
+                v-model="formData.current_password"
+                type="password"
+                placeholder="Enter current your password"
+              />
+            </InputWrapper>
+            <div data-kt-password-meter="true">
               <InputWrapper
                 required
                 label="New employee password"
@@ -51,20 +50,44 @@
                   type="password"
                   placeholder="Enter new employee password"
                 />
-              </InputWrapper>
-
-              <InputWrapper
-                required
-                label="Repeat employee password"
-                prop="repeat_employee_password"
-              >
-                <el-input
-                  v-model="formData.repeat_employee_password"
-                  type="password"
-                  placeholder="Repeat employee password"
-                />
+                <span
+                  class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2"
+                  data-kt-password-meter-control="visibility"
+                >
+                  <i class="bi bi-eye-slash fs-2"></i>
+                  <i class="bi bi-eye fs-2 d-none"></i>
+                </span>
+                <div
+                  class="d-flex align-items-center mt-3"
+                  data-kt-password-meter-control="highlight"
+                >
+                  <div
+                    class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                  ></div>
+                  <div
+                    class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                  ></div>
+                  <div
+                    class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                  ></div>
+                  <div
+                    class="flex-grow-1 bg-secondary bg-active-success rounded h-5px"
+                  ></div>
+                </div>
               </InputWrapper>
             </div>
+
+            <InputWrapper
+              required
+              label="Repeat employee password"
+              prop="repeat_employee_password"
+            >
+              <el-input
+                v-model="formData.repeat_employee_password"
+                type="password"
+                placeholder="Repeat employee password"
+              />
+            </InputWrapper>
           </div>
           <div class="modal-footer flex-center">
             <button
@@ -100,6 +123,7 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
 
 export default defineComponent({
   name: "update-employee-password-modal",
@@ -232,6 +256,7 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch(Actions.CLINICS.LIST);
+      PasswordMeterComponent.createInstances();
     });
 
     return {
