@@ -147,9 +147,9 @@ export default defineComponent({
 
     const handleCreateAppointment = (info) => {
       info.jsEvent.preventDefault();
-      const date = moment(info.date).format("YYYY-MM-DD").toString();
-      const time = moment(info.date).format("HH:MM").toString();
-      const weekDay = moment(info.date).format("ddd").toUpperCase();
+      const date = moment(info.start).format("YYYY-MM-DD").toString();
+      const time = moment(info.start).format("HH:MM").toString();
+      const weekDay = moment(info.start).format("ddd").toUpperCase();
       // filter correct specialist base on info
       const specialists = allSpecialists.value.filter((specialist) => {
         if (specialist.id == info.resource.id) return specialist;
