@@ -12,6 +12,9 @@
               :appointment="event.event.extendedProps.appointment"
             />
           </template>
+          <template v-else>
+            {{ event.event.extendedProps.text }}
+          </template>
         </template>
       </FullCalendar>
     </template>
@@ -99,7 +102,7 @@ export default defineComponent({
               color = "#C1F0C1";
             }
 
-            //console.log(color);
+            console.log(timeslot);
             appointments.value.push({
               id: appointments.value.length,
               resourceId: specialist.id,
@@ -107,6 +110,7 @@ export default defineComponent({
               end: end_time,
               display: "background",
               backgroundColor: color,
+              text: timeslot.clinic_name,
             });
           }
         });
