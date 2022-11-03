@@ -103,8 +103,9 @@ export default defineComponent({
         editable: false,
         dayMaxEvents: false,
         events: appointments,
+        selectConstraint: "businessHours",
         eventClick: handleShowAppointmentDrawer,
-        dateClick: handleCreateAppointment,
+        select: handleCreateAppointment,
       };
 
       if (appointmentCalendarRef.value) {
