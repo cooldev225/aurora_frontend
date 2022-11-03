@@ -300,12 +300,17 @@ export default defineComponent({
               reason: data,
             })
             .then(() => {
-              store.dispatch(
-                AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
-                searchVal.value
-              );
-
-              DrawerComponent?.getInstance("appointment-drawer")?.hide();
+              store
+                .dispatch(AppointmentActions.LIST, {
+                  date: searchVal.value.date,
+                })
+                .then(() => {
+                  store.dispatch(
+                    AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
+                    searchVal.value
+                  );
+                  DrawerComponent?.getInstance("appointment-drawer")?.hide();
+                });
             });
         },
       });

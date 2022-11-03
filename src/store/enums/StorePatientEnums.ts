@@ -37,6 +37,7 @@ const PatientActions = {
     UPDATE: "updatePatientAlsoKnownAs",
     DELETE: "deletePatientAlsoKnownAs",
   },
+  ALLERGIES_LIST: "getAllergiesList",
 };
 
 const PatientMutations = {

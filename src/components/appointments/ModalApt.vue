@@ -592,6 +592,18 @@
                       </InputWrapper>
 
                       <InputWrapper
+                        class="col-12"
+                        label="Clinical Alerts"
+                        prop="clinical_alerts"
+                      >
+                        <el-input
+                          type="textarea"
+                          v-model="patientInfoData.clinical_alerts"
+                          placeholder="Enter Clinical Alerts"
+                        />
+                      </InputWrapper>
+
+                      <!-- <InputWrapper
                         class="col-6"
                         label="Allergies"
                         prop="allergies"
@@ -601,18 +613,28 @@
                           v-model="patientInfoData.allergies"
                           placeholder="Enter Allergies"
                         />
-                      </InputWrapper>
-
+                      </InputWrapper> -->
                       <InputWrapper
-                        class="col-6"
-                        label="Clinical Alerts"
-                        prop="clinical_alerts"
+                        class="col-12"
+                        label="Allergies"
+                        prop="allergies"
                       >
-                        <el-input
-                          type="textarea"
-                          v-model="patientInfoData.clinical_alerts"
-                          placeholder="Enter Clinical Alerts"
-                        />
+                        <el-select
+                          class="w-100"
+                          multiple
+                          filterable
+                          allow-create
+                          default-first-option
+                          :reserve-keyword="false"
+                          v-model="patientInfoData.allergies"
+                        >
+                          <el-option
+                            v-for="item in allergiesList"
+                            :value="item.id"
+                            :label="item.name"
+                            :key="item.id"
+                          />
+                        </el-select>
                       </InputWrapper>
                     </div>
                     <div class="d-flex justify-content-between">
@@ -1354,6 +1376,7 @@ export default defineComponent({
     const title = ref(null);
     const refName = ref(null);
     const refCode = ref(null);
+    const allergiesList = ref([]);
 
     const patientTableData = ref([]);
     const patientTableHeader = ref([
@@ -1747,6 +1770,9 @@ export default defineComponent({
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
+      store.dispatch(PatientActions.ALLERGIES_LIST).then((data) => {
+        allergiesList.value = data;
+      });
     });
 
     const getAvailableRooms = () => {
@@ -1787,6 +1813,7 @@ export default defineComponent({
           appointment_confirm_method: "sms",
           allergies: "",
           clinical_alerts: "",
+          also_known_as: [],
         };
         if (formRef_2.value) formRef_2.value.resetFields();
       }
@@ -1837,6 +1864,7 @@ export default defineComponent({
     // Send request to update exiting appointment
     const handleSave = () => {
       loading.value = true;
+      aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
       store
         .dispatch(AppointmentActions.APT.UPDATE, {
           id: aptData.value.id,
@@ -1849,15 +1877,6 @@ export default defineComponent({
           loading.value = false;
           store.dispatch(AppointmentActions.LIST);
           hideModal(createAptModalRef.value);
-          if (searchVal.value.date) {
-            store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
-              ...searchVal.value,
-            });
-          } else {
-            store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
-              ...searchVal.value,
-            });
-          }
           resetCreateModal();
         })
         .catch(({ response }) => {
@@ -1968,18 +1987,6 @@ export default defineComponent({
           }).then((result) => {
             hideModal(createAptModalRef.value);
             resetCreateModal();
-            if (searchVal.value.date) {
-              store.dispatch(AppointmentActions.BOOKING.SEARCH.SPECIALISTS, {
-                ...searchVal.value,
-              });
-            } else {
-              store.dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
-                ...searchVal.value,
-              });
-            }
-
-            resetCreateModal();
-
             if (result.dismiss === "cancel") {
               router.push({ name: "make-payment-pay" });
             }
@@ -1994,6 +2001,7 @@ export default defineComponent({
     const updateApt = () => {
       const billingInfo = billingInfoData.value;
       const patientInfo = patientInfoData.value;
+      aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
 
       billingInfo.claim_sources = billingInfo.claim_sources.filter((source) => {
         return !Object.prototype.hasOwnProperty.call(source, "id");
@@ -2015,18 +2023,6 @@ export default defineComponent({
           loading.value = false;
           store.dispatch(Actions.APT.LIST);
           hideModal(editAptModalRef.value);
-          if (searchVal.value.date) {
-            store.dispatch(Actions.BOOKING.SEARCH.SPECIALIST, {
-              ...searchVal.value,
-            });
-            store.dispatch(Actions.BOOKING.SEARCH.SPECIALISTS, {
-              ...searchVal.value,
-            });
-          } else {
-            store.dispatch(Actions.BOOKING.SEARCH.NEXT_APT, {
-              ...searchVal.value,
-            });
-          }
         })
         .catch(({ response }) => {
           loading.value = false;
@@ -2223,6 +2219,7 @@ export default defineComponent({
       getBillingType,
       getHealthFund,
       updatePatientDetails,
+      allergiesList,
     };
   },
 });
