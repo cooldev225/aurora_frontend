@@ -124,6 +124,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
+import { validatePass } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "update-employee-password-modal",
@@ -141,17 +142,6 @@ export default defineComponent({
         repeat_employee_password: null,
       },
     ]);
-
-    const validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("Please input the password"));
-      } else {
-        if (formData.value.repeat_employee_password !== "") {
-          formRef.value.validateField("checkPass", () => null);
-        }
-        callback();
-      }
-    };
 
     const validatePass2 = (rule, value, callback) => {
       if (value === "") {

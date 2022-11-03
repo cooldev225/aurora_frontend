@@ -104,6 +104,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import ProfileNavigation from "@/components/auth/ProfileNavigation";
 import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
+import { validatePass } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "password-change",
@@ -117,17 +118,6 @@ export default defineComponent({
       confirm_password: "",
     });
     const loading = ref(false);
-
-    const validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("Please input the password"));
-      } else {
-        if (formData.value.confirm_password !== "") {
-          formRef.value.validateField("checkPass", () => null);
-        }
-        callback();
-      }
-    };
 
     const validatePass2 = (rule, value, callback) => {
       if (value === "") {
@@ -155,7 +145,7 @@ export default defineComponent({
           message: "Password cannot be blank",
           trigger: "change",
         },
-        //{ min: 6, message: "The password must be at least 6 characters" },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
       confirm_password: [
         { validator: validatePass2, trigger: "blur" },
@@ -164,7 +154,7 @@ export default defineComponent({
           message: "Confirm Password cannot be blank.",
           trigger: "change",
         },
-        //{ min: 6, message: "The password must be at least 6 characters" },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
     });
 

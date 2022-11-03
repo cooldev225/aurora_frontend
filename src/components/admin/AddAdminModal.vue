@@ -248,6 +248,7 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
+import { validatePass } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "add-admin-modal",
@@ -266,17 +267,6 @@ export default defineComponent({
       password: "",
       password_confirmation: "",
     });
-
-    const validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("Please input the password"));
-      } else {
-        if (formData.value.password_confirmation !== "") {
-          formRef.value.validateField("checkPass", () => null);
-        }
-        callback();
-      }
-    };
 
     const validatePass2 = (rule, value, callback) => {
       if (value === "") {

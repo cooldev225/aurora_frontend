@@ -234,6 +234,7 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
+import { validatePass } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "add-org-admin-modal",
@@ -251,6 +252,16 @@ export default defineComponent({
       password: "",
       password_confirmation: "",
     });
+
+    const validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Please input the password again"));
+      } else if (value !== formData.value.password) {
+        callback(new Error("Password doesn't match!"));
+      } else {
+        callback();
+      }
+    };
 
     const rules = ref({
       first_name: [
@@ -282,18 +293,22 @@ export default defineComponent({
         },
       ],
       password: [
+        { validator: validatePass, trigger: "blur" },
         {
           required: true,
           message: "Password cannot be blank",
           trigger: "change",
         },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
       password_confirmation: [
+        { validator: validatePass2, trigger: "blur" },
         {
           required: true,
           message: "Confirm Password cannot be blank.",
           trigger: "change",
         },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
     });
 
