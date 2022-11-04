@@ -465,7 +465,6 @@ export default defineComponent({
     const clinic_list = computed(() => store.getters.clinicsList);
 
     watch(monthAvailabilities, () => {
-
       $(".datepicker-days")
         .children()
         .each(function () {
