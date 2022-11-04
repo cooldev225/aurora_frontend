@@ -14,6 +14,7 @@
         >
           <div class="row">
             <InputWrapper
+              required
               class="col-12 col-md-6"
               label="First Name"
               prop="first_name"
@@ -25,6 +26,7 @@
               />
             </InputWrapper>
             <InputWrapper
+              required
               class="col-12 col-md-6"
               label="Last Name"
               prop="last_name"
@@ -35,7 +37,12 @@
                 placeholder="Last Name"
               />
             </InputWrapper>
-            <InputWrapper class="col-12 col-md-6" label="Email" prop="email">
+            <InputWrapper
+              required
+              class="col-12 col-md-6"
+              label="Email"
+              prop="email"
+            >
               <el-input
                 v-model="formData.email"
                 type="email"
@@ -43,6 +50,7 @@
               />
             </InputWrapper>
             <InputWrapper
+              required
               class="col-12 col-md-6"
               label="Contact Number"
               v-mask="'0#-####-####'"
@@ -55,6 +63,7 @@
               />
             </InputWrapper>
             <InputWrapper
+              required
               class="col-12 col-md-6"
               label="Address"
               prop="address"
@@ -155,14 +164,15 @@
           <el-divider />
           <div class="d-flex justify-content-end">
             <button
+              :disabled="loading"
               type="button"
               class="btn btn-lg btn-primary me-3"
               @click="submit()"
             >
-              <span class="indicator-label">
+              <span v-if="!loading" class="indicator-label">
                 {{ formInfo.submitButtonName }}
               </span>
-              <span class="indicator-progress">
+              <span v-if="loading">
                 Please wait...
                 <span
                   class="spinner-border spinner-border-sm align-middle ms-2"
@@ -285,6 +295,20 @@ export default defineComponent({
           trigger: "change",
         },
       ],
+      mobile_number: [
+        {
+          required: true,
+          message: "Contact number cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      address: [
+        {
+          required: true,
+          message: "Address cannot be blank.",
+          trigger: "change",
+        },
+      ],
       email: [
         {
           required: true,
@@ -400,16 +424,7 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                let id = route.params.id;
-                if (id != undefined) {
-                  router.push({ name: "employees" });
-                } else {
-                  router.push({
-                    name: "employees-edit",
-                    params: { id: res.id },
-                  });
-                  setForUpdateEmployee();
-                }
+                router.push({ name: "employees" });
               });
             })
             .catch(({ response }) => {

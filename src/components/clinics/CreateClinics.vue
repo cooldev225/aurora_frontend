@@ -25,7 +25,18 @@
                   placeholder="Clinic Name"
                 />
               </InputWrapper>
-
+              <InputWrapper
+                required
+                :class="colString"
+                label="Clinic Nickname"
+                prop="nickname_code"
+              >
+                <el-input
+                  v-model="formData.nickname_code"
+                  type="text"
+                  placeholder="e.g BAW"
+                />
+              </InputWrapper>
               <InputWrapper
                 required
                 :class="colString"
@@ -84,18 +95,6 @@
                   placeholder="Fax Number"
                 />
               </InputWrapper>
-
-              <InputWrapper
-                :class="colString"
-                label="Health Link"
-                prop="healthlink_edi"
-              >
-                <el-input
-                  v-model="formData.healthlink_edi"
-                  type="text"
-                  placeholder="Health Link"
-                />
-              </InputWrapper>
             </div>
             <el-divider />
           </div>
@@ -134,7 +133,17 @@
                   placeholder="LSPN id"
                 />
               </InputWrapper>
-
+              <InputWrapper
+                :class="colString"
+                label="Health Link"
+                prop="healthlink_edi"
+              >
+                <el-input
+                  v-model="formData.healthlink_edi"
+                  type="text"
+                  placeholder="Health Link"
+                />
+              </InputWrapper>
               <InputWrapper
                 :class="colString"
                 label="Specimen Collection Point"
@@ -244,6 +253,7 @@ export default defineComponent({
     const loadingMinorId = ref(false);
     const formData = ref({
       name: "",
+      nickname_code: "",
       email: "",
       phone_number: "",
       fax_number: "",
@@ -260,6 +270,13 @@ export default defineComponent({
         {
           required: true,
           message: "Clinic Name cannot be blank.",
+          trigger: "change",
+        },
+      ],
+      nickname_code: [
+        {
+          required: true,
+          message: "Please enter a nickname code.",
           trigger: "change",
         },
       ],

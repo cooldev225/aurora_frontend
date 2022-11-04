@@ -7,16 +7,29 @@
         :options="calendarOptions"
       >
         <template v-slot:eventContent="event">
-          <AppointmentTableData
-            :appointment="event.event.extendedProps.appointment"
-          />
+          <template v-if="event.event.display != 'background'">
+            <AppointmentTableData
+              :appointment="event.event.extendedProps.appointment"
+            />
+          </template>
+          <template v-else>
+            {{ event.event.extendedProps.text }}
+          </template>
         </template>
       </FullCalendar>
     </template>
   </CardSection>
   <MoveModal :isDisableAptTypeList="true" />
 </template>
+<style>
+.fc-non-business {
+  background-color: #7d7d7d !important;
+}
 
+.fc .fc-timegrid-slot {
+  height: 3em !important;
+}
+</style>
 <script>
 import {
   defineComponent,
@@ -55,17 +68,55 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-
     const calendarOptions = ref(null);
     const appointmentCalendarRef = ref(null); //this.$refs.refAppointmentCalendar.getApi();
     const appointmentsRaw = computed(() => store.getters.getAptList);
     const appointments = ref([]);
     const allSpecialists = computed(() => store.getters.getSpecialistList);
 
-    onMounted(() => {
-      store.dispatch(AppointmentActions.LIST, { date: props.visibleDate.date });
+    watch(props, () => {
+      let date = moment(props.visibleDate.date).format("YYYY-MM-DD");
     });
+
     watch(appointments, () => {
+      var check = moment(props.visibleDate.date, "YYYY/MM/DD");
+      var day = check.format("ddd").toUpperCase();
+      allSpecialists.value.forEach((specialist) => {
+        specialist.schedule_timeslots.forEach((timeslot) => {
+          if (timeslot.week_day == day) {
+            let date = moment(props.visibleDate.date, "YYYY/MM/DD").format(
+              "YYYY-MM-DD"
+            );
+            let start_time = date + "T" + timeslot.start_time;
+            let end_time = date + "T" + timeslot.end_time;
+
+            let color = "";
+            if (timeslot.restriction == "CONSULTATION") {
+              color = "#DDC1F0";
+            } else if (timeslot.restriction == "PROCEDURE") {
+              color = "#F0E9C1";
+            } else {
+              color = "#C1F0C1";
+            }
+
+            appointments.value.push({
+              id: appointments.value.length,
+              resourceId: specialist.id,
+              start: start_time,
+              end: end_time,
+              display: "background",
+              backgroundColor: color,
+              text: timeslot.clinic_name,
+            });
+          }
+        });
+      });
+
+      const duration = moment()
+        .startOf("day")
+        .add(props.organization.appointment_length, "minutes")
+        .format("HH:mm:ss")
+        .toString();
       calendarOptions.value = {
         schedulerLicenseKey: "CC-Attribution-NonCommercial-NoDerivatives",
         plugins: [
@@ -88,18 +139,21 @@ export default defineComponent({
         selectable: true,
         selectMirror: false,
         allDaySlot: false,
-        height: 500,
+        height: 700,
+        contentHeight: 700,
+        expandRows: true,
         slotMinTime: props.organization.start_time,
         slotMaxTime: props.organization.end_time,
-        slotDuration: "00:30:00",
+        slotDuration: duration,
         views: {
           timeGridDay: { buttonText: "day" },
         },
         editable: false,
         dayMaxEvents: false,
         events: appointments,
+        selectConstraint: "businessHours",
         eventClick: handleShowAppointmentDrawer,
-        dateClick: handleCreateAppointment,
+        select: handleCreateAppointment,
       };
 
       if (appointmentCalendarRef.value) {
@@ -141,32 +195,39 @@ export default defineComponent({
 
     const handleCreateAppointment = (info) => {
       info.jsEvent.preventDefault();
-      const date = moment(info.date).format("YYYY-MM-DD").toString();
-      const time = moment(info.date).format("HH:MM").toString();
-      const weekDay = moment(info.date).format("ddd").toUpperCase();
+      const date = moment(info.start).format("YYYY-MM-DD").toString();
+      const time = moment(info.start).format("HH:mm").toString();
+      const timeF = moment(info.start).format("HH:mm:ss").toString();
+      const weekDay = moment(info.start).format("ddd").toUpperCase();
       // filter correct specialist base on info
-      const specialists = allSpecialists.value.filter((specialist) => {
-        if (specialist.id == info.resource.id) return specialist;
-      });
-      let restriction = null;
-      specialists[0].schedule_timeslots.filter((slot) => {
-        //make this more accurate filter this by clinic ID as well
-        if (slot.week_day == weekDay) {
-          restriction = slot.restriction;
-          return slot;
+      let specialists = [];
+      allSpecialists.value.map((specialist) => {
+        if (specialist.id == info.resource.id) {
+          specialists = { ...specialist };
         }
       });
+      let restriction = null;
+      specialists.schedule_timeslots = specialists.schedule_timeslots.filter(
+        (slot) => {
+          //make this more accurate filter this by clinic ID as well
+          if (
+            slot.week_day == weekDay &&
+            slot.start_time <= timeF &&
+            slot.end_time > timeF
+          ) {
+            restriction = slot.restriction;
+            return slot;
+          }
+        }
+      );
       const item = {
         time_slot: [date + "T" + time],
         date: date,
-        selected_specialist: specialists[0],
+        selected_specialist: specialists,
         restriction: restriction,
       };
       store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
-      store.commit(
-        AppointmentMutations.SET_APT.SELECT_SPECIALIST,
-        specialists[0]
-      );
+      store.commit(AppointmentMutations.SET_APT.SELECT_SPECIALIST, specialists);
       const modal = new Modal(document.getElementById("modal_create_apt"));
       modal.show();
     };

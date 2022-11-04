@@ -123,7 +123,11 @@
         <div class="d-flex flex-column gap-3 mt-5">
           <!--Check In Button-->
           <LargeIconButton
-            v-if="aptData.attendance_status === 'NOT_PRESENT'"
+            v-if="
+              aptData.attendance_status === 'NOT_PRESENT' &&
+              userRole !== 'specialist' &&
+              userRole !== 'anesthetist'
+            "
             @click="handleCheckIn"
             :heading="'Check In'"
             :iconPath="'media/icons/duotune/arrows/arr024.svg'"
@@ -134,7 +138,11 @@
 
           <!--Check Out Button-->
           <LargeIconButton
-            v-if="aptData.attendance_status === 'CHECKED_IN'"
+            v-if="
+              aptData.attendance_status === 'CHECKED_IN' &&
+              userRole !== 'specialist' &&
+              userRole !== 'anesthetist'
+            "
             @click="handleCheckOut"
             :heading="'Check Out'"
             :iconPath="'media/icons/duotune/arrows/arr021.svg'"
@@ -142,10 +150,13 @@
             justify="start"
             iconSize="3"
           />
-
           <!--Checked Out Label-->
           <LargeIconButton
-            v-if="aptData.attendance_status === 'CHECKED_OUT'"
+            v-if="
+              aptData.attendance_status === 'CHECKED_OUT' &&
+              userRole !== 'specialist' &&
+              userRole !== 'anesthetist'
+            "
             :heading="'Checked Out'"
             :iconPath="'media/icons/duotune/arrows/arr021.svg'"
             :color="'grey'"
@@ -165,6 +176,7 @@
 
           <!--Edit Appointment-->
           <LargeIconButton
+            v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
             @click="handleEdit"
             :heading="'Edit'"
             :iconPath="'media/icons/duotune/general/gen055.svg'"
@@ -174,6 +186,7 @@
           />
           <!--Move Appointment-->
           <LargeIconButton
+            v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
             @click="handleMove"
             :heading="'Move'"
             :iconPath="'media/icons/duotune/arrows/arr035.svg'"
@@ -184,6 +197,7 @@
 
           <!--Cancel Appointment Button-->
           <LargeIconButton
+            v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
             @click="handleCancel"
             :heading="'Cancel'"
             :iconPath="'media/icons/duotune/arrows/arr011.svg'"
@@ -232,6 +246,7 @@ export default defineComponent({
     const router = useRouter();
     const aptData = computed(() => store.getters.getAptSelected);
     const searchVal = computed(() => store.getters.getSearchVariable);
+    const userRole = computed(() => store.getters.userRole);
 
     const displayData = reactive({
       clinic_name: "",
@@ -300,12 +315,17 @@ export default defineComponent({
               reason: data,
             })
             .then(() => {
-              store.dispatch(
-                AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
-                searchVal.value
-              );
-
-              DrawerComponent?.getInstance("appointment-drawer")?.hide();
+              store
+                .dispatch(AppointmentActions.LIST, {
+                  date: searchVal.value.date,
+                })
+                .then(() => {
+                  store.dispatch(
+                    AppointmentActions.BOOKING.SEARCH.SPECIALISTS,
+                    searchVal.value
+                  );
+                  DrawerComponent?.getInstance("appointment-drawer")?.hide();
+                });
             });
         },
       });
@@ -366,6 +386,7 @@ export default defineComponent({
       handleCheckIn,
       handleCheckOut,
       handleMove,
+      userRole,
     };
   },
 });
