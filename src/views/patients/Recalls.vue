@@ -15,7 +15,7 @@
       :table-data="tableData"
       :loading="loading"
       :rows-per-page="10"
-      emptyTableText="This patient has no recalls"
+      :emptyTableText="`This patient has no recalls`"
       :enable-items-per-page-dropdown="true"
     >
       <template v-slot:cell-specialist="{ row: recall }">
@@ -44,7 +44,7 @@
   </CardSection>
 </template>
 
-<script lang="ts">
+<script>
 import {
   defineComponent,
   onMounted,
@@ -104,18 +104,16 @@ export default defineComponent({
     const loading = ref(false);
     const route = useRoute();
     const recallsFilter = ref("-1");
-    watch([recallsFilter, filteredData], () => {
-      let temp = filteredData.value;
+
+    const applyFilterAndSort = () => {
       if (recallsFilter.value !== "-1") {
-        temp = temp.filter(
-          (item: { confirmed: number }) =>
-            item.confirmed === Number(recallsFilter.value)
-        );
+        filteredData.value = recalls.value.filter((item) => {
+          return item.confirmed === Number(recallsFilter.value);
+        });
+      } else {
+        filteredData.value = recalls.value;
       }
-      filteredData.value = temp;
-      tableData.value = filteredData.value;
-      console.log("----------------------", recalls.value);
-    });
+    };
 
     onMounted(() => {
       const id = route.params.id;
@@ -123,14 +121,18 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Recalls", ["Patients"]);
     });
 
+    watch([recallsFilter, recalls], () => {
+      applyFilterAndSort();
+    });
+
+    watch(filteredData, () => {
+      tableData.value = filteredData.value;
+    });
+
     watchEffect(() => {
-      filteredData.value = recalls.value;
-      // setTimeout(() => {
-      //   tableData.value = [];
-      // }, 10000);
-      loading.value = false;
-      const id = route.params.id;
-      store.dispatch(PatientActions.VIEW, id);
+      // loading.value = false;
+      // const id = route.params.id;
+      // store.dispatch(PatientActions.VIEW, id);
     });
 
     return {
@@ -141,7 +143,6 @@ export default defineComponent({
       confirmStateList,
       recalls,
       recallsFilter,
-      filteredData,
     };
   },
 });
