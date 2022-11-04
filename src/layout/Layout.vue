@@ -25,6 +25,7 @@
         <!-- begin:: Content Body -->
         <div class="post d-flex flex-column-fluid">
           <div id="kt_content_container" class="container-fluid">
+            <PasswordExpiredAlert v-if="passwordExpired" />
             <router-view />
           </div>
         </div>
@@ -46,7 +47,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, watch, nextTick } from "vue";
+import {
+  defineComponent,
+  computed,
+  onMounted,
+  watch,
+  nextTick,
+  ref,
+} from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import KTAside from "@/layout/aside/Aside.vue";
@@ -60,6 +68,9 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { MenuComponent } from "@/assets/ts/components";
 import { removeModalBackdrop } from "@/core/helpers/dom";
 import { reinitializeComponents } from "@/core/plugins/keenthemes";
+import PasswordExpiredAlert from "@/components/auth/PasswordExpiredAlert.vue";
+import moment from "moment";
+
 import {
   toolbarDisplay,
   loaderEnabled,
@@ -81,11 +92,14 @@ export default defineComponent({
     KTScrollTop,
     KTLoader,
     AppointmentDrawer,
+    PasswordExpiredAlert,
   },
   setup() {
     const store = useStore();
     const route = useRoute();
     const router = useRouter();
+    const currentUser = computed(() => store.getters.currentUser);
+    const passwordExpired = ref(false);
 
     // show page loading
     store.dispatch(Actions.ADD_BODY_CLASSNAME, "page-loading");
@@ -99,6 +113,21 @@ export default defineComponent({
 
     const breadcrumbs = computed(() => {
       return store.getters.pageBreadcrumbPath;
+    });
+
+    watch(currentUser, () => {
+      if (currentUser.value && currentUser.value.profile) {
+        if (
+          moment(currentUser.value.profile.password_changed_date)
+            .add(
+              currentUser.value.organization.password_expiration_timeframe,
+              "months"
+            )
+            .unix() < moment().unix()
+        ) {
+          passwordExpired.value = true;
+        }
+      }
     });
 
     onMounted(() => {
@@ -146,6 +175,7 @@ export default defineComponent({
       breadcrumbs,
       themeLightLogo,
       themeDarkLogo,
+      passwordExpired,
     };
   },
 });

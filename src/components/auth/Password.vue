@@ -164,7 +164,6 @@ export default defineComponent({
       }
 
       formRef.value.validate((valid) => {
-        valid = false;
         if (valid) {
           loading.value = true;
           store
