@@ -76,7 +76,6 @@ export default defineComponent({
 
     watch(props, () => {
       let date = moment(props.visibleDate.date).format("YYYY-MM-DD");
-      store.dispatch(AppointmentActions.LIST, { date: date });
     });
 
     watch(appointments, () => {
@@ -201,30 +200,37 @@ export default defineComponent({
       info.jsEvent.preventDefault();
       const date = moment(info.start).format("YYYY-MM-DD").toString();
       const time = moment(info.start).format("HH:mm").toString();
+      const timeF = moment(info.start).format("HH:mm:ss").toString();
       const weekDay = moment(info.start).format("ddd").toUpperCase();
       // filter correct specialist base on info
-      const specialists = allSpecialists.value.filter((specialist) => {
-        if (specialist.id == info.resource.id) return specialist;
-      });
-      let restriction = null;
-      specialists[0].schedule_timeslots.filter((slot) => {
-        //make this more accurate filter this by clinic ID as well
-        if (slot.week_day == weekDay) {
-          restriction = slot.restriction;
-          return slot;
+      let specialists = [];
+      allSpecialists.value.map((specialist) => {
+        if (specialist.id == info.resource.id) {
+          specialists = { ...specialist };
         }
       });
+      let restriction = null;
+      specialists.schedule_timeslots = specialists.schedule_timeslots.filter(
+        (slot) => {
+          //make this more accurate filter this by clinic ID as well
+          if (
+            slot.week_day == weekDay &&
+            slot.start_time <= timeF &&
+            slot.end_time > timeF
+          ) {
+            restriction = slot.restriction;
+            return slot;
+          }
+        }
+      );
       const item = {
         time_slot: [date + "T" + time],
         date: date,
-        selected_specialist: specialists[0],
+        selected_specialist: specialists,
         restriction: restriction,
       };
       store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
-      store.commit(
-        AppointmentMutations.SET_APT.SELECT_SPECIALIST,
-        specialists[0]
-      );
+      store.commit(AppointmentMutations.SET_APT.SELECT_SPECIALIST, specialists);
       const modal = new Modal(document.getElementById("modal_create_apt"));
       modal.show();
     };

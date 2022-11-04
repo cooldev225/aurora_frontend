@@ -433,8 +433,6 @@ export default defineComponent({
       specialist_ids: [],
     });
 
-    const tableTitle = ref("");
-
     const specialistsList = ref([]);
     const options = ref([]);
     const specialistsData = ref([]);
@@ -443,7 +441,14 @@ export default defineComponent({
     const clinicOptions = ref([]);
     const clinicsData = ref([]);
 
-    const specialists = computed(() => store.getters.getSpecialistList);
+    const specialists = computed(() => {
+      let spt = store.getters.getSpecialistList;
+      spt.forEach(function (specialist) {
+        specialist.value = specialist.id;
+        specialist.label = `Dr. ${specialist.first_name} ${specialist.last_name}`;
+      });
+      return spt;
+    });
 
     const available_slots_by_date = computed(
       () => store.getters.getAvailableAppointmentList
