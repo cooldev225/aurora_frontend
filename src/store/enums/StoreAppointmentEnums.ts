@@ -29,6 +29,7 @@ const AppointmentActions = {
     VALIDATE:     "validateAptPreAdmission",
     STORE:        "createAptPreAdmission",
   },
+  MONTH_AVAILABILITIES : "showMonthAvailabilities",
 
 
 
@@ -88,6 +89,7 @@ const AppointmentMutations = {
     LIST: "setProcedureApprovalsList",
     DATA: "setProcedureApproval",
   },
+  SET_MONTH_AVAILABILITIES : 'setMonthAvailabilities'
 
 };
 

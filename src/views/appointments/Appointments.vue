@@ -441,6 +441,10 @@ export default defineComponent({
     const clinicOptions = ref([]);
     const clinicsData = ref([]);
 
+    const monthAvailabilities = computed(
+      () => store.getters.getMonthAvailabilities
+    );
+
     const specialists = computed(() => {
       let spt = store.getters.getSpecialistList;
       spt.forEach(function (specialist) {
@@ -460,6 +464,32 @@ export default defineComponent({
     );
     const clinic_list = computed(() => store.getters.clinicsList);
 
+    watch(monthAvailabilities, () => {
+
+      $(".datepicker-days")
+        .children()
+        .each(function () {
+          const calenderDate = $(this).children("span").last().text();
+
+          const appointments_availability = monthAvailabilities.value.find(
+            (date) => date.date == calenderDate
+          )?.appointments_availability;
+
+          let color = "#cccccc";
+          if (appointments_availability == "AVAILABLE_APPOINTMENTS") {
+            color = "#EDF6D5";
+          } else if (appointments_availability == "ALMOST_FULLY_BOOKED") {
+            color = "#f5f1e3";
+          } else if (appointments_availability == "FULLY_BOOKED") {
+            color = "#F5E8E3";
+          }
+
+          if (color != undefined) {
+            $(this).attr("style", "background-color: " + color + " !important");
+          }
+        });
+    });
+
     onMounted(() => {
       toggleLayout.value =
         localStorage.getItem("toggleBookingLayout") === "true" ? true : false;
@@ -470,6 +500,18 @@ export default defineComponent({
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
       store.dispatch(AppointmentActions.LIST, { date: formattedDate });
+
+      const month = $(
+        ".datepicker-container-label>span:first-child>button>span:nth-child(2)"
+      ).text();
+      const year = $(
+        ".datepicker-container-label>span:nth-child(2)>button>span:nth-child(2)"
+      ).text();
+
+      store.dispatch(AppointmentActions.MONTH_AVAILABILITIES, {
+        month_string: month,
+        year_string: year,
+      });
     });
 
     onUpdated(() => {
@@ -572,6 +614,19 @@ export default defineComponent({
       store.dispatch(AppointmentActions.LIST, { date: formattedDate });
       getFilterSpecialists();
       filterSpecialists();
+
+      // Potentially add a check to only update this if the month has changed
+      const month = $(
+        ".datepicker-container-label>span:first-child>button>span:nth-child(2)"
+      ).text();
+      const year = $(
+        ".datepicker-container-label>span:nth-child(2)>button>span:nth-child(2)"
+      ).text();
+
+      store.dispatch(AppointmentActions.MONTH_AVAILABILITIES, {
+        month_string: month,
+        year_string: year,
+      });
     });
 
     watch(specialists, () => {
