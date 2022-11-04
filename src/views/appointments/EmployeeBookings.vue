@@ -30,8 +30,6 @@
     <!--end::Card body-->
   </div>
   <!--end::Card-->
-
-  <AppointmentDrawer />
 </template>
 
 <script>
@@ -44,7 +42,6 @@ import {
 } from "@/store/enums/StoreAppointmentEnums";
 import { Mutations, Actions } from "@/store/enums/StoreEnums";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
-import AppointmentDrawer from "@/components/specialist/AppointmentDrawer.vue";
 import SignatureAlert from "@/components/specialist/SignatureAlert.vue";
 
 import FullCalendar from "@fullcalendar/vue3";
@@ -59,7 +56,6 @@ export default defineComponent({
   name: "employee-bookings-dashboard",
   components: {
     FullCalendar,
-    AppointmentDrawer,
     SignatureAlert,
   },
   setup() {
@@ -71,18 +67,12 @@ export default defineComponent({
     const userProfile = computed(() => store.getters.userProfile);
     let appointments = [];
     const currentUser = computed(() => store.getters.currentUser);
-    const handleEventClick = (e) => {
-      const appointment_id = e.event.extendedProps.appointment_id;
-      const aptSelected = userAptList.value.find(
-        ({ id }) => id === appointment_id
-      );
 
-      if (aptSelected) {
-        store.commit(AppointmentMutations.SET_APT.USER_APT.SELECT, aptSelected);
-      }
-
+    const handleEventClick = (info) => {
+      info.jsEvent.preventDefault();
+      let appointment = info.event.extendedProps.appointment;
+      store.commit(AppointmentMutations.SET_APT.SELECT, appointment);
       DrawerComponent?.getInstance("appointment-drawer")?.toggle();
-      console.log();
     };
 
     const calendarOptions = ref(null);
@@ -148,6 +138,7 @@ export default defineComponent({
           end_time: end_time,
           className: "fc-event-success",
           attendance_status: appointment.attendance_status,
+          appointment: appointment,
         });
       }
 
