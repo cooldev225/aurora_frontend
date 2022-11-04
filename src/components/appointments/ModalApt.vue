@@ -1738,8 +1738,10 @@ export default defineComponent({
         if (bookingData.selected_specialist) {
           clinic.value =
             bookingData.selected_specialist.schedule_timeslots[0].clinic;
-          aptInfoData.value.clinic_name = clinic.value.name;
-          aptInfoData.value.clinic_id = clinic.value.id;
+          if (props.modalId !== "modal_edit_apt") {
+            aptInfoData.value.clinic_name = clinic.value.name;
+            aptInfoData.value.clinic_id = clinic.value.id;
+          }
           if (props.modalId === "modal_create_apt") {
             aptInfoData.value.date = bookingData.date;
           }
