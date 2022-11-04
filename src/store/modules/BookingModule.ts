@@ -43,9 +43,19 @@ export interface BookingInfo {
 export default class BooingModule extends VuexModule implements BookingInfo {
   bookingData = {} as IBookingData;
   filteredData = {} as IBookingData;
+  monthAvailabilities;
   availableAppointmentList = {} as IBookingData;
   filteredSpecialists = {} as IBookingData;
   searchVal = {} as ISearchVariable;
+
+  /**
+   * Get current user object
+   * @returns SelectedclinicsData
+   */
+  get getMonthAvailabilities() {
+    return this.monthAvailabilities;
+  }
+
   /**
    * Get current user object
    * @returns SelectedclinicsData
@@ -113,6 +123,11 @@ export default class BooingModule extends VuexModule implements BookingInfo {
     this.filteredSpecialists = data;
   }
 
+  @Mutation
+  [AppointmentMutations.SET_MONTH_AVAILABILITIES](data: IBookingData) {
+    this.monthAvailabilities = data;
+  }
+
   @Action
   [AppointmentActions.BOOKING.SEARCH.NEXT_APT](payload) {
     if (JwtService.getToken()) {
@@ -121,6 +136,25 @@ export default class BooingModule extends VuexModule implements BookingInfo {
         .then(({ data }) => {
           this.context.commit(
             AppointmentMutations.SET_BOOKING.SEARCH.NEXT_APTS,
+            data.data
+          );
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [AppointmentActions.MONTH_AVAILABILITIES](payload) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.query("appointment-month-availabilities", { params: payload })
+        .then(({ data }) => {
+          this.context.commit(
+            AppointmentMutations.SET_MONTH_AVAILABILITIES,
             data.data
           );
         })

@@ -79,13 +79,11 @@ export default defineComponent({
     });
 
     watch(appointments, () => {
-      console.log("load appointments");
       var check = moment(props.visibleDate.date, "YYYY/MM/DD");
       var day = check.format("ddd").toUpperCase();
       allSpecialists.value.forEach((specialist) => {
         specialist.schedule_timeslots.forEach((timeslot) => {
           if (timeslot.week_day == day) {
-            //  console.log(timeslot.restriction);
             let date = moment(props.visibleDate.date, "YYYY/MM/DD").format(
               "YYYY-MM-DD"
             );
@@ -101,7 +99,6 @@ export default defineComponent({
               color = "#C1F0C1";
             }
 
-            console.log(timeslot);
             appointments.value.push({
               id: appointments.value.length,
               resourceId: specialist.id,
