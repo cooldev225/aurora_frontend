@@ -1,22 +1,33 @@
 <template>
   <CardSection heading="Recalls">
-    <el-select
-      class="w-100 mb-6"
-      placeholder="Select Confirm State"
-      v-model="recallsFilter"
-    >
-      <el-option value="-1" label="All State"></el-option>
-      <template v-for="(state, index) in confirmStateList" :key="index">
-        <el-option :value="index" :label="state"></el-option>
-      </template>
-    </el-select>
+    <div class="w-100">
+      <el-select
+        class="mb-6"
+        placeholder="Select Confirm State"
+        v-model="recallsFilter"
+      >
+        <el-option value="-1" label="All State"></el-option>
+        <template v-for="(state, index) in confirmStateList" :key="index">
+          <el-option :value="index" :label="state"></el-option>
+        </template>
+      </el-select>
+      <el-select
+        class="mx-2 mb-6"
+        placeholder="Select Confirm State"
+        v-model="recallsFilter"
+      >
+        <el-option value="-1" label="All State"></el-option>
+        <template v-for="(state, index) in confirmStateList" :key="index">
+          <el-option :value="index" :label="state"></el-option>
+        </template>
+      </el-select>
+    </div>
     <Datatable
       :table-header="tableHeader"
       :table-data="tableData"
+      :rows-per-page="5"
       :loading="loading"
-      :rows-per-page="10"
-      :emptyTableText="`This patient has no recalls`"
-      :enable-items-per-page-dropdown="true"
+      :enable-items-per-page-dropdown="false"
     >
       <template v-slot:cell-specialist="{ row: recall }">
         {{ recall.summery.specialist_name }}
@@ -54,11 +65,11 @@ import {
   watch,
 } from "vue";
 import { useStore } from "vuex";
+import { useRoute } from "vue-router";
+import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
-import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import moment from "moment";
-import { useRoute } from "vue-router";
 import confirmStateList from "@/core/data/confirm-state";
 
 export default defineComponent({
@@ -67,8 +78,10 @@ export default defineComponent({
   components: {
     Datatable,
   },
+
   setup() {
     const store = useStore();
+    const route = useRoute();
     const tableHeader = ref([
       {
         name: "Specialist",
@@ -97,51 +110,48 @@ export default defineComponent({
       },
     ]);
 
-    let tableData = ref([]);
-    let filteredData = ref([]);
+    const tableData = ref([]);
+    const filteredData = ref([]);
     const recalls = computed(() => store.getters.patientsRecallList);
-    const patient = computed(() => store.getters.selectedPatient);
-    const loading = ref(false);
-    const route = useRoute();
+    const loading = ref(true);
     const recallsFilter = ref("-1");
 
     const applyFilterAndSort = () => {
       if (recallsFilter.value !== "-1") {
-        filteredData.value = recalls.value.filter((item) => {
-          return item.confirmed === Number(recallsFilter.value);
-        });
+        filteredData.value = recalls.value.filter(
+          (item) => item.confirmed === Number(recallsFilter.value)
+        );
       } else {
         filteredData.value = recalls.value;
       }
+      tableData.value = filteredData;
     };
 
-    onMounted(() => {
-      const id = route.params.id;
-      store.dispatch(PatientActions.RECALL.LIST, { patient_id: id });
-      setCurrentPageBreadcrumbs("Recalls", ["Patients"]);
-    });
-
-    watch([recallsFilter, recalls], () => {
+    watch(recallsFilter, () => {
       applyFilterAndSort();
     });
 
-    watch(filteredData, () => {
-      tableData.value = filteredData.value;
+    watchEffect(() => {
+      applyFilterAndSort();
     });
 
-    watchEffect(() => {
-      // loading.value = false;
-      // const id = route.params.id;
-      // store.dispatch(PatientActions.VIEW, id);
+    onMounted(() => {
+      const id = route.params.id;
+      setCurrentPageBreadcrumbs("Recalls", ["Patients"]);
+      store
+        .dispatch(PatientActions.RECALL.LIST, { patient_id: id })
+        .then(() => {
+          loading.value = false;
+        });
     });
 
     return {
       tableHeader,
       tableData,
       loading,
+      recalls,
       moment,
       confirmStateList,
-      recalls,
       recallsFilter,
     };
   },
