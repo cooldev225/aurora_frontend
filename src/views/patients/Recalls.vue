@@ -29,11 +29,8 @@
       :loading="loading"
       :enable-items-per-page-dropdown="false"
     >
-      <template v-slot:cell-specialist="{ row: recall }">
-        {{ recall.summery.specialist_name }}
-      </template>
-      <template v-slot:cell-time_frame="{ row: recall }">
-        {{ recall.date_recall_due }}
+      <template v-slot:cell-patient="{ row: recall }">
+        {{ recall.summery.patient_name }}
       </template>
       <template v-slot:cell-appointment="{ row: recall }">
         {{ recall.summery.appointment_type }} @
@@ -43,7 +40,7 @@
       <template v-slot:cell-reason="{ row: recall }">
         {{ recall.reason }}
       </template>
-      <template v-slot:cell-status="{ row: recall }">
+      <template v-slot:cell-logs="{ row: recall }">
         <div class="d-flex flex-column">
           <span v-for="log in recall.sent_logs" :key="log.id"
             >Sent via {{ log.sent_by }} @
@@ -87,17 +84,12 @@ export default defineComponent({
     const route = useRoute();
     const tableHeader = ref([
       {
-        name: "Specialist",
-        key: "specialist",
+        name: "Patient",
+        key: "patient",
         sortable: true,
       },
       {
-        name: "Recall Date",
-        key: "time_frame",
-        sortable: true,
-      },
-      {
-        name: "Related Appointment",
+        name: "Appointment",
         key: "appointment",
         sortable: true,
       },
@@ -107,8 +99,8 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "Status",
-        key: "status",
+        name: "Sent Logs",
+        key: "logs",
         sortable: true,
       },
     ]);
