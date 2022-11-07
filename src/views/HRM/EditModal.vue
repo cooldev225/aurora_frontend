@@ -219,13 +219,17 @@
                           />
                         </el-select>
                       </InputWrapper>
-                      <InputWrapper>
+                      <InputWrapper
+                        class="col"
+                        label="Status"
+                        :prop="'status-' + index"
+                      >
                         <el-select
                           v-model="day.status"
                           class="m-2"
                           label="Status"
                           placeholder="Select"
-                          :disabled="day.id"
+                          :disabled="day.id ? true : false"
                         >
                           <el-option
                             v-for="item in shiftStatusOptions"
@@ -357,6 +361,8 @@ import restrictionsTypes from "@/core/data/apt-restriction";
 import schCategories from "@/core/data/schedule-category";
 import { ElMessage } from "element-plus";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper";
+import Swal from "sweetalert2";
+import moment from "moment";
 
 export default defineComponent({
   name: "edit-admin-modal",
@@ -430,10 +436,53 @@ export default defineComponent({
     };
 
     const handleDeleteTimeslot = (index) => {
-      deleteTimeslots.value.push(formData.value.timeslots[index].id);
-      formData.value.timeslots = formData.value.timeslots.filter(
-        (t, i) => i != index
-      );
+      if (formData.value.timeslots[index].id) {
+        const { value: fruit } = Swal.fire({
+          title: "Select a reason for Delete Shift",
+          input: "select",
+          width: 600,
+          inputOptions: {
+            AnnualLeave: "Annual Leave",
+            SickLeave: "Sick Leave",
+            UnpaidLeave: "Unpaid Leave",
+            Vacation: "Vacation",
+            Other: "Other",
+          },
+          inputPlaceholder: "Select",
+          showCancelButton: true,
+          inputValidator: (value) => {
+            return new Promise((resolve) => {
+              if (value === "") {
+                resolve("Please select a reason to delete shift");
+              } else {
+                deleteTimeslots.value.push({
+                  hrm_weekly_schedule_id: formData.value.timeslots[index].id,
+                  client_id: formData.value.timeslots[index].client_id,
+                  clinic_id: formData.value.timeslots[index].clinic_id,
+                  date: formData.value.timeslots[index].date,
+                  start_time: formData.value.timeslots[index].start_time,
+                  end_time: formData.value.timeslots[index].end_time,
+                  status: formData.value.timeslots[index].status,
+                  week_day: formData.value.timeslots[index].week_day,
+                  reason: value,
+                });
+                formData.value.timeslots = formData.value.timeslots.filter(
+                  (t, i) => i != index
+                );
+                resolve();
+              }
+            });
+          },
+        });
+
+        if (fruit) {
+          Swal.fire(`You selected: ${fruit}`);
+        }
+      } else {
+        formData.value.timeslots = formData.value.timeslots.filter(
+          (t, i) => i != index
+        );
+      }
     };
 
     const submit = () => {
@@ -494,6 +543,7 @@ export default defineComponent({
             deleteTimeslots.value.map((slotId) => {
               formData.value.deleteTimeslots.push(slotId);
             });
+            deleteTimeslots.value = [];
           }
           hideModal(editScheduleModalRef.value);
           formData.value.timeslots = _timeslots;
@@ -502,13 +552,12 @@ export default defineComponent({
             .then(() => {
               loading.value = false;
               store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
-                clinic_id: formData.value.clinic_id,
+                date: schedule.value.dateOptions.date,
               });
-              // store.dispatch(Actions.EMPLOYEE.LIST);
             })
-            .catch(({ response }) => {
+            .catch((response) => {
               loading.value = false;
-              console.log(response.data.error);
+              console.log(response);
             });
         } else {
           // this.context.commit(Mutations.PURGE_AUTH);
@@ -623,3 +672,8 @@ export default defineComponent({
   },
 });
 </script>
+<style scoped>
+.dialog-footer button:first-child {
+  margin-right: 10px;
+}
+</style>
