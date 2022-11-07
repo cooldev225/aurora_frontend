@@ -59,6 +59,8 @@ import HRMTimeScheduleTable from "@/components/HRM/HRMWeeklyScheduleTable";
 import moment from "moment";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
 import FillFromTemplateModal from "@/views/HRM/FillFromTemplateModal";
+import Swal from "sweetalert2";
+import { ElNotification } from "element-plus";
 
 export default defineComponent({
   name: "hrm-weekly-schedule",
@@ -213,26 +215,51 @@ export default defineComponent({
     };
 
     const PublishAllSlots = () => {
-      let publishSlots = {
-        id: 6,
-        timeslots: [],
-        deleteTimeslots: [],
-      };
-      employeeList.value.map((employee) => {
-        employee.hrm_weekly_schedule.map((slot) => {
-          if (slot.status == "UNPUBLISHED") {
-            slot.status = "PUBLISHED";
-            publishSlots.timeslots.push(slot);
-          }
-        });
+      Swal.fire({
+        title: "Do you want to Publish all Shifts on " + displayDateRange.value,
+        showDenyButton: true,
+        showCancelButton: true,
+        width: 600,
+        confirmButtonText: "Confirm",
+        denyButtonText: `Cancel`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          processApiCall();
+        }
       });
-      store
-        .dispatch(HRMActions.WEEKLY_TEMPLATE.UPDATE, publishSlots)
-        .then(() => {
-          store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
-            date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+      const processApiCall = () => {
+        let publishSlots = {
+          id: 6,
+          timeslots: [],
+          deleteTimeslots: [],
+        };
+        let unpublishedShiftFound = false;
+
+        employeeList.value.map((employee) => {
+          employee.hrm_weekly_schedule.map((slot) => {
+            if (slot.status == "UNPUBLISHED") {
+              slot.status = "PUBLISHED";
+              publishSlots.timeslots.push(slot);
+              unpublishedShiftFound = true;
+            }
           });
         });
+        if (unpublishedShiftFound) {
+          store
+            .dispatch(HRMActions.WEEKLY_TEMPLATE.UPDATE, publishSlots)
+            .then(() => {
+              store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+                date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+              });
+            });
+        } else {
+          ElNotification({
+            title: "Error",
+            message: "Unpublished shifts couldn't be found !",
+            type: "error",
+          });
+        }
+      };
     };
 
     return {
