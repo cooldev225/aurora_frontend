@@ -2,9 +2,7 @@
   <div class="card w-75 m-auto">
     <div class="card-header border-0 pt-6">
       <!--begin::Card title-->
-      <div class="card-title">
-        {{ clinic.name }}
-      </div>
+      <div class="card-title">Schedule Fees</div>
       <!--begin::Card title-->
 
       <!--begin::Card toolbar-->
@@ -18,14 +16,12 @@
           <button
             type="button"
             class="btn btn-light-primary ms-auto"
-            @click="
-              handleRoomEdit({ id: '-1', clinic_id: clinic.id, name: '' })
-            "
+            @click="handleCreate"
           >
             <span class="svg-icon svg-icon-2">
               <InlineSVG icon="plus" />
             </span>
-            Add
+            New MBS Item
           </button>
           <!--end::Add subscription-->
         </div>
@@ -40,27 +36,17 @@
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-name="{ row: item }">
-          {{ item.name }}
-        </template>
-        <template v-slot:cell-action="{ row: item }">
-          <button
-            @click="handleRoomEdit(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+        <template
+          v-bind:key="column.key"
+          v-for="column in tableHeader"
+          v-slot:[cellName(column.key)]="{ row: item }"
+        >
+          <span
+            @click="handleEdit(item.id, column.key)"
+            style="cursor: pointer"
           >
-            <span class="svg-icon svg-icon-3">
-              <InlineSVG icon="pencil" />
-            </span>
-          </button>
-
-          <button
-            @click="handleDelete(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-          >
-            <span class="svg-icon svg-icon-3">
-              <InlineSVG icon="bin" />
-            </span>
-          </button>
+            {{ item[column.key] }}
+          </span>
         </template>
       </Datatable>
     </div>
@@ -93,7 +79,11 @@ export default defineComponent({
     Datatable,
     RoomModal,
   },
-
+  methods: {
+    cellName(name) {
+      return "cell-" + name;
+    },
+  },
   setup() {
     const store = useStore();
     const route = useRoute();
@@ -101,20 +91,22 @@ export default defineComponent({
       id: -1,
       name: "",
     });
-    const tableHeader = ref([
+    const tableHeader = ref(null);
+    const tableData = ref([
       {
-        name: "MBS Item",
-        key: "name",
-        sortable: true,
+        id: 1,
+        mbs_code: "mbs",
+        CHF: 1200,
       },
       {
-        name: "Action",
-        key: "action",
+        id: 2,
+        mbs_code: "mbs",
+        CHF: 1200,
       },
     ]);
-    const tableData = ref([]);
-    const clinicsList = computed(() => store.getters.clinicsList);
-    const roomsList = computed(() => store.getters.roomsList);
+
+    const healthFundsList = computed(() => store.getters.healthFundsList);
+    const scheduleFeeList = computed(() => store.getters.getScheduleFeeList);
 
     const deleteAfterConfirmation = (item) => {
       const html =
@@ -184,24 +176,31 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Schedule Fees", ["Settings"]);
-      store.dispatch(Actions.CLINICS.LIST);
-
-      let id = route.params.id;
-      store.dispatch(Actions.CLINICS.ROOMS.LIST, id);
+      store.dispatch(Actions.HEALTH_FUND.LIST);
+      store.dispatch(Actions.SCHEDULE_FEE.LIST);
     });
 
-    watch(clinicsList, () => {
-      let id = route.params.id;
-      let clinics = clinicsList.value.filter((c) => c.id == id);
-      if (clinics.length) {
-        clinic.value = clinics[0];
-        store.commit(Mutations.SET_CLINICS.SELECT, clinic.value);
-      }
+    watch(healthFundsList, () => {
+      tableHeader.value = [];
+      healthFundsList.value.map((h) => {
+        h.key = h.code;
+        h.sortable = true;
+        tableHeader.value.push(h);
+      });
     });
 
-    watchEffect(() => {
-      tableData.value = roomsList;
+    watch(scheduleFeeList, () => {
+      tableData.value = [];
+      let keys = new Set(
+        scheduleFeeList.value.map((item) => item.mbs_item_code)
+      );
+      Array.from(keys).map((mbs) => {
+        tableData.value.push({
+          mbs_item_code: mbs,
+        });
+      });
     });
+
     return {
       tableHeader,
       tableData,
