@@ -115,8 +115,6 @@ export default defineComponent({
       name: "",
       email: "",
       mobile_number: "",
-      password: "",
-      password_confirmation: "",
       logoUploaded: "media/avatars/300-1.jpg",
       max_clinics: "",
       max_employees: "",
@@ -173,20 +171,6 @@ export default defineComponent({
           trigger: "change",
         },
         { validator: validatePhone, trigger: "blur" },
-      ],
-      password: [
-        {
-          required: true,
-          message: "Password cannot be blank.",
-          trigger: "change",
-        },
-      ],
-      password_confirmation: [
-        {
-          required: true,
-          message: "Confirm Password cannot be blank.",
-          trigger: "change",
-        },
       ],
     });
 
