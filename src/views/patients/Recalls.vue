@@ -13,12 +13,12 @@
       </el-select>
       <el-select
         class="mx-2 mb-6"
-        placeholder="Select Confirm State"
-        v-model="recallsFilter"
+        placeholder="Select Send Method"
+        v-model="methodFilter"
       >
-        <el-option value="-1" label="All State"></el-option>
-        <template v-for="(state, index) in confirmStateList" :key="index">
-          <el-option :value="index" :label="state"></el-option>
+        <el-option value="all" label="All Method"></el-option>
+        <template v-for="(method, index) in sendRecallMethodList" :key="index">
+          <el-option :value="method.key" :label="method.value"></el-option>
         </template>
       </el-select>
     </div>
@@ -71,6 +71,9 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import moment from "moment";
 import confirmStateList from "@/core/data/confirm-state";
+import sendRecallMethodList, {
+  sendRecallMethodKey,
+} from "@/core/data/send-recall-method";
 
 export default defineComponent({
   name: "patient-recalls-view",
@@ -115,19 +118,29 @@ export default defineComponent({
     const recalls = computed(() => store.getters.patientsRecallList);
     const loading = ref(true);
     const recallsFilter = ref("-1");
+    const methodFilter = ref("all");
 
     const applyFilterAndSort = () => {
+      filteredData.value = recalls.value;
       if (recallsFilter.value !== "-1") {
-        filteredData.value = recalls.value.filter(
+        filteredData.value = filteredData.value.filter(
           (item) => item.confirmed === Number(recallsFilter.value)
         );
-      } else {
-        filteredData.value = recalls.value;
+      }
+      if (methodFilter.value !== "all") {
+        filteredData.value = filteredData.value.filter((item) => {
+          console.log(item);
+          if (item.sent_logs && item.sent_logs.length > 0) {
+            return item.sent_logs.some((log) => {
+              return log.sent_by === sendRecallMethodKey[methodFilter.value];
+            });
+          } else return false;
+        });
       }
       tableData.value = filteredData;
     };
 
-    watch(recallsFilter, () => {
+    watch([recallsFilter, methodFilter], () => {
       applyFilterAndSort();
     });
 
@@ -153,6 +166,9 @@ export default defineComponent({
       moment,
       confirmStateList,
       recallsFilter,
+      methodFilter,
+      sendRecallMethodList,
+      sendRecallMethodKey,
     };
   },
 });
