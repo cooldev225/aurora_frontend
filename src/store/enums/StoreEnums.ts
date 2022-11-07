@@ -190,7 +190,7 @@ const Actions = {
   },
 
   SCHEDULE_FEE: {
-    LIST: "getScheduleFeeList",
+    LIST: "getScheduleFeeListData",
   },
 };
 
@@ -329,8 +329,8 @@ const Mutations = {
   },
 
   SET_SCHEDULE_FEE: {
-    LIST: "setScheduleFeeList",
-    SELECT: "setSelectedScheduleFee",
+    LIST: "setScheduleFeeListData",
+    SELECT: "setSelectedScheduleFeeData",
   },
 };
 

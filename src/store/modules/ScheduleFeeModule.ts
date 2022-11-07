@@ -50,7 +50,7 @@ export default class ScheduleFeeModule
   [Actions.SCHEDULE_FEE.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      return ApiService.get("schedule-fee")
+      return ApiService.get("schedule-fees")
         .then(({ data }) => {
           this.context.commit(Mutations.SET_SCHEDULE_FEE.LIST, data.data);
           return data.data;
