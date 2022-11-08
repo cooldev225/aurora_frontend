@@ -57,8 +57,8 @@ const props = defineProps({
 });
 const getAnesthetistName = () => {
   anesthetistName.value = null;
-  if (props.specialist.schedule_timeslots) {
-    props.specialist.schedule_timeslots.map((slot) => {
+  if (props.specialist.hrm_weekly_schedule) {
+    props.specialist.hrm_weekly_schedule.map((slot) => {
       if (
         slot.anesthetist_id &&
         slot.clinic_id === props.aptInfoData.clinic_id &&

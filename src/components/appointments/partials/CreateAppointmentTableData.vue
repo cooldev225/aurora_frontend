@@ -57,7 +57,7 @@ export default {
     };
 
     const specialistAvailable = () => {
-      if (!props.specialist.schedule_timeslots) {
+      if (!props.specialist.hrm_weekly_schedule) {
         return false;
       } else {
         if (getTimeSlot()) {
@@ -68,7 +68,7 @@ export default {
 
     const getTimeSlot = () => {
       let result;
-      props.specialist.schedule_timeslots.forEach(function (timeSlot) {
+      props.specialist.hrm_weekly_schedule.forEach(function (timeSlot) {
         let startTime = timeStr2Number(timeSlot.start_time);
         let endTime = timeStr2Number(timeSlot.end_time);
         let appointmentTime = timeStr2Number(props.startTime);

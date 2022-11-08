@@ -82,7 +82,7 @@ export default defineComponent({
       var check = moment(props.visibleDate.date, "YYYY/MM/DD");
       var day = check.format("ddd").toUpperCase();
       allSpecialists.value.forEach((specialist) => {
-        specialist.schedule_timeslots.forEach((timeslot) => {
+        specialist.hrm_weekly_schedule.forEach((timeslot) => {
           if (timeslot.week_day == day) {
             let date = moment(props.visibleDate.date, "YYYY/MM/DD").format(
               "YYYY-MM-DD"
@@ -207,7 +207,7 @@ export default defineComponent({
         }
       });
       let restriction = null;
-      specialists.schedule_timeslots = specialists.schedule_timeslots.filter(
+      specialists.hrm_weekly_schedule = specialists.hrm_weekly_schedule.filter(
         (slot) => {
           //make this more accurate filter this by clinic ID as well
           if (

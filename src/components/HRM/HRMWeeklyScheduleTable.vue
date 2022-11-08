@@ -124,9 +124,8 @@ export default defineComponent({
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
       schedule.clinic_id = props.clinicFilter.value;
       schedule.dateOptions = day;
-      // should get anesthetist base on their weekly schedule
       store.dispatch(HRMActions.ANESTHETIST.LIST, {
-        day: day.week_day,
+        date: day.date,
       });
       if (schedule.id) schedule._submit = HRMActions.WEEKLY_TEMPLATE.UPDATE;
       schedule._day = day.week_day;
