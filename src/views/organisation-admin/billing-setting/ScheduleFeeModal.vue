@@ -206,6 +206,7 @@ export default defineComponent({
       console.log(["scheduleFee", scheduleFee.value]);
       formData.value.mbs_item_code = scheduleFee.value.mbs_item_code;
       formData.value.health_fund_code = scheduleFee.value.health_fund_code;
+      formData.value.amount = scheduleFee.value.amount;
     });
 
     return {

@@ -45,8 +45,29 @@
           v-for="column in tableHeader"
           v-slot:[cellName(column.key)]="{ row: item }"
         >
+          <div
+            v-if="column.key == 'mbs_item_code'"
+            class="d-flex justify-content-between"
+          >
+            <span
+              @click="handleEdit(item.mbs_item_code, 'NA', item['NA'])"
+              style="cursor: pointer; font-weight: bold"
+            >
+              {{ item[column.key] == null ? item["NA"] : item[column.key] }}
+            </span>
+            <span
+              class="svg-icon svg-icon-3 me-3"
+              @click="handleDelete(item.mbs_item_code)"
+              style="cursor: pointer"
+            >
+              <InlineSVG icon="bin" />
+            </span>
+          </div>
           <span
-            @click="handleEdit(item.mbs_item_code, column.key)"
+            v-if="column.key != 'mbs_item_code'"
+            @click="
+              handleEdit(item.mbs_item_code, column.key, item[column.key])
+            "
             style="cursor: pointer"
           >
             {{ item[column.key] == null ? item["NA"] : item[column.key] }}
@@ -126,6 +147,7 @@ export default defineComponent({
 
     watch(scheduleFeeList, () => {
       loading.value = true;
+      filterData.value = [];
       let keys = new Set(
         scheduleFeeList.value.map((item) => item.mbs_item_code)
       );
@@ -158,14 +180,15 @@ export default defineComponent({
         mbs_item_code: "",
         health_fund_code: "NA",
         is_base_amount: 0,
+        amount: 0,
       };
       store.commit(Mutations.SET_SCHEDULE_FEE.SELECT, item);
       const modal = new Modal(document.getElementById("modal_schedule_fee"));
       modal.show();
     };
 
-    const handleEdit = (mbs_item_code, health_fund_code) => {
-      //console.log([mbs_item_code, health_fund_code]);
+    const handleEdit = (mbs_item_code, health_fund_code, amount) => {
+      console.log([mbs_item_code, health_fund_code, amount]);
       let item = {
         _title: "Update Schedule Fee",
         _button: "Update",
@@ -173,10 +196,15 @@ export default defineComponent({
         health_fund_code: health_fund_code,
         is_base_amount:
           mbs_item_code == "mbs_item_code" && health_fund_code == "NA" ? 1 : 0,
+        amount: amount,
       };
       store.commit(Mutations.SET_SCHEDULE_FEE.SELECT, item);
       const modal = new Modal(document.getElementById("modal_schedule_fee"));
       modal.show();
+    };
+
+    const handleDelete = (mbs_item_code) => {
+      //
     };
 
     return {
@@ -185,6 +213,7 @@ export default defineComponent({
       loading,
       handleCreate,
       handleEdit,
+      handleDelete,
     };
   },
 });
