@@ -78,4 +78,20 @@ export default class ScheduleFeeModule
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.SCHEDULE_FEE.DELETE](code) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.delete("schedule-fees/" + code)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }

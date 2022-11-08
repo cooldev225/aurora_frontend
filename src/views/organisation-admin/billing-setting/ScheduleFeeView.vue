@@ -204,7 +204,33 @@ export default defineComponent({
     };
 
     const handleDelete = (mbs_item_code) => {
-      //
+      loading.value = true;
+
+      const html =
+        "<h3>Are you sure you want to remove this item? All custom fees will be lost.</h3><br/><p>MBS Item Code: <span style='font-weight: bold;'>" +
+        mbs_item_code +
+        "</span></p>";
+
+      Swal.fire({
+        html: html,
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Confirm",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+        preConfirm: async () => {
+          store
+            .dispatch(Actions.SCHEDULE_FEE.DELETE, mbs_item_code)
+            .then(() => {
+              store.dispatch(Actions.SCHEDULE_FEE.LIST);
+            });
+          loading.value = false;
+          return true;
+        },
+      });
     };
 
     return {

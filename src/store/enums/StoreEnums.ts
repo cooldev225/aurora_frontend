@@ -192,6 +192,7 @@ const Actions = {
   SCHEDULE_FEE: {
     LIST: "getScheduleFeeListData",
     CREATE: "saveScheduleFeeData",
+    DELETE: "deleteScheduleFeeData",
   },
 };
 
