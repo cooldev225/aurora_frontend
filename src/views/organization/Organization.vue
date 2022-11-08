@@ -8,113 +8,55 @@
     >
       <div class="row mt-10 me-5 ms-5">
         <InputWrapper
+          class="col-sm-3 mb-5"
           required
-          class="col-4"
-          label="Document Header Letter"
-          prop="document_letter_header"
+          label="Organization name"
+          prop="name"
         >
-          <!-- <el-input
-            type="textarea"
-            v-model="formData.document_letter_header"
-            placeholder="Header Letter"
-          /> -->
-          <el-upload
-            action="#"
-            ref="headerRef"
-            class="avatar-uploader"
-            list-type="picture-card"
-            :auto-upload="false"
-            :show-file-list="false"
-            :on-change="
-              (uploadFile) => {
-                handleAvatarSuccess(uploadFile, 'document_letter_header');
-              }
-            "
-          >
-            <img
-              v-if="formData.document_letter_header"
-              :src="formData.document_letter_header"
-              class="avatar"
-            />
-            <i
-              v-if="!formData.document_letter_header"
-              class="el-icon avatar-uploader-icon"
-            >
-              <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fill="currentColor"
-                  d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"
-                ></path>
-              </svg>
-            </i>
-          </el-upload>
+          <el-input
+            v-model="formData.name"
+            type="text"
+            placeholder="Organization name"
+          />
         </InputWrapper>
         <InputWrapper
-          required
-          class="col-4"
-          label="Document Footer Letter"
-          prop="document_letter_footer"
+          class="col-sm-3 mb-5"
+          label="Appointment length"
+          prop="arrival_time"
         >
-          <!-- <el-input
-            type="textarea"
-            v-model="formData.document_letter_footer"
-            placeholder="Footer Letter"
-          /> -->
-          <el-upload
-            action="#"
-            ref="footerRef"
-            class="avatar-uploader"
-            list-type="picture-card"
-            :auto-upload="false"
-            :show-file-list="false"
-            :on-change="
-              (uploadFile) => {
-                handleAvatarSuccess(uploadFile, 'document_letter_footer');
-              }
-            "
-          >
-            <img
-              v-if="formData.document_letter_footer"
-              :src="formData.document_letter_footer"
-              class="avatar"
-            />
-            <i
-              v-if="!formData.document_letter_footer"
-              class="el-icon avatar-uploader-icon"
-            >
-              <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fill="currentColor"
-                  d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"
-                ></path>
-              </svg>
-            </i>
-          </el-upload>
+          <el-input
+            v-model="formData.appointment_length"
+            type="number"
+            placeholder="Appointment length"
+          />
         </InputWrapper>
-        <InputWrapper required class="col-4" label="Logo" prop="logo">
-          <el-upload
-            action="#"
-            ref="logoRef"
-            class="avatar-uploader"
-            list-type="picture-card"
-            :auto-upload="false"
-            :show-file-list="false"
-            :on-change="
-              (uploadFile) => {
-                handleAvatarSuccess(uploadFile, 'logo');
-              }
-            "
-          >
-            <img v-if="formData.logo" :src="formData.logo" class="avatar" />
-            <i v-if="!formData.logo" class="el-icon avatar-uploader-icon">
-              <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fill="currentColor"
-                  d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"
-                ></path>
-              </svg>
-            </i>
-          </el-upload>
+      </div>
+      <div class="row me-5 ms-5">
+        <InputWrapper
+          class="col-sm-3 mb-5"
+          required
+          label="Start time"
+          prop="start_time"
+        >
+          <el-time-picker
+            v-model="formData.start_time"
+            arrow-control
+            format="HH:mm"
+            placeholder="Start time"
+          />
+        </InputWrapper>
+        <InputWrapper
+          class="col-sm-3 mb-5"
+          required
+          label="End time"
+          prop="end_time"
+        >
+          <el-time-picker
+            v-model="formData.end_time"
+            arrow-control
+            format="HH:mm:ss"
+            placeholder="End time"
+          />
         </InputWrapper>
       </div>
       <div class="d-flex justify-content-end mb-10 me-10">
@@ -167,25 +109,19 @@ export default defineComponent({
     const store = useStore();
     const loading = ref(false);
     const formData = ref({
-      document_letter_header: null,
-      document_letter_header_file: null,
-      document_letter_footer: null,
-      document_letter_footer_file: null,
-      logo: null,
-      logo_file: null,
+      name: null,
+      start_time: null,
+      end_time: null,
+      appointment_length: null,
     });
     const rules = ref({});
     const currentUser = computed(() => store.getters.currentUser);
-
-    const handleAvatarSuccess = (uploadFile, flag) => {
-      formData.value[flag] = URL.createObjectURL(uploadFile.raw);
-      formData.value[flag + "_file"] = uploadFile;
-    };
     const handleCancelButton = () => {
       formData.value = {
-        document_letter_header: null,
-        document_letter_footer: null,
-        logo: null,
+        name: null,
+        start_time: null,
+        end_time: null,
+        appointment_length: null,
       };
     };
     const submit = () => {
@@ -230,7 +166,7 @@ export default defineComponent({
                 },
               });
               formRef.value.resetFields();
-              reloadOrgData();
+              // reloadOrgData();
             })
             .catch(({ response }) => {
               loading.value = false;
@@ -241,54 +177,20 @@ export default defineComponent({
         }
       });
     };
-    const reloadOrgData = () => {
-      const orgId = currentUser.value.profile.organization_id;
-      currentUser.value.profile.organization_id && loadOrganizationData(orgId);
-    };
-    const loadPreviewImage = (payload, key) => {
-      store
-        .dispatch(Actions.FILE.VIEW, payload)
-        .then((data) => {
-          const blob = new Blob([data], { type: "application/image" });
-          const objectUrl = URL.createObjectURL(blob);
-          formData.value[key] = objectUrl;
-        })
-        .catch(() => {
-          console.log("image load error");
-        });
-    };
-    const loadOrganizationData = (id) => {
-      store
-        .dispatch(Actions.ORG.SELECT, id)
-        .then((data) => {
-          loadPreviewImage(
-            {
-              type: "ORGANIZATION_FOOTER",
-              path: data.document_letter_footer,
-            },
-            "document_letter_footer"
-          );
-          loadPreviewImage(
-            {
-              type: "ORGANIZATION_HEADER",
-              path: data.document_letter_header,
-            },
-            "document_letter_header"
-          );
-          loadPreviewImage(
-            {
-              type: "ORGANIZATION_LOGO",
-              path: data.logo,
-            },
-            "logo"
-          );
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
-    };
     watch(currentUser, () => {
-      reloadOrgData();
+      console.log("currentUser", currentUser);
+      if (currentUser.value) {
+        formData.value.name = currentUser.value.organization.name;
+        formData.value.appointment_length =
+          currentUser.value.organization.appointment_length;
+        formData.value.start_time = new Date(2000, 1, 1, 12, 0, 0);
+        // formData.value.start_time = new Date(
+        //   currentUser.value.organization.start_time
+        // );
+        // formData.value.end_time = new Date(
+        //   currentUser.value.organization.end_time
+        // );
+      }
     });
 
     onMounted(() => {
@@ -296,7 +198,6 @@ export default defineComponent({
     });
     return {
       formData,
-      handleAvatarSuccess,
       handleCancelButton,
       rules,
       submit,
