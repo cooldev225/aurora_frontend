@@ -56,7 +56,11 @@ export const getProcedurePrice = (data, charge_type, healthFund = null) => {
 
   if (Object.prototype.hasOwnProperty.call(data, "procedures")) {
     data.procedures.forEach((item) => {
-      let price = parseFloat(item.price);
+      let price = 0;
+
+      if (item.price && !isNaN(parseFloat(item.price))) {
+        price = parseFloat(item.price);
+      }
 
       if (charge_type.includes("health-fund")) {
         const scheduleFee = item.schedule_fees.find(

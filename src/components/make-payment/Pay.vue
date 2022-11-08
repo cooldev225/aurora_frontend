@@ -49,19 +49,24 @@
       </div>
       <div class="card-body pt-3 pb-0">
         <div class="row">
-          <div class="col-md-7 p-3">
+          <div class="col-md-7 mb-4 p-3 pe-5">
             <div class="fv-row mb-8">
-              <label class="text-muted fs-6 fw-bold mb-2 d-block">
-                Procedures
-              </label>
+              <div
+                class="d-flex justify-content-between align-items-center gap-4"
+              >
+                <label class="text-muted fs-6 fw-bold">Procedures</label>
+
+                <IconButton label="Add Procedure" @click="submit" />
+              </div>
 
               <Datatable
                 :table-header="tableHeader"
                 :table-data="billingData.charges.procedures"
                 :enable-items-per-page-dropdown="false"
+                empty-table-text="No items added"
               >
                 <template v-slot:cell-mbs_code="{ row: item }">
-                  {{ item.mbs_code }}
+                  {{ item.mbs_item_code }}
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
@@ -72,17 +77,34 @@
                   <el-input
                     type="number"
                     class="w-100"
-                    placeholder="Item Price"
+                    placeholder="Procedure Price"
                     v-model="item.price"
+                    @input="updatePrice(item, $event, 'procedures')"
                   />
+                </template>
+
+                <template v-slot:cell-actions="{ row: item }">
+                  <button
+                    type="button"
+                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                    @click="deleteItem('procedures', item)"
+                  >
+                    <span class="svg-icon svg-icon-3">
+                      <InlineSVG icon="bin" />
+                    </span>
+                  </button>
                 </template>
               </Datatable>
             </div>
 
             <div class="fv-row mb-8">
-              <label class="text-muted fs-6 fw-bold mb-2 d-block">
-                Extra Items
-              </label>
+              <div
+                class="d-flex justify-content-between align-items-center gap-4"
+              >
+                <label class="text-muted fs-6 fw-bold">Extra Items</label>
+
+                <IconButton label="Add Extra Item" @click="submit" />
+              </div>
 
               <Datatable
                 :table-header="tableHeader"
@@ -91,7 +113,7 @@
                 empty-table-text="No items added"
               >
                 <template v-slot:cell-mbs_code="{ row: item }">
-                  {{ item.mbs_code }}
+                  {{ item.mbs_item_code }}
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
@@ -102,15 +124,28 @@
                   <el-input
                     type="number"
                     class="w-100"
-                    placeholder="Item Price"
+                    placeholder="Procedure Price"
                     v-model="item.price"
+                    @input="updatePrice(item, $event, 'procedures')"
                   />
+                </template>
+
+                <template v-slot:cell-actions="{ row: item }">
+                  <button
+                    type="button"
+                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                    @click="deleteItem('extra_items', item)"
+                  >
+                    <span class="svg-icon svg-icon-3">
+                      <InlineSVG icon="bin" />
+                    </span>
+                  </button>
                 </template>
               </Datatable>
             </div>
           </div>
 
-          <div class="col-md-5 p-3">
+          <div class="col-md-5 p-3 ps-5 mb-4 border-start border-light">
             <div class="fv-row mb-8">
               <label class="text-muted fs-6 fw-bold mb-2 d-block">
                 Charge Type
@@ -140,15 +175,15 @@
             <div class="fv-row mb-8">
               <div class="fs-6 fw-bold mt-2 d-flex flex-column gap-2">
                 <InfoSection heading="Total Payable Amount">
-                  {{ procedurePrice() }}
+                  {{ convertToCurrency(procedurePrice) }}
                 </InfoSection>
 
                 <InfoSection heading="Amount Paid">
-                  {{ amountPaid() }}
+                  {{ convertToCurrency(amountPaid) }}
                 </InfoSection>
 
                 <InfoSection heading="Amount Outstanding">
-                  {{ amountOutstanding() }}
+                  {{ convertToCurrency(amountOutstanding) }}
                 </InfoSection>
               </div>
             </div>
@@ -189,7 +224,7 @@
                 </div>
               </div>
 
-              <div class="fv-row mb-4">
+              <div class="fv-row">
                 <button
                   type="submit"
                   class="btn btn-primary w-100"
@@ -216,11 +251,13 @@ import chargeTypes, {
   getProcedurePrice,
   getChargeTypes,
 } from "@/core/data/charge-types";
+import { convertToCurrency } from "@/core/data/billing";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import CardSection from "../presets/GeneralElements/CardSection.vue";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
+import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 
 export default defineComponent({
   name: "make-payment-pay",
@@ -228,16 +265,13 @@ export default defineComponent({
     InfoSection,
     CardSection,
     Datatable,
+    IconButton,
   },
   setup() {
     const store = useStore();
     const route = useRoute();
     const appointmentId = route.params.id;
     const billingData = computed(() => store.getters.paymentSelected);
-    const amounts = ref({
-      procedurePrice: 0,
-      amountPaid: 0,
-    });
     const total_amount = ref(0);
     const formRef = ref<null | HTMLFormElement>(null);
     const formData = ref({
@@ -271,7 +305,7 @@ export default defineComponent({
       },
     ]);
 
-    const procedurePrice = () => {
+    const procedurePrice = computed(() => {
       let price = 0;
       if (Object.prototype.hasOwnProperty.call(billingData.value, "charges")) {
         price = getProcedurePrice(
@@ -280,15 +314,10 @@ export default defineComponent({
         );
       }
 
-      amounts.value.procedurePrice = price;
+      return price;
+    });
 
-      return new Intl.NumberFormat("en-AU", {
-        style: "currency",
-        currency: "AUD",
-      }).format(price);
-    };
-
-    const amountPaid = () => {
+    const amountPaid = computed(() => {
       let total = 0;
 
       if (
@@ -299,21 +328,30 @@ export default defineComponent({
         });
       }
 
-      amounts.value.amountPaid = total;
+      return total;
+    });
 
-      return new Intl.NumberFormat("en-AU", {
-        style: "currency",
-        currency: "AUD",
-      }).format(total);
+    const amountOutstanding = computed(() => {
+      const total = procedurePrice.value - amountPaid.value;
+
+      return total;
+    });
+
+    const deleteItem = (category, item) => {
+      const index = billingData.value.charges[category].findIndex(
+        (charge) => charge.id === item.id
+      );
+
+      billingData.value.charges[category].splice(index, 1);
     };
 
-    const amountOutstanding = () => {
-      const total = amounts.value.procedurePrice - amounts.value.amountPaid;
+    const updatePrice = (item, price, category) => {
+      console.log("Sean", price);
+      const found = billingData.value.charges[category].find(
+        (charge) => charge.id === item.id
+      );
 
-      return new Intl.NumberFormat("en-AU", {
-        style: "currency",
-        currency: "AUD",
-      }).format(total);
+      found.price = price;
     };
 
     const submit = () => {
@@ -363,6 +401,9 @@ export default defineComponent({
       procedurePrice,
       amountOutstanding,
       tableHeader,
+      deleteItem,
+      updatePrice,
+      convertToCurrency,
     };
   },
 });
