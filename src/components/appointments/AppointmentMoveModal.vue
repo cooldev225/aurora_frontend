@@ -371,6 +371,7 @@ export default defineComponent({
       appointment_confirm_method: "",
       allergies: "",
       clinical_alerts: "",
+      also_known_as: [],
     });
 
     const billingInfoData = ref({
