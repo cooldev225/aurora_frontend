@@ -191,6 +191,7 @@ const Actions = {
 
   SCHEDULE_FEE: {
     LIST: "getScheduleFeeListData",
+    CREATE: "saveScheduleFeeData",
   },
 };
 

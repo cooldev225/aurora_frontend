@@ -37,7 +37,7 @@
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-mbscode="{ row: item }">
+        <template v-slot:cell-mbs_item_code="{ row: item }">
           {{ item.mbs_item_code }}
         </template>
         <template
@@ -46,16 +46,16 @@
           v-slot:[cellName(column.key)]="{ row: item }"
         >
           <span
-            @click="handleEdit(item.id, column.key)"
+            @click="handleEdit(item.mbs_item_code, column.key)"
             style="cursor: pointer"
           >
-            {{ item[column.key] }}
+            {{ item[column.key] == null ? item["NA"] : item[column.key] }}
           </span>
         </template>
       </Datatable>
     </div>
   </div>
-  <RoomModal></RoomModal>
+  <ScheduleFeeModal></ScheduleFeeModal>
 </template>
 
 <script>
@@ -72,7 +72,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import RoomModal from "@/components/clinics/EditRoom.vue";
+import ScheduleFeeModal from "@/views/organisation-admin/billing-setting/ScheduleFeeModal.vue";
 import { Modal } from "bootstrap";
 
 export default defineComponent({
@@ -80,7 +80,7 @@ export default defineComponent({
 
   components: {
     Datatable,
-    RoomModal,
+    ScheduleFeeModal,
   },
   methods: {
     cellName(name) {
@@ -110,8 +110,8 @@ export default defineComponent({
     watch(healthFundsList, () => {
       let list = [
         {
-          code: "mbscode",
-          key: "mbscode",
+          code: "mbs_item_code",
+          key: "mbs_item_code",
           name: "MBS Item",
           sortable: true,
         },
@@ -131,8 +131,7 @@ export default defineComponent({
       );
       Array.from(keys).map((mbs) => {
         let row = {
-          mbscode: mbs,
-          //is_base_amount:
+          mbs_item_code: mbs,
         };
         let cols = scheduleFeeList.value.filter(
           (sch) => sch.mbs_item_code === mbs
@@ -153,13 +152,28 @@ export default defineComponent({
     });
 
     const handleCreate = () => {
-      let item = {};
+      let item = {
+        _title: "Create New MBS Item",
+        _button: "Create",
+        mbs_item_code: "",
+        health_fund_code: "NA",
+        is_base_amount: 0,
+      };
       store.commit(Mutations.SET_SCHEDULE_FEE.SELECT, item);
       const modal = new Modal(document.getElementById("modal_schedule_fee"));
       modal.show();
     };
 
-    const handleEdit = (item) => {
+    const handleEdit = (mbs_item_code, health_fund_code) => {
+      //console.log([mbs_item_code, health_fund_code]);
+      let item = {
+        _title: "Update Schedule Fee",
+        _button: "Update",
+        mbs_item_code: mbs_item_code,
+        health_fund_code: health_fund_code,
+        is_base_amount:
+          mbs_item_code == "mbs_item_code" && health_fund_code == "NA" ? 1 : 0,
+      };
       store.commit(Mutations.SET_SCHEDULE_FEE.SELECT, item);
       const modal = new Modal(document.getElementById("modal_schedule_fee"));
       modal.show();
