@@ -187,7 +187,13 @@ const Actions = {
 
   OUTGOING: {
     LIST: "getOutgoingLogs",
-  }
+  },
+
+  SCHEDULE_FEE: {
+    LIST: "getScheduleFeeListData",
+    CREATE: "saveScheduleFeeData",
+    DELETE: "deleteScheduleFeeData",
+  },
 };
 
 const Mutations = {
@@ -322,6 +328,11 @@ const Mutations = {
   SET_OUTGOING: {
     LIST: "setOutgoingLogs",
     SELECT: "setOutgoingSelectLog",
+  },
+
+  SET_SCHEDULE_FEE: {
+    LIST: "setScheduleFeeListData",
+    SELECT: "setSelectedScheduleFeeData",
   },
 };
 
