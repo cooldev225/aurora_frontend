@@ -199,7 +199,7 @@
                         label="Anesthetist"
                         :prop="'restriction-' + index"
                         v-if="
-                          day.restriction == 'PROCEDURE' &&
+                          day.restriction !== 'CONSULTATION' &&
                           formData.role_id == 5
                         "
                       >
@@ -560,7 +560,7 @@ export default defineComponent({
 
     const verifyAnesthetist = (data) => {
       let filteredAnesthetists = [];
-      if (data.restriction == "PROCEDURE") {
+      if (data.restriction !== "CONSULTATION") {
         anesthetists.value.forEach((anesthetist) => {
           anesthetist.isDisabled = true;
           anesthetist.hrm_weekly_schedule.map((slot) => {

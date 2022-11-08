@@ -50,7 +50,7 @@
                   <span
                     v-if="
                       props.selectedFilters.includes('anesthetist') &&
-                      timeslot.restriction === 'PROCEDURE' &&
+                      timeslot.restriction !== 'CONSULTATION' &&
                       employee.role_id === 5
                     "
                   >
