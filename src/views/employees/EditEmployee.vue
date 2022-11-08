@@ -359,7 +359,7 @@ export default defineComponent({
           formData.value.address = employee.address;
           formData.value.role_id = employee.role_id;
           formData.value.type = employee.type;
-          if (employee.schedule_timeslots?.length) {
+          if (employee.hrm_weekly_schedule?.length) {
             // formData.value.schedule_timeslots = employee.schedule_timeslots;
           }
           if (employee.specialist_clinic_relations?.length) {

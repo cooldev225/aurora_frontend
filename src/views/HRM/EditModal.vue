@@ -457,13 +457,6 @@ export default defineComponent({
               } else {
                 deleteTimeslots.value.push({
                   hrm_weekly_schedule_id: formData.value.timeslots[index].id,
-                  client_id: formData.value.timeslots[index].client_id,
-                  clinic_id: formData.value.timeslots[index].clinic_id,
-                  date: formData.value.timeslots[index].date,
-                  start_time: formData.value.timeslots[index].start_time,
-                  end_time: formData.value.timeslots[index].end_time,
-                  status: formData.value.timeslots[index].status,
-                  week_day: formData.value.timeslots[index].week_day,
                   reason: value,
                 });
                 formData.value.timeslots = formData.value.timeslots.filter(
@@ -570,7 +563,7 @@ export default defineComponent({
       if (data.restriction == "PROCEDURE") {
         anesthetists.value.forEach((anesthetist) => {
           anesthetist.isDisabled = true;
-          anesthetist.schedule_timeslots.map((slot) => {
+          anesthetist.hrm_weekly_schedule.map((slot) => {
             if (
               slot.clinic_id == data.clinic_id &&
               !filteredAnesthetists.includes(anesthetist) &&
@@ -632,7 +625,7 @@ export default defineComponent({
       let anesthetistBookedTimeSlots = [];
       employeeList.value.forEach((specialist) => {
         if (specialist.role_id === 5) {
-          specialist.schedule_timeslots.forEach((slot) => {
+          specialist.hrm_weekly_schedule.forEach((slot) => {
             if (slot.week_day === day && slot.id !== slotId) {
               if (slot.anesthetist_id === anesthetistId) {
                 anesthetistBookedTimeSlots.push({

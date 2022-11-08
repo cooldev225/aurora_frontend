@@ -225,7 +225,7 @@ export default defineComponent({
         ({ id }) => id == specialist_ids
       );
       let $restriction;
-      selected_specialist.schedule_timeslots.forEach(function (slot) {
+      selected_specialist.hrm_weekly_schedule.forEach(function (slot) {
         let $weekDay = moment(date).format("ddd").toString().toUpperCase();
         if (slot.week_day == $weekDay) $restriction = slot.restriction;
       });
