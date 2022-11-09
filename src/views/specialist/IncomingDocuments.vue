@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, watch, ref } from "vue";
+import { defineComponent, computed, watch } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
