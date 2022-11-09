@@ -109,7 +109,7 @@ export default defineComponent({
     const filteredData = ref([]);
     const recalls = computed(() => store.getters.patientsRecallList);
     const loading = ref(true);
-    const recallsFilter = ref("-1");
+    const recallsFilter = ref("0");
     const methodFilter = ref("all");
 
     const applyFilterAndSort = () => {

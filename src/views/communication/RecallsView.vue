@@ -105,7 +105,7 @@ export default defineComponent({
     const tableData = ref([]);
     const filteredData = ref([]);
     const recalls = computed(() => store.getters.patientsRecallList);
-    const recallsFilter = ref("-1");
+    const recallsFilter = ref("0");
     const methodFilter = ref("all");
     const loading = ref(false);
 
