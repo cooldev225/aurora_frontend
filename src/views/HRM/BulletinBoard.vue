@@ -1,5 +1,4 @@
 <template>
-  <SignatureAlert v-if="isNoSignature"></SignatureAlert>
   <section>
     <template v-for="(bulletin, index) in bulletins" :key="index">
       <CardSection>
@@ -35,28 +34,15 @@ import { defineComponent, onMounted, computed, ref, watch } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
 import { useStore } from "vuex";
-import SignatureAlert from "@/components/specialist/SignatureAlert.vue";
 
 export default defineComponent({
   name: "bulletin-board",
-  components: {
-    SignatureAlert,
-  },
+  components: {},
   setup() {
     const store = useStore();
     const loading = ref(true);
     const bulletins = computed(() => store.getters.getBulletinList);
-    const currentUser = computed(() => store.getters.currentUser);
-    const isNoSignature = ref(false);
 
-    watch(currentUser, () => {
-      if (currentUser.value) {
-        const role_id = currentUser.value.profile.role_id;
-        const signature = currentUser.value.profile.signature;
-        if (role_id === 5 && !signature) isNoSignature.value = true;
-        else isNoSignature.value = false;
-      }
-    });
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("HRM", ["Bulletin Board"]);
@@ -68,7 +54,6 @@ export default defineComponent({
     return {
       bulletins,
       loading,
-      isNoSignature,
     };
   },
 });

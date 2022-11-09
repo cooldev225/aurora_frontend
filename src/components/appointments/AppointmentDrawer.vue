@@ -184,16 +184,35 @@
             justify="start"
             iconSize="3"
           />
-          <!--Move Appointment-->
-          <LargeIconButton
-            v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
-            @click="handleMove"
-            :heading="'Move'"
-            :iconPath="'media/icons/duotune/arrows/arr035.svg'"
-            :color="'success'"
-            justify="start"
-            iconSize="3"
-          />
+
+          <div class="d-flex flex-row w-full">
+            <!--Move Appointment-->
+            <div class="col-6">
+              <LargeIconButton
+                class="me-1"
+                v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
+                @click="handleMove"
+                :heading="'Move'"
+                :iconPath="'media/icons/duotune/arrows/arr035.svg'"
+                :color="'success'"
+                justify="start"
+                iconSize="3"
+              />
+            </div>
+            <div class="col-6">
+              <!--Move Appointment-->
+              <LargeIconButton
+                class="ms-1"
+                v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
+                @click="handleCopy"
+                :heading="'Copy'"
+                :iconPath="'media/icons/duotune/arrows/arr058.svg'"
+                :color="'success'"
+                justify="start"
+                iconSize="3"
+              />
+            </div>
+          </div>
 
           <!--Cancel Appointment Button-->
           <LargeIconButton
@@ -284,6 +303,10 @@ export default defineComponent({
       const modal = new Modal(document.getElementById("modal_move_apt"));
       modal.show();
       DrawerComponent?.getInstance("appointment-drawer")?.hide();
+    };
+
+    const handleCopy = async () => {
+      console.log("COPY");
     };
 
     const handleCancel = () => {
@@ -386,6 +409,7 @@ export default defineComponent({
       handleCheckIn,
       handleCheckOut,
       handleMove,
+      handleCopy,
       userRole,
     };
   },

@@ -1,6 +1,7 @@
 <template>
   <div
-    :class="'alert justify-content-center bg-light-warning border border-warning d-flex flex-column flex-sm-row w-100 p-2 mb-6'"
+    v-if="!userData.signature && userData.role == 'specialist'"
+    :class="'x-3 alert justify-content-center bg-light-warning border border-warning d-flex flex-column flex-sm-row w-100 p-2 mb-6'"
   >
     <span :class="'svg-icon svg-icon-2hx svg-icon-warning'">
       <InlineSVG icon="bell" />
