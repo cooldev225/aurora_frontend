@@ -192,6 +192,13 @@ const Actions = {
     UPDATE: "updateScheduleFee",
   },
 
+  SCHEDULE_ITEM: {
+    LIST: "listScheduleItem",
+    CREATE: "createScheduleItem",
+    DELETE: "deleteScheduleItem",
+    UPDATE: "updateScheduleItem",
+  },
+
   OUTGOING: {
     LIST: "getOutgoingLogs",
   },
@@ -328,6 +335,10 @@ const Mutations = {
 
   SET_SCHEDULE_FEE: {
     LIST: "setScheduleFeeList",
+  },
+
+  SET_SCHEDULE_ITEM: {
+    LIST: "setScheduleItemList",
   },
 
   SET_OUTGOING: {
