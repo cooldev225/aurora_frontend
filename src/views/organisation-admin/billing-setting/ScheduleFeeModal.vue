@@ -1,24 +1,24 @@
 <template>
   <div
     class="modal fade"
-    id="modal_edit_admin"
+    id="modal_schedule_fee"
     tabindex="-1"
     aria-hidden="true"
-    ref="editAdminModalRef"
+    ref="scheduleFeeModalRef"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_edit_admin_header">
+        <div class="modal-header" id="kt_modal_schedule_fee_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Update Administrator</h2>
+          <h2 class="fw-bolder">{{ scheduleFee._title }}</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
           <div
-            id="kt_modal_edit_admin_close"
+            id="kt_modal_add_customer_close"
             data-bs-dismiss="modal"
             class="btn btn-icon btn-sm btn-active-icon-primary"
           >
@@ -34,6 +34,7 @@
           @submit.prevent="submit()"
           :model="formData"
           :rules="rules"
+          :loading="loading"
           ref="formRef"
         >
           <!--begin::Modal body-->
@@ -41,88 +42,45 @@
             <!--begin::Scroll-->
             <div
               class="scroll-y me-n7 pe-7"
-              id="kt_modal_edit_admin_scroll"
+              id="kt_modal_schedule_fee_scroll"
               data-kt-scroll="true"
               data-kt-scroll-activate="{default: false, lg: true}"
               data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#kt_modal_edit_admin_header"
-              data-kt-scroll-wrappers="#kt_modal_edit_admin_scroll"
+              data-kt-scroll-dependencies="#kt_modal_schedule_fee_header"
+              data-kt-scroll-wrappers="#kt_modal_schedule_fee_scroll"
               data-kt-scroll-offset="300px"
             >
-              <!--begin::Input group-->
               <div class="fv-row mb-7">
                 <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">First Name</label>
+                <label class="required fs-6 fw-bold mb-2">MBS Item</label>
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="first_name">
+                <el-form-item prop="mbs_item_code">
                   <el-input
-                    v-model="formData.first_name"
+                    v-model="formData.mbs_item_code"
                     type="text"
-                    placeholder="First Name"
+                    placeholder="MBS Item Code"
                   />
                 </el-form-item>
                 <!--end::Input-->
               </div>
-              <!--end::Input group-->
 
-              <!--begin::Input group-->
               <div class="fv-row mb-7">
                 <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Last Name</label>
+                <label class="required fs-6 fw-bold mb-2">Amount</label>
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="last_name">
+                <el-form-item prop="amount">
                   <el-input
-                    v-model="formData.last_name"
-                    type="text"
-                    placeholder="Last Name"
+                    v-model="formData.amount"
+                    type="number"
+                    placeholder="Amount"
                   />
                 </el-form-item>
                 <!--end::Input-->
               </div>
-              <!--end::Input group-->
-
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Username</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="username">
-                  <el-input
-                    v-model="formData.username"
-                    type="text"
-                    placeholder="Username"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="fs-6 fw-bold mb-2">
-                  <span class="required">Email</span>
-                  <i
-                    class="fas fa-exclamation-circle ms-1 fs-7"
-                    data-bs-toggle="tooltip"
-                    title="Email address must be active"
-                  ></i>
-                </label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="email">
-                  <el-input v-model="formData.email" />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
             </div>
             <!--end::Scroll-->
           </div>
@@ -132,9 +90,9 @@
           <div class="modal-footer flex-center">
             <!--begin::Button-->
             <button
-              type="button"
+              type="reset"
               data-bs-dismiss="modal"
-              id="kt_modal_edit_admin_cancel"
+              id="kt_modal_schedule_fee_cancel"
               class="btn btn-light me-3"
             >
               Cancel
@@ -148,10 +106,7 @@
               type="submit"
             >
               <span v-if="!loading" class="indicator-label">
-                Update
-                <span class="svg-icon svg-icon-3 ms-2 me-0">
-                  <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
-                </span>
+                {{ scheduleFee._button }}
               </span>
               <span v-if="loading" class="indicator-progress">
                 Please wait...
@@ -171,63 +126,44 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "edit-admin-modal",
+  name: "schedule-fee-modal",
   components: {},
   setup() {
     const store = useStore();
     const formRef = ref(null);
-    const editAdminModalRef = ref(null);
+    const scheduleFeeModalRef = ref(null);
     const loading = ref(false);
-    const formData = ref({
-      first_name: "",
-      last_name: "",
-      username: "",
-      email: "",
-    });
+    const scheduleFee = computed(
+      () => store.getters.getScheduleFeeSelectedList
+    );
 
-    watchEffect(() => {
-      formData.value = store.getters.getAdminSelected;
+    const formData = ref({
+      mbs_item_code: "",
+      health_fund_code: "",
+      is_base_amount: 0,
+      amount: "",
     });
 
     const rules = ref({
-      first_name: [
+      mbs_item_code: [
         {
           required: true,
-          message: "First Name cannot be blank",
+          message: "MBS item code cannnot be blank",
           trigger: "change",
         },
       ],
-      last_name: [
+      amount: [
         {
           required: true,
-          message: "Last Name cannnot be blank",
+          message: "Amount cannot be blank",
           trigger: "change",
-        },
-      ],
-      username: [
-        {
-          required: true,
-          message: "Username cannot be blank",
-          trigger: "change",
-        },
-      ],
-      email: [
-        {
-          required: true,
-          message: "Email cannot be blank",
-          trigger: "change",
-        },
-        {
-          type: "email",
-          message: "Please input correct email address",
-          trigger: ["blur", "change"],
         },
       ],
     });
@@ -240,14 +176,13 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-
           store
-            .dispatch(Actions.ADMIN.UPDATE, formData.value)
+            .dispatch(Actions.SCHEDULE_FEE.CREATE, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.ADMIN.LIST);
+              store.dispatch(Actions.SCHEDULE_FEE.LIST);
               Swal.fire({
-                text: "Successfully Updated!",
+                text: "Successfully Saved!",
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -255,18 +190,24 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(editAdminModalRef.value);
+                hideModal(scheduleFeeModalRef.value);
               });
             })
             .catch(({ response }) => {
               loading.value = false;
               console.log(response.data.error);
             });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
+          formRef.value.resetFields();
         }
       });
     };
+
+    watch(scheduleFee, () => {
+      console.log(["scheduleFee", scheduleFee.value]);
+      formData.value.mbs_item_code = scheduleFee.value.mbs_item_code;
+      formData.value.health_fund_code = scheduleFee.value.health_fund_code;
+      formData.value.amount = scheduleFee.value.amount;
+    });
 
     return {
       formData,
@@ -274,7 +215,8 @@ export default defineComponent({
       submit,
       formRef,
       loading,
-      editAdminModalRef,
+      scheduleFeeModalRef,
+      scheduleFee,
     };
   },
 });

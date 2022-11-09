@@ -123,7 +123,7 @@
               </div>
               <!--end::Input group-->
 
-              <div class="fv-row mb-7">
+              <div class="fv-row mb-7" data-kt-password-meter="true">
                 <!--begin::Label-->
                 <label class="required fs-6 fw-bold mb-2">Password</label>
                 <!--end::Label-->
@@ -135,7 +135,31 @@
                     type="password"
                     placeholder="Password"
                   />
+                  <span
+                    class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2"
+                    data-kt-password-meter-control="visibility"
+                  >
+                    <i class="bi bi-eye-slash fs-2"></i>
+                    <i class="bi bi-eye fs-2 d-none"></i>
+                  </span>
                 </el-form-item>
+                <div
+                  class="d-flex align-items-center mb-3"
+                  data-kt-password-meter-control="highlight"
+                >
+                  <div
+                    class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                  ></div>
+                  <div
+                    class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                  ></div>
+                  <div
+                    class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                  ></div>
+                  <div
+                    class="flex-grow-1 bg-secondary bg-active-success rounded h-5px"
+                  ></div>
+                </div>
                 <!--end::Input-->
               </div>
 
@@ -203,9 +227,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
+import { validatePass } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "view-admin-modal",
@@ -222,6 +248,16 @@ export default defineComponent({
       password: "",
       repassword: "",
     });
+
+    const validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Please input the password again"));
+      } else if (value !== formData.value.password) {
+        callback(new Error("Password doesn't match!"));
+      } else {
+        callback();
+      }
+    };
 
     const rules = ref({
       firstname: [
@@ -253,18 +289,22 @@ export default defineComponent({
         },
       ],
       password: [
+        { validator: validatePass, trigger: "blur" },
         {
           required: true,
           message: "Password is required",
           trigger: "change",
         },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
       repassword: [
+        { validator: validatePass2, trigger: "blur" },
         {
           required: true,
           message: "Confirm Password is required",
           trigger: "change",
         },
+        { min: 6, message: "The password must be at least 6 characters" },
       ],
     });
 
@@ -306,6 +346,10 @@ export default defineComponent({
         }
       });
     };
+
+    onMounted(() => {
+      PasswordMeterComponent.createInstances();
+    });
 
     return {
       formData,

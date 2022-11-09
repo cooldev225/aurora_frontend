@@ -71,15 +71,25 @@
         </InputWrapper>
 
         <InputWrapper :class="colString" label="Address" prop="address">
-          <el-input
-            type="text"
-            v-model="formData.address"
-            placeholder="Address"
-          />
+          <div class="el-input">
+            <GMapAutocomplete
+              :value="formData.address"
+              ref="addressRef"
+              placeholder="Enter the Address"
+              @place_changed="handleAddressChange"
+              :options="{
+                componentRestrictions: {
+                  country: 'au',
+                },
+              }"
+            >
+            </GMapAutocomplete>
+          </div>
         </InputWrapper>
 
         <InputWrapper :class="colString" label="Post Code" prop="postcode">
           <el-input
+            disabled
             type="text"
             v-model="formData.postcode"
             placeholder="Post Code"
@@ -317,13 +327,6 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      postcode: [
-        {
-          required: true,
-          message: "Post code cannot be blank",
-          trigger: "change",
-        },
-      ],
       kin_name: [
         {
           required: true,
@@ -360,6 +363,18 @@ export default defineComponent({
       ],
     });
     const loading = ref(false);
+
+    const handleAddressChange = (e) => {
+      formData.value.address = e.formatted_address;
+      const postCodeData = e.address_components.filter((data) => {
+        return data.types.some((type) => type === "postal_code");
+      });
+      if (postCodeData && postCodeData.length > 0) {
+        formData.value.postcode = postCodeData[0].short_name;
+      } else {
+        formData.value.postcode = "";
+      }
+    };
 
     const submit = () => {
       if (!formRef.value) {
@@ -409,6 +424,7 @@ export default defineComponent({
       race,
       country_of_birth,
       maritalStatus,
+      handleAddressChange,
       submit,
     };
   },

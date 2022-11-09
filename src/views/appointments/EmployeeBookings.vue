@@ -12,16 +12,10 @@
           :key="calendarKey"
           :options="calendarOptions"
         >
-          <template v-slot:eventContent="arg">
-            <div
-              v-if="arg.event.extendedProps.attendance_status == 'CHECKED_IN'"
-            >
-              <span class="badge badge-success"> CHECKED IN </span>
-              <br />
-            </div>
-            {{ arg.event.title }}<br />
-            {{ arg.event.extendedProps.start_time }} -
-            {{ arg.event.extendedProps.end_time }}
+          <template v-slot:eventContent="event">
+            <AppointmentTableData
+              :appointment="event.event.extendedProps.appointment"
+            />
           </template>
         </FullCalendar>
       </template>
@@ -51,12 +45,13 @@ import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import moment from "moment";
 import JwtService from "@/core/services/JwtService";
-
+import AppointmentTableData from "@/components/appointments/partials/AppointmentTableData.vue";
 export default defineComponent({
   name: "employee-bookings-dashboard",
   components: {
     FullCalendar,
     SignatureAlert,
+    AppointmentTableData,
   },
   setup() {
     const store = useStore();
@@ -137,7 +132,6 @@ export default defineComponent({
           start_time: start_time,
           end_time: end_time,
           className: "fc-event-success",
-          attendance_status: appointment.attendance_status,
           appointment: appointment,
         });
       }

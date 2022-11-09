@@ -5,6 +5,7 @@ import {
   ToggleComponent,
   DrawerComponent,
   SwapperComponent,
+  PasswordMeterComponent,
 } from "@/assets/ts/components";
 
 /**
@@ -18,6 +19,7 @@ const initializeComponents = () => {
     ScrollComponent.bootstrap();
     DrawerComponent.bootstrap();
     SwapperComponent.bootstrap();
+    PasswordMeterComponent.bootstrap();
   }, 0);
 };
 
@@ -34,6 +36,7 @@ const reinitializeComponents = () => {
     });
     DrawerComponent.reInitialization();
     SwapperComponent.reInitialization();
+    PasswordMeterComponent.reInitialization();
   }, 0);
 };
 

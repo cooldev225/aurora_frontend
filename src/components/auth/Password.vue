@@ -29,7 +29,7 @@
             </div>
           </div>
           <div class="col-sm-6">
-            <div class="fv-row mb-7">
+            <div class="fv-row mb-7" data-kt-password-meter="true">
               <label class="text-muted fs-6 fw-bold mb-2 d-block"
                 >New Password</label
               >
@@ -40,7 +40,31 @@
                   v-model="formData.new_password"
                   placeholder="New Password"
                 />
+                <span
+                  class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2"
+                  data-kt-password-meter-control="visibility"
+                >
+                  <i class="bi bi-eye-slash fs-2"></i>
+                  <i class="bi bi-eye fs-2 d-none"></i>
+                </span>
               </el-form-item>
+              <div
+                class="d-flex align-items-center mb-3"
+                data-kt-password-meter-control="highlight"
+              >
+                <div
+                  class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                ></div>
+                <div
+                  class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                ></div>
+                <div
+                  class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2"
+                ></div>
+                <div
+                  class="flex-grow-1 bg-secondary bg-active-success rounded h-5px"
+                ></div>
+              </div>
             </div>
           </div>
           <div class="col-sm-6">
@@ -79,6 +103,8 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import ProfileNavigation from "@/components/auth/ProfileNavigation";
+import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
+import { validatePass } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "password-change",
@@ -92,17 +118,6 @@ export default defineComponent({
       confirm_password: "",
     });
     const loading = ref(false);
-
-    const validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("Please input the password"));
-      } else {
-        if (formData.value.confirm_password !== "") {
-          formRef.value.validateField("checkPass", () => null);
-        }
-        callback();
-      }
-    };
 
     const validatePass2 = (rule, value, callback) => {
       if (value === "") {
@@ -178,6 +193,9 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Password", ["Profile"]);
+      PasswordMeterComponent.createInstances();
+      // var el = document.querySelector("#kt_password_meter_control");
+      // var passwordMeter = PasswordMeterComponent.createInstance(el);
     });
 
     return {

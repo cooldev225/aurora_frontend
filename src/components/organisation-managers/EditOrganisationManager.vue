@@ -189,7 +189,6 @@ export default defineComponent({
       last_name: "",
       username: "",
       email: "",
-      password: "",
     });
 
     watchEffect(() => {
