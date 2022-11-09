@@ -393,7 +393,6 @@ export default defineComponent({
     });
 
     watch(aptData, () => {
-      //formData.value.step = 0;
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST).then(() => {
         formData.value.appointment_type_id = aptData.value.appointment_type?.id;
       });
@@ -447,14 +446,9 @@ export default defineComponent({
         })
         .then(() => {
           loading.value = false;
-          store.dispatch(AppointmentActions.LIST).then((data) => {
-            hideModal(MoveAptModalRef.value);
-
-            let updatedApt = data.filter((a) => a.id == aptData.value.id);
-            if (updatedApt.length)
-              store.commit(AppointmentMutations.SET_APT.SELECT, updatedApt[0]);
-            DrawerComponent?.getInstance("appointment-drawer")?.toggle();
-          });
+          hideModal(MoveAptModalRef.value);
+          DrawerComponent?.getInstance("appointment-drawer")?.toggle();
+          store.dispatch(AppointmentActions.LIST);
         })
         .catch(({ response }) => {
           loading.value = false;
