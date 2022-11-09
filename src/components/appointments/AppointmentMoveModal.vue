@@ -392,17 +392,12 @@ export default defineComponent({
       no_referral_reason: "",
     });
 
-    watch(formData.value.x_weeks, () => {
-      console.log(formData.value);
-    });
-
     watch(aptData, () => {
       //formData.value.step = 0;
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST).then(() => {
         formData.value.appointment_type_id = aptData.value.appointment_type?.id;
       });
       store.dispatch(Actions.CLINICS.LIST).then(() => {
-        console.log();
         formData.value.clinic_id = aptData.value.clinic_id;
       });
       store.dispatch(Actions.SPECIALIST.LIST).then(() => {
@@ -435,33 +430,13 @@ export default defineComponent({
         .format("DD-MM-YYYY")
         .toString();
       aptInfoData.value.time_slot = bookingData.value.time_slot;
-      // const _selected = aptTypelist.value.filter(
-      //   (aptType) => aptType.id === aptData.value.appointment_type_id
-      // )[0];
-      // let arrival_time = 30;
-      // if (typeof _selected !== "undefined") {
-      //   arrival_time = Number(_selected.arrival_time);
-      // }
-      // aptInfoData.value.arrival_time = moment(
-      //   bookingData.value.time_slot[0],
-      //   "HH:mm"
-      // )
-      //   .subtract(arrival_time, "minutes")
-      //   .format("HH:mm")
-      //   .toString();
       aptInfoData.value.start_time = moment(
         bookingData.value.time_slot[0]
       ).format("HH:mm");
       aptInfoData.value.end_time = moment(
         bookingData.value.time_slot[1]
       ).format("HH:mm");
-      console.log({
-        id: aptData.value.id,
-        ...aptInfoData.value,
-        ...patientInfoData.value,
-        ...billingInfoData.value,
-        ...otherInfoData.value,
-      });
+
       store
         .dispatch(AppointmentActions.APT.UPDATE, {
           id: aptData.value.id,
@@ -474,7 +449,7 @@ export default defineComponent({
           loading.value = false;
           store.dispatch(AppointmentActions.LIST).then((data) => {
             hideModal(MoveAptModalRef.value);
-            console.log(["updaed list", data]);
+
             let updatedApt = data.filter((a) => a.id == aptData.value.id);
             if (updatedApt.length)
               store.commit(AppointmentMutations.SET_APT.SELECT, updatedApt[0]);
@@ -483,7 +458,6 @@ export default defineComponent({
         })
         .catch(({ response }) => {
           loading.value = false;
-          console.log(response.data.errors);
         });
     };
 
