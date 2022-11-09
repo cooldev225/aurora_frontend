@@ -30,17 +30,17 @@ export default class ScheduleFeeModule
   }
 
   @Mutation
-  [Mutations.SET_SCHEDULE_ITEM.LIST](data) {
+  [Mutations.SET_SCHEDULE_FEE.LIST](data) {
     this.scheduleFeeData = data;
   }
 
   @Action
-  [Actions.SCHEDULE_ITEM.LIST]() {
+  [Actions.SCHEDULE_FEE.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("schedule-items")
+      ApiService.get("schedule-fees")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_SCHEDULE_ITEM.LIST, data.data);
+          this.context.commit(Mutations.SET_SCHEDULE_FEE.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -53,13 +53,13 @@ export default class ScheduleFeeModule
   }
 
   @Action
-  [Actions.SCHEDULE_ITEM.CREATE](payload) {
+  [Actions.SCHEDULE_FEE.CREATE](payload) {
     const config = {
       headers: { "Content-Type": "multipart/form-data" },
     };
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("schedule-items", payload, config)
+      ApiService.post("schedule-fees", payload, config)
         .then(({ data }) => {
           return data.data;
         })
@@ -72,10 +72,10 @@ export default class ScheduleFeeModule
   }
 
   @Action
-  [Actions.SCHEDULE_ITEM.UPDATE](item) {
+  [Actions.SCHEDULE_FEE.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("schedule-items", item.id, item)
+      ApiService.update("schedule-fees", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
@@ -89,10 +89,10 @@ export default class ScheduleFeeModule
   }
 
   @Action
-  [Actions.SCHEDULE_ITEM.DELETE](id) {
+  [Actions.SCHEDULE_FEE.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.delete("schedule-items/" + id)
+      ApiService.delete("schedule-fees/" + id)
         .then(({ data }) => {
           return data.data;
         })

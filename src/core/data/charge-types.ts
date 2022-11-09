@@ -96,6 +96,25 @@ export const getProcedurePrice = (data, charge_type, healthFund = null) => {
     });
   }
 
+  if (Object.prototype.hasOwnProperty.call(data, "admin_items")) {
+    data.admin_items.forEach((item) => {
+      let price = parseFloat(item.price);
+
+      if (charge_type.includes("health-fund")) {
+        const scheduleFee = item.schedule_fees.find(
+          (fee) => fee.health_fund_code == healthFund
+        );
+
+        if (scheduleFee !== null) {
+          item.price = scheduleFee.amount / 100;
+          price = scheduleFee.amount / 100;
+        }
+      }
+
+      amount += price;
+    });
+  }
+
   return amount;
 };
 

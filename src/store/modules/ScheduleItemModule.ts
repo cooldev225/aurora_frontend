@@ -30,22 +30,22 @@ export default class ScheduleItemModule
    * Get current user object
    * @returns AdminList
    */
-  get scheduleFeeList(): Array<IScheduleItem> {
+  get scheduleItemList(): Array<IScheduleItem> {
     return this.scheduleItemData;
   }
 
   @Mutation
-  [Mutations.SET_SCHEDULE_FEE.LIST](data) {
+  [Mutations.SET_SCHEDULE_ITEM.LIST](data) {
     this.scheduleItemData = data;
   }
 
   @Action
-  [Actions.SCHEDULE_FEE.LIST]() {
+  [Actions.SCHEDULE_ITEM.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("schedule-fees")
+      ApiService.get("schedule-items")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_SCHEDULE_FEE.LIST, data.data);
+          this.context.commit(Mutations.SET_SCHEDULE_ITEM.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -58,13 +58,13 @@ export default class ScheduleItemModule
   }
 
   @Action
-  [Actions.SCHEDULE_FEE.CREATE](payload) {
+  [Actions.SCHEDULE_ITEM.CREATE](payload) {
     const config = {
       headers: { "Content-Type": "multipart/form-data" },
     };
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("schedule-fees", payload, config)
+      ApiService.post("schedule-items", payload, config)
         .then(({ data }) => {
           return data.data;
         })
@@ -77,10 +77,10 @@ export default class ScheduleItemModule
   }
 
   @Action
-  [Actions.SCHEDULE_FEE.UPDATE](item) {
+  [Actions.SCHEDULE_ITEM.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("schedule-fees", item.id, item)
+      ApiService.update("schedule-items", item.id, item)
         .then(({ data }) => {
           return data.data;
         })
@@ -94,10 +94,10 @@ export default class ScheduleItemModule
   }
 
   @Action
-  [Actions.SCHEDULE_FEE.DELETE](id) {
+  [Actions.SCHEDULE_ITEM.DELETE](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.delete("schedule-fees/" + id)
+      ApiService.delete("schedule-items/" + id)
         .then(({ data }) => {
           return data.data;
         })

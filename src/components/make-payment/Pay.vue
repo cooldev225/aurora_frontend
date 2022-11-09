@@ -56,11 +56,14 @@
               >
                 <label class="text-muted fs-6 fw-bold">Procedures</label>
 
-                <IconButton label="Add Procedure" @click="submit" />
+                <IconButton
+                  label="Add Procedure"
+                  @click="handleAddItem('procedures')"
+                />
               </div>
 
               <Datatable
-                :table-header="tableHeader"
+                :table-header="mbsTableHeader"
                 :table-data="billingData.charges.procedures"
                 :enable-items-per-page-dropdown="false"
                 empty-table-text="No items added"
@@ -74,23 +77,17 @@
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
-                  <el-input
-                    type="number"
-                    class="w-100"
-                    placeholder="Procedure Price"
-                    v-model="item.price"
-                    @input="updatePrice(item, $event, 'procedures')"
-                  />
+                  {{ convertToCurrency(item.price) }}
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
                   <button
                     type="button"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                    @click="deleteItem('procedures', item)"
+                    @click="handleEditItem('procedures', item)"
                   >
                     <span class="svg-icon svg-icon-3">
-                      <InlineSVG icon="bin" />
+                      <InlineSVG icon="pencil" />
                     </span>
                   </button>
                 </template>
@@ -107,7 +104,7 @@
               </div>
 
               <Datatable
-                :table-header="tableHeader"
+                :table-header="mbsTableHeader"
                 :table-data="billingData.charges.extra_items"
                 :enable-items-per-page-dropdown="false"
                 empty-table-text="No items added"
@@ -121,28 +118,70 @@
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
-                  <el-input
-                    type="number"
-                    class="w-100"
-                    placeholder="Procedure Price"
-                    v-model="item.price"
-                    @input="updatePrice(item, $event, 'procedures')"
-                  />
+                  {{ convertToCurrency(item.price) }}
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
                   <button
                     type="button"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                    @click="deleteItem('extra_items', item)"
+                    @click="handleEditItem('extra_items', item)"
                   >
                     <span class="svg-icon svg-icon-3">
-                      <InlineSVG icon="bin" />
+                      <InlineSVG icon="pencil" />
                     </span>
                   </button>
                 </template>
               </Datatable>
             </div>
+
+            <div class="fv-row mb-8">
+              <div
+                class="d-flex justify-content-between align-items-center gap-4"
+              >
+                <label class="text-muted fs-6 fw-bold">Non-MBS Items</label>
+
+                <IconButton label="Add Non-MBS Item" @click="submit" />
+              </div>
+
+              <Datatable
+                :table-header="tableHeader"
+                :table-data="billingData.charges.admin_items"
+                :enable-items-per-page-dropdown="false"
+                empty-table-text="No items added"
+              >
+                <template v-slot:cell-mbs_code="{ row: item }">
+                  {{ item.mbs_item_code }}
+                </template>
+
+                <template v-slot:cell-description="{ row: item }">
+                  {{ item.description }}
+                </template>
+
+                <template v-slot:cell-price="{ row: item }">
+                  {{ convertToCurrency(item.price) }}
+                </template>
+
+                <template v-slot:cell-actions="{ row: item }">
+                  <button
+                    type="button"
+                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                    @click="handleEditItem('admin_items', item)"
+                  >
+                    <span class="svg-icon svg-icon-3">
+                      <InlineSVG icon="pencil" />
+                    </span>
+                  </button>
+                </template>
+              </Datatable>
+            </div>
+
+            <PaymentItemModal
+              :item="paymentItemModalData"
+              v-on:deleteItem="handleDeleteItem"
+              v-on:submitItem="handlePaymentItemModalSubmit"
+              v-on:closeModal="handleCloseModal"
+            />
           </div>
 
           <div class="col-md-5 p-3 ps-5 mb-4 border-start border-light">
@@ -243,7 +282,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed } from "vue";
+import { defineComponent, onMounted, ref, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -253,11 +292,14 @@ import chargeTypes, {
 } from "@/core/data/charge-types";
 import { convertToCurrency } from "@/core/data/billing";
 import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import CardSection from "../presets/GeneralElements/CardSection.vue";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
+import PaymentItemModal from "@/components/make-payment/PaymentItemModal.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "make-payment-pay",
@@ -266,6 +308,7 @@ export default defineComponent({
     CardSection,
     Datatable,
     IconButton,
+    PaymentItemModal,
   },
   setup() {
     const store = useStore();
@@ -273,6 +316,7 @@ export default defineComponent({
     const appointmentId = route.params.id;
     const billingData = computed(() => store.getters.paymentSelected);
     const total_amount = ref(0);
+    const paymentItemModal = ref();
     const formRef = ref<null | HTMLFormElement>(null);
     const formData = ref({
       appointment_id: 0,
@@ -281,8 +325,13 @@ export default defineComponent({
       is_deposit: false,
       is_send_receipt: true,
     });
+    const paymentItemModalData = ref({
+      mode: "",
+      category: "",
+      item: null,
+    });
 
-    const tableHeader = ref([
+    const mbsTableHeader = ref([
       {
         name: "MBS Code",
         key: "mbs_code",
@@ -304,6 +353,71 @@ export default defineComponent({
         sortable: false,
       },
     ]);
+
+    const tableHeader = ref([
+      {
+        name: "Name",
+        key: "name",
+        sortable: true,
+      },
+      {
+        name: "Description",
+        key: "description",
+        sortable: false,
+      },
+      {
+        name: "Price",
+        key: "price",
+        sortable: false,
+      },
+      {
+        name: "Actions",
+        key: "actions",
+        sortable: false,
+      },
+    ]);
+
+    const proceduresUndertakenList = computed(() => {
+      let list = [] as Array<number>;
+
+      if (Object.prototype.hasOwnProperty.call(billingData.value, "charges")) {
+        const charges = billingData.value.charges.procedures;
+
+        charges.forEach((charge) => {
+          list.push(charge.id);
+        });
+      }
+
+      return list;
+    });
+
+    const extraItemsList = computed(() => {
+      let list = [] as Array<number>;
+
+      if (Object.prototype.hasOwnProperty.call(billingData.value, "charges")) {
+        const charges = billingData.value.charges.extra_items;
+
+        charges.forEach((charge) => {
+          list.push(charge.id);
+        });
+      }
+
+      return list;
+    });
+
+    const adminItemsList = computed(() => {
+      let list = [] as Array<number>;
+
+      if (Object.prototype.hasOwnProperty.call(billingData.value, "charges")) {
+        const charges = billingData.value.charges.admin_items;
+
+        charges.forEach((charge) => {
+          list.push(charge.id);
+        });
+      }
+
+      return list;
+    });
 
     const procedurePrice = computed(() => {
       let price = 0;
@@ -337,21 +451,80 @@ export default defineComponent({
       return total;
     });
 
+    const handleDeleteItem = () => {
+      const category = paymentItemModalData.value.category;
+      const item = paymentItemModalData.value.item;
+
+      deleteItem(category, item);
+    };
+
+    const handleEditItem = (category, item) => {
+      if (!paymentItemModal.value) {
+        paymentItemModal.value = new Modal(
+          document.getElementById("modal_payment_item")
+        );
+      }
+
+      paymentItemModalData.value.mode = "edit";
+      paymentItemModalData.value.category = category;
+      paymentItemModalData.value.item = item;
+
+      paymentItemModal.value.show();
+    };
+
+    const handleAddItem = (category) => {
+      if (!paymentItemModal.value) {
+        paymentItemModal.value = new Modal(
+          document.getElementById("modal_payment_item")
+        );
+      }
+
+      paymentItemModalData.value.mode = "add";
+      paymentItemModalData.value.category = category;
+
+      paymentItemModal.value.show();
+    };
+
     const deleteItem = (category, item) => {
       const index = billingData.value.charges[category].findIndex(
         (charge) => charge.id === item.id
       );
 
       billingData.value.charges[category].splice(index, 1);
+      updateAppointmentDetail();
     };
 
     const updatePrice = (item, price, category) => {
-      console.log("Sean", price);
       const found = billingData.value.charges[category].find(
         (charge) => charge.id === item.id
       );
 
       found.price = price;
+    };
+
+    const addPaymentItem = (item) => {
+      billingData.value.charges[paymentItemModalData.value.category].push(item);
+      updateAppointmentDetail();
+    };
+
+    const handlePaymentItemModalSubmit = (event) => {
+      if (paymentItemModalData.value.mode === "add") {
+        addPaymentItem(event);
+      }
+
+      if (paymentItemModalData.value.mode === "edit") {
+        updatePrice(
+          paymentItemModalData.value.item,
+          event.price,
+          paymentItemModalData.value.category
+        );
+      }
+
+      handleCloseModal();
+    };
+
+    const handleCloseModal = () => {
+      paymentItemModal.value.hide();
     };
 
     const submit = () => {
@@ -381,6 +554,17 @@ export default defineComponent({
         });
     };
 
+    const updateAppointmentDetail = () => {
+      const data = {
+        appointment_id: billingData.value.appointment.id,
+        procedures_undertaken: proceduresUndertakenList.value,
+        extra_items_used: extraItemsList.value,
+        admin_items: adminItemsList.value,
+      };
+
+      store.dispatch(AppointmentActions.DETAIL.UPDATE, data);
+    };
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("Pay", ["Billing", "Out of Pocket"]);
       store.dispatch(Actions.MAKE_PAYMENT.VIEW, appointmentId).then(() => {
@@ -401,9 +585,15 @@ export default defineComponent({
       procedurePrice,
       amountOutstanding,
       tableHeader,
-      deleteItem,
+      mbsTableHeader,
+      handleDeleteItem,
       updatePrice,
       convertToCurrency,
+      handleEditItem,
+      paymentItemModalData,
+      handlePaymentItemModalSubmit,
+      handleCloseModal,
+      handleAddItem,
     };
   },
 });
