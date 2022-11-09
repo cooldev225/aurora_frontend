@@ -98,11 +98,11 @@
 <script>
 import { defineComponent, ref, onMounted, computed, watch } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import { ElMessage } from "element-plus";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
+import JwtService from "@/core/services/JwtService";
 
 export default defineComponent({
   name: "organization-settings",
@@ -111,6 +111,7 @@ export default defineComponent({
     const formRef = ref(null);
     const store = useStore();
     const loading = ref(false);
+    const initialAppointmentLength = ref(null);
     const formData = ref({
       name: null,
       start_time: null,
@@ -158,30 +159,26 @@ export default defineComponent({
     };
     const submit = () => {
       formRef.value.validate((valid) => {
-        if (!formData.value.document_letter_header) {
-          ElMessage.error("Please upload header file!");
-          valid = false;
-        }
-        if (!formData.value.document_letter_footer) {
-          ElMessage.error("Please upload footer file!");
-          valid = false;
-        }
-        if (!formData.value.logo) {
-          ElMessage.error("Please upload logo file!");
-          valid = false;
-        }
         if (valid) {
           loading.value = true;
           let submitData = new FormData();
+          submitData.append("name", formData.value.name);
           submitData.append(
-            "header",
-            formData.value.document_letter_header_file.raw
+            "start_time",
+            moment(formData.value.start_time).format("HH:mm:ss")
           );
           submitData.append(
-            "footer",
-            formData.value.document_letter_footer_file.raw
+            "end_time",
+            moment(formData.value.end_time).format("HH:mm:ss")
           );
-          submitData.append("logo", formData.value.logo_file.raw);
+          submitData.append(
+            "appointment_length",
+            formData.value.appointment_length
+          );
+          var flag =
+            initialAppointmentLength.value ===
+            formData.value.appointment_length;
+
           store
             .dispatch(Actions.ORG_ADMIN.ORGANIZATION.SETTINGS.UPDATE, {
               submitData: submitData,
@@ -189,7 +186,10 @@ export default defineComponent({
             .then(() => {
               loading.value = false;
               Swal.fire({
-                text: "Successfully Updated organization",
+                // text: "Successfully Updated organization",
+                html: flag
+                  ? "Successfully Updated organization"
+                  : 'Successfully Updated organization <br/><br/><i class="bi bi-info-circle-fill text-warning fs-3"></i><span class="text-warning mx-2">Important Note: Changing the Appointment Length will not change existing appointments.</span>',
                 icon: "success",
                 buttonsStyling: false,
                 confirmButtonText: "Ok, got it!",
@@ -197,20 +197,18 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               });
-              formRef.value.resetFields();
-              // reloadOrgData();
+              store.dispatch(Actions.VERIFY_AUTH, {
+                api_token: JwtService.getToken(),
+              });
             })
             .catch(({ response }) => {
               loading.value = false;
               console.log(response.data.error);
             });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
     watch(currentUser, () => {
-      console.log("currentUser", currentUser);
       if (currentUser.value) {
         formData.value.name = currentUser.value.organization.name;
         formData.value.appointment_length =
@@ -225,12 +223,15 @@ export default defineComponent({
             " " +
             currentUser.value.organization.end_time
         );
+        initialAppointmentLength.value =
+          currentUser.value.organization.appointment_length;
       }
     });
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Organization Settings", ["Settings"]);
     });
+
     return {
       formData,
       handleCancelButton,
@@ -238,6 +239,7 @@ export default defineComponent({
       submit,
       formRef,
       loading,
+      initialAppointmentLength,
     };
   },
 });

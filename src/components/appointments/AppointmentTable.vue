@@ -31,14 +31,7 @@
 }
 </style>
 <script>
-import {
-  defineComponent,
-  ref,
-  computed,
-  watchEffect,
-  watch,
-  onMounted,
-} from "vue";
+import { defineComponent, ref, computed, watchEffect, watch } from "vue";
 import { useStore } from "vuex";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import moment from "moment";
@@ -48,10 +41,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import resourceTimeGridPlugin from "@fullcalendar/resource-timegrid";
-import {
-  AppointmentActions,
-  AppointmentMutations,
-} from "@/store/enums/StoreAppointmentEnums";
+import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
 import AppointmentTableData from "./partials/AppointmentTableData.vue";
 import { Modal } from "bootstrap";
 import MoveModal from "@/components/appointments/AppointmentMoveModal.vue";
@@ -73,10 +63,6 @@ export default defineComponent({
     const appointmentsRaw = computed(() => store.getters.getAptList);
     const appointments = ref([]);
     const allSpecialists = computed(() => store.getters.getSpecialistList);
-
-    watch(props, () => {
-      let date = moment(props.visibleDate.date).format("YYYY-MM-DD");
-    });
 
     watch(appointments, () => {
       var check = moment(props.visibleDate.date, "YYYY/MM/DD");

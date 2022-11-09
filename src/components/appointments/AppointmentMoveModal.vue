@@ -298,14 +298,7 @@
 }
 </style>
 <script>
-import {
-  defineComponent,
-  computed,
-  ref,
-  onMounted,
-  watch,
-  watchEffect,
-} from "vue";
+import { defineComponent, computed, ref, onMounted, watch } from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
@@ -390,13 +383,7 @@ export default defineComponent({
       no_referral: false,
       no_referral_reason: "",
     });
-
-    watch(formData.value.x_weeks, () => {
-      console.log(formData.value);
-    });
-
     watch(aptData, () => {
-      //formData.value.step = 0;
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST).then(() => {
         formData.value.appointment_type_id = aptData.value.appointment_type?.id;
       });

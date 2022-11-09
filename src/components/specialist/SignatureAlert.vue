@@ -20,10 +20,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, watchEffect } from "vue";
-import { PatientActions } from "@/store/enums/StorePatientEnums";
+import { defineComponent, computed } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import InlineSVG from "../presets/GeneralElements/InlineSVG.vue";
 import IconButton from "../presets/GeneralElements/IconButton.vue";
 
@@ -32,7 +30,6 @@ export default defineComponent({
   components: { InlineSVG, IconButton },
   setup() {
     const store = useStore();
-    const router = useRouter();
     const userData = computed(() => store.getters.currentUser);
 
     return {

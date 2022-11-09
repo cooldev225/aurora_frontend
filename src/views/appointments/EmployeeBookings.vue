@@ -40,7 +40,7 @@ import {
   AppointmentActions,
   AppointmentMutations,
 } from "@/store/enums/StoreAppointmentEnums";
-import { Mutations, Actions } from "@/store/enums/StoreEnums";
+import { Actions } from "@/store/enums/StoreEnums";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import SignatureAlert from "@/components/specialist/SignatureAlert.vue";
 

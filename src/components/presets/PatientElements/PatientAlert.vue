@@ -16,7 +16,6 @@
   </div>
 </template>
 <script lang="ts">
-import icons from "@/core/data/icons";
 import { onMounted, ref } from "vue";
 import { Modal } from "bootstrap";
 

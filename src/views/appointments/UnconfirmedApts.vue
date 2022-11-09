@@ -16,10 +16,7 @@ import { defineComponent, onMounted } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import AppointmentList from "@/views/appointments/AppointmentList.vue";
-import {
-  AppointmentActions,
-  AppointmentMutations,
-} from "@/store/enums/StoreAppointmentEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 
 export default defineComponent({
@@ -46,7 +43,7 @@ export default defineComponent({
           confirmButton: "btn btn-primary",
           cancelButton: "btn btn-light-primary",
         },
-        preConfirm: async (data) => {
+        preConfirm: async () => {
           await store
             .dispatch(AppointmentActions.CONFIRMATION_STATUS.UPDATE, {
               id: appointmentId,

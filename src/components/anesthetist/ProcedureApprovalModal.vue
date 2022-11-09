@@ -186,14 +186,13 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
-import store from "@/store";
 import pdf from "pdfobject";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 
 export default defineComponent({
   name: "view-pre-admission-form-modal",
   components: { InfoSection },
-  setup(props) {
+  setup() {
     const store = useStore();
     const formRef = ref(null);
     const viewPreAdmissionModalRef = ref(null);

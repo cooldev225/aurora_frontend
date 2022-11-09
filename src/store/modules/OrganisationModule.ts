@@ -67,7 +67,7 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
           this.context.commit(Mutations.SET_ORG.LIST, data.data);
           return data.data;
         })
-        .catch(({ response }) => {
+        .catch(() => {
           // console.log(response.data.error);
           // this.context.commit(Mutations.SET_ERROR, response.data.errors);
         });
