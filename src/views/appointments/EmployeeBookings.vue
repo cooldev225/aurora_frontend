@@ -6,8 +6,7 @@
       <!--begin::Calendar-->
       <template v-if="calendarOptions">
         <FullCalendar
-          ref="refCalendar"
-          class="demo-app-calendar"
+          ref="appointmentCalendarRef"
           :key="calendarKey"
           :options="calendarOptions"
         >
@@ -52,12 +51,14 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const userAptList = computed(() => store.getters.getAptList);
-    const refCalendar = ref(null);
+
+    const appointmentCalendarRef = ref(null);
     const calendarKey = ref(0);
+
+    const appointmentsRaw = computed(() => store.getters.getAptList);
+    const appointments = ref([]);
     const userProfile = computed(() => store.getters.userProfile);
-    let appointments = [];
-    const currentUser = computed(() => store.getters.currentUser);
+    const organization = computed(() => store.getters.userOrganization);
 
     const handleEventClick = (info) => {
       info.jsEvent.preventDefault();
@@ -68,17 +69,7 @@ export default defineComponent({
 
     const calendarOptions = ref(null);
 
-    watch(userProfile, () => {
-      let specialist_id =
-        userProfile.value.role_id === 5 ? userProfile.value.id : null;
-      let anesthetist_id =
-        userProfile.value.role_id === 9 ? userProfile.value.id : null;
-
-      store.dispatch(AppointmentActions.LIST, {
-        specialist_id: specialist_id,
-        anesthetist_id: anesthetist_id,
-      });
-
+    watch(organization, () => {
       calendarOptions.value = {
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
         headerToolbar: {
@@ -91,28 +82,78 @@ export default defineComponent({
         selectable: true,
         selectMirror: false,
         allDaySlot: false,
-        slotMinTime: currentUser.value.organization.start_time,
-        slotMaxTime: currentUser.value.organization.end_time,
+        slotMinTime: organization.value.start_time,
+        slotMaxTime: organization.value.end_time,
         views: {
           timeGridWeek: { buttonText: "week" },
           timeGridDay: { buttonText: "day" },
         },
 
         editable: false,
-        dayMaxEvents: false, // allow "more" link when too many events
-        events: appointments,
+        dayMaxEvents: false,
+        events: [],
         eventClick: handleEventClick,
       };
     });
 
+    watch(userProfile, () => {
+      let specialist_id =
+        userProfile.value.role.id == 5 ? userProfile.value.id : null;
+      let anesthetist_id =
+        userProfile.value.role.id == 9 ? userProfile.value.id : null;
+
+      store.dispatch(AppointmentActions.LIST, {
+        specialist_id: specialist_id,
+        anesthetist_id: anesthetist_id,
+      });
+    });
+
+    watch(appointments, () => {
+      if (appointmentCalendarRef.value) {
+        let calenderAPI = appointmentCalendarRef.value.getApi();
+        calenderAPI.removeAllEvents();
+        for (let index = 0; index < appointments.value.length; index++) {
+          appointmentCalendarRef.value
+            .getApi()
+            .addEvent(appointments.value[index]);
+        }
+      }
+    });
+
+    watch(appointmentsRaw, () => {
+      appointments.value = [];
+      appointmentsRaw.value.forEach((appointment) => {
+        appointments.value.push({
+          id: appointment.id,
+          resourceId: appointment.specialist_id,
+          start: appointment.date + "T" + appointment.start_time,
+          end: appointment.date + "T" + appointment.end_time,
+          appointment: appointment,
+        });
+      });
+    });
+
     onMounted(() => {
-      setCurrentPageBreadcrumbs("My Bookings", ["Booking Dashboard"]);
+      window.setInterval(() => {
+        if (userProfile.value) {
+          console.log("updating");
+          let specialist_id =
+            userProfile.value.role.id == 5 ? userProfile.value.id : null;
+          let anesthetist_id =
+            userProfile.value.role.id == 9 ? userProfile.value.id : null;
+
+          store.dispatch(AppointmentActions.LIST, {
+            specialist_id: specialist_id,
+            anesthetist_id: anesthetist_id,
+          });
+        }
+      }, 8000);
     });
 
     return {
       calendarOptions,
       handleEventClick,
-      refCalendar,
+      appointmentCalendarRef,
       calendarKey,
     };
   },

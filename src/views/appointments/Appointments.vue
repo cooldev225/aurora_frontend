@@ -503,7 +503,7 @@ export default defineComponent({
 
       window.setInterval(() => {
         store.dispatch(AppointmentActions.LIST, { date: formattedDate });
-      }, 10000);
+      }, 8000);
 
       const month = $(
         ".datepicker-container-label>span:first-child>button>span:nth-child(2)"
