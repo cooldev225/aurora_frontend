@@ -149,7 +149,9 @@
                 <span class="caption-content me-2">
                   {{
                     cliniclist.filter((c) => c.id === formData.clinic_id)[0]
-                      ?.name
+                      ? cliniclist.filter((c) => c.id === formData.clinic_id)[0]
+                          .name
+                      : "Any"
                   }}
                 </span>
                 <span class="me-1">Specialist:</span>
@@ -157,7 +159,11 @@
                   {{
                     allSpecialist.filter(
                       (c) => c.id === formData.specialist_id
-                    )[0].full_name
+                    )[0]
+                      ? allSpecialist.filter(
+                          (c) => c.id === formData.specialist_id
+                        )[0].full_name
+                      : "Any"
                   }}
                 </span>
                 <span class="me-1">Time Requirement:</span>
@@ -231,7 +237,7 @@
                     }})
                   </InfoSection>
                   <InfoSection :heading="'Clinic'">{{
-                    aptData.clinic_details?.name
+                    bookingData?.clinic_name
                   }}</InfoSection>
 
                   <InfoSection :heading="'Date'">
@@ -248,7 +254,7 @@
                   }}</InfoSection>
 
                   <InfoSection :heading="'Specialist'">{{
-                    aptData.specialist_name
+                    bookingData?.specialist_name
                   }}</InfoSection>
                 </div>
               </div>
@@ -435,6 +441,9 @@ export default defineComponent({
       aptInfoData.value.end_time = moment(
         bookingData.value.time_slot[1]
       ).format("HH:mm");
+      aptInfoData.value.specialist_id = bookingData.value.specialist_id;
+      aptInfoData.value.clinic_id = bookingData.value.clinic_id;
+      aptInfoData.value.clinic_name = bookingData.value.clinic_name;
 
       store
         .dispatch(AppointmentActions.APT.UPDATE, {
