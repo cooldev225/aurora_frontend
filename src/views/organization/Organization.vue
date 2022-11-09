@@ -21,8 +21,9 @@
         </InputWrapper>
         <InputWrapper
           class="col-sm-3 mb-5"
+          required
           label="Appointment length"
-          prop="arrival_time"
+          prop="appointment_length"
         >
           <el-input
             v-model="formData.appointment_length"
@@ -54,7 +55,7 @@
           <el-time-picker
             v-model="formData.end_time"
             arrow-control
-            format="HH:mm:ss"
+            format="HH:mm"
             placeholder="End time"
           />
         </InputWrapper>
@@ -101,6 +102,8 @@ import { ElMessage } from "element-plus";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import moment from "moment";
+
 export default defineComponent({
   name: "organization-settings",
   components: {},
@@ -114,7 +117,36 @@ export default defineComponent({
       end_time: null,
       appointment_length: null,
     });
-    const rules = ref({});
+    const rules = ref({
+      name: [
+        {
+          required: true,
+          message: "Organization Name is required",
+          trigger: "change",
+        },
+      ],
+      start_time: [
+        {
+          required: true,
+          message: "Start Time is required",
+          trigger: "change",
+        },
+      ],
+      end_time: [
+        {
+          required: true,
+          message: "End Time is required",
+          trigger: "change",
+        },
+      ],
+      appointment_length: [
+        {
+          required: true,
+          message: "Appointment Length is required",
+          trigger: "change",
+        },
+      ],
+    });
     const currentUser = computed(() => store.getters.currentUser);
     const handleCancelButton = () => {
       formData.value = {
@@ -183,13 +215,16 @@ export default defineComponent({
         formData.value.name = currentUser.value.organization.name;
         formData.value.appointment_length =
           currentUser.value.organization.appointment_length;
-        formData.value.start_time = new Date(2000, 1, 1, 12, 0, 0);
-        // formData.value.start_time = new Date(
-        //   currentUser.value.organization.start_time
-        // );
-        // formData.value.end_time = new Date(
-        //   currentUser.value.organization.end_time
-        // );
+        formData.value.start_time = new Date(
+          moment().format("YYYY-MM-DD") +
+            " " +
+            currentUser.value.organization.start_time
+        );
+        formData.value.end_time = new Date(
+          moment().format("YYYY-MM-DD") +
+            " " +
+            currentUser.value.organization.end_time
+        );
       }
     });
 
