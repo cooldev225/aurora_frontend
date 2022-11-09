@@ -24,17 +24,43 @@
         />
       </el-select>
     </div>
+    <div class="filter-selector">
+      <p>Display</p>
+      <el-select
+        v-model="selectedFilters"
+        multiple
+        placeholder="Select Filters"
+        style="width: 240px"
+      >
+        <el-option
+          v-for="item in filterOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </div>
     <div class="date-range-selector">
       <el-button type="info" @click="setDate(1)" plain>Previous Week</el-button>
-      <span class="date-caption"> {{ displayDateRange }} </span>
+      <el-date-picker
+        v-model="dateRange.startDate"
+        type="week"
+        :editable="false"
+        :clearable="false"
+        :format="displayDateRange.datepicker"
+        placeholder="Pick a week"
+        @change="setDate(3)"
+      />
       <el-button type="info" @click="setDate(2)" plain>Next Week</el-button>
-      <el-button type="warning" @click="isShowFillFromTemplate = true" plain
-        >Fill From Template
-      </el-button>
-      <el-button type="warning" @click="PublishAllSlots" plain
-        >Mark All as Published
-      </el-button>
     </div>
+  </div>
+  <div class="hrm-filter-container fill-buttons">
+    <el-button type="warning" @click="isShowFillFromTemplate = true" plain
+      >Fill From Template
+    </el-button>
+    <el-button type="warning" @click="PublishAllSlots" plain
+      >Mark All as Published
+    </el-button>
   </div>
   <div v-loading="loading">
     <HRMTimeScheduleTable
@@ -72,7 +98,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const clinicFilter = ref();
-    const selectedFilters = ref(["time", "anesthetist", "clinic"]);
+    const selectedFilters = ref(["time", "clinic"]);
     const selectedEmployees = ref([]);
     const loading = ref(false);
     const isShowFillFromTemplate = ref(false);
@@ -89,15 +115,18 @@ export default defineComponent({
         value: "anesthetist",
         label: "Anesthetist",
       },
+      {
+        value: "status",
+        label: "Status",
+      },
     ]);
     const dateRange = ref({
-      startDate: null,
+      startDate: moment().startOf("isoWeek"),
       endDate: null,
       datesInWeek: [],
     });
 
     const clinics = computed(() => store.getters.clinicsList);
-    const schedule = computed(() => store.getters.hrmScheduleSelected);
     const employeeList = computed(() => {
       const allEmployees = store.getters.hrmWeeklyTemplatesData;
       let filteredList = [];
@@ -165,6 +194,15 @@ export default defineComponent({
             .endOf("isoWeek")
             .add("days", 7);
           break;
+        case 3:
+          dateRange.value.startDate = moment(dateRange.value.startDate).add(
+            "days",
+            1
+          );
+          dateRange.value.endDate = moment(dateRange.value.startDate).endOf(
+            "isoWeek"
+          );
+          break;
       }
       loading.value = true;
       store
@@ -190,14 +228,17 @@ export default defineComponent({
     };
 
     const displayDateRange = computed(() => {
-      let result;
-      result = moment(dateRange.value.startDate, "MM")
+      let result = {};
+      result.defaultF = moment(dateRange.value.startDate, "MM")
         .format("DD MMM")
         .toString();
-      result += " - ";
-      result += moment(dateRange.value.endDate, "MM")
+      result.defaultF += " - ";
+      result.defaultF += moment(dateRange.value.endDate, "MM")
         .format("DD MMM")
         .toString();
+      result.datepicker = "[ ";
+      result.datepicker += result.defaultF;
+      result.datepicker += " ]";
       return result;
     });
 
@@ -216,7 +257,9 @@ export default defineComponent({
 
     const PublishAllSlots = () => {
       Swal.fire({
-        title: "Do you want to Publish all Shifts on " + displayDateRange.value,
+        title:
+          "Do you want to Publish all Shifts on " +
+          displayDateRange.value.defaultF,
         showDenyButton: true,
         showCancelButton: true,
         width: 600,
@@ -301,5 +344,10 @@ export default defineComponent({
 
 .el-loading-spinner {
   position: sticky;
+}
+
+.fill-buttons {
+  justify-content: end;
+  margin-top: 0;
 }
 </style>

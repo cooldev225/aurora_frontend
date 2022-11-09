@@ -405,6 +405,7 @@ export default defineComponent({
         },
       ],
     });
+    const orginalTimeslots = ref([]);
 
     const employeeList = computed(() => store.getters.hrmWeeklyTemplatesData);
     const schedule = computed(() => store.getters.hrmScheduleSelected);
@@ -418,6 +419,10 @@ export default defineComponent({
       formData.value.role_id = schedule.value.role_id;
       formData.value.user_id = schedule.value.id;
       formData.value.organization_id = schedule.value.organization_id;
+      orginalTimeslots.value = [];
+      timeslots.value.map((slot) => {
+        orginalTimeslots.value.push({ ...slot });
+      });
       formData.value.timeslots = timeslots.value;
     });
 
@@ -478,7 +483,40 @@ export default defineComponent({
       }
     };
 
-    const submit = () => {
+    const confirmEditPublishedShifts = async () => {
+      let isShiftEdited = false;
+      let isShiftDeleted = false;
+      orginalTimeslots.value.map((oSlot) => {
+        formData.value.timeslots.map((slot) => {
+          if (slot.id === oSlot.id && slot.status == "PUBLISHED") {
+            if (JSON.stringify(slot) !== JSON.stringify(oSlot))
+              isShiftEdited = true;
+          }
+        });
+        const found = formData.value.timeslots.find(({ id }) => id == oSlot.id);
+        if (!found) isShiftDeleted = true;
+      });
+
+      if (isShiftDeleted || isShiftEdited) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "Are you sure you you want to make changes to a published shift",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Confirm",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            submitRequest();
+          }
+        });
+      } else {
+        submitRequest();
+      }
+    };
+
+    const submit = async () => {
       if (!formRef.value) {
         return;
       }
@@ -505,6 +543,10 @@ export default defineComponent({
         ElMessage.error("There is the over lap slots!");
         return;
       }
+      confirmEditPublishedShifts();
+    };
+
+    const submitRequest = () => {
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;

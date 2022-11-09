@@ -41,7 +41,9 @@
                 <span class="p-2" :class="slotBgColor(timeslot.status)">
                   <template v-if="props.selectedFilters.includes('time')">
                     {{ moment(timeslot.start_time, "hh:ss").format("hh:ss") }} -
-                    {{ moment(timeslot.end_time, "hh:ss").format("hh:ss") }}
+                    {{
+                      moment(timeslot.end_time, "hh:ss").format("hh:ss") + " "
+                    }}
                   </template>
 
                   <span v-if="props.selectedFilters.includes('clinic')">
@@ -58,7 +60,9 @@
                   </span>
                   <span>
                     {{ timeslot.date }}
-                    {{ timeslot.status }}
+                    <template v-if="props.selectedFilters.includes('status')">
+                      {{ timeslot.status }}
+                    </template>
                   </span>
                 </span>
               </template>
@@ -81,6 +85,7 @@ import employeeRoles from "@/core/data/employee-roles";
 import moment from "moment";
 import { Modal } from "bootstrap";
 import EditModal from "@/views/HRM/EditModal.vue";
+
 export default defineComponent({
   name: "hrm-time-schedule-table",
   components: {
