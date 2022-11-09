@@ -239,7 +239,7 @@
                   </InfoSection>
 
                   <InfoSection :heading="'Time'">
-                    {{ moment(bookingData.time_slot[0]).format("HH:mm") }}-
+                    {{ moment(bookingData.time_slot[0]).format("HH:mm") }} -
                     {{ moment(bookingData.time_slot[1]).format("HH:mm") }}
                   </InfoSection>
 
@@ -435,23 +435,33 @@ export default defineComponent({
         .format("DD-MM-YYYY")
         .toString();
       aptInfoData.value.time_slot = bookingData.value.time_slot;
-      const _selected = aptTypelist.value.filter(
-        (aptType) => aptType.id === aptData.value.appointment_type_id
-      )[0];
-      let arrival_time = 30;
-      if (typeof _selected !== "undefined") {
-        arrival_time = Number(_selected.arrival_time);
-      }
-      aptInfoData.value.arrival_time = moment(
-        bookingData.value.time_slot[0],
-        "HH:mm"
-      )
-        .subtract(arrival_time, "minutes")
-        .format("HH:mm")
-        .toString();
+      // const _selected = aptTypelist.value.filter(
+      //   (aptType) => aptType.id === aptData.value.appointment_type_id
+      // )[0];
+      // let arrival_time = 30;
+      // if (typeof _selected !== "undefined") {
+      //   arrival_time = Number(_selected.arrival_time);
+      // }
+      // aptInfoData.value.arrival_time = moment(
+      //   bookingData.value.time_slot[0],
+      //   "HH:mm"
+      // )
+      //   .subtract(arrival_time, "minutes")
+      //   .format("HH:mm")
+      //   .toString();
       aptInfoData.value.start_time = moment(
         bookingData.value.time_slot[0]
       ).format("HH:mm");
+      aptInfoData.value.end_time = moment(
+        bookingData.value.time_slot[1]
+      ).format("HH:mm");
+      console.log({
+        id: aptData.value.id,
+        ...aptInfoData.value,
+        ...patientInfoData.value,
+        ...billingInfoData.value,
+        ...otherInfoData.value,
+      });
       store
         .dispatch(AppointmentActions.APT.UPDATE, {
           id: aptData.value.id,
