@@ -8,8 +8,6 @@ export default defineComponent({
 
   setup() {
     onMounted(() => {
-      console.log("myheader mounted");
-
       let dymo = new Dymo();
       var labelXml = `
 <?xml version="1.0" encoding="utf-8"?>

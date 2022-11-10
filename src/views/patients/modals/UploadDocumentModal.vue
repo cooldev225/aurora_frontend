@@ -246,15 +246,6 @@ export default defineComponent({
       });
     };
 
-    watch(formData.value, () => {
-      if (formData.value.appointment_id) {
-        console.log(
-          aptList.value.pastAppointments.filter((x) => x.id === 1)[0]
-            .specialist_id
-        );
-      }
-    });
-
     watch(patientId, () => {
       formData.value.patient_id = patientId.value;
       store.dispatch(AppointmentActions.LIST, {

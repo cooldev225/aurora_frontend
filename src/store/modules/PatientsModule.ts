@@ -130,7 +130,6 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       ApiService.setHeader();
       ApiService.update("patients", patient.id, patient)
         .then(({ data }) => {
-          console.log(patient.patient_id);
           this.context.dispatch(PatientActions.VIEW, patient.id);
           return data.data;
         })

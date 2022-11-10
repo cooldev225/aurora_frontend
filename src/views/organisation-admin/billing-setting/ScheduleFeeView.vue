@@ -188,7 +188,6 @@ export default defineComponent({
     };
 
     const handleEdit = (mbs_item_code, health_fund_code, amount) => {
-      console.log([mbs_item_code, health_fund_code, amount]);
       let item = {
         _title: "Update Schedule Fee",
         _button: "Update",

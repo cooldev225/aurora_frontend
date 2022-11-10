@@ -228,7 +228,6 @@ export default defineComponent({
 
     const handleUpdateClaimSource = (source) => {
       updatingSource.value = source;
-      console.log(document.getElementById("modal_update_claim_source"));
       const modal = new Modal(
         document.getElementById("modal_update_claim_source")
       );
