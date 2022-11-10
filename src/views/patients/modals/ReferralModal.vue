@@ -312,7 +312,7 @@ export default defineComponent({
           //patient_id: patientId.value,
         })
         .then(() => {
-          console.log(["appointments", appointments.value]);
+          //
         });
     });
 

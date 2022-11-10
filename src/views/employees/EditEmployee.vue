@@ -370,10 +370,6 @@ export default defineComponent({
       }
     });
 
-    watch(formData.value, () => {
-      // console.log(["schedule_timeslots", formData.value.sedule_timeslots]);
-    });
-
     onMounted(() => {
       let id = route.params.id;
       if (id != undefined) {

@@ -187,7 +187,6 @@ export default defineComponent({
               formData.value
             )
             .then((data) => {
-              console.log(["Actions.PRE_ADMISSION_SECTION", data]);
               formData.value.sections = data;
               Swal.fire({
                 text: " Pre Admission Section Updated!",
@@ -209,7 +208,6 @@ export default defineComponent({
       await store
         .dispatch(Actions.ORG_ADMIN.ORGANIZATION.PRE_ADMISSION_SECTION.LIST)
         .then((data) => {
-          console.log(["Actions.PRE_ADMISSION_SECTION", data]);
           formData.value.sections = data;
           isLoaded.value = true;
         });

@@ -97,7 +97,6 @@ export default defineComponent({
     });
 
     const updateCodes = (appointment) => {
-      console.log(appointment);
       store.commit(CodingMutations.SET_SELECT, appointment);
       const modal = new Modal(document.getElementById("modal_coding"));
       modal.show();

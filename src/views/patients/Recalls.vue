@@ -88,7 +88,6 @@ export default defineComponent({
     onMounted(() => {
       const id = route.params.id;
       store.dispatch(PatientActions.RECALL.LIST, { patient_id: id });
-      console.log(patient.value);
       setCurrentPageBreadcrumbs("Recalls", ["Patients"]);
     });
 

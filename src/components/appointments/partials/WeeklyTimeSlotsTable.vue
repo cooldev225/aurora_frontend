@@ -173,7 +173,6 @@ export default defineComponent({
       }
       tableData.value.header = header;
 
-      console.log(search_params.value);
       search_params.value.date = moment(tableData.value.cur_date).format(
         "DD/MM/YYYY"
       );
@@ -250,7 +249,6 @@ export default defineComponent({
       };
       store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
 
-      console.log(["apt", apt, item]);
       apt.step = 2;
       store.commit(AppointmentMutations.SET_APT.SELECT, apt);
     };

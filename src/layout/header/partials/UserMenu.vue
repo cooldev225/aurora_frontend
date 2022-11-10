@@ -12,7 +12,7 @@
           <img
             alt="Logo"
             :src="
-              profileData.photo == undefined
+              profileData?.photo == undefined
                 ? 'media/avatars/blank.png'
                 : profileData.photo
             "
@@ -23,12 +23,12 @@
         <!--begin::Username-->
         <div class="d-flex flex-column">
           <div class="fw-bolder d-flex align-items-center fs-5">
-            {{ profileData.first_name + " " + profileData.last_name }}
+            {{ profileData?.first_name + " " + profileData?.last_name }}
           </div>
           <span
             class="text-break pe-1 fw-bold text-muted text-hover-primary fs-7"
           >
-            {{ profileData.email }}
+            {{ profileData?.email }}
           </span>
         </div>
         <!--end::Username-->

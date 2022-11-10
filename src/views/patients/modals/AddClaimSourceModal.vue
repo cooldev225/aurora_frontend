@@ -2,7 +2,7 @@
   <ModalWrapper
     title="Add New Claim Source"
     modalId="add_claim_source"
-    modalRef="addClaimSourceRef"
+    :modalRef="addClaimSourceRef"
     :static="true"
   >
     <el-form
@@ -213,6 +213,7 @@ export default defineComponent({
     const shouldEmit = computed(() => props.shouldEmit);
     const parentModal = ref(null);
     const addClaimSourceFormRef = ref(null);
+    const addClaimSourceRef = ref(null);
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const minorId = computed(() => store.getters.latestMinorId);
     const loading = ref(false);
@@ -522,6 +523,7 @@ export default defineComponent({
     return {
       loading,
       addClaimSourceFormRef,
+      addClaimSourceRef,
       moment,
       validated,
       validationMessage,

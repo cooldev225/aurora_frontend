@@ -275,7 +275,6 @@ export default defineComponent({
     watch(list, () => {
       patientData.value = list.value;
       tableData.value = patientData.value;
-      console.log(tableData.value[0]);
       renderTable();
     });
 

@@ -40,7 +40,7 @@ export default defineComponent({
     const route = useRoute();
 
     watch(patient, () => {
-      console.log(patient);
+      //
     });
 
     onMounted(() => {
