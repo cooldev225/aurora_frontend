@@ -2,7 +2,7 @@
   <ModalWrapper
     title="Available Appointments"
     modalId="available_time_slot_popup"
-    modalRef="AppointmentListPopupModalRef"
+    :modalRef="AppointmentListPopupModalRef"
   >
     <div class="d-flex flex-row" v-loading="loading">
       <div class="d-flex align-items-center justify-content-center">
@@ -156,6 +156,7 @@ export default defineComponent({
     const searchParam = ref(null);
     const isInitial = ref(false);
     const loading = ref(false);
+    const AppointmentListPopupModalRef = ref(null);
 
     const clinic_name = computed(() => {
       const clinic = props.clinicList.find(
@@ -303,6 +304,7 @@ export default defineComponent({
     });
 
     return {
+      AppointmentListPopupModalRef,
       handleAddApt,
       availableSlotsByDate,
       clinic_name,

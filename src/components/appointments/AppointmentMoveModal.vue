@@ -391,10 +391,6 @@ export default defineComponent({
       no_referral_reason: "",
     });
 
-    watch(formData.value.x_weeks, () => {
-      console.log(formData.value);
-    });
-
     watch(aptData, () => {
       //formData.value.step = 0;
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST).then(() => {
