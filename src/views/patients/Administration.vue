@@ -232,6 +232,14 @@
       </div>
     </el-form>
   </CardSection>
+  <CardSection>
+    <HeadingText text="Patient also known as" />
+    <div class="d-flex justify-content-end">
+      <el-button type="primary" class="btn btn-primary m-3"
+        ><el-icon class="fs-5"><Plus /></el-icon
+      ></el-button>
+    </div>
+  </CardSection>
 </template>
 
 <script lang="ts">
@@ -246,7 +254,7 @@ import genders from "@/core/data/genders";
 import race from "@/core/data/race";
 import country_of_birth from "@/core/data/patient-birth-country";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
-
+import { Plus } from "@element-plus/icons-vue";
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 
@@ -255,7 +263,7 @@ export default defineComponent({
   directives: {
     mask,
   },
-  components: { InputWrapper },
+  components: { InputWrapper, Plus },
   data: function () {
     return {
       colString: "col-12 col-sm-6 col-lg-4 ",
