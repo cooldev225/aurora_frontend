@@ -1,5 +1,5 @@
 <template>
-  <CardSection heading="Recalls">
+  <CardSection>
     <div class="w-100">
       <el-select
         class="mb-6"
@@ -25,9 +25,9 @@
     <Datatable
       :table-header="tableHeader"
       :table-data="tableData"
-      :rows-per-page="5"
       :loading="loading"
-      :enable-items-per-page-dropdown="false"
+      :rows-per-page="5"
+      :enable-items-per-page-dropdown="true"
     >
       <template v-slot:cell-patient="{ row: recall }">
         {{ recall.summery.patient_name }}
@@ -62,10 +62,9 @@ import {
   watch,
 } from "vue";
 import { useStore } from "vuex";
-import { useRoute } from "vue-router";
-import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
+import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import moment from "moment";
 import confirmStateList from "@/core/data/confirm-state";
 import sendRecallMethodList, {
@@ -73,15 +72,13 @@ import sendRecallMethodList, {
 } from "@/core/data/send-recall-method";
 
 export default defineComponent({
-  name: "patient-recalls-view",
+  name: "patient-recalls",
 
   components: {
     Datatable,
   },
-
   setup() {
     const store = useStore();
-    const route = useRoute();
     const tableHeader = ref([
       {
         name: "Patient",
@@ -108,9 +105,9 @@ export default defineComponent({
     const tableData = ref([]);
     const filteredData = ref([]);
     const recalls = computed(() => store.getters.patientsRecallList);
-    const loading = ref(true);
     const recallsFilter = ref("0");
     const methodFilter = ref("all");
+    const loading = ref(false);
 
     const applyFilterAndSort = () => {
       filteredData.value = recalls.value;
@@ -141,20 +138,17 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      const id = route.params.id;
-      setCurrentPageBreadcrumbs("Recalls", ["Patients"]);
-      store
-        .dispatch(PatientActions.RECALL.LIST, { patient_id: id })
-        .then(() => {
-          loading.value = false;
-        });
+      store.dispatch(PatientActions.RECALL.LIST).then(() => {
+        loading.value = false;
+      });
+
+      setCurrentPageBreadcrumbs("Patient Recalls");
     });
 
     return {
       tableHeader,
       tableData,
       loading,
-      recalls,
       moment,
       confirmStateList,
       recallsFilter,
