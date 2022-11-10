@@ -174,6 +174,7 @@ export default defineComponent({
     };
 
     const handleRoomEdit = (item) => {
+      console.log(["handleRoomEdit=", item]);
       store.commit(Mutations.SET_CLINICS.SELECTROOMS, item);
       const modal = new Modal(
         document.getElementById("modal_edit_clinic_room")

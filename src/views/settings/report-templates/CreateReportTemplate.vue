@@ -355,6 +355,7 @@ export default defineComponent({
           .then((response) => {
             codes.value = response.data[3];
             loadingICD.value = false;
+            console.log(codes.value);
           })
           .catch((response) => {
             console.log(response);

@@ -71,6 +71,7 @@ export default defineComponent({
           currentUser.value.organization.logo !== null &&
           currentUser.value.organization.logo !== ""
         ) {
+          console.log("getting the logo");
           store
             .dispatch(Actions.FILE.VIEW, {
               type: "ORGANIZATION_LOGO",

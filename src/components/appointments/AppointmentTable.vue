@@ -62,7 +62,7 @@ export default defineComponent({
     MoveModal,
   },
   props: {
-    visibleDate: { type: Object, required: true },
+    visibleDate: { type: String, required: true },
     visibleSpecialists: { type: Object, required: true },
     organization: { type: Object, required: true },
   },

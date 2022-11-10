@@ -34,7 +34,7 @@ export default defineComponent({
     };
 
     const handleEventClick = () => {
-      //
+      // console.log(event);
     };
 
     const calendarOptions = {

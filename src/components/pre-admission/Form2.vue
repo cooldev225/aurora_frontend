@@ -454,6 +454,7 @@ export default defineComponent({
 
       formRef.value.validate(async (valid) => {
         if (valid) {
+          console.log("valid");
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });

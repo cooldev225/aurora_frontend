@@ -22,7 +22,7 @@ export default defineComponent({
     });
 
     const handleRemoveFromWaitList = (appointmentId) => {
-      //
+      console.log(appointmentId);
     };
 
     return {

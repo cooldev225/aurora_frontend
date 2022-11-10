@@ -32,6 +32,8 @@ export default defineComponent({
     });
 
     const handleConfirmAppointment = async (appointmentId) => {
+      console.log(appointmentId);
+
       const html =
         "<h3>Are you sure you would like to confirm this appointment?</h3><br/>";
       Swal.fire({

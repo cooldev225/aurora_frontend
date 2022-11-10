@@ -136,6 +136,7 @@ export default defineComponent({
     onMounted(() => {
       window.setInterval(() => {
         if (userProfile.value) {
+          console.log("updating");
           let specialist_id =
             userProfile.value.role.id == 5 ? userProfile.value.id : null;
           let anesthetist_id =

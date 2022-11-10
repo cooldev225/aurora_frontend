@@ -222,6 +222,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
         clinic
       )
         .then(({ data }) => {
+          console.log("Module:", data.data);
           return data.data;
         })
         .catch(({ response }) => {
