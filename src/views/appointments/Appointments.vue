@@ -315,6 +315,7 @@
     </div>
     <div :class="{ 'col-8': toggleLayout }">
       <AppointmentTable
+        v-if="organization && visibleSpecialists"
         :organization="organization"
         :visibleDate="visibleDate"
         :visibleSpecialists="visibleSpecialists"
@@ -499,6 +500,10 @@ export default defineComponent({
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
       store.dispatch(AppointmentActions.LIST, { date: formattedDate });
+
+      window.setInterval(() => {
+        store.dispatch(AppointmentActions.LIST, { date: formattedDate });
+      }, 8000);
 
       const month = $(
         ".datepicker-container-label>span:first-child>button>span:nth-child(2)"

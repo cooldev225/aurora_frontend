@@ -75,6 +75,14 @@
         Header/Footer Template
       </router-link>
     </div>
+    <div class="card col-sm-6 shadow-sm">
+      <div class="card-header">
+        <h3 class="card-title">Billing Settings</h3>
+      </div>
+      <router-link to="/setting/schedule-fee" class="btn btn-light-primary m-2">
+        Schedule Fees
+      </router-link>
+    </div>
   </div>
 </template>
 

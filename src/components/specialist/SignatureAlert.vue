@@ -1,6 +1,7 @@
 <template>
   <div
-    :class="'alert justify-content-center bg-light-warning border border-warning d-flex flex-column flex-sm-row w-100 p-2 mb-6'"
+    v-if="!userData.signature && userData.role == 'specialist'"
+    :class="'x-3 alert justify-content-center bg-light-warning border border-warning d-flex flex-column flex-sm-row w-100 p-2 mb-6'"
   >
     <span :class="'svg-icon svg-icon-2hx svg-icon-warning'">
       <InlineSVG icon="bell" />
@@ -20,10 +21,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, watchEffect } from "vue";
-import { PatientActions } from "@/store/enums/StorePatientEnums";
+import { defineComponent, computed } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import InlineSVG from "../presets/GeneralElements/InlineSVG.vue";
 import IconButton from "../presets/GeneralElements/IconButton.vue";
 
@@ -32,7 +31,6 @@ export default defineComponent({
   components: { InlineSVG, IconButton },
   setup() {
     const store = useStore();
-    const router = useRouter();
     const userData = computed(() => store.getters.currentUser);
 
     return {

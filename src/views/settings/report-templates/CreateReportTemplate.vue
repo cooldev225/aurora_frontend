@@ -207,12 +207,12 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect, watch, computed } from "vue";
+import { defineComponent, ref, watchEffect, computed } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
-import { CodingActions, CodingMutations } from "@/store/enums/StoreCodingEnums";
+import { CodingActions } from "@/store/enums/StoreCodingEnums";
 export default defineComponent({
   name: "create-report-template-modal",
   components: {},

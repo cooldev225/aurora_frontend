@@ -48,10 +48,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import resourceTimeGridPlugin from "@fullcalendar/resource-timegrid";
-import {
-  AppointmentActions,
-  AppointmentMutations,
-} from "@/store/enums/StoreAppointmentEnums";
+import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
 import AppointmentTableData from "./partials/AppointmentTableData.vue";
 import { Modal } from "bootstrap";
 import MoveModal from "@/components/appointments/AppointmentMoveModal.vue";
@@ -74,11 +71,7 @@ export default defineComponent({
     const appointments = ref([]);
     const allSpecialists = computed(() => store.getters.getSpecialistList);
 
-    watch(props, () => {
-      let date = moment(props.visibleDate.date).format("YYYY-MM-DD");
-    });
-
-    watch(appointments, () => {
+    onMounted(() => {
       var check = moment(props.visibleDate.date, "YYYY/MM/DD");
       var day = check.format("ddd").toUpperCase();
       allSpecialists.value.forEach((specialist) => {
@@ -150,12 +143,28 @@ export default defineComponent({
         },
         editable: false,
         dayMaxEvents: false,
-        events: appointments,
+        events: [],
         selectConstraint: "businessHours",
         eventClick: handleShowAppointmentDrawer,
         select: handleCreateAppointment,
       };
+    });
 
+    watch(appointments, () => {
+      console.log("refreshing appointments");
+      //  calendarOptions.value.events = appointments;
+      if (appointmentCalendarRef.value) {
+        let calenderAPI = appointmentCalendarRef.value.getApi();
+        calenderAPI.removeAllEvents();
+        for (let index = 0; index < appointments.value.length; index++) {
+          appointmentCalendarRef.value
+            .getApi()
+            .addEvent(appointments.value[index]);
+        }
+      }
+    });
+
+    watch(props.visibleDate, () => {
       if (appointmentCalendarRef.value) {
         appointmentCalendarRef.value
           .getApi()

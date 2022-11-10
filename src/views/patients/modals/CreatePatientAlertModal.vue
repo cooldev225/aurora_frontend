@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect, computed, onMounted } from "vue";
+import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";

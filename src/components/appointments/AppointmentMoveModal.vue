@@ -304,14 +304,7 @@
 }
 </style>
 <script>
-import {
-  defineComponent,
-  computed,
-  ref,
-  onMounted,
-  watch,
-  watchEffect,
-} from "vue";
+import { defineComponent, computed, ref, onMounted, watch } from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";

@@ -24,6 +24,7 @@ export default class SpecialistModule
   specialistsData = [] as Array<ISpecialist>;
   searchSpecialistsData = [] as Array<ISpecialist>;
   specialistsSelectData = {} as ISpecialist;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private specialistDate: any;
 
   /**

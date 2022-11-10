@@ -286,7 +286,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       return ApiService.delete(`patients/billing/${source.id}`)
-        .then(({ data }) => {
+        .then(() => {
           this.context.dispatch(PatientActions.VIEW, source.patient_id);
           Swal.fire({
             text: "Successfully Deleted!",
@@ -348,7 +348,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete(`patients/also-known-as/${details.id}`)
-        .then(({ data }) => {
+        .then(() => {
           this.context.dispatch(PatientActions.VIEW, details.patient_id);
           Swal.fire({
             text: "Successfully Deleted!",

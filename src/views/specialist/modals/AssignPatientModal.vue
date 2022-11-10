@@ -113,7 +113,6 @@
 <script>
 import { defineComponent, ref, reactive, watch, computed } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import { hideModal } from "@/core/helpers/dom";
@@ -130,7 +129,6 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const router = useRouter();
     const list = computed(() => store.getters.patientsList);
     const documentId = computed(() => props.document.id);
     const documentType = computed(() => props.document.document_type);

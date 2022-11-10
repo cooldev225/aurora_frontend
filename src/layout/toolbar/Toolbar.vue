@@ -64,13 +64,14 @@
     <!--end::Container-->
   </div>
   <!--end::Toolbar-->
+  <SignatureAlert />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { toolbarWidthFluid } from "@/core/helpers/config";
 import KTTopbar from "@/layout/header/Topbar.vue";
-
+import SignatureAlert from "@/components/specialist/SignatureAlert.vue";
 export default defineComponent({
   name: "KToolbar",
   props: {
@@ -86,6 +87,7 @@ export default defineComponent({
   },
   components: {
     KTTopbar,
+    SignatureAlert,
   },
   setup() {
     return {

@@ -1352,7 +1352,6 @@ export default defineComponent({
 
     const editAptRef = ref(null);
     const editAptModalRef = ref(null);
-    const cur_specialist_id = ref("");
 
     const ava_specialist = ref([]);
     const apt_type = ref("");
@@ -1424,7 +1423,6 @@ export default defineComponent({
     const patientAptData = computed(() => store.getters.getPatientAppointments);
     const aptData = computed(() => store.getters.getAptSelected);
     const bookingData = computed(() => store.getters.bookingDatas);
-    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
 
     // Setting modal Heading and Ids
     const setTitle = () => {

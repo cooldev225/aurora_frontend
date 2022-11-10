@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";

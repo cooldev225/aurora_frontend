@@ -1,5 +1,4 @@
 <template>
-  <SignatureAlert class="w-xxl-75 m-auto" v-if="isNoSignature"></SignatureAlert>
   <div class="card w-xxl-75 m-auto">
     <div class="card-header border-0 p-5">
       <div class="card border border-dashed border-primary w-100">
@@ -168,17 +167,14 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
-import moment from "moment";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import store from "@/store";
-import SignatureAlert from "@/components/specialist/SignatureAlert.vue";
 
 export default defineComponent({
   name: "patients-list",
 
   components: {
     Datatable,
-    SignatureAlert,
   },
 
   data: function () {
@@ -217,10 +213,8 @@ export default defineComponent({
     const patientData = ref([]);
     const tableData = ref([]);
     const list = computed(() => store.getters.patientsList);
-    const currentUser = computed(() => store.getters.currentUser);
     const loading = ref(false);
     const tableKey = ref(0);
-    const isNoSignature = ref(false);
     const filter = reactive({
       first_name: "",
       last_name: "",
@@ -284,15 +278,6 @@ export default defineComponent({
       renderTable();
     });
 
-    watch(currentUser, () => {
-      if (currentUser.value) {
-        const role_id = currentUser.value.profile.role_id;
-        const signature = currentUser.value.profile.signature;
-        if (role_id === 5 && !signature) isNoSignature.value = true;
-        else isNoSignature.value = false;
-      }
-    });
-
     onMounted(() => {
       setCurrentPageBreadcrumbs("Patients", []);
     });
@@ -308,7 +293,6 @@ export default defineComponent({
       searchPatient,
       clearFilters,
       loading,
-      isNoSignature,
     };
   },
 });
