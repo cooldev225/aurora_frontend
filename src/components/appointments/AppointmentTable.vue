@@ -74,10 +74,6 @@ export default defineComponent({
     const appointments = ref([]);
     const allSpecialists = computed(() => store.getters.getSpecialistList);
 
-    watch(props, () => {
-      let date = moment(props.visibleDate.date).format("YYYY-MM-DD");
-    });
-
     onMounted(() => {
       var check = moment(props.visibleDate.date, "YYYY/MM/DD");
       var day = check.format("ddd").toUpperCase();
