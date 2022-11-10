@@ -37,12 +37,12 @@
   </div>
   <!-- end:: Body -->
   <KTScrollTop />
-  <!-- <KTDrawerMessenger /> -->
+  <KTDrawerMessenger />
   <KTUserMenu />
-  <!-- <KTCreateApp /> -->
-  <!-- <KTInviteFriendsModal /> -->
-  <!-- <KTDemosDrawer /> -->
-  <!-- <KTHelpDrawer /> -->
+  <KTCreateApp />
+  <KTInviteFriendsModal />
+  <KTDemosDrawer />
+  <KTHelpDrawer />
   <AppointmentDrawer />
 </template>
 
@@ -57,7 +57,6 @@ import {
 } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
-import KTUserMenu from "@/layout/header/partials/UserMenu.vue";
 import KTAside from "@/layout/aside/Aside.vue";
 import KTFooter from "@/layout/footer/Footer.vue";
 import HtmlClass from "@/core/services/LayoutService";
@@ -82,11 +81,11 @@ import {
   themeLightLogo,
   themeDarkLogo,
 } from "@/core/helpers/config";
+import AppVue from "@/App.vue";
 
 export default defineComponent({
   name: "master-layout",
   components: {
-    KTUserMenu,
     KTAside,
     KTFooter,
     KTToolbar,

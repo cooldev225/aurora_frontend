@@ -94,7 +94,7 @@ export default defineComponent({
               date_of_birth: formData.value.date_of_birth,
             })
             .then(() => {
-              //
+              console.log("success");
             })
             .catch(({ response }) => {
               formData.value.last_name = "";

@@ -108,6 +108,7 @@ export default defineComponent({
     };
 
     const handleEdit = (item) => {
+      console.log(["item", item]);
       store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, {
         template: item,
         appointment: null,

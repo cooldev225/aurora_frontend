@@ -254,6 +254,11 @@ export default defineComponent({
     const handleAvatarSuccess = (uploadFile, flag) => {
       formData.value[flag] = URL.createObjectURL(uploadFile.raw);
       formData.value[flag + "_file"] = uploadFile;
+      console.log([
+        "file",
+        formData.value[flag],
+        formData.value[flag + "_file"],
+      ]);
     };
 
     const submit = () => {

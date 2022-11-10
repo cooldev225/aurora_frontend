@@ -104,12 +104,14 @@ export default defineComponent({
     ]);
 
     watchEffect(() => {
+      //console.log(["outgoingLogs", outgoingLogs.value]);
       tableData.value = outgoingLogs;
     });
 
     watch(currentUser, () => {
       let title = "Outgoing Log";
       let params = {};
+      //console.log(["currentUser.value", currentUser.value]);
       if (currentUser.value.profile.role_id === 5) {
         title = "Outgoing";
         params.sending_doctor_user = currentUser.value.profile.id;

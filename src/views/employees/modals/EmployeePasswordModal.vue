@@ -198,6 +198,7 @@ export default defineComponent({
               confirm_password: formData.value.repeat_employee_password,
             })
             .then((data) => {
+              console.log(data);
               loading.value = false;
               if (data && data.success) {
                 Swal.fire({

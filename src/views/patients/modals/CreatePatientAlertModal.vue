@@ -118,6 +118,7 @@ export default defineComponent({
     });
     const setAlertLevel = (alertLevel) => {
       formData.value.alert_level = alertLevel;
+      console.log(formData.value.alert_level);
     };
 
     watchEffect(() => {

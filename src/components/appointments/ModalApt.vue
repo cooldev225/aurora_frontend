@@ -1352,7 +1352,7 @@ export default defineComponent({
 
     const editAptRef = ref(null);
     const editAptModalRef = ref(null);
-    //const cur_specialist_id = ref("");
+    const cur_specialist_id = ref("");
 
     const ava_specialist = ref([]);
     const apt_type = ref("");
@@ -1364,7 +1364,7 @@ export default defineComponent({
     const rooms = ref([]);
     const cur_appointment_type_id = ref("");
     const appointmentType = ref("");
-    const cur_specialist = ref({});
+    const cur_specialist = ref("");
     const start_time = ref("");
     const end_time = ref("");
     const appointment_name = ref("");

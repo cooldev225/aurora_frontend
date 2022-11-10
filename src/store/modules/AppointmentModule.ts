@@ -287,6 +287,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
 
   @Action
   [AppointmentActions.PRE_ADMISSION.STORE](data) {
+    console.log(data.get("pre_admission_answers"));
     ApiService.post(
       "appointments/pre-admissions/store/" + data.get("apt_id").toString(),
       data
