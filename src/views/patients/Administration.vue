@@ -246,6 +246,9 @@
       ref="formRef"
     >
       <div class="row justify-content-md-left">
+        <div class="action-width d-flex align-items-center">
+          <el-avatar> 1 </el-avatar>
+        </div>
         <InputWrapper :class="colString" label="Name" prop="kin_name">
           <el-input
             type="text"
@@ -264,7 +267,11 @@
     </el-form>
   </CardSection>
 </template>
-
+<style lang="scss">
+.action-width {
+  width: 60px;
+}
+</style>
 <script lang="ts">
 import { defineComponent, ref, watchEffect, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -290,6 +297,7 @@ export default defineComponent({
   data: function () {
     return {
       colString: "col-12 col-sm-6 col-lg-4 ",
+      colActionString: "col-1 col-sm-1 col-lg-1 ",
     };
   },
   setup() {
