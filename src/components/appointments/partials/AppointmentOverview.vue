@@ -4,7 +4,7 @@
   >
     <InfoSection heading="Appointment Type">{{ appointmentName }}</InfoSection>
 
-    <InfoSection heading="Specialist">{{ specialist.full_name }}</InfoSection>
+    <InfoSection heading="Specialist">{{ specialist?.full_name }}</InfoSection>
     <InfoSection heading="Anesthetist" v-if="anesthetistName"
       >{{ anesthetistName }}
     </InfoSection>
@@ -40,7 +40,6 @@ const props = defineProps({
   },
   specialist: {
     required: true,
-    type: Object,
   },
   startTime: {
     required: true,

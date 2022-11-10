@@ -191,7 +191,7 @@ export default defineComponent({
   name: "add-claim-source-modal",
   props: {
     patient: { required: true },
-    claimSource: { type: Object },
+    claimSource: { type: String },
     shouldEmit: { type: Boolean, default: false },
   },
   emits: ["addClaimSource", "closeModal", "updateDetails"],
