@@ -247,9 +247,6 @@ export default defineComponent({
               uid: new Date(),
             };
             formData.value.file = [file];
-          })
-          .catch(() => {
-            console.log("pdf error");
           });
       }
       formData.value.doctor_address_book_id =

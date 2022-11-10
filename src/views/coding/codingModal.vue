@@ -291,9 +291,6 @@ export default defineComponent({
               document.getElementById("documents_viewer").innerHTML =
                 "<img src='" + data + "' />";
             }
-          })
-          .catch(() => {
-            console.log("Document Load Error");
           });
       }
     });

@@ -279,9 +279,6 @@ export default defineComponent({
             pdf.embed(objectUrl, "#divPDFViewer", {
               pdfOpenParams: { pagemode: "none" },
             });
-          })
-          .catch(() => {
-            console.log("pdf error");
           });
       }
     });

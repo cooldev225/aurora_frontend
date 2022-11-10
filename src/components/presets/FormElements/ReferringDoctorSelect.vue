@@ -31,7 +31,6 @@ export default defineComponent({
 
     let timeout;
     const searchDoctorAddressBook = (term, cb) => {
-      console.log(term);
       const results = term
         ? doctorAddressBooks.value.filter(createFilter(term))
         : doctorAddressBooks.value;

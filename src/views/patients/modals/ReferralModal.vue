@@ -305,13 +305,9 @@ export default defineComponent({
     onMounted(() => {
       store.dispatch(Actions.LETTER_TEMPLATE.LIST);
       store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
-      store
-        .dispatch(AppointmentActions.LIST, {
-          //patient_id: patientId.value,
-        })
-        .then(() => {
-          console.log(["appointments", appointments.value]);
-        });
+      store.dispatch(AppointmentActions.LIST, {
+        //patient_id: patientId.value,
+      });
     });
 
     return {

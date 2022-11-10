@@ -118,7 +118,6 @@ export default defineComponent({
       }
       if (methodFilter.value !== "all") {
         filteredData.value = filteredData.value.filter((item) => {
-          console.log(item);
           if (item.sent_logs && item.sent_logs.length > 0) {
             return item.sent_logs.some((log) => {
               return log.sent_by === sendRecallMethodKey[methodFilter.value];
