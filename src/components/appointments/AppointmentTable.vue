@@ -62,7 +62,7 @@ export default defineComponent({
     MoveModal,
   },
   props: {
-    visibleDate: { type: String, required: true },
+    visibleDate: { type: Object, required: true },
     visibleSpecialists: { type: Object, required: true },
     organization: { type: Object, required: true },
   },
@@ -73,10 +73,6 @@ export default defineComponent({
     const appointmentsRaw = computed(() => store.getters.getAptList);
     const appointments = ref([]);
     const allSpecialists = computed(() => store.getters.getSpecialistList);
-
-    watch(props, () => {
-      let date = moment(props.visibleDate.date).format("YYYY-MM-DD");
-    });
 
     onMounted(() => {
       var check = moment(props.visibleDate.date, "YYYY/MM/DD");
@@ -158,8 +154,6 @@ export default defineComponent({
     });
 
     watch(appointments, () => {
-      console.log("refreshing appointments");
-      //  calendarOptions.value.events = appointments;
       if (appointmentCalendarRef.value) {
         let calenderAPI = appointmentCalendarRef.value.getApi();
         calenderAPI.removeAllEvents();
@@ -188,6 +182,37 @@ export default defineComponent({
           start: appointment.date + "T" + appointment.start_time,
           end: appointment.date + "T" + appointment.end_time,
           appointment: appointment,
+        });
+      });
+
+      var check = moment(props.visibleDate.date, "YYYY/MM/DD");
+      var day = check.format("ddd").toUpperCase();
+      allSpecialists.value.forEach((specialist) => {
+        specialist.schedule_timeslots.forEach((timeslot) => {
+          if (timeslot.week_day == day) {
+            let date = moment(props.visibleDate.date, "YYYY/MM/DD").format(
+              "YYYY-MM-DD"
+            );
+            let start_time = date + "T" + timeslot.start_time;
+            let end_time = date + "T" + timeslot.end_time;
+            let color = "";
+            if (timeslot.restriction == "CONSULTATION") {
+              color = "#DDC1F0";
+            } else if (timeslot.restriction == "PROCEDURE") {
+              color = "#F0E9C1";
+            } else {
+              color = "#C1F0C1";
+            }
+            appointments.value.push({
+              id: appointments.value.length,
+              resourceId: specialist.id,
+              start: start_time,
+              end: end_time,
+              display: "background",
+              backgroundColor: color,
+              text: timeslot.clinic_name,
+            });
+          }
         });
       });
     });

@@ -1,5 +1,4 @@
 <template>
-  <SignatureAlert v-if="isNoSignature"></SignatureAlert>
   <!--begin::Card-->
   <div class="card">
     <!--begin::Card body-->
@@ -7,8 +6,7 @@
       <!--begin::Calendar-->
       <template v-if="calendarOptions">
         <FullCalendar
-          ref="refCalendar"
-          class="demo-app-calendar"
+          ref="appointmentCalendarRef"
           :key="calendarKey"
           :options="calendarOptions"
         >
@@ -28,40 +26,36 @@
 
 <script>
 import { defineComponent, onMounted, computed, ref, watch } from "vue";
-import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import {
   AppointmentActions,
   AppointmentMutations,
 } from "@/store/enums/StoreAppointmentEnums";
-import { Mutations, Actions } from "@/store/enums/StoreEnums";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
-import SignatureAlert from "@/components/specialist/SignatureAlert.vue";
 
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
-import moment from "moment";
-import JwtService from "@/core/services/JwtService";
+
 import AppointmentTableData from "@/components/appointments/partials/AppointmentTableData.vue";
 export default defineComponent({
   name: "employee-bookings-dashboard",
   components: {
     FullCalendar,
-    SignatureAlert,
     AppointmentTableData,
   },
   setup() {
     const store = useStore();
-    const userAptList = computed(() => store.getters.getAptList);
-    const refCalendar = ref(null);
-    const isNoSignature = ref(false);
+
+    const appointmentCalendarRef = ref(null);
     const calendarKey = ref(0);
+
+    const appointmentsRaw = computed(() => store.getters.getAptList);
+    const appointments = ref([]);
     const userProfile = computed(() => store.getters.userProfile);
-    let appointments = [];
-    const currentUser = computed(() => store.getters.currentUser);
+    const organization = computed(() => store.getters.userOrganization);
 
     const handleEventClick = (info) => {
       info.jsEvent.preventDefault();
@@ -72,17 +66,7 @@ export default defineComponent({
 
     const calendarOptions = ref(null);
 
-    watch(userProfile, () => {
-      let specialist_id =
-        userProfile.value.role_id === 5 ? userProfile.value.id : null;
-      let anesthetist_id =
-        userProfile.value.role_id === 9 ? userProfile.value.id : null;
-
-      store.dispatch(AppointmentActions.LIST, {
-        specialist_id: specialist_id,
-        anesthetist_id: anesthetist_id,
-      });
-
+    watch(organization, () => {
       calendarOptions.value = {
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
         headerToolbar: {
@@ -95,74 +79,79 @@ export default defineComponent({
         selectable: true,
         selectMirror: false,
         allDaySlot: false,
-        slotMinTime: currentUser.value.organization.start_time,
-        slotMaxTime: currentUser.value.organization.end_time,
+        slotMinTime: organization.value.start_time,
+        slotMaxTime: organization.value.end_time,
         views: {
           timeGridWeek: { buttonText: "week" },
           timeGridDay: { buttonText: "day" },
         },
 
         editable: false,
-        dayMaxEvents: false, // allow "more" link when too many events
-        events: appointments,
+        dayMaxEvents: false,
+        events: [],
         eventClick: handleEventClick,
       };
     });
 
-    watch(userAptList, () => {
-      appointments = [];
-      for (let i = 0; i < userAptList.value.length; i++) {
-        const appointment = userAptList.value[i];
-        const title = appointment.patient_name.full;
-        const start_date_time = appointment.date + "T" + appointment.start_time;
-        const end_date_time = appointment.date + "T" + appointment.end_time;
+    watch(userProfile, () => {
+      let specialist_id =
+        userProfile.value.role.id == 5 ? userProfile.value.id : null;
+      let anesthetist_id =
+        userProfile.value.role.id == 9 ? userProfile.value.id : null;
 
-        const start_time = moment(appointment.start_time, "h:mm A")
-          .format("h:mm A")
-          .toString();
-        const end_time = moment(appointment.end_time, "h:mm A")
-          .format("h:mm A")
-          .toString();
-
-        appointments.push({
-          appointment_id: appointment.id,
-          title: title,
-          start: start_date_time,
-          end: end_date_time,
-          start_time: start_time,
-          end_time: end_time,
-          className: "fc-event-success",
-          appointment: appointment,
-        });
-      }
-
-      refCalendar.value.$props.options.events = appointments;
-      calendarKey.value++;
+      store.dispatch(AppointmentActions.LIST, {
+        specialist_id: specialist_id,
+        anesthetist_id: anesthetist_id,
+      });
     });
 
-    watch(currentUser, () => {
-      if (!currentUser.value) {
-        store.dispatch(Actions.VERIFY_AUTH, {
-          api_token: JwtService.getToken(),
-        });
-      } else {
-        const role_id = currentUser.value.profile.role_id;
-        const signature = currentUser.value.profile.signature;
-        if (role_id === 5 && !signature) isNoSignature.value = true;
-        else isNoSignature.value = false;
+    watch(appointments, () => {
+      if (appointmentCalendarRef.value) {
+        let calenderAPI = appointmentCalendarRef.value.getApi();
+        calenderAPI.removeAllEvents();
+        for (let index = 0; index < appointments.value.length; index++) {
+          appointmentCalendarRef.value
+            .getApi()
+            .addEvent(appointments.value[index]);
+        }
       }
+    });
+
+    watch(appointmentsRaw, () => {
+      appointments.value = [];
+      appointmentsRaw.value.forEach((appointment) => {
+        appointments.value.push({
+          id: appointment.id,
+          resourceId: appointment.specialist_id,
+          start: appointment.date + "T" + appointment.start_time,
+          end: appointment.date + "T" + appointment.end_time,
+          appointment: appointment,
+        });
+      });
     });
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("My Bookings", ["Booking Dashboard"]);
+      window.setInterval(() => {
+        if (userProfile.value) {
+          console.log("updating");
+          let specialist_id =
+            userProfile.value.role.id == 5 ? userProfile.value.id : null;
+          let anesthetist_id =
+            userProfile.value.role.id == 9 ? userProfile.value.id : null;
+
+          store.dispatch(AppointmentActions.LIST, {
+            specialist_id: specialist_id,
+            anesthetist_id: anesthetist_id,
+          });
+        }
+      }, 8000);
     });
 
     return {
       calendarOptions,
       handleEventClick,
-      refCalendar,
+      appointmentCalendarRef,
       calendarKey,
-      isNoSignature,
     };
   },
 });

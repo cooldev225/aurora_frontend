@@ -91,7 +91,7 @@ export default class AnesthetistModule
           );
           return data.data;
         })
-        .catch(({ response }) => {
+        .catch(() => {
           // this.context.commit(Mutations.SET_ERROR, response.data.errors);
         });
     } else {

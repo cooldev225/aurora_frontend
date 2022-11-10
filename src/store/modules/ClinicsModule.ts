@@ -2,7 +2,6 @@ import ApiService from "@/core/services/ApiService";
 import BillingApiService from "@/core/services/BillingApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import { menuItemEmits } from "element-plus";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 
 export interface IClinics {

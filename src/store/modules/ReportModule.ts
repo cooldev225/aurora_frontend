@@ -1,7 +1,7 @@
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { StoreReportActions } from "@/store/enums/StoreReportEnums";
-import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import { Module, Action, VuexModule } from "vuex-module-decorators";
 
 @Module
 export default class ReportModule extends VuexModule {

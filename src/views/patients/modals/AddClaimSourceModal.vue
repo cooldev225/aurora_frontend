@@ -179,28 +179,19 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  ref,
-  computed,
-  onMounted,
-  watchEffect,
-  watch,
-} from "vue";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
 import PatientBillingTypes from "@/core/data/patient-billing-types";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
-import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "add-claim-source-modal",
   props: {
     patient: { required: true },
-    claimSource: { type: Object },
+    claimSource: { type: String },
     shouldEmit: { type: Boolean, default: false },
   },
   emits: ["addClaimSource", "closeModal", "updateDetails"],
@@ -209,7 +200,6 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const store = useStore();
-    const claimSource = computed(() => props.claimSource);
     const shouldEmit = computed(() => props.shouldEmit);
     const parentModal = ref(null);
     const addClaimSourceFormRef = ref(null);
@@ -376,7 +366,7 @@ export default defineComponent({
             }
           }
         })
-        .catch((e) => {
+        .catch(() => {
           const errors = store.getters.getErrors;
           let message;
 

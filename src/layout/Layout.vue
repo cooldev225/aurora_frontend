@@ -12,8 +12,6 @@
     <!-- end:: Aside Left -->
 
     <div id="kt_wrapper" class="d-flex flex-column flex-row-fluid wrapper">
-      <!-- <KTHeader :breadcrumbs="breadcrumbs" :title="pageTitle" /> -->
-
       <KTToolbar
         v-if="subheaderDisplay"
         :breadcrumbs="breadcrumbs"
@@ -37,12 +35,6 @@
   </div>
   <!-- end:: Body -->
   <KTScrollTop />
-  <KTDrawerMessenger />
-  <KTUserMenu />
-  <KTCreateApp />
-  <KTInviteFriendsModal />
-  <KTDemosDrawer />
-  <KTHelpDrawer />
   <AppointmentDrawer />
 </template>
 
@@ -81,7 +73,6 @@ import {
   themeLightLogo,
   themeDarkLogo,
 } from "@/core/helpers/config";
-import AppVue from "@/App.vue";
 
 export default defineComponent({
   name: "master-layout",

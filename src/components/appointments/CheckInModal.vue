@@ -245,14 +245,14 @@
         <div class="modal-footer flex-center">
           <!--begin::Button-->
           <button
-            :data-kt-indicator="loading ? 'on' : null"
+            :data-kt-indicator="loadingPay ? 'on' : null"
             class="btn btn-lg btn-primary"
             @click="handleCheckIn(true)"
           >
-            <span v-if="!loading" class="indicator-label">
+            <span v-if="!loadingPay" class="indicator-label">
               Make Payment and Check In
             </span>
-            <span v-if="loading" class="indicator-progress">
+            <span v-if="loadingPay" class="indicator-progress">
               Please wait...
               <span
                 class="spinner-border spinner-border-sm align-middle ms-2"
@@ -263,7 +263,7 @@
           <button
             :data-kt-indicator="loading ? 'on' : null"
             class="btn btn-lg btn-primary"
-            @click="handleCheckIn"
+            @click="handleCheckIn(false)"
           >
             <span v-if="!loading" class="indicator-label"> Check In Only </span>
             <span v-if="loading" class="indicator-progress">
@@ -284,6 +284,7 @@
 <script>
 import { defineComponent, computed, ref, onMounted } from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
+import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { hideModal } from "@/core/helpers/dom";
@@ -301,12 +302,12 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const aptData = computed(() => store.getters.getAptSelected);
-    const searchVal = computed(() => store.getters.getSearchVariable);
     const doctorAddressBooks = computed(
       () => store.getters.getDoctorAddressBookList
     );
     const checkInAptModalRef = ref(null);
     const router = useRouter();
+    const loadingPay = ref(false);
     const loading = ref(false);
 
     const handleSelect = (item) => {
@@ -348,25 +349,27 @@ export default defineComponent({
       window.open(aptData.value.referral_file, "_blank");
     };
 
-    const handleCheckIn = async (is_move = false) => {
-      loading.value = true;
+    const handleCheckIn = async (is_move) => {
+      if (is_move) loadingPay.value = true;
+      else loading.value = true;
       await store
-        .dispatch(Actions.APT.CHECK_IN, aptData.value)
+        .dispatch(AppointmentActions.APT.CHECK_IN, aptData.value)
         .then(() => {
-          store.dispatch(Actions.BOOKING.SEARCH.SPECIALIST, searchVal.value);
-          hideModal(checkInAptModalRef.value);
-          loading.value = false;
-
-          if (is_move === true) {
-            router.push({ name: "make-payment-pay" });
-            store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
-            DrawerComponent?.getInstance("appointment-drawer")?.hide();
-          } else {
-            DrawerComponent?.getInstance("appointment-drawer")?.hide();
-          }
+          store.dispatch(AppointmentActions.LIST).then(() => {
+            if (is_move) loadingPay.value = false;
+            else loading.value = false;
+            hideModal(checkInAptModalRef.value);
+            if (is_move === true) {
+              router.push({ name: "make-payment-pay" });
+              store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
+              DrawerComponent?.getInstance("appointment-drawer")?.hide();
+            } else {
+              DrawerComponent?.getInstance("appointment-drawer")?.hide();
+            }
+          });
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          console.log(response);
         });
     };
 
@@ -382,6 +385,7 @@ export default defineComponent({
       handleSelect,
       checkInAptModalRef,
       loading,
+      loadingPay,
     };
   },
 });

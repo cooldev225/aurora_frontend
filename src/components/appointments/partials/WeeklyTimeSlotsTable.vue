@@ -1,31 +1,23 @@
 <template>
   <div class="timeslot-table mt-5 d-flex" v-loading="loading">
     <div class="arrow left d-flex align-items-center">
-      <InlineSVG v-if="tableData.cur_week" icon="left" @click="moveDate(-1)" />
+      <svg
+        v-if="tableData.cur_week"
+        @click="moveDate(-1)"
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        class="bi bi-chevron-compact-left cursor-pointer"
+        viewBox="0 0 16 16"
+        style="width: 32px; height: 32px"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M9.224 1.553a.5.5 0 0 1 .223.67L6.56 8l2.888 5.776a.5.5 0 1 1-.894.448l-3-6a.5.5 0 0 1 0-.448l3-6a.5.5 0 0 1 .67-.223z"
+        />
+      </svg>
     </div>
-    <!-- <div class="table-content d-flex flex-column">
-      <div class="table-header d-flex justify-content-between">
-        <div
-          class="text-center d-flex flex-column"
-          v-for="(cell, index) in tableData?.header"
-          :key="index"
-        >
-          <span class="header-cell fw-bold">{{ cell.label }}</span>
-          <span class="header-cell fw-bold">{{ cell.date }}</span>
-        </div>
-      </div>
-      <div class="table-body d-flex justify-content-between">
-        <div
-          class="text-center d-flex flex-column"
-          v-for="(cell, index) in tableData?.header"
-          :key="index"
-        >
-          <div class="mt-5 table-cell" v-if="availableSlotsByDate">
-            <span>{{ "08:00" }}</span>
-          </div>
-        </div>
-      </div>
-    </div> -->
     <div class="table-content scroll h-500px">
       <template v-if="availableSlotsByDate">
         <div class="row justify-content-center">
@@ -61,13 +53,30 @@
                     @click="
                       handleAddApt(
                         time_slot.specialist_id,
+                        time_slot.clinic_id,
                         date.date,
-                        time_slot.time
+                        time_slot.time,
+                        time_slot.specialist_name,
+                        time_slot.clinic_name
                       )
                     "
                   >
                     {{ time_slot.time }}
                   </span>
+                  <p
+                    class="mb-1 small"
+                    style="color: var(--el-text-color-secondary)"
+                    v-if="search_params.clinic_id == ''"
+                  >
+                    {{ time_slot.clinic_name }}
+                  </p>
+                  <p
+                    class="small"
+                    style="color: var(--el-color-warning)"
+                    v-if="search_params.specialist_id == ''"
+                  >
+                    {{ time_slot.specialist_name }}
+                  </p>
                 </div>
               </template>
             </div>
@@ -76,11 +85,22 @@
       </template>
     </div>
     <div class="arrow right d-flex align-items-center">
-      <InlineSVG
-        v-if="tableData.cur_week < props.search.x_weeks"
-        icon="right"
+      <svg
+        v-if="tableData.cur_week < search_params.x_weeks"
         @click="moveDate(1)"
-      />
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        class="bi bi-chevron-compact-right cursor-pointer"
+        viewBox="0 0 16 16"
+        style="width: 32px; height: 32px"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M6.776 1.553a.5.5 0 0 1 .671.223l3 6a.5.5 0 0 1 0 .448l-3 6a.5.5 0 1 1-.894-.448L9.44 8 6.553 2.224a.5.5 0 0 1 .223-.671z"
+        />
+      </svg>
     </div>
   </div>
 </template>
@@ -144,12 +164,6 @@ export default defineComponent({
       header: [],
     });
     var weeks = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-    //   watch(aptData, () => {
-    //     //
-    //   });
-    watch(props.search, () => {
-      //
-    });
 
     onMounted(() => {
       search_params.value = props.search;
@@ -173,7 +187,6 @@ export default defineComponent({
       }
       tableData.value.header = header;
 
-      console.log(search_params.value);
       search_params.value.date = moment(tableData.value.cur_date).format(
         "DD/MM/YYYY"
       );
@@ -196,7 +209,14 @@ export default defineComponent({
       else return "col bg-light bg-gradient";
     };
 
-    const handleAddApt = (specialist_ids, date, startTime) => {
+    const handleAddApt = (
+      specialist_ids,
+      clinic_id,
+      date,
+      startTime,
+      specialist_name,
+      clinic_name
+    ) => {
       let apt = { ...props.aptData };
 
       const _date = moment(date).format("YYYY-MM-DD").toString();
@@ -247,10 +267,13 @@ export default defineComponent({
           id: props.search.appointment_type_id,
           name: apt.appointment_type_name,
         },
+        specialist_id: specialist_ids,
+        clinic_id: clinic_id,
+        specialist_name: specialist_name,
+        clinic_name: clinic_name,
       };
       store.commit(AppointmentMutations.SET_BOOKING.SELECT, item);
 
-      console.log(["apt", apt, item]);
       apt.step = 2;
       store.commit(AppointmentMutations.SET_APT.SELECT, apt);
     };
@@ -264,6 +287,7 @@ export default defineComponent({
       getClass,
       moment,
       handleAddApt,
+      search_params,
     };
   },
 });

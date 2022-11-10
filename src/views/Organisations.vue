@@ -301,25 +301,25 @@ export default defineComponent({
             return true;
           }
 
-          if (
-            org.email
-              .toLowerCase()
-              .search(filterAndSort.searchText.toLowerCase()) >= 0
-          ) {
-            return true;
-          }
+          // if (
+          //   org.email
+          //     .toLowerCase()
+          //     .search(filterAndSort.searchText.toLowerCase()) >= 0
+          // ) {
+          //   return true;
+          // }
 
-          if (
-            org.username
-              .toLowerCase()
-              .search(filterAndSort.searchText.toLowerCase()) >= 0
-          ) {
-            return true;
-          }
+          // if (
+          //   org.username
+          //     .toLowerCase()
+          //     .search(filterAndSort.searchText.toLowerCase()) >= 0
+          // ) {
+          //   return true;
+          // }
 
-          if (org.mobile_number.search(filterAndSort.searchText) >= 0) {
-            return true;
-          }
+          // if (org.mobile_number.search(filterAndSort.searchText) >= 0) {
+          //   return true;
+          // }
 
           return false;
         });
