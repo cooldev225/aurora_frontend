@@ -239,6 +239,29 @@
         ><el-icon class="fs-5"><Plus /></el-icon
       ></el-button>
     </div>
+    <el-form
+      @submit.prevent="submit()"
+      :model="formData"
+      :rules="rules"
+      ref="formRef"
+    >
+      <div class="row justify-content-md-left">
+        <InputWrapper :class="colString" label="Name" prop="kin_name">
+          <el-input
+            type="text"
+            v-model="formData.kin_name"
+            placeholder="Kin First Name"
+          />
+        </InputWrapper>
+        <InputWrapper :class="colString" label="Name" prop="kin_name">
+          <el-input
+            type="text"
+            v-model="formData.kin_name"
+            placeholder="Kin First Name"
+          />
+        </InputWrapper>
+      </div>
+    </el-form>
   </CardSection>
 </template>
 
