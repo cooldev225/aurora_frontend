@@ -149,7 +149,9 @@
                 <span class="caption-content me-2">
                   {{
                     cliniclist.filter((c) => c.id === formData.clinic_id)[0]
-                      ?.name
+                      ? cliniclist.filter((c) => c.id === formData.clinic_id)[0]
+                          .name
+                      : "Any"
                   }}
                 </span>
                 <span class="me-1">Specialist:</span>
@@ -157,7 +159,11 @@
                   {{
                     allSpecialist.filter(
                       (c) => c.id === formData.specialist_id
-                    )[0].full_name
+                    )[0]
+                      ? allSpecialist.filter(
+                          (c) => c.id === formData.specialist_id
+                        )[0].full_name
+                      : "Any"
                   }}
                 </span>
                 <span class="me-1">Time Requirement:</span>
@@ -231,7 +237,7 @@
                     }})
                   </InfoSection>
                   <InfoSection :heading="'Clinic'">{{
-                    aptData.clinic_details?.name
+                    bookingData?.clinic_name
                   }}</InfoSection>
 
                   <InfoSection :heading="'Date'">
@@ -239,7 +245,7 @@
                   </InfoSection>
 
                   <InfoSection :heading="'Time'">
-                    {{ moment(bookingData.time_slot[0]).format("HH:mm") }}-
+                    {{ moment(bookingData.time_slot[0]).format("HH:mm") }} -
                     {{ moment(bookingData.time_slot[1]).format("HH:mm") }}
                   </InfoSection>
 
@@ -248,7 +254,7 @@
                   }}</InfoSection>
 
                   <InfoSection :heading="'Specialist'">{{
-                    aptData.specialist_name
+                    bookingData?.specialist_name
                   }}</InfoSection>
                 </div>
               </div>
@@ -364,6 +370,7 @@ export default defineComponent({
       appointment_confirm_method: "",
       allergies: "",
       clinical_alerts: "",
+      also_known_as: [],
     });
 
     const billingInfoData = ref({
@@ -383,12 +390,12 @@ export default defineComponent({
       no_referral: false,
       no_referral_reason: "",
     });
+
     watch(aptData, () => {
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST).then(() => {
         formData.value.appointment_type_id = aptData.value.appointment_type?.id;
       });
       store.dispatch(Actions.CLINICS.LIST).then(() => {
-        console.log();
         formData.value.clinic_id = aptData.value.clinic_id;
       });
       store.dispatch(Actions.SPECIALIST.LIST).then(() => {
@@ -421,23 +428,16 @@ export default defineComponent({
         .format("DD-MM-YYYY")
         .toString();
       aptInfoData.value.time_slot = bookingData.value.time_slot;
-      const _selected = aptTypelist.value.filter(
-        (aptType) => aptType.id === aptData.value.appointment_type_id
-      )[0];
-      let arrival_time = 30;
-      if (typeof _selected !== "undefined") {
-        arrival_time = Number(_selected.arrival_time);
-      }
-      aptInfoData.value.arrival_time = moment(
-        bookingData.value.time_slot[0],
-        "HH:mm"
-      )
-        .subtract(arrival_time, "minutes")
-        .format("HH:mm")
-        .toString();
       aptInfoData.value.start_time = moment(
         bookingData.value.time_slot[0]
       ).format("HH:mm");
+      aptInfoData.value.end_time = moment(
+        bookingData.value.time_slot[1]
+      ).format("HH:mm");
+      aptInfoData.value.specialist_id = bookingData.value.specialist_id;
+      aptInfoData.value.clinic_id = bookingData.value.clinic_id;
+      aptInfoData.value.clinic_name = bookingData.value.clinic_name;
+
       store
         .dispatch(AppointmentActions.APT.UPDATE, {
           id: aptData.value.id,
@@ -448,18 +448,12 @@ export default defineComponent({
         })
         .then(() => {
           loading.value = false;
-          store.dispatch(AppointmentActions.LIST).then((data) => {
-            hideModal(MoveAptModalRef.value);
-            console.log(["updaed list", data]);
-            let updatedApt = data.filter((a) => a.id == aptData.value.id);
-            if (updatedApt.length)
-              store.commit(AppointmentMutations.SET_APT.SELECT, updatedApt[0]);
-            DrawerComponent?.getInstance("appointment-drawer")?.toggle();
-          });
+          hideModal(MoveAptModalRef.value);
+          DrawerComponent?.getInstance("appointment-drawer")?.toggle();
+          store.dispatch(AppointmentActions.LIST);
         })
         .catch(({ response }) => {
           loading.value = false;
-          console.log(response.data.errors);
         });
     };
 
