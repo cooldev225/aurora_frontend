@@ -44,7 +44,6 @@
 import { defineComponent, onMounted, ref, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { Actions } from "@/store/enums/StoreEnums";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 

@@ -3,11 +3,6 @@ import JwtService from "@/core/services/JwtService";
 import { Mutations } from "@/store/enums/StoreEnums";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-import {
-  AppointmentActions,
-  AppointmentMutations,
-} from "@/store/enums/StoreAppointmentEnums";
-import { array } from "yup";
 
 export interface IHRMWeeklyScheduleTimeslot {
   id: number;

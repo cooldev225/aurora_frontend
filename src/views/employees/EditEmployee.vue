@@ -411,7 +411,7 @@ export default defineComponent({
 
           store
             .dispatch(formInfo.submitAction, formData.value)
-            .then((res) => {
+            .then(() => {
               loading.value = false;
               store.dispatch(Actions.EMPLOYEE.LIST);
               Swal.fire({

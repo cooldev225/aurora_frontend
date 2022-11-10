@@ -30,9 +30,9 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, computed, ref, watch } from "vue";
+import { defineComponent, onMounted, computed, ref } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
+import { HRMActions } from "@/store/enums/StoreHRMEnums";
 import { useStore } from "vuex";
 
 export default defineComponent({

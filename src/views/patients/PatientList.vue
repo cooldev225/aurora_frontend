@@ -167,7 +167,6 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
-import moment from "moment";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import store from "@/store";
 

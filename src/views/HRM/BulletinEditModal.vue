@@ -142,7 +142,7 @@
 <script>
 import { defineComponent, onMounted, computed, ref, watchEffect } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
+import { HRMActions } from "@/store/enums/StoreHRMEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import { hideModal } from "@/core/helpers/dom";
