@@ -273,8 +273,10 @@ export default defineComponent({
       const processApiCall = () => {
         let publishSlots = {
           id: 6,
+          date: dateRange.value.startDate.format("YYYY-MM-DD").toString(),
           timeslots: [],
           deleteTimeslots: [],
+          notifyUsers: [],
         };
         let unpublishedShiftFound = false;
 
@@ -283,6 +285,7 @@ export default defineComponent({
             if (slot.status == "UNPUBLISHED") {
               slot.status = "PUBLISHED";
               publishSlots.timeslots.push(slot);
+              publishSlots.notifyUsers.push(slot.user_id);
               unpublishedShiftFound = true;
             }
           });

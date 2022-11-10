@@ -1,7 +1,7 @@
 <template>
   <div
     class="modal fade"
-    id="modal_edit_schedule"
+    id="hrm_modal_edit_schedule"
     tabindex="-1"
     aria-hidden="true"
     ref="editScheduleModalRef"
@@ -280,6 +280,7 @@
               data-bs-dismiss="modal"
               id="kt_modal_edit_schedule_cancel"
               class="btn btn-light me-3"
+              @click="clearData"
             >
               Cancel
             </button>
@@ -362,7 +363,6 @@ import schCategories from "@/core/data/schedule-category";
 import { ElMessage } from "element-plus";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper";
 import Swal from "sweetalert2";
-import moment from "moment";
 
 export default defineComponent({
   name: "edit-admin-modal",
@@ -373,6 +373,7 @@ export default defineComponent({
     const editScheduleModalRef = ref(null);
     const loading = ref(false);
     const deleteTimeslots = ref([]);
+    const notifyUsers = ref([]);
     const shiftStatusOptions = ref([
       {
         value: "PUBLISHED",
@@ -393,6 +394,7 @@ export default defineComponent({
       user_id: null,
       timeslots: [],
       deleteTimeslots: [],
+      notifyUsers: [],
       organization_id: null,
       is_template: 1,
     });
@@ -464,6 +466,7 @@ export default defineComponent({
                   hrm_weekly_schedule_id: formData.value.timeslots[index].id,
                   reason: value,
                 });
+                notifyUsers.value.push(formData.value.timeslots[index].user_id);
                 formData.value.timeslots = formData.value.timeslots.filter(
                   (t, i) => i != index
                 );
@@ -489,12 +492,18 @@ export default defineComponent({
       orginalTimeslots.value.map((oSlot) => {
         formData.value.timeslots.map((slot) => {
           if (slot.id === oSlot.id && slot.status == "PUBLISHED") {
-            if (JSON.stringify(slot) !== JSON.stringify(oSlot))
+            if (JSON.stringify(slot) !== JSON.stringify(oSlot)) {
               isShiftEdited = true;
+              notifyUsers.value.push(slot.user_id);
+            }
           }
         });
-        const found = formData.value.timeslots.find(({ id }) => id == oSlot.id);
-        if (!found) isShiftDeleted = true;
+        if (oSlot.status == "PUBLISHED") {
+          const found = formData.value.timeslots.find(
+            ({ id }) => id == oSlot.id
+          );
+          if (!found) isShiftDeleted = true;
+        }
       });
 
       if (isShiftDeleted || isShiftEdited) {
@@ -509,6 +518,8 @@ export default defineComponent({
         }).then((result) => {
           if (result.isConfirmed) {
             submitRequest();
+          } else {
+            notifyUsers.value = [];
           }
         });
       } else {
@@ -547,6 +558,7 @@ export default defineComponent({
     };
 
     const submitRequest = () => {
+      formData.value.date = schedule.value.dateOptions.date;
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
@@ -578,8 +590,12 @@ export default defineComponent({
             deleteTimeslots.value.map((slotId) => {
               formData.value.deleteTimeslots.push(slotId);
             });
-            deleteTimeslots.value = [];
           }
+          // Add notify users to payload
+          formData.value.notifyUsers = [];
+          notifyUsers.value.map((userId) => {
+            formData.value.notifyUsers.push(userId);
+          });
           hideModal(editScheduleModalRef.value);
           formData.value.timeslots = _timeslots;
           store
@@ -681,8 +697,17 @@ export default defineComponent({
       });
       return anesthetistBookedTimeSlots;
     };
+
+    const clearData = () => {
+      deleteTimeslots.value = [];
+      notifyUsers.value = [];
+    };
     onMounted(() => {
       store.dispatch(Actions.EMPLOYEE.LIST);
+      const myModalEl = document.getElementById("hrm_modal_edit_schedule");
+      myModalEl.addEventListener("hide.bs.modal", () => {
+        clearData();
+      });
     });
     return {
       formData,
@@ -703,6 +728,7 @@ export default defineComponent({
       verifyAnesthetist,
       clinics,
       shiftStatusOptions,
+      clearData,
     };
   },
 });

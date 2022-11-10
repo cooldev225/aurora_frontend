@@ -142,7 +142,9 @@ export default defineComponent({
         timeslots = [];
       }
       store.commit(HRMMutations.WEEKLY_TEMPLATE.SET_TIMESLOT, timeslots);
-      const modal = new Modal(document.getElementById("modal_edit_schedule"));
+      const modal = new Modal(
+        document.getElementById("hrm_modal_edit_schedule")
+      );
       modal.show();
     };
 
