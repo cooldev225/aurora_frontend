@@ -1602,18 +1602,6 @@ export default defineComponent({
       }
     });
 
-    // Make sure this watch runs only edit
-    // watch(cur_specialist_id, () => {
-    //   // aptInfoData.value.specialist_id = cur_specialist_id.value;
-    //   const specialist = store.getters.getSelectedSpecialist;
-    //   const _selected = specialist.filter(
-    //     (item) => item.id === cur_specialist_id.value
-    //   )[0];
-    //   specialist_name.value = _selected.name;
-    //   anesthetist.value = _selected.anesthetist;
-    //   aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
-    // });
-
     watch(cur_specialist, () => {
       aptInfoData.value.specialist_id = cur_specialist.value.id;
       specialist_name.value = cur_specialist.value.full_name;
