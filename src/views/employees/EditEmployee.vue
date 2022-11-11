@@ -359,7 +359,7 @@ export default defineComponent({
           formData.value.address = employee.address;
           formData.value.role_id = employee.role_id;
           formData.value.type = employee.type;
-          if (employee.schedule_timeslots?.length) {
+          if (employee.hrm_weekly_schedule?.length) {
             // formData.value.schedule_timeslots = employee.schedule_timeslots;
           }
           if (employee.specialist_clinic_relations?.length) {
@@ -368,10 +368,6 @@ export default defineComponent({
           }
         }
       }
-    });
-
-    watch(formData.value, () => {
-      // console.log(["schedule_timeslots", formData.value.sedule_timeslots]);
     });
 
     onMounted(() => {
@@ -411,7 +407,7 @@ export default defineComponent({
 
           store
             .dispatch(formInfo.submitAction, formData.value)
-            .then((res) => {
+            .then(() => {
               loading.value = false;
               store.dispatch(Actions.EMPLOYEE.LIST);
               Swal.fire({

@@ -4,7 +4,7 @@
   >
     <InfoSection heading="Appointment Type">{{ appointmentName }}</InfoSection>
 
-    <InfoSection heading="Specialist">{{ specialist.full_name }}</InfoSection>
+    <InfoSection heading="Specialist">{{ specialist?.full_name }}</InfoSection>
     <InfoSection heading="Anesthetist" v-if="anesthetistName"
       >{{ anesthetistName }}
     </InfoSection>
@@ -40,7 +40,6 @@ const props = defineProps({
   },
   specialist: {
     required: true,
-    type: Object,
   },
   startTime: {
     required: true,
@@ -57,8 +56,8 @@ const props = defineProps({
 });
 const getAnesthetistName = () => {
   anesthetistName.value = null;
-  if (props.specialist.schedule_timeslots) {
-    props.specialist.schedule_timeslots.map((slot) => {
+  if (props.specialist.hrm_weekly_schedule) {
+    props.specialist.hrm_weekly_schedule.map((slot) => {
       if (
         slot.anesthetist_id &&
         slot.clinic_id === props.aptInfoData.clinic_id &&

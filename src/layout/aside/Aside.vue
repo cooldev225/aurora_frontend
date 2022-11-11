@@ -71,7 +71,6 @@ export default defineComponent({
           currentUser.value.organization.logo !== null &&
           currentUser.value.organization.logo !== ""
         ) {
-          console.log("getting the logo");
           store
             .dispatch(Actions.FILE.VIEW, {
               type: "ORGANIZATION_LOGO",
@@ -81,9 +80,6 @@ export default defineComponent({
               const blob = new Blob([data], { type: "application/image" });
               const objectUrl = URL.createObjectURL(blob);
               logo.value = objectUrl;
-            })
-            .catch(() => {
-              console.log("image load error");
             });
         }
     });

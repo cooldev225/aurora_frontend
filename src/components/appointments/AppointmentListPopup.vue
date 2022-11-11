@@ -134,7 +134,6 @@
 import { defineComponent, computed, watch, ref } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
-import { Mutations } from "@/store/enums/StoreEnums";
 import { Modal } from "bootstrap";
 import {
   AppointmentActions,
@@ -235,13 +234,11 @@ export default defineComponent({
         }
       }
 
-      const specialist_id = Object.values(specialist_ids)[0];
-
       const selected_specialist = props.allSpecialists.find(
         ({ id }) => id == specialist_ids
       );
       let $restriction;
-      selected_specialist.schedule_timeslots.forEach(function (slot) {
+      selected_specialist.hrm_weekly_schedule.forEach(function (slot) {
         let $weekDay = moment(date).format("ddd").toString().toUpperCase();
         if (slot.week_day == $weekDay) $restriction = slot.restriction;
       });

@@ -125,14 +125,7 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  ref,
-  watchEffect,
-  onMounted,
-  computed,
-  watch,
-} from "vue";
+import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
@@ -228,7 +221,6 @@ export default defineComponent({
 
     const handleUpdateClaimSource = (source) => {
       updatingSource.value = source;
-      console.log(document.getElementById("modal_update_claim_source"));
       const modal = new Modal(
         document.getElementById("modal_update_claim_source")
       );

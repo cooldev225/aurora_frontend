@@ -1,6 +1,6 @@
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
-import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import { Mutations } from "@/store/enums/StoreEnums";
 import {
   PatientActions,
   PatientMutations,
@@ -49,7 +49,7 @@ export default class PatientsRecallModule
   [PatientActions.RECALL.LIST](params) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("patients/recalls/", { params: params })
+      ApiService.query("patients/recalls", { params: params })
         .then(({ data }) => {
           this.context.commit(
             PatientMutations.SET_PATIENT_RECALL.LIST,

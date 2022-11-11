@@ -144,19 +144,11 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  watchEffect,
-  watch,
-  ref,
-  onMounted,
-  computed,
-} from "vue";
+import { defineComponent, watchEffect, ref, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import moment from "moment";
 import CollectingPersonModal from "./modals/CollectingPersonModal.vue";
 import AppointmentReferralModal from "./modals/AppointmentReferralModal.vue";
 import ProcedureApprovalModal from "./modals/ProcedureApprovalModal.vue";
@@ -258,7 +250,7 @@ export default defineComponent({
       modal.show();
     };
 
-    const handlePrintHospitalCertificate = (item) => {
+    const handlePrintHospitalCertificate = () => {
       router.push({
         name: "appointment-print-hospital-certificate-view",
       });

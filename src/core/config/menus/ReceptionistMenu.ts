@@ -1,4 +1,4 @@
-import icons from "@/core/data/icons";
+// import icons from "@/core/data/icons";
 const ReceptionistMenu = [];
 
 export default ReceptionistMenu;

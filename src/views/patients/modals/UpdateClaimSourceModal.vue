@@ -178,18 +178,9 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  ref,
-  computed,
-  onMounted,
-  watchEffect,
-  watch,
-} from "vue";
+import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
-import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
-import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
 import PatientBillingTypes from "@/core/data/patient-billing-types";
@@ -373,7 +364,7 @@ export default defineComponent({
             }
           }
         })
-        .catch((e) => {
+        .catch(() => {
           const errors = store.getters.getErrors;
           let message;
 

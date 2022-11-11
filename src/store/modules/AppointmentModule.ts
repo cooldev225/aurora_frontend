@@ -366,4 +366,17 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
         }
       });
   }
+
+  @Action
+  [AppointmentActions.DETAIL.UPDATE](data) {
+    console.log(data);
+    return ApiService.post(`appointments/${data.appointment_id}/detail`, data)
+      .then(({ data }) => {
+        return data;
+      })
+      .catch(({ response }) => {
+        console.log(response);
+        return response.data;
+      });
+  }
 }

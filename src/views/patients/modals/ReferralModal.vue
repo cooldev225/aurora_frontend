@@ -175,11 +175,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
-import { hideModal } from "@/core/helpers/dom";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
@@ -307,13 +305,9 @@ export default defineComponent({
     onMounted(() => {
       store.dispatch(Actions.LETTER_TEMPLATE.LIST);
       store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
-      store
-        .dispatch(AppointmentActions.LIST, {
-          //patient_id: patientId.value,
-        })
-        .then(() => {
-          console.log(["appointments", appointments.value]);
-        });
+      store.dispatch(AppointmentActions.LIST, {
+        //patient_id: patientId.value,
+      });
     });
 
     return {

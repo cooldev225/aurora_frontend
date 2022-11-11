@@ -184,7 +184,6 @@
 import { defineComponent, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import { CodingActions, CodingMutations } from "@/store/enums/StoreCodingEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import pdf from "pdfobject";
@@ -292,9 +291,6 @@ export default defineComponent({
               document.getElementById("documents_viewer").innerHTML =
                 "<img src='" + data + "' />";
             }
-          })
-          .catch(() => {
-            console.log("Document Load Error");
           });
       }
     });

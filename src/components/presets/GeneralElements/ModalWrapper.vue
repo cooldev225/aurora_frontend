@@ -42,7 +42,7 @@ export default {
   props: {
     title: { type: String, required: true },
     modalId: { type: String, required: true },
-    modalRef: { type: Object, required: false },
+    modalRef: { required: false },
     updateRef: { type: Function, required: false },
     static: { type: Boolean, required: false },
   },

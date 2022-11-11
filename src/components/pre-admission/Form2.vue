@@ -295,7 +295,6 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import maritalStatus from "@/core/data/marital-status";
 import titles from "@/core/data/titles";
-import { Actions } from "@/store/enums/StoreEnums";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
@@ -454,7 +453,6 @@ export default defineComponent({
 
       formRef.value.validate(async (valid) => {
         if (valid) {
-          console.log("valid");
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
           });
@@ -471,7 +469,6 @@ export default defineComponent({
           });
         } else {
           loading.value = false;
-          console.log("validation error");
         }
       });
     };

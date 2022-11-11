@@ -26,13 +26,11 @@
 
 <script>
 import { defineComponent, onMounted, computed, ref, watch } from "vue";
-import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import {
   AppointmentActions,
   AppointmentMutations,
 } from "@/store/enums/StoreAppointmentEnums";
-import { Mutations, Actions } from "@/store/enums/StoreEnums";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 import FullCalendar from "@fullcalendar/vue3";
@@ -40,7 +38,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
-import moment from "moment";
 
 import AppointmentTableData from "@/components/appointments/partials/AppointmentTableData.vue";
 export default defineComponent({
@@ -136,7 +133,6 @@ export default defineComponent({
     onMounted(() => {
       window.setInterval(() => {
         if (userProfile.value) {
-          console.log("updating");
           let specialist_id =
             userProfile.value.role.id == 5 ? userProfile.value.id : null;
           let anesthetist_id =

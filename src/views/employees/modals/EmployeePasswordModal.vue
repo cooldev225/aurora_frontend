@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { hideModal } from "@/core/helpers/dom";
@@ -198,7 +198,6 @@ export default defineComponent({
               confirm_password: formData.value.repeat_employee_password,
             })
             .then((data) => {
-              console.log(data);
               loading.value = false;
               if (data && data.success) {
                 Swal.fire({

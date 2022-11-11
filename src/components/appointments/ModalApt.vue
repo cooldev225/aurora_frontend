@@ -1352,7 +1352,6 @@ export default defineComponent({
 
     const editAptRef = ref(null);
     const editAptModalRef = ref(null);
-    const cur_specialist_id = ref("");
 
     const ava_specialist = ref([]);
     const apt_type = ref("");
@@ -1424,7 +1423,6 @@ export default defineComponent({
     const patientAptData = computed(() => store.getters.getPatientAppointments);
     const aptData = computed(() => store.getters.getAptSelected);
     const bookingData = computed(() => store.getters.bookingDatas);
-    const referralDoctors = computed(() => store.getters.getReferralDoctorList);
 
     // Setting modal Heading and Ids
     const setTitle = () => {
@@ -1604,18 +1602,6 @@ export default defineComponent({
       }
     });
 
-    // Make sure this watch runs only edit
-    // watch(cur_specialist_id, () => {
-    //   // aptInfoData.value.specialist_id = cur_specialist_id.value;
-    //   const specialist = store.getters.getSelectedSpecialist;
-    //   const _selected = specialist.filter(
-    //     (item) => item.id === cur_specialist_id.value
-    //   )[0];
-    //   specialist_name.value = _selected.name;
-    //   anesthetist.value = _selected.anesthetist;
-    //   aptInfoData.value.anesthetist_id = _selected.anesthetist.id;
-    // });
-
     watch(cur_specialist, () => {
       aptInfoData.value.specialist_id = cur_specialist.value.id;
       specialist_name.value = cur_specialist.value.full_name;
@@ -1737,7 +1723,7 @@ export default defineComponent({
 
         if (bookingData.selected_specialist) {
           clinic.value =
-            bookingData.selected_specialist.schedule_timeslots[0].clinic;
+            bookingData.selected_specialist.hrm_weekly_schedule[0].clinic;
           if (props.modalId !== "modal_edit_apt") {
             aptInfoData.value.clinic_name = clinic.value.name;
             aptInfoData.value.clinic_id = clinic.value.id;

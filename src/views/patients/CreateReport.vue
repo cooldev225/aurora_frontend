@@ -499,10 +499,12 @@ export default defineComponent({
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (formRef.value as any).validate(async (valid) => {
         if (valid) {
           const reportData: unknown[] = [];
           const icd_10_code: string[] = [];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (templateData.value.sections as any).forEach((data) => {
             reportData.push({
               sectionId: data.id,

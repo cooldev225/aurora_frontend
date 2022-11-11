@@ -110,16 +110,8 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  ref,
-  reactive,
-  watch,
-  computed,
-  onMounted,
-} from "vue";
+import { defineComponent, ref, reactive, watch, computed } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
@@ -136,7 +128,6 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const router = useRouter();
     const list = computed(() => store.getters.getAptList);
     const selectedDocument = computed(() => props.document);
     const documentId = computed(() => props.document.id);

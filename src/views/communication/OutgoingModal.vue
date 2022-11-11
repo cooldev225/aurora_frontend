@@ -95,7 +95,6 @@
 import { defineComponent, ref, onMounted, computed } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
-import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
 
 export default defineComponent({

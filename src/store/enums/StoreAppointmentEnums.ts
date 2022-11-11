@@ -30,6 +30,9 @@ const AppointmentActions = {
     STORE:        "createAptPreAdmission",
   },
   MONTH_AVAILABILITIES : "showMonthAvailabilities",
+  DETAIL: {
+    UPDATE: "updateAppointmentDetail",
+  },
 
 
 
