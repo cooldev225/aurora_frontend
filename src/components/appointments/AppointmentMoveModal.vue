@@ -15,7 +15,9 @@
       <div class="modal-content">
         <div class="modal-header" id="kt_modal_move_appointment_header">
           <div class="d-block">
-            <h2 class="fw-bolder">Moving Appointment:</h2>
+            <h2 class="fw-bolder">
+              {{ aptData.action === "move" ? "Moving" : "Copy" }} Appointment:
+            </h2>
             <div class="mt-1">
               <span class="me-1">{{ aptData?.patient_name?.full }},</span>
               <span class="me-1">{{ aptData?.aus_formatted_date }},</span>
@@ -262,7 +264,11 @@
                 class="btn btn-primary mt-3 w-100"
                 @click.prevent="handleConfirm"
               >
-                MOVE APPOINTMENT
+                {{
+                  aptData.action === "move"
+                    ? "MOVE APPOINTMENT"
+                    : "COPY APPOINTMENT"
+                }}
               </button>
             </el-form>
           </div>
