@@ -145,4 +145,48 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.ORG.PIN.SET](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.put(
+        `organizations/${data.organization_id}/pin/set`,
+        data
+      )
+        .then(({ data }) => {
+          return Promise.resolve();
+        })
+        .catch(({ response }) => {
+          return Promise.reject(response?.data?.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.ORG.PIN.VERIFY](data) {
+    if (JwtService.getToken()) {
+      console.log(data);
+      ApiService.setHeader();
+      return ApiService.post(
+        `organizations/${data.organization_id}/pin/verify`,
+        data
+      )
+        .then(({ data }) => {
+          console.log(data);
+          if (data.verified) {
+            return Promise.resolve(data.verified);
+          } else {
+            throw new Error();
+          }
+        })
+        .catch(() => {
+          return Promise.reject("Could not verify pin");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }

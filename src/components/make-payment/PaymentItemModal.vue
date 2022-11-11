@@ -28,17 +28,31 @@
           </el-select>
         </InputWrapper>
 
-        <InputWrapper label="Price" prop="price">
+        <InputWrapper v-if="canEditPrice" label="Price" prop="price">
           <el-input
             type="text"
             v-model="formData.price"
             placeholder="Enter price"
           />
         </InputWrapper>
+
+        <div v-if="!canEditPrice" class="px-6 pb-6">
+          <InfoSection heading="Price">
+            {{ formData.price }}
+          </InfoSection>
+        </div>
       </div>
     </el-form>
 
     <div class="d-flex justify-content-end">
+      <button
+        v-if="!canEditPrice"
+        class="btn btn-lg btn-secondary me-2"
+        @click="openPinConfirmModal"
+      >
+        Edit Price
+      </button>
+
       <button
         v-if="mode === 'edit'"
         class="btn btn-lg btn-danger me-2"
@@ -63,6 +77,12 @@
         Cancel
       </button>
     </div>
+
+    <VerifyPinModal
+      v-if="!canEditPrice"
+      v-on:verified="enableEditPrice"
+      v-on:closeModal="closePinConfirmModal"
+    />
   </ModalWrapper>
 </template>
 
@@ -80,9 +100,13 @@ import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
 import { Modal } from "bootstrap";
+import VerifyPinModal from "@/components/organisations/VerifyPinModal.vue";
 
 export default defineComponent({
   name: "payment-item-modal",
+  components: {
+    VerifyPinModal,
+  },
   props: {
     item: { type: Object },
   },
@@ -100,6 +124,8 @@ export default defineComponent({
     const mode = ref("add");
     const category = ref("");
     const scheduleItems = computed(() => store.getters.scheduleItemList);
+    const canEditPrice = ref(false);
+    const verifyOrganizationPinModal = ref();
 
     const rules = ref({
       billing_type: [
@@ -124,6 +150,25 @@ export default defineComponent({
         },
       ],
     });
+
+    const enableEditPrice = () => {
+      canEditPrice.value = true;
+      closePinConfirmModal();
+    };
+
+    const openPinConfirmModal = () => {
+      if (!verifyOrganizationPinModal.value) {
+        verifyOrganizationPinModal.value = new Modal(
+          document.getElementById("modal_verify_organization_pin")
+        );
+      }
+
+      verifyOrganizationPinModal.value.show();
+    };
+
+    const closePinConfirmModal = () => {
+      verifyOrganizationPinModal.value.hide();
+    };
 
     const closeModal = () => {
       emit("closeModal");
@@ -240,6 +285,10 @@ export default defineComponent({
       availableItems,
       handleDelete,
       submitItem,
+      openPinConfirmModal,
+      canEditPrice,
+      enableEditPrice,
+      closePinConfirmModal,
     };
   },
 });
