@@ -28,7 +28,7 @@
           </el-select>
         </InputWrapper>
 
-        <InputWrapper v-if="canEditPrice" label="Price" prop="price">
+        <InputWrapper v-if="canEditItem" label="Price" prop="price">
           <el-input
             type="text"
             v-model="formData.price"
@@ -36,7 +36,7 @@
           />
         </InputWrapper>
 
-        <div v-if="!canEditPrice" class="px-6 pb-6">
+        <div v-if="!canEditItem" class="px-6 pb-6">
           <InfoSection heading="Price">
             {{ formData.price }}
           </InfoSection>
@@ -46,16 +46,17 @@
 
     <div class="d-flex justify-content-end">
       <button
-        v-if="!canEditPrice"
+        v-if="!canEditItem"
         class="btn btn-lg btn-secondary me-2"
         @click="openPinConfirmModal"
       >
-        Edit Price
+        {{ mode === "add" ? "Edit Price" : "Enable Editing" }}
       </button>
 
       <button
         v-if="mode === 'edit'"
         class="btn btn-lg btn-danger me-2"
+        :disabled="!canEditItem"
         @click="handleDelete"
       >
         Delete
@@ -79,7 +80,7 @@
     </div>
 
     <VerifyPinModal
-      v-if="!canEditPrice"
+      v-if="!canEditItem"
       v-on:verified="enableEditPrice"
       v-on:closeModal="closePinConfirmModal"
     />
@@ -124,7 +125,7 @@ export default defineComponent({
     const mode = ref("add");
     const category = ref("");
     const scheduleItems = computed(() => store.getters.scheduleItemList);
-    const canEditPrice = ref(false);
+    const canEditItem = ref(false);
     const verifyOrganizationPinModal = ref();
 
     const rules = ref({
@@ -152,7 +153,7 @@ export default defineComponent({
     });
 
     const enableEditPrice = () => {
-      canEditPrice.value = true;
+      canEditItem.value = true;
       closePinConfirmModal();
     };
 
@@ -270,6 +271,11 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch(Actions.SCHEDULE_ITEM.LIST);
+
+      const modal = document.getElementById("modal_payment_item");
+      modal.addEventListener("shown.bs.modal", function () {
+        canEditItem.value = false;
+      });
     });
 
     return {
@@ -286,7 +292,7 @@ export default defineComponent({
       handleDelete,
       submitItem,
       openPinConfirmModal,
-      canEditPrice,
+      canEditItem,
       enableEditPrice,
       closePinConfirmModal,
     };
