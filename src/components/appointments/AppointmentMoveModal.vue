@@ -429,7 +429,8 @@ export default defineComponent({
         if (aptData.value.patient.billing.length)
           billingInfoData.value[key] = aptData.value.patient.billing[0][key];
       for (let key in otherInfoData.value)
-        otherInfoData.value[key] = aptData.value[key];
+        if (aptData.value.referral[key] !== undefined)
+          otherInfoData.value[key] = aptData.value.referral[key];
       aptInfoData.value.date = moment(bookingData.value.date)
         .format("DD-MM-YYYY")
         .toString();
@@ -444,19 +445,32 @@ export default defineComponent({
       aptInfoData.value.clinic_id = bookingData.value.clinic_id;
       aptInfoData.value.clinic_name = bookingData.value.clinic_name;
 
+      let submitData = {
+        ...aptInfoData.value,
+        ...patientInfoData.value,
+        ...billingInfoData.value,
+        ...otherInfoData.value,
+      };
+
+      let submitAction = AppointmentActions.APT.CREATE;
+      if (aptData.value.action === "move") {
+        submitData.id = aptData.value.id;
+        submitAction = AppointmentActions.APT.UPDATE;
+      }
+
       store
-        .dispatch(AppointmentActions.APT.UPDATE, {
-          id: aptData.value.id,
-          ...aptInfoData.value,
-          ...patientInfoData.value,
-          ...billingInfoData.value,
-          ...otherInfoData.value,
-        })
+        .dispatch(submitAction, submitData)
         .then(() => {
           loading.value = false;
           hideModal(MoveAptModalRef.value);
-          DrawerComponent?.getInstance("appointment-drawer")?.toggle();
-          store.dispatch(AppointmentActions.LIST);
+          if (aptData.value.action === "move") {
+            DrawerComponent?.getInstance("appointment-drawer")?.toggle();
+            store.dispatch(AppointmentActions.LIST);
+          } else {
+            let newAptData = aptData.value;
+            for (let key in submitData) newAptData[key] = submitData[key];
+            store.commit(AppointmentMutations.SET_APT.SELECT, newAptData);
+          }
         })
         .catch(({ response }) => {
           loading.value = false;
