@@ -461,16 +461,17 @@ export default defineComponent({
       store
         .dispatch(submitAction, submitData)
         .then(() => {
-          loading.value = false;
-          hideModal(MoveAptModalRef.value);
-          if (aptData.value.action === "move") {
-            DrawerComponent?.getInstance("appointment-drawer")?.toggle();
-            store.dispatch(AppointmentActions.LIST);
-          } else {
-            let newAptData = aptData.value;
-            for (let key in submitData) newAptData[key] = submitData[key];
-            store.commit(AppointmentMutations.SET_APT.SELECT, newAptData);
-          }
+          store.dispatch(AppointmentActions.LIST).then(() => {
+            loading.value = false;
+            hideModal(MoveAptModalRef.value);
+            if (aptData.value.action === "move") {
+              DrawerComponent?.getInstance("appointment-drawer")?.toggle();
+            } else {
+              let newAptData = aptData.value;
+              for (let key in submitData) newAptData[key] = submitData[key];
+              store.commit(AppointmentMutations.SET_APT.SELECT, newAptData);
+            }
+          });
         })
         .catch(({ response }) => {
           loading.value = false;
