@@ -100,7 +100,10 @@
               >
                 <label class="text-muted fs-6 fw-bold">Extra Items</label>
 
-                <IconButton label="Add Extra Item" @click="submit" />
+                <IconButton
+                  label="Add Extra Item"
+                  @click="handleAddItem('extra_items')"
+                />
               </div>
 
               <Datatable
@@ -141,7 +144,10 @@
               >
                 <label class="text-muted fs-6 fw-bold">Non-MBS Items</label>
 
-                <IconButton label="Add Non-MBS Item" @click="submit" />
+                <IconButton
+                  label="Add Non-MBS Item"
+                  @click="handleAddItem('admin_items')"
+                />
               </div>
 
               <Datatable
