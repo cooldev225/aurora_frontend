@@ -9,20 +9,6 @@
           </el-option>
         </template>
       </el-select>
-      <p>Employee Type</p>
-      <el-select
-        v-model="selectedEmployees"
-        multiple
-        placeholder="Select Employee"
-        style="width: 240px"
-      >
-        <el-option
-          v-for="type in employeeTypeList"
-          :key="type.id"
-          :label="type.name"
-          :value="type.id"
-        />
-      </el-select>
     </div>
     <div class="filter-selector">
       <p>Display</p>
@@ -54,27 +40,15 @@
       <el-button type="info" @click="setDate(2)" plain>Next Week</el-button>
     </div>
   </div>
-  <div class="hrm-filter-container fill-buttons">
-    <el-button type="warning" @click="isShowFillFromTemplate = true" plain
-      >Fill From Template
-    </el-button>
-    <el-button type="warning" @click="PublishAllSlots" plain
-      >Mark All as Published
-    </el-button>
-  </div>
   <div v-loading="loading">
     <HRMTimeScheduleTable
       :selectedFilters="selectedFilters"
       :employeeList="employeeList"
       :clinicFilter="clinicFilter"
       :dateOptions="dateRange"
-      :canEdit="true"
+      :canEdit="false"
     />
   </div>
-  <FillFromTemplateModal
-    :dialogVisible="isShowFillFromTemplate"
-    @selectedData="processFillFromTemplate"
-  />
 </template>
 
 <script>
@@ -85,15 +59,13 @@ import { Actions } from "@/store/enums/StoreEnums";
 import HRMTimeScheduleTable from "@/components/HRM/HRMWeeklyScheduleTable";
 import moment from "moment";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
-import FillFromTemplateModal from "@/views/HRM/FillFromTemplateModal";
 import Swal from "sweetalert2";
 import { ElNotification } from "element-plus";
 
 export default defineComponent({
-  name: "hrm-weekly-schedule",
+  name: "my-schedule",
   components: {
     HRMTimeScheduleTable,
-    FillFromTemplateModal,
   },
 
   setup() {
@@ -130,39 +102,19 @@ export default defineComponent({
     const clinics = computed(() => store.getters.clinicsList);
     const employeeList = computed(() => {
       const allEmployees = store.getters.hrmWeeklyTemplatesData;
+      const user = store.getters.currentUser;
       let filteredList = [];
-      if (selectedEmployees.value.length > 0) {
-        allEmployees.filter((employee) => {
-          selectedEmployees.value.map((role) => {
-            if (employee.role_id === role) {
-              filteredList.push(employee);
-              return employee;
-            }
-          });
-        });
-        return filteredList;
-      } else return allEmployees;
-    });
-    const employeeTypeList = computed(() => {
-      const allEmployees = store.getters.hrmWeeklyTemplatesData;
-      let list = [];
-      allEmployees.map((employee) => {
-        if (!list.includes(employee)) list.push(employee.role);
+      allEmployees.filter((employee) => {
+        if (employee.id === user.profile.id) {
+          filteredList.push(employee);
+          return employee;
+        }
       });
-      const uniqueArray = list.filter((value, index) => {
-        const _value = JSON.stringify(value);
-        return (
-          index ===
-          list.findIndex((obj) => {
-            return JSON.stringify(obj) === _value;
-          })
-        );
-      });
-      return uniqueArray;
+      return filteredList;
     });
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Weekly Schedule Template", ["HRM"]);
+      setCurrentPageBreadcrumbs("My Schedule", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       setDate(0);
     });
@@ -316,7 +268,6 @@ export default defineComponent({
       filterOptions,
       selectedFilters,
       selectedEmployees,
-      employeeTypeList,
       displayDateRange,
       setDate,
       dateRange,

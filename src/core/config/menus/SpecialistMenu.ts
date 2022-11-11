@@ -15,6 +15,10 @@ const SpecialistMenu = [
         heading: "Bulletin Board",
         route: "/hrm/bulletin-board",
       },
+      {
+        heading: "My Schedule",
+        route: "/hrm/my-schedule",
+      },
     ],
   },
   {
