@@ -185,14 +185,22 @@ const Actions = {
     LIST: "listMbsItems",
   },
 
-  OUTGOING: {
-    LIST: "getOutgoingLogs",
+  SCHEDULE_FEE: {
+    LIST: "listScheduleFee",
+    CREATE: "createScheduleFee",
+    DELETE: "deleteScheduleFee",
+    UPDATE: "updateScheduleFee",
   },
 
-  SCHEDULE_FEE: {
-    LIST: "getScheduleFeeListData",
-    CREATE: "saveScheduleFeeData",
-    DELETE: "deleteScheduleFeeData",
+  SCHEDULE_ITEM: {
+    LIST: "listScheduleItem",
+    CREATE: "createScheduleItem",
+    DELETE: "deleteScheduleItem",
+    UPDATE: "updateScheduleItem",
+  },
+
+  OUTGOING: {
+    LIST: "getOutgoingLogs",
   },
 };
 
@@ -325,14 +333,17 @@ const Mutations = {
     LIST: "setMbsItems",
   },
 
+  SET_SCHEDULE_FEE: {
+    LIST: "setScheduleFeeList",
+  },
+
+  SET_SCHEDULE_ITEM: {
+    LIST: "setScheduleItemList",
+  },
+
   SET_OUTGOING: {
     LIST: "setOutgoingLogs",
     SELECT: "setOutgoingSelectLog",
-  },
-
-  SET_SCHEDULE_FEE: {
-    LIST: "setScheduleFeeListData",
-    SELECT: "setSelectedScheduleFeeData",
   },
 };
 

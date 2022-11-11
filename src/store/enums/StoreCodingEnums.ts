@@ -3,7 +3,7 @@ const CodingActions = {
     LIST: "listAppointmentsForCoding",
     SEARCH_DIAGNOSES: "searchDiagnosisCodes",
     DOCUMENT_VIEW: "viewDocument",
-    UPDATE: "updateAppointmentCodes",
+    UPDATE: "updateAppointmentDetail",
 };
 
 const CodingMutations = {
