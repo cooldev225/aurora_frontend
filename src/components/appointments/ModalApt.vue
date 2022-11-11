@@ -1723,7 +1723,7 @@ export default defineComponent({
 
         if (bookingData.selected_specialist) {
           clinic.value =
-            bookingData.selected_specialist.schedule_timeslots[0].clinic;
+            bookingData.selected_specialist.hrm_weekly_schedule[0].clinic;
           if (props.modalId !== "modal_edit_apt") {
             aptInfoData.value.clinic_name = clinic.value.name;
             aptInfoData.value.clinic_id = clinic.value.id;
