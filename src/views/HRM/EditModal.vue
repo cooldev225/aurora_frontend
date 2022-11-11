@@ -223,6 +223,7 @@
                         class="col"
                         label="Status"
                         :prop="'status-' + index"
+                        v-if="!day.id ? true : false"
                       >
                         <el-select
                           v-model="day.status"
