@@ -299,6 +299,7 @@ export default defineComponent({
 
     const handleMove = async () => {
       aptData.value.step = 0;
+      aptData.value.action = "move";
       store.commit(AppointmentMutations.SET_APT.SELECT, aptData.value);
       const modal = new Modal(document.getElementById("modal_move_apt"));
       modal.show();
@@ -306,7 +307,12 @@ export default defineComponent({
     };
 
     const handleCopy = async () => {
-      console.log("COPY");
+      aptData.value.step = 0;
+      aptData.value.action = "copy";
+      store.commit(AppointmentMutations.SET_APT.SELECT, aptData.value);
+      const modal = new Modal(document.getElementById("modal_move_apt"));
+      modal.show();
+      DrawerComponent?.getInstance("appointment-drawer")?.hide();
     };
 
     const handleCancel = () => {

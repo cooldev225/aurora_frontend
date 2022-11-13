@@ -464,6 +464,11 @@ export default defineComponent({
       () => store.getters.getAptTimeRequireList
     );
     const clinic_list = computed(() => store.getters.clinicsList);
+    const selected_apt = computed(() => store.getters.getAptSelected);
+
+    watch(selected_apt, () => {
+      date_search.date = moment(selected_apt.value.date);
+    });
 
     watch(monthAvailabilities, () => {
       $(".datepicker-days")
