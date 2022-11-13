@@ -57,7 +57,8 @@
                   <span
                     v-if="
                       props.selectedFilters.includes('anesthetist') &&
-                      timeslot.restriction === 'PROCEDURE' &&
+                      (timeslot.restriction === 'PROCEDURE' ||
+                        timeslot.restriction === 'NONE') &&
                       employee.role_id === 5
                     "
                   >
@@ -84,6 +85,7 @@ import employeeRoles from "@/core/data/employee-roles";
 import moment from "moment";
 import { Modal } from "bootstrap";
 import EditModal from "@/views/HRM/EditWeeklyScheduleModal.vue";
+
 export default defineComponent({
   name: "hrm-time-schedule-table",
   components: {
