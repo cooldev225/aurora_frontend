@@ -43,6 +43,7 @@ const Actions = {
     PIN: {
       SET: "setOrganizationPin",
       VERIFY: "verifyOrganizationPin",
+      SHOW: "showOrganizationPin",
     }
   },
 

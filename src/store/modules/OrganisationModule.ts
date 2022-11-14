@@ -158,7 +158,13 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
           return Promise.resolve();
         })
         .catch(({ response }) => {
-          return Promise.reject(response?.data?.error);
+          let message = "Could not set pin";
+
+          if (response?.data?.error) {
+            message = response.data.error;
+          }
+
+          return Promise.reject(message);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -168,14 +174,12 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
   @Action
   [Actions.ORG.PIN.VERIFY](data) {
     if (JwtService.getToken()) {
-      console.log(data);
       ApiService.setHeader();
       return ApiService.post(
         `organizations/${data.organization_id}/pin/verify`,
         data
       )
         .then(({ data }) => {
-          console.log(data);
           if (data.verified) {
             return Promise.resolve(data.verified);
           } else {
@@ -184,6 +188,26 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
         })
         .catch(() => {
           return Promise.reject("Could not verify pin");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.ORG.PIN.SHOW](organization_id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.get(`organizations/${organization_id}/pin/show`)
+        .then(({ data }) => {
+          if (data.pin) {
+            return Promise.resolve(data.pin);
+          } else {
+            throw new Error();
+          }
+        })
+        .catch(() => {
+          return Promise.reject("Could not get pin");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
