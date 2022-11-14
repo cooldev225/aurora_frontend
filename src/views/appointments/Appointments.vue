@@ -495,7 +495,7 @@ export default defineComponent({
         localStorage.getItem("toggleBookingLayout") === "true" ? true : false;
       const formattedDate = moment().format("YYYY-MM-DD").toString();
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
-      store.dispatch(Actions.SPECIALIST.LIST, formattedDate);
+      store.dispatch(Actions.SPECIALIST.LIST, { date: formattedDate });
       store.dispatch(Actions.APT_TIME_REQUIREMENT.LIST);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
