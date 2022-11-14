@@ -25,16 +25,19 @@
           <td v-for="day in props.dateOptions.datesInWeek" :key="day.id">
             <div
               @click="handleEditTemplateTimeslots(employee, day)"
-              class="d-flex flex-column rounded min-h-150px min-w-100px cursor-pointer bg-hover-primary bg-light-primary p-3"
+              class="d-flex flex-column rounded min-h-150px min-w-100px bg-light-primary p-3"
+              :class="canEditClass"
             >
               <span
                 class="svg-icon absolute text-light-primary svg-icon-4 me-1"
+                v-if="canEdit"
               >
                 <InlineSVG icon="pencil" />
               </span>
               <template
-                v-for="timeslot in employee.hrm_weekly_schedule.filter(
-                  (x) => x.date == day.date
+                v-for="timeslot in validateSlots(
+                  day.date,
+                  employee.hrm_weekly_schedule
                 )"
                 :key="timeslot.id"
               >
@@ -72,7 +75,7 @@
       </tbody>
     </table>
   </CardSection>
-  <EditModal></EditModal>
+  <EditModal v-if="props.canEdit"></EditModal>
 </template>
 <script>
 import { defineComponent, onMounted, computed, watch, ref } from "vue";
@@ -96,6 +99,7 @@ export default defineComponent({
     employeeList: Object,
     clinicFilter: Number,
     dateOptions: { type: Object, required: true },
+    canEdit: { type: Boolean, required: true },
   },
   setup(props) {
     const store = useStore();
@@ -124,6 +128,9 @@ export default defineComponent({
     });
 
     const handleEditTemplateTimeslots = (schedule, day) => {
+      if (!props.canEdit) {
+        return;
+      }
       schedule._title = "Edit Time Slot - " + day.label;
       schedule._action = "edit_weekly_time";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
@@ -177,6 +184,27 @@ export default defineComponent({
       else result = "";
       return result;
     };
+
+    const canEditClass = computed(() => {
+      if (props.canEdit) return " cursor-pointer bg-hover-primary";
+      return null;
+    });
+
+    const validateSlots = (date, slots) => {
+      let result = [];
+      slots.map((slot) => {
+        if (props.canEdit) {
+          if (slot.date == date) {
+            result.push(slot);
+          }
+        } else {
+          if (slot.date == date && slot.status == "PUBLISHED") {
+            result.push(slot);
+          }
+        }
+      });
+      return result;
+    };
     return {
       scheduleTemplates,
       weekdays,
@@ -190,6 +218,8 @@ export default defineComponent({
       selectedEmployees,
       props,
       slotBgColor,
+      canEditClass,
+      validateSlots,
     };
   },
 });

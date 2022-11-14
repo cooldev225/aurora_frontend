@@ -28,21 +28,31 @@
           </el-select>
         </InputWrapper>
 
-        <InputWrapper label="Price" prop="price">
-          <!-- <el-input
-            type="text"
-            v-model="formData.price"
-            placeholder="Enter price"
-          /> -->
+        <InputWrapper v-if="canEditItem" label="Price" prop="price">
           <CurrencyInput v-model="formData.price" placeholder="Enter price" />
         </InputWrapper>
+
+        <div v-if="!canEditItem" class="px-6 pb-6">
+          <InfoSection heading="Price">
+            {{ formData.price }}
+          </InfoSection>
+        </div>
       </div>
     </el-form>
 
     <div class="d-flex justify-content-end">
       <button
+        v-if="!canEditItem"
+        class="btn btn-lg btn-secondary me-2"
+        @click="openPinConfirmModal"
+      >
+        {{ mode === "add" ? "Edit Price" : "Enable Editing" }}
+      </button>
+
+      <button
         v-if="mode === 'edit'"
         class="btn btn-lg btn-danger me-2"
+        :disabled="!canEditItem"
         @click="handleDelete"
       >
         Delete
@@ -64,6 +74,12 @@
         Cancel
       </button>
     </div>
+
+    <VerifyPinModal
+      v-if="!canEditItem"
+      v-on:verified="enableEditPrice"
+      v-on:closeModal="closePinConfirmModal"
+    />
   </ModalWrapper>
 </template>
 
@@ -81,9 +97,13 @@ import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
 import { Modal } from "bootstrap";
+import VerifyPinModal from "@/components/organisations/VerifyPinModal.vue";
 
 export default defineComponent({
   name: "payment-item-modal",
+  components: {
+    VerifyPinModal,
+  },
   props: {
     item: { type: Object },
   },
@@ -101,6 +121,8 @@ export default defineComponent({
     const mode = ref("add");
     const category = ref("");
     const scheduleItems = computed(() => store.getters.scheduleItemList);
+    const canEditItem = ref(false);
+    const verifyOrganizationPinModal = ref();
 
     const rules = ref({
       billing_type: [
@@ -125,6 +147,25 @@ export default defineComponent({
         },
       ],
     });
+
+    const enableEditPrice = () => {
+      canEditItem.value = true;
+      closePinConfirmModal();
+    };
+
+    const openPinConfirmModal = () => {
+      if (!verifyOrganizationPinModal.value) {
+        verifyOrganizationPinModal.value = new Modal(
+          document.getElementById("modal_verify_organization_pin")
+        );
+      }
+
+      verifyOrganizationPinModal.value.show();
+    };
+
+    const closePinConfirmModal = () => {
+      verifyOrganizationPinModal.value.hide();
+    };
 
     const closeModal = () => {
       emit("closeModal");
@@ -226,6 +267,11 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch(Actions.SCHEDULE_ITEM.LIST);
+
+      const modal = document.getElementById("modal_payment_item");
+      modal.addEventListener("shown.bs.modal", function () {
+        canEditItem.value = false;
+      });
     });
 
     return {
@@ -241,6 +287,10 @@ export default defineComponent({
       availableItems,
       handleDelete,
       submitItem,
+      openPinConfirmModal,
+      canEditItem,
+      enableEditPrice,
+      closePinConfirmModal,
     };
   },
 });

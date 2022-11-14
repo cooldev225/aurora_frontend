@@ -34,6 +34,11 @@ const HRMRoutes = [
     name: "bulletin-manage",
     component: () => import("@/views/HRM/BulletinManage.vue"),
   },
+  {
+    path: "/hrm/my-schedule",
+    name: "my-schedule",
+    component: () => import("@/views/HRM/MySchedule.vue"),
+  },
 ];
 
 export default HRMRoutes;

@@ -199,8 +199,9 @@
                         label="Anesthetist"
                         :prop="'restriction-' + index"
                         v-if="
-                          day.restriction == 'PROCEDURE' &&
-                          formData.role_id == 5
+                          formData.role_id == 5 &&
+                          (day.restriction == 'NONE' ||
+                            day.restriction == 'PROCEDURE')
                         "
                       >
                         <el-select
@@ -487,7 +488,7 @@ export default defineComponent({
 
     const verifyAnesthetist = (data) => {
       let filteredAnesthetists = [];
-      if (data.restriction == "PROCEDURE") {
+      if (data.restriction == "PROCEDURE" || data.restriction == "NONE") {
         anesthetists.value.forEach((anesthetist) => {
           anesthetist.isDisabled = true;
           anesthetist.schedule_timeslots.map((slot) => {

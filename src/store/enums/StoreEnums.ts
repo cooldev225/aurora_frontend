@@ -40,6 +40,11 @@ const Actions = {
     DELETE: "deleteOrg",
     UPDATE: "updateOrg",
     SELECT: "selectOrg",
+    PIN: {
+      SET: "setOrganizationPin",
+      VERIFY: "verifyOrganizationPin",
+      SHOW: "showOrganizationPin",
+    }
   },
 
   ORG_ADMIN: {
@@ -56,7 +61,7 @@ const Actions = {
       PRE_ADMISSION_SECTION: {
         LIST: "listPreAdmissionSections",
         UPDATE: "updatePreAdmissionSections",
-      }
+      },
     }
   },
 
