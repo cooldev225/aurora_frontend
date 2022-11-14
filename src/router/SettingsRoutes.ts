@@ -97,12 +97,17 @@ const SettingsRoutes = [
         "@/views/settings/header-footer-templates/HeaderFooterTemplates.vue"
       ),
   },
-  //
   {
     path: "/setting/schedule-fee",
     name: "setting-schedule-fee",
     component: () =>
       import("@/views/organisation-admin/billing-setting/ScheduleFeeView.vue"),
+  },
+  {
+    path: "/setting/billing-pin",
+    name: "setting-billing-pin",
+    component: () =>
+      import("@/views/organisation-admin/billing-setting/BillingPin.vue"),
   },
 ];
 
