@@ -72,6 +72,7 @@
                 />
               </el-form-item>
               <button
+                type="button"
                 @click="handleDeleteQuestion(sectionIndex, questionIndex)"
                 class="btn btn-icon btn-bg-light btn-active-color-error btn-sm"
               >
