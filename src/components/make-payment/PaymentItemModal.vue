@@ -29,11 +29,12 @@
         </InputWrapper>
 
         <InputWrapper label="Price" prop="price">
-          <el-input
+          <!-- <el-input
             type="text"
             v-model="formData.price"
             placeholder="Enter price"
-          />
+          /> -->
+          <CurrencyInput v-model="formData.price" placeholder="Enter price" />
         </InputWrapper>
       </div>
     </el-form>
