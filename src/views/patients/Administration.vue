@@ -506,25 +506,29 @@ export default defineComponent({
             (item) => item.first_name || item.last_name
           );
           console.log(data);
-          // store
-          //   .dispatch(PatientActions.UPDATE, formData.value)
-          //   .then(() => {
-          //     loading.value = false;
-          //     store.dispatch(PatientActions.LIST);
-          //     Swal.fire({
-          //       text: "Successfully Updated!",
-          //       icon: "success",
-          //       buttonsStyling: false,
-          //       confirmButtonText: "Ok, got it!",
-          //       customClass: {
-          //         confirmButton: "btn btn-primary",
-          //       },
-          //     });
-          //   })
-          //   .catch(({ response }) => {
-          //     loading.value = false;
-          //     console.log(response.data.error);
-          //   });
+          store
+            .dispatch(PatientActions.ALSO_KNOWN_AS.BULK, {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              id: (formData.value as any).id,
+              data: data,
+            })
+            .then(() => {
+              loading.value = false;
+              store.dispatch(PatientActions.LIST);
+              Swal.fire({
+                text: "Successfully Updated!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              });
+            })
+            .catch(({ response }) => {
+              loading.value = false;
+              console.log(response.data.error);
+            });
         }
       });
     };
