@@ -695,8 +695,12 @@
                         label="Appointment Price"
                         prop="procedure_price"
                       >
-                        <el-input
+                        <!-- <el-input
                           type="text"
+                          v-model.number="billingInfoData.procedure_price"
+                          disabled
+                        /> -->
+                        <CurrencyInput
                           v-model.number="billingInfoData.procedure_price"
                           disabled
                         />

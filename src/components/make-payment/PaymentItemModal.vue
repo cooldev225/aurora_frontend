@@ -29,11 +29,7 @@
         </InputWrapper>
 
         <InputWrapper v-if="canEditItem" label="Price" prop="price">
-          <el-input
-            type="text"
-            v-model="formData.price"
-            placeholder="Enter price"
-          />
+          <CurrencyInput v-model="formData.price" placeholder="Enter price" />
         </InputWrapper>
 
         <div v-if="!canEditItem" class="px-6 pb-6">

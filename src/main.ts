@@ -24,6 +24,7 @@ import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import InlineSVG from "@/components/presets/GeneralElements/InlineSVG.vue";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
+import CurrencyInput from "@/components/presets/GeneralElements/CurrencyInput.vue";
 import "@/core/plugins/prismjs";
 import "bootstrap";
 import VueSignaturePad from "vue-signature-pad";
@@ -56,7 +57,8 @@ app
   .component("InfoSection", InfoSection)
   .component("InlineSVG", InlineSVG)
   .component("IconButton", IconButton)
-  .component("LargeIconButton", LargeIconButton);
+  .component("LargeIconButton", LargeIconButton)
+  .component("CurrencyInput", CurrencyInput);
 
 app.use(i18n);
 
