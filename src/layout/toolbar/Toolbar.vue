@@ -3,7 +3,7 @@
     <div
       class="w-100 opacity-50 mb-n5 text-center font-weight-bold text-uppercase"
       :style="{ background: bannerColor }"
-      v-if="isBanner"
+      v-if="isBanner == 'true'"
     >
       {{ bannerText }}
     </div>
