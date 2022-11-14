@@ -244,7 +244,6 @@
                   class="w-100"
                   v-model="formData.amount"
                   placeholder="Procedure Price"
-                  :options="{ currency: 'USD' }"
                 />
               </div>
 
