@@ -129,25 +129,6 @@
           />
         </InputWrapper>
 
-        <InputWrapper
-          :class="colString"
-          label="Marital Status"
-          prop="marital_status"
-        >
-          <el-select
-            class="w-100"
-            v-model="formData.marital_status"
-            placeholder="Marital Status"
-          >
-            <el-option
-              v-for="status in maritalStatus"
-              :key="status.value"
-              :value="status.value"
-              :label="status.label"
-            />
-          </el-select>
-        </InputWrapper>
-
         <InputWrapper :class="colString" label="Occupation" prop="occupation">
           <el-input
             type="text"
@@ -156,20 +137,6 @@
           />
         </InputWrapper>
 
-        <InputWrapper
-          :class="colString"
-          label="Aboriginal or Torres Strait Islander?"
-          prop="aborginality"
-        >
-          <el-select
-            class="w-100"
-            v-model="formData.aborginality"
-            placeholder="Aborginality"
-          >
-            <el-option :value="0" label="No" />
-            <el-option :value="1" label="Yes" />
-          </el-select>
-        </InputWrapper>
         <span :class="colString"></span>
       </div>
     </CardSection>
@@ -290,6 +257,7 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import maritalStatus from "@/core/data/marital-status";
 import titles from "@/core/data/titles";
+import race from "@/core/data/race";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
@@ -316,7 +284,6 @@ export default defineComponent({
     const patientData = computed(() => store.getters.getAptPreAdmissionOrg);
     const pre_admission_answers = ref([]);
     const apt_id = ref("");
-    const Data = new FormData();
     const html2Pdf = ref("");
     const formData = ref({
       title: "",
@@ -326,9 +293,7 @@ export default defineComponent({
       contact_number: "",
       email: "",
       address: "",
-      aborginality: "",
       occupation: "",
-      marital_status: "",
       kin_name: "",
       kin_phone_number: "",
       kin_relationship: "",
@@ -448,15 +413,15 @@ export default defineComponent({
 
       formRef.value.validate(async (valid) => {
         if (valid) {
-          Object.keys(formData.value).forEach((key) => {
-            Data.append(key, formData.value[key]);
-          });
-          Data.append("apt_id", apt_id.value);
-          Data.append(
-            "pre_admission_answers",
-            JSON.stringify(formattedAnswer())
+          formData.value.apt_id = apt_id.value;
+          formData.value.pre_admission_answers = JSON.stringify(
+            formattedAnswer()
           );
-          await store.dispatch(AppointmentActions.PRE_ADMISSION.STORE, Data);
+
+          store.dispatch(
+            AppointmentActions.PRE_ADMISSION.STORE,
+            formData.value
+          );
           loading.value = false;
           router.push({
             path:
@@ -507,6 +472,7 @@ export default defineComponent({
       loading,
       pre_admission_answers,
       submit,
+      race,
     };
   },
 });
