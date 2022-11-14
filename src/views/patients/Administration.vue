@@ -248,22 +248,26 @@
       :rules="rules"
       ref="formAlsoKnowAsRef"
     >
-      <div class="row justify-content-md-left">
+      <div
+        class="row justify-content-md-left"
+        v-for="(item, index) in formAlsoKnowAsData"
+        :key="item.id"
+      >
         <div class="action-width d-flex align-items-center">
-          <el-avatar> 1 </el-avatar>
+          <el-avatar> {{ (index + 1).toString() }} </el-avatar>
         </div>
-        <InputWrapper :class="colString" label="Name" prop="kin_name">
+        <InputWrapper :class="colString" label="First Name" prop="first_name">
           <el-input
             type="text"
-            v-model="formData.kin_name"
-            placeholder="Kin First Name"
+            v-model="item.first_name"
+            placeholder="First Name"
           />
         </InputWrapper>
-        <InputWrapper :class="colString" label="Name" prop="kin_name">
+        <InputWrapper :class="colString" label="Last Name" prop="last_name">
           <el-input
             type="text"
-            v-model="formData.kin_name"
-            placeholder="Kin First Name"
+            v-model="item.last_name"
+            placeholder="Last Name"
           />
         </InputWrapper>
       </div>
@@ -328,7 +332,13 @@ export default defineComponent({
       kin_email: "",
       kin_receive_correspondence: false,
     });
-    const formAlsoKnowAsData = ref([]);
+    const formAlsoKnowAsData = ref<
+      {
+        id: number;
+        first_name: string;
+        last_name: string;
+      }[]
+    >([]);
     const rules = ref({
       first_name: [
         {
@@ -422,6 +432,14 @@ export default defineComponent({
 
     const addNewKnowAs = () => {
       console.log();
+      const temp = formAlsoKnowAsData.value;
+      const newItem = {
+        id: 0,
+        first_name: "",
+        last_name: "",
+      };
+      temp.push(newItem);
+      formAlsoKnowAsData.value = temp;
     };
 
     const submit = () => {
