@@ -246,13 +246,8 @@
     <div class="separator separator-dashed"></div>
 
     <CardSection heading="Consent">
-      <el-input
-        type="textarea"
-        v-if="patientData.pre_admission_consent"
-        v-model="patientData.pre_admission_consent.text"
-        rows="15"
-        readonly
-      />
+      <div v-html="patientData.pre_admission_consent.text"></div>
+
       <el-checkbox
         type="checkbox"
         :label="
