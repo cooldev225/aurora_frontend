@@ -243,9 +243,9 @@
       ></el-button>
     </div>
     <el-form
-      @submit.prevent="submit()"
+      @submit.prevent="submit2()"
       :model="formAlsoKnowAsData"
-      :rules="rules"
+      :rules="knowRules"
       ref="formAlsoKnowAsRef"
     >
       <div
@@ -253,23 +253,33 @@
         v-for="(item, index) in formAlsoKnowAsData"
         :key="item.id"
       >
-        <div class="action-width d-flex align-items-center">
-          <el-avatar> {{ (index + 1).toString() }} </el-avatar>
-        </div>
-        <InputWrapper :class="colString" label="First Name" prop="first_name">
-          <el-input
-            type="text"
-            v-model="item.first_name"
-            placeholder="First Name"
-          />
-        </InputWrapper>
-        <InputWrapper :class="colString" label="Last Name" prop="last_name">
-          <el-input
-            type="text"
-            v-model="item.last_name"
-            placeholder="Last Name"
-          />
-        </InputWrapper>
+        <template v-if="!item.is_delete">
+          <div class="action-width d-flex align-items-center">
+            <el-avatar> {{ (index + 1).toString() }} </el-avatar>
+          </div>
+          <InputWrapper :class="colString" label="First Name" prop="first_name">
+            <el-input
+              type="text"
+              v-model="item.first_name"
+              placeholder="First Name"
+            />
+          </InputWrapper>
+          <InputWrapper :class="colString" label="Last Name" prop="last_name">
+            <el-input
+              type="text"
+              v-model="item.last_name"
+              placeholder="Last Name"
+            />
+          </InputWrapper>
+          <div class="action-width d-flex align-items-center">
+            <button type="button" class="btn" @click="removeKnowAs(index)">
+              Delete
+            </button>
+          </div>
+        </template>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary w-25 m-3">Save</button>
       </div>
     </el-form>
   </CardSection>
@@ -416,6 +426,7 @@ export default defineComponent({
         },
       ],
     });
+    const knowRules = ref({});
     const loading = ref(false);
 
     const handleAddressChange = (e) => {
@@ -439,6 +450,16 @@ export default defineComponent({
         last_name: "",
       };
       temp.push(newItem);
+      formAlsoKnowAsData.value = temp;
+    };
+
+    const removeKnowAs = (index) => {
+      const temp = formAlsoKnowAsData.value;
+      if (temp[index].id === 0) {
+        temp.splice(index, 1);
+      } else {
+        temp[index]["is_delete"] = 1;
+      }
       formAlsoKnowAsData.value = temp;
     };
 
@@ -472,6 +493,41 @@ export default defineComponent({
         }
       });
     };
+    const submit2 = () => {
+      if (!formAlsoKnowAsRef.value) {
+        return;
+      }
+
+      formAlsoKnowAsRef.value.validate((valid) => {
+        if (valid) {
+          loading.value = true;
+          console.log(formAlsoKnowAsData.value);
+          const data = formAlsoKnowAsData.value.filter(
+            (item) => item.first_name || item.last_name
+          );
+          console.log(data);
+          // store
+          //   .dispatch(PatientActions.UPDATE, formData.value)
+          //   .then(() => {
+          //     loading.value = false;
+          //     store.dispatch(PatientActions.LIST);
+          //     Swal.fire({
+          //       text: "Successfully Updated!",
+          //       icon: "success",
+          //       buttonsStyling: false,
+          //       confirmButtonText: "Ok, got it!",
+          //       customClass: {
+          //         confirmButton: "btn btn-primary",
+          //       },
+          //     });
+          //   })
+          //   .catch(({ response }) => {
+          //     loading.value = false;
+          //     console.log(response.data.error);
+          //   });
+        }
+      });
+    };
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
@@ -490,6 +546,7 @@ export default defineComponent({
       formRef,
       formAlsoKnowAsRef,
       rules,
+      knowRules,
       titles,
       genders,
       race,
@@ -497,7 +554,9 @@ export default defineComponent({
       maritalStatus,
       handleAddressChange,
       addNewKnowAs,
+      removeKnowAs,
       submit,
+      submit2,
     };
   },
 });
