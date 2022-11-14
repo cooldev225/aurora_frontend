@@ -44,7 +44,7 @@
               </span>
             </button>
             <span
-              class="p-2"
+              class="p-3 text-white"
               :style="{
                 'border-radius': '5px',
                 color: 'black',

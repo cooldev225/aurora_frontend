@@ -240,11 +240,10 @@
                 <label class="text-muted fs-6 fw-bold mb-2 d-block">
                   Amount to Pay
                 </label>
-                <el-input
-                  type="number"
+                <CurrencyInput
                   class="w-100"
-                  placeholder="Procedure Price"
                   v-model="formData.amount"
+                  placeholder="Procedure Price"
                 />
               </div>
 

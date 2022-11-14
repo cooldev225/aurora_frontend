@@ -51,7 +51,7 @@
           />
 
           <AlertBadge
-            v-if="displayData.procedure_approval_status === 'NOT_ACCESSED'"
+            v-if="displayData.procedure_approval_status === 'NOT_ASSESSED'"
             :text="'This procedure has not yet been accessed'"
             :color="'warning'"
             :iconPath="'media/icons/duotune/arrows/arr015.svg'"
