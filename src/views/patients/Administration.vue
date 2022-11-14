@@ -235,15 +235,18 @@
   <CardSection>
     <HeadingText text="Patient also known as" />
     <div class="d-flex justify-content-end">
-      <el-button type="primary" class="btn btn-primary m-3"
+      <el-button
+        type="primary"
+        class="btn btn-primary m-3"
+        @click="addNewKnowAs()"
         ><el-icon class="fs-5"><Plus /></el-icon
       ></el-button>
     </div>
     <el-form
       @submit.prevent="submit()"
-      :model="formData"
+      :model="formAlsoKnowAsData"
       :rules="rules"
-      ref="formRef"
+      ref="formAlsoKnowAsRef"
     >
       <div class="row justify-content-md-left">
         <div class="action-width d-flex align-items-center">
@@ -303,6 +306,8 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const formRef = ref<null | HTMLFormElement>(null);
+    const formAlsoKnowAsRef = ref<null | HTMLFormElement>(null);
+
     const formData = ref({
       title: "",
       first_name: "",
@@ -323,7 +328,7 @@ export default defineComponent({
       kin_email: "",
       kin_receive_correspondence: false,
     });
-
+    const formAlsoKnowAsData = ref([]);
     const rules = ref({
       first_name: [
         {
@@ -415,6 +420,10 @@ export default defineComponent({
       }
     };
 
+    const addNewKnowAs = () => {
+      console.log();
+    };
+
     const submit = () => {
       if (!formRef.value) {
         return;
@@ -448,6 +457,9 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.selectedPatient;
+      formAlsoKnowAsData.value = store.getters.selectedPatient
+        ? store.getters.selectedPatient.also_known_as
+        : [];
     });
 
     onMounted(() => {
@@ -456,7 +468,9 @@ export default defineComponent({
 
     return {
       formData,
+      formAlsoKnowAsData,
       formRef,
+      formAlsoKnowAsRef,
       rules,
       titles,
       genders,
@@ -464,6 +478,7 @@ export default defineComponent({
       country_of_birth,
       maritalStatus,
       handleAddressChange,
+      addNewKnowAs,
       submit,
     };
   },
