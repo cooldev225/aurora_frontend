@@ -123,7 +123,6 @@
                 label="Assign Specialist"
               />
             </InfoSection>
-            {{ selectedDocument }}
             <InfoSection heading="Appointment"
               >{{ selectedDocument.document_info.appointment }}
               <IconButton
@@ -378,7 +377,6 @@ export default defineComponent({
             })
             .then((data) => {
               tempFile.value = data;
-              console.log(data);
               if (selectedDocument.value.file_type === "PDF") {
                 document.getElementById("document-view").innerHTML = "";
                 let blob = new Blob([data], { type: "application/pdf" });
