@@ -9,10 +9,11 @@
     <section>
       <template
         v-for="(preAdmissionSection, sectionIndex) in formData.sections"
-        :key="sectionIndex"
+        :key="'card-section-' + sectionIndex"
       >
         <CardSection>
           <InputWrapper
+            required
             label="Section Title"
             :prop="'title-' + sectionIndex"
             :rules="[
@@ -31,10 +32,7 @@
               placeholder="Pre Admission Section Title"
             />
           </InputWrapper>
-          <label
-            class="fs-6 fw-bold mb-2 px-6"
-            style="color: grey"
-            :class="{ required: required }"
+          <label class="fs-6 fw-bold mb-2 px-6" style="color: grey"
             >Section Questions</label
           >
           <template
