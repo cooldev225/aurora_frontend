@@ -101,7 +101,7 @@ const SettingsRoutes = [
     path: "/setting/schedule-fee",
     name: "setting-schedule-fee",
     component: () =>
-      import("@/views/organisation-admin/billing-setting/ScheduleFeeView.vue"),
+      import("@/views/organisation-admin/billing-setting/ScheduleItemView.vue"),
   },
   {
     path: "/setting/billing-pin",

@@ -25,18 +25,32 @@ export default class ScheduleItemModule
   implements ScheduleItemInfo
 {
   scheduleItemData = [] as Array<IScheduleItem>;
+  scheduleItemSelectData = {} as IScheduleItem;
 
   /**
-   * Get current user object
-   * @returns AdminList
+   * Get Schedule Item List
+   * @returns Schedule Item List
    */
   get scheduleItemList(): Array<IScheduleItem> {
     return this.scheduleItemData;
   }
 
+  /**
+   * Get current Schedule Item
+   * @returns Schedule Item
+   */
+  get getScheduleItemSelectedList(): IScheduleItem {
+    return this.scheduleItemSelectData;
+  }
+
   @Mutation
   [Mutations.SET_SCHEDULE_ITEM.LIST](data) {
     this.scheduleItemData = data;
+  }
+
+  @Mutation
+  [Mutations.SET_SCHEDULE_ITEM.SELECT](scheduleItemData) {
+    this.scheduleItemSelectData = scheduleItemData;
   }
 
   @Action

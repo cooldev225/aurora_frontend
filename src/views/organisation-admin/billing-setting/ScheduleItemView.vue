@@ -16,12 +16,23 @@
           <button
             type="button"
             class="btn btn-light-primary ms-auto"
-            @click="handleCreate"
+            @click="handleAddMbsItem"
           >
             <span class="svg-icon svg-icon-2">
               <InlineSVG icon="plus" />
             </span>
-            New MBS Item
+            Add MBS Item
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-light-primary ms-4"
+            @click="handleAddCustomItem"
+          >
+            <span class="svg-icon svg-icon-2">
+              <InlineSVG icon="plus" />
+            </span>
+            Add Custom Item
           </button>
           <!--end::Add subscription-->
         </div>
@@ -76,7 +87,9 @@
       </Datatable>
     </div>
   </div>
+
   <ScheduleFeeModal></ScheduleFeeModal>
+  <ScheduleItemModal v-if="selectedItem" />
 </template>
 
 <script>
@@ -94,6 +107,7 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import ScheduleFeeModal from "@/views/organisation-admin/billing-setting/ScheduleFeeModal.vue";
+import ScheduleItemModal from "@/views/organisation-admin/billing-setting/ScheduleItemModal.vue";
 import { Modal } from "bootstrap";
 
 export default defineComponent({
@@ -102,6 +116,7 @@ export default defineComponent({
   components: {
     Datatable,
     ScheduleFeeModal,
+    ScheduleItemModal,
   },
   methods: {
     cellName(name) {
@@ -114,16 +129,22 @@ export default defineComponent({
     const tableData = ref([]);
     const filterData = ref([]);
 
+    const selectedItem = ref();
+    const scheduleItemModal = ref();
+    const scheduleFeeModal = ref();
+
     const healthFundsList = computed(() => store.getters.healthFundsList);
-    const scheduleFeeList = computed(() => store.getters.getScheduleFeeList);
+    const scheduleItemList = computed(() => store.getters.scheduleItemList);
     const loading = ref(false);
 
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Schedule Fees", ["Settings"]);
       store.dispatch(Actions.HEALTH_FUND.LIST).then(() => {
-        store.dispatch(Actions.SCHEDULE_FEE.LIST).then(() => {
-          loading.value = false;
+        store.dispatch(Actions.SCHEDULE_ITEM.LIST).then(() => {
+          store.dispatch(Actions.MBS.LIST).then(() => {
+            loading.value = false;
+          });
         });
       });
     });
@@ -145,17 +166,17 @@ export default defineComponent({
       tableHeader.value = list;
     });
 
-    watch(scheduleFeeList, () => {
+    watch(scheduleItemList, () => {
       loading.value = true;
       filterData.value = [];
       let keys = new Set(
-        scheduleFeeList.value.map((item) => item.mbs_item_code)
+        scheduleItemList.value.map((item) => item.mbs_item_code)
       );
       Array.from(keys).map((mbs) => {
         let row = {
           mbs_item_code: mbs,
         };
-        let cols = scheduleFeeList.value.filter(
+        let cols = scheduleItemList.value.filter(
           (sch) => sch.mbs_item_code === mbs
         );
         if (cols.length) {
@@ -173,18 +194,44 @@ export default defineComponent({
       tableData.value = filterData;
     });
 
-    const handleCreate = () => {
-      let item = {
-        _title: "Create New MBS Item",
-        _button: "Create",
-        mbs_item_code: "",
-        health_fund_code: "NA",
-        is_base_amount: 0,
+    const handleAddMbsItem = () => {
+      selectedItem.value = {
+        name: "",
+        description: "",
         amount: 0,
+        mbs_item_code: "",
+        icd_code: "",
+        type: "mbs",
       };
-      store.commit(Mutations.SET_SCHEDULE_FEE.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_schedule_fee"));
-      modal.show();
+
+      if (!scheduleItemModal.value) {
+        scheduleItemModal.value = new Modal(
+          document.getElementById("modal_schedule_item")
+        );
+      }
+      scheduleItemModal.value.show();
+    };
+
+    const handleAddCustomItem = () => {
+      selectedItem.value = {
+        name: "",
+        description: "",
+        amount: 0,
+        internal_code: "",
+        type: "custom",
+      };
+
+      if (!scheduleItemModal.value) {
+        scheduleItemModal.value = new Modal(
+          document.getElementById("modal_schedule_item")
+        );
+      }
+      scheduleItemModal.value.show();
+    };
+
+    const handleCloseScheduleItemModal = () => {
+      scheduleItemModal.value.hide();
+      selectedItem.value = null;
     };
 
     const handleEdit = (mbs_item_code, health_fund_code, amount) => {
@@ -236,9 +283,12 @@ export default defineComponent({
       tableHeader,
       tableData,
       loading,
-      handleCreate,
+      handleAddMbsItem,
+      handleAddCustomItem,
+      handleCloseScheduleItemModal,
       handleEdit,
       handleDelete,
+      selectedItem,
     };
   },
 });

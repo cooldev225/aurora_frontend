@@ -1,7 +1,7 @@
 <template>
   <div
     class="modal fade"
-    id="modal_schedule_fee"
+    id="modal_schedule_item"
     tabindex="-1"
     aria-hidden="true"
     ref="scheduleItemModalRef"
@@ -13,7 +13,7 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_schedule_item_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">{{ scheduleItem._title }}</h2>
+          <h2 class="fw-bolder">Add Schedule Item</h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -135,14 +135,15 @@ import { Actions } from "@/store/enums/StoreEnums";
 export default defineComponent({
   name: "schedule-fee-modal",
   components: {},
-  setup() {
+  props: {
+    item: { type: Object },
+  },
+  setup(props) {
     const store = useStore();
     const formRef = ref(null);
     const scheduleItemModalRef = ref(null);
     const loading = ref(false);
-    const scheduleItem = computed(
-      () => store.getters.getScheduleItemSelectedList
-    );
+    const scheduleItem = computed(() => props.item);
 
     const formData = ref({
       mbs_item_code: "",
