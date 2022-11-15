@@ -110,6 +110,7 @@
                           step="00:15"
                           end="18:30"
                           format="HH:mm"
+                          :editable="false"
                           v-model="day.start_time"
                           :prop="'starttime-' + index"
                           @change="verifyAnesthetist(day)"
@@ -129,6 +130,7 @@
                           step="00:15"
                           end="18:30"
                           format="HH:mm"
+                          :editable="false"
                           v-model="day.end_time"
                           :prop="'endtime-' + index"
                           @change="verifyAnesthetist(day)"
@@ -227,7 +229,7 @@
                       >
                         <el-select
                           v-model="day.status"
-                          class="m-2"
+                          class="w-100"
                           label="Status"
                           placeholder="Select"
                           :disabled="day.id ? true : false"
@@ -528,10 +530,40 @@ export default defineComponent({
       }
     };
 
+    const validateFormData = (formData) => {
+      let result = true;
+      if (formData.value.timeslots.length == 0) {
+        ElMessage.error("Please add timeslot first.");
+        return false;
+      }
+      formData.value.timeslots.map((t) => {
+        if (t.start_time == null || t.start_time == "") {
+          ElMessage.error("Start time cannot be blank");
+          result = false;
+        } else if (t.end_time == null || t.end_time == "") {
+          ElMessage.error("End time cannot be blank");
+          result = false;
+        } else if (t.clinic_id == null || t.clinic_id == "") {
+          ElMessage.error("Please select a clinic");
+          result = false;
+        } else if (t.category == null || t.category == "") {
+          ElMessage.error("Please select a category");
+          result = false;
+        } else if (!t.id) {
+          if (t.status == null || t.status == "") {
+            ElMessage.error("Please select a status");
+            result = false;
+          }
+        }
+      });
+      return result;
+    };
+
     const submit = async () => {
       if (!formRef.value) {
         return;
       }
+      if (!validateFormData(formData)) return;
 
       //validate overlap time range
       let overlap = formData.value.timeslots.filter((t, i) => {
