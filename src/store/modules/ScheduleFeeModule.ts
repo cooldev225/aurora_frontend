@@ -21,50 +21,21 @@ export default class ScheduleFeeModule
 {
   scheduleFeeData = [] as Array<IScheduleFee>;
 
-  /**
-   * Get current user object
-   * @returns AdminList
-   */
-  get scheduleFeeList(): Array<IScheduleFee> {
-    return this.scheduleFeeData;
-  }
-
-  @Mutation
-  [Mutations.SET_SCHEDULE_FEE.LIST](data) {
-    this.scheduleFeeData = data;
-  }
-
-  @Action
-  [Actions.SCHEDULE_FEE.LIST]() {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      ApiService.get("schedule-fees")
-        .then(({ data }) => {
-          this.context.commit(Mutations.SET_SCHEDULE_FEE.LIST, data.data);
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
   @Action
   [Actions.SCHEDULE_FEE.CREATE](payload) {
-    const config = {
-      headers: { "Content-Type": "multipart/form-data" },
-    };
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("schedule-fees", payload, config)
+      return ApiService.post("schedule-fees", payload)
         .then(({ data }) => {
-          return data.data;
+          return Promise.resolve();
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          let message = "Could not create schedule fee.";
+          if (response?.data?.error) {
+            message = response.data.error;
+          }
+
+          return Promise.reject(message);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -77,11 +48,15 @@ export default class ScheduleFeeModule
       ApiService.setHeader();
       ApiService.update("schedule-fees", item.id, item)
         .then(({ data }) => {
-          return data.data;
+          return Promise.resolve();
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          let message = "Could not update schedule fee.";
+          if (response?.data?.error) {
+            message = response.data.error;
+          }
+
+          return Promise.reject(message);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -90,14 +65,20 @@ export default class ScheduleFeeModule
 
   @Action
   [Actions.SCHEDULE_FEE.DELETE](id) {
+    console.log(id);
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("schedule-fees/" + id)
         .then(({ data }) => {
-          return data.data;
+          return Promise.resolve();
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          let message = "Could not delete schedule fee.";
+          if (response?.data?.error) {
+            message = response.data.error;
+          }
+
+          return Promise.reject(message);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

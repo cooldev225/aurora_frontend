@@ -340,10 +340,12 @@ const Mutations = {
 
   SET_SCHEDULE_FEE: {
     LIST: "setScheduleFeeList",
+    SELECT: "selectScheduleFee",
   },
 
   SET_SCHEDULE_ITEM: {
     LIST: "setScheduleItemList",
+    SELECT: "selectScheduleItem",
   },
 
   SET_OUTGOING: {
