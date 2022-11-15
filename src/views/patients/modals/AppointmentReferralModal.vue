@@ -228,10 +228,10 @@ export default defineComponent({
     });
 
     const afterChangedData = () => {
-      if (appointmentData.value.referral?.referral_file) {
+      if (appointmentData.value.referral?.patient_document_id) {
         store
           .dispatch(Actions.FILE.VIEW, {
-            path: appointmentData.value.referral.referral_file,
+            path: appointmentData.value.referral.patient_document_file_path,
             type: "REFERRAL",
           })
           .then((data) => {
