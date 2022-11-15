@@ -42,15 +42,14 @@
     </div>
     <div class="card-body pt-0">
       <Datatable
+        v-if="healthFundsList.length > 0"
         :table-header="tableHeader"
         :table-data="tableData"
         :loading="loading"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
+        :key="`schedule-fee-table-${tableKey}`"
       >
-        <template v-slot:cell-mbs_item_code="{ row: item }">
-          {{ item.mbs_item_code }}
-        </template>
         <template
           v-bind:key="column.key"
           v-for="column in tableHeader"
@@ -61,10 +60,10 @@
             class="d-flex justify-content-between"
           >
             <span
-              @click="handleEdit(item.mbs_item_code, 'NA', item['NA'])"
+              @click="handleEditItem(item)"
               style="cursor: pointer; font-weight: bold"
             >
-              {{ item[column.key] == null ? item["NA"] : item[column.key] }}
+              {{ item?.mbs_item_code ?? item?.internal_code ?? item.name }}
             </span>
             <span
               class="svg-icon svg-icon-3 me-3"
@@ -81,7 +80,11 @@
             "
             style="cursor: pointer"
           >
-            {{ item[column.key] == null ? item["NA"] : item[column.key] }}
+            {{
+              convertToCurrency(
+                item[column.key] == null ? item.amount : item[column.key]
+              )
+            }}
           </span>
         </template>
       </Datatable>
@@ -89,7 +92,7 @@
   </div>
 
   <ScheduleFeeModal></ScheduleFeeModal>
-  <ScheduleItemModal v-if="selectedItem" />
+  <ScheduleItemModal :item="selectedItem" />
 </template>
 
 <script>
@@ -108,6 +111,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import ScheduleFeeModal from "@/views/organisation-admin/billing-setting/ScheduleFeeModal.vue";
 import ScheduleItemModal from "@/views/organisation-admin/billing-setting/ScheduleItemModal.vue";
+import { convertToCurrency } from "@/core/data/billing";
 import { Modal } from "bootstrap";
 
 export default defineComponent({
@@ -136,6 +140,7 @@ export default defineComponent({
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const scheduleItemList = computed(() => store.getters.scheduleItemList);
     const loading = ref(false);
+    const tableKey = ref(1);
 
     onMounted(() => {
       loading.value = true;
@@ -154,7 +159,7 @@ export default defineComponent({
         {
           code: "mbs_item_code",
           key: "mbs_item_code",
-          name: "MBS Item",
+          name: "Item",
           sortable: true,
         },
       ];
@@ -169,16 +174,12 @@ export default defineComponent({
     watch(scheduleItemList, () => {
       loading.value = true;
       filterData.value = [];
-      let keys = new Set(
-        scheduleItemList.value.map((item) => item.mbs_item_code)
-      );
-      Array.from(keys).map((mbs) => {
+
+      scheduleItemList.value.map((item) => {
         let row = {
-          mbs_item_code: mbs,
+          ...item,
         };
-        let cols = scheduleItemList.value.filter(
-          (sch) => sch.mbs_item_code === mbs
-        );
+        let cols = item.schedule_fees;
         if (cols.length) {
           cols.map((col) => {
             row[col.health_fund_code] = col.amount;
@@ -186,12 +187,13 @@ export default defineComponent({
         }
         filterData.value.push(row);
       });
-      tableData.value = filterData;
+      tableData.value = filterData.value;
       loading.value = false;
+      tableKey.value++;
     });
 
     watchEffect(() => {
-      tableData.value = filterData;
+      tableData.value = filterData.value;
     });
 
     const handleAddMbsItem = () => {
@@ -200,8 +202,8 @@ export default defineComponent({
         description: "",
         amount: 0,
         mbs_item_code: "",
-        icd_code: "",
         type: "mbs",
+        mode: "add",
       };
 
       if (!scheduleItemModal.value) {
@@ -219,7 +221,19 @@ export default defineComponent({
         amount: 0,
         internal_code: "",
         type: "custom",
+        mode: "add",
       };
+
+      if (!scheduleItemModal.value) {
+        scheduleItemModal.value = new Modal(
+          document.getElementById("modal_schedule_item")
+        );
+      }
+      scheduleItemModal.value.show();
+    };
+
+    const handleEditItem = (item) => {
+      selectedItem.value = { ...item };
 
       if (!scheduleItemModal.value) {
         scheduleItemModal.value = new Modal(
@@ -287,8 +301,12 @@ export default defineComponent({
       handleAddCustomItem,
       handleCloseScheduleItemModal,
       handleEdit,
+      handleEditItem,
       handleDelete,
       selectedItem,
+      healthFundsList,
+      tableKey,
+      convertToCurrency,
     };
   },
 });

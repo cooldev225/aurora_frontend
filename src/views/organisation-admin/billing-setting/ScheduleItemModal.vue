@@ -1,162 +1,181 @@
 <template>
-  <div
-    class="modal fade"
-    id="modal_schedule_item"
-    tabindex="-1"
-    aria-hidden="true"
-    ref="scheduleItemModalRef"
+  <ModalWrapper
+    :title="`${isAdd ? 'Add' : 'Edit'} ${isMbs ? 'MBS' : 'Custom'} Item`"
+    modalId="schedule_item"
+    modalRef="scheduleItemModalRef"
+    :static="true"
   >
-    <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-650px">
-      <!--begin::Modal content-->
-      <div class="modal-content">
-        <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_schedule_item_header">
-          <!--begin::Modal title-->
-          <h2 class="fw-bolder">Add Schedule Item</h2>
-          <!--end::Modal title-->
-
-          <!--begin::Close-->
-          <div
-            id="kt_modal_add_customer_close"
-            data-bs-dismiss="modal"
-            class="btn btn-icon btn-sm btn-active-icon-primary"
-          >
-            <span class="svg-icon svg-icon-1">
-              <InlineSVG icon="cross" />
-            </span>
-          </div>
-          <!--end::Close-->
-        </div>
-        <!--end::Modal header-->
-        <!--begin::Form-->
-        <el-form
-          @submit.prevent="submit()"
-          :model="formData"
-          :rules="rules"
-          :loading="loading"
-          ref="formRef"
+    <!--begin::Form-->
+    <el-form
+      @submit.prevent="submit()"
+      :model="formData"
+      :rules="rules"
+      :loading="loading"
+      ref="formRef"
+    >
+      <!--begin::Scroll-->
+      <div>
+        <InputWrapper
+          v-if="isMbs"
+          required
+          class="fill-out"
+          label="MBS Item"
+          prop="mbs_item_code_search"
         >
-          <!--begin::Modal body-->
-          <div class="modal-body py-10 px-lg-17">
-            <!--begin::Scroll-->
-            <div
-              class="scroll-y me-n7 pe-7"
-              id="kt_modal_schedule_item_scroll"
-              data-kt-scroll="true"
-              data-kt-scroll-activate="{default: false, lg: true}"
-              data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#kt_modal_schedule_item_header"
-              data-kt-scroll-wrappers="#kt_modal_schedule_item_scroll"
-              data-kt-scroll-offset="300px"
-            >
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">MBS Item</label>
-                <!--end::Label-->
+          <div
+            class="d-flex flex-column flex-md-row align-items-center w-100 gap-3"
+          >
+            <div class="d-flex flex-column flex-md-row gap-3 flex-grow-1 w-100">
+              <el-input
+                class="w-100 w-md-50"
+                type="text"
+                v-model="mbsItemSearch.item_number"
+                placeholder="Search by MBS item number"
+                :disabled="mbsItemsLoading"
+              />
 
-                <!--begin::Input-->
-                <el-form-item prop="mbs_item_code">
-                  <el-input
-                    v-model="formData.mbs_item_code"
-                    type="text"
-                    placeholder="MBS Item Code"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Amount</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="amount">
-                  <el-input
-                    v-model="formData.amount"
-                    type="number"
-                    placeholder="Amount"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
+              <el-input
+                class="w-100 w-md-50"
+                type="text"
+                v-model="mbsItemSearch.description"
+                placeholder="Search by MBS description"
+                :disabled="mbsItemsLoading"
+              />
             </div>
-            <!--end::Scroll-->
-          </div>
-          <!--end::Modal body-->
 
-          <!--begin::Modal footer-->
-          <div class="modal-footer flex-center">
-            <!--begin::Button-->
             <button
-              type="reset"
-              data-bs-dismiss="modal"
-              id="kt_modal_schedule_item_cancel"
-              class="btn btn-light me-3"
+              :data-kt-indicator="mbsItemsLoading ? 'on' : null"
+              class="btn btn-md btn-primary text-nowrap"
+              :disabled="
+                mbsItemsLoading ||
+                (!mbsItemSearch.item_number && !mbsItemSearch.description)
+              "
+              @click="handleMbsItemSearch"
             >
-              Cancel
-            </button>
-            <!--end::Button-->
-
-            <!--begin::Button-->
-            <button
-              :data-kt-indicator="loading ? 'on' : null"
-              class="btn btn-lg btn-primary"
-              type="submit"
-            >
-              <span v-if="!loading" class="indicator-label">
-                {{ scheduleItem._button }}
+              <span v-if="!mbsItemsLoading" class="indicator-label">
+                Search
               </span>
-              <span v-if="loading" class="indicator-progress">
-                Please wait...
+
+              <span v-if="mbsItemsLoading" class="indicator-progress">
+                Searching...
                 <span
                   class="spinner-border spinner-border-sm align-middle ms-2"
                 ></span>
               </span>
             </button>
-            <!--end::Button-->
           </div>
-          <!--end::Modal footer-->
-        </el-form>
-        <!--end::Form-->
+
+          <el-select
+            class="col-12 mt-3"
+            placeholder="Select MBS item"
+            props="mbs_item_code"
+            filterable
+            remote
+            reserve-keyword
+            :remote-method="filterMbsItemsHandle"
+            :loading="loading"
+            :disabled="mbsItemsSearchDataFiltered.length === 0"
+            v-model="formData.mbs_item_code"
+          >
+            <el-option
+              v-for="(item, idx) in mbsItemsSearchDataFiltered"
+              :key="idx"
+              :value="item.mbs_item_number"
+              :label="item.label_name"
+            />
+          </el-select>
+        </InputWrapper>
+
+        <InputWrapper
+          required
+          class="fill-out"
+          label="Out of Pocket Amount"
+          prop="amount"
+        >
+          <CurrencyInput v-model="formData.amount" placeholder="Amount" />
+        </InputWrapper>
       </div>
-    </div>
-  </div>
+      <!--end::Scroll-->
+
+      <!--begin::Modal footer-->
+      <div class="d-flex justify-content-end">
+        <!--begin::Button-->
+        <button
+          type="reset"
+          data-bs-dismiss="modal"
+          id="kt_modal_schedule_item_cancel"
+          class="btn btn-light me-3"
+        >
+          Cancel
+        </button>
+        <!--end::Button-->
+
+        <!--begin::Button-->
+        <button
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-primary"
+          type="submit"
+        >
+          <span v-if="!loading" class="indicator-label">Add</span>
+          <span v-if="loading" class="indicator-progress">
+            Please wait...
+            <span
+              class="spinner-border spinner-border-sm align-middle ms-2"
+            ></span>
+          </span>
+        </button>
+        <!--end::Button-->
+      </div>
+      <!--end::Modal footer-->
+    </el-form>
+  </ModalWrapper>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
+import { MbsItem } from "@/store/modules/MbsModule";
+import { IScheduleItem } from "@/store/modules/ScheduleItemModule";
 
 export default defineComponent({
-  name: "schedule-fee-modal",
+  name: "schedule-item-modal",
   components: {},
   props: {
     item: { type: Object },
   },
   setup(props) {
     const store = useStore();
-    const formRef = ref(null);
-    const scheduleItemModalRef = ref(null);
+    const formRef = ref();
+    const scheduleItemModalRef = ref();
     const loading = ref(false);
+    const mbsItemsLoading = ref(false);
     const scheduleItem = computed(() => props.item);
+    const isAdd = computed(() => scheduleItem.value?.mode === "add");
+    const isMbs = computed(() => scheduleItem.value?.type === "mbs");
+    const mbsItemsSearchData = ref<Array<MbsItem>>([]);
+    const mbsItemsSearchDataFiltered = ref<Array<MbsItem>>([]);
+
+    const mbsItemSearch = ref({
+      item_number: null,
+      description: null,
+    });
 
     const formData = ref({
+      name: "",
+      description: "",
+      amount: 0,
       mbs_item_code: "",
-      health_fund_code: "",
-      is_base_amount: 0,
-      amount: "",
+      internal_code: "",
     });
 
     const rules = ref({
-      mbs_item_code: [
+      name: [
         {
           required: true,
-          message: "MBS item code cannnot be blank",
+          message: "Name cannnot be blank",
           trigger: "change",
         },
       ],
@@ -169,45 +188,111 @@ export default defineComponent({
       ],
     });
 
-    const submit = () => {
-      if (!formRef.value) {
-        return;
+    const filterMbsItemsHandle = (query: string) => {
+      if (query) {
+        loading.value = true;
+        setTimeout(() => {
+          loading.value = false;
+          mbsItemsSearchDataFiltered.value = mbsItemsSearchData.value.filter(
+            (item) => {
+              return (
+                item.mbs_item_number.toString().includes(query) ||
+                item.description.includes(query)
+              );
+            }
+          );
+        }, 200);
+      } else {
+        mbsItemsSearchDataFiltered.value = [];
       }
+    };
 
-      formRef.value.validate((valid) => {
-        if (valid) {
-          loading.value = true;
-          store
-            .dispatch(Actions.SCHEDULE_ITEM.CREATE, formData.value)
-            .then(() => {
-              loading.value = false;
-              store.dispatch(Actions.SCHEDULE_ITEM.LIST);
-              Swal.fire({
-                text: "Successfully Saved!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                hideModal(scheduleItemModalRef.value);
+    const handleMbsItemSearch = () => {
+      mbsItemsLoading.value = true;
+      store
+        .dispatch(Actions.MBS.LIST, mbsItemSearch.value)
+        .then(() => {
+          mbsItemsSearchData.value = store.getters.mbsItems.items;
+          mbsItemsSearchDataFiltered.value = store.getters.mbsItems.items;
+        })
+        .finally(() => {
+          mbsItemsLoading.value = false;
+        });
+    };
+
+    const submit = () => {
+      if (formRef.value) {
+        formRef.value.validate((valid) => {
+          if (valid) {
+            let data;
+            let action = Actions.SCHEDULE_ITEM.CREATE;
+
+            if (isMbs.value) {
+              const mbsItem = mbsItemsSearchDataFiltered.value.find(
+                (item) =>
+                  item.mbs_item_number.toString() ==
+                  formData.value.mbs_item_code
+              );
+              data = {
+                name: mbsItem?.name,
+                description: mbsItem?.description,
+                mbs_item_code: formData.value.mbs_item_code,
+                amount: formData.value.amount,
+              };
+            } else {
+              data = {
+                ...formData.value,
+              };
+            }
+
+            if (!isAdd.value) {
+              data.id = scheduleItem.value?.id;
+              action = Actions.SCHEDULE_ITEM.UPDATE;
+            }
+
+            loading.value = true;
+            store
+              .dispatch(action, data)
+              .then(() => {
+                store.dispatch(Actions.SCHEDULE_ITEM.LIST);
+                Swal.fire({
+                  text: "Successfully Saved!",
+                  icon: "success",
+                  buttonsStyling: false,
+                  confirmButtonText: "Ok, got it!",
+                  customClass: {
+                    confirmButton: "btn btn-primary",
+                  },
+                }).then(() => {
+                  formRef.value.resetFields();
+                  hideModal(scheduleItemModalRef.value);
+                });
+              })
+              .catch((error) => {
+                Swal.fire({
+                  text: error,
+                  icon: "error",
+                  buttonsStyling: false,
+                  confirmButtonText: "Ok, got it!",
+                  customClass: {
+                    confirmButton: "btn btn-primary",
+                  },
+                });
+              })
+              .finally(() => {
+                loading.value = false;
               });
-            })
-            .catch(({ response }) => {
-              loading.value = false;
-              console.log(response.data.error);
-            });
-          formRef.value.resetFields();
-        }
-      });
+          }
+        });
+      }
     };
 
     watch(scheduleItem, () => {
-      console.log(["scheduleItem", scheduleItem.value]);
-      formData.value.mbs_item_code = scheduleItem.value.mbs_item_code;
-      formData.value.health_fund_code = scheduleItem.value.health_fund_code;
-      formData.value.amount = scheduleItem.value.amount;
+      formData.value.mbs_item_code = scheduleItem.value?.mbs_item_code;
+      formData.value.internal_code = scheduleItem.value?.internal_code;
+      formData.value.name = scheduleItem.value?.name;
+      formData.value.description = scheduleItem.value?.description;
+      formData.value.amount = scheduleItem.value?.amount;
     });
 
     return {
@@ -218,6 +303,14 @@ export default defineComponent({
       loading,
       scheduleItemModalRef,
       scheduleItem,
+      isAdd,
+      isMbs,
+      mbsItemsLoading,
+      mbsItemsSearchData,
+      mbsItemsSearchDataFiltered,
+      mbsItemSearch,
+      filterMbsItemsHandle,
+      handleMbsItemSearch,
     };
   },
 });

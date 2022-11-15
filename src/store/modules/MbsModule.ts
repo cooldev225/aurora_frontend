@@ -14,6 +14,7 @@ export interface MbsItemDataResponse {
 
 export interface MbsItem {
   id: number;
+  name: string;
   description: string;
   mbs_item_number: number;
   mbs_sub_item_number: number | null;
