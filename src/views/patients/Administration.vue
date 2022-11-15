@@ -245,7 +245,6 @@
     <el-form
       @submit.prevent="submit2()"
       :model="formAlsoKnowAsData"
-      :rules="knowRules"
       ref="formAlsoKnowAsRef"
     >
       <div
@@ -257,14 +256,24 @@
           <div class="action-width d-flex align-items-center">
             <el-avatar> {{ (index + 1).toString() }} </el-avatar>
           </div>
-          <InputWrapper :class="colString" label="First Name" prop="first_name">
+          <InputWrapper
+            :class="colString"
+            label="First Name"
+            prop="first_name"
+            :rule="knowRules.first_name"
+          >
             <el-input
               type="text"
               v-model="item.first_name"
               placeholder="First Name"
             />
           </InputWrapper>
-          <InputWrapper :class="colString" label="Last Name" prop="last_name">
+          <InputWrapper
+            :class="colString"
+            label="Last Name"
+            prop="last_name"
+            :rule="knowRules.last_name"
+          >
             <el-input
               type="text"
               v-model="item.last_name"
@@ -360,7 +369,7 @@ export default defineComponent({
       last_name: [
         {
           required: true,
-          message: "Last Name cannnot be blank",
+          message: "Last Name cannot be blank",
           trigger: "change",
         },
       ],
@@ -426,7 +435,22 @@ export default defineComponent({
         },
       ],
     });
-    const knowRules = ref({});
+    const knowRules = ref({
+      first_name: [
+        {
+          required: true,
+          message: "First Name cannot be blank",
+          trigger: "change",
+        },
+      ],
+      last_name: [
+        {
+          required: true,
+          message: "Last Name cannot be blank",
+          trigger: "change",
+        },
+      ],
+    });
     const loading = ref(false);
 
     const handleAddressChange = (e) => {

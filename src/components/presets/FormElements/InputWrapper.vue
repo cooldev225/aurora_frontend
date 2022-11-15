@@ -7,7 +7,7 @@
       >{{ label }}</label
     >
 
-    <el-form-item :prop="prop">
+    <el-form-item :prop="prop" :rules="rule">
       <slot></slot>
     </el-form-item>
   </div>
@@ -18,6 +18,7 @@ export default {
   props: {
     label: { type: String, required: true },
     prop: { type: String, required: true },
+    rule: { type: Array, required: false },
     required: { type: Boolean, default: false },
   },
 };
