@@ -44,7 +44,7 @@
         >
           CHECKED OUT
         </span>
-        <span>-{{ appointment.clinic.nickname_code }}</span>
+        <span v-if="showClinic">-{{ appointment.clinic.nickname_code }}</span>
       </span>
     </div>
   </div>
@@ -53,6 +53,7 @@
 export default {
   props: {
     appointment: { required: true, type: Object },
+    showClinic: { default: false },
   },
   setup() {
     const getTootTip = (allergies) => {

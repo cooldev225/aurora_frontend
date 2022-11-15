@@ -2,7 +2,6 @@
   <ModalWrapper
     title="Create Alert"
     modalId="patient_alert"
-    modalRef="patientRecallReminderModal"
     :updateRef="updateRef"
   >
     <el-form

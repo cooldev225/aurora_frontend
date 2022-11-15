@@ -27,55 +27,9 @@
 
             <!--begin::Actions-->
             <div class="my-4">
-              <div class="d-flex">
-                <IconButton
-                  v-if="userRole != 'specialist'"
-                  label="Print Label"
-                  @click="handlePrintLabel"
-                />
-                <IconButton
-                  v-if="userRole != 'specialist'"
-                  label="Upload Document"
-                  @click="handleUploadDocument"
-                />
-                <IconButton
-                  @click="handleRecallReminder"
-                  label="Add Recall Reminder"
-                />
-                <IconButton @click="handleAddAlert" label="Add Alert" />
-                <!-- SPECIALIST ONLY ACTIONS-->
-
-                <IconButton
-                  v-if="userRole == 'specialist'"
-                  iconSRC="media/icons/duotune/arrows/arr009.svg"
-                  @click="handleReport"
-                  label="Report"
-                />
-                <IconButton
-                  v-if="userRole == 'specialist'"
-                  iconSRC="media/icons/duotune/arrows/arr009.svg"
-                  @click="handleDoctorAddressBook"
-                  label="Doctor Address"
-                />
-                <IconButton
-                  v-if="userRole == 'specialist'"
-                  iconSRC="media/icons/duotune/arrows/arr009.svg"
-                  @click="handleReport"
-                  label="Clinical Note"
-                />
-                <IconButton
-                  v-if="userRole == 'specialist'"
-                  iconSRC="media/icons/duotune/arrows/arr009.svg"
-                  @click="handleLetter"
-                  label="Letter"
-                />
-                <IconButton
-                  v-if="userRole == 'specialist'"
-                  iconSRC="media/icons/duotune/arrows/arr009.svg"
-                  @click="handleAudio"
-                  label="Audio"
-                />
-                <!--END SPECIALIST ONLY ACTIONS-->
+              <div class="d-flex gap-3">
+                <UploadDocumentButton :patient="patientData" />
+                <AddAlertButton :patient="patientData" />
               </div>
             </div>
           </div>
@@ -136,6 +90,7 @@
               class="nav-link text-active-primary me-6"
               :to="'/patients/' + patientData.id + '/claim-sources'"
               active-class="active"
+              v-if="userRole != 'specialist'"
             >
               Claim Sources
             </router-link>
@@ -180,53 +135,27 @@
     </div>
   </div>
   <!--end::Navbar-->
-  <RecallReminderModal></RecallReminderModal>
-  <CreatePatientAlertModal
-    :patientId="patientData.id"
-  ></CreatePatientAlertModal>
-  <ReportModal></ReportModal>
-  <ReferralModal :patientId="patientData.id"></ReferralModal>
-  <LetterModal :patientId="patientData.id"></LetterModal>
-  <CreateAudioModal :patientId="patientData.id"></CreateAudioModal>
-  <UploadDocumentModal :patientId="patientData.id"></UploadDocumentModal>
-  <PrintLabelModal :patient="patientData"></PrintLabelModal>
+
   <router-view></router-view>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, watchEffect, computed } from "vue";
-import { useStore } from "vuex";
-import { Modal } from "bootstrap";
-import { Actions } from "@/store/enums/StoreEnums";
-import RecallReminderModal from "@/views/patients/modals/RecallReminderModal.vue";
-import CreatePatientAlertModal from "@/views/patients/modals/CreatePatientAlertModal.vue";
 import ViewPatientAlertModal from "@/views/patients/modals/ViewPatientAlertModal.vue";
-import ReportModal from "@/views/patients/modals/ReportTemplateSelectModal.vue";
-import ReferralModal from "@/views/patients/modals/ReferralModal.vue";
-import LetterModal from "@/views/patients/modals/LetterModal.vue";
-import CreateAudioModal from "@/views/patients/modals/CreateAudioModal.vue";
-import UploadDocumentModal from "@/views/patients/modals/UploadDocumentModal.vue";
-import PrintLabelModal from "@/views/patients/modals/PrintLabelsModal.vue";
+import AddAlertButton from "@/components/patients//patientActions/AddAlertButton.vue";
+import UploadDocumentButton from "@/components/patients//patientActions/UploadDocumentButton.vue";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
-import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import store from "@/store";
 import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue";
 
 export default defineComponent({
   name: "patients-view",
   components: {
-    RecallReminderModal,
-    CreatePatientAlertModal,
-    ReportModal,
-    ReferralModal,
-    LetterModal,
-    CreateAudioModal,
-    UploadDocumentModal,
-    PrintLabelModal,
     IconText,
-    IconButton,
     PatientAlert,
     ViewPatientAlertModal,
+    AddAlertButton,
+    UploadDocumentButton,
   },
   data: function () {
     return {
@@ -235,7 +164,6 @@ export default defineComponent({
   },
 
   setup() {
-    const store = useStore();
     const patientData = ref({
       id: "",
       first_name: "",
@@ -247,65 +175,14 @@ export default defineComponent({
       alerts: [],
     });
 
-    const handleRecallReminder = () => {
-      const modal = new Modal(document.getElementById("modal_patient_alert"));
-      modal.show();
-    };
-
-    const handleAddAlert = () => {
-      const modal = new Modal(document.getElementById("modal_patient_alert"));
-      modal.show();
-    };
-
-    const handlePrintLabel = () => {
-      const modal = new Modal(document.getElementById("modal_print_label"));
-      modal.show();
-    };
-
-    const handleReport = () => {
-      store.dispatch(Actions.REPORT_TEMPLATES.LIST);
-      const modal = new Modal(document.getElementById("modal_report"));
-      modal.show();
-    };
-
-    const handleDoctorAddressBook = () => {
-      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
-      const modal = new Modal(document.getElementById("modal_referral"));
-      modal.show();
-    };
-
-    const handleLetter = () => {
-      const modal = new Modal(document.getElementById("modal_letter"));
-      modal.show();
-    };
-
-    const handleAudio = () => {
-      const modal = new Modal(document.getElementById("modal_create_audio"));
-      modal.show();
-    };
-
     watchEffect(() => {
       patientData.value = store.getters.selectedPatient;
     });
-
-    const handleUploadDocument = () => {
-      const modal = new Modal(document.getElementById("modal_upload_document"));
-      modal.show();
-    };
 
     return {
       patientData,
       PatientAlert,
 
-      handleRecallReminder,
-      CreatePatientAlertModal,
-      handleReport,
-      handleDoctorAddressBook,
-      handleLetter,
-      handleAudio,
-      handleUploadDocument,
-      handlePrintLabel,
-      handleAddAlert,
       ViewPatientAlertModal,
     };
   },

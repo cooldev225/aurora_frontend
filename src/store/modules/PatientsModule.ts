@@ -344,6 +344,24 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
+  [PatientActions.ALSO_KNOWN_AS.BULK](details) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("patients/also-known-as/bulk", details.id, details.data)
+        .then(({ data }) => {
+          this.context.dispatch(PatientActions.VIEW, details.patient_id);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
   [PatientActions.ALSO_KNOWN_AS.DELETE](details) {
     if (JwtService.getToken()) {
       ApiService.setHeader();

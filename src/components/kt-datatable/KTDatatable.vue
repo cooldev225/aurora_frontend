@@ -4,7 +4,6 @@
       <table
         :class="[loading && 'overlay overlay-block']"
         class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer"
-        id="kt_customers_table"
         role="grid"
       >
         <!--begin::Table head-->
@@ -59,7 +58,7 @@
             <template v-for="(item, i) in getItems" :key="i">
               <tr
                 :class="`odd ${
-                  item.date === moment().format('YYYY-MM-DD')
+                  item.date === moment().format('YYYY-MM-DD') && highlightToday
                     ? 'bg-light-success'
                     : ''
                 }`"
@@ -99,14 +98,9 @@
       <div
         class="col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start"
       >
-        <div
-          v-if="enableItemsPerPageDropdown"
-          class="dataTables_length"
-          id="kt_customers_table_length"
-        >
+        <div v-if="enableItemsPerPageDropdown" class="dataTables_length">
           <label
             ><select
-              name="kt_customers_table_length"
               class="form-select form-select-sm form-select-solid"
               @change="setItemsPerPage"
             >
@@ -181,6 +175,7 @@ export default defineComponent({
     order: { type: String, default: "asc" },
     sortLabel: { type: String, default: "" },
     disableTableHeader: { type: Boolean, default: false },
+    highlightToday: { type: Boolean, default: false },
   },
   components: {},
   setup(props, { emit }) {

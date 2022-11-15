@@ -1,9 +1,5 @@
 <template>
-  <ModalWrapper
-    title="Print Label"
-    modalId="print_label"
-    :modalRef="patientRecallReminderModal"
-  >
+  <ModalWrapper title="Print Label" modalId="print_label">
     Print Labels for {{ patient.full_name }}
   </ModalWrapper>
 </template>

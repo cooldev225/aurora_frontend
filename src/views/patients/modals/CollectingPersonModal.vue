@@ -75,16 +75,17 @@ export default defineComponent({
     selectedApt: { type: Object, required: true },
   },
   setup(props) {
+    console.log(props.selectedApt);
     const store = useStore();
     const formRef = ref(null);
     const collectingPersonModalRef = ref(null);
     const loading = ref(false);
-    const aptData = computed(() => props.selectedApt);
 
     const formData = ref({
-      collecting_person_name: "",
-      collecting_person_phone: "",
-      collecting_person_alternate_contact: "",
+      collecting_person_name: props.selectedApt.collecting_person_name,
+      collecting_person_phone: props.selectedApt.collecting_person_phone,
+      collecting_person_alternate_contact:
+        props.selectedApt.collecting_person_alternate_contact,
     });
 
     const rules = ref({
@@ -122,7 +123,7 @@ export default defineComponent({
           loading.value = true;
           store
             .dispatch(AppointmentActions.COLLECTING_PERSON.UPDATE, {
-              id: aptData.value.id,
+              id: props.selectedApt.id,
               ...formData.value,
             })
             .then(() => {
@@ -136,7 +137,10 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                store.dispatch(PatientActions.VIEW, aptData.value.patient_id);
+                store.dispatch(
+                  PatientActions.VIEW,
+                  props.selectedApt.patient_id
+                );
                 hideModal(collectingPersonModalRef.value);
               });
             })
@@ -150,10 +154,6 @@ export default defineComponent({
         }
       });
     };
-
-    watch(aptData, () => {
-      for (let key in formData.value) formData.value[key] = aptData.value[key];
-    });
 
     return {
       formData,
