@@ -1,128 +1,71 @@
 <template>
-  <div
-    class="modal fade"
-    id="modal_schedule_fee"
-    tabindex="-1"
-    aria-hidden="true"
-    ref="scheduleItemModalRef"
+  <ModalWrapper
+    :title="`${isAdd ? 'Add' : 'Edit'} Fee`"
+    modalId="schedule_fee"
+    modalRef="scheduleFeeModalRef"
+    :static="true"
   >
-    <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-650px">
-      <!--begin::Modal content-->
-      <div class="modal-content">
-        <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_schedule_item_header">
-          <!--begin::Modal title-->
-          <h2 class="fw-bolder">{{ scheduleItem._title }}</h2>
-          <!--end::Modal title-->
-
-          <!--begin::Close-->
-          <div
-            id="kt_modal_add_customer_close"
-            data-bs-dismiss="modal"
-            class="btn btn-icon btn-sm btn-active-icon-primary"
-          >
-            <span class="svg-icon svg-icon-1">
-              <InlineSVG icon="cross" />
-            </span>
-          </div>
-          <!--end::Close-->
-        </div>
-        <!--end::Modal header-->
-        <!--begin::Form-->
-        <el-form
-          @submit.prevent="submit()"
-          :model="formData"
-          :rules="rules"
-          :loading="loading"
-          ref="formRef"
-        >
-          <!--begin::Modal body-->
-          <div class="modal-body py-10 px-lg-17">
-            <!--begin::Scroll-->
-            <div
-              class="scroll-y me-n7 pe-7"
-              id="kt_modal_schedule_item_scroll"
-              data-kt-scroll="true"
-              data-kt-scroll-activate="{default: false, lg: true}"
-              data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#kt_modal_schedule_item_header"
-              data-kt-scroll-wrappers="#kt_modal_schedule_item_scroll"
-              data-kt-scroll-offset="300px"
-            >
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">MBS Item</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="mbs_item_code">
-                  <el-input
-                    v-model="formData.mbs_item_code"
-                    type="text"
-                    placeholder="MBS Item Code"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Amount</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="amount">
-                  <el-input
-                    v-model="formData.amount"
-                    type="number"
-                    placeholder="Amount"
-                  />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-            </div>
-            <!--end::Scroll-->
-          </div>
-          <!--end::Modal body-->
-
-          <!--begin::Modal footer-->
-          <div class="modal-footer flex-center">
-            <!--begin::Button-->
-            <button
-              type="reset"
-              data-bs-dismiss="modal"
-              id="kt_modal_schedule_item_cancel"
-              class="btn btn-light me-3"
-            >
-              Cancel
-            </button>
-            <!--end::Button-->
-
-            <!--begin::Button-->
-            <button
-              :data-kt-indicator="loading ? 'on' : null"
-              class="btn btn-lg btn-primary"
-              type="submit"
-            >
-              <span v-if="!loading" class="indicator-label">
-                {{ scheduleItem._button }}
-              </span>
-              <span v-if="loading" class="indicator-progress">
-                Please wait...
-                <span
-                  class="spinner-border spinner-border-sm align-middle ms-2"
-                ></span>
-              </span>
-            </button>
-            <!--end::Button-->
-          </div>
-          <!--end::Modal footer-->
-        </el-form>
-        <!--end::Form-->
+    <!--begin::Form-->
+    <el-form
+      @submit.prevent="submit()"
+      :model="formData"
+      :rules="rules"
+      :loading="loading"
+      ref="formRef"
+    >
+      <!--begin::Scroll-->
+      <div>
+        <InputWrapper required class="fill-out" label="Amount" prop="amount">
+          <CurrencyInput v-model="formData.amount" placeholder="Amount" />
+        </InputWrapper>
       </div>
-    </div>
-  </div>
+      <!--end::Scroll-->
+
+      <!--begin::Modal footer-->
+      <div class="d-flex justify-content-end">
+        <!--begin::Button-->
+        <button
+          v-if="!isAdd"
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-danger me-3"
+          @click.prevent="handleDelete"
+        >
+          Delete
+        </button>
+        <!--end::Button-->
+
+        <!--begin::Button-->
+        <button
+          type="reset"
+          data-bs-dismiss="modal"
+          id="kt_modal_schedule_item_cancel"
+          class="btn btn-light me-3"
+        >
+          Cancel
+        </button>
+        <!--end::Button-->
+
+        <!--begin::Button-->
+        <button
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-primary"
+          type="submit"
+        >
+          <span v-if="!loading" class="indicator-label">
+            {{ isAdd ? "Add" : "Update" }}
+          </span>
+          <span v-if="loading" class="indicator-progress">
+            Please wait...
+            <span
+              class="spinner-border spinner-border-sm align-middle ms-2"
+            ></span>
+          </span>
+        </button>
+        <!--end::Button-->
+      </div>
+      <!--end::Modal footer-->
+    </el-form>
+  </ModalWrapper>
 </template>
 
 <script>
@@ -135,30 +78,22 @@ import { Actions } from "@/store/enums/StoreEnums";
 export default defineComponent({
   name: "schedule-fee-modal",
   components: {},
-  setup() {
+  props: {
+    fee: { type: Object },
+  },
+  setup(props, { emit }) {
     const store = useStore();
     const formRef = ref(null);
-    const scheduleItemModalRef = ref(null);
+    const scheduleFeeModalRef = ref(null);
     const loading = ref(false);
-    const scheduleItem = computed(
-      () => store.getters.getScheduleItemSelectedList
-    );
+    const scheduleFee = computed(() => props.fee);
+    const isAdd = computed(() => scheduleFee.value?.mode === "add");
 
     const formData = ref({
-      mbs_item_code: "",
-      health_fund_code: "",
-      is_base_amount: 0,
-      amount: "",
+      amount: 0,
     });
 
     const rules = ref({
-      mbs_item_code: [
-        {
-          required: true,
-          message: "MBS item code cannnot be blank",
-          trigger: "change",
-        },
-      ],
       amount: [
         {
           required: true,
@@ -175,11 +110,23 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
+          let action = Actions.SCHEDULE_FEE.CREATE;
+
+          const data = {
+            health_fund_code: scheduleFee.value.health_fund_code,
+            amount: formData.value.amount,
+            schedule_item_id: scheduleFee.value.schedule_item_id,
+          };
+
+          if (!isAdd.value) {
+            data.id = scheduleFee.value.id;
+            action = Actions.SCHEDULE_FEE.UPDATE;
+          }
+
           loading.value = true;
           store
-            .dispatch(Actions.SCHEDULE_ITEM.CREATE, formData.value)
+            .dispatch(action, data)
             .then(() => {
-              loading.value = false;
               store.dispatch(Actions.SCHEDULE_ITEM.LIST);
               Swal.fire({
                 text: "Successfully Saved!",
@@ -190,23 +137,57 @@ export default defineComponent({
                   confirmButton: "btn btn-primary",
                 },
               }).then(() => {
-                hideModal(scheduleItemModalRef.value);
+                formRef.value.resetFields();
+                emit("closeModal");
               });
             })
             .catch(({ response }) => {
-              loading.value = false;
               console.log(response.data.error);
+            })
+            .finally(() => {
+              loading.value = false;
             });
-          formRef.value.resetFields();
         }
       });
     };
 
-    watch(scheduleItem, () => {
-      console.log(["scheduleItem", scheduleItem.value]);
-      formData.value.mbs_item_code = scheduleItem.value.mbs_item_code;
-      formData.value.health_fund_code = scheduleItem.value.health_fund_code;
-      formData.value.amount = scheduleItem.value.amount;
+    const handleDelete = () => {
+      Swal.fire({
+        text: `Are you sure you want to delete this fee?`,
+        icon: "question",
+        buttonsStyling: false,
+        confirmButtonText: "Yes",
+        showCancelButton: true,
+        cancelButtonText: "No",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-secondary",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          store
+            .dispatch(Actions.SCHEDULE_FEE.DELETE, scheduleFee.value.id)
+            .then(() => {
+              store.dispatch(Actions.SCHEDULE_ITEM.LIST);
+              Swal.fire({
+                text: "Successfully Delete!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                formRef.value.resetFields();
+                emit("closeModal");
+              });
+            });
+        }
+      });
+    };
+
+    watch(scheduleFee, () => {
+      formData.value.amount = scheduleFee.value.amount;
     });
 
     return {
@@ -215,8 +196,10 @@ export default defineComponent({
       submit,
       formRef,
       loading,
-      scheduleItemModalRef,
-      scheduleItem,
+      scheduleFeeModalRef,
+      scheduleFee,
+      isAdd,
+      handleDelete,
     };
   },
 });

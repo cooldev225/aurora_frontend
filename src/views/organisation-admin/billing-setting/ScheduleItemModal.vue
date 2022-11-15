@@ -15,8 +15,18 @@
     >
       <!--begin::Scroll-->
       <div>
+        <div v-if="isMbs && !isAdd" class="d-flex gap-6 px-6 mb-4">
+          <InfoSection heading="MBS Code">
+            {{ scheduleItem?.mbs_item_code }}
+          </InfoSection>
+
+          <InfoSection heading="Name">
+            {{ scheduleItem?.name }}
+          </InfoSection>
+        </div>
+
         <InputWrapper
-          v-if="isMbs"
+          v-if="isMbs && isAdd"
           required
           class="fill-out"
           label="MBS Item"
@@ -86,6 +96,35 @@
           </el-select>
         </InputWrapper>
 
+        <template v-if="!isMbs">
+          <InputWrapper required class="fill-out" label="Item Name" prop="name">
+            <el-input
+              type="text"
+              v-model="formData.name"
+              placeholder="Enter item name..."
+              :disabled="loading"
+            />
+          </InputWrapper>
+
+          <InputWrapper class="fill-out" label="Item Description" prop="name">
+            <el-input
+              type="text"
+              v-model="formData.description"
+              placeholder="Enter item description..."
+              :disabled="loading"
+            />
+          </InputWrapper>
+
+          <InputWrapper class="fill-out" label="Internal Code" prop="name">
+            <el-input
+              type="text"
+              v-model="formData.internal_code"
+              placeholder="Enter internal code..."
+              :disabled="loading"
+            />
+          </InputWrapper>
+        </template>
+
         <InputWrapper
           required
           class="fill-out"
@@ -116,7 +155,9 @@
           class="btn btn-lg btn-primary"
           type="submit"
         >
-          <span v-if="!loading" class="indicator-label">Add</span>
+          <span v-if="!loading" class="indicator-label">
+            {{ isAdd ? "Add" : "Update" }}
+          </span>
           <span v-if="loading" class="indicator-progress">
             Please wait...
             <span
@@ -134,19 +175,20 @@
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
-import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { MbsItem } from "@/store/modules/MbsModule";
-import { IScheduleItem } from "@/store/modules/ScheduleItemModule";
+import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 
 export default defineComponent({
   name: "schedule-item-modal",
-  components: {},
+  components: {
+    InfoSection,
+  },
   props: {
     item: { type: Object },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const store = useStore();
     const formRef = ref();
     const scheduleItemModalRef = ref();
@@ -265,7 +307,7 @@ export default defineComponent({
                   },
                 }).then(() => {
                   formRef.value.resetFields();
-                  hideModal(scheduleItemModalRef.value);
+                  emit("closeModal");
                 });
               })
               .catch((error) => {

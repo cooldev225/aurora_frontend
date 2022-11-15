@@ -67,7 +67,7 @@
             </span>
             <span
               class="svg-icon svg-icon-3 me-3"
-              @click="handleDelete(item.mbs_item_code)"
+              @click="handleDelete(item.id)"
               style="cursor: pointer"
             >
               <InlineSVG icon="bin" />
@@ -75,9 +75,7 @@
           </div>
           <span
             v-if="column.key != 'mbs_item_code'"
-            @click="
-              handleEdit(item.mbs_item_code, column.key, item[column.key])
-            "
+            @click="handleEditFee(item.id, column.key, item[column.key])"
             style="cursor: pointer"
           >
             {{
@@ -91,8 +89,15 @@
     </div>
   </div>
 
-  <ScheduleFeeModal></ScheduleFeeModal>
-  <ScheduleItemModal :item="selectedItem" />
+  <ScheduleFeeModal
+    :fee="selectedFee"
+    v-on:closeModal="handleCloseScheduleFeeModal"
+  />
+
+  <ScheduleItemModal
+    :item="selectedItem"
+    v-on:closeModal="handleCloseScheduleItemModal"
+  />
 </template>
 
 <script>
@@ -134,6 +139,7 @@ export default defineComponent({
     const filterData = ref([]);
 
     const selectedItem = ref();
+    const selectedFee = ref();
     const scheduleItemModal = ref();
     const scheduleFeeModal = ref();
 
@@ -233,7 +239,20 @@ export default defineComponent({
     };
 
     const handleEditItem = (item) => {
-      selectedItem.value = { ...item };
+      const type =
+        item.mbs_item_code !== null && item.mbs_item_code.length > 0
+          ? "mbs"
+          : "custom";
+      selectedItem.value = {
+        name: item.name,
+        description: item.description,
+        amount: item.amount,
+        internal_code: item.internal_code,
+        mbs_item_code: item.mbs_item_code,
+        id: item.id,
+        type: type,
+        mode: "edit",
+      };
 
       if (!scheduleItemModal.value) {
         scheduleItemModal.value = new Modal(
@@ -248,31 +267,45 @@ export default defineComponent({
       selectedItem.value = null;
     };
 
-    const handleEdit = (mbs_item_code, health_fund_code, amount) => {
+    const handleEditFee = (schedule_item_id, health_fund_code, amount) => {
+      const scheduleItem = scheduleItemList.value.find(
+        (item) => item.id == schedule_item_id
+      );
+      const schedule_fee = scheduleItem.schedule_fees.find(
+        (fee) => fee.health_fund_code == health_fund_code
+      );
+
       let item = {
-        _title: "Update Schedule Fee",
-        _button: "Update",
-        mbs_item_code: mbs_item_code,
-        health_fund_code: health_fund_code,
-        is_base_amount:
-          mbs_item_code == "mbs_item_code" && health_fund_code == "NA" ? 1 : 0,
-        amount: amount,
+        schedule_item_id,
+        health_fund_code,
+        amount: amount ?? 0,
+        mode: schedule_fee ? "edit" : "add",
       };
-      store.commit(Mutations.SET_SCHEDULE_FEE.SELECT, item);
-      const modal = new Modal(document.getElementById("modal_schedule_fee"));
-      modal.show();
+
+      if (schedule_fee) {
+        item.id = schedule_fee.id;
+      }
+
+      selectedFee.value = item;
+
+      if (!scheduleFeeModal.value) {
+        scheduleFeeModal.value = new Modal(
+          document.getElementById("modal_schedule_fee")
+        );
+      }
+      scheduleFeeModal.value.show();
     };
 
-    const handleDelete = (mbs_item_code) => {
+    const handleCloseScheduleFeeModal = () => {
+      scheduleFeeModal.value.hide();
+      selectedFee.value = null;
+    };
+
+    const handleDelete = (id) => {
       loading.value = true;
 
-      const html =
-        "<h3>Are you sure you want to remove this item? All custom fees will be lost.</h3><br/><p>MBS Item Code: <span style='font-weight: bold;'>" +
-        mbs_item_code +
-        "</span></p>";
-
       Swal.fire({
-        html: html,
+        html: "Are you sure you want to remove this item? All custom fees will be lost.",
         icon: "warning",
         showCancelButton: true,
         cancelButtonText: "Cancel",
@@ -282,11 +315,9 @@ export default defineComponent({
           cancelButton: "btn btn-light-primary",
         },
         preConfirm: async () => {
-          store
-            .dispatch(Actions.SCHEDULE_FEE.DELETE, mbs_item_code)
-            .then(() => {
-              store.dispatch(Actions.SCHEDULE_FEE.LIST);
-            });
+          store.dispatch(Actions.SCHEDULE_ITEM.DELETE, id).then(() => {
+            store.dispatch(Actions.SCHEDULE_ITEM.LIST);
+          });
           loading.value = false;
           return true;
         },
@@ -300,13 +331,15 @@ export default defineComponent({
       handleAddMbsItem,
       handleAddCustomItem,
       handleCloseScheduleItemModal,
-      handleEdit,
+      handleEditFee,
       handleEditItem,
       handleDelete,
       selectedItem,
+      selectedFee,
       healthFundsList,
       tableKey,
       convertToCurrency,
+      handleCloseScheduleFeeModal,
     };
   },
 });
