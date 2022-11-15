@@ -140,6 +140,17 @@
       <div class="d-flex justify-content-end">
         <!--begin::Button-->
         <button
+          v-if="!isAdd"
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-danger me-3"
+          @click.prevent="handleDelete"
+        >
+          Delete
+        </button>
+        <!--end::Button-->
+
+        <!--begin::Button-->
+        <button
           type="reset"
           data-bs-dismiss="modal"
           id="kt_modal_schedule_item_cancel"
@@ -329,6 +340,41 @@ export default defineComponent({
       }
     };
 
+    const handleDelete = () => {
+      Swal.fire({
+        text: `Are you sure you want to delete this item?`,
+        icon: "question",
+        buttonsStyling: false,
+        confirmButtonText: "Yes",
+        showCancelButton: true,
+        cancelButtonText: "No",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-secondary",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          store
+            .dispatch(Actions.SCHEDULE_ITEM.DELETE, scheduleItem.value?.id)
+            .then(() => {
+              store.dispatch(Actions.SCHEDULE_ITEM.LIST);
+              Swal.fire({
+                text: "Successfully Delete!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+              }).then(() => {
+                formRef.value.resetFields();
+                emit("closeModal");
+              });
+            });
+        }
+      });
+    };
+
     watch(scheduleItem, () => {
       formData.value.mbs_item_code = scheduleItem.value?.mbs_item_code;
       formData.value.internal_code = scheduleItem.value?.internal_code;
@@ -353,6 +399,7 @@ export default defineComponent({
       mbsItemSearch,
       filterMbsItemsHandle,
       handleMbsItemSearch,
+      handleDelete,
     };
   },
 });
