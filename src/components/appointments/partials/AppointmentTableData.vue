@@ -15,11 +15,13 @@
       <span class="text-uppercase fw-bolder" v-if="userRole == 'specialist'">
         {{ appointment.appointment_type_name }}
       </span>
-      <span class="">
+      <span class="text-uppercase fs-6">
         {{ appointment.patient.first_name }}
         {{ appointment.patient.last_name }}
         ({{ appointment.patient.contact_number }})
-
+        <span v-if="userRole != 'specialist'"
+          >-{{ appointment.clinic.nickname_code }}</span
+        >
         <span
           v-if="appointment.patient.allergies"
           class="badge badge-light-danger opacity-50 mx-2"
@@ -47,7 +49,6 @@
         >
           CHECKED OUT
         </span>
-        <span v-if="showClinic">-{{ appointment.clinic.nickname_code }}</span>
       </span>
     </div>
   </div>
@@ -58,7 +59,6 @@ import { computed } from "vue";
 export default {
   props: {
     appointment: { required: true, type: Object },
-    showClinic: { default: false },
   },
   setup() {
     const userRole = computed(() => store.getters.userRole);
