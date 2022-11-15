@@ -8,9 +8,18 @@
         :table-data="tableData"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
+        class="patient-appointment-table"
       >
         <template v-slot:cell-date="{ row: item }">
           <div class="p-4 d-flex flex-column">
+            <span class="fw-bolder fs-1"
+              >{{ item.aus_formatted_date }}
+              {{ item.formatted_appointment_time }}</span
+            >
+            <span class="fw-bolder fs-2">{{ item.appointment_type.name }}</span>
+            <span>@ {{ item.clinic_details.name }}</span>
+
+            <span> {{ item.specialist_name }}</span>
             <span
               :class="`mb-1 p-2 rounded text-uppercase badge-xl badge-${
                 item.confirmation_status === 'CONFIRMED'
@@ -28,14 +37,6 @@
             <div v-if="item.confirmation_status === 'CANCELED'">
               Reason: {{ item.cancel_reason }}
             </div>
-            <span
-              >{{ item.aus_formatted_date }}
-              {{ item.formatted_appointment_time }}</span
-            >
-            <span>@ {{ item.clinic_details.name }}</span>
-
-            <span>{{ item.appointment_type.name }}</span>
-            <span> {{ item.specialist_name }}</span>
           </div>
         </template>
         <template v-slot:cell-referral="{ row: item }">
@@ -54,12 +55,7 @@
             </div>
           </div>
           <div v-else class="d-flex flex-column">No referral information</div>
-          <button
-            class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
-            @click="handleDoctorAddressBook(item)"
-          >
-            Update Referral
-          </button>
+          <ViewReferralButton :appointment="item" />
         </template>
         <template v-slot:cell-attendance_status="{ row: item }">
           <div class="d-flex flex-column">
@@ -81,43 +77,11 @@
             <span>{{ item.collecting_person_phone }}</span>
             <span>{{ item.collecting_person_alternate_contact }}</span>
           </div>
-          <button
-            class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
-            @click="handleCollectingPerson(item)"
-          >
-            Update Collecting Person
-          </button>
+          <CollectingPersonButton :appointment="item" />
         </template>
         <template v-slot:cell-report="{ row: item }">
           <div class="d-flex flex-column">
-            <a
-              @click="handlePay(item)"
-              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
-            >
-              <span class="svg-icon svg-icon-1">
-                <inline-svg src="media/icons/duotune/finance/fin002.svg" />
-              </span>
-              Payment
-            </a>
-            <a
-              @click="handlePrintHospitalCertificate(item)"
-              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
-            >
-              <span class="svg-icon svg-icon-1">
-                <inline-svg src="media/icons/duotune/files/fil017.svg" />
-              </span>
-              Hospital Certificate
-            </a>
-            <a
-              v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
-              @click="handlePreAdmission(item)"
-              class="btn btn-sm btn-light btn-icon-primary me-2 mb-2"
-            >
-              <span class="svg-icon svg-icon-1">
-                <inline-svg src="media/icons/duotune/general/gen004.svg" />
-              </span>
-              Pre-Admission Form
-            </a>
+            <PatientAppointmentActions :appointment="item" :patient="patient" />
             <a
               v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
               @click="handlePreAdmissionTest(item)"
@@ -133,42 +97,40 @@
       </Datatable>
     </template>
   </CardSection>
-
-  <CollectingPersonModal :selectedApt="selectedApt"></CollectingPersonModal>
-  <AppointmentReferralModal
-    :selectedApt="selectedApt"
-  ></AppointmentReferralModal>
-  <!--end::details View-->
-
-  <ProcedureApprovalModal isEditable="false" :selectedApt="selectedApt" />
 </template>
+
+<style>
+.patient-appointment-table * td {
+  border-top: #3d749e solid 3px;
+}
+</style>
 
 <script lang="ts">
 import { defineComponent, watchEffect, ref, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CollectingPersonModal from "./modals/CollectingPersonModal.vue";
-import AppointmentReferralModal from "./modals/AppointmentReferralModal.vue";
-import ProcedureApprovalModal from "./modals/ProcedureApprovalModal.vue";
 import { Modal } from "bootstrap";
-import { Actions } from "@/store/enums/StoreEnums";
 import md5 from "js-md5";
+import store from "@/store";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
+import PatientAppointmentActions from "@/components/patients/PatientAppointmentActions.vue";
+import ViewReferralButton from "@/components/patients/patientAppointmentActions/ViewReferralButton.vue";
+import CollectingPersonButton from "@/components/patients/patientAppointmentActions/CollectingPersonButton.vue";
 export default defineComponent({
   name: "patient-appointments",
   components: {
     Datatable,
-    CollectingPersonModal,
-    AppointmentReferralModal,
-    ProcedureApprovalModal,
+    ViewReferralButton,
+    PatientAppointmentActions,
+    CollectingPersonButton,
   },
+
   setup() {
-    const store = useStore();
     const router = useRouter();
     const route = useRoute();
     const patient = computed(() => store.getters.selectedPatient);
+    const userRole = computed(() => store.getters.userRole);
     const tableHeader = ref([
       {
         name: "Time/Place",
@@ -176,13 +138,8 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "Doctor Address",
+        name: "Referring Doctor",
         key: "referral",
-        sortable: false,
-      },
-      {
-        name: "Attendance Status",
-        key: "attendance_status",
         sortable: false,
       },
       {
@@ -192,25 +149,6 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-
-    const handlePay = (item) => {
-      store.dispatch(Actions.MAKE_PAYMENT.VIEW, item.id).then(() => {
-        setTimeout(() => {
-          router.push({ name: "make-payment-pay" });
-        }, 100);
-      });
-    };
-
-    const handlePreAdmission = (item) => {
-      selectedApt.value = {
-        patient_id: patient.value.id,
-        ...item,
-      };
-      const modal = new Modal(
-        document.getElementById("modal_view_pre_admission")
-      );
-      modal.show();
-    };
 
     const handlePreAdmissionTest = (item) => {
       router.push({
@@ -227,35 +165,6 @@ export default defineComponent({
 
     const selectedApt = ref({});
 
-    const handleCollectingPerson = (item) => {
-      selectedApt.value = {
-        patient_id: patient.value.id,
-        ...item,
-      };
-      // store.commit(Mutations.SET_APT.SELECT, item);
-      const modal = new Modal(
-        document.getElementById("modal_collecting_person")
-      );
-      modal.show();
-    };
-
-    const handleDoctorAddressBook = (item) => {
-      selectedApt.value = {
-        patient_id: patient.value.id,
-        ...item,
-      };
-      const modal = new Modal(
-        document.getElementById("modal_appointment_referral")
-      );
-      modal.show();
-    };
-
-    const handlePrintHospitalCertificate = () => {
-      router.push({
-        name: "appointment-print-hospital-certificate-view",
-      });
-    };
-
     watchEffect(() => {
       console.log(patient.value);
       tableData.value = patient.value.appointments;
@@ -263,6 +172,15 @@ export default defineComponent({
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Appointments", ["Patients"]);
+
+      if (userRole.value != "specialist") {
+        tableHeader.value.push({
+          name: "Attendance Status",
+          key: "attendance_status",
+          sortable: false,
+        });
+      }
+
       const id = route.params.id;
       store.dispatch(PatientActions.VIEW, id);
     });
@@ -271,13 +189,10 @@ export default defineComponent({
       tableHeader,
       tableData,
       selectedApt,
-      handlePay,
-      handlePreAdmission,
+      userRole,
       handlePreAdmissionTest,
-      handleDoctorAddressBook,
-      handleCollectingPerson,
-      handlePrintHospitalCertificate,
       handleView,
+      patient,
     };
   },
 });

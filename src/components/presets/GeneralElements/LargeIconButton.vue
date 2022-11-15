@@ -11,7 +11,7 @@
     "
   >
     <span :class="'svg-icon svg-icon-' + iconSize + 'x'">
-      <inline-svg :src="iconPath" />
+      <inline-svg v-if="iconPath" :src="iconPath" />
     </span>
 
     <span class="d-block fw-bold text-start text-uppercase">
@@ -24,8 +24,8 @@
 <script lang="ts">
 export default {
   props: {
-    iconPath: { required: true, type: String },
-    heading: { required: true, type: String },
+    iconPath: { type: String },
+    heading: { required: false, type: String },
     color: { default: "primary", type: String },
     justify: { default: "center", type: String },
     iconSize: { default: "2", type: String },
