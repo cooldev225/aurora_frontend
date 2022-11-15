@@ -8,6 +8,7 @@
         :table-data="tableData"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
+        highlight-today
         class="patient-appointment-table"
       >
         <template v-slot:cell-date="{ row: item }">
