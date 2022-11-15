@@ -213,7 +213,7 @@
     <div class="separator separator-dashed"></div>
 
     <CardSection heading="Consent">
-      <div v-html="patientData.pre_admission_consent.text"></div>
+      <div v-html="patientData.pre_admission_consent?.text"></div>
 
       <el-checkbox
         type="checkbox"
