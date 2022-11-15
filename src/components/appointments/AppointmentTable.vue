@@ -23,7 +23,7 @@
 </template>
 <style>
 .fc-non-business {
-  background-color: #7d7d7d !important;
+  background-color: #f4f4f4 !important;
 }
 
 .fc .fc-timegrid-slot {
