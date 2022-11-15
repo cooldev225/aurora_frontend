@@ -23,7 +23,7 @@
               v-for="(item, index) in availableItems"
               :key="`item-modal-select-option-${index}`"
               :value="item.id"
-              :label="item.name ?? item.description"
+              :label="getItemName(item)"
             />
           </el-select>
         </InputWrapper>
@@ -207,6 +207,23 @@ export default defineComponent({
       emit("submitItem", data);
     };
 
+    const getItemName = (item) => {
+      const isMbs = item.mbs_item_code ? true : false;
+
+      if (isMbs) {
+        return `${item.mbs_item_code} - ${item.name}`;
+      }
+
+      let name = [];
+      if (item.internal_code) {
+        name.push(item.internal_code);
+      }
+
+      name.push(item.name);
+
+      return name.join(" - ");
+    };
+
     const modalTitle = computed(() => {
       let title = mode.value === "add" ? "Add " : "Edit ";
 
@@ -291,6 +308,7 @@ export default defineComponent({
       canEditItem,
       enableEditPrice,
       closePinConfirmModal,
+      getItemName,
     };
   },
 });
