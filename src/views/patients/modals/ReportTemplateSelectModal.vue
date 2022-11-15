@@ -6,7 +6,7 @@
     class="modal fade"
     aria-hidden="true"
   >
-    <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
+    <el-form @submit.prevent="submit()" ref="formRef">
       <InputWrapper label="Report Template">
         <el-select
           class="w-100"
