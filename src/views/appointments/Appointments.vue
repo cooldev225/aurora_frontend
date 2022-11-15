@@ -143,7 +143,7 @@
               <div class="card border border-dashed border-primary">
                 <div class="card-header">
                   <div class="card-title">
-                    <span>SPECIALISTS</span>
+                    <span>FILTER VIEW</span>
                   </div>
                 </div>
                 <div
@@ -216,7 +216,7 @@
               <div class="card border border-dashed border-primary">
                 <div class="card-header">
                   <div class="card-title">
-                    <span>SEARCH NEXT AVAILABLE APPOINTMENT</span>
+                    <span>SEARCH AVAILABLE APPOINTMENTS</span>
                   </div>
                 </div>
                 <div class="card-body card-scroll h-350px">
