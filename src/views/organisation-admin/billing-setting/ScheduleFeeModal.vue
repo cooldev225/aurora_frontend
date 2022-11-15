@@ -178,6 +178,8 @@ export default defineComponent({
 
           const data = { ...formData.value };
 
+          data.amount = data.amount * 100;
+
           if (!isAdd.value) {
             data.id = scheduleFee.value.id;
             action = Actions.SCHEDULE_FEE.UPDATE;
@@ -247,7 +249,7 @@ export default defineComponent({
     };
 
     watch(scheduleFee, () => {
-      formData.value.amount = scheduleFee.value?.amount;
+      formData.value.amount = scheduleFee.value?.amount / 100;
       formData.value.health_fund_code = scheduleFee.value?.health_fund_code;
       formData.value.schedule_item_id = scheduleFee.value?.schedule_item_id;
     });

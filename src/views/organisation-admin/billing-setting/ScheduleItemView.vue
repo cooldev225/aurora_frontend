@@ -83,7 +83,7 @@
             v-if="column.key == 'out_of_pocket'"
             class="text-muted fw-bold text-center"
           >
-            {{ convertToCurrency(item.amount) }}
+            {{ convertToCurrency(item.amount / 100) }}
           </div>
 
           <button
@@ -96,7 +96,8 @@
           >
             {{
               convertToCurrency(
-                item[column.key] == null ? item.amount : item[column.key]
+                (item[column.key] == null ? item.amount : item[column.key]) /
+                  100
               )
             }}
           </button>
