@@ -550,9 +550,10 @@ export default defineComponent({
           ElMessage.error("Please select a category");
           result = false;
         } else if (!t.id) {
-          if (t.status == null || t.status == "")
+          if (t.status == null || t.status == "") {
             ElMessage.error("Please select a status");
-          result = false;
+            result = false;
+          }
         }
       });
       return result;
