@@ -15,6 +15,48 @@
     >
       <!--begin::Scroll-->
       <div>
+        <InputWrapper
+          required
+          class="fill-out"
+          label="Item"
+          prop="schedule_item_id"
+        >
+          <el-select
+            v-model="formData.schedule_item_id"
+            placeholder="Select Item"
+            :disabled="!isAdd"
+            class="w-100"
+          >
+            <el-option
+              v-for="(item, index) in scheduleItemList"
+              :key="`item-modal-select-option-${index}`"
+              :value="item.id"
+              :label="getItemName(item)"
+            />
+          </el-select>
+        </InputWrapper>
+
+        <InputWrapper
+          required
+          class="fill-out"
+          label="Health Fund"
+          prop="health_fund_code"
+        >
+          <el-select
+            v-model="formData.health_fund_code"
+            placeholder="Select Health Fund"
+            :disabled="!isAdd"
+            class="w-100"
+          >
+            <el-option
+              v-for="(item, index) in healthFundsList"
+              :key="`hf-modal-select-option-${index}`"
+              :value="item.code"
+              :label="item.name"
+            />
+          </el-select>
+        </InputWrapper>
+
         <InputWrapper required class="fill-out" label="Amount" prop="amount">
           <CurrencyInput v-model="formData.amount" placeholder="Amount" />
         </InputWrapper>
@@ -89,8 +131,13 @@ export default defineComponent({
     const scheduleFee = computed(() => props.fee);
     const isAdd = computed(() => scheduleFee.value?.mode === "add");
 
+    const healthFundsList = computed(() => store.getters.healthFundsList);
+    const scheduleItemList = computed(() => store.getters.scheduleItemList);
+
     const formData = ref({
+      health_fund_code: "",
       amount: 0,
+      schedule_fee_id: null,
     });
 
     const rules = ref({
@@ -103,6 +150,23 @@ export default defineComponent({
       ],
     });
 
+    const getItemName = (item) => {
+      const isMbs = item.mbs_item_code ? true : false;
+
+      if (isMbs) {
+        return `${item.mbs_item_code} - ${item.name}`;
+      }
+
+      let name = [];
+      if (item.internal_code) {
+        name.push(item.internal_code);
+      }
+
+      name.push(item.name);
+
+      return name.join(" - ");
+    };
+
     const submit = () => {
       if (!formRef.value) {
         return;
@@ -112,11 +176,7 @@ export default defineComponent({
         if (valid) {
           let action = Actions.SCHEDULE_FEE.CREATE;
 
-          const data = {
-            health_fund_code: scheduleFee.value.health_fund_code,
-            amount: formData.value.amount,
-            schedule_item_id: scheduleFee.value.schedule_item_id,
-          };
+          const data = { ...formData.value };
 
           if (!isAdd.value) {
             data.id = scheduleFee.value.id;
@@ -187,7 +247,9 @@ export default defineComponent({
     };
 
     watch(scheduleFee, () => {
-      formData.value.amount = scheduleFee.value.amount;
+      formData.value.amount = scheduleFee.value?.amount;
+      formData.value.health_fund_code = scheduleFee.value?.health_fund_code;
+      formData.value.schedule_item_id = scheduleFee.value?.schedule_item_id;
     });
 
     return {
@@ -200,6 +262,9 @@ export default defineComponent({
       scheduleFee,
       isAdd,
       handleDelete,
+      healthFundsList,
+      scheduleItemList,
+      getItemName,
     };
   },
 });

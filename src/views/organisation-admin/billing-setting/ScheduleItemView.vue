@@ -34,6 +34,17 @@
             </span>
             Add Custom Item
           </button>
+
+          <button
+            type="button"
+            class="btn btn-light-primary ms-4"
+            @click="handleAddScheduleFee"
+          >
+            <span class="svg-icon svg-icon-2">
+              <InlineSVG icon="plus" />
+            </span>
+            Add Fee
+          </button>
           <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
@@ -42,11 +53,10 @@
     </div>
     <div class="card-body pt-0">
       <Datatable
-        v-if="healthFundsList.length > 0"
+        v-if="healthFundsList.length > 0 && tableHeader !== null"
         :table-header="tableHeader"
         :table-data="tableData"
         :loading="loading"
-        :rows-per-page="5"
         :enable-items-per-page-dropdown="false"
         :key="`schedule-fee-table-${tableKey}`"
       >
@@ -58,32 +68,38 @@
           <div
             v-if="column.key == 'mbs_item_code'"
             class="d-flex justify-content-between"
+            style="max-width: 400px"
           >
-            <span
+            <button
               @click="handleEditItem(item)"
-              style="cursor: pointer; font-weight: bold"
+              role="button"
+              class="text-truncate fw-bold bg-transparent border-0"
             >
-              {{ item?.mbs_item_code ?? item?.internal_code ?? item.name }}
-            </span>
-            <span
-              class="svg-icon svg-icon-3 me-3"
-              @click="handleDelete(item.id)"
-              style="cursor: pointer"
-            >
-              <InlineSVG icon="bin" />
-            </span>
+              {{ getItemName(item) }}
+            </button>
           </div>
-          <span
-            v-if="column.key != 'mbs_item_code'"
+
+          <div
+            v-if="column.key == 'out_of_pocket'"
+            class="text-muted fw-bold text-center"
+          >
+            {{ convertToCurrency(item.amount) }}
+          </div>
+
+          <button
+            v-if="
+              column.key != 'mbs_item_code' && column.key != 'out_of_pocket'
+            "
+            role="button"
             @click="handleEditFee(item.id, column.key, item[column.key])"
-            style="cursor: pointer"
+            class="text-muted fw-bold bg-transparent border-0 w-100"
           >
             {{
               convertToCurrency(
                 item[column.key] == null ? item.amount : item[column.key]
               )
             }}
-          </span>
+          </button>
         </template>
       </Datatable>
     </div>
@@ -99,6 +115,12 @@
     v-on:closeModal="handleCloseScheduleItemModal"
   />
 </template>
+
+<style>
+th > div {
+  text-align: center;
+}
+</style>
 
 <script>
 import {
@@ -148,6 +170,8 @@ export default defineComponent({
     const loading = ref(false);
     const tableKey = ref(1);
 
+    const usedHealthFunds = ref([]);
+
     onMounted(() => {
       loading.value = true;
       setCurrentPageBreadcrumbs("Schedule Fees", ["Settings"]);
@@ -160,7 +184,7 @@ export default defineComponent({
       });
     });
 
-    watch(healthFundsList, () => {
+    watch(usedHealthFunds, () => {
       let list = [
         {
           code: "mbs_item_code",
@@ -168,11 +192,20 @@ export default defineComponent({
           name: "Item",
           sortable: true,
         },
+        {
+          code: "out_of_pocket",
+          key: "out_of_pocket",
+          name: "Out of pocket",
+          sortable: false,
+        },
       ];
-      healthFundsList.value.map((h) => {
-        h.key = h.code;
-        h.sortable = true;
-        list.push(h);
+      usedHealthFunds.value.map((h) => {
+        list.push({
+          code: h.code,
+          key: h.code,
+          name: h.name,
+          sortable: false,
+        });
       });
       tableHeader.value = list;
     });
@@ -196,11 +229,63 @@ export default defineComponent({
       tableData.value = filterData.value;
       loading.value = false;
       tableKey.value++;
+
+      // Update list of used health funds
+      let funds = [];
+      scheduleItemList.value.forEach((item) => {
+        item.schedule_fees.forEach((fee) => {
+          if (!funds.includes(fee.health_fund_code)) {
+            const fund = healthFundsList.value.find(
+              (fund) => fund.code == fee.health_fund_code
+            );
+
+            funds.push({
+              name: fund.name,
+              code: fee.health_fund_code,
+            });
+          }
+        });
+      });
+
+      usedHealthFunds.value = funds;
     });
 
     watchEffect(() => {
       tableData.value = filterData.value;
     });
+
+    const getItemName = (item) => {
+      const isMbs = item.mbs_item_code ? true : false;
+
+      if (isMbs) {
+        return `${item.mbs_item_code} - ${item.name}`;
+      }
+
+      let name = [];
+      if (item.internal_code) {
+        name.push(item.internal_code);
+      }
+
+      name.push(item.name);
+
+      return name.join(" - ");
+    };
+
+    const handleAddScheduleFee = () => {
+      selectedFee.value = {
+        health_fund_code: "",
+        amount: 0,
+        schedule_item_id: null,
+        mode: "add",
+      };
+
+      if (!scheduleFeeModal.value) {
+        scheduleFeeModal.value = new Modal(
+          document.getElementById("modal_schedule_fee")
+        );
+      }
+      scheduleFeeModal.value.show();
+    };
 
     const handleAddMbsItem = () => {
       selectedItem.value = {
@@ -340,6 +425,8 @@ export default defineComponent({
       tableKey,
       convertToCurrency,
       handleCloseScheduleFeeModal,
+      getItemName,
+      handleAddScheduleFee,
     };
   },
 });
