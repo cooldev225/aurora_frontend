@@ -174,7 +174,7 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Appointments", ["Patients"]);
 
       if (userRole.value != "specialist") {
-        tableHeader.value.push({
+        tableHeader.value.splice(1, 0, {
           name: "Attendance Status",
           key: "attendance_status",
           sortable: false,
