@@ -290,7 +290,7 @@ export default defineComponent({
                 name: mbsItem?.name,
                 description: mbsItem?.description,
                 mbs_item_code: formData.value.mbs_item_code,
-                amount: formData.value.amount,
+                amount: formData.value.amount * 100,
               };
             } else {
               data = {
@@ -380,7 +380,7 @@ export default defineComponent({
       formData.value.internal_code = scheduleItem.value?.internal_code;
       formData.value.name = scheduleItem.value?.name;
       formData.value.description = scheduleItem.value?.description;
-      formData.value.amount = scheduleItem.value?.amount;
+      formData.value.amount = scheduleItem.value?.amount / 100;
     });
 
     return {
