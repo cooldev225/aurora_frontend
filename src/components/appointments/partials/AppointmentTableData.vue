@@ -12,6 +12,9 @@
     <div
       class="fw-bold d-flex flex-column justify-content-center align-items-center"
     >
+      <span class="text-uppercase fw-bolder" v-if="userRole == 'specialist'">
+        {{ appointment.appointment_type_name }}
+      </span>
       <span class="">
         {{ appointment.patient.first_name }}
         {{ appointment.patient.last_name }}
@@ -50,12 +53,15 @@
   </div>
 </template>
 <script lang="ts">
+import store from "@/store";
+import { computed } from "vue";
 export default {
   props: {
     appointment: { required: true, type: Object },
     showClinic: { default: false },
   },
   setup() {
+    const userRole = computed(() => store.getters.userRole);
     const getTootTip = (allergies) => {
       var html = "";
       allergies.forEach((allergy) => {
@@ -65,6 +71,7 @@ export default {
     };
 
     return {
+      userRole,
       getTootTip,
     };
   },
