@@ -52,14 +52,18 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
   [Actions.MAKE_PAYMENT.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("payments")
+      return ApiService.get("payments")
         .then(({ data }) => {
           this.context.commit(Mutations.SET_MAKE_PAYMENT.LIST, data.data);
-          return data.data;
+          return Promise.resolve();
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          let message = "Could not get all payments";
+          if (response?.data?.error) {
+            message = response.data.error;
+          }
+
+          return Promise.reject(message);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -70,15 +74,18 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
   [Actions.MAKE_PAYMENT.VIEW](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("payments/" + id)
+      return ApiService.get("payments/" + id)
         .then(({ data }) => {
-          console.log(data.data);
           this.context.commit(Mutations.SET_MAKE_PAYMENT.SELECT, data.data);
-          return data.data;
+          return Promise.resolve();
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          let message = "Could not payment";
+          if (response?.data?.error) {
+            message = response.data.error;
+          }
+
+          return Promise.reject(message);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -89,12 +96,17 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
   [Actions.MAKE_PAYMENT.CREATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("payments", data)
+      return ApiService.post("payments", data)
         .then(({ data }) => {
-          return data.data;
+          return Promise.resolve();
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          let message = "Could not create payment";
+          if (response?.data?.error) {
+            message = response.data.error;
+          }
+
+          return Promise.reject(message);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

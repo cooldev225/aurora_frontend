@@ -123,6 +123,14 @@ export default defineComponent({
         });
     };
 
+    onMounted(() => {
+      const modal = document.getElementById("modal_verify_organization_pin");
+      modal.addEventListener("shown.bs.modal", function () {
+        loading.value = false;
+        formData.value.pin = "";
+      });
+    });
+
     return {
       store,
       formData,
