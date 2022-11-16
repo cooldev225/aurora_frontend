@@ -175,6 +175,11 @@
                         :value="item.value"
                       />
                     </el-select>
+                    <el-checkbox
+                      v-model="hideSpecialistNotWorking"
+                      label="Hide specialist if not working"
+                      size="large"
+                    />
                   </div>
                   <div class="d-flex flex-column">
                     <el-checkbox
@@ -383,6 +388,9 @@ export default defineComponent({
       date: new Date(),
     });
     const visibleDate = ref(date_search);
+
+    // Show/hide specialist that are not working on day
+    const hideSpecialistNotWorking = ref(true);
 
     // The specialist that will be show in calender
     const visibleSpecialists = ref();
@@ -633,7 +641,7 @@ export default defineComponent({
       });
     });
 
-    watch(specialists, () => {
+    watch((specialists, hideSpecialistNotWorking), () => {
       getFilterSpecialists();
       filterSpecialists();
     });
@@ -652,7 +660,25 @@ export default defineComponent({
         });
       });
 
-      // Apply filters per specialist filter view
+      // Hide not working specialists if required
+      if (hideSpecialistNotWorking.value) {
+        const result = [];
+        specialists.value.map((specialist) => {
+          let viewDay = moment(date_search.date).format("ddd").toUpperCase();
+          let workOnDay = false;
+          specialist.hrm_weekly_schedule.map((slot) => {
+            if (slot.week_day == viewDay) {
+              workOnDay = true;
+            }
+          });
+          if (!workOnDay) {
+            result.push(specialist.id);
+          }
+        });
+        specialistsList.value = specialistsList.value.filter((specialist) => {
+          if (!result.includes(specialist.id)) return specialist;
+        });
+      }
 
       // check user's selected specialist or show all specialist
       if (!isShowAllSpecialist.value) {
@@ -876,6 +902,7 @@ export default defineComponent({
       clinicsData,
       selectedClinicIds,
       organization,
+      hideSpecialistNotWorking,
       visibleSpecialists, // FOR APPOINTMENT TABLE
       visibleDate, // FOR APPOINTMENT TABLE
     };
