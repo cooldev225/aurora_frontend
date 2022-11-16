@@ -68,14 +68,12 @@ export default class SpecialistModule
 
   @Action
   [Actions.SPECIALIST.LIST](payload) {
-    console.log(payload.date);
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.query("users", {
         params: { role_id: 5, date: payload.date ? payload.date : null },
       })
         .then(({ data }) => {
-          console.log(data);
           this.context.commit(Mutations.SET_SPECIALIST.LIST, data.data);
           return data.data;
         })

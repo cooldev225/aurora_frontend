@@ -173,6 +173,11 @@ export default defineComponent({
       }
     });
 
+    watch(props, () => {
+      console.log(props.visibleSpecialists);
+      calendarOptions.value.resources = props.visibleSpecialists;
+    });
+
     watch(appointmentsRaw, () => {
       appointments.value = [];
       appointmentsRaw.value.forEach((appointment) => {

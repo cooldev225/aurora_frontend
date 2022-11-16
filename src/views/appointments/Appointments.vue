@@ -640,31 +640,27 @@ export default defineComponent({
 
     const filterSpecialists = () => {
       specialistsList.value = [];
+
+      // Add ALL organization specialists with appropriate data for Calender resource
       specialists.value.map((specialist) => {
-        let i = true;
-        specialist.hrm_weekly_schedule.map((slot) => {
-          if (
-            slot.week_day ===
-              moment(date_search.date).format("ddd").toUpperCase() &&
-            i
-          ) {
-            i = false;
-            specialistsList.value.push({
-              value: specialist.id,
-              label: `Dr.${specialist.first_name} ${specialist.last_name}`,
-              id: specialist.id,
-              title: `Dr.${specialist.first_name} ${specialist.last_name}`,
-              businessHours: getBusinessHours(specialist.hrm_weekly_schedule),
-            });
-          }
+        specialistsList.value.push({
+          value: specialist.id,
+          label: `Dr.${specialist.first_name} ${specialist.last_name}`,
+          id: specialist.id,
+          title: `Dr.${specialist.first_name} ${specialist.last_name}`,
+          businessHours: getBusinessHours(specialist.hrm_weekly_schedule),
         });
       });
+
+      // Apply filters per specialist filter view
+
       // check user's selected specialist or show all specialist
       if (!isShowAllSpecialist.value) {
         specialistsList.value = specialistsList.value.filter((specialist) => {
           if (specialistsData.value.includes(specialist.id)) return specialist;
         });
       }
+
       // Check user's selected clinics or show all clinics
       if (!isShowAllClinics.value) {
         const result = [];
@@ -686,6 +682,7 @@ export default defineComponent({
           if (result.includes(specialist.id)) return specialist;
         });
       }
+
       visibleSpecialists.value = specialistsList.value;
     };
     const getBusinessHours = (data) => {
