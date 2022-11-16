@@ -329,6 +329,7 @@ export default defineComponent({
       amount: 0,
       is_deposit: false,
       is_send_receipt: true,
+      sent_to: null,
     });
     const paymentItemModalData = ref({
       mode: "",
@@ -553,6 +554,12 @@ export default defineComponent({
         return;
       }
       formData.value.appointment_id = billingData.value.appointment.id;
+
+      if (formData.value.is_send_receipt) {
+        formData.value.sent_to =
+          billingData.value.appointment.patient_details.email;
+      }
+
       store
         .dispatch(Actions.MAKE_PAYMENT.CREATE, formData.value)
         .then(() => {
@@ -570,9 +577,9 @@ export default defineComponent({
             },
           });
         })
-        .catch((message) => {
+        .catch(() => {
           Swal.fire({
-            text: message,
+            text: "Error submitting payment",
             icon: "error",
             buttonsStyling: false,
             confirmButtonText: "Ok, got it!",

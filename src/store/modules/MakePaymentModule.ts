@@ -59,8 +59,8 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
         })
         .catch(({ response }) => {
           let message = "Could not get all payments";
-          if (response?.data?.error) {
-            message = response.data.error;
+          if (response?.data?.message) {
+            message = response.data.message;
           }
 
           return Promise.reject(message);
@@ -80,9 +80,9 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
           return Promise.resolve();
         })
         .catch(({ response }) => {
-          let message = "Could not payment";
-          if (response?.data?.error) {
-            message = response.data.error;
+          let message = "Could not get payment information";
+          if (response?.data?.message) {
+            message = response.data.message;
           }
 
           return Promise.reject(message);
@@ -101,12 +101,7 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
           return Promise.resolve();
         })
         .catch(({ response }) => {
-          let message = "Could not create payment";
-          if (response?.data?.error) {
-            message = response.data.error;
-          }
-
-          return Promise.reject(message);
+          return Promise.reject();
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

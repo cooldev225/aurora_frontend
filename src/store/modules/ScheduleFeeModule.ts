@@ -31,8 +31,8 @@ export default class ScheduleFeeModule
         })
         .catch(({ response }) => {
           let message = "Could not create schedule fee.";
-          if (response?.data?.error) {
-            message = response.data.error;
+          if (response?.data?.message) {
+            message = response.data.message;
           }
 
           return Promise.reject(message);
@@ -52,8 +52,8 @@ export default class ScheduleFeeModule
         })
         .catch(({ response }) => {
           let message = "Could not update schedule fee.";
-          if (response?.data?.error) {
-            message = response.data.error;
+          if (response?.data?.message) {
+            message = response.data.message;
           }
 
           return Promise.reject(message);
@@ -74,8 +74,8 @@ export default class ScheduleFeeModule
         })
         .catch(({ response }) => {
           let message = "Could not delete schedule fee.";
-          if (response?.data?.error) {
-            message = response.data.error;
+          if (response?.data?.message) {
+            message = response.data.message;
           }
 
           return Promise.reject(message);
