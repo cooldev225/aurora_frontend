@@ -19,6 +19,10 @@ const SpecialistMenu = [
         heading: "My Schedule",
         route: "/hrm/my-schedule",
       },
+      {
+        heading: "My availability",
+        route: "/hrm/my-availability",
+      },
     ],
   },
   {

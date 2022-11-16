@@ -18,6 +18,8 @@ export interface IHRMWeeklyScheduleTemplates {
   hrmTimeslotSelectData: Array<IHRMWeeklyScheduleTimeslot>;
   hrmAnesthetists: Array<IHRMWeeklyScheduleTemplate>;
   hrmWeeklyTemplateData: Array<IHRMWeeklyScheduleTemplate>;
+  hrmData: Array<IHRMWeeklyScheduleTemplate>;
+  hrmSelectedData: IHRMWeeklyScheduleTemplate;
 }
 
 @Module
@@ -31,6 +33,8 @@ export default class HRMModule
   hrmAnesthetists = [] as Array<IHRMWeeklyScheduleTemplate>;
   hrmWeeklyTemplateData = [] as Array<IHRMWeeklyScheduleTemplate>;
   hrmWeeklyTemplateSelectData = [] as Array<IHRMWeeklyScheduleTimeslot>;
+  hrmData = [] as Array<IHRMWeeklyScheduleTemplate>;
+  hrmSelectedData = {} as IHRMWeeklyScheduleTemplate;
 
   get hrmScheduleList(): Array<IHRMWeeklyScheduleTemplate> {
     return this.hrmScheduleData;
@@ -54,6 +58,14 @@ export default class HRMModule
 
   get hrmWeeklyTemplateSelected(): Array<IHRMWeeklyScheduleTemplate> {
     return this.hrmWeeklyTemplateSelectData;
+  }
+
+  get hrmDataList(): Array<IHRMWeeklyScheduleTemplate> {
+    return this.hrmData;
+  }
+
+  get hrmDataSelected(): IHRMWeeklyScheduleTemplate {
+    return this.hrmSelectedData;
   }
 
   @Mutation
@@ -85,6 +97,17 @@ export default class HRMModule
   [HRMMutations.WEEKLY_TEMPLATE.SET_TIMESLOT](data) {
     this.hrmWeeklyTemplateSelectData = data;
   }
+
+  @Mutation
+  [HRMMutations.DATA.SET_SELECT](data) {
+    this.hrmSelectedData = data;
+  }
+
+  @Mutation
+  [HRMMutations.DATA.SET_LIST](data) {
+    this.hrmData = data;
+  }
+
   @Action
   [HRMActions.SCHEDULE_TEMPLATE.LIST](data) {
     if (JwtService.getToken()) {
@@ -200,6 +223,74 @@ export default class HRMModule
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("hrm/weekly-schedule", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [HRMActions.EMPLOYEE_LEAVE.LIST](payload) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.query("hrm/employee-leaves", { params: payload })
+        .then(({ data }) => {
+          this.context.commit(HRMMutations.DATA.SET_LIST, data.data);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      // this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [HRMActions.EMPLOYEE_LEAVE.UPDATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.update("hrm/employee-leaves", item.id, item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [HRMActions.EMPLOYEE_LEAVE.CREATE](item) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("hrm/employee-leaves", item)
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [HRMActions.EMPLOYEE_LEAVE.DELETE](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.delete("hrm/employee-leaves/" + id)
         .then(({ data }) => {
           return data.data;
         })
