@@ -1177,6 +1177,7 @@ import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue"
 import ViewPatientAlertModal from "@/views/patients/modals/ViewPatientAlertModal.vue";
 import PatientBillingTypes from "@/core/data/patient-billing-types";
 import AddClaimSourceModal from "@/views/patients/modals/AddClaimSourceModal.vue";
+import { ElMessage } from "element-plus";
 import { Modal } from "bootstrap";
 
 export default defineComponent({
@@ -1870,6 +1871,7 @@ export default defineComponent({
           store.dispatch(AppointmentActions.LIST);
           hideModal(createAptModalRef.value);
           resetCreateModal();
+          ElMessage.success("Appointment Saved");
         })
         .catch(({ response }) => {
           loading.value = false;
