@@ -259,7 +259,8 @@
           <InputWrapper
             :class="colString"
             label="First Name"
-            prop="first_name"
+            :prop="index + '.first_name'"
+            required="true"
             :rule="knowRules.first_name"
           >
             <el-input
@@ -271,7 +272,8 @@
           <InputWrapper
             :class="colString"
             label="Last Name"
-            prop="last_name"
+            :prop="index + '.last_name'"
+            required="true"
             :rule="knowRules.last_name"
           >
             <el-input
