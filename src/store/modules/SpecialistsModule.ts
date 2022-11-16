@@ -71,7 +71,7 @@ export default class SpecialistModule
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.query("users", {
-        params: { role_id: 5, date: payload.date ? payload.date : null },
+        params: { role_id: 5 },
       })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_SPECIALIST.LIST, data.data);
