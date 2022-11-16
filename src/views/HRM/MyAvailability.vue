@@ -119,6 +119,7 @@ import { loaderLogo } from "@/core/helpers/config";
 import LeaveRequestModal from "@/views/HRM/modals/LeaveRequestModal.vue";
 import { Modal } from "bootstrap";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
+import moment from "moment";
 
 export default defineComponent({
   name: "create-employee",
@@ -133,7 +134,7 @@ export default defineComponent({
     const formData = ref({
       leaveType: "",
       date: [new Date(), new Date()],
-      desc: "",
+      description: "",
       startTime: "08:30",
       endTime: "17:30",
       isFullDay: true,
@@ -147,11 +148,11 @@ export default defineComponent({
         user_id: 6,
       });
     });
-    const testData = computed(() => store.getters.hrmDataList);
+    const leaveList = computed(() => store.getters.hrmDataList);
     const user = computed(() => store.getters.currentUser);
 
-    watch(testData, () => {
-      tableData.value = testData.value;
+    watch(leaveList, () => {
+      tableData.value = leaveList.value;
     });
 
     const filterTag = (value, row) => {
@@ -164,12 +165,11 @@ export default defineComponent({
         id: $event.id,
         leaveType: $event.leave_type,
         date: [new Date($event.start_date), new Date($event.end_date)],
-        desc: $event.description,
+        description: $event.description,
         startTime: $event.start_time,
         endTime: $event.end_time,
-        isFullDay: true,
+        isFullDay: $event.full_day === 1 ? true : false,
       };
-
       store.commit(HRMMutations.DATA.SET_SELECT, { ...formData });
       const modal = new Modal(document.getElementById("leave-request-modal"));
       modal.show();
@@ -200,9 +200,10 @@ export default defineComponent({
 
     const processRequest = (data) => {
       data.status = "pending";
+      data.date[0] = moment(data.date[0]).format("YYYY-MM-DD");
+      data.date[1] = moment(data.date[1]).format("YYYY-MM-DD");
       if (data.id) {
         store.dispatch(HRMActions.EMPLOYEE_LEAVE.UPDATE, data).then((e) => {
-          console.log(e);
           store.dispatch(HRMActions.EMPLOYEE_LEAVE.LIST, {
             user_id: user.value.id,
           });
@@ -219,7 +220,7 @@ export default defineComponent({
     const deleteRequest = (data) => {
       store.dispatch(HRMActions.EMPLOYEE_LEAVE.DELETE, data).then((e) => {
         store.dispatch(HRMActions.EMPLOYEE_LEAVE.LIST, {
-          user_id: 6,
+          user_id: user.value.id,
         });
       });
     };

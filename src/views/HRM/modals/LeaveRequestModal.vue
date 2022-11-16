@@ -13,7 +13,8 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_edit_schedule_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Leave Request Form</h2>
+          <h2 class="fw-bolder" v-if="formData.id">Edit Leave Request</h2>
+          <h2 class="fw-bolder" v-else>New Leave Request</h2>
           <!--end::Modal title-->
           <!--begin::Close-->
           <div
@@ -39,7 +40,7 @@
         >
           <el-form-item
             label="Type of Request"
-            prop="leave_type"
+            prop="leaveType"
             class="span-leave-type"
           >
             <el-select
@@ -54,8 +55,8 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="Description" prop="desc">
-            <el-input v-model="formData.desc" type="textarea" />
+          <el-form-item label="Description" prop="description">
+            <el-input v-model="formData.description" type="textarea" />
           </el-form-item>
           <el-form-item label="Pick a date form" prop="date">
             <el-date-picker
@@ -113,7 +114,9 @@
             </el-form-item>
           </div>
           <el-form-item>
-            <el-button type="primary" @click="submitForm">Request</el-button>
+            <el-button type="primary" @click="submitForm">{{
+              formData.id ? "Update" : "Request"
+            }}</el-button>
             <el-button data-bs-dismiss="modal" @click="resetForm"
               >Cancel</el-button
             >
@@ -238,7 +241,7 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      desc: [
+      description: [
         {
           required: true,
           message: "Please input a description",
@@ -291,8 +294,8 @@ export default defineComponent({
         text: "You won't be able to revert this!",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
