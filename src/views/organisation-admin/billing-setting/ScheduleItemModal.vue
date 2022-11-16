@@ -290,13 +290,15 @@ export default defineComponent({
                 name: mbsItem?.name,
                 description: mbsItem?.description,
                 mbs_item_code: formData.value.mbs_item_code,
-                amount: formData.value.amount * 100,
+                amount: formData.value.amount,
               };
             } else {
               data = {
                 ...formData.value,
               };
             }
+
+            data.amount = data.amount * 100;
 
             if (!isAdd.value) {
               data.id = scheduleItem.value?.id;

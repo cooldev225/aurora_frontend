@@ -77,7 +77,7 @@
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
-                  {{ convertToCurrency(item.price) }}
+                  {{ convertToCurrency(item.price / 100) }}
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
@@ -121,7 +121,7 @@
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
-                  {{ convertToCurrency(item.price) }}
+                  {{ convertToCurrency(item.price / 100) }}
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
@@ -165,7 +165,7 @@
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
-                  {{ convertToCurrency(item.price) }}
+                  {{ convertToCurrency(item.price / 100) }}
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
@@ -220,15 +220,15 @@
             <div class="fv-row mb-8">
               <div class="fs-6 fw-bold mt-2 d-flex flex-column gap-2">
                 <InfoSection heading="Total Payable Amount">
-                  {{ convertToCurrency(procedurePrice) }}
+                  {{ convertToCurrency(procedurePrice / 100) }}
                 </InfoSection>
 
                 <InfoSection heading="Amount Paid">
-                  {{ convertToCurrency(amountPaid) }}
+                  {{ convertToCurrency(amountPaid / 100) }}
                 </InfoSection>
 
                 <InfoSection heading="Amount Outstanding">
-                  {{ convertToCurrency(amountOutstanding) }}
+                  {{ convertToCurrency(amountOutstanding / 100) }}
                 </InfoSection>
               </div>
             </div>
@@ -329,11 +329,13 @@ export default defineComponent({
       amount: 0,
       is_deposit: false,
       is_send_receipt: true,
+      sent_to: null,
     });
     const paymentItemModalData = ref({
       mode: "",
       category: "",
       item: null,
+      key: 1,
     });
 
     const mbsTableHeader = ref([
@@ -383,13 +385,16 @@ export default defineComponent({
     ]);
 
     const proceduresUndertakenList = computed(() => {
-      let list = [] as Array<number>;
+      let list = [] as Array<Record<string, unknown>>;
 
       if (Object.prototype.hasOwnProperty.call(billingData.value, "charges")) {
         const charges = billingData.value.charges.procedures;
 
         charges.forEach((charge) => {
-          list.push(charge.id);
+          list.push({
+            id: charge.id,
+            price: charge.price,
+          });
         });
       }
 
@@ -397,13 +402,16 @@ export default defineComponent({
     });
 
     const extraItemsList = computed(() => {
-      let list = [] as Array<number>;
+      let list = [] as Array<Record<string, unknown>>;
 
       if (Object.prototype.hasOwnProperty.call(billingData.value, "charges")) {
         const charges = billingData.value.charges.extra_items;
 
         charges.forEach((charge) => {
-          list.push(charge.id);
+          list.push({
+            id: charge.id,
+            price: charge.price,
+          });
         });
       }
 
@@ -411,13 +419,16 @@ export default defineComponent({
     });
 
     const adminItemsList = computed(() => {
-      let list = [] as Array<number>;
+      let list = [] as Array<Record<string, unknown>>;
 
       if (Object.prototype.hasOwnProperty.call(billingData.value, "charges")) {
         const charges = billingData.value.charges.admin_items;
 
         charges.forEach((charge) => {
-          list.push(charge.id);
+          list.push({
+            id: charge.id,
+            price: charge.price,
+          });
         });
       }
 
@@ -473,6 +484,7 @@ export default defineComponent({
       paymentItemModalData.value.mode = "edit";
       paymentItemModalData.value.category = category;
       paymentItemModalData.value.item = item;
+      paymentItemModalData.value.key++;
 
       paymentItemModal.value.show();
     };
@@ -486,6 +498,8 @@ export default defineComponent({
 
       paymentItemModalData.value.mode = "add";
       paymentItemModalData.value.category = category;
+      paymentItemModalData.value.item = null;
+      paymentItemModalData.value.key++;
 
       paymentItemModal.value.show();
     };
@@ -504,10 +518,13 @@ export default defineComponent({
         (charge) => charge.id === item.id
       );
 
-      found.price = price;
+      found.price = price * 100;
+
+      updateAppointmentDetail();
     };
 
     const addPaymentItem = (item) => {
+      item.price = item.price * 100;
       billingData.value.charges[paymentItemModalData.value.category].push(item);
       updateAppointmentDetail();
     };
@@ -537,6 +554,12 @@ export default defineComponent({
         return;
       }
       formData.value.appointment_id = billingData.value.appointment.id;
+
+      if (formData.value.is_send_receipt) {
+        formData.value.sent_to =
+          billingData.value.appointment.patient_details.email;
+      }
+
       store
         .dispatch(Actions.MAKE_PAYMENT.CREATE, formData.value)
         .then(() => {
@@ -554,8 +577,16 @@ export default defineComponent({
             },
           });
         })
-        .catch(({ response }) => {
-          console.log(response.data.error);
+        .catch(() => {
+          Swal.fire({
+            text: "Error submitting payment",
+            icon: "error",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+          });
         });
     };
 
@@ -568,6 +599,7 @@ export default defineComponent({
       };
 
       store.dispatch(AppointmentActions.DETAIL.UPDATE, data);
+      store.dispatch(Actions.MAKE_PAYMENT.VIEW, formData.value.appointment_id);
     };
 
     onMounted(() => {

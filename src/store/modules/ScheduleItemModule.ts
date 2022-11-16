@@ -64,8 +64,8 @@ export default class ScheduleItemModule
         })
         .catch(({ response }) => {
           let message = "Could not get schedule items.";
-          if (response?.data?.error) {
-            message = response.data.error;
+          if (response?.data?.message) {
+            message = response.data.message;
           }
 
           return Promise.reject(message);
@@ -85,8 +85,8 @@ export default class ScheduleItemModule
         })
         .catch(({ response }) => {
           let message = "Could not create schedule item.";
-          if (response?.data?.error) {
-            message = response.data.error;
+          if (response?.data?.message) {
+            message = response.data.message;
           }
 
           return Promise.reject(message);
@@ -106,8 +106,8 @@ export default class ScheduleItemModule
         })
         .catch(({ response }) => {
           let message = "Could not update schedule item.";
-          if (response?.data?.error) {
-            message = response.data.error;
+          if (response?.data?.message) {
+            message = response.data.message;
           }
 
           return Promise.reject(message);
@@ -126,7 +126,12 @@ export default class ScheduleItemModule
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          let message = "Could not delete schedule item.";
+          if (response?.data?.message) {
+            message = response.data.message;
+          }
+
+          return Promise.reject(message);
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

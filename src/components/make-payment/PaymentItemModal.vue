@@ -34,7 +34,7 @@
 
         <div v-if="!canEditItem" class="px-6 pb-6">
           <InfoSection heading="Price">
-            {{ formData.price }}
+            {{ convertToCurrency(formData.price) }}
           </InfoSection>
         </div>
       </div>
@@ -76,7 +76,6 @@
     </div>
 
     <VerifyPinModal
-      v-if="!canEditItem"
       v-on:verified="enableEditPrice"
       v-on:closeModal="closePinConfirmModal"
     />
@@ -94,6 +93,7 @@ import {
 } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
+import { convertToCurrency } from "@/core/data/billing";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
 import { Modal } from "bootstrap";
@@ -208,9 +208,9 @@ export default defineComponent({
     };
 
     const getItemName = (item) => {
-      const isMbs = item.mbs_item_code ? true : false;
+      const isMbsItem = item.mbs_item_code ? true : false;
 
-      if (isMbs) {
+      if (isMbsItem) {
         return `${item.mbs_item_code} - ${item.name}`;
       }
 
@@ -247,10 +247,10 @@ export default defineComponent({
 
       return scheduleItems.value.filter((item) => {
         if (isMbs) {
-          return item.mbs_code !== null;
+          return item.mbs_item_code !== null;
         }
 
-        return item.mbs_code === null;
+        return item.mbs_item_code === null;
       });
     });
 
@@ -258,9 +258,10 @@ export default defineComponent({
       () => item,
       () => {
         resetForm();
-
         formData.value.schedule_item_id = item.value.item?.id;
-        formData.value.price = item.value.item?.price;
+        formData.value.price = item.value.item?.price
+          ? item.value.item?.price / 100
+          : 0;
         mode.value = item.value.mode;
         category.value = item.value.category;
       },
@@ -270,7 +271,7 @@ export default defineComponent({
     watch(
       () => formData.value.schedule_item_id,
       (value) => {
-        if (value) {
+        if (mode.value === "add" && value) {
           const selectedItem = scheduleItems.value.find(
             (item) => item.id === value
           );
@@ -309,6 +310,7 @@ export default defineComponent({
       enableEditPrice,
       closePinConfirmModal,
       getItemName,
+      convertToCurrency,
     };
   },
 });

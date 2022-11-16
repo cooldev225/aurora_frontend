@@ -160,8 +160,8 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
         .catch(({ response }) => {
           let message = "Could not set pin";
 
-          if (response?.data?.error) {
-            message = response.data.error;
+          if (response?.data?.message) {
+            message = response.data.message;
           }
 
           return Promise.reject(message);
