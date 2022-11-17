@@ -25,8 +25,8 @@
           <td v-for="day in props.dateOptions.datesInWeek" :key="day.id">
             <div
               @click="handleEditTemplateTimeslots(employee, day)"
-              class="d-flex flex-column rounded min-h-150px min-w-100px bg-light-primary p-3"
-              :class="canEditClass"
+              class="d-flex flex-column rounded min-h-150px min-w-100px p-3"
+              :class="canEditClass(employee, day)"
             >
               <span
                 class="svg-icon absolute text-light-primary svg-icon-4 me-1"
@@ -99,6 +99,7 @@ export default defineComponent({
     employeeList: Object,
     clinicFilter: Number,
     dateOptions: { type: Object, required: true },
+    leaveList: { type: Object, required: true },
     canEdit: { type: Boolean, required: true },
   },
   setup(props) {
@@ -185,10 +186,13 @@ export default defineComponent({
       return result;
     };
 
-    const canEditClass = computed(() => {
-      if (props.canEdit) return " cursor-pointer bg-hover-primary";
+    const canEditClass = (user, date) => {
+      if (props.canEdit)
+        return (
+          " cursor-pointer bg-hover-primary" + checkEmployeeLeaves(user, date)
+        );
       return null;
-    });
+    };
 
     const validateSlots = (date, slots) => {
       let result = [];
@@ -204,6 +208,23 @@ export default defineComponent({
         }
       });
       return result;
+    };
+
+    const checkEmployeeLeaves = (user, date) => {
+      if (props.leaveList.length > 0) {
+        const result = props.leaveList.filter((leave) => {
+          if (
+            leave.user_id == user.id &&
+            leave.start_date >= date.date &&
+            leave.end_date <= date.date
+          ) {
+            return leave;
+          }
+        });
+        return result.length > 0 ? " user-on-leave" : " bg-light-primary";
+      } else {
+        return " bg-light-primary";
+      }
     };
     return {
       scheduleTemplates,
@@ -224,3 +245,9 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="scss" scoped>
+.user-on-leave {
+  border: 1px solid #4f4f4c;
+  background-color: #7f7a6e3b;
+}
+</style>

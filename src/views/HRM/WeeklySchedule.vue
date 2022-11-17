@@ -72,6 +72,7 @@
       :employeeList="employeeList"
       :clinicFilter="clinicFilter"
       :dateOptions="dateRange"
+      :leaveList="leaveList"
       :canEdit="true"
     />
   </div>
@@ -132,6 +133,7 @@ export default defineComponent({
     });
 
     const clinics = computed(() => store.getters.clinicsList);
+    const leaveList = computed(() => store.getters.hrmDataList);
     const employeeList = computed(() => {
       const allEmployees = store.getters.hrmWeeklyTemplatesData;
       let filteredList = [];
@@ -215,8 +217,16 @@ export default defineComponent({
           date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
         })
         .then(() => {
-          loading.value = false;
+          store
+            .dispatch(HRMActions.EMPLOYEE_LEAVE.LIST, {
+              date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+              status: "Approved",
+            })
+            .then((e) => {
+              loading.value = false;
+            });
         });
+
       let day = dateRange.value.startDate;
       dateRange.value.datesInWeek = [];
       if (day !== null) {
@@ -368,6 +378,7 @@ export default defineComponent({
       processFillFromTemplate,
       PublishAllSlots,
       canPullFromTemplate,
+      leaveList,
     };
   },
 });
