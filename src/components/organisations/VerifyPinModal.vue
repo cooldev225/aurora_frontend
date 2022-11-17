@@ -3,7 +3,7 @@
     :title="modalTitle"
     modalId="verify_organization_pin"
     modalRef="verifyOrganizationPinModalRef"
-    :static="true"
+    :is-static="true"
   >
     <div class="row justify-content-md-center mb-4">
       <label class="text-muted fs-6 fw-bold mb-2 d-block">

@@ -195,7 +195,6 @@
     </div>
   </CardSection>
   <SendDocumentViaEmailModal
-    v-if="selectedDocument"
     :document="selectedDocument"
   ></SendDocumentViaEmailModal>
   <AssignPatientModal
@@ -245,6 +244,7 @@ export default defineComponent({
 
   components: {
     DocumentLabel,
+    SendDocumentViaEmailModal,
     AssignPatientModal,
     AssignSpecialistModal,
     AssignAppointmentModal,

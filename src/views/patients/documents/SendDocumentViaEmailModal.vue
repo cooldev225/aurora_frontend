@@ -2,7 +2,7 @@
   <ModalWrapper
     title="Send Via Email"
     modalId="send_email"
-    modalRef="letterModalRef"
+    :updateRef="letterModalRef"
   >
     <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
       <InputWrapper prop="email">
@@ -50,11 +50,12 @@
 import { defineComponent, ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
-  name: "create-letter-template-modal",
+  name: "send-email-modal",
   components: {},
   props: {
     document: { type: String, required: true },
@@ -101,16 +102,19 @@ export default defineComponent({
       ],
     });
 
+    const updateRef = (_ref) => {
+      sendEmailModalRef.value = _ref;
+    };
+
     const submit = () => {
       if (!formRef.value) {
         return;
       }
-
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.DOCUMENT.SEND_VIA_EMAIL, formData.value)
+            .dispatch(PatientActions.DOCUMENTS.SEND_VIA_EMAIL, formData.value)
             .then(() => {
               loading.value = false;
               Swal.fire({
@@ -145,11 +149,11 @@ export default defineComponent({
       rules,
       formRef,
       loading,
-      // sendableUsers,
       doctorAddressBooks,
       sendEmailModalRef,
       letter_template,
       submit,
+      updateRef,
     };
   },
 });

@@ -3,7 +3,7 @@
     :title="modalTitle"
     modalId="payment_item"
     modalRef="paymentItemModalRef"
-    :static="true"
+    :is-static="true"
   >
     <el-form
       @submit.prevent
