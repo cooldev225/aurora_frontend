@@ -135,10 +135,9 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
       return ApiService.get("organizations/" + id)
         .then(({ data }) => {
           this.context.commit(Mutations.SET_ORG.SELECT, data.data);
-          return data.data;
         })
         .catch(({ response }) => {
-          displayServerError(response, "Showing a single organization");
+          return displayServerError(response, "Showing a single organization");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
