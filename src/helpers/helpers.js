@@ -31,3 +31,17 @@ export function validatePass(rule, value, callback) {
     }
   }
 }
+
+import Swal from "sweetalert2/dist/sweetalert2.min.js";
+
+export function displayServerError(text, status, action) {
+  Swal.fire({
+    text: text,
+    icon: "error",
+    buttonsStyling: false,
+    confirmButtonText: "Try again later",
+    customClass: {
+      confirmButton: "btn btn-warning",
+    },
+  });
+}
