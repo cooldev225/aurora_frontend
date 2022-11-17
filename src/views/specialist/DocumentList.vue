@@ -357,9 +357,14 @@ export default defineComponent({
       }
     });
 
-    watch(currentUser, () => {
-      if (currentUser.value) {
-        specialistFilter.value = currentUser.value.profile.id;
+    watch([currentUser, specialists], () => {
+      if (currentUser.value && specialists.value?.length > 0) {
+        if (
+          specialists.value.some(
+            (item) => item.id === currentUser.value.profile.id
+          )
+        )
+          specialistFilter.value = currentUser.value.profile.id;
       }
     });
 
