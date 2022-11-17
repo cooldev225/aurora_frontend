@@ -9,7 +9,7 @@
         <el-select
           class="w-100"
           placeholder="Enter emails"
-          v-model="formData.to_user_ids"
+          v-model="formData.to_user_emails"
           filterable
           allow-create
           multiple
@@ -76,7 +76,7 @@ export default defineComponent({
 
     const formData = ref({
       document_id: documentId,
-      to_user_ids: [],
+      to_user_emails: [],
     });
 
     const rules = ref({
