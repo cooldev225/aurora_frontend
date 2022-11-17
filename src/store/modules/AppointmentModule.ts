@@ -5,6 +5,11 @@ import {
   AppointmentActions,
   AppointmentMutations,
 } from "@/store/enums/StoreAppointmentEnums";
+import {
+  displayServerError,
+  displaySuccessModal,
+  displaySuccessToast,
+} from "@/helpers/helpers.js";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -145,8 +150,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Listing all appointments");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -169,8 +173,10 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(
+            response,
+            "Updating appointment confirmation status"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -181,21 +187,9 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   [AppointmentActions.APT.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("appointments", payload)
-        .then(({ data }) => {
-          ApiService.get("payments/" + data.data.id)
-            .then(({ data }) => {
-              this.context.commit(Mutations.SET_MAKE_PAYMENT.SELECT, data.data);
-              return data.data;
-            })
-            .catch(({ response }) => {
-              console.log(response.data.error);
-            });
-          return data.data;
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
+      return ApiService.post("appointments", payload).catch(({ response }) => {
+        return displayServerError(response, "Creating an appointment");
+      });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
     }
@@ -210,8 +204,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Updating an appointment");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -227,8 +220,10 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(
+            response,
+            "Updating appointment collecting person"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -244,8 +239,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Checking in an appointment");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -261,8 +255,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Checking out an appointment");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -280,8 +273,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
         return data.data;
       })
       .catch(({ response }) => {
-        console.log(response.data.error);
-        // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        return displayServerError(response, "Displaying pre admissions");
       });
   }
 
@@ -293,8 +285,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
         return data.message;
       })
       .catch(({ response }) => {
-        console.log(response.data.error);
-        // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        return displayServerError(response, "Storing a pre admissions form");
       });
   }
 
@@ -313,8 +304,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
         return data;
       })
       .catch(({ response }) => {
-        console.log(response.data.error);
-        return response.data;
+        return displayServerError(response, "Updating a referral");
       });
   }
 
@@ -359,21 +349,22 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
           });
           //this.context.commit(Mutations.SET_ERROR, response.data.errors);
         } else {
-          console.error(response);
+          return displayServerError(
+            response,
+            "Validating a pre admission form view"
+          );
         }
       });
   }
 
   @Action
   [AppointmentActions.DETAIL.UPDATE](data) {
-    console.log(data);
     return ApiService.post(`appointments/${data.appointment_id}/detail`, data)
       .then(({ data }) => {
         return data;
       })
       .catch(({ response }) => {
-        console.log(response);
-        return response.data;
+        return displayServerError(response, "Updating appointment detail's");
       });
   }
 }
