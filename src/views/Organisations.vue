@@ -213,26 +213,11 @@ export default defineComponent({
         },
       }).then((result) => {
         if (result.value == "success") {
-          store
-            .dispatch(Actions.ORG.DELETE, item.id)
-            .then(() => {
+          store.dispatch(Actions.ORG.DELETE, item.id).then(() => {
+            store.dispatch(Actions.ORG.LIST).then(() => {
               loading.value = false;
-
-              Swal.fire({
-                text: "Successfully Deleted!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                store.dispatch(Actions.ORG.LIST);
-              });
-            })
-            .catch(({ response }) => {
-              console.log(response.data.error);
             });
+          });
         }
       });
     };
@@ -300,27 +285,6 @@ export default defineComponent({
           ) {
             return true;
           }
-
-          // if (
-          //   org.email
-          //     .toLowerCase()
-          //     .search(filterAndSort.searchText.toLowerCase()) >= 0
-          // ) {
-          //   return true;
-          // }
-
-          // if (
-          //   org.username
-          //     .toLowerCase()
-          //     .search(filterAndSort.searchText.toLowerCase()) >= 0
-          // ) {
-          //   return true;
-          // }
-
-          // if (org.mobile_number.search(filterAndSort.searchText) >= 0) {
-          //   return true;
-          // }
-
           return false;
         });
       } else {

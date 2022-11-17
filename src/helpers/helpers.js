@@ -33,15 +33,47 @@ export function validatePass(rule, value, callback) {
 }
 
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
+import { ElMessage } from "element-plus";
 
-export function displayServerError(text, status, action) {
-  Swal.fire({
-    text: text,
+export function displayServerError(response, action) {
+  console.log(response);
+  let html = "";
+  if (!response.data) {
+    html =
+      "<h1>ERROR </h1><textarea style='height: 160px; width: 100%; padding: 10px; color: grey; font-size: small;' readonly>" +
+      response +
+      "</textarea>";
+  } else {
+    html =
+      "<h1>ERROR " +
+      response.status +
+      "</h1><textarea style='height: 160px; width: 100%; padding: 10px; color: grey; font-size: small;' readonly>" +
+      response.data.message +
+      "</textarea>";
+  }
+  return Swal.fire({
+    html: html,
     icon: "error",
     buttonsStyling: false,
     confirmButtonText: "Try again later",
     customClass: {
       confirmButton: "btn btn-warning",
+    },
+  });
+}
+
+export function displaySuccessToast(message) {
+  ElMessage.success(message);
+}
+
+export function displaySuccessModal(text) {
+  Swal.fire({
+    text: text,
+    icon: "success",
+    buttonsStyling: false,
+    confirmButtonText: "Ok, got it!",
+    customClass: {
+      confirmButton: "btn btn-primary",
     },
   });
 }
