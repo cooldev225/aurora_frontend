@@ -16,7 +16,7 @@
         >
           <el-option
             v-for="doctorAddressBook in doctorAddressBooks"
-            :value="doctorAddressBook.id"
+            :value="doctorAddressBook.email"
             :label="
               doctorAddressBook.first_name +
               ' ' +
@@ -25,7 +25,7 @@
               doctorAddressBook.email +
               '>'
             "
-            :key="doctorAddressBook.id"
+            :key="doctorAddressBook.email"
           />
         </el-select>
       </InputWrapper>
