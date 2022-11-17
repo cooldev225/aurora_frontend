@@ -3,6 +3,11 @@ import BillingApiService from "@/core/services/BillingApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import {
+  displayServerError,
+  displaySuccessModal,
+  displaySuccessToast,
+} from "@/helpers/helpers.js";
 
 export interface IClinics {
   id: number;
@@ -89,8 +94,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Listing all clinics");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -106,7 +110,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Creating a clinic");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -117,13 +121,12 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
   [Actions.CLINICS.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("clinics", item.id, item)
-        .then(({ data }) => {
-          return data.data;
+      return ApiService.update("clinics", item.id, item)
+        .then(() => {
+          return displaySuccessToast("Clinic Updated");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          displayServerError(response, "Updating a clinic");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -135,11 +138,11 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("clinics/" + id)
-        .then(({ data }) => {
-          return data.data;
+        .then(() => {
+          return displaySuccessToast("Clinic deleted");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Deleting a clinic");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -156,8 +159,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Listing clinic rooms");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -173,7 +175,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Creating a clinic room");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -189,8 +191,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Updating a clinic room");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -206,7 +207,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Deleting a clinic room");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -221,7 +222,6 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
         clinic
       )
         .then(({ data }) => {
-          console.log("Module:", data.data);
           return data.data;
         })
         .catch(({ response }) => {

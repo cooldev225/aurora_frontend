@@ -152,24 +152,9 @@ export default defineComponent({
         },
       }).then((result) => {
         if (result.value == "success") {
-          store
-            .dispatch(Actions.CLINICS.DELETE, item.id)
-            .then(() => {
-              Swal.fire({
-                text: "Successfully Deleted!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                store.dispatch(Actions.CLINICS.LIST);
-              });
-            })
-            .catch(({ response }) => {
-              console.log(response.data.error);
-            });
+          store.dispatch(Actions.CLINICS.DELETE, item.id).then(() => {
+            store.dispatch(Actions.CLINICS.LIST);
+          });
         }
       });
     };

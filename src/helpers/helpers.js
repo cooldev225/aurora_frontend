@@ -36,7 +36,6 @@ import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { ElMessage } from "element-plus";
 
 export function displayServerError(response, action) {
-  console.log(response);
   let html = "";
   if (!response.data) {
     html =
@@ -51,7 +50,7 @@ export function displayServerError(response, action) {
       response.data.message +
       "</textarea>";
   }
-  return Swal.fire({
+  Swal.fire({
     html: html,
     icon: "error",
     buttonsStyling: false,
