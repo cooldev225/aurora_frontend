@@ -11,6 +11,7 @@
           placeholder="Enter emails"
           v-model="formData.to_user_ids"
           filterable
+          allow-create
           multiple
         >
           <el-option
