@@ -235,25 +235,7 @@ export default defineComponent({
             })
             .then(() => {
               loading.value = false;
-              store.dispatch(Actions.ORG.LIST);
-              Swal.fire({
-                text: "Successfully Updated!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                router.push({ name: "organisations" });
-              });
-            })
-            .catch(({ response }) => {
-              loading.value = false;
-              console.log(response.data.error);
             });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
