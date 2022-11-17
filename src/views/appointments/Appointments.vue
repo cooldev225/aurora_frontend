@@ -524,6 +524,8 @@ export default defineComponent({
         month_string: month,
         year_string: year,
       });
+
+      filterSpecialists();
     });
 
     onUpdated(() => {
