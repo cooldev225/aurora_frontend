@@ -1771,13 +1771,11 @@ export default defineComponent({
     const getAvailableRooms = () => {
       if (JwtService.getToken()) {
         ApiService.setHeader();
-        ApiService.get("clinics/" + aptInfoData.value.clinic_id + "/rooms")
-          .then(({ data }) => {
-            rooms.value = data.data;
-          })
-          .catch(({ response }) => {
-            console.log(response.data.errors);
-          });
+        ApiService.get(
+          "clinics/" + aptInfoData.value.clinic_id + "/rooms"
+        ).then(({ data }) => {
+          rooms.value = data.data;
+        });
       } else {
         // this.context.commit(Mutations.PURGE_AUTH);
       }
@@ -1867,15 +1865,13 @@ export default defineComponent({
           ...otherInfoData.value,
         })
         .then(() => {
-          loading.value = false;
           store.dispatch(AppointmentActions.LIST);
           hideModal(createAptModalRef.value);
           resetCreateModal();
           ElMessage.success("Appointment Saved");
         })
-        .catch(({ response }) => {
+        .finally(() => {
           loading.value = false;
-          console.log(response.data.errors);
         });
     };
 
@@ -1900,14 +1896,8 @@ export default defineComponent({
         patientStatus.value = "new";
         patientStep.value = 3;
       } else {
-        // Edit modal
         store.dispatch(PatientActions.LIST);
       }
-      //
-      // cur_appointment_type_id.value = "";
-      // patientStatus.value = "new";
-      // patientStep.value = 1;
-      // patientTableData.value = patientList.value;
     };
 
     const handleCancel = () => {
@@ -1936,8 +1926,6 @@ export default defineComponent({
           loading.value = true;
           props.modalId === "modal_create_apt" ? createApt() : updateApt();
           resetCreateModal();
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
@@ -1986,9 +1974,8 @@ export default defineComponent({
             }
           });
         })
-        .catch((response) => {
+        .finally(() => {
           loading.value = false;
-          console.log(response);
         });
     };
 
@@ -2018,9 +2005,8 @@ export default defineComponent({
           store.dispatch(Actions.APT.LIST);
           hideModal(editAptModalRef.value);
         })
-        .catch(({ response }) => {
+        .finally(() => {
           loading.value = false;
-          console.log(response.data.error);
         });
     };
 
@@ -2038,7 +2024,6 @@ export default defineComponent({
     const selectPatient = (item) => {
       store.dispatch(PatientActions.APPOINTMENTS, item.id);
       store.dispatch(PatientActions.VIEW, item.id);
-      //patientInfoData.value = item;
       for (let key in patientInfoData.value)
         patientInfoData.value[key] = item[key];
       patientInfoData.value.alerts = item.alerts;
