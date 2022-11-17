@@ -39,6 +39,7 @@ const PatientActions = {
     DELETE: "deletePatientAlsoKnownAs",
   },
   ALLERGIES_LIST: "getAllergiesList",
+  PRINT_LABEL: "getPatientPrintLabel",
 };
 
 const PatientMutations = {

@@ -1,9 +1,6 @@
 <template>
   <LargeIconButton text="Print Label" @click="handlePrintLabel()" />
-  <PrintLabelModal
-    :patient="patient"
-    :referral="appointment.referral"
-  ></PrintLabelModal>
+  <PrintLabelModal :appointmentId="appointment.id"></PrintLabelModal>
 </template>
 
 <script lang="ts">
