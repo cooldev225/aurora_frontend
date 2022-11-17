@@ -108,14 +108,10 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
-
-import { useRouter, useRoute } from "vue-router";
-import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
 import { Plus } from "@element-plus/icons-vue";
 import { mask } from "vue-the-mask";
-import { loaderLogo } from "@/core/helpers/config";
 import LeaveRequestModal from "@/views/HRM/modals/LeaveRequestModal.vue";
 import { Modal } from "bootstrap";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
@@ -145,11 +141,11 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("My Availability", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(HRMActions.EMPLOYEE_LEAVE.LIST, {
-        user_id: 6,
+        user_id: user.value.id,
       });
     });
     const leaveList = computed(() => store.getters.hrmDataList);
-    const user = computed(() => store.getters.currentUser);
+    const user = computed(() => store.getters.userProfile);
 
     watch(leaveList, () => {
       tableData.value = leaveList.value;
