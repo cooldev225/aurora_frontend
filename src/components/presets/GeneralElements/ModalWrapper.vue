@@ -7,7 +7,11 @@
     ref="bModalRef"
     :data-bs-backdrop="static ? 'static' : 'none'"
   >
-    <div class="modal-dialog modal-dialog-centered mw-850px">
+    <div
+      :class="
+        'modal-dialog modal-dialog-centered mw-' + (width ? width : '850px')
+      "
+    >
       <div class="modal-content">
         <div
           class="modal-header d-flex flex-row"
@@ -45,6 +49,8 @@ export default {
     modalRef: { required: false },
     updateRef: { type: Function, required: false },
     static: { type: Boolean, required: false },
+    width: { type: String, required: false },
+    height: { type: String, required: false },
   },
   setup(props) {
     const bModalRef = ref(null);
