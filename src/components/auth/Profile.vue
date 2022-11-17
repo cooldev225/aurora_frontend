@@ -264,26 +264,11 @@ export default defineComponent({
           store
             .dispatch(Actions.PROFILE.UPDATE, Data)
             .then(() => {
-              loading.value = false;
               store.dispatch(Actions.PROFILE.VIEW);
-              Swal.fire({
-                text: "Successfully Updated!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                // router.go();
-              });
             })
-            .catch(({ response }) => {
+            .finally(() => {
               loading.value = false;
-              console.log(response.data.error);
             });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
