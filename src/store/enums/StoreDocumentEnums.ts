@@ -3,6 +3,9 @@ const DocumentActions = {
     LIST: "documentList",
     SHOW: "documentShow",
     UPDATE: "update",
+    ACTION_LOGS: {
+        CREATE: "createDocumentActionLog",
+    }
 };
 
 const DocumentMutations = {

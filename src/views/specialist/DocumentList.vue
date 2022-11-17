@@ -229,6 +229,7 @@ import { defineComponent, computed, watch, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import pdf from "pdfobject";
 import patientDocumentTypes from "@/core/data/patient-document-types";
+import patientDocumentActionStatus from "@/core/data/patient-document-action-status";
 import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import DocumentLabel from "@/views/patients/documents/DocumentLabel.vue";
@@ -414,12 +415,23 @@ export default defineComponent({
 
         iframe.style.display = "none";
         iframe.src = blobURL;
-        iframe.onload = function () {
-          setTimeout(function () {
-            iframe.focus();
-            iframe.contentWindow.print();
-          }, 1);
-        };
+        let Data = new FormData();
+        Data.append("patient_document_id", selectedDocument.value.id);
+        Data.append("status", patientDocumentActionStatus.PRINTED);
+        store
+          .dispatch(DocumentActions.ACTION_LOGS.CREATE, {
+            patient_document_id: 1,
+            data: Data,
+          })
+          .then(() => {
+            console.log("Document printed.");
+          });
+        // iframe.onload = function () {
+        //   setTimeout(function () {
+        //     iframe.focus();
+        //     iframe.contentWindow.print();
+        //   }, 1);
+        // };
       }
     };
 
@@ -610,6 +622,7 @@ export default defineComponent({
 
     return {
       patientDocumentTypes,
+      patientDocumentActionStatus,
       DocumentLabel,
       filteredDocuments,
       documentTypeFilter,
