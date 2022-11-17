@@ -13,7 +13,9 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_edit_schedule_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder" v-if="formData.id">Edit Leave Request</h2>
+          <h2 class="fw-bolder" v-if="formData.id">
+            Edit Leave Request - {{ formData.full_name }}
+          </h2>
           <h2 class="fw-bolder" v-else>New Leave Request</h2>
           <!--end::Modal title-->
           <!--begin::Close-->
@@ -117,6 +119,14 @@
             <el-button type="primary" @click="submitForm">{{
               formData.id ? "Update" : "Request"
             }}</el-button>
+            <el-button
+              class="approve-btn"
+              type="warning"
+              @click="approveAndSubmit"
+              v-if="formData.id && userRole.role_id == 3"
+            >
+              Approve and Update
+            </el-button>
             <el-button data-bs-dismiss="modal" @click="resetForm"
               >Cancel</el-button
             >
@@ -131,43 +141,17 @@
   </div>
 </template>
 <style lang="scss">
-.time-slots-divider {
-  margin-top: 0px !important;
-}
-
-.time-slots-box {
-  margin-left: 0px !important;
-  margin-right: 0px !important;
-
-  .time-slots-view {
-    & > div {
-      padding-right: 0.5rem !important;
-      padding-left: 0.5rem !important;
-    }
-
-    & > div.gap {
-      align-items: center;
-      display: flex;
-      padding-right: 0px !important;
-      padding-left: 0px !important;
-    }
+.approve-btn {
+  background: #36ae45;
+  border-color: #36ae45;
+  &:hover {
+    background: #309b41ad;
+    border-color: #309b41ad;
   }
-
-  .time-slots-delete {
-    display: flex;
-    align-items: center;
-    margin-right: 0.5rem;
-  }
-}
-
-.time-slots-add-box {
-  justify-content: center;
-  cursor: pointer;
-  padding: 1.5rem;
 }
 </style>
 <script>
-import { defineComponent, computed, ref, onMounted } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { useStore } from "vuex";
 import employeeTypes from "@/core/data/employee-schedule-types";
 import employeeRoles from "@/core/data/employee-roles";
@@ -187,6 +171,7 @@ export default defineComponent({
     const formRef = ref(null);
     const loading = ref(false);
     const leaveRequestModalRef = ref(null);
+    const userRole = computed(() => store.getters.userProfile);
     const leaveTypes = ref([
       {
         value: "Annual Leave",
@@ -309,6 +294,22 @@ export default defineComponent({
       return date < new Date();
     };
 
+    const approveAndSubmit = () => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You are about to approve and update this leave request",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#36ae45",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, proceed it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          formData.value.status = "Approved";
+          submitForm();
+        }
+      });
+    };
     return {
       rules,
       submitForm,
@@ -325,6 +326,8 @@ export default defineComponent({
       deleteRequest,
       leaveRequestModalRef,
       disabledDate,
+      approveAndSubmit,
+      userRole,
     };
   },
 });

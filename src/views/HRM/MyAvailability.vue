@@ -4,7 +4,7 @@
     <!--begin::Content-->
     <div class="d-flex flex-row-fluid flex-center bg-white rounded">
       <div class="w-100 py-4 px-9">
-        <HeadingText text="Available Leave Balances" />
+        <HeadingText text="Available Leave Balance" />
         <el-divider border-style="double" />
         <div class="row">
           <div class="w-50">

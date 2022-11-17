@@ -44,6 +44,11 @@ const HRMRoutes = [
     name: "my-availability",
     component: () => import("@/views/HRM/MyAvailability.vue"),
   },
+  {
+    path: "/hrm/employee-availabilities",
+    name: "Employee Availabilities",
+    component: () => import("@/views/HRM/EmployeeLeave.vue"),
+  },
 ];
 
 export default HRMRoutes;

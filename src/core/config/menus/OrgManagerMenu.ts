@@ -81,6 +81,10 @@ const OrgManagerMenu = [
         heading: "Bulletin Board",
         route: "/hrm/bulletin-board",
       },
+      {
+        heading: "Employee Availabilities",
+        route: "/hrm/employee-availabilities",
+      },
     ],
   },
 ];
