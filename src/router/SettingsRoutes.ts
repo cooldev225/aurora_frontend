@@ -29,11 +29,6 @@ const SettingsRoutes = [
     component: () => import("@/views/settings/health-fund/HealthFund.vue"),
   },
   {
-    path: "/settings/birthCode",
-    name: "birthCode",
-    component: () => import("@/views/settings/birth-code/BirthCode.vue"),
-  },
-  {
     path: "/settings",
     name: "org-admin-settings",
     component: () => import("@/views/settings/OrgAdminSettings.vue"),

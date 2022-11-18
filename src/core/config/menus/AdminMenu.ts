@@ -21,10 +21,6 @@ const AdminMenu = [
         heading: "Health Fund List",
         route: "/settings/health-fund",
       },
-      {
-        heading: "BirthCode List",
-        route: "/settings/birthCode",
-      },
     ],
   },
 ];
