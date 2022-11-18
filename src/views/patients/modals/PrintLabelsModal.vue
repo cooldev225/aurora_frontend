@@ -72,7 +72,7 @@
 <style lang="scss">
 .pdf_viewer_wrapper {
   width: 100%;
-  height: 90px;
+  height: 175px;
   > .pdf_viewer {
     height: 100%;
   }
@@ -136,6 +136,11 @@ export default defineComponent({
 
           pdf.embed(objectUrl, "#divPDFViewer_" + props.appointmentId, {
             pdfOpenParams: { pagemode: "none" },
+            width: "100%",
+            height: "100%",
+            view: "FitV",
+            pagemode: "thumbs",
+            search: "lorem ipsum",
           });
         });
     });
