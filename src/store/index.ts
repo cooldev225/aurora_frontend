@@ -22,7 +22,7 @@ import AptTimeRequireModule from "@/store/modules/AptTimeRequireModule";
 import ReportTemplatesModule from "@/store/modules/ReportTemplatesModule";
 import MailsModule from "@/store/modules/MailsModule";
 import SpecialistsModule from "@/store/modules/SpecialistsModule";
-import NtfTemplatesModule from "@/store/modules/NtfTemplatesModule";
+import NotificationTemplatesModule from "@/store/modules/NotificationTemplatesModule";
 import MakePaymentModule from "@/store/modules/MakePaymentModule";
 import ProfileModule from "@/store/modules/ProfileModule";
 import DoctorAddressBookModule from "@/store/modules/DoctorAddressBookModule";
@@ -62,7 +62,7 @@ const store = createStore({
     EmployeeModule,
     BookingModule,
     AnesthetistModule,
-    NtfTemplatesModule,
+    NotificationTemplatesModule,
     AppointmentModule,
     AptTypesModule,
     AptTimeRequireModule,
