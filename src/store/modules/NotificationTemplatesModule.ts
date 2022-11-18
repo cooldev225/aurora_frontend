@@ -2,7 +2,11 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-
+import {
+  displayServerError,
+  displaySuccessModal,
+  displaySuccessToast,
+} from "@/helpers/helpers.js";
 export interface INtfTemplates {
   id: number;
 }
@@ -56,8 +60,7 @@ export default class NtfTemplatesModule
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Listing notification templates");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -69,12 +72,14 @@ export default class NtfTemplatesModule
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("notification-templates", item.id, item)
-        .then(({ data }) => {
-          return data.data;
+        .then(() => {
+          return displaySuccessToast("Notification template updated");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(
+            response,
+            "Updating a notification template"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

@@ -14,7 +14,9 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_add_customer_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Edit Notification Template</h2>
+          <h2 class="fw-bolder">
+            Edit Notification Template: {{ formData.title }}
+          </h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
@@ -50,20 +52,6 @@
               data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
               data-kt-scroll-offset="300px"
             >
-              <!--begin::Input group-->
-              <div class="fv-row mb-7">
-                <!--begin::Label-->
-                <label class="fs-6 fw-bold mb-2">Title</label>
-                <!--end::Label-->
-
-                <!--begin::Input-->
-                <el-form-item prop="title">
-                  <el-input v-model="formData.title" type="text" disabled />
-                </el-form-item>
-                <!--end::Input-->
-              </div>
-              <!--end::Input group-->
-
               <!--begin::Input group-->
               <div v-if="formData.allow_day_edit != 0" class="fv-row mb-7">
                 <!--begin::Label-->
@@ -213,27 +201,15 @@ export default defineComponent({
           store
             .dispatch(Actions.NTF_TEMPLATES.UPDATE, formData.value)
             .then(() => {
-              loading.value = false;
-              store.dispatch(Actions.NTF_TEMPLATES.LIST);
-              Swal.fire({
-                text: "Successfully Updated!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
+              store.dispatch(Actions.NTF_TEMPLATES.LIST).then(() => {
                 hideModal(editNtfTemplateModalRef.value);
               });
             })
-            .catch(({ response }) => {
+            .finally(() => {
               loading.value = false;
-              console.log(response.data.error);
+              hideModal(editNtfTemplateModalRef.value);
             });
           formRef.value.resetFields();
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
