@@ -2,6 +2,11 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import {
+  displayServerError,
+  displaySuccessModal,
+  displaySuccessToast,
+} from "@/helpers/helpers.js";
 
 export interface IDoctorAddressBook {
   id: number;
@@ -44,7 +49,7 @@ export default class DoctorAddressBookModule
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.message);
+          return displayServerError(response, "Listing doctor address book");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -60,7 +65,7 @@ export default class DoctorAddressBookModule
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Creating a doctor address");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -72,11 +77,11 @@ export default class DoctorAddressBookModule
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("doctor-address-book", item.id, item)
-        .then(({ data }) => {
-          return data.data;
+        .then(() => {
+          return displaySuccessToast("Doctor address updated");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Updating a doctor address");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -88,11 +93,11 @@ export default class DoctorAddressBookModule
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("doctor-address-book/" + id)
-        .then(({ data }) => {
-          return data.data;
+        .then(() => {
+          return displaySuccessToast("Doctor address deleted");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Deleting a doctor address");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
