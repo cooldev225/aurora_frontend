@@ -1,7 +1,11 @@
 <template>
-  <ModalWrapper title="Print Label" modalId="print_label" width="227px">
+  <ModalWrapper
+    title="Print Label"
+    :modalId="'print_label_' + appointmentId"
+    width="227px"
+  >
     <div class="pdf_viewer_wrapper">
-      <div id="divPDFViewer" class="pdf_viewer"></div>
+      <div :id="'divPDFViewer_' + appointmentId" class="pdf_viewer"></div>
     </div>
     <!-- <div id="print_preview" class="print-preview-box mb-4">
       <div class="d-flex justify-content-between fw-bolder">
@@ -67,7 +71,7 @@
 </template>
 <style lang="scss">
 .pdf_viewer_wrapper {
-  width: 227px;
+  width: 100%;
   height: 90px;
   > .pdf_viewer {
     height: 100%;
@@ -110,10 +114,6 @@ export default defineComponent({
       //var blob = new Blob([tempFile.value], { type: "application/pdf" });
       var blobURL = URL.createObjectURL(file.value);
 
-      pdf.embed(blobURL, "#divPDFViewer", {
-        pdfOpenParams: { pagemode: "none" },
-      });
-
       let iframe = document.createElement("iframe");
       document.body.appendChild(iframe);
 
@@ -133,8 +133,8 @@ export default defineComponent({
           file.value = data;
           const blob = new Blob([data], { type: "application/pdf" });
           const objectUrl = URL.createObjectURL(blob);
-          console.log(objectUrl);
-          pdf.embed(objectUrl, "#divPDFViewer", {
+
+          pdf.embed(objectUrl, "#divPDFViewer_" + props.appointmentId, {
             pdfOpenParams: { pagemode: "none" },
           });
         });

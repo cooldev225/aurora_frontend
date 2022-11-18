@@ -19,9 +19,11 @@ export default {
       type: Object,
     },
   },
-  setup() {
+  setup(props) {
     const handlePrintLabel = () => {
-      const modal = new Modal(document.getElementById("modal_print_label"));
+      const modal = new Modal(
+        document.getElementById("modal_print_label_" + props.appointment.id)
+      );
       modal.show();
     };
 

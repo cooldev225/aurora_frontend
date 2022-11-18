@@ -266,7 +266,7 @@ export default defineComponent({
       mobile_number: "0",
       first_name: "",
       last_name: "",
-      address: "",
+      address: "address",
       role_id: 4,
       type: "full-time",
       schedule_timeslots: [],
