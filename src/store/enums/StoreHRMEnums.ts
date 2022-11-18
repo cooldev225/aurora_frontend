@@ -26,6 +26,9 @@ const HRMActions = {
         CREATE: "setEmployeeLeaveCreate",
         UPDATE: "setEmployeeLeaveUpdate",
         DELETE: "setEmployeeLeaveDelete",
+    },
+    DEALLOCATE_APPOINTMENTS: {
+        LIST: "setSpecialistLeaveAppointments"
     }
 };
 

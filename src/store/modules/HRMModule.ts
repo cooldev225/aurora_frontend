@@ -302,4 +302,24 @@ export default class HRMModule
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [HRMActions.DEALLOCATE_APPOINTMENTS.LIST](payload) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.query("hrm/deallocate-appointments", { params: payload })
+        .then(({ data }) => {
+          this.context.commit(HRMMutations.DATA.SET_LIST, {
+            specialistAppointments: data.specialistAppointments,
+            anesthetistAppointments: data.anesthetistAppointments,
+          });
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      // this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }
