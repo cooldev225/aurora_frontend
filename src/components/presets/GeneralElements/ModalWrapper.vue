@@ -8,9 +8,8 @@
     :data-bs-backdrop="static ? 'static' : 'none'"
   >
     <div
-      :class="
-        'modal-dialog modal-dialog-centered mw-' + (width ? width : '850px')
-      "
+      :class="'modal-dialog modal-dialog-centered'"
+      :style="'max-width: ' + (width ? width : '850px') + '!important'"
     >
       <div class="modal-content">
         <div

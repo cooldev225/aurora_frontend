@@ -2,62 +2,11 @@
   <ModalWrapper
     title="Print Label"
     :modalId="'print_label_' + appointmentId"
-    width="227px"
+    width="500px"
   >
     <div class="pdf_viewer_wrapper">
       <div :id="'divPDFViewer_' + appointmentId" class="pdf_viewer"></div>
     </div>
-    <!-- <div id="print_preview" class="print-preview-box mb-4">
-      <div class="d-flex justify-content-between fw-bolder">
-        <label>{{ patient.last_name }}</label>
-      </div>
-      <div class="d-flex justify-content-between fw-bold">
-        <label>{{ patient.first_name }}</label>
-        <label>{{
-          "DOB: " +
-          moment(patient.date_of_birth).format("DD/MM/YYYY") +
-          " " +
-          genders.filter((g) => g.value === patient.gender)[0].label.charAt(0)
-        }}</label>
-      </div>
-      <div class="d-flex justify-content-between">
-        <label>{{ patient.address }}</label>
-        <label class="fw-bold">{{ patient.id }}</label>
-      </div>
-      <div>
-        <label>{{
-          patient.suburb + ", " + patient.postcode + ", " + patient.birth_state
-        }}</label>
-      </div>
-      <div>
-        <label class="fw-bold">{{
-          "Ref Doc: " + referral.doctor_address_book_name
-        }}</label>
-      </div>
-      <div>
-        <label class="fw-bold">{{
-          referral.doctor_address_book.address
-        }}</label>
-      </div>
-      <div>
-        <label>{{
-          "M/C #: " +
-          patient.medicare_details.medicare_no +
-          " - " +
-          patient.medicare_details.medicare_reference_no
-        }}</label>
-      </div>
-      <div>
-        <label class="fw-bold fit" style="word-spacing: '0.1rem'">{{
-          "(H) " +
-          patient.contact_number +
-          " (M) " +
-          patient.int_contact_number +
-          " (W) " +
-          patient.kin_phone_number
-        }}</label>
-      </div>
-    </div> -->
     <div class="modal-footer flex-center">
       <button
         class="btn btn-lg btn-primary"
@@ -136,11 +85,8 @@ export default defineComponent({
 
           pdf.embed(objectUrl, "#divPDFViewer_" + props.appointmentId, {
             pdfOpenParams: { pagemode: "none" },
-            width: "100%",
+            width: "200%",
             height: "100%",
-            view: "FitV",
-            pagemode: "thumbs",
-            search: "lorem ipsum",
           });
         });
     });
