@@ -159,7 +159,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, watch } from "vue";
+import { defineComponent, ref, computed, watch, onMounted } from "vue";
 import { useStore } from "vuex";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -179,9 +179,10 @@ export default defineComponent({
   },
   components: { InputWrapper },
   props: {
-    selectedApt: { type: Object, required: true },
+    appointment: { type: Object, required: true },
   },
   setup(props) {
+    console.log(props.appointment);
     const store = useStore();
     const formRef = ref(null);
     const doctorAddressBookModalRef = ref(null);
@@ -190,16 +191,18 @@ export default defineComponent({
     const uploadDisabled = ref(true);
     const pdfType = "application/pdf";
 
-    const appointmentData = computed(() => props.selectedApt);
+    const appointmentData = computed(() => props.appointment);
     const doctorAddressBooks = computed(
       () => store.getters.getDoctorAddressBookList
     );
 
     const formData = ref({
-      doctor_address_book_name: "",
-      doctor_address_book_id: "2",
-      referral_date: "",
-      referral_duration: "",
+      doctor_address_book_name:
+        appointmentData.value.referral.doctor_address_book_name,
+      doctor_address_book_id:
+        appointmentData.value.referral.doctor_address_book_id,
+      referral_date: appointmentData.value.referral.referral_date,
+      referral_duration: appointmentData.value.referral.referral_duration,
       file: [],
     });
 
@@ -368,6 +371,10 @@ export default defineComponent({
         return full_name_pos !== -1 || address_pos !== -1;
       };
     };
+
+    onMounted(() => {
+      afterChangedData();
+    });
 
     const handleUploadChange = (file) => {
       if (file.raw?.type?.toString().toLowerCase() !== pdfType) {
