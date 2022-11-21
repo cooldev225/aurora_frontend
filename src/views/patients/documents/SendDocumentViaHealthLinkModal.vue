@@ -8,15 +8,13 @@
       <InputWrapper prop="email">
         <el-select
           class="w-100"
-          placeholder="Enter emails"
-          v-model="formData.to_user_emails"
+          placeholder="Search doctor address book"
+          v-model="formData.receiving_doctor_id"
           filterable
-          allow-create
-          multiple
         >
           <el-option
             v-for="doctorAddressBook in doctorAddressBooks"
-            :value="doctorAddressBook.email"
+            :value="doctorAddressBook.id"
             :label="
               doctorAddressBook.first_name +
               ' ' +
@@ -25,7 +23,7 @@
               doctorAddressBook.email +
               '>'
             "
-            :key="doctorAddressBook.email"
+            :key="doctorAddressBook.id"
           />
         </el-select>
       </InputWrapper>
@@ -75,8 +73,8 @@ export default defineComponent({
     // const sendableUsers = computed(() => store.getters.getUserList);
 
     const formData = ref({
-      document_id: documentId,
-      to_user_emails: [],
+      patient_document_id: documentId,
+      receiving_doctor_id: null,
     });
 
     const rules = ref({
@@ -115,7 +113,10 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(PatientActions.DOCUMENTS.SEND_VIA_EMAIL, formData.value)
+            .dispatch(
+              PatientActions.DOCUMENTS.SEND_VIA_HEALTH_LINK,
+              formData.value
+            )
             .then(() => {
               loading.value = false;
               Swal.fire({
