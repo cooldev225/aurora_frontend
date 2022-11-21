@@ -30,6 +30,11 @@ const AppointmentRoutes = [
     component: () =>
       import("@/views/appointments/PrintHospitalCertificate.vue"),
   },
+  {
+    path: "/appointments/deallocate-appointments",
+    name: "deallocate-appointments",
+    component: () => import("@/views/appointments/DeallocateAppointments.vue"),
+  },
 ];
 
 export default AppointmentRoutes;

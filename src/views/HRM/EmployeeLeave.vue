@@ -198,7 +198,11 @@ export default defineComponent({
     });
 
     const loading = ref(false);
-    const leaveList = computed(() => store.getters.hrmDataList);
+    const leaveList = computed(() => {
+      const list = store.getters.hrmDataList;
+      if (list.anesthetistAppointments) return [];
+      return list;
+    });
     const user = computed(() => store.getters.currentUser);
 
     onMounted(() => {

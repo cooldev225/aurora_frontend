@@ -229,7 +229,6 @@
       </div>
     </div>
   </div>
-  <EditModal modalId="modal_edit_apt" />
   <CheckInModal></CheckInModal>
 </template>
 
@@ -244,7 +243,6 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
-import EditModal from "@/components/appointments/ModalApt.vue";
 import CheckInModal from "@/components/appointments/CheckInModal.vue";
 import { Modal } from "bootstrap";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
@@ -254,7 +252,6 @@ import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 export default defineComponent({
   name: "booing-drawer",
   components: {
-    EditModal,
     CheckInModal,
     LargeIconButton,
     AlertBadge,

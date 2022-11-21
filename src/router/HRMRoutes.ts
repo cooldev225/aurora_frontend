@@ -49,11 +49,6 @@ const HRMRoutes = [
     name: "Employee Availabilities",
     component: () => import("@/views/HRM/EmployeeLeave.vue"),
   },
-  {
-    path: "/hrm/deallocate-appointments",
-    name: "Deallocate Appointments",
-    component: () => import("@/views/HRM/DeallocateAppointments.vue"),
-  },
 ];
 
 export default HRMRoutes;

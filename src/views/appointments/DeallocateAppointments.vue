@@ -23,14 +23,12 @@
     :header="tableHeader"
     :loading="loading"
     title="Deallocate Specialist Appointments"
-    @showModal="editRequest"
   />
   <AptTable
     :tableData="anesthetistAptList"
     :header="tableAnesthetistHeader"
     :loading="loading"
     title="Deallocate Anesthetist Appointments"
-    @showModal="editRequest"
   />
 </template>
 <script lang="ts">
@@ -41,7 +39,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { mask } from "vue-the-mask";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
 import moment from "moment";
-import AptTable from "@/components/HRM/DeallocateAppointmentTable.vue";
+import AptTable from "@/components/appointments/DeallocateAppointmentTable.vue";
 
 export default defineComponent({
   name: "deallocate-appointments",
@@ -167,28 +165,24 @@ export default defineComponent({
     const loading = ref(false);
     const specialistAptList = computed(() => {
       const aptList = store.getters.hrmDataList;
-      if (aptList.length <= 0) return [];
+      if (!aptList.specialistAppointments) return [];
       return aptList.specialistAppointments;
     });
 
     const anesthetistAptList = computed(() => {
       const aptList = store.getters.hrmDataList;
-      if (aptList.length <= 0) return [];
+      if (!aptList.anesthetistAppointments) return [];
       return aptList.anesthetistAppointments;
     });
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Deallocate Appointments", ["HRM"]);
+      setCurrentPageBreadcrumbs("Deallocate Appointments", ["Booking"]);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(HRMActions.DEALLOCATE_APPOINTMENTS.LIST, {
         start_date: moment().startOf("isoWeek").format("YYYY-MM-DD"),
         end_date: moment().endOf("month").format("YYYY-MM-DD"),
       });
     });
-
-    const editRequest = (apt) => {
-      console.log(apt);
-    };
 
     const tagClass = (data) => {
       if (data == "PENDING") return "";
@@ -204,7 +198,6 @@ export default defineComponent({
       });
     };
     return {
-      editRequest,
       tagClass,
       tableHeader,
       loading,

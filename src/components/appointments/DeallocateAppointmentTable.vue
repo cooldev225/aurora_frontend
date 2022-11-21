@@ -59,7 +59,7 @@
           <template v-slot:cell-action="{ row: item }">
             <div class="d-flex justify-content-start">
               <button
-                @click="edit(item)"
+                @click="handleMove(item)"
                 class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
               >
                 <span class="svg-icon svg-icon-3">
@@ -72,13 +72,17 @@
       </div>
     </div>
   </div>
+  <MoveModal :isDisableAptTypeList="true" />
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import { useStore } from "vuex";
 import { HRMMutations } from "@/store/enums/StoreHRMEnums";
+
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Modal } from "bootstrap";
+import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
+import MoveModal from "@/components/appointments/AppointmentMoveModal.vue";
 
 export default defineComponent({
   name: "deallocate-appointments-table",
@@ -88,17 +92,9 @@ export default defineComponent({
     title: { type: String },
     loading: { type: Boolean },
   },
-  emits: ["showModal"],
-  components: { Datatable },
-  setup(props, { emit }) {
+  components: { Datatable, MoveModal },
+  setup(props) {
     const store = useStore();
-
-    const edit = (item) => {
-      store.commit(HRMMutations.DATA.SET_SELECT, item);
-      const modal = new Modal(document.getElementById("leave-request-modal"));
-      modal.show();
-      emit("showModal", item);
-    };
 
     const tagClass = (data) => {
       if (data == "PENDING") return "";
@@ -121,8 +117,16 @@ export default defineComponent({
         return data[0].leave_type;
       }
     };
+    const handleMove = async (item) => {
+      item.step = 0;
+      item.action = "move";
+      store.commit(AppointmentMutations.SET_APT.SELECT, item);
+      const modal = new Modal(document.getElementById("modal_move_apt"));
+      modal.show();
+    };
+
     return {
-      edit,
+      handleMove,
       tagClass,
       props,
       filterCancelReason,
