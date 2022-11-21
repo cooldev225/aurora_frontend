@@ -2,10 +2,10 @@
   <ModalWrapper
     title="Send Via Email"
     modalId="send_email"
-    :updateRef="letterModalRef"
+    :updateRef="updateRef"
   >
     <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
-      <InputWrapper prop="email">
+      <InputWrapper prop="practice_email">
         <el-select
           class="w-100"
           placeholder="Enter emails"
@@ -16,16 +16,16 @@
         >
           <el-option
             v-for="doctorAddressBook in doctorAddressBooks"
-            :value="doctorAddressBook.email"
+            :value="doctorAddressBook.practice_email"
             :label="
               doctorAddressBook.first_name +
               ' ' +
               doctorAddressBook.last_name +
               ' <' +
-              doctorAddressBook.email +
+              doctorAddressBook.practice_email +
               '>'
             "
-            :key="doctorAddressBook.email"
+            :key="doctorAddressBook.practice_email"
           />
         </el-select>
       </InputWrapper>
@@ -118,6 +118,7 @@ export default defineComponent({
             .dispatch(PatientActions.DOCUMENTS.SEND_VIA_EMAIL, formData.value)
             .then(() => {
               loading.value = false;
+              hideModal(sendEmailModalRef.value);
               Swal.fire({
                 text: "Successfully Sent!",
                 icon: "success",
@@ -126,8 +127,6 @@ export default defineComponent({
                 customClass: {
                   confirmButton: "btn btn-primary",
                 },
-              }).then(() => {
-                hideModal(sendEmailModalRef.value);
               });
             })
             .catch(() => {

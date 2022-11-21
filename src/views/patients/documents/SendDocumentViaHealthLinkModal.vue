@@ -2,7 +2,7 @@
   <ModalWrapper
     title="Send Via Health Link"
     modalId="send_health_link"
-    :updateRef="letterModalRef"
+    :updateRef="updateRef"
   >
     <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
       <InputWrapper prop="email">
@@ -20,7 +20,7 @@
               ' ' +
               doctorAddressBook.last_name +
               ' <' +
-              doctorAddressBook.email +
+              doctorAddressBook.practice_email +
               '>'
             "
             :key="doctorAddressBook.id"
@@ -62,7 +62,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const formRef = ref(null);
-    const sendEmailModalRef = ref(null);
+    const sendHealthLinkModalRef = ref(null);
     const loading = ref(false);
     const letter_template = ref("");
     const documentId = computed(() => props.document.id);
@@ -102,7 +102,7 @@ export default defineComponent({
     });
 
     const updateRef = (_ref) => {
-      sendEmailModalRef.value = _ref;
+      sendHealthLinkModalRef.value = _ref;
     };
 
     const submit = () => {
@@ -119,6 +119,8 @@ export default defineComponent({
             )
             .then(() => {
               loading.value = false;
+              formRef.value.resetFields();
+              hideModal(sendHealthLinkModalRef.value);
               Swal.fire({
                 text: "Successfully Sent!",
                 icon: "success",
@@ -127,14 +129,11 @@ export default defineComponent({
                 customClass: {
                   confirmButton: "btn btn-primary",
                 },
-              }).then(() => {
-                hideModal(sendEmailModalRef.value);
               });
             })
             .catch(() => {
               loading.value = false;
             });
-          formRef.value.resetFields();
         } else {
           // this.context.commit(Mutations.PURGE_AUTH);
         }
@@ -152,7 +151,7 @@ export default defineComponent({
       formRef,
       loading,
       doctorAddressBooks,
-      sendEmailModalRef,
+      sendHealthLinkModalRef,
       letter_template,
       submit,
       updateRef,

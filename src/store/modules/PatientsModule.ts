@@ -230,10 +230,6 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       ApiService.setHeader();
       ApiService.post("patients/documents/send/email", data)
         .then(({ data }) => {
-          this.context.dispatch(
-            PatientActions.DOCUMENTS.LIST,
-            data.get("patient_id")
-          );
           return data.data;
         })
         .catch(({ response }) => {
@@ -251,10 +247,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       ApiService.setHeader();
       ApiService.post("patients/documents/send/health-link", data)
         .then(({ data }) => {
-          this.context.dispatch(
-            PatientActions.DOCUMENTS.LIST,
-            data.get("patient_id")
-          );
+          // self.context.dispatch(
+          //   PatientActions.DOCUMENTS.LIST,
+          //   data.get("patient_id")
+          // );
           return data.data;
         })
         .catch(({ response }) => {
