@@ -31,6 +31,13 @@
             placeholder="Appointment length"
           />
         </InputWrapper>
+        <InputWrapper class="col-sm-3 mb-5" required label="ABN" prop="abn">
+          <el-input
+            v-model="formData.abn"
+            type="text"
+            placeholder="Organization ABN"
+          />
+        </InputWrapper>
       </div>
       <div class="row me-5 ms-5">
         <InputWrapper
@@ -117,7 +124,18 @@ export default defineComponent({
       start_time: null,
       end_time: null,
       appointment_length: null,
+      abn: null,
     });
+    const confirmABN = (rule, value, callback) => {
+      var ABN_regex = /^([0-9]{11})$/;
+      if (value === "") {
+        callback(new Error("ABN cannot be blank."));
+      } else if (value.match(ABN_regex) === null) {
+        callback(new Error("ABN should be always 11 digits long."));
+      } else {
+        callback();
+      }
+    };
     const rules = ref({
       name: [
         {
@@ -145,6 +163,17 @@ export default defineComponent({
           required: true,
           message: "Appointment Length is required",
           trigger: "change",
+        },
+      ],
+      abn: [
+        {
+          required: true,
+          message: "ABN cannot be blank.",
+          trigger: "change",
+        },
+        {
+          validator: confirmABN,
+          trigger: ["blur"],
         },
       ],
     });
@@ -175,6 +204,7 @@ export default defineComponent({
             "appointment_length",
             formData.value.appointment_length
           );
+          submitData.append("abn", formData.value.abn);
           var flag =
             initialAppointmentLength.value ===
             formData.value.appointment_length;
@@ -211,6 +241,7 @@ export default defineComponent({
     watch(currentUser, () => {
       if (currentUser.value) {
         formData.value.name = currentUser.value.organization.name;
+        formData.value.abn = currentUser.value.organization.abn;
         formData.value.appointment_length =
           currentUser.value.organization.appointment_length;
         formData.value.start_time = new Date(
