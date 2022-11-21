@@ -8,27 +8,23 @@ import {
   displaySuccessModal,
   displaySuccessToast,
 } from "@/helpers/helpers.js";
-
-export interface IClinics {
-  id: number;
-  minor_id: string;
-}
+import IClinic from "../interfaces/IClinic";
 
 export interface IRooms {
   id: number;
 }
 
 export interface ClinicsInfo {
-  clinicsData: Array<IClinics>;
-  clinicsSelectData: IClinics;
+  clinicsData: Array<IClinic>;
+  clinicsSelectData: IClinic;
   roomsData: Array<IRooms>;
   roomsSelectData: IRooms;
 }
 
 @Module
 export default class ClinicsModule extends VuexModule implements ClinicsInfo {
-  clinicsData = [] as Array<IClinics>;
-  clinicsSelectData = {} as IClinics;
+  clinicsData = [] as Array<IClinic>;
+  clinicsSelectData = {} as IClinic;
   roomsData = [] as Array<IRooms>;
   roomsSelectData = {} as IRooms;
 
@@ -36,7 +32,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
    * Get current user object
    * @returns AdminList
    */
-  get clinicsList(): Array<IClinics> {
+  get clinicsList(): Array<IClinic> {
     return this.clinicsData;
   }
 
@@ -44,7 +40,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
    * Get current user object
    * @returns SelectedclinicsData
    */
-  get clinicsSelected(): IClinics {
+  get clinicsSelected(): IClinic {
     return this.clinicsSelectData;
   }
 

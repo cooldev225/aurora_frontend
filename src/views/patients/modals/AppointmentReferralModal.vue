@@ -182,7 +182,6 @@ export default defineComponent({
     appointment: { type: Object, required: true },
   },
   setup(props) {
-    console.log(props.appointment);
     const store = useStore();
     const formRef = ref(null);
     const doctorAddressBookModalRef = ref(null);

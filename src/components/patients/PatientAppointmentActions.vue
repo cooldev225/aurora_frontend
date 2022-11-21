@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, PropType } from "vue";
 import store from "@/store";
 import PreAdmissionFormButton from "./patientAppointmentActions/PreAdmissionFormButton.vue";
 import CreateReportButton from "./patientAppointmentActions/CreateReportButton.vue";
@@ -35,6 +35,8 @@ import AddLetterButton from "./patientAppointmentActions/AddLetterButton.vue";
 import AddAudioButton from "./patientAppointmentActions/AddAudioButton.vue";
 import PrintHospitalCertificateButton from "./patientAppointmentActions/PrintHospitalCertificateButton.vue";
 import MakePaymentButton from "./patientAppointmentActions/MakePaymentButton.vue";
+import IAppointment from "@/store/interfaces/IAppointment";
+import IPatient from "@/store/interfaces/IPatient";
 export default defineComponent({
   name: "patient-appointment-actions",
   components: {
@@ -50,11 +52,11 @@ export default defineComponent({
   props: {
     appointment: {
       required: true,
-      type: Object,
+      type: Object as PropType<IAppointment>,
     },
     patient: {
       required: true,
-      type: Object,
+      type: Object as PropType<IPatient>,
     },
   },
 

@@ -1,18 +1,20 @@
 <template>
   <LargeIconButton text="Upload Document" @click="handleUploadDocument" />
-  <UploadDocumentModal :patientId="patient.id + ''"></UploadDocumentModal>
+  <UploadDocumentModal :patient="patient"></UploadDocumentModal>
 </template>
 
 <script lang="ts">
 import { Modal } from "bootstrap";
 
 import UploadDocumentModal from "@/views/patients/modals/UploadDocumentModal.vue";
+import { PropType } from "vue";
+import IPatient from "@/store/interfaces/IPatient";
 export default {
   components: { UploadDocumentModal },
   props: {
     patient: {
       required: true,
-      type: Object,
+      type: Object as PropType<IPatient>,
     },
   },
   setup() {

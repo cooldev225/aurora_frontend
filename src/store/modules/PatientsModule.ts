@@ -6,18 +6,13 @@ import {
 } from "@/store/enums/StorePatientEnums";
 import { Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-import { IApt } from "./AppointmentModule";
-import Swal from "sweetalert2/dist/sweetalert2.js";
+import IAppointment from "./AppointmentModule";
 import {
   displayServerError,
   displaySuccessModal,
   displaySuccessToast,
 } from "@/helpers/helpers.js";
-
-export interface IPatient {
-  id: string;
-  appointments: Array<IApt>;
-}
+import IPatient from "../interfaces/IPatient";
 
 export interface IMinorId {
   minorId?: string | null;
@@ -30,8 +25,8 @@ export interface PatientsInfo {
 }
 
 export interface PatientAppointmentsData {
-  pastAppointments: Array<IApt>;
-  futureAppointments: Array<IApt>;
+  pastAppointments: Array<IAppointment>;
+  futureAppointments: Array<IAppointment>;
 }
 
 @Module
@@ -115,7 +110,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   [PatientActions.LIST](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("patients", "", data)
+      return ApiService.get("patients", "", data)
         .then(({ data }) => {
           this.context.commit(PatientMutations.SET_PATIENT.LIST, data.data);
           return data.data;

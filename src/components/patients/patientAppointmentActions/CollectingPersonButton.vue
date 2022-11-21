@@ -4,19 +4,21 @@
     @click="handleCollectingPerson"
   />
 
-  <CollectingPersonModal :selectedApt="appointment" />
+  <CollectingPersonModal :appointment="appointment" />
 </template>
 
 <script lang="ts">
+import { PropType } from "vue";
 import { Modal } from "bootstrap";
 import CollectingPersonModal from "@/views/patients/modals/CollectingPersonModal.vue";
+import IAppointment from "@/store/interfaces/IAppointment";
 
 export default {
   components: { CollectingPersonModal },
   props: {
     appointment: {
       required: true,
-      type: Object,
+      type: Object as PropType<IAppointment>,
     },
   },
   setup() {

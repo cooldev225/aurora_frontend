@@ -25,21 +25,10 @@
         </InputWrapper>
 
         <InputWrapper class="col-12 f-row row" label="Attach document to: ">
-          <input
-            type="radio"
-            id="appointment"
-            value="appointment"
-            v-model="attachmentType"
-          />
-          <label for="appointment">Appointment</label>
-
-          <input
-            type="radio"
-            id="specialist"
-            value="specialist"
-            v-model="attachmentType"
-          />
-          <label for="specialist">Specialist</label>
+          <el-radio-group v-model="attachmentType" size="large">
+            <el-radio-button value="appointment" label="Appointment" />
+            <el-radio-button value="specialist" label="Specialist" />
+          </el-radio-group>
         </InputWrapper>
         <InputWrapper
           v-if="attachmentType != 'specialist'"
@@ -96,7 +85,7 @@
       ></InputWrapper>
 
       <!--begin::Modal footer-->
-      <div class="modal-footer flex-center">
+      <div class="modal-footer flex-reverse">
         <!--begin::Button-->
         <button
           type="reset"
@@ -114,7 +103,7 @@
           class="btn btn-lg btn-primary"
           type="submit"
         >
-          <span v-if="!loading" class="indicator-label"> Save </span>
+          <span v-if="!loading" class="indicator-label"> Upload </span>
           <span v-if="loading" class="indicator-progress">
             Please wait...
             <span
@@ -130,8 +119,8 @@
   </ModalWrapper>
 </template>
 
-<script>
-import { defineComponent, ref, computed, onMounted, watch } from "vue";
+<script lang="ts">
+import { defineComponent, ref, computed, onMounted, PropType } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
@@ -140,28 +129,28 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import patientDocumentTypes from "@/core/data/patient-document-types";
 import moment from "moment";
-
+import IPatient from "@/store/interfaces/IPatient";
 export default defineComponent({
   name: "create-letter-template-modal",
   props: {
-    patientId: { type: String, required: true },
+    patient: { type: Object as PropType<IPatient>, required: true },
   },
   setup(props) {
     const store = useStore();
-    const formRef = ref(null);
-    const uploadDocumentRef = ref(null);
-    const loading = ref(false);
+    const formRef = ref();
+    const uploadDocumentRef = ref();
+
     const specialistList = computed(() => store.getters.getSpecialistList);
     const aptList = computed(() => store.getters.getAptList);
-    const patientId = computed(() => props.patientId);
-    const uploadDisabled = ref(false);
-    const upload = ref(null);
+    const uploadDisabled = ref<boolean>(false);
+    const loading = ref<boolean>(false);
+    const upload = ref();
     const attachmentType = ref("appointment");
     let Data = new FormData();
     const fileList = ref([]);
 
     const formData = ref({
-      patient_id: patientId.value,
+      patient_id: props.patient.id,
       specialist_id: "",
       document_type: "",
       appointment_id: "",
@@ -239,22 +228,6 @@ export default defineComponent({
       });
     };
 
-    watch(formData.value, () => {
-      if (formData.value.appointment_id) {
-        console.log(
-          aptList.value.pastAppointments.filter((x) => x.id === 1)[0]
-            .specialist_id
-        );
-      }
-    });
-
-    watch(patientId, () => {
-      formData.value.patient_id = patientId.value;
-      store.dispatch(AppointmentActions.LIST, {
-        patient_id: patientId.value,
-      });
-    });
-
     onMounted(() => {
       store.dispatch(Actions.SPECIALIST.LIST);
     });
@@ -264,11 +237,11 @@ export default defineComponent({
       upload.value.clearFiles();
       uploadDisabled.value = false;
       Data.append("file", file.raw);
-      uploadDisabled.value = fileList.length >= 1;
+      //uploadDisabled.value = fileList.length >= 1;
     };
 
     const handleRemove = (file, fileList) => {
-      uploadDisabled.value = fileList.length - 1;
+      //uploadDisabled.value = fileList.length - 1;
       Data.delete("file");
     };
 
