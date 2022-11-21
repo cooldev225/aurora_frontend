@@ -118,6 +118,7 @@ export default defineComponent({
             .dispatch(PatientActions.DOCUMENTS.SEND_VIA_EMAIL, formData.value)
             .then(() => {
               loading.value = false;
+              formRef.value.resetFields();
               hideModal(sendEmailModalRef.value);
               Swal.fire({
                 text: "Successfully Sent!",
@@ -132,7 +133,6 @@ export default defineComponent({
             .catch(() => {
               loading.value = false;
             });
-          formRef.value.resetFields();
         } else {
           // this.context.commit(Mutations.PURGE_AUTH);
         }
