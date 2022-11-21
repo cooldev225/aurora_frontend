@@ -14,38 +14,34 @@ import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import router from "@/router";
-import { IClinics } from "./ClinicsModule";
-export interface IApt {
-  id: number;
-  clinic: IClinics;
-}
+import IAppointment from "../interfaces/IAppointment";
 
 export interface AptInfo {
-  aptData: Array<IApt>;
-  aptSelectData: IApt;
-  aptPreAdmissionOrgData: IApt;
-  aptPreAdmissionValidateData: IApt;
+  aptData: Array<IAppointment>;
+  aptSelectData: IAppointment;
+  aptPreAdmissionOrgData: IAppointment;
+  aptPreAdmissionValidateData: IAppointment;
   aptPreAdmissionValidateMsg: string;
   selectedSpecialistData;
-  userAptList: Array<IApt>;
-  aptUserSelectedData: IApt;
+  userAptList: Array<IAppointment>;
+  aptUserSelectedData: IAppointment;
 }
 
 @Module
 export default class AppointmentModule extends VuexModule implements AptInfo {
-  aptData = [] as Array<IApt>;
-  aptSelectData = {} as IApt;
-  aptPreAdmissionOrgData = {} as IApt;
-  aptPreAdmissionValidateData = {} as IApt;
+  aptData = [] as Array<IAppointment>;
+  aptSelectData = {} as IAppointment;
+  aptPreAdmissionOrgData = {} as IAppointment;
+  aptPreAdmissionValidateData = {} as IAppointment;
   aptPreAdmissionValidateMsg = "" as string;
   selectedSpecialistData = null;
-  userAptList = [] as Array<IApt>;
-  aptUserSelectedData = {} as IApt;
+  userAptList = [] as Array<IAppointment>;
+  aptUserSelectedData = {} as IAppointment;
   /**
    * Get current user object
    * @returns AdminList
    */
-  get getAptList(): Array<IApt> {
+  get getAptList(): Array<IAppointment> {
     return this.aptData;
   }
 
@@ -53,7 +49,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
    * Get current user object
    * @returns SelectedaptData
    */
-  get getAptSelected(): IApt {
+  get getAptSelected(): IAppointment {
     return this.aptSelectData;
   }
 
@@ -69,7 +65,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
    * Get current user object
    * @returns SelectedaptData
    */
-  get getAptPreAdmissionOrg(): IApt {
+  get getAptPreAdmissionOrg(): IAppointment {
     return this.aptPreAdmissionOrgData;
   }
 
@@ -77,7 +73,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
    * Get current user object
    * @returns SelectedaptData
    */
-  get getAptPreAdmissionValidateData(): IApt {
+  get getAptPreAdmissionValidateData(): IAppointment {
     return this.aptPreAdmissionValidateData;
   }
 
@@ -93,7 +89,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
    * Get current user apt list
    * @returns SelectedaptData
    */
-  get getUserAptList(): Array<IApt> {
+  get getUserAptList(): Array<IAppointment> {
     return this.userAptList;
   }
 
@@ -101,7 +97,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
    * Get current selected appointment
    * @returns SelectedaptData
    */
-  get getAptUserSelected(): IApt {
+  get getAptUserSelected(): IAppointment {
     return this.aptUserSelectedData;
   }
 

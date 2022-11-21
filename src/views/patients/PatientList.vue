@@ -87,10 +87,10 @@
     </div>
     <div class="card-body pt-0">
       <Datatable
+        v-if="tableData"
         :table-header="tableHeader"
         :table-data="tableData"
         :rows-per-page="5"
-        :key="tableKey"
         :loading="loading"
         :enable-items-per-page-dropdown="true"
       >
@@ -152,16 +152,8 @@
   </div>
 </template>
 
-<script>
-import {
-  defineComponent,
-  onMounted,
-  ref,
-  reactive,
-  watch,
-  computed,
-} from "vue";
-import { useStore } from "vuex";
+<script lang="ts">
+import { defineComponent, onMounted, ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
@@ -169,6 +161,7 @@ import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import store from "@/store";
+import IPatient from "@/store/interfaces/IPatient";
 
 export default defineComponent({
   name: "patients-list",
@@ -177,14 +170,7 @@ export default defineComponent({
     Datatable,
   },
 
-  data: function () {
-    return {
-      userRole: computed(() => store.getters.userRole),
-    };
-  },
-
   setup() {
-    const store = useStore();
     const router = useRouter();
     const tableHeader = ref([
       {
@@ -210,49 +196,40 @@ export default defineComponent({
         key: "upcoming",
       },
     ]);
-    const patientData = ref([]);
-    const tableData = ref([]);
-    const list = computed(() => store.getters.patientsList);
-    const loading = ref(false);
-    const tableKey = ref(0);
-    const filter = reactive({
+
+    const userRole = computed(() => store.getters.userRole);
+    const patientData = ref(computed(() => store.getters.patientsList));
+    const tableData = ref<IPatient[]>();
+    const loading = ref<boolean>(false);
+
+    watch(patientData, () => {
+      tableData.value = patientData.value;
+      loading.value = false;
+    });
+
+    onMounted(() => {
+      store.dispatch(PatientActions.LIST);
+    });
+
+    const filter = ref({
       first_name: "",
       last_name: "",
       date_of_birth: "",
     });
 
-    const renderTable = () => tableKey.value++;
-
-    const generateID = (id) => {
-      let prefix = "";
-      let i = 0;
-      while (i < 6 - id.toString().length) {
-        prefix += "0";
-        i++;
-      }
-      return prefix + id.toString();
-    };
-
     const searchPatient = () => {
       loading.value = true;
-      store
-        .dispatch(PatientActions.LIST, {
-          first_name: filter.first_name,
-          last_name: filter.last_name,
-          date_of_birth: filter.date_of_birth,
-        })
-        .finally(() => {
-          loading.value = false;
-          renderTable();
-        });
+      store.dispatch(PatientActions.LIST, {
+        first_name: filter.value.first_name,
+        last_name: filter.value.last_name,
+        date_of_birth: filter.value.date_of_birth,
+      });
     };
-    searchPatient();
+
     const clearFilters = () => {
-      filter.first_name = "";
-      filter.last_name = "";
-      filter.date_of_birth = "";
-      tableData.value = [];
-      renderTable();
+      filter.value.first_name = "";
+      filter.value.last_name = "";
+      filter.value.date_of_birth = "";
     };
 
     const handleView = (item) => {
@@ -271,12 +248,6 @@ export default defineComponent({
       router.push({ name: "booking-dashboard" });
     };
 
-    watch(list, () => {
-      patientData.value = list.value;
-      tableData.value = patientData.value;
-      renderTable();
-    });
-
     onMounted(() => {
       setCurrentPageBreadcrumbs("Patients", []);
     });
@@ -285,13 +256,12 @@ export default defineComponent({
       tableHeader,
       tableData,
       filter,
-      tableKey,
-      generateID,
       handleView,
       handleBadge,
       searchPatient,
       clearFilters,
       loading,
+      userRole,
     };
   },
 });
