@@ -32,12 +32,19 @@
   />
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import {
+  computed,
+  defineComponent,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
 import { mask } from "vue-the-mask";
-import { HRMActions } from "@/store/enums/StoreHRMEnums";
+import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import moment from "moment";
 import AptTable from "@/components/appointments/DeallocateAppointmentTable.vue";
 
@@ -182,6 +189,10 @@ export default defineComponent({
         start_date: moment().startOf("isoWeek").format("YYYY-MM-DD"),
         end_date: moment().endOf("month").format("YYYY-MM-DD"),
       });
+    });
+
+    onBeforeUnmount(() => {
+      store.commit(HRMMutations.DATA.SET_LIST, []);
     });
 
     const tagClass = (data) => {

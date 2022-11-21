@@ -123,7 +123,14 @@
 }
 </style>
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import {
+  computed,
+  defineComponent,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -198,17 +205,17 @@ export default defineComponent({
     });
 
     const loading = ref(false);
-    const leaveList = computed(() => {
-      const list = store.getters.hrmDataList;
-      if (list.anesthetistAppointments) return [];
-      return list;
-    });
+    const leaveList = computed(() => store.getters.hrmDataList);
     const user = computed(() => store.getters.currentUser);
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Employee Availability", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(HRMActions.EMPLOYEE_LEAVE.LIST);
+    });
+
+    onBeforeUnmount(() => {
+      store.commit(HRMMutations.DATA.SET_LIST, []);
     });
 
     const editRequest = ($event) => {
