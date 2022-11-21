@@ -89,84 +89,13 @@
               <Apt-date-picker :date_="date_search" @changeDate="changeDate" />
             </div>
             <div class="col mb-2">
-              <div class="card border border-dashed border-primary">
-                <div class="card-header">
-                  <div class="card-title">
-                    <span>FILTER VIEW</span>
-                  </div>
-                </div>
-                <div
-                  class="card-body card-scroll h-350px d-flex flex-column justify-content-between"
-                >
-                  <div class="d-flex flex-column">
-                    <el-checkbox
-                      v-model="isShowAllSpecialist"
-                      label="Show All Specialists"
-                      size="large"
-                    />
-                    <el-select
-                      v-model="specialistsData"
-                      multiple
-                      filterable
-                      remote
-                      reserve-keyword
-                      placeholder="Please type a specialist name"
-                      remote-show-suffix
-                      :remote-method="remoteMethodSpecalist"
-                      :loading="loading"
-                      :disabled="isShowAllSpecialist"
-                      @change="filterSpecialists"
-                    >
-                      <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                    <el-checkbox
-                      v-model="hideSpecialistNotWorking"
-                      label="Hide specialist if not working"
-                      size="large"
-                    />
-                  </div>
-                  <div class="d-flex flex-column">
-                    <el-checkbox
-                      v-model="isShowAllClinics"
-                      label="Show All Clinics"
-                      size="large"
-                    />
-                    <el-select
-                      v-model="clinicsData"
-                      multiple
-                      filterable
-                      remote
-                      reserve-keyword
-                      placeholder="Please type a clinc name"
-                      remote-show-suffix
-                      :remote-method="remoteMethodClinic"
-                      :loading="loading"
-                      :disabled="isShowAllClinics"
-                      @change="filterSpecialists"
-                    >
-                      <el-option
-                        v-for="item in clinicOptions"
-                        :value="item.id"
-                        :label="item.name"
-                        :key="item.id"
-                      />
-                    </el-select>
-                  </div>
-                  <button
-                    class="btn btn-light-primary w-100 mt-2"
-                    @click="handleReset"
-                  >
-                    CLEAR FILTERS
-                  </button>
-                </div>
-              </div>
+              <apt-filter
+                :date_search="date_search"
+                @selectedSpecialists="updateSpecialists"
+                @clearData="handleReset"
+              />
             </div>
-            <div class="col mb-2"><appointment-search /></div>
+            <div class="col mb-2"><apt-search /></div>
           </div>
         </div>
       </div>
@@ -204,14 +133,16 @@ import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import $ from "jquery";
 import AptDatePicker from "@/components/appointments/DateTimePicker.vue";
-import AppointmentSearch from "@/components/appointments/AppointmentSearch.vue";
+import AptSearch from "@/components/appointments/AppointmentSearch.vue";
+import AptFilter from "@/components/appointments/AppointmentFilter.vue";
 export default defineComponent({
   name: "bookings-dashboard",
   components: {
     AptModal,
     AppointmentTable,
     AptDatePicker,
-    AppointmentSearch,
+    AptSearch,
+    AptFilter,
   },
   data: function () {
     return {
@@ -221,7 +152,7 @@ export default defineComponent({
   },
   setup: function () {
     const store = useStore();
-    const format = ref("YYYY-MM-DD");
+
     const organization = computed(() => store.getters.userOrganization);
     // Data calender is showing
     const date_search = reactive({
@@ -229,22 +160,10 @@ export default defineComponent({
     });
     const visibleDate = ref(date_search);
 
-    // Show/hide specialist that are not working on day
-    const hideSpecialistNotWorking = ref(true);
-
     // The specialist that will be show in calender
     const visibleSpecialists = ref();
 
-    const isShowAllSpecialist = ref(true);
     const toggleLayout = ref(false);
-
-    const validateAppointmentTypeId = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("Please select appointment type"));
-      } else {
-        callback();
-      }
-    };
 
     const setToggleLayout = (value) => {
       toggleLayout.value = value;
@@ -262,33 +181,14 @@ export default defineComponent({
     const specialists_search = reactive({
       specialist_ids: [],
     });
-
-    const specialistsList = ref([]);
-    const options = ref([]);
-    const specialistsData = ref([]);
     const loading = ref(false);
     const isShowAllClinics = ref(true);
-    const clinicOptions = ref([]);
-    const clinicsData = ref([]);
 
     const monthAvailabilities = computed(
       () => store.getters.getMonthAvailabilities
     );
 
-    const specialists = computed(() => {
-      let spt = store.getters.getSpecialistList;
-      spt.forEach(function (specialist) {
-        specialist.value = specialist.id;
-        specialist.label = `Dr. ${specialist.first_name} ${specialist.last_name}`;
-      });
-      return spt;
-    });
-
-    const available_slots_by_date = computed(
-      () => store.getters.getAvailableAppointmentList
-    );
     const aptTypelist = computed(() => store.getters.getAptTypesList);
-    const clinic_list = computed(() => store.getters.clinicsList);
 
     watch(monthAvailabilities, () => {
       $(".datepicker-days")
@@ -343,8 +243,6 @@ export default defineComponent({
         month_string: month,
         year_string: year,
       });
-
-      filterSpecialists();
     });
 
     onUpdated(() => {
@@ -373,16 +271,7 @@ export default defineComponent({
     });
 
     const handleReset = () => {
-      specialists_search.specialist_ids = [];
       date_search.date = new Date();
-
-      searchAppointmentForm.value.appointment_type_id = "";
-      searchAppointmentForm.value.x_weeks = "0";
-      searchAppointmentForm.value.clinic_id = "";
-      searchAppointmentForm.value.specialist_id = "";
-      searchAppointmentForm.value.time_requirement = 0;
-      isShowAllClinics.value = true;
-      isShowAllSpecialist.value = true;
     };
 
     watchEffect(() => {
@@ -404,8 +293,6 @@ export default defineComponent({
         .toString();
       store.dispatch(Actions.SPECIALIST.LIST, formattedDate);
       store.dispatch(AppointmentActions.LIST, { date: formattedDate });
-      getFilterSpecialists();
-      filterSpecialists();
 
       // Potentially add a check to only update this if the month has changed
       const month = $(
@@ -421,93 +308,6 @@ export default defineComponent({
       });
     });
 
-    watch((specialists, hideSpecialistNotWorking), () => {
-      getFilterSpecialists();
-      filterSpecialists();
-    });
-
-    const filterSpecialists = () => {
-      specialistsList.value = [];
-
-      // Add ALL organization specialists with appropriate data for Calender resource
-      specialists.value.map((specialist) => {
-        specialistsList.value.push({
-          value: specialist.id,
-          label: `Dr.${specialist.first_name} ${specialist.last_name}`,
-          id: specialist.id,
-          title: `Dr.${specialist.first_name} ${specialist.last_name}`,
-          businessHours: getBusinessHours(specialist.hrm_weekly_schedule),
-        });
-      });
-
-      // Hide not working specialists if required
-      if (hideSpecialistNotWorking.value) {
-        const result = [];
-        specialists.value.map((specialist) => {
-          let viewDay = moment(date_search.date).format("ddd").toUpperCase();
-          let workOnDay = false;
-          specialist.hrm_weekly_schedule.map((slot) => {
-            if (slot.week_day == viewDay) {
-              workOnDay = true;
-            }
-          });
-          if (!workOnDay) {
-            result.push(specialist.id);
-          }
-        });
-        specialistsList.value = specialistsList.value.filter((specialist) => {
-          if (!result.includes(specialist.id)) return specialist;
-        });
-      }
-
-      // check user's selected specialist or show all specialist
-      if (!isShowAllSpecialist.value) {
-        specialistsList.value = specialistsList.value.filter((specialist) => {
-          if (specialistsData.value.includes(specialist.id)) return specialist;
-        });
-      }
-
-      // Check user's selected clinics or show all clinics
-      if (!isShowAllClinics.value) {
-        const result = [];
-        specialists.value.map((specialist) => {
-          specialist.hrm_weekly_schedule.map((slot) => {
-            clinicsData.value.map((clinic) => {
-              if (
-                clinic == slot.clinic_id &&
-                !result.includes(specialist.id) &&
-                slot.week_day ==
-                  moment(date_search.date).format("ddd").toUpperCase()
-              ) {
-                result.push(specialist.id);
-              }
-            });
-          });
-        });
-        specialistsList.value = specialistsList.value.filter((specialist) => {
-          if (result.includes(specialist.id)) return specialist;
-        });
-      }
-
-      visibleSpecialists.value = specialistsList.value;
-    };
-    const getBusinessHours = (data) => {
-      const weekDays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-      let businessHours = [];
-      data.forEach((slot) => {
-        let daysOfWork = [];
-        daysOfWork.push(weekDays.indexOf(slot.week_day) + 1);
-        businessHours.push({
-          startTime: slot.start_time,
-          endTime: slot.end_time,
-          daysOfWeek: daysOfWork,
-        });
-      });
-      return businessHours;
-    };
-    watch(clinic_list, () => {
-      getSelectedClinics();
-    });
     const changeDate = (mode, date) => {
       switch (mode) {
         case 0:
@@ -536,146 +336,21 @@ export default defineComponent({
           break;
       }
     };
-
-    watch(specialistsData, () => {
-      let newArray = [];
-      specialistsData.value.forEach(function (data) {
-        newArray.push(data);
-      });
-      localStorage.setItem("selectedSpecialist", JSON.stringify(newArray));
-      getFilterSpecialists();
-    });
-
-    watch(clinicsData, () => {
-      let newArray = [];
-      clinicsData.value.forEach(function (data) {
-        if (data.value) {
-          newArray.push(parseInt(data.value));
-        } else {
-          newArray.push(data);
-        }
-      });
-      localStorage.setItem("selectedClinics", JSON.stringify(newArray));
-    });
-
-    watch([isShowAllSpecialist, isShowAllClinics], () => {
-      filterSpecialists();
-    });
-
-    const remoteMethodSpecalist = (query) => {
-      if (query) {
-        loading.value = true;
-        setTimeout(() => {
-          loading.value = false;
-          options.value = specialists.value.filter((item) => {
-            return item.label.toLowerCase().includes(query.toLowerCase());
-          });
-        }, 200);
-      } else {
-        options.value = specialists.value.filter((item) => {
-          return item;
-        });
-      }
-    };
-
-    const remoteMethodClinic = (query) => {
-      if (query) {
-        loading.value = true;
-        setTimeout(() => {
-          loading.value = false;
-          clinicOptions.value = clinic_list.value.filter((item) => {
-            return item.name.toLowerCase().includes(query.toLowerCase());
-          });
-        }, 200);
-      } else {
-        clinicOptions.value = clinic_list.value.filter((item) => {
-          return item.name.toLowerCase();
-        });
-      }
-    };
-
-    const checkSpecialistSelectected = (id) => {
-      let isSpecialistSelected = false;
-      specialistsData.value.forEach(function (val) {
-        if (val.value == id) isSpecialistSelected = true;
-        if (val === parseInt(id)) isSpecialistSelected = true;
-      });
-      return isSpecialistSelected;
-    };
-
-    //Getting selected specialists from localstorage
-    const getFilterSpecialists = () => {
-      let localSpecialistCodes = null;
-      if (localStorage.getItem("selectedSpecialist") !== null) {
-        localSpecialistCodes = localStorage.getItem("selectedSpecialist");
-        const savedSpecialists = JSON.parse(localSpecialistCodes);
-        if (savedSpecialists.length > 0) {
-          options.value = [];
-          specialists.value.forEach(function (specialist) {
-            options.value.push({
-              value: specialist.id,
-              label: `Dr. ${specialist.first_name} ${specialist.last_name}`,
-            });
-            savedSpecialists.forEach(function (e) {
-              if (e == specialist.id) {
-                specialist.checked = true;
-                if (!checkSpecialistSelectected(e)) {
-                  specialistsData.value.push(specialist.id);
-                }
-              }
-            });
-          });
-        } else {
-          isShowAllSpecialist.value = true;
-        }
-      } else {
-        isShowAllSpecialist.value = true;
-      }
-    };
-    //Getting selected clinics from localstorage
-    const getSelectedClinics = () => {
-      let localClinicCodes = null;
-      if (localStorage.getItem("selectedClinics") !== null) {
-        localClinicCodes = JSON.parse(localStorage.getItem("selectedClinics"));
-        if (localClinicCodes.length > 0) {
-          clinicsData.value = [];
-          remoteMethodClinic();
-          localClinicCodes.forEach(function (code) {
-            clinicsData.value.push(code);
-          });
-        } else {
-          isShowAllClinics.value = true;
-        }
-      } else {
-        isShowAllClinics.value = true;
-      }
+    const updateSpecialists = (data) => {
+      visibleSpecialists.value = data;
     };
     return {
-      format,
       date_search,
-      specialists_search,
-      specialists,
-      available_slots_by_date,
       aptTypelist,
-      clinic_list,
       handleReset,
       changeDate,
       toggleLayout,
       setToggleLayout,
-      isShowAllSpecialist,
-      remoteMethodSpecalist,
-      specialistsData,
       loading,
-      options,
-      filterSpecialists,
-      isShowAllClinics,
-      remoteMethodClinic,
-      clinicOptions,
-      clinicsData,
       organization,
-      hideSpecialistNotWorking,
       visibleSpecialists, // FOR APPOINTMENT TABLE
       visibleDate, // FOR APPOINTMENT TABLE
+      updateSpecialists,
     };
   },
 });
