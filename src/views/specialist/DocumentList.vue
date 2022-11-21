@@ -149,6 +149,11 @@
             <IconButton class="mb-2" label="Email" @click="handleSendEmail" />
             <IconButton
               class="mb-2"
+              label="HealthLink"
+              @click="handleSendHealthLink"
+            />
+            <IconButton
+              class="mb-2"
               v-if="userRole == 'specialist' && !selectedDocument.is_read"
               label="Mark Read"
               @click="handleMarkRead(true)"
@@ -426,6 +431,10 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleSendHealthLink = () => {
+      console.log();
+    };
+
     const handlePrint = () => {
       if (selectedDocument.value.file_type === "PDF") {
         var blob = new Blob([tempFile.value], { type: "application/pdf" });
@@ -659,6 +668,7 @@ export default defineComponent({
       selectedDocument,
       handlePrint,
       handleSendEmail,
+      handleSendHealthLink,
       handleViewLogs,
       SendDocumentViaEmailModal,
       showAssignPatientModal,

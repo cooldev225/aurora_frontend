@@ -228,7 +228,28 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   [PatientActions.DOCUMENTS.SEND_VIA_EMAIL](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("patients/documents/email/send", data)
+      ApiService.post("patients/documents/send/email", data)
+        .then(({ data }) => {
+          this.context.dispatch(
+            PatientActions.DOCUMENTS.LIST,
+            data.get("patient_id")
+          );
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [PatientActions.DOCUMENTS.SEND_VIA_HEALTH_LINK](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      ApiService.post("patients/documents/send/health-link", data)
         .then(({ data }) => {
           this.context.dispatch(
             PatientActions.DOCUMENTS.LIST,

@@ -9,6 +9,7 @@ const PatientActions = {
     LIST: "listPatientsDocuments",
     CREATE: "createPatientsDocument",
     SEND_VIA_EMAIL: "sendPatientsDocumentViaEmail",
+    SEND_VIA_HEALTH_LINK: "sendPatientsDocumentViaHealthLink",
     VIEW: "viewPatientDocument",
     AUDIO: {
       CREATE: "createPatientsDocumentAudio",
