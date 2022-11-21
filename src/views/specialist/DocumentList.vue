@@ -216,6 +216,10 @@
     v-if="selectedDocument"
     :document="selectedDocument"
   ></SendDocumentViaEmailModal>
+  <SendDocumentViaHealthLinkModal
+    v-if="selectedDocument"
+    :document="selectedDocument"
+  ></SendDocumentViaHealthLinkModal>
   <DocumentActionLogModal
     v-if="selectedDocument"
     :document="selectedDocument"
@@ -256,6 +260,8 @@ import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import DocumentLabel from "@/views/patients/documents/DocumentLabel.vue";
 import SendDocumentViaEmailModal from "@/views/patients/documents/SendDocumentViaEmailModal.vue";
+import SendDocumentViaHealthLinkModal from "@/views/patients/documents/SendDocumentViaHealthLinkModal.vue";
+
 import DocumentActionLogModal from "@/views/patients/documents/DocumentActionLogModal.vue";
 import { Modal } from "bootstrap";
 import AssignPatientModal from "@/views/specialist/modals/AssignPatientModal.vue";
@@ -270,6 +276,7 @@ export default defineComponent({
   components: {
     DocumentLabel,
     SendDocumentViaEmailModal,
+    SendDocumentViaHealthLinkModal,
     DocumentActionLogModal,
     AssignPatientModal,
     AssignSpecialistModal,
@@ -432,7 +439,10 @@ export default defineComponent({
     };
 
     const handleSendHealthLink = () => {
-      console.log();
+      const modal = new Modal(
+        document.getElementById("modal_send_health_link")
+      );
+      modal.show();
     };
 
     const handlePrint = () => {
