@@ -93,6 +93,13 @@
             <InfoSection :heading="'Specialist'">{{
               displayData.specialist_name
             }}</InfoSection>
+
+            <InfoSection
+              v-if="displayData.anesthetist_name !== ''"
+              :heading="'Anaesthetist'"
+            >
+              {{ displayData.anesthetist_name }}
+            </InfoSection>
           </div>
           <!--end::Appointment Info-->
           <el-divider />
@@ -278,6 +285,7 @@ export default defineComponent({
       patient_name: "",
       patient_number: "",
       procedure_approval_status: "",
+      anesthetist_name: "",
     });
 
     const handleView = () => {
@@ -391,6 +399,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
+      console.log(aptData.value);
       displayData.clinic_name = aptData.value.clinic_details?.name;
       displayData.appointment_type_name = aptData.value.appointment_type?.name;
       displayData.specialist_name = aptData.value.specialist_name;
@@ -404,6 +413,9 @@ export default defineComponent({
       displayData.notes = aptData.value.note;
       displayData.procedure_approval_status =
         aptData.value.procedure_approval_status;
+      displayData.anesthetist_name = aptData.value.anesthetist
+        ? aptData.value.anesthetist.name
+        : "";
     });
 
     return {
