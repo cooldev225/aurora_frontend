@@ -6,57 +6,18 @@
   >
     <div
       :id="'print_preview_box_' + appointmentId"
-      class="print-preview-box mb-4"
+      class="-m-5 d-flex text-xs p-5 flex-column print-preview-box mb-4 border-primary border-solid"
     >
-      <div class="d-flex justify-content-between fw-bolder">
-        <label>{{ patient.last_name }}</label>
-      </div>
-      <div class="d-flex justify-content-between fw-bold">
-        <label>{{ patient.first_name }}</label>
-        <label>{{
-          "DOB: " +
-          moment(patient.date_of_birth).format("DD/MM/YYYY") +
-          " " +
-          genders.filter((g) => g.value === patient.gender)[0].label.charAt(0)
-        }}</label>
-      </div>
-      <div class="d-flex justify-content-between">
-        <label>{{ patient.address }}</label>
-        <label class="fw-bold">{{ patient.id }}</label>
-      </div>
-      <div>
-        <label>{{
-          patient.suburb + ", " + patient.postcode + ", " + patient.birth_state
-        }}</label>
-      </div>
-      <div>
-        <label class="fw-bold">{{
-          "Ref Doc: " + referral.doctor_address_book_name
-        }}</label>
-      </div>
-      <div>
-        <label class="fw-bold">{{
-          referral.doctor_address_book.address
-        }}</label>
-      </div>
-      <div>
-        <label>{{
-          "M/C #: " +
-          patient.medicare_details.medicare_no +
-          " - " +
-          patient.medicare_details.medicare_reference_no
-        }}</label>
-      </div>
-      <div>
-        <label class="fw-bold-fit">{{
-          "(H) " +
-          patient.contact_number +
-          " (M) " +
-          patient.int_contact_number +
-          " (W) " +
-          patient.kin_phone_number
-        }}</label>
-      </div>
+      <span class="font-uppercase">{{ patient.last_name }}</span
+      ><br />
+      {{ patient.first_name }}<br />
+
+      {{
+        "DOB: " +
+        moment(patient.date_of_birth).format("DD/MM/YYYY") +
+        " " +
+        genders.filter((g) => g.value === patient.gender)[0].label.charAt(0)
+      }}
     </div>
     <div class="modal-footer flex-center">
       <button
@@ -69,30 +30,19 @@
     </div>
   </ModalWrapper>
 </template>
-<style lang="scss">
-.pdf_viewer_wrapper {
-  width: 100%;
-  height: 175px;
-  > .pdf_viewer {
-    height: 100%;
+<style>
+@media print {
+  @page {
+    size: portrait;
+    margin-left: 0.5in;
+    margin-right: 0.5in;
+    margin-top: 0px;
+    margin-bottom: 0;
   }
-}
-.print-preview-box {
-  word-spacing: 1rem;
-  font-weight: 300 !important;
-  font-size: 1.2rem;
-  .fw-bolder {
-    font-size: 1.8rem;
-    font-weight: 700 !important;
-  }
-  .fw-bold {
-    font-weight: 700 !important;
-    word-spacing: 0.8rem;
-  }
-  .fw-bold-fit {
-    font-weight: 700 !important;
-    word-spacing: 0.1rem;
-    font-size: 1.1rem;
+
+  body {
+    width: 2in;
+    height: 1in;
   }
 }
 </style>
@@ -110,7 +60,29 @@ export default defineComponent({
     referral: { type: Object, required: true },
   },
   setup(props) {
+    const printElem = (elem) => {
+      var mywindow = window.open("", "PRINT");
+
+      mywindow.document.write("<html><head>");
+      mywindow.document.write("</head><body class='print'>");
+      mywindow.document.write(
+        "<style>@media   @page {size: portrait; margin-left: 0.5in; margin-right:0.5in;     margin-bottom: 0;  }}</style>"
+      );
+      mywindow.document.write(document.getElementById(elem).innerHTML);
+      mywindow.document.write("</body></html>");
+
+      mywindow.document.close(); // necessary for IE >= 10
+      mywindow.focus(); // necessary for IE >= 10
+
+      mywindow.print();
+      mywindow.close();
+
+      return true;
+    };
+
     const handlePrint = async () => {
+      printElem("print_preview_box_" + props.appointmentId);
+      /*
       let element = document.getElementById(
         "print_preview_box_" + props.appointmentId
       );
@@ -118,7 +90,7 @@ export default defineComponent({
         margin: 0.1,
         filename: "document.pdf",
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { dpi: 192, letterRendering: true },
+        html2canvas: { dpi: 100, letterRendering: true },
         jsPDF: { unit: "in", format: "b7", orientation: "landscape" },
       };
       html2pdf()
@@ -138,8 +110,7 @@ export default defineComponent({
               iframe.contentWindow.print();
             }, 1);
           };
-        });
-      // .save();
+        });*/
     };
 
     return {

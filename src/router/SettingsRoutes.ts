@@ -24,6 +24,11 @@ const SettingsRoutes = [
       import("@/views/settings/report-templates/ReportTemplates.vue"),
   },
   {
+    path: "/settings/patient-print-label-setting",
+    name: "patientPrintLabelSettings",
+    component: () => import("@/views/settings/PatientLabelPrintSettings.vue"),
+  },
+  {
     path: "/settings/health-fund",
     name: "healthFund",
     component: () => import("@/views/settings/health-fund/HealthFund.vue"),
