@@ -5,8 +5,8 @@
 <script>
 import { defineComponent, onMounted } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-//import * as shajs from "sha.js";
-//import * as qz from "qz-tray";
+import * as shajs from "sha.js";
+import * as qz from "qz-tray";
 export default defineComponent({
   name: "patient-label-print-settings",
 
@@ -18,7 +18,6 @@ export default defineComponent({
     });
 
     const printTestLabel = () => {
-      /*
       qz.api.setSha256Type(function (data) {
         return shajs("sha256").update(data).digest("hex");
       });
@@ -73,7 +72,7 @@ export default defineComponent({
         })
         .catch(function (e) {
           console.error(e);
-        });*/
+        });
     };
 
     return { printTestLabel };

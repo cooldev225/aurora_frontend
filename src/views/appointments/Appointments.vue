@@ -120,7 +120,6 @@
     v-if="visibleSpecialists"
   />
   <AptModal modalId="modal_edit_apt" />
-
 </template>
 <script>
 import {
