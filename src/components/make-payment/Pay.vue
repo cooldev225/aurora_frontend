@@ -235,7 +235,7 @@
 
             <el-divider />
 
-            <el-form @submit.prevent="submit()" ref="formRef">
+            <el-form @submit.prevent="handleSubmitPayment" ref="formRef">
               <div class="fv-row mb-4">
                 <label class="text-muted fs-6 fw-bold mb-2 d-block">
                   Amount to Pay
@@ -272,9 +272,16 @@
                 <button
                   type="submit"
                   class="btn btn-primary w-100"
-                  :disabled="formData.amount === 0"
+                  :disabled="formData.amount === 0 || loading"
+                  :data-kt-indicator="loading ? 'on' : null"
                 >
-                  Confirm
+                  <span v-if="!loading" class="indicator-label">Confirm</span>
+                  <span v-if="loading" class="indicator-progress">
+                    Submitting...
+                    <span
+                      class="spinner-border spinner-border-sm align-middle ms-2"
+                    ></span>
+                  </span>
                 </button>
               </div>
             </el-form>
@@ -322,6 +329,7 @@ export default defineComponent({
     const billingData = computed(() => store.getters.paymentSelected);
     const total_amount = ref(0);
     const paymentItemModal = ref();
+    const loading = ref(false);
     const formRef = ref<null | HTMLFormElement>(null);
     const formData = ref({
       appointment_id: 0,
@@ -549,6 +557,29 @@ export default defineComponent({
       paymentItemModal.value.hide();
     };
 
+    const handleSubmitPayment = () => {
+      if (formData.value.amount > amountOutstanding.value) {
+        Swal.fire({
+          text: "The payment amount is more than the amount owing. Are you sure you want to make this payment?",
+          icon: "question",
+          buttonsStyling: false,
+          confirmButtonText: "Yes",
+          showCancelButton: true,
+          cancelButtonText: "No",
+          customClass: {
+            confirmButton: "btn btn-primary",
+            cancelButton: "btn btn-secondary",
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            submit();
+          }
+        });
+      } else {
+        submit();
+      }
+    };
+
     const submit = () => {
       if (!formRef.value) {
         return;
@@ -559,6 +590,8 @@ export default defineComponent({
         formData.value.sent_to =
           billingData.value.appointment.patient_details.email;
       }
+
+      loading.value = true;
 
       store
         .dispatch(Actions.MAKE_PAYMENT.CREATE, formData.value)
@@ -587,6 +620,9 @@ export default defineComponent({
               confirmButton: "btn btn-primary",
             },
           });
+        })
+        .finally(() => {
+          loading.value = false;
         });
     };
 
@@ -631,6 +667,8 @@ export default defineComponent({
       handlePaymentItemModalSubmit,
       handleCloseModal,
       handleAddItem,
+      loading,
+      handleSubmitPayment,
     };
   },
 });
