@@ -691,7 +691,7 @@
                   >
                     <div class="row">
                       <InputWrapper
-                        class="col-12 px-0"
+                        class="col-12"
                         label="Charge Type"
                         prop="charge_type"
                       >
