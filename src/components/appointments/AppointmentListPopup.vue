@@ -294,7 +294,7 @@ export default defineComponent({
         });
     };
 
-    watch([props.searchNextApts], () => {
+    watch(props.searchNextApts, () => {
       setTimeout(() => {
         searchParam.value = props.searchNextApts;
         !isInitial.value && handleSearch();

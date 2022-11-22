@@ -116,7 +116,6 @@ import { computed, defineComponent, reactive, ref } from "vue";
 import moment from "moment";
 import { Modal } from "bootstrap";
 import { useStore } from "vuex";
-import aptWeeksList from "@/core/data/apt-weeks";
 import AppointmentListPopup from "@/components/appointments/AppointmentListPopup.vue";
 
 export default defineComponent({
@@ -172,7 +171,6 @@ export default defineComponent({
     });
 
     const handleSearch = async () => {
-      console.log(["searchAppointmentForm", searchAppointmentForm]);
       searchAppointmentFormRef.value.validate(async (valid) => {
         if (valid) {
           search_next_apts.appointment_type_id =
@@ -181,16 +179,12 @@ export default defineComponent({
             searchAppointmentForm.value.specialist_id;
           search_next_apts.time_requirement =
             searchAppointmentForm.value.time_requirement;
-          // search_next_apts.date = moment(moment())
-          //   .add(searchAppointmentForm.value.x_weeks, "weeks")
-          //   .format("DD/MM/YYYY");
           search_next_apts.date = moment(moment())
             .add(
               searchAppointmentForm.value.timeframe_count,
               searchAppointmentForm.value.timeframe_type
             )
             .format("DD/MM/YYYY");
-          // search_next_apts.x_weeks = searchAppointmentForm.value.x_weeks;
           search_next_apts.timeframe_count =
             searchAppointmentForm.value.timeframe_count;
           search_next_apts.timeframe_type =
@@ -199,7 +193,6 @@ export default defineComponent({
           const modal = new Modal(
             document.getElementById("modal_available_time_slot_popup")
           );
-          console.log(["search_next_apts", search_next_apts]);
           modal.show();
         }
       });
@@ -213,7 +206,6 @@ export default defineComponent({
       searchAppointmentForm,
       searchAppointmentRules,
       handleSearch,
-      aptWeeksList,
       search_next_apts,
     };
   },
