@@ -120,6 +120,7 @@
     v-if="visibleSpecialists"
   />
   <AptModal modalId="modal_edit_apt" />
+  <AptModal modalId="modal_create_apt" />
 </template>
 <script>
 import {
@@ -178,21 +179,7 @@ export default defineComponent({
       toggleLayout.value = value;
       localStorage.setItem("toggleBookingLayout", toggleLayout.value);
     };
-
-    const searchAppointmentForm = ref({
-      appointment_type_id: "",
-      specialist_id: "",
-      time_requirement: 0,
-      x_weeks: "0",
-      clinic_id: "",
-    });
-
-    const specialists_search = reactive({
-      specialist_ids: [],
-    });
     const loading = ref(false);
-    const isShowAllClinics = ref(true);
-
     const monthAvailabilities = computed(
       () => store.getters.getMonthAvailabilities
     );
