@@ -19,10 +19,25 @@
         ref="formRef"
       >
         <div class="report-template-wrapper">
+          <InputWrapper class="fill-out" label="Appointment">
+            <el-select
+              class="w-100"
+              v-model="appointmentData"
+              placeholder="Select Appointment"
+            >
+              <el-option
+                v-for="(option, idx) in appointmentsData"
+                :key="option.id"
+                :value="idx"
+                :label="option.appointment_type_name"
+              />
+            </el-select>
+          </InputWrapper>
+
           <InputWrapper class="fill-out" label="Report Template">
             <el-select
               class="w-100"
-              v-model="reportTemplate"
+              v-model="templateData"
               placeholder="Select Report Template"
             >
               <el-option
@@ -34,20 +49,6 @@
             </el-select>
           </InputWrapper>
 
-          <InputWrapper class="fill-out" label="Appointment">
-            <el-select
-              class="w-100"
-              v-model="appointment"
-              placeholder="Select Appointment"
-            >
-              <el-option
-                v-for="(option, idx) in appointmentsData"
-                :key="option.id"
-                :value="idx"
-                :label="option.appointment_type_name"
-              />
-            </el-select>
-          </InputWrapper>
           <InputWrapper class="title-input-wrapper fill-out" prop="title">
             <el-input
               v-model="formData.title"
@@ -313,7 +314,14 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, watchEffect, ref, onMounted, computed } from "vue";
+import {
+  defineComponent,
+  watchEffect,
+  ref,
+  onMounted,
+  computed,
+  watch,
+} from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { StoreReportActions } from "@/store/enums/StoreReportEnums";
 import { useStore } from "vuex";
@@ -340,17 +348,20 @@ export default defineComponent({
     const appointmentsData = ref([]);
     const patientData = computed(() => store.getters.selectedPatient);
 
-    const templateData = computed(
-      () => store.getters.getReportTemplateSelected
-    );
+    // const templateData = computed(
+    //   () => store.getters.getReportTemplateSelected
+    // );
+    const templateData = ref();
     // const patientList = computed(() => store.getters.selectedPatient);
 
     const headerFooterList = computed(
       () => store.getters.getHeaderFooterTemplateList
     );
-    const appointmentData = computed(
-      () => store.getters.getReportAppointmentSelected
-    );
+    // const appointmentData = computed(
+    //   () => store.getters.getReportAppointmentSelected
+    // );
+
+    const appointmentData = ref();
     const scheduleItems = computed(() => store.getters.scheduleItemList);
     const proceduresUndertakenDataFiltered = ref<Array<IScheduleItem>>([]);
     const extraItemsUsedDataFiltered = ref<Array<IScheduleItem>>([]);
@@ -587,10 +598,13 @@ export default defineComponent({
       return name.join(" - ");
     };
 
-    watchEffect(() => {
-      // patientData.value = patientList.value;
+    watch(templateData, () => {
+      formData.value.title =
+        reportTemplatesData.value[templateData.value].title;
+    });
+
+    watch(patientData, () => {
       appointmentsData.value = patientData.value.appointments;
-      formData.value.title = templateData.value.title;
     });
 
     onMounted(() => {
@@ -611,6 +625,7 @@ export default defineComponent({
       rules,
       templateData,
       patientData,
+      appointmentsData,
       reportTemplatesData,
       appointmentData,
       formData,

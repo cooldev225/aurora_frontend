@@ -20,7 +20,7 @@ export default {
   setup() {
     const router = useRouter();
     const handleReport = () => {
-      // store.dispatch(Actions.REPORT_TEMPLATES.LIST);
+      store.dispatch(Actions.REPORT_TEMPLATES.LIST);
       // const modal = new Modal(document.getElementById("modal_report"));
       // modal.show();
       router.push({ name: "patients-report" });
