@@ -390,4 +390,26 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [PatientActions.PRINT_LABEL](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post(
+        "patients/print-label/" + id,
+        {},
+        {
+          responseType: "blob",
+        }
+      )
+        .then(({ data }) => {
+          return data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }

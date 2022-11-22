@@ -69,6 +69,12 @@
         Doctor Address Books
       </router-link>
       <router-link
+        to="/settings/patient-print-label-setting"
+        class="btn btn-light-primary m-2"
+      >
+        Patient Label Printing Settings
+      </router-link>
+      <router-link
         to="/settings/header-footer-templates"
         class="btn btn-light-primary m-2"
       >

@@ -1,6 +1,10 @@
 <template>
   <LargeIconButton text="Print Label" @click="handlePrintLabel()" />
-  <PrintLabelModal :patient="patient"></PrintLabelModal>
+  <PrintLabelModal
+    :appointmentId="appointment.id"
+    :patient="appointment.patient"
+    :referral="appointment.referral"
+  ></PrintLabelModal>
 </template>
 
 <script lang="ts">
@@ -19,9 +23,11 @@ export default {
       type: Object,
     },
   },
-  setup() {
+  setup(props) {
     const handlePrintLabel = () => {
-      const modal = new Modal(document.getElementById("modal_print_label"));
+      const modal = new Modal(
+        document.getElementById("modal_print_label_" + props.appointment.id)
+      );
       modal.show();
     };
 
