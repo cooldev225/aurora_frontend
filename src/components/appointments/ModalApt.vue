@@ -103,7 +103,7 @@
                   :rules="rules"
                   :model="aptInfoData"
                   ref="formRef_1"
-                  @submit.prevent="handleStep_1"
+                  @submit.prevent="aptOverlapCheck"
                 >
                   <div class="row scroll h-520px">
                     <InputWrapper
@@ -257,7 +257,7 @@
                     <button
                       type="button"
                       class="btn btn-lg btn-primary align-self-end"
-                      @click="handleStep_1"
+                      @click="aptOverlapCheck"
                     >
                       Continue
                       <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -1471,6 +1471,7 @@ export default defineComponent({
     const patientList = computed(() => store.getters.patientsList);
     const patientAptData = computed(() => store.getters.getPatientAppointments);
     const aptData = computed(() => store.getters.getAptSelected);
+    const aptList = computed(() => store.getters.getAptList);
     const bookingData = computed(() => store.getters.bookingDatas);
 
     // Setting modal Heading and Ids
@@ -2104,6 +2105,7 @@ export default defineComponent({
     };
 
     const gotoPage = (page) => {
+      aptOverlapCheck();
       if (props.modalId === "modal_edit_apt") {
         currentStepIndex.value = Number(page - 1);
         _stepperObj.value.goto(page);
@@ -2167,6 +2169,46 @@ export default defineComponent({
       patientInfoData.value.also_known_as.push(previousData);
     };
 
+    const aptOverlapCheck = () => {
+      if (props.modalId == "model_edit_apt") {
+        handleStep_1();
+        return;
+      }
+      const startTime = aptInfoData.value.time_slot[0] + ":00";
+      const endTime = aptInfoData.value.time_slot[1] + ":00";
+      const filter = aptList.value.filter((apt) => {
+        if (
+          aptInfoData.value.specialist_id == apt.specialist_id &&
+          aptInfoData.value.clinic_id === apt.clinic_id
+        ) {
+          if (startTime < apt && endTime > apt.start_time) {
+            return apt;
+          } else if (startTime < apt.end_time && endTime > apt.end_time) {
+            return apt;
+          } else if (startTime > apt.start_time && endTime < apt.end_time) {
+            return apt;
+          } else if (startTime < apt.start_time && endTime > apt.end_time) {
+            return apt;
+          }
+        }
+      });
+      if (filter.length > 0) {
+        Swal.fire({
+          title: "Are you sure?",
+          text:
+            "You already have an appointment at " +
+            filter[0].start_time +
+            ", This action will overlap with existing appointment!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, do it!",
+        }).then((result) => {
+          if (result.isConfirmed) handleStep_1();
+        });
+      } else handleStep_1();
+    };
     return {
       chargeTypes,
       rules,
@@ -2247,6 +2289,7 @@ export default defineComponent({
       updatePatientDetails,
       allergiesList,
       convertToCurrency,
+      aptOverlapCheck,
     };
   },
 });
