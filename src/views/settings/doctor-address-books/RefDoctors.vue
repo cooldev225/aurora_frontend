@@ -1,5 +1,5 @@
 <template>
-  <div class="card w-75 mx-auto">
+  <div class="card w-full w-xl-75 mx-auto">
     <div class="card-header border-0 pt-6">
       <div class="card-title">
         <div class="d-flex align-items-center position-relative my-1">
@@ -39,16 +39,19 @@
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-provider_no="{ row: item }">
-          {{ item.provider_no }}
+          <span class="text-uppercase">{{ item.provider_no }}</span>
         </template>
         <template v-slot:cell-full_name="{ row: item }">
           {{ item.full_name }}
         </template>
-        <template v-slot:cell-email="{ row: item }">
-          {{ item.email }}
+        <template v-slot:cell-details="{ row: item }">
+          {{ item.practice_name }}<br />
+          {{ item.practice_number }}<br v-if="item.practice_number" />
+          {{ item.practice_email }}<br v-if="item.practice_email" />
+          {{ item.practice_address }}
         </template>
-        <template v-slot:cell-phone="{ row: item }">
-          {{ item.phone }}
+        <template v-slot:cell-preferred_contact_method="{ row: item }">
+          {{ item.preferred_communication_method }}
         </template>
         <template v-slot:cell-action="{ row: item }">
           <button
@@ -88,7 +91,6 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
@@ -116,14 +118,12 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "Email Address",
-        key: "email",
-        sortable: true,
+        name: "Practice Details",
+        key: "details",
       },
       {
-        name: "Contact Number",
-        key: "phone",
-        sortable: true,
+        name: "Preferred Communication",
+        key: "preferred_contact_method",
       },
       {
         name: "Action",
@@ -142,23 +142,9 @@ export default defineComponent({
     };
 
     const handleDelete = (id) => {
-      store
-        .dispatch(Actions.DOCTOR_ADDRESS_BOOK.DELETE, id)
-        .then(() => {
-          store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
-          Swal.fire({
-            text: "Successfully Deleted!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          });
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        });
+      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.DELETE, id).then(() => {
+        store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
+      });
     };
 
     onMounted(() => {

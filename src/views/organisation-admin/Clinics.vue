@@ -27,6 +27,7 @@
     </div>
     <div class="card-body pt-0">
       <Datatable
+        v-if="tableData"
         :table-header="tableHeader"
         :table-data="tableData"
         :rows-per-page="5"
@@ -74,22 +75,20 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+<script lang="ts">
+import { defineComponent, onMounted, ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
-
+import IClinic from "@/store/interfaces/IClinic";
 export default defineComponent({
   name: "clinics-main",
-
   components: {
     Datatable,
   },
-
   setup() {
     const store = useStore();
     const tableHeader = ref([
@@ -113,9 +112,9 @@ export default defineComponent({
         key: "action",
       },
     ]);
-    const tableData = ref([]);
+    const tableData = ref<IClinic[]>();
     const router = useRouter();
-    const clinicsList = computed(() => store.getters.clinicsList);
+    const clinicsList = computed<IClinic[]>(() => store.getters.clinicsList);
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_CLINICS.SELECT, item);
@@ -152,24 +151,9 @@ export default defineComponent({
         },
       }).then((result) => {
         if (result.value == "success") {
-          store
-            .dispatch(Actions.CLINICS.DELETE, item.id)
-            .then(() => {
-              Swal.fire({
-                text: "Successfully Deleted!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                store.dispatch(Actions.CLINICS.LIST);
-              });
-            })
-            .catch(({ response }) => {
-              console.log(response.data.error);
-            });
+          store.dispatch(Actions.CLINICS.DELETE, item.id).then(() => {
+            store.dispatch(Actions.CLINICS.LIST);
+          });
         }
       });
     };
@@ -186,12 +170,12 @@ export default defineComponent({
     onMounted(() => {
       setCurrentPageBreadcrumbs("Clinics", []);
       store.dispatch(Actions.CLINICS.LIST);
-      tableData.value = clinicsList;
     });
 
-    watchEffect(() => {
-      tableData.value = clinicsList;
+    watch(clinicsList, () => {
+      tableData.value = clinicsList.value;
     });
+
     return { tableHeader, tableData, handleEdit, handleDelete, handleRoomEdit };
   },
 });

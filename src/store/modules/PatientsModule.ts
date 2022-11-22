@@ -6,13 +6,13 @@ import {
 } from "@/store/enums/StorePatientEnums";
 import { Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-import { IApt } from "./AppointmentModule";
-import Swal from "sweetalert2/dist/sweetalert2.js";
-
-export interface IPatient {
-  id: string;
-  appointments: Array<IApt>;
-}
+import IAppointment from "./AppointmentModule";
+import {
+  displayServerError,
+  displaySuccessModal,
+  displaySuccessToast,
+} from "@/helpers/helpers.js";
+import IPatient from "../interfaces/IPatient";
 
 export interface IMinorId {
   minorId?: string | null;
@@ -25,8 +25,8 @@ export interface PatientsInfo {
 }
 
 export interface PatientAppointmentsData {
-  pastAppointments: Array<IApt>;
-  futureAppointments: Array<IApt>;
+  pastAppointments: Array<IAppointment>;
+  futureAppointments: Array<IAppointment>;
 }
 
 @Module
@@ -110,14 +110,13 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   [PatientActions.LIST](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.get("patients", "", data)
+      return ApiService.get("patients", "", data)
         .then(({ data }) => {
           this.context.commit(PatientMutations.SET_PATIENT.LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Listing patients");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -130,13 +129,11 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       ApiService.setHeader();
       ApiService.update("patients", patient.id, patient)
         .then(({ data }) => {
-          console.log(patient.patient_id);
           this.context.dispatch(PatientActions.VIEW, patient.id);
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Updating a patient");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -153,8 +150,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Viewing a patient");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -174,8 +170,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Listing patient appointments");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -195,8 +190,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(PatientMutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Listing patient document's");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -216,8 +210,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Creating a patient document");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -237,8 +230,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(
+            response,
+            "Sending a patient document via emails"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -255,8 +250,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Add a patient claim source");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -273,8 +267,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(
+            response,
+            "Updating a patient claim source"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -288,19 +284,14 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       return ApiService.delete(`patients/billing/${source.id}`)
         .then(() => {
           this.context.dispatch(PatientActions.VIEW, source.patient_id);
-          Swal.fire({
-            text: "Successfully Deleted!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-secondary",
-            },
-          });
+
+          return displaySuccessToast("Successfully Deleted claim source");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(
+            response,
+            "Deleting a patient claim source"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -317,8 +308,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(
+            response,
+            "Creating a patient 'also know as'"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -335,8 +328,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(
+            response,
+            "Updating a patient 'also know as'"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -353,8 +348,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Listing patient 'also know as'");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -368,19 +362,13 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       ApiService.delete(`patients/also-known-as/${details.id}`)
         .then(() => {
           this.context.dispatch(PatientActions.VIEW, details.patient_id);
-          Swal.fire({
-            text: "Successfully Deleted!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-secondary",
-            },
-          });
+          return displaySuccessToast("Successfully updated 'also know as'");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(
+            response,
+            "Deleting a patient 'also know as'"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -396,7 +384,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Listing patient allergies");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

@@ -140,6 +140,7 @@ import {
   watchEffect,
   getCurrentInstance,
   watch,
+  PropType,
 } from "vue";
 import arraySort from "array-sort";
 import moment from "moment";
@@ -166,7 +167,7 @@ export default defineComponent({
       type: Object as () => Array<IHeaderConfiguration>,
       required: true,
     },
-    tableData: { type: Array, required: true },
+    tableData: { type: Array as PropType<Array<unknown>>, required: true },
     emptyTableText: { type: String, default: "No data found" },
     loading: { type: Boolean, default: false },
     currentPage: { type: Number, default: 1 },

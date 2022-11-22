@@ -1,6 +1,11 @@
 import ApiService from "@/core/services/ApiService";
 import { Actions } from "@/store/enums/StoreEnums";
 import { Module, Action, VuexModule } from "vuex-module-decorators";
+import {
+  displayServerError,
+  displaySuccessModal,
+  displaySuccessToast,
+} from "@/helpers/helpers.js";
 
 @Module
 export default class FileModule extends VuexModule {
@@ -20,7 +25,7 @@ export default class FileModule extends VuexModule {
         return data;
       })
       .catch(({ response }) => {
-        console.log(response.data.error);
+        return displayServerError(response, "Viewing a File");
       });
   }
 }

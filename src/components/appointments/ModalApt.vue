@@ -691,22 +691,7 @@
                   >
                     <div class="row">
                       <InputWrapper
-                        class="col-6"
-                        label="Appointment Price"
-                        prop="procedure_price"
-                      >
-                        <!-- <el-input
-                          type="text"
-                          v-model.number="billingInfoData.procedure_price"
-                          disabled
-                        /> -->
-                        <CurrencyInput
-                          v-model.number="billingInfoData.procedure_price"
-                          disabled
-                        />
-                      </InputWrapper>
-                      <InputWrapper
-                        class="col-6"
+                        class="col-12"
                         label="Charge Type"
                         prop="charge_type"
                       >
@@ -723,6 +708,12 @@
                           />
                         </el-select>
                       </InputWrapper>
+
+                      <div class="mb-4">
+                        <InfoSection :heading="'Estimated Appointment Price'">
+                          {{ convertToCurrency(appointment_type_quote / 100) }}
+                        </InfoSection>
+                      </div>
 
                       <el-divider />
 
@@ -1177,6 +1168,8 @@ import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue"
 import ViewPatientAlertModal from "@/views/patients/modals/ViewPatientAlertModal.vue";
 import PatientBillingTypes from "@/core/data/patient-billing-types";
 import AddClaimSourceModal from "@/views/patients/modals/AddClaimSourceModal.vue";
+import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
+import { convertToCurrency } from "@/core/data/billing";
 import { ElMessage } from "element-plus";
 import { Modal } from "bootstrap";
 
@@ -1199,6 +1192,7 @@ export default defineComponent({
     PatientAlert,
     ViewPatientAlertModal,
     AddClaimSourceModal,
+    InfoSection,
   },
 
   setup(props) {
@@ -1372,6 +1366,7 @@ export default defineComponent({
     const start_time = ref("");
     const end_time = ref("");
     const appointment_name = ref("");
+    const appointment_type_quote = ref(0);
     const specialist_name = ref("");
     const _appointment_time = ref(30);
     const arrival_time = ref(30);
@@ -1552,6 +1547,7 @@ export default defineComponent({
 
         if (typeof _selected === "undefined") {
           appointment_name.value = "";
+          appointment_type_quote.value = 0;
           _appointment_time.value = Number(appointment_time.value);
           arrival_time.value = 30;
 
@@ -1561,6 +1557,7 @@ export default defineComponent({
         } else {
           appointment_name.value = _selected.name;
           appointmentType.value = _selected.type;
+          appointment_type_quote.value = _selected?.default_items_quote ?? 0;
           _appointment_time.value = Number(
             appointment_length[_selected.appointment_time] *
               appointment_time.value
@@ -1771,13 +1768,11 @@ export default defineComponent({
     const getAvailableRooms = () => {
       if (JwtService.getToken()) {
         ApiService.setHeader();
-        ApiService.get("clinics/" + aptInfoData.value.clinic_id + "/rooms")
-          .then(({ data }) => {
-            rooms.value = data.data;
-          })
-          .catch(({ response }) => {
-            console.log(response.data.errors);
-          });
+        ApiService.get(
+          "clinics/" + aptInfoData.value.clinic_id + "/rooms"
+        ).then(({ data }) => {
+          rooms.value = data.data;
+        });
       } else {
         // this.context.commit(Mutations.PURGE_AUTH);
       }
@@ -1867,15 +1862,13 @@ export default defineComponent({
           ...otherInfoData.value,
         })
         .then(() => {
-          loading.value = false;
           store.dispatch(AppointmentActions.LIST);
           hideModal(createAptModalRef.value);
           resetCreateModal();
           ElMessage.success("Appointment Saved");
         })
-        .catch(({ response }) => {
+        .finally(() => {
           loading.value = false;
-          console.log(response.data.errors);
         });
     };
 
@@ -1900,14 +1893,8 @@ export default defineComponent({
         patientStatus.value = "new";
         patientStep.value = 3;
       } else {
-        // Edit modal
         store.dispatch(PatientActions.LIST);
       }
-      //
-      // cur_appointment_type_id.value = "";
-      // patientStatus.value = "new";
-      // patientStep.value = 1;
-      // patientTableData.value = patientList.value;
     };
 
     const handleCancel = () => {
@@ -1936,8 +1923,6 @@ export default defineComponent({
           loading.value = true;
           props.modalId === "modal_create_apt" ? createApt() : updateApt();
           resetCreateModal();
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
@@ -1986,9 +1971,8 @@ export default defineComponent({
             }
           });
         })
-        .catch((response) => {
+        .finally(() => {
           loading.value = false;
-          console.log(response);
         });
     };
 
@@ -2018,9 +2002,8 @@ export default defineComponent({
           store.dispatch(Actions.APT.LIST);
           hideModal(editAptModalRef.value);
         })
-        .catch(({ response }) => {
+        .finally(() => {
           loading.value = false;
-          console.log(response.data.error);
         });
     };
 
@@ -2038,7 +2021,6 @@ export default defineComponent({
     const selectPatient = (item) => {
       store.dispatch(PatientActions.APPOINTMENTS, item.id);
       store.dispatch(PatientActions.VIEW, item.id);
-      //patientInfoData.value = item;
       for (let key in patientInfoData.value)
         patientInfoData.value[key] = item[key];
       patientInfoData.value.alerts = item.alerts;
@@ -2155,6 +2137,7 @@ export default defineComponent({
       start_time,
       end_time,
       appointment_name,
+      appointment_type_quote,
       appointmentType,
       specialist_name,
       submit,
@@ -2214,6 +2197,7 @@ export default defineComponent({
       getHealthFund,
       updatePatientDetails,
       allergiesList,
+      convertToCurrency,
     };
   },
 });

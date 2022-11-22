@@ -54,10 +54,13 @@
               <div class="appointment-type">
                 <InputWrapper prop="appointment_type_id">
                   <el-select
-                    :disabled="props.isDisableAptTypeList"
+                    :disabled="
+                      props.isDisableAptTypeList && aptData.action === 'move'
+                    "
                     class="w-100"
                     placeholder="Select Appointment Type"
                     v-model="formData.appointment_type_id"
+                    @change="handleChangeAppointmentType"
                   >
                     <el-option
                       v-for="item in aptTypelist"
@@ -184,7 +187,7 @@
                 </span>
                 <span class="me-1">Appointment Type:</span>
                 <span class="caption-content me-2">
-                  {{ aptData.appointment_type_name }}
+                  {{ formData.appointment_type_name }}
                 </span>
               </div>
               <WeeklyTimeSlotsTable
@@ -346,6 +349,7 @@ export default defineComponent({
     const bookingData = computed(() => store.getters.bookingDatas);
     const formData = ref({
       appointment_type_id: null,
+      appointment_type_name: "",
       clinic_id: null,
       specialist_id: null,
       time_requirement: 0,
@@ -397,9 +401,17 @@ export default defineComponent({
       no_referral_reason: "",
     });
 
+    const handleChangeAppointmentType = () => {
+      formData.value.appointment_type_name = aptTypelist.value.filter(
+        (t) => t.id === formData.value.appointment_type_id
+      )[0].name;
+    };
+
     watch(aptData, () => {
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST).then(() => {
         formData.value.appointment_type_id = aptData.value.appointment_type?.id;
+        formData.value.appointment_type_name =
+          aptData.value.appointment_type?.name;
       });
       store.dispatch(Actions.CLINICS.LIST).then(() => {
         formData.value.clinic_id = aptData.value.clinic_id;
@@ -444,6 +456,9 @@ export default defineComponent({
       aptInfoData.value.specialist_id = bookingData.value.specialist_id;
       aptInfoData.value.clinic_id = bookingData.value.clinic_id;
       aptInfoData.value.clinic_name = bookingData.value.clinic_name;
+
+      aptInfoData.value.appointment_type_id =
+        formData.value.appointment_type_id;
 
       let submitData = {
         ...aptInfoData.value,
@@ -493,6 +508,7 @@ export default defineComponent({
       handleConfirm,
       bookingData,
       moment,
+      handleChangeAppointmentType,
     };
   },
 });

@@ -81,7 +81,7 @@
   </ModalWrapper>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
@@ -91,21 +91,22 @@ import timeFrames from "@/core/data/time-frames";
 export default defineComponent({
   name: "patient-alert-modal",
   props: {
-    patientId: { required: true },
+    patientId: { type: Number, required: true },
   },
   setup(props) {
+    console.log(props);
     const store = useStore();
-    const formRef = ref(null);
-    const patientAlertModal = ref(null);
-    const loading = ref(false);
+    const formRef = ref();
+    const patientAlertModal = ref();
+    const loading = ref<boolean>(false);
 
     const formData = ref({
-      patient_id: null,
+      patient_id: props.patientId,
       alert_level: "NOTICE",
       title: "",
       explanation: "",
     });
-    const patientData = ref([]);
+
     const rules = ref({
       reason: [
         {
@@ -119,10 +120,6 @@ export default defineComponent({
       formData.value.alert_level = alertLevel;
       console.log(formData.value.alert_level);
     };
-
-    watchEffect(() => {
-      patientData.value = store.getters.selectedPatient;
-    });
 
     const updateRef = (_ref) => {
       patientAlertModal.value = _ref;

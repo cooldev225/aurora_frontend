@@ -79,15 +79,6 @@ const Actions = {
     MINOR_ID: "createClinicMinorId",
   },
 
-
-
-  BIRTH_CODE: {
-    LIST: "listBirthCode",
-    CREATE: "createBirthCode",
-    DELETE: "deleteBirthCode",
-    UPDATE: "updateBirthCode",
-  },
-
   HEALTH_FUND: {
     LIST: "listHealthFunds",
   },
@@ -263,11 +254,6 @@ const Mutations = {
     LISTROOMS: "setClinicsRoomsList",
     SELECTROOMS: "setSelectClinicsRooms",
     MINOR_ID: "setClinicMinorId",
-  },
-
-  SET_BIRTH_CODE: {
-    LIST: "setClinicsList",
-    SELECT: "setSelectClinics",
   },
 
   SET_HEALTH_FUND: {

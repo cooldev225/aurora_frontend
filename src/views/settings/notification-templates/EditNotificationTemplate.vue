@@ -1,24 +1,27 @@
 <template>
   <div
     class="modal fade"
-    id="modal-edit-birth-code"
-    ref="editBirthCodeModalRef"
+    id="modal_edit_notification_template"
     tabindex="-1"
     aria-hidden="true"
+    ref="editNtfTemplateModalRef"
+    data-bs-backdrop="static"
   >
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
-        <div class="modal-header" id="modal_update_spectype_header">
+        <div class="modal-header" id="kt_modal_add_customer_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">Edit Birth Code</h2>
+          <h2 class="fw-bolder">
+            Edit Notification Template: {{ formData.title }}
+          </h2>
           <!--end::Modal title-->
 
           <!--begin::Close-->
           <div
-            id="modal_update_spectype_close"
+            id="kt_modal_add_customer_close"
             data-bs-dismiss="modal"
             class="btn btn-icon btn-sm btn-active-icon-primary"
           >
@@ -41,26 +44,41 @@
             <!--begin::Scroll-->
             <div
               class="scroll-y me-n7 pe-7"
-              id="modal_update_spectype_scroll"
+              id="kt_modal_add_customer_scroll"
               data-kt-scroll="true"
               data-kt-scroll-activate="{default: false, lg: true}"
               data-kt-scroll-max-height="auto"
-              data-kt-scroll-dependencies="#modal_update_spectype_header"
-              data-kt-scroll-wrappers="#modal_update_spectype_scroll"
+              data-kt-scroll-dependencies="#kt_modal_add_customer_header"
+              data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
               data-kt-scroll-offset="300px"
             >
               <!--begin::Input group-->
-              <div class="fv-row mb-7">
+              <div v-if="formData.allow_day_edit != 0" class="fv-row mb-7">
                 <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Birth Code</label>
+                <label class="required fs-6 fw-bold mb-2">Days Before</label>
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="code">
+                <el-form-item prop="days_before">
+                  <el-input-number v-model="formData.days_before" :min="1" />
+                </el-form-item>
+                <!--end::Input-->
+              </div>
+              <!--end::Input group-->
+
+              <!--begin::Input group-->
+              <div class="fv-row mb-7">
+                <!--begin::Label-->
+                <label class="required fs-6 fw-bold mb-2">SMS Template</label>
+                <!--end::Label-->
+
+                <!--begin::Input-->
+                <el-form-item prop="sms_template">
                   <el-input
-                    v-model="formData.code"
-                    type="text"
-                    placeholder="Birth Code"
+                    v-model="formData.sms_template"
+                    type="textarea"
+                    rows="3"
+                    placeholder="SMS Template"
                   />
                 </el-form-item>
                 <!--end::Input-->
@@ -70,15 +88,18 @@
               <!--begin::Input group-->
               <div class="fv-row mb-7">
                 <!--begin::Label-->
-                <label class="required fs-6 fw-bold mb-2">Description</label>
+                <label class="required fs-6 fw-bold mb-2"
+                  >Email Print Template</label
+                >
                 <!--end::Label-->
 
                 <!--begin::Input-->
-                <el-form-item prop="description">
+                <el-form-item prop="email_print_template">
                   <el-input
-                    v-model="formData.description"
-                    type="text"
-                    placeholder="Description"
+                    v-model="formData.email_print_template"
+                    type="textarea"
+                    rows="3"
+                    placeholder="Email Print Template"
                   />
                 </el-form-item>
                 <!--end::Input-->
@@ -93,8 +114,9 @@
           <div class="modal-footer flex-center">
             <!--begin::Button-->
             <button
-              type="button"
+              type="reset"
               data-bs-dismiss="modal"
+              id="kt_modal_add_customer_cancel"
               class="btn btn-light me-3"
             >
               Cancel
@@ -107,12 +129,7 @@
               class="btn btn-lg btn-primary"
               type="submit"
             >
-              <span v-if="!loading" class="indicator-label">
-                Update
-                <span class="svg-icon svg-icon-3 ms-2 me-0">
-                  <inline-svg src="media/icons/duotune/arrows/arr064.svg" />
-                </span>
-              </span>
+              <span v-if="!loading" class="indicator-label"> Update </span>
               <span v-if="loading" class="indicator-progress">
                 Please wait...
                 <span
@@ -138,34 +155,39 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "edit-birth-code",
+  name: "edit-notification-template",
   components: {},
   setup() {
     const store = useStore();
     const formRef = ref(null);
-    const editBirthCodeModalRef = ref(null);
+    const editNtfTemplateModalRef = ref(null);
     const loading = ref(false);
-    const formData = ref({ code: "", descriptoin: "" });
 
-    watchEffect(() => {
-      formData.value = store.getters.birthCodeSelected;
+    const formData = ref({
+      days_before: "",
+      sms_template: "",
+      email_print_template: "",
     });
 
     const rules = ref({
-      code: [
+      sms_template: [
         {
           required: true,
-          message: "Birth Code cannot be blank",
+          message: "SMS template cannot be blank",
           trigger: "change",
         },
       ],
-      description: [
+      email_print_template: [
         {
           required: true,
-          message: "Description cannnot be blank",
+          message: "Email print template cannot be blank",
           trigger: "change",
         },
       ],
+    });
+
+    watchEffect(() => {
+      formData.value = store.getters.getNtfTemplatesSelected;
     });
 
     const submit = () => {
@@ -177,28 +199,17 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(Actions.BIRTH_CODE.UPDATE, formData.value)
+            .dispatch(Actions.NTF_TEMPLATES.UPDATE, formData.value)
             .then(() => {
-              loading.value = false;
-              store.dispatch(Actions.BIRTH_CODE.LIST);
-              Swal.fire({
-                text: "Successfully Updated!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                hideModal(editBirthCodeModalRef.value);
+              store.dispatch(Actions.NTF_TEMPLATES.LIST).then(() => {
+                hideModal(editNtfTemplateModalRef.value);
               });
             })
-            .catch(({ response }) => {
+            .finally(() => {
               loading.value = false;
-              console.log(response.data.error);
+              hideModal(editNtfTemplateModalRef.value);
             });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
+          formRef.value.resetFields();
         }
       });
     };
@@ -206,10 +217,10 @@ export default defineComponent({
     return {
       formData,
       rules,
-      submit,
       formRef,
       loading,
-      editBirthCodeModalRef,
+      editNtfTemplateModalRef,
+      submit,
     };
   },
 });

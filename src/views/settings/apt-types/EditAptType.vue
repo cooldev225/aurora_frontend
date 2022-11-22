@@ -98,6 +98,29 @@
               </el-select>
             </InputWrapper>
           </div>
+
+          <div class="row">
+            <div class="col-sm-12 px-0">
+              <InputWrapper label="Select Item" prop="default_items">
+                <el-select
+                  class="w-100"
+                  multiple
+                  filterable
+                  allow-create
+                  default-first-option
+                  :reserve-keyword="false"
+                  v-model="formData.default_items"
+                >
+                  <el-option
+                    v-for="item in scheduleItems"
+                    :value="item.id"
+                    :label="item.label_name"
+                    :key="item.id"
+                  />
+                </el-select>
+              </InputWrapper>
+            </div>
+          </div>
         </div>
         <!--end::Scroll-->
 
@@ -177,6 +200,7 @@ export default defineComponent({
     const createAptTypeModalRef = ref(null);
     const aptTypes = computed(() => store.getters.getAptTypesList);
     const reportTemplates = computed(() => store.getters.getReportTemplateList);
+    const scheduleItems = computed(() => store.getters.scheduleItemList);
     const loading = ref(false);
 
     const formInfo = reactive({
@@ -197,6 +221,7 @@ export default defineComponent({
       arrival_time: 0,
       appointment_time: "SINGLE",
       report_template: null,
+      default_items: [],
     });
 
     const rules = ref({
@@ -229,6 +254,7 @@ export default defineComponent({
     onMounted(() => {
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
       store.dispatch(Actions.REPORT_TEMPLATES.LIST);
+      store.dispatch(Actions.SCHEDULE_ITEM.LIST);
     });
 
     const submit = () => {
@@ -276,6 +302,7 @@ export default defineComponent({
       createAptTypeModalRef,
       reportTemplates,
       submit,
+      scheduleItems,
     };
   },
 });

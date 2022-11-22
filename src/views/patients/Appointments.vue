@@ -111,7 +111,6 @@ import { defineComponent, watchEffect, ref, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useRouter, useRoute } from "vue-router";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import { Modal } from "bootstrap";
 import md5 from "js-md5";
 import store from "@/store";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
@@ -131,6 +130,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const patient = computed(() => store.getters.selectedPatient);
+
     const userRole = computed(() => store.getters.userRole);
     const tableHeader = ref([
       {
@@ -160,14 +160,7 @@ export default defineComponent({
       });
     };
 
-    const handleView = () => {
-      router.push({ name: "make-payment-view" });
-    };
-
-    const selectedApt = ref({});
-
     watchEffect(() => {
-      console.log(patient.value);
       tableData.value = patient.value.appointments;
     });
 
@@ -189,10 +182,8 @@ export default defineComponent({
     return {
       tableHeader,
       tableData,
-      selectedApt,
       userRole,
       handlePreAdmissionTest,
-      handleView,
       patient,
     };
   },
