@@ -18,7 +18,11 @@ export default defineComponent({
 
     const printTestLabel = () => {
       const printerName = "ZDesigner GK420d";
-      const testPatient = {};
+      const testPatient = {
+        first_name: "John",
+        last_name: "Smith",
+        contact_number: "04811832455",
+      };
       printPatientLabel(testPatient, printerName);
     };
 
