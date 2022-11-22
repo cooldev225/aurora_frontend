@@ -89,6 +89,9 @@
               </button>
 
               <button
+                v-if="
+                  item.status == 'Pending' && item.user_id === user.profile.id
+                "
                 @click="confirmDeleteRequest(item.id)"
                 class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
               >
@@ -151,6 +154,9 @@ export default defineComponent({
   components: { LeaveRequestModal, Datatable },
   setup() {
     const store = useStore();
+    const loading = ref(false);
+    const leaveList = computed(() => store.getters.hrmDataList);
+    const user = computed(() => store.getters.currentUser);
     const tableHeader = ref([
       {
         name: "Name",
@@ -202,16 +208,14 @@ export default defineComponent({
       isFullDay: true,
       start_date: "",
       end_date: "",
+      userId: user.value.profile.id,
     });
-
-    const loading = ref(false);
-    const leaveList = computed(() => store.getters.hrmDataList);
-    const user = computed(() => store.getters.currentUser);
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Employee Availability", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(HRMActions.EMPLOYEE_LEAVE.LIST);
+      store.dispatch(Actions.USER_LIST);
     });
 
     onBeforeUnmount(() => {
@@ -223,7 +227,8 @@ export default defineComponent({
       const formData = {
         id: $event.id,
         status: $event.status,
-        full_name: $event.full_name,
+        userId: $event.user_id,
+        fullName: $event.full_name,
         leaveType: $event.leave_type,
         date: [new Date($event.start_date), new Date($event.end_date)],
         description: $event.description,
@@ -253,16 +258,12 @@ export default defineComponent({
       data.date[1] = moment(data.date[1]).format("YYYY-MM-DD");
       if (data.id) {
         store.dispatch(HRMActions.EMPLOYEE_LEAVE.UPDATE, data).then((e) => {
-          store.dispatch(HRMActions.EMPLOYEE_LEAVE.LIST, {
-            user_id: user.value.id,
-          });
+          store.dispatch(HRMActions.EMPLOYEE_LEAVE.LIST);
         });
         return;
       }
       store.dispatch(HRMActions.EMPLOYEE_LEAVE.CREATE, data).then((e) => {
-        store.dispatch(HRMActions.EMPLOYEE_LEAVE.LIST, {
-          user_id: user.value.id,
-        });
+        store.dispatch(HRMActions.EMPLOYEE_LEAVE.LIST);
       });
     };
 
@@ -331,6 +332,7 @@ export default defineComponent({
       const formData = {
         id: $event.id,
         status: $event.status,
+        userId: $event.user_id,
         full_name: $event.full_name,
         leaveType: $event.leave_type,
         date: [new Date($event.start_date), new Date($event.end_date)],
@@ -355,6 +357,7 @@ export default defineComponent({
       moment,
       updateApproval,
       confirmDeleteRequest,
+      user,
     };
   },
 });

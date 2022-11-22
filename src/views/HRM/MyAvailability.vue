@@ -126,9 +126,13 @@ export default defineComponent({
   setup() {
     const store = useStore();
 
+    const leaveList = computed(() => store.getters.hrmDataList);
+    const user = computed(() => store.getters.userProfile);
+
     const tableData = ref([]);
     const formData = ref({
       leaveType: "",
+      userId: user.value.id,
       date: [new Date(), new Date()],
       description: "",
       startTime: "08:30",
@@ -144,8 +148,6 @@ export default defineComponent({
         user_id: user.value.id,
       });
     });
-    const leaveList = computed(() => store.getters.hrmDataList);
-    const user = computed(() => store.getters.userProfile);
 
     watch(leaveList, () => {
       tableData.value = leaveList.value;
@@ -159,7 +161,10 @@ export default defineComponent({
       if ($event.status !== "Pending") return;
       const formData = {
         id: $event.id,
+        status: $event.status,
+        userId: $event.user_id,
         leaveType: $event.leave_type,
+        fullName: $event.full_name,
         date: [new Date($event.start_date), new Date($event.end_date)],
         description: $event.description,
         startTime: $event.start_time,

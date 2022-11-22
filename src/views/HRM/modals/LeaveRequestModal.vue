@@ -14,7 +14,7 @@
         <div class="modal-header" id="kt_modal_edit_schedule_header">
           <!--begin::Modal title-->
           <h2 class="fw-bolder" v-if="formData.id">
-            Edit Leave Request - {{ formData.full_name }}
+            Edit Leave Request - {{ formData.fullName }}
           </h2>
           <h2 class="fw-bolder" v-else>New Leave Request</h2>
           <!--end::Modal title-->
@@ -40,6 +40,42 @@
           class="leave-form"
           status-icon
         >
+          <el-form-item
+            label="Select Employee"
+            prop="userId"
+            v-if="!formData.id && userRole.role_id == 3"
+          >
+            <el-select
+              v-model="formData.userId"
+              placeholder="Select a employee"
+              filterable
+              remote
+              reserve-keyword
+              :remote-method="remoteMethodUsers"
+              :loading="loading"
+              :fit-input-width="false"
+            >
+              <el-option
+                v-for="user in userList"
+                :key="user.id"
+                :label="user.full_name"
+                :value="user.id"
+                label-width="360px"
+                class="user-option-selector"
+              >
+                <span style="float: left">{{ user.full_name }}</span>
+                <span
+                  style="
+                    float: right;
+                    color: var(--el-text-color-secondary);
+                    font-size: 13px;
+                  "
+                  >{{ user.role.name }}</span
+                >
+              </el-option>
+            </el-select>
+          </el-form-item>
+
           <el-form-item
             label="Type of Request"
             prop="leaveType"
@@ -122,7 +158,15 @@
             <el-button
               class="approve-btn"
               type="warning"
-              @click="approveAndSubmit"
+              @click="approveAndSubmit(0)"
+              v-if="!formData.id && userRole.role_id == 3"
+            >
+              Request and Approve
+            </el-button>
+            <el-button
+              class="approve-btn"
+              type="warning"
+              @click="approveAndSubmit(1)"
               v-if="formData.id && userRole.role_id == 3"
             >
               Approve and Update
@@ -130,7 +174,12 @@
             <el-button data-bs-dismiss="modal" @click="resetForm"
               >Cancel</el-button
             >
-            <el-button type="danger" @click="deleteRequest" v-if="formData.id"
+            <el-button
+              type="danger"
+              @click="deleteRequest"
+              v-if="
+                formData.status == 'Pending' && formData.userId === userRole.id
+              "
               >delete</el-button
             >
           </el-form-item>
@@ -151,7 +200,7 @@
 }
 </style>
 <script>
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import employeeTypes from "@/core/data/employee-schedule-types";
 import employeeRoles from "@/core/data/employee-roles";
@@ -167,11 +216,10 @@ export default defineComponent({
   props: [],
   setup(props, { emit }) {
     const store = useStore();
-    const formData = computed(() => store.getters.hrmDataSelected);
     const formRef = ref(null);
     const loading = ref(false);
     const leaveRequestModalRef = ref(null);
-    const userRole = computed(() => store.getters.userProfile);
+    const userList = ref([]);
     const leaveTypes = ref([
       {
         value: "Annual Leave",
@@ -202,6 +250,13 @@ export default defineComponent({
           trigger: "change",
         },
       ],
+      userId: [
+        {
+          required: true,
+          message: "Please select a employee",
+          trigger: "change",
+        },
+      ],
       date: [
         {
           type: "array",
@@ -228,17 +283,31 @@ export default defineComponent({
       ],
       description: [
         {
-          required: true,
+          required: false,
           message: "Please input a description",
           trigger: "blur",
         },
       ],
     });
 
+    const userRole = computed(() => store.getters.userProfile);
+    const formData = computed(() => store.getters.hrmDataSelected);
+    const users = computed(() => {
+      const list = store.getters.getUserList;
+      return list;
+    });
+
+    watch(users, () => {
+      users.value.map((user) => {
+        userList.value.push(user);
+      });
+    });
+
     const submitForm = async () => {
       if (!formRef.value) return;
       await formRef.value.validate((valid) => {
         if (valid) {
+          console.log(formData.value);
           emit("sendRequest", formData.value);
           hideModal(leaveRequestModalRef.value);
         } else {
@@ -294,10 +363,11 @@ export default defineComponent({
       return date < new Date();
     };
 
-    const approveAndSubmit = () => {
+    const approveAndSubmit = (id) => {
+      const caption = id === 0 ? "create" : "update";
       Swal.fire({
         title: "Are you sure?",
-        text: "You are about to approve and update this leave request",
+        text: "You are about to approve and" + caption + " this leave request",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#36ae45",
@@ -309,6 +379,20 @@ export default defineComponent({
           submitForm();
         }
       });
+    };
+
+    const remoteMethodUsers = (query) => {
+      if (query) {
+        loading.value = true;
+        setTimeout(() => {
+          loading.value = false;
+          userList.value = users.value.filter((item) => {
+            return item.full_name.toLowerCase().includes(query.toLowerCase());
+          });
+        }, 200);
+      } else {
+        userList.value = [];
+      }
     };
     return {
       rules,
@@ -328,6 +412,8 @@ export default defineComponent({
       disabledDate,
       approveAndSubmit,
       userRole,
+      userList,
+      remoteMethodUsers,
     };
   },
 });
@@ -336,11 +422,16 @@ export default defineComponent({
 .dialog-footer button:first-child {
   margin-right: 10px;
 }
+
 .leave-form {
   padding: 10px;
 
   label {
     width: 160px !important;
   }
+}
+
+.user-option-selector {
+  width: 370px;
 }
 </style>
