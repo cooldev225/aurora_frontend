@@ -94,6 +94,12 @@
               displayData.specialist_name
             }}</InfoSection>
 
+            <InfoSection :heading="'Anaesthetist'">
+              <span v-if="displayData.anesthetist_name !== ''">
+                {{ displayData.anesthetist_name }}</span
+              ><span> No Anaesthetist Assigned </span>
+            </InfoSection>
+
             <InfoSection :heading="'Estimated Price'">{{
               convertToCurrency(displayData.estimated_price / 100)
             }}</InfoSection>
@@ -283,6 +289,7 @@ export default defineComponent({
       patient_name: "",
       patient_number: "",
       procedure_approval_status: "",
+      anesthetist_name: "",
       estimated_price: 0,
     });
 
@@ -397,6 +404,7 @@ export default defineComponent({
     };
 
     watchEffect(() => {
+      console.log(aptData.value);
       displayData.clinic_name = aptData.value.clinic_details?.name;
       displayData.appointment_type_name = aptData.value.appointment_type?.name;
       displayData.specialist_name = aptData.value.specialist_name;
@@ -410,6 +418,9 @@ export default defineComponent({
       displayData.notes = aptData.value.note;
       displayData.procedure_approval_status =
         aptData.value.procedure_approval_status;
+      displayData.anesthetist_name = aptData.value.anesthetist
+        ? aptData.value.anesthetist.name
+        : "";
       displayData.estimated_price =
         aptData.value.appointment_type?.default_items_quote;
     });
