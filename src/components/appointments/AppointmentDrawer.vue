@@ -94,7 +94,6 @@
               displayData.specialist_name
             }}</InfoSection>
 
-
             <InfoSection :heading="'Anaesthetist'">
               <span v-if="displayData.anesthetist_name !== ''">
                 {{ displayData.anesthetist_name }}</span
@@ -104,7 +103,6 @@
             <InfoSection :heading="'Estimated Price'">{{
               convertToCurrency(displayData.estimated_price / 100)
             }}</InfoSection>
-
           </div>
           <!--end::Appointment Info-->
           <el-divider />
@@ -293,7 +291,6 @@ export default defineComponent({
       procedure_approval_status: "",
       anesthetist_name: "",
       estimated_price: 0,
-
     });
 
     const handleView = () => {
