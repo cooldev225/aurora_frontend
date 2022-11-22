@@ -139,6 +139,7 @@ import {
   onMounted,
   watchEffect,
   getCurrentInstance,
+  watch,
   PropType,
 } from "vue";
 import arraySort from "array-sort";
@@ -217,6 +218,10 @@ export default defineComponent({
           pagination.value.rowsPerPage;
         return clone.splice(startFrom, pagination.value.rowsPerPage);
       }
+    });
+
+    watch(props, () => {
+      data.value = props.tableData;
     });
 
     const currentPageChange = (val) => {

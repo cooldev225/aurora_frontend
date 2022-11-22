@@ -110,7 +110,17 @@
     </div>
   </div>
 
-  <AptModal modalId="modal_create_apt" />
+  <AppointmentListPopup
+    :all-specialists="allSpecialists"
+    :search-next-apts="search_next_apts"
+    :apt-type-list="aptTypelist"
+    :clinic-list="clinic_list"
+    :apt-time-require-list="aptTimeRequireList"
+    :x-weeks="aptWeeksList"
+    v-if="visibleSpecialists"
+  />
+  <AptModal modalId="modal_edit_apt" />
+
 </template>
 <script>
 import {
