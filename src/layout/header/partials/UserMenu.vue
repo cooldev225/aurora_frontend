@@ -57,7 +57,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -70,35 +69,7 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
-    const i18n = useI18n();
     const store = useStore();
-
-    i18n.locale.value = localStorage.getItem("lang")
-      ? (localStorage.getItem("lang") as string)
-      : "en";
-
-    const countries = {
-      en: {
-        flag: "media/flags/united-states.svg",
-        name: "English",
-      },
-      es: {
-        flag: "media/flags/spain.svg",
-        name: "Spanish",
-      },
-      de: {
-        flag: "media/flags/germany.svg",
-        name: "German",
-      },
-      ja: {
-        flag: "media/flags/japan.svg",
-        name: "Japanese",
-      },
-      fr: {
-        flag: "media/flags/france.svg",
-        name: "French",
-      },
-    };
 
     const handleProfile = () => {
       router.push({ name: "profile" });
@@ -110,26 +81,9 @@ export default defineComponent({
         .then(() => router.push({ name: "sign-in" }));
     };
 
-    const setLang = (lang) => {
-      localStorage.setItem("lang", lang);
-      i18n.locale.value = lang;
-    };
-
-    const currentLanguage = (lang) => {
-      return i18n.locale.value === lang;
-    };
-
-    const currentLanguageLocale = computed(() => {
-      return countries[i18n.locale.value];
-    });
-
     return {
       handleProfile,
       signOut,
-      setLang,
-      currentLanguage,
-      currentLanguageLocale,
-      countries,
     };
   },
 });

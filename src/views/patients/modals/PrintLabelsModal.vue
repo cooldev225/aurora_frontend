@@ -50,7 +50,6 @@
 import { defineComponent } from "vue";
 import genders from "@/core/data/genders";
 import moment from "moment";
-import html2pdf from "html2pdf.js";
 
 export default defineComponent({
   name: "patient-print-label-modal",
