@@ -94,11 +94,10 @@
               displayData.specialist_name
             }}</InfoSection>
 
-            <InfoSection
-              v-if="displayData.anesthetist_name !== ''"
-              :heading="'Anaesthetist'"
-            >
-              {{ displayData.anesthetist_name }}
+            <InfoSection :heading="'Anaesthetist'">
+              <span v-if="displayData.anesthetist_name !== ''">
+                {{ displayData.anesthetist_name }}</span
+              ><span> No Anaesthetist Assigned </span>
             </InfoSection>
           </div>
           <!--end::Appointment Info-->
