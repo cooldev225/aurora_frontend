@@ -691,22 +691,7 @@
                   >
                     <div class="row">
                       <InputWrapper
-                        class="col-6"
-                        label="Appointment Price"
-                        prop="procedure_price"
-                      >
-                        <!-- <el-input
-                          type="text"
-                          v-model.number="billingInfoData.procedure_price"
-                          disabled
-                        /> -->
-                        <CurrencyInput
-                          v-model.number="billingInfoData.procedure_price"
-                          disabled
-                        />
-                      </InputWrapper>
-                      <InputWrapper
-                        class="col-6"
+                        class="col-12 px-0"
                         label="Charge Type"
                         prop="charge_type"
                       >
@@ -723,6 +708,12 @@
                           />
                         </el-select>
                       </InputWrapper>
+
+                      <div class="mb-4">
+                        <InfoSection :heading="'Estimated Appointment Price'">
+                          {{ convertToCurrency(appointment_type_quote / 100) }}
+                        </InfoSection>
+                      </div>
 
                       <el-divider />
 
@@ -1177,6 +1168,8 @@ import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue"
 import ViewPatientAlertModal from "@/views/patients/modals/ViewPatientAlertModal.vue";
 import PatientBillingTypes from "@/core/data/patient-billing-types";
 import AddClaimSourceModal from "@/views/patients/modals/AddClaimSourceModal.vue";
+import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
+import { convertToCurrency } from "@/core/data/billing";
 import { ElMessage } from "element-plus";
 import { Modal } from "bootstrap";
 
@@ -1199,6 +1192,7 @@ export default defineComponent({
     PatientAlert,
     ViewPatientAlertModal,
     AddClaimSourceModal,
+    InfoSection,
   },
 
   setup(props) {
@@ -1372,6 +1366,7 @@ export default defineComponent({
     const start_time = ref("");
     const end_time = ref("");
     const appointment_name = ref("");
+    const appointment_type_quote = ref(0);
     const specialist_name = ref("");
     const _appointment_time = ref(30);
     const arrival_time = ref(30);
@@ -1552,6 +1547,7 @@ export default defineComponent({
 
         if (typeof _selected === "undefined") {
           appointment_name.value = "";
+          appointment_type_quote.value = 0;
           _appointment_time.value = Number(appointment_time.value);
           arrival_time.value = 30;
 
@@ -1561,6 +1557,7 @@ export default defineComponent({
         } else {
           appointment_name.value = _selected.name;
           appointmentType.value = _selected.type;
+          appointment_type_quote.value = _selected?.default_items_quote ?? 0;
           _appointment_time.value = Number(
             appointment_length[_selected.appointment_time] *
               appointment_time.value
@@ -2140,6 +2137,7 @@ export default defineComponent({
       start_time,
       end_time,
       appointment_name,
+      appointment_type_quote,
       appointmentType,
       specialist_name,
       submit,
@@ -2199,6 +2197,7 @@ export default defineComponent({
       getHealthFund,
       updatePatientDetails,
       allergiesList,
+      convertToCurrency,
     };
   },
 });
