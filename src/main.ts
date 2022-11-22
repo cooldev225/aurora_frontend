@@ -4,7 +4,6 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import ElementPlus from "element-plus";
-import i18n from "@/core/plugins/i18n";
 
 //imports for app initialization
 import ApiService from "@/core/services/ApiService";
@@ -58,7 +57,5 @@ app
   .component("IconButton", IconButton)
   .component("LargeIconButton", LargeIconButton)
   .component("CurrencyInput", CurrencyInput);
-
-app.use(i18n);
 
 app.mount("#app");
