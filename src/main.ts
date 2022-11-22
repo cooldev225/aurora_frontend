@@ -14,7 +14,6 @@ import { initInlineSvg } from "@/core/plugins/inline-svg";
 import { initVeeValidate } from "@/core/plugins/vee-validate";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 import print from "vue3-print-nb";
-// import VuePdf from "vue3-pdfjs";
 
 import HeadingText from "./components/presets/GeneralElements/HeadingText.vue";
 import CardSection from "./components/presets/GeneralElements/CardSection.vue";
