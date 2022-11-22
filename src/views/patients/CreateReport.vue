@@ -19,6 +19,35 @@
         ref="formRef"
       >
         <div class="report-template-wrapper">
+          <InputWrapper class="fill-out" label="Report Template">
+            <el-select
+              class="w-100"
+              v-model="reportTemplate"
+              placeholder="Select Report Template"
+            >
+              <el-option
+                v-for="(option, idx) in reportTemplatesData"
+                :key="option.id"
+                :value="idx"
+                :label="option.title"
+              />
+            </el-select>
+          </InputWrapper>
+
+          <InputWrapper class="fill-out" label="Appointment">
+            <el-select
+              class="w-100"
+              v-model="appointment"
+              placeholder="Select Appointment"
+            >
+              <el-option
+                v-for="(option, idx) in appointmentsData"
+                :key="option.id"
+                :value="idx"
+                :label="option.appointment_type_name"
+              />
+            </el-select>
+          </InputWrapper>
           <InputWrapper class="title-input-wrapper fill-out" prop="title">
             <el-input
               v-model="formData.title"
@@ -304,10 +333,18 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const formRef = ref(null);
+
+    const reportTemplatesData = computed(
+      () => store.getters.getReportTemplateList
+    );
+    const appointmentsData = ref([]);
+    const patientData = computed(() => store.getters.selectedPatient);
+
     const templateData = computed(
       () => store.getters.getReportTemplateSelected
     );
-    const patientList = computed(() => store.getters.selectedPatient);
+    // const patientList = computed(() => store.getters.selectedPatient);
+
     const headerFooterList = computed(
       () => store.getters.getHeaderFooterTemplateList
     );
@@ -318,7 +355,7 @@ export default defineComponent({
     const proceduresUndertakenDataFiltered = ref<Array<IScheduleItem>>([]);
     const extraItemsUsedDataFiltered = ref<Array<IScheduleItem>>([]);
     const adminItemsUsedDataFiltered = ref<Array<IScheduleItem>>([]);
-    const patientData = ref();
+    // const patientData = ref();
     const formData = ref({
       title: "",
       section: {},
@@ -526,7 +563,7 @@ export default defineComponent({
                 id: data,
               });
               router.push({
-                path: "/patients/" + patientList.value.id + "/documents",
+                path: "/patients/" + patientData.value.id + "/documents",
               });
             });
         }
@@ -551,7 +588,8 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      patientData.value = patientList.value;
+      // patientData.value = patientList.value;
+      appointmentsData.value = patientData.value.appointments;
       formData.value.title = templateData.value.title;
     });
 
@@ -573,6 +611,7 @@ export default defineComponent({
       rules,
       templateData,
       patientData,
+      reportTemplatesData,
       appointmentData,
       formData,
       moment,
