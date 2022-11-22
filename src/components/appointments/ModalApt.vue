@@ -273,7 +273,15 @@
                       class="btn btn-lg btn-light-primary me-3"
                       @click="handleSave"
                     >
-                      Save
+                      <span v-if="!loading" class="indicator-label">
+                        Save
+                      </span>
+                      <span v-if="loading" class="indicator-label">
+                        Please wait...
+                        <span
+                          class="spinner-border spinner-border-sm align-middle ms-2"
+                        ></span>
+                      </span>
                     </button>
                     <button
                       type="submit"
@@ -359,10 +367,19 @@
                           class="btn btn-lg btn-light-primary me-3"
                           @click="handleSave"
                         >
-                          Save
+                          <span v-if="!loading" class="indicator-label">
+                            Save
+                          </span>
+                          <span v-if="loading" class="indicator-label">
+                            Please wait...
+                            <span
+                              class="spinner-border spinner-border-sm align-middle ms-2"
+                            ></span>
+                          </span>
                         </button>
                         <button
                           type="submit"
+                          :data-kt-indicator="loading ? 'on' : null"
                           class="btn btn-lg btn-primary align-self-end"
                         >
                           Continue
@@ -658,7 +675,15 @@
                           v-if="modalId == 'modal_edit_apt'"
                           @click="handleSave"
                         >
-                          Save
+                          <span v-if="!loading" class="indicator-label">
+                            Save
+                          </span>
+                          <span v-if="loading" class="indicator-label">
+                            Please wait...
+                            <span
+                              class="spinner-border spinner-border-sm align-middle ms-2"
+                            ></span>
+                          </span>
                         </button>
                         <button
                           type="button"
@@ -870,7 +895,15 @@
                           v-if="modalId == 'modal_edit_apt'"
                           @click="handleSave"
                         >
-                          Save
+                          <span v-if="!loading" class="indicator-label">
+                            Save
+                          </span>
+                          <span v-if="loading" class="indicator-label">
+                            Please wait...
+                            <span
+                              class="spinner-border spinner-border-sm align-middle ms-2"
+                            ></span>
+                          </span>
                         </button>
                         <button
                           type="button"
@@ -1088,7 +1121,15 @@
                         v-if="modalId == 'modal_edit_apt'"
                         @click="handleSave"
                       >
-                        Save
+                        <span v-if="!loading" class="indicator-label">
+                          Save
+                        </span>
+                        <span v-if="loading" class="indicator-label">
+                          Please wait...
+                          <span
+                            class="spinner-border spinner-border-sm align-middle ms-2"
+                          ></span>
+                        </span>
                       </button>
                       <button
                         type="button"
@@ -1096,11 +1137,19 @@
                         @click="submit"
                         v-else
                       >
-                        Create Appointment
-                        <span class="svg-icon svg-icon-4 ms-1 me-0">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr064.svg"
-                          />
+                        <span v-if="!loading" class="indicator-label">
+                          Create Appointment
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </span>
+                        <span v-if="loading" class="indicator-label">
+                          Please wait...
+                          <span
+                            class="spinner-border spinner-border-sm align-middle ms-2"
+                          ></span>
                         </span>
                       </button>
                     </div>
