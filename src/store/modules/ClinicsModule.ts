@@ -7,7 +7,7 @@ import {
   displayServerError,
   displaySuccessModal,
   displaySuccessToast,
-} from "@/helpers/helpers.js";
+} from "@/helpers/helpers";
 import IClinic from "../interfaces/IClinic";
 
 export interface IRooms {

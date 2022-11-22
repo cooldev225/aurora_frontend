@@ -9,7 +9,7 @@ import {
   displayServerError,
   displaySuccessModal,
   displaySuccessToast,
-} from "@/helpers/helpers.js";
+} from "@/helpers/helpers";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";

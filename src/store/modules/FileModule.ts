@@ -5,7 +5,7 @@ import {
   displayServerError,
   displaySuccessModal,
   displaySuccessToast,
-} from "@/helpers/helpers.js";
+} from "@/helpers/helpers";
 
 @Module
 export default class FileModule extends VuexModule {

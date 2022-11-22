@@ -6,7 +6,7 @@ import {
   displayServerError,
   displaySuccessModal,
   displaySuccessToast,
-} from "@/helpers/helpers.js";
+} from "@/helpers/helpers";
 
 export interface IDoctorAddressBook {
   id: number;

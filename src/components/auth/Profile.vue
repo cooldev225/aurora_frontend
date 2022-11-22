@@ -158,7 +158,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import ProfileNavigation from "@/components/auth/ProfileNavigation";
 
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
+import { validatePhone } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "profile-page-layout",

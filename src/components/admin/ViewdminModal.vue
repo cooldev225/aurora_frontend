@@ -231,7 +231,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
-import { validatePass } from "@/helpers/helpers.js";
+import { validatePass } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "view-admin-modal",

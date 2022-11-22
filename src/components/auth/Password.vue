@@ -104,7 +104,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import ProfileNavigation from "@/components/auth/ProfileNavigation";
 import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
-import { validatePass } from "@/helpers/helpers.js";
+import { validatePass } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "password-change",

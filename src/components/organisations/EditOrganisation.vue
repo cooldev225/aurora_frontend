@@ -88,7 +88,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
 
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
+import { validatePhone } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "edit-org",

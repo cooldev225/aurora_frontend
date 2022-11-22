@@ -314,7 +314,7 @@ import country_of_birth from "@/core/data/patient-birth-country";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import { Plus } from "@element-plus/icons-vue";
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
+import { validatePhone } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "patient-administration",
