@@ -71,23 +71,12 @@
                 :key="item.id"
               />
             </el-select>
-            <el-select
-              class="w-50 p-2"
-              placeholder="Select Time frame"
-              v-model="searchAppointmentForm.x_weeks"
-            >
-              <el-option
-                v-for="(item, index) in aptWeeksList"
-                :value="index"
-                :label="item"
-                :key="item.id"
-              />
-            </el-select>
             <div class="w-50 d-flex p-2">
               <el-input
                 style="width: 100px"
                 type="number"
                 v-model="searchAppointmentForm.timeframe_count"
+                min="0"
                 prop="timeframe_count"
                 placeholder=""
               />
@@ -183,6 +172,7 @@ export default defineComponent({
     });
 
     const handleSearch = async () => {
+      console.log(["searchAppointmentForm", searchAppointmentForm]);
       searchAppointmentFormRef.value.validate(async (valid) => {
         if (valid) {
           search_next_apts.appointment_type_id =
@@ -209,7 +199,7 @@ export default defineComponent({
           const modal = new Modal(
             document.getElementById("modal_available_time_slot_popup")
           );
-
+          console.log(["search_next_apts", search_next_apts]);
           modal.show();
         }
       });
