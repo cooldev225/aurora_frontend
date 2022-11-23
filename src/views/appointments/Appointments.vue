@@ -2,58 +2,6 @@
   <div class="card w-100 d-flex align-items-end mb-2 px-5">
     <!--begin::Booking Toolbar-->
     <div class="d-flex flex-row align-items-center gap-2">
-      <div class="d-inline-block mb-2 p-2">
-        <div class="d-flex">
-          <span
-            @mouseover="toggleRestrictionKey = true"
-            @mouseout="toggleRestrictionKey = false"
-            class="svg-icon-primary svg-icon svg-icon-2x btn m-0 p-0"
-          >
-            <inline-svg src="media/icons/duotune/arrows/arr009.svg" />
-          </span>
-        </div>
-        <div
-          v-if="toggleRestrictionKey"
-          style="background-color: #ffffff; z-index: 100"
-          class="position-absolute mt-2 d-flex flex-column m-2 p-2"
-        >
-          <div>
-            <i :class="'fa fa-plus text-primary'"></i> Consultations Only
-          </div>
-          <div><i :class="'fa fa-plus text-danger'"></i> Procedures Only</div>
-          <div><i :class="'fa fa-plus text-success'"></i> No Restrictions</div>
-        </div>
-      </div>
-      <span class="h-30px border-gray-200 border-start mx-2"></span>
-      <div class="d-inline-block mb-2 p-2">
-        <div class="d-flex">
-          <span
-            @mouseover="toggleKey = true"
-            @mouseout="toggleKey = false"
-            class="svg-icon-primary svg-icon svg-icon-2x btn m-0 p-0"
-          >
-            <inline-svg src="media/icons/duotune/coding/cod005.svg" />
-          </span>
-        </div>
-        <div
-          v-if="toggleKey"
-          style="background-color: #ffffff; z-index: 100; right: 0px"
-          class="position-absolute mt-2 d-flex flex-column m-2"
-        >
-          <span
-            v-for="item in aptTypelist"
-            :value="item.id"
-            :label="item.name"
-            :key="item.id"
-            class="badge mt-1"
-            :style="{ 'background-color': item.color }"
-            >{{ item.name }}</span
-          >
-        </div>
-      </div>
-      <!--begin::Appointment Type Key-->
-      <span class="h-30px border-gray-200 border-start mx-2"></span>
-      <!--end::Appointment Type Key-->
       <!--begin::Layout Toggle-->
       <div class="d-inline-block mb-2 p-2">
         <div class="d-flex flex-row">
@@ -145,12 +93,6 @@ export default defineComponent({
     AptSearch,
     AptFilter,
   },
-  data: function () {
-    return {
-      toggleKey: false,
-      toggleRestrictionKey: false,
-    };
-  },
   setup: function () {
     const store = useStore();
 
@@ -174,8 +116,6 @@ export default defineComponent({
     const monthAvailabilities = computed(
       () => store.getters.getMonthAvailabilities
     );
-
-    const aptTypelist = computed(() => store.getters.getAptTypesList);
 
     watch(monthAvailabilities, () => {
       $(".datepicker-days")
@@ -328,7 +268,6 @@ export default defineComponent({
     };
     return {
       date_search,
-      aptTypelist,
       handleReset,
       changeDate,
       toggleLayout,
