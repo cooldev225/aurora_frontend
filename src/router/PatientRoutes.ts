@@ -42,7 +42,7 @@ const PatientRoutes = [
     ],
   },
   {
-    path: "/patients/report",
+    path: "/patients/:patientId/report/:appointmentId",
     name: "patients-report",
     component: () => import("@/views/patients/CreateReport.vue"),
   },

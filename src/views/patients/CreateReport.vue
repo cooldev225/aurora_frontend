@@ -19,21 +19,6 @@
         ref="formRef"
       >
         <div class="report-template-wrapper">
-          <InputWrapper class="fill-out" label="Appointment">
-            <el-select
-              class="w-100"
-              v-model="appointmentData"
-              placeholder="Select Appointment"
-            >
-              <el-option
-                v-for="(option, idx) in appointmentsData"
-                :key="option.id"
-                :value="idx"
-                :label="option.appointment_type_name"
-              />
-            </el-select>
-          </InputWrapper>
-
           <InputWrapper class="fill-out" label="Report Template">
             <el-select
               class="w-100"
