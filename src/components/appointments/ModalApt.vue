@@ -2178,20 +2178,15 @@ export default defineComponent({
       const endTime = aptInfoData.value.time_slot[1] + ":00";
       const filter = aptList.value.filter((apt) => {
         if (
-          aptInfoData.value.specialist_id == apt.specialist_id &&
+          aptInfoData.value.specialist_id === apt.specialist_id &&
           aptInfoData.value.clinic_id === apt.clinic_id
         ) {
-          if (startTime < apt && endTime > apt.start_time) {
-            return apt;
-          } else if (startTime < apt.end_time && endTime > apt.end_time) {
-            return apt;
-          } else if (startTime >= apt.start_time && endTime <= apt.end_time) {
-            return apt;
-          } else if (startTime <= apt.start_time && endTime >= apt.end_time) {
+          if (startTime < apt.end_time && apt.start_time <= endTime) {
             return apt;
           }
         }
       });
+
       if (filter.length > 0) {
         Swal.fire({
           title: "Are you sure?",
