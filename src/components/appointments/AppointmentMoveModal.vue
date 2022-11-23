@@ -29,6 +29,15 @@
           <h2 class="select-new-apt-caption" v-if="aptData.step === 1">
             Select New Appointment Time
           </h2>
+          <div class="d-flex justify-content-between">
+            <button
+              class="btn btn-primary"
+              v-if="aptData.step"
+              @click.prevent="handleBack"
+            >
+              Back
+            </button>
+          </div>
           <div
             id="kt_modal_add_customer_close"
             data-bs-dismiss="modal"
@@ -440,7 +449,11 @@ export default defineComponent({
 
     const handleSearch = () => {
       aptData.value.step = 1;
-      //store.commit(AppointmentMutations.SET_APT.OTHER_SELECT, aptData.value);
+      // store.commit(AppointmentMutations.SET_APT.OTHER_SELECT, aptData.value);
+    };
+
+    const handleBack = () => {
+      aptData.value.step = aptData.value.step - 1;
     };
 
     const handleConfirm = () => {
@@ -521,6 +534,7 @@ export default defineComponent({
       bookingData,
       moment,
       handleChangeAppointmentType,
+      handleBack,
     };
   },
 });
