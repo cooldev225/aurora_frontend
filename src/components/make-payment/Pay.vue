@@ -290,6 +290,12 @@
       </div>
     </div>
     <!--end::Card-->
+
+    <VerifyPinModal
+      customMessage="You are attempting to issue a refund. Please confirm your organization pin to continue."
+      v-on:verified="verifyRefund"
+      v-on:closeModal="closePinConfirmModal"
+    />
   </div>
 </template>
 
@@ -311,6 +317,7 @@ import CardSection from "../presets/GeneralElements/CardSection.vue";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import PaymentItemModal from "@/components/make-payment/PaymentItemModal.vue";
+import VerifyPinModal from "@/components/organisations/VerifyPinModal.vue";
 import { Modal } from "bootstrap";
 
 export default defineComponent({
@@ -321,6 +328,7 @@ export default defineComponent({
     Datatable,
     IconButton,
     PaymentItemModal,
+    VerifyPinModal,
   },
   setup() {
     const store = useStore();
@@ -329,7 +337,9 @@ export default defineComponent({
     const billingData = computed(() => store.getters.paymentSelected);
     const total_amount = ref(0);
     const paymentItemModal = ref();
+    const verifyPinModal = ref();
     const loading = ref(false);
+    const refundVerified = ref(false);
     const formRef = ref<null | HTMLFormElement>(null);
     const formData = ref({
       appointment_id: 0,
@@ -557,6 +567,15 @@ export default defineComponent({
       paymentItemModal.value.hide();
     };
 
+    const closePinConfirmModal = () => {
+      verifyPinModal.value.hide();
+    };
+
+    const verifyRefund = () => {
+      refundVerified.value = true;
+      closePinConfirmModal();
+    };
+
     const handleSubmitPayment = () => {
       if (formData.value.amount > amountOutstanding.value) {
         Swal.fire({
@@ -575,9 +594,22 @@ export default defineComponent({
             submit();
           }
         });
-      } else {
-        submit();
+
+        return true;
       }
+
+      if (formData.value.amount < 0 && refundVerified.value === false) {
+        if (!verifyPinModal.value) {
+          verifyPinModal.value = new Modal(
+            document.getElementById("modal_verify_organization_pin")
+          );
+        }
+
+        verifyPinModal.value.show();
+        return false;
+      }
+
+      submit();
     };
 
     const submit = () => {
@@ -623,6 +655,7 @@ export default defineComponent({
         })
         .finally(() => {
           loading.value = false;
+          refundVerified.value = false;
         });
     };
 
@@ -669,6 +702,8 @@ export default defineComponent({
       handleAddItem,
       loading,
       handleSubmitPayment,
+      verifyRefund,
+      closePinConfirmModal,
     };
   },
 });

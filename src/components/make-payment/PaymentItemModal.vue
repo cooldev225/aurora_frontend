@@ -76,6 +76,7 @@
     </div>
 
     <VerifyPinModal
+      customId="verify_org_pin_item_modal"
       v-on:verified="enableEditPrice"
       v-on:closeModal="closePinConfirmModal"
     />
@@ -156,7 +157,7 @@ export default defineComponent({
     const openPinConfirmModal = () => {
       if (!verifyOrganizationPinModal.value) {
         verifyOrganizationPinModal.value = new Modal(
-          document.getElementById("modal_verify_organization_pin")
+          document.getElementById("modal_verify_org_pin_item_modal")
         );
       }
 
