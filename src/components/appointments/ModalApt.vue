@@ -2185,9 +2185,9 @@ export default defineComponent({
             return apt;
           } else if (startTime < apt.end_time && endTime > apt.end_time) {
             return apt;
-          } else if (startTime > apt.start_time && endTime < apt.end_time) {
+          } else if (startTime >= apt.start_time && endTime <= apt.end_time) {
             return apt;
-          } else if (startTime < apt.start_time && endTime > apt.end_time) {
+          } else if (startTime <= apt.start_time && endTime >= apt.end_time) {
             return apt;
           }
         }
@@ -2198,6 +2198,8 @@ export default defineComponent({
           text:
             "You already have an appointment at " +
             filter[0].start_time +
+            " - " +
+            filter[0].end_time +
             ", This action will overlap with existing appointment!",
           icon: "warning",
           showCancelButton: true,
