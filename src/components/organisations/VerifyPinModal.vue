@@ -1,10 +1,12 @@
 <template>
   <ModalWrapper
     :title="modalTitle"
-    modalId="verify_organization_pin"
+    :modalId="modalId"
     modalRef="verifyOrganizationPinModalRef"
     :static="true"
   >
+    <p v-if="message">{{ message }}</p>
+
     <div class="row justify-content-md-center mb-4">
       <label class="text-muted fs-6 fw-bold mb-2 d-block">
         Organization Pin
@@ -73,6 +75,8 @@ export default defineComponent({
   emits: ["verified", "closeModal"],
   props: {
     title: { type: [String, null] },
+    customId: { type: [String, null] },
+    customMessage: { type: [String, null] },
   },
   setup(props, { emit }) {
     const store = useStore();
@@ -84,6 +88,8 @@ export default defineComponent({
     const loading = ref(false);
     const verificationFailed = ref(false);
     const modalTitle = computed(() => props.title ?? "Verify Access");
+    const modalId = computed(() => props.customId ?? "verify_organization_pin");
+    const message = computed(() => props.customMessage);
 
     const closeModal = () => {
       emit("closeModal");
@@ -128,6 +134,7 @@ export default defineComponent({
       modal.addEventListener("shown.bs.modal", function () {
         loading.value = false;
         formData.value.pin = "";
+        verificationFailed.value = false;
       });
     });
 
@@ -139,6 +146,8 @@ export default defineComponent({
       submit,
       verificationFailed,
       modalTitle,
+      modalId,
+      message,
     };
   },
 });
