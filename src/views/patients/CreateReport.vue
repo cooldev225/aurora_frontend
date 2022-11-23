@@ -310,7 +310,7 @@ import {
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { StoreReportActions } from "@/store/enums/StoreReportEnums";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import moment from "moment";
 import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
@@ -325,32 +325,26 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const formRef = ref(null);
+    const route = useRoute();
+    const patientId = route.params.patientId;
+    const appointmentId = route.params.appointmentId;
 
     const reportTemplatesData = computed(
       () => store.getters.getReportTemplateList
     );
-    const appointmentsData = ref([]);
     const patientData = computed(() => store.getters.selectedPatient);
 
-    // const templateData = computed(
-    //   () => store.getters.getReportTemplateSelected
-    // );
     const templateData = ref();
-    // const patientList = computed(() => store.getters.selectedPatient);
-
     const headerFooterList = computed(
       () => store.getters.getHeaderFooterTemplateList
     );
-    // const appointmentData = computed(
-    //   () => store.getters.getReportAppointmentSelected
-    // );
 
     const appointmentData = ref();
     const scheduleItems = computed(() => store.getters.scheduleItemList);
     const proceduresUndertakenDataFiltered = ref<Array<IScheduleItem>>([]);
     const extraItemsUsedDataFiltered = ref<Array<IScheduleItem>>([]);
     const adminItemsUsedDataFiltered = ref<Array<IScheduleItem>>([]);
-    // const patientData = ref();
+
     const formData = ref({
       title: "",
       section: {},
@@ -483,28 +477,11 @@ export default defineComponent({
         return;
       }
 
-      // if (formData.value.headerFooter == null) {
-      //   ElMessage.error("Header/Footer Template cannot be blank");
-      //   loading.value = false;
-      //   return;
-      // }
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (formRef.value as any).validate(async (valid) => {
         if (valid) {
           const reportData: unknown[] = [];
           const icd_10_code: string[] = [];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          // (templateData.value.sections as any).forEach((data) => {
-          //   reportData.push({
-          //     sectionId: data.id,
-          //     free_text_default: data.free_text_default,
-          //     value: formData.value.section["section" + data.id],
-          //   });
-          //   data.auto_texts.forEach((auto) => {
-          //     icd_10_code.push(auto.icd_10_code);
-          //   });
-          // });
 
           const proceduresUndertaken = [] as Array<Record<string, unknown>>;
           formData.value.procedures_undertaken.forEach((item) => {
@@ -532,8 +509,7 @@ export default defineComponent({
 
           const data = {
             title: formData.value.title,
-            // patient_id: patientList.value.id,
-            patient_id: 1,
+            patient_id: patientId,
             reportData: reportData,
             doctorAddressBook:
               appointmentData.value.referral?.doctor_address_book_name,
@@ -558,7 +534,7 @@ export default defineComponent({
                 id: data,
               });
               router.push({
-                path: "/patients/" + patientData.value.id + "/documents",
+                path: "/patients/" + patientId + "/documents",
               });
             });
         }
@@ -588,12 +564,17 @@ export default defineComponent({
     });
 
     watch(patientData, () => {
-      appointmentsData.value = patientData.value.appointments;
+      if (patientData.value)
+        appointmentData.value = patientData.value.appointments?.find(
+          (appointment) => appointment.id === Number(appointmentId)
+        );
     });
 
     watchEffect(() => {
       if (patientData.value)
-        appointmentsData.value = patientData.value.appointments;
+        appointmentData.value = patientData.value.appointments?.find(
+          (appointment) => appointment.id === Number(appointmentId)
+        );
     });
 
     onMounted(() => {
@@ -614,7 +595,6 @@ export default defineComponent({
       rules,
       templateData,
       patientData,
-      appointmentsData,
       reportTemplatesData,
       appointmentData,
       formData,
