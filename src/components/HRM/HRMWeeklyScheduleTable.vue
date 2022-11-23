@@ -87,7 +87,7 @@ import weekdays from "@/core/data/weekdays";
 import employeeRoles from "@/core/data/employee-roles";
 import moment from "moment";
 import { Modal } from "bootstrap";
-import EditModal from "@/views/HRM/EditModal.vue";
+import EditModal from "@/views/HRM/modals/EditModal.vue";
 
 export default defineComponent({
   name: "hrm-time-schedule-table",

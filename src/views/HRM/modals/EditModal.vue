@@ -532,7 +532,10 @@ export default defineComponent({
 
     const validateFormData = (formData) => {
       let result = true;
-      if (formData.value.timeslots.length == 0) {
+      if (
+        formData.value.timeslots.length === 0 &&
+        deleteTimeslots.value.length <= 0
+      ) {
         ElMessage.error("Please add timeslot first.");
         return false;
       }
