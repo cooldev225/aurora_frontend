@@ -331,7 +331,6 @@ import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import InputWrapper from "../../components/presets/FormElements/InputWrapper.vue";
 import { Actions } from "@/store/enums/StoreEnums";
-import { ElMessage } from "element-plus";
 import { IScheduleItem } from "@/store/modules/ScheduleItemModule";
 
 export default defineComponent({
@@ -605,6 +604,11 @@ export default defineComponent({
 
     watch(patientData, () => {
       appointmentsData.value = patientData.value.appointments;
+    });
+
+    watchEffect(() => {
+      if (patientData.value)
+        appointmentsData.value = patientData.value.appointments;
     });
 
     onMounted(() => {
