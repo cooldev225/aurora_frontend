@@ -23,7 +23,7 @@
         <!--begin::Username-->
         <div class="d-flex flex-column">
           <div class="fw-bolder d-flex align-items-center fs-5">
-            {{ profileData.first_name + " " + profileData.last_name }}
+            {{ profileData.full_name }}
           </div>
           <span
             class="text-break pe-1 fw-bold text-muted text-hover-primary fs-7"
@@ -56,16 +56,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, PropType } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Actions } from "@/store/enums/StoreEnums";
+import IUserProfile from "@/store/interfaces/IUserProfile";
 
 export default defineComponent({
   name: "kt-user-menu",
   components: {},
   props: {
-    profileData: Object,
+    profileData: { type: Object as PropType<IUserProfile>, required: true },
   },
   setup() {
     const router = useRouter();

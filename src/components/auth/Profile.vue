@@ -154,9 +154,7 @@ import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import ProfileNavigation from "@/components/auth/ProfileNavigation";
-
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 
@@ -220,7 +218,7 @@ export default defineComponent({
         },
       ],
     });
-    const profileData = computed(() => store.getters.getProfileSelected);
+    const profileData = computed(() => store.getters.userProfile);
     const loading = ref(false);
     const uploadDisabled = ref(false);
     const upload = ref(null);
@@ -261,14 +259,9 @@ export default defineComponent({
             Data.append(key, formData.value[key]);
           });
           loading.value = true;
-          store
-            .dispatch(Actions.PROFILE.UPDATE, Data)
-            .then(() => {
-              store.dispatch(Actions.PROFILE.VIEW);
-            })
-            .finally(() => {
-              loading.value = false;
-            });
+          store.dispatch(Actions.PROFILE.UPDATE, Data).finally(() => {
+            loading.value = false;
+          });
         }
       });
     };
