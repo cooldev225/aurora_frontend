@@ -70,7 +70,7 @@ import { defineComponent, onMounted, computed, ref, watchEffect } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import BulletinEditModal from "@/views/HRM/BulletinEditModal.vue";
+import BulletinEditModal from "@/views/HRM/modals/BulletinEditModal.vue";
 import { useStore } from "vuex";
 import { Modal } from "bootstrap";
 import Swal from "sweetalert2/dist/sweetalert2.js";
