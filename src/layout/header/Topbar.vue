@@ -28,10 +28,10 @@
               ? 'media/avatars/blank.png'
               : profileData.photo
           "
-          :alt="profileData.first_name + ' ' + profileData.last_name"
+          :alt="profileData.full_name"
         />
       </div>
-      <KTUserMenu :profile-data="profileData"></KTUserMenu>
+      <UserMenu :profile-data="profileData"></UserMenu>
     </div>
 
     <div
@@ -50,23 +50,28 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, computed, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, computed, onMounted, watch, PropType } from "vue";
 import { useStore } from "vuex";
-import KTUserMenu from "@/layout/header/partials/UserMenu.vue";
+import UserMenu from "@/layout/header/partials/UserMenu.vue";
 import { Actions } from "@/store/enums/StoreEnums";
-
+import IUserProfile from "@/store/interfaces/IUserProfile";
+import store from "@/store";
 export default defineComponent({
   name: "layout-top-bar",
   components: {
-    KTUserMenu,
+    UserMenu,
   },
   setup() {
     const store = useStore();
-    const profileData = computed(() => store.getters.getProfileSelected);
+    const profileData = computed<IUserProfile>(() => store.getters.userProfile);
 
     onMounted(() => {
       store.dispatch(Actions.PROFILE.VIEW);
+    });
+
+    watch(profileData, () => {
+      console.log(profileData);
     });
 
     return {
