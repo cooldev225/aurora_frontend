@@ -31,6 +31,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "coding-dashboard",
         component: () => import("@/views/coding/dashboard.vue"),
       },
+      {
+        path: "/coding-reports",
+        name: "coding-reports",
+        component: () => import("@/views/coding/report.vue"),
+      },
       ...OrganizationRoutes,
       ...ClinicRoutes,
       ...DocumentRoutes,
