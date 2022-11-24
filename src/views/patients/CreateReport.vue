@@ -62,6 +62,8 @@
             </el-select>
           </InputWrapper>
 
+          <el-divider />
+
           <InputWrapper
             class="fill-out"
             label="Procedures Undertaken"
@@ -205,7 +207,7 @@
               </div>
             </div>
           </InputWrapper>
-
+          <el-divider />
           <div class="d-flex flex-column gap-2 mb-6">
             <InfoSection heading="Patient"
               >{{ patientData?.title }} {{ patientData?.first_name }}
@@ -221,7 +223,7 @@
             </InfoSection>
           </div>
           <div
-            v-for="section in templateData?.sections"
+            v-for="section in reportSections"
             class="d-flex flex-column gap-2"
             :key="section.id"
           >
@@ -335,6 +337,7 @@ export default defineComponent({
     const patientData = computed(() => store.getters.selectedPatient);
 
     const templateData = ref();
+    const reportSections = ref([]);
     const headerFooterList = computed(
       () => store.getters.getHeaderFooterTemplateList
     );
@@ -480,8 +483,21 @@ export default defineComponent({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (formRef.value as any).validate(async (valid) => {
         if (valid) {
-          const reportData: unknown[] = [];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const reportData: any[] = [];
           const icd_10_code: string[] = [];
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          reportSections.value.forEach((section: any) => {
+            reportData.push({
+              sectionId: section.id,
+              free_text_default: section.free_text_default,
+              value: formData.value.section["section" + section.id],
+            });
+            section.auto_texts.forEach((auto) => {
+              icd_10_code.push(auto.icd_10_code);
+            });
+          });
 
           const proceduresUndertaken = [] as Array<Record<string, unknown>>;
           formData.value.procedures_undertaken.forEach((item) => {
@@ -561,6 +577,8 @@ export default defineComponent({
     watch(templateData, () => {
       formData.value.title =
         reportTemplatesData.value[templateData.value].title;
+      reportSections.value =
+        reportTemplatesData.value[templateData.value].sections;
     });
 
     watch(patientData, () => {
@@ -594,6 +612,7 @@ export default defineComponent({
       formRef,
       rules,
       templateData,
+      reportSections,
       patientData,
       reportTemplatesData,
       appointmentData,
