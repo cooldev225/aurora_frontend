@@ -7,10 +7,7 @@ import {
   displaySuccessModal,
   displaySuccessToast,
 } from "@/helpers/helpers";
-
-export interface IDoctorAddressBook {
-  id: number;
-}
+import IDoctorAddressBook from "../interfaces/IDoctorAddressBook";
 
 export interface DoctorAddressBookInfo {
   doctorAddressBookData: Array<IDoctorAddressBook>;

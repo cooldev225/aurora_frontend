@@ -79,57 +79,81 @@ export function displaySuccessModal(text) {
 import * as shajs from "sha.js";
 import * as qz from "qz-tray";
 import IPatient from "@/store/interfaces/IPatient";
-export function printPatientLabel(patient: IPatient, printerName: string) {
-  qz.api.setSha256Type(function (data) {
-    return shajs("sha256").update(data).digest("hex");
-  });
-  qz.api.setPromiseType(function (resolver) {
-    return new Promise(resolver);
-  });
-  qz.websocket
-    .connect()
-    .then(function () {
-      // Pass the printer name into the next Promise
-      return qz.printers.find(printerName);
-    })
-    .then(function (printer) {
-      // Create a default config for the found printer
-      const config = qz.configs.create(printer);
+import IAppointment from "@/store/interfaces/IAppointment";
 
-      // Raw ZPL
-      const data = [
-        "^XA^MMT^PW312^LL0200^LS24" +
-          "^FT40,27^A0N,20,19^FH^FD" +
-          patient.last_name +
-          "^FS" +
-          "^FT40,49^A0N,20,19^FH^FD" +
-          patient.first_name +
-          "^FS" +
-          "^FT40,71^A0N,20,19^FH^FD" +
-          patient.address +
-          "^FS" +
-          "^FT40,92^A0N,20,19^FH^FD" +
-          "suburb" +
-          ", " +
-          patient.postcode +
-          ", " +
-          "state" +
-          "^FS" +
-          "^FT40,116^A0N,20,19^FH^FDRef Doc: Dr man person^FS" +
-          "^FT40,139^A0N,20,19^FH^FDreffering doc address^FS" +
-          "^FT40,165^A0N,20,19^FH^FDM/C#: 5623 6546 8448 4663 - 3^FS" +
-          "^FT40,191^A0N,20,19^FH^FD(H)- (M) - " +
-          patient.contact_number +
-          " ^FS" +
-          "^FT217,47^A0N,20,24^FB85,1,0,R^FH^FDpatientid^FS" +
-          "^FT148,26^A0N,14,19^FB156,1,0,R^FH^FDDOB: " +
-          patient.date_of_birth +
-          "^FS^PQ1,0,1,Y^XZ",
-      ];
-
-      return qz.print(config, data);
-    })
-    .catch(function (e) {
-      console.error(e);
+export function printPatientLabel(
+  patient: IPatient,
+  appointment: IAppointment,
+  printerName: string
+) {
+  if (!qz.websocket.isActive()) {
+    qz.api.setSha256Type(function (data) {
+      return shajs("sha256").update(data).digest("hex");
     });
+    qz.api.setPromiseType(function (resolver) {
+      return new Promise(resolver);
+    });
+    qz.websocket
+      .connect()
+      .catch(function (e) {
+        console.error(e);
+      })
+      .then(() => {
+        sendLabelToPrint(patient, appointment, printerName);
+      });
+  } else {
+    sendLabelToPrint(patient, appointment, printerName);
+  }
+}
+
+function sendLabelToPrint(
+  patient: IPatient,
+  appointment: IAppointment,
+  printerName: string
+) {
+  qz.printers.find(printerName).then((printer) => {
+    const config = qz.configs.create(printer);
+
+    let zplLabelString = "^XA^MMT^PW312^LL0240^LS24";
+    zplLabelString += zplLabelField(patient.last_name.toUpperCase(), 0, 0);
+    zplLabelString += zplLabelField(patient.first_name, 1, 0);
+    zplLabelString += zplLabelField(patient.address.trim(), 2, 0);
+    zplLabelString += zplLabelField(
+      `${patient.suburb.toUpperCase()}, ${
+        patient.postcode
+      }, ${patient.state?.toUpperCase()}`,
+      3,
+      0
+    );
+    zplLabelString += zplLabelField(
+      `${appointment.referral.doctor_address_book.full_name} (${appointment.referral.doctor_address_book.provider_no})`,
+      4,
+      0
+    );
+    zplLabelString += zplLabelField(
+      `M/C#: ${patient.medicare_details.member_number}-${patient.medicare_details.member_reference_number}`,
+      5,
+      0
+    );
+    zplLabelString += zplLabelField(`(H)- (M)-${patient.contact_number}`, 6, 0);
+
+    zplLabelString += zplLabelField(
+      `DOB: ${patient.date_of_birth.toUpperCase()}`,
+      0,
+      140
+    );
+    zplLabelString += zplLabelField(`#${patient.ur_id.toUpperCase()}`, 1, 210);
+
+    zplLabelString += "^PQ1,0,1,Y^XZ";
+    console.log(zplLabelString);
+    const zplData = [zplLabelString];
+    qz.print(config, zplData);
+    function zplLabelField(text: string, yLine: number, xOffset: number) {
+      const yLineHeight = 25;
+      const yShift = yLine * yLineHeight + 20;
+      const xShift = 40 + xOffset;
+      const fontSettings = "A0N,20,19";
+      return `^FT${xShift},${yShift}^${fontSettings}^FH^FD${text}^FS`;
+    }
+  });
 }
