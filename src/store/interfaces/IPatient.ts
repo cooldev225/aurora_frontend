@@ -1,5 +1,6 @@
 import IAppointment from "./IAppointment";
 import IPatientAlert from "./IPatientAlert";
+import IPatientAlsoKnownAs from "./IPatientAlsoKnownAs";
 import IPatientBilling from "./IPatientBilling";
 
 export default interface IPatient {
@@ -12,6 +13,8 @@ export default interface IPatient {
   email: string;
   contact_number: string;
   date_of_birth: string;
+  country_of_birth: string;
+  gender: string;
   address: string;
   suburb: string;
   state: string;
@@ -30,7 +33,10 @@ export default interface IPatient {
   send_recall_method: string;
   kin_name: string;
   kin_relationship: string;
+  kin_phone_number: string;
+  kin_receive_correspondence: boolean;
   kin_email: string;
   alerts: Array<IPatientAlert>;
   appointments: Array<IAppointment>;
+  also_known_as: Array<IPatientAlsoKnownAs>;
 }
