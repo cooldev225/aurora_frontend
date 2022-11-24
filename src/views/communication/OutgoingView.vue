@@ -10,6 +10,9 @@
       <template v-slot:cell-created_at="{ row: item }">
         {{ moment(item.created_at).format("DD/MM/YYYY HH:mm").toString() }}
       </template>
+      <template v-slot:cell-sending_user_name="{ row: item }">
+        {{ item.sending_user_name }}
+      </template>
       <template v-slot:cell-sending_doctor_name="{ row: item }">
         {{ item.sending_doctor_name + ", " + item.sending_doctor_provider }}
       </template>
@@ -78,6 +81,11 @@ export default defineComponent({
         sortable: true,
       },
       {
+        name: "Sent By",
+        key: "sending_user_name",
+        sortable: true,
+      },
+      {
         name: "Sending Doctor",
         key: "sending_doctor_name",
         sortable: true,
@@ -112,7 +120,7 @@ export default defineComponent({
       let params = {};
       if (currentUser.value.profile.role_id === 5) {
         title = "Outgoing";
-        params.sending_doctor_user = currentUser.value.profile.id;
+        params.sending_user = currentUser.value.profile.id;
       }
       setCurrentPageBreadcrumbs(title, ["Communication"]);
 
