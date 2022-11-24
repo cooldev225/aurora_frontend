@@ -1,34 +1,27 @@
 <template>
   <LargeIconButton text="Print Label" @click="handlePrintLabel()" />
-  <PrintLabelModal
-    :appointmentId="appointment.id"
-    :patient="appointment.patient"
-    :referral="appointment.referral"
-  ></PrintLabelModal>
 </template>
 
 <script lang="ts">
-import { Modal } from "bootstrap";
-import PrintLabelModal from "@/views/patients/modals/PrintLabelsModal.vue";
+import IPatient from "@/store/interfaces/IPatient";
+import { PropType } from "vue";
+import { printPatientLabel } from "@/helpers/helpers";
+import IAppointment from "@/store/interfaces/IAppointment";
 
 export default {
-  components: { PrintLabelModal },
   props: {
     appointment: {
       required: true,
-      type: Object,
+      type: Object as PropType<IAppointment>,
     },
     patient: {
       required: true,
-      type: Object,
+      type: Object as PropType<IPatient>,
     },
   },
   setup(props) {
     const handlePrintLabel = () => {
-      const modal = new Modal(
-        document.getElementById("modal_print_label_" + props.appointment.id)
-      );
-      modal.show();
+      printPatientLabel(props.patient, props.appointment, "ZDesigner GK420d");
     };
 
     return { handlePrintLabel };

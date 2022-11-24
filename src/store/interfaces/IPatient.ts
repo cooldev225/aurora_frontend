@@ -1,8 +1,10 @@
 import IAppointment from "./IAppointment";
 import IPatientAlert from "./IPatientAlert";
+import IPatientBilling from "./IPatientBilling";
 
 export default interface IPatient {
   id: number;
+  ur_id: string;
   title: string;
   first_name: string;
   last_name: string;
@@ -12,9 +14,11 @@ export default interface IPatient {
   date_of_birth: string;
   address: string;
   suburb: string;
+  state: string;
   postcode: string;
   country: string;
   marital_status: string;
+  medicare_details: IPatientBilling;
   birth_place_code: string;
   birth_state: string;
   occupation: string;

@@ -6,11 +6,8 @@ import {
   displayServerError,
   displaySuccessModal,
   displaySuccessToast,
-} from "@/helpers/helpers.js";
-
-export interface IDoctorAddressBook {
-  id: number;
-}
+} from "@/helpers/helpers";
+import IDoctorAddressBook from "../interfaces/IDoctorAddressBook";
 
 export interface DoctorAddressBookInfo {
   doctorAddressBookData: Array<IDoctorAddressBook>;

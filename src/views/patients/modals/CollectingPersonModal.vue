@@ -63,7 +63,7 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import IAppointment from "@/store/interfaces/IAppointment";
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
+import { validatePhone } from "@/helpers/helpers";
 import store from "@/store";
 export default defineComponent({
   name: "update-collecting-person-modal",

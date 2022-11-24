@@ -158,7 +158,6 @@ import ProfileNavigation from "@/components/auth/ProfileNavigation.vue";
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
 import IUserProfile from "@/store/interfaces/IUserProfile";
-
 export default defineComponent({
   name: "profile-page-layout",
   directives: {

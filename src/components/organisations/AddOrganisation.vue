@@ -131,7 +131,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
+import { validatePhone } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "add-org",

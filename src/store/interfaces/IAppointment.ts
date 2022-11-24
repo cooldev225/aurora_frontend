@@ -1,3 +1,4 @@
+import IAppointmentReferral from "./IAppointmentReferral";
 import IClinic from "./IClinic";
 export default interface IAppointment {
   id: number;
@@ -21,4 +22,5 @@ export default interface IAppointment {
   collecting_person_phone: string;
   collecting_person_alternate_contact: string;
   clinic: IClinic;
+  referral: IAppointmentReferral;
 }

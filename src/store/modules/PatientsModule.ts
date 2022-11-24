@@ -11,7 +11,7 @@ import {
   displayServerError,
   displaySuccessModal,
   displaySuccessToast,
-} from "@/helpers/helpers.js";
+} from "@/helpers/helpers";
 import IPatient from "../interfaces/IPatient";
 
 export interface IMinorId {

@@ -1208,7 +1208,7 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { useRouter } from "vue-router";
 import AptOverview from "@/components/appointments/partials/AppointmentOverview";
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
+import { validatePhone } from "@/helpers/helpers";
 import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
 import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
