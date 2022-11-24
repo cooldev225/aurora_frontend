@@ -198,6 +198,11 @@ const Actions = {
   OUTGOING: {
     LIST: "getOutgoingLogs",
   },
+
+  INVOICE: {
+    SEND: "sendInvoiceWithoutPayment",
+    VIEW: "viewInvoiceWithoutPayment",
+  },
 };
 
 const Mutations = {

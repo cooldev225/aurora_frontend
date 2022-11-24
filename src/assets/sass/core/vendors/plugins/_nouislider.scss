@@ -59,15 +59,6 @@
         box-shadow: 0 3px 6px -3px rgba(#000, 0.7);
     }
 
-    // Small size
-    &.noUi-sm {
-       @include nouislider-size(6px, 20px, 20px, 7px);
-    }
-
-    // Large size
-    &.noUi-lg {
-        @include nouislider-size(18px, 30px, 30px, 6px);
-    }
 }
     
 // Theme colors

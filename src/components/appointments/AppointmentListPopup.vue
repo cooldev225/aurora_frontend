@@ -37,7 +37,16 @@
             <span class="text-primary">{{ time_requirement }}</span>
           </h4>
           <h4 class="text-nowrap" style="color: var(--el-color-info)">
-            Time Frame: <span class="text-primary">{{ time_frame }}</span>
+            Time Frame:
+            <span class="text-primary">{{
+              props.searchNextApts.timeframe_count == 0
+                ? "This " + props.searchNextApts.timeframe_type.replace("s", "")
+                : props.searchNextApts.timeframe_count == 1
+                ? "Next " + props.searchNextApts.timeframe_type.replace("s", "")
+                : props.searchNextApts.timeframe_count +
+                  " " +
+                  props.searchNextApts.timeframe_type
+            }}</span>
           </h4>
           <h4 class="text-nowrap" style="color: var(--el-color-info)">
             Appointment Type:
@@ -148,7 +157,6 @@ export default defineComponent({
     aptTypeList: { type: Array, required: true },
     clinicList: { type: Array, required: true },
     aptTimeRequireList: { type: Array, required: true },
-    xWeeks: { type: Object, required: true },
   },
   setup(props) {
     const store = useStore();
@@ -185,12 +193,6 @@ export default defineComponent({
 
       return time_requirement == undefined ? "Any" : time_requirement.title;
     });
-
-    const time_frame = computed(() =>
-      props.xWeeks[props.searchNextApts.x_weeks] == undefined
-        ? "Any"
-        : props.xWeeks[props.searchNextApts.x_weeks]
-    );
 
     const appointment_type = computed(() => {
       const appointment_type = props.aptTypeList.find(
@@ -285,6 +287,7 @@ export default defineComponent({
           ...searchParam.value,
         })
         .finally(() => {
+          isInitial.value = false;
           setTimeout(() => {
             loading.value = false;
           }, 1000);
@@ -305,12 +308,12 @@ export default defineComponent({
       clinic_name,
       specialist_name,
       time_requirement,
-      time_frame,
       appointment_type,
       moment,
       search,
       getClass,
       loading,
+      props,
     };
   },
 });

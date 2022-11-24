@@ -32,7 +32,7 @@
                   <inline-svg :src="item.svgIcon" />
                 </span>
               </span>
-              <span class="menu-title">{{ translate(item.heading) }}</span>
+              <span class="menu-title">{{ item.heading }}</span>
             </router-link>
           </div>
         </template>
@@ -63,7 +63,7 @@
                 <inline-svg :src="item.svgIcon" />
               </span>
             </span>
-            <span class="menu-title">{{ translate(item.heading) }}</span>
+            <span class="menu-title">{{ item.heading }}</span>
           </span>
           <div
             :class="{ show: hasActiveChildren(item.route) }"
@@ -85,9 +85,9 @@
                   <span class="menu-bullet">
                     <span class="bullet bullet-dot"></span>
                   </span>
-                  <span class="menu-title">{{
-                    translate(menuItem.heading)
-                  }}</span>
+                  <span class="menu-title">
+                    {{ menuItem.heading }}
+                  </span>
                 </router-link>
               </div>
             </template>
@@ -109,9 +109,7 @@ import {
   watch,
 } from "vue";
 import { useStore } from "vuex";
-import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import { version } from "@/core/helpers/documentation";
 import { asideMenuIcons } from "@/core/helpers/config";
 import MenuConfig from "@/core/config/MainMenuConfig";
 
@@ -119,7 +117,6 @@ export default defineComponent({
   name: "left-menu",
   components: {},
   setup() {
-    const { t, te } = useI18n();
     const route = useRoute();
     const store = useStore();
     const scrollElRef = ref<null | HTMLElement>(null);
@@ -142,14 +139,6 @@ export default defineComponent({
       MainMenuConfig.value = MenuConfig[store.getters.userRole];
     });
 
-    const translate = (text) => {
-      if (te(text)) {
-        return t(text);
-      } else {
-        return text;
-      }
-    };
-
     const hasActiveChildren = (match) => {
       return route.path.indexOf(match) !== -1;
     };
@@ -163,8 +152,6 @@ export default defineComponent({
       currentActive,
       MainMenuConfig,
       asideMenuIcons,
-      version,
-      translate,
       hasCoding,
     };
   },

@@ -57,7 +57,7 @@
             </el-select>
           </div>
           <el-divider />
-          <div>
+          <div class="d-flex">
             <el-select
               class="w-50 p-2"
               placeholder="Select Appointment Time Requirement"
@@ -71,18 +71,25 @@
                 :key="item.id"
               />
             </el-select>
-            <el-select
-              class="w-50 p-2"
-              placeholder="Select Time frame"
-              v-model="searchAppointmentForm.x_weeks"
-            >
-              <el-option
-                v-for="(item, index) in aptWeeksList"
-                :value="index"
-                :label="item"
-                :key="item.id"
+            <div class="w-50 d-flex p-2">
+              <el-input
+                style="width: 100px"
+                type="number"
+                v-model="searchAppointmentForm.timeframe_count"
+                min="0"
+                prop="timeframe_count"
+                placeholder=""
               />
-            </el-select>
+              <el-select
+                class="w-100"
+                placeholder="Select Time frame"
+                v-model="searchAppointmentForm.timeframe_type"
+              >
+                <el-option value="weeks" label="week(s)" />
+                <el-option value="months" label="month(s)" />
+                <el-option value="years" label="year(s)" />
+              </el-select>
+            </div>
           </div>
           <button
             class="btn btn-primary mt-3 w-100"
@@ -100,7 +107,6 @@
     :apt-type-list="aptTypelist"
     :clinic-list="clinic_list"
     :apt-time-require-list="aptTimeRequireList"
-    :x-weeks="aptWeeksList"
     v-if="allSpecialists"
   />
 </template>
@@ -110,7 +116,6 @@ import { computed, defineComponent, reactive, ref } from "vue";
 import moment from "moment";
 import { Modal } from "bootstrap";
 import { useStore } from "vuex";
-import aptWeeksList from "@/core/data/apt-weeks";
 import AppointmentListPopup from "@/components/appointments/AppointmentListPopup.vue";
 
 export default defineComponent({
@@ -132,6 +137,8 @@ export default defineComponent({
       specialist_id: "",
       time_requirement: 0,
       x_weeks: "0",
+      timeframe_count: 0,
+      timeframe_type: "weeks",
       clinic_id: "",
     });
 
@@ -159,6 +166,8 @@ export default defineComponent({
       date: moment(),
       clinic_id: "",
       x_weeks: 0,
+      timeframe_count: 0,
+      timeframe_type: "weeks",
     });
 
     const handleSearch = async () => {
@@ -171,14 +180,19 @@ export default defineComponent({
           search_next_apts.time_requirement =
             searchAppointmentForm.value.time_requirement;
           search_next_apts.date = moment(moment())
-            .add(searchAppointmentForm.value.x_weeks, "weeks")
+            .add(
+              searchAppointmentForm.value.timeframe_count,
+              searchAppointmentForm.value.timeframe_type
+            )
             .format("DD/MM/YYYY");
-          search_next_apts.x_weeks = searchAppointmentForm.value.x_weeks;
+          search_next_apts.timeframe_count =
+            searchAppointmentForm.value.timeframe_count;
+          search_next_apts.timeframe_type =
+            searchAppointmentForm.value.timeframe_type;
           search_next_apts.clinic_id = searchAppointmentForm.value.clinic_id;
           const modal = new Modal(
             document.getElementById("modal_available_time_slot_popup")
           );
-
           modal.show();
         }
       });
@@ -192,7 +206,6 @@ export default defineComponent({
       searchAppointmentForm,
       searchAppointmentRules,
       handleSearch,
-      aptWeeksList,
       search_next_apts,
     };
   },

@@ -2,7 +2,6 @@
   <div class="timeslot-table mt-5 d-flex" v-loading="loading">
     <div class="arrow left d-flex align-items-center">
       <svg
-        v-if="tableData.cur_week"
         @click="moveDate(-1)"
         xmlns="http://www.w3.org/2000/svg"
         width="16"
@@ -86,7 +85,6 @@
     </div>
     <div class="arrow right d-flex align-items-center">
       <svg
-        v-if="tableData.cur_week < search_params.x_weeks"
         @click="moveDate(1)"
         xmlns="http://www.w3.org/2000/svg"
         width="16"
@@ -157,28 +155,31 @@ export default defineComponent({
       () => store.getters.getAvailableAppointmentList
     );
     const tableData = ref({
-      weeks: 1,
       cur_week: 0,
-      cur_date: new Date(),
-      end_date: moment().add(props.weeks, "weeks"),
+      cur_date: moment(),
       header: [],
     });
     var weeks = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
     onMounted(() => {
       search_params.value = props.search;
+      tableData.value.cur_week = 0;
+      tableData.value.cur_date = moment().add(
+        props.search.timeframe_count,
+        props.search.timeframe_type
+      );
       moveDate(0);
     });
 
     const moveDate = async (dir) => {
       loading.value = true;
       tableData.value.cur_week += dir;
-      tableData.value.cur_date = new Date(
-        moment().add(tableData.value.cur_week, "weeks")
+      var start_date = new Date(
+        tableData.value.cur_date.add(tableData.value.cur_week, "weeks")
       );
       let header = [];
       for (var i = 0; i < 7; i++) {
-        let date = new Date(moment(tableData.value.cur_date).add(i, "days"));
+        let date = new Date(moment(start_date).add(i, "days"));
         let data = {
           label: weeks[date.getDay()],
           date: moment(date).format("DD/MM"),
@@ -187,9 +188,7 @@ export default defineComponent({
       }
       tableData.value.header = header;
 
-      search_params.value.date = moment(tableData.value.cur_date).format(
-        "DD/MM/YYYY"
-      );
+      search_params.value.date = moment(start_date).format("DD/MM/YYYY");
       await store
         .dispatch(AppointmentActions.BOOKING.SEARCH.NEXT_APT, {
           ...search_params.value,

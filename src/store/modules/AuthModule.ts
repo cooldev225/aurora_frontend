@@ -2,33 +2,25 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-
-export interface User {
-  profile: object;
-  organization: object;
-  username: string;
-  email: string;
-  access_token: string;
-  role: string;
-}
+import IUserAuth from "../interfaces/IUserAuth";
 
 export interface UserAuthInfo {
   errors: unknown;
-  user: User;
+  user: IUserAuth;
   isAuthenticated: boolean;
 }
 
 @Module
 export default class AuthModule extends VuexModule implements UserAuthInfo {
   errors = {};
-  user = {} as User;
+  user = {} as IUserAuth;
   isAuthenticated = !!JwtService.getToken();
 
   /**
    * Get current user object
    * @returns User
    */
-  get currentUser(): User {
+  get currentUser(): IUserAuth {
     return this.user;
   }
 
@@ -39,15 +31,6 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
   get userRole() {
     return this.user.role;
   }
-
-  /**
-   * Get current user profile
-   * @returns User
-   */
-  get userProfile() {
-    return this.user.profile;
-  }
-
   /**
    * Get current user organization
    * @returns User
@@ -90,15 +73,10 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
     this.user = user;
   }
 
-  // @Mutation
-  // [Mutations.SET_PASSWORD](password) {
-  //   this.user.password = password;
-  // }
-
   @Mutation
   [Mutations.PURGE_AUTH]() {
     this.isAuthenticated = false;
-    this.user = {} as User;
+    this.user = {} as IUserAuth;
     this.errors = [];
     JwtService.destroyToken();
   }

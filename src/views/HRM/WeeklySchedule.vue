@@ -90,7 +90,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import HRMTimeScheduleTable from "@/components/HRM/HRMWeeklyScheduleTable";
 import moment from "moment";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
-import FillFromTemplateModal from "@/views/HRM/FillFromTemplateModal";
+import FillFromTemplateModal from "@/views/HRM/modals/FillFromTemplateModal";
 import Swal from "sweetalert2";
 import { ElNotification } from "element-plus";
 
@@ -257,6 +257,7 @@ export default defineComponent({
       return result;
     });
 
+    // send the request to copy data from template to hrm weekly schedule
     const processFillFromTemplate = (data) => {
       isShowFillFromTemplate.value = false;
       if (data)
@@ -270,6 +271,7 @@ export default defineComponent({
       });
     };
 
+    // Find if there unpublished shifts available in selected date range
     const findUnpublishedShifts = () => {
       let result = {
         unpublishedShiftFound: false,

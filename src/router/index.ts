@@ -27,11 +27,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/Admins.vue"),
       },
       {
-        path: "/label-test",
-        name: "appointment-print-hospital-certificate-view",
-        component: () => import("@/views/LabelTest.vue"),
-      },
-      {
         path: "/coding",
         name: "coding-dashboard",
         component: () => import("@/views/coding/dashboard.vue"),

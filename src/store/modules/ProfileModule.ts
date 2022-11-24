@@ -6,34 +6,28 @@ import {
   displayServerError,
   displaySuccessModal,
   displaySuccessToast,
-} from "@/helpers/helpers";
-export interface IProfile {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  photo: string;
-}
+} from "@/helpers/helpers.js";
+import IUserProfile from "../interfaces/IUserProfile";
 
 export interface ProfileInfo {
-  profileSelectedData: IProfile;
+  profile: IUserProfile;
 }
 
 @Module
 export default class ProfileModule extends VuexModule implements ProfileInfo {
-  profileSelectedData = {} as IProfile;
+  profile = {} as IUserProfile;
 
   /**
    * Get current user object
    * @returns profileSelectedData
    */
-  get getProfileSelected(): IProfile {
-    return this.profileSelectedData;
+  get userProfile(): IUserProfile {
+    return this.profile;
   }
 
   @Mutation
   [Mutations.SET_PROFILE](data) {
-    this.profileSelectedData = data;
+    this.profile = data;
   }
 
   @Action
@@ -42,7 +36,7 @@ export default class ProfileModule extends VuexModule implements ProfileInfo {
       ApiService.setHeader();
       ApiService.get("profile")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_PROFILE, data);
+          this.context.commit(Mutations.SET_PROFILE, data.data);
         })
         .catch(({ response }) => {
           return displayServerError(response, "viewing user profile");

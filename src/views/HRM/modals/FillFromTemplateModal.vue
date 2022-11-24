@@ -74,6 +74,8 @@ export default defineComponent({
     const selectedEmployees = ref([]);
     const clinics = computed(() => store.getters.clinicsList);
     const clinicFilter = ref([]);
+
+    // return employee list based on user selected employee types
     const employeeList = computed(() => {
       const allEmployees = store.getters.employeeList;
       let filteredList = [];
@@ -89,6 +91,7 @@ export default defineComponent({
         return filteredList;
       } else return allEmployees;
     });
+
     const employeeTypeList = computed(() => {
       const allEmployees = store.getters.hrmWeeklyTemplatesData;
       let list = [];
@@ -123,9 +126,11 @@ export default defineComponent({
     };
 
     const submit = () => {
+      // OVERRIDE EMPLOYEE TYPE AND CLINIC FILTER FUNCTIONALITY SINCE WE ALLOW
+      // PUBLISHED SHIFTS ONLY ONE TIME PER WEEK
       emit("selectedData", {
-        employees: employeeList.value,
-        clinics: fillteredClinics.value,
+        employees: store.getters.hrmWeeklyTemplatesData,
+        clinics: store.getters.clinicsList,
       });
       dialogVisible.value = false;
     };
