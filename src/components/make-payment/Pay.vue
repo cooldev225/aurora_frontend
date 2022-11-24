@@ -230,6 +230,42 @@
                 <InfoSection heading="Amount Outstanding">
                   {{ convertToCurrency(amountOutstanding / 100) }}
                 </InfoSection>
+
+                <button
+                  class="btn btn-light-primary w-100 mt-6"
+                  :disabled="sendingInvoice"
+                  :data-kt-indicator="sendingInvoice ? 'on' : null"
+                  @click="sendInvoice"
+                >
+                  <span v-if="!sendingInvoice" class="indicator-label">
+                    Send Appointment Invoice
+                  </span>
+
+                  <span v-if="sendingInvoice" class="indicator-progress">
+                    Sending...
+                    <span
+                      class="spinner-border spinner-border-sm align-middle ms-2"
+                    ></span>
+                  </span>
+                </button>
+
+                <button
+                  class="btn btn-light-primary w-100 mt-2"
+                  :disabled="viewingInvoice"
+                  :data-kt-indicator="viewingInvoice ? 'on' : null"
+                  @click="viewInvoice"
+                >
+                  <span v-if="!viewingInvoice" class="indicator-label">
+                    View Appointment Invoice
+                  </span>
+
+                  <span v-if="viewingInvoice" class="indicator-progress">
+                    Loading...
+                    <span
+                      class="spinner-border spinner-border-sm align-middle ms-2"
+                    ></span>
+                  </span>
+                </button>
               </div>
             </div>
 
@@ -319,6 +355,7 @@ import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import PaymentItemModal from "@/components/make-payment/PaymentItemModal.vue";
 import VerifyPinModal from "@/components/organisations/VerifyPinModal.vue";
 import { Modal } from "bootstrap";
+import { object } from "yup";
 
 export default defineComponent({
   name: "make-payment-pay",
@@ -339,6 +376,8 @@ export default defineComponent({
     const paymentItemModal = ref();
     const verifyPinModal = ref();
     const loading = ref(false);
+    const sendingInvoice = ref(false);
+    const viewingInvoice = ref(false);
     const refundVerified = ref(false);
     const formRef = ref<null | HTMLFormElement>(null);
     const formData = ref({
@@ -576,6 +615,27 @@ export default defineComponent({
       closePinConfirmModal();
     };
 
+    const sendInvoice = () => {
+      sendingInvoice.value = true;
+      store.dispatch(Actions.INVOICE.SEND, appointmentId).finally(() => {
+        sendingInvoice.value = false;
+      });
+    };
+
+    const viewInvoice = () => {
+      viewingInvoice.value = true;
+      store
+        .dispatch(Actions.INVOICE.VIEW, appointmentId)
+        .then((data) => {
+          let blob = new Blob([data], { type: "application/pdf" });
+          let objectUrl = URL.createObjectURL(blob);
+          window.open(objectUrl, "_blank");
+        })
+        .finally(() => {
+          viewingInvoice.value = false;
+        });
+    };
+
     const handleSubmitPayment = () => {
       if (formData.value.amount > amountOutstanding.value) {
         Swal.fire({
@@ -704,6 +764,10 @@ export default defineComponent({
       handleSubmitPayment,
       verifyRefund,
       closePinConfirmModal,
+      sendingInvoice,
+      sendInvoice,
+      viewingInvoice,
+      viewInvoice,
     };
   },
 });

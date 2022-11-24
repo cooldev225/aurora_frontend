@@ -42,6 +42,7 @@ import MbsModule from "@/store/modules/MbsModule";
 import OutgoingModule from "@/store/modules/OutgoingModule";
 import ScheduleFeeModule from "@/store/modules/ScheduleFeeModule";
 import ScheduleItemModule from "@/store/modules/ScheduleItemModule";
+import InvoiceModule from "@/store/modules/InvoiceModule";
 
 config.rawError = true;
 
@@ -88,6 +89,7 @@ const store = createStore({
     OutgoingModule,
     ScheduleFeeModule,
     ScheduleItemModule,
+    InvoiceModule,
   },
 });
 
