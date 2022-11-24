@@ -6,7 +6,7 @@ import {
   displayServerError,
   displaySuccessModal,
   displaySuccessToast,
-} from "@/helpers/helpers.js";
+} from "@/helpers/helpers";
 import IUserProfile from "../interfaces/IUserProfile";
 
 export interface ProfileInfo {
