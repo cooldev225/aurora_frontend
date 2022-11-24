@@ -1,8 +1,6 @@
 <template>
   <div class="card pb-9">
-    <ProfileNavigation />
     <div class="card-body pt-9 pb-0">
-      <!--begin::Details-->
       <el-form
         @submit.prevent="submit()"
         :model="formData"
@@ -10,33 +8,23 @@
         ref="formRef"
       >
         <div class="row">
-          <InputWrapper
-            class="col-6"
-            required
-            prop="from_date"
-            label="From Date"
-          >
-            <el-form-item>
+          <InputWrapper class="col-6" required label="From Date">
+            <el-form-item prop="date">
               <el-date-picker
                 class="w-100"
-                v-model="formData.from_date"
+                v-model="formData.date"
+                type="daterange"
+                unlink-panels
+                range-separator="-"
+                start-placeholder="From date"
+                end-placeholder="To date"
+                :shortcuts="shortcuts"
                 format="DD/MM/YYYY"
-                placeholder="01/01/1990"
               />
             </el-form-item>
           </InputWrapper>
-          <InputWrapper class="col-6" required prop="to_date" label="From Date">
-            <el-form-item>
-              <el-date-picker
-                class="w-100"
-                v-model="formData.to_date"
-                format="DD/MM/YYYY"
-                placeholder="01/01/1990"
-              />
-            </el-form-item>
-          </InputWrapper>
-          <InputWrapper class="col-6" required prop="type" label="Report Type">
-            <el-form-item>
+          <InputWrapper class="col-6" required label="Report Type">
+            <el-form-item prop="type">
               <el-select
                 class="w-100"
                 placeholder="Select Time frame"
@@ -53,21 +41,23 @@
           </InputWrapper>
         </div>
         <div class="d-flex ms-auto justify-content-end w-50">
-          <button type="submit" class="btn btn-primary w-100 w-sm-25">
-            Save
-          </button>
-          <!--begin::Button-->
-          <router-link
-            type="reset"
-            to="/booking/dashboard"
-            class="btn btn-light-primary w-100 w-sm-25 ms-2"
+          <button
+            :data-kt-indicator="loading ? 'on' : null"
+            class="btn btn-lg btn-primary"
+            type="submit"
           >
-            Cancel
-          </router-link>
-          <!--end::Button-->
+            <span v-if="!loading" class="indicator-label">
+              Generate Report
+            </span>
+            <span v-if="loading" class="indicator-progress">
+              Please wait...
+              <span
+                class="spinner-border spinner-border-sm align-middle ms-2"
+              />
+            </span>
+          </button>
         </div>
       </el-form>
-      <!--end::Details-->
     </div>
   </div>
 </template>
@@ -78,31 +68,24 @@ import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { CodingActions, CodingMutations } from "@/store/enums/StoreCodingEnums";
 import { codingReportTypes } from "@/core/data/coding-report-types";
+import moment from "moment";
 
 export default defineComponent({
   name: "coding-reports",
   setup() {
     const store = useStore();
-    const loading = ref(true);
+    const loading = ref(false);
     const formRef = ref(null);
     const formData = ref({
-      from_date: null,
-      to_date: null,
+      date: [moment().add(-1, "weeks"), moment()],
       type: null,
     });
 
     const rules = ref({
-      from_date: [
+      date: [
         {
           required: true,
-          message: "From date cannot be blank",
-          trigger: "change",
-        },
-      ],
-      to_date: [
-        {
-          required: true,
-          message: "To date cannot be blank",
+          message: "Date cannot be blank",
           trigger: "change",
         },
       ],
@@ -115,15 +98,72 @@ export default defineComponent({
       ],
     });
 
+    const shortcuts = [
+      {
+        text: "Last week",
+        value: () => {
+          const end = moment();
+          const start = moment().add(-1, "weeks");
+          return [start, end];
+        },
+      },
+      {
+        text: "Last month",
+        value: () => {
+          const end = moment();
+          const start = moment().add(-1, "months");
+          return [start, end];
+        },
+      },
+      {
+        text: "Last 3 months",
+        value: () => {
+          const end = moment();
+          const start = moment().add(-3, "months");
+          return [start, end];
+        },
+      },
+    ];
+
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Coding Reports");
+      setCurrentPageBreadcrumbs("Coding Reports", ["Coding"]);
     });
+
+    const submit = () => {
+      if (!formRef.value) {
+        return;
+      }
+
+      formRef.value.validate((valid) => {
+        if (valid) {
+          loading.value = true;
+          store
+            .dispatch(CodingActions.CHECK_APPOINTMENTS_COMPLETE, {
+              from_date: formData.value.date[0],
+              to_date: formData.value.date[1],
+              type: formData.value.type,
+            })
+            .then((data) => {
+              loading.value = false;
+              if (data) {
+                //
+              } else {
+                alert("uncompleted");
+              }
+            });
+          formRef.value.resetFields();
+        }
+      });
+    };
 
     return {
       loading,
+      formRef,
       formData,
       rules,
       codingReportTypes,
+      submit,
+      shortcuts,
     };
   },
 });
