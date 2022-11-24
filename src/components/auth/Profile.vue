@@ -156,7 +156,7 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import ProfileNavigation from "@/components/auth/ProfileNavigation.vue";
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
+import { validatePhone } from "@/helpers/helpers";
 import IUserProfile from "@/store/interfaces/IUserProfile";
 export default defineComponent({
   name: "profile-page-layout",
