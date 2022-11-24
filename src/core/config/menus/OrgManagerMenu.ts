@@ -21,6 +21,11 @@ const OrgManagerMenu = [
         heading: "Waitlisted Appointments",
         route: "/appointments/waitlisted-apts",
       },
+
+      {
+        heading: "Deallocate Appointments",
+        route: "/appointments/deallocate-appointments",
+      },
       {
         heading: "Cancellation List",
         route: "/appointments/cancellation-list",
@@ -80,6 +85,10 @@ const OrgManagerMenu = [
       {
         heading: "Bulletin Board",
         route: "/hrm/bulletin-board",
+      },
+      {
+        heading: "Employee Availabilities",
+        route: "/hrm/employee-availabilities",
       },
     ],
   },

@@ -11,7 +11,6 @@ import OrganisationModule from "@/store/modules/OrganisationModule";
 import OrgAdminModule from "@/store/modules/OrgAdminModule";
 import ClinicsModule from "@/store/modules/ClinicsModule";
 import HealthFundModule from "@/store/modules/HealthFundModule";
-import BirthCodeModule from "@/store/modules/BirthCodeModule";
 import PatientsModule from "@/store/modules/PatientsModule";
 import PatientsRecallModule from "@/store/modules/PatientsRecallModule";
 import EmployeeModule from "@/store/modules/EmployeeModule";
@@ -23,7 +22,7 @@ import AptTimeRequireModule from "@/store/modules/AptTimeRequireModule";
 import ReportTemplatesModule from "@/store/modules/ReportTemplatesModule";
 import MailsModule from "@/store/modules/MailsModule";
 import SpecialistsModule from "@/store/modules/SpecialistsModule";
-import NtfTemplatesModule from "@/store/modules/NtfTemplatesModule";
+import NotificationTemplatesModule from "@/store/modules/NotificationTemplatesModule";
 import MakePaymentModule from "@/store/modules/MakePaymentModule";
 import ProfileModule from "@/store/modules/ProfileModule";
 import DoctorAddressBookModule from "@/store/modules/DoctorAddressBookModule";
@@ -43,6 +42,7 @@ import MbsModule from "@/store/modules/MbsModule";
 import OutgoingModule from "@/store/modules/OutgoingModule";
 import ScheduleFeeModule from "@/store/modules/ScheduleFeeModule";
 import ScheduleItemModule from "@/store/modules/ScheduleItemModule";
+import InvoiceModule from "@/store/modules/InvoiceModule";
 
 config.rawError = true;
 
@@ -58,13 +58,12 @@ const store = createStore({
     OrgAdminModule,
     ClinicsModule,
     HealthFundModule,
-    BirthCodeModule,
     PatientsModule,
     PatientsRecallModule,
     EmployeeModule,
     BookingModule,
     AnesthetistModule,
-    NtfTemplatesModule,
+    NotificationTemplatesModule,
     AppointmentModule,
     AptTypesModule,
     AptTimeRequireModule,
@@ -90,6 +89,7 @@ const store = createStore({
     OutgoingModule,
     ScheduleFeeModule,
     ScheduleItemModule,
+    InvoiceModule,
   },
 });
 

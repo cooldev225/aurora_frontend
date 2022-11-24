@@ -6,9 +6,9 @@
       <!--begin::Details-->
       <el-form
         @submit.prevent="submit()"
-        :model="formData"
+        :model="profileFormData"
         :rules="rules"
-        ref="formRef"
+        ref="profileFormRef"
       >
         <div class="row">
           <div class="col-sm-12">
@@ -17,7 +17,7 @@
                 <div class="d-flex">
                   <img
                     v-if="showOldPhoto"
-                    :src="'http://52.64.63.21/' + formData.photo"
+                    :src="'http://52.64.63.21/' + profileFormData.photo"
                     className="rounded me-2"
                     width="146"
                     height="146"
@@ -59,7 +59,7 @@
                 <el-input
                   type="text"
                   class="w-100"
-                  v-model="formData.first_name"
+                  v-model="profileFormData.first_name"
                   placeholder="First Name"
                 />
               </el-form-item>
@@ -74,7 +74,7 @@
                 <el-input
                   type="text"
                   class="w-100"
-                  v-model="formData.last_name"
+                  v-model="profileFormData.last_name"
                   placeholder="Last Name"
                 />
               </el-form-item>
@@ -87,7 +87,7 @@
                 <el-input
                   type="text"
                   class="w-100"
-                  v-model="formData.email"
+                  v-model="profileFormData.email"
                   placeholder="Email"
                 />
               </el-form-item>
@@ -101,7 +101,7 @@
                   type="text"
                   class="w-100"
                   v-mask="'0#-####-####'"
-                  v-model="formData.mobile_number"
+                  v-model="profileFormData.mobile_number"
                   placeholder="Mobile Number"
                 />
               </el-form-item>
@@ -115,7 +115,7 @@
               <el-form-item prop="address">
                 <GMapAutocomplete
                   ref="addressRef"
-                  :placeholder="formData.address"
+                  :placeholder="profileFormData.address"
                   @place_changed="handleAddressChange"
                   :options="{
                     componentRestrictions: {
@@ -149,17 +149,15 @@
   <!--end::Navbar-->
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
-import Swal from "sweetalert2/dist/sweetalert2.js";
-import ProfileNavigation from "@/components/auth/ProfileNavigation";
-
+import ProfileNavigation from "@/components/auth/ProfileNavigation.vue";
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers.js";
-
+import IUserProfile from "@/store/interfaces/IUserProfile";
 export default defineComponent({
   name: "profile-page-layout",
   directives: {
@@ -168,15 +166,8 @@ export default defineComponent({
   components: { ProfileNavigation },
   setup() {
     const store = useStore();
-    const formRef = ref(null);
-    const formData = ref({
-      first_name: "",
-      last_name: "",
-      email: "",
-      mobile_number: "",
-      address: "",
-      photo: "",
-    });
+    const profileFormRef = ref();
+
     const rules = ref({
       first_name: [
         {
@@ -220,29 +211,31 @@ export default defineComponent({
         },
       ],
     });
-    const profileData = computed(() => store.getters.getProfileSelected);
-    const loading = ref(false);
+    const profileFormData = computed<IUserProfile>(
+      () => store.getters.userProfile
+    );
+    const loading = ref<boolean>(false);
     const uploadDisabled = ref(false);
-    const upload = ref(null);
+    const upload = ref();
     const Data = new FormData();
     const dialogImageUrl = ref("");
     const dialogVisible = ref(false);
     const showOldPhoto = ref(true);
 
     const handleAddressChange = (e) => {
-      formData.value.address = e.formatted_address;
+      profileFormData.value.address = e.formatted_address;
     };
 
-    const handleChange = (file, fileList) => {
+    const handleChange = (file) => {
       showOldPhoto.value = false;
       upload.value.clearFiles();
       uploadDisabled.value = false;
       Data.append("photo", file.raw);
-      uploadDisabled.value = fileList.length >= 1;
+      uploadDisabled.value = true;
     };
 
-    const handleRemove = (file, fileList) => {
-      uploadDisabled.value = fileList.length - 1;
+    const handleRemove = () => {
+      uploadDisabled.value = false;
     };
 
     const handlePreview = (uploadFile) => {
@@ -251,46 +244,21 @@ export default defineComponent({
     };
 
     const submit = () => {
-      if (!formRef.value) {
+      if (!profileFormRef.value) {
         return;
       }
 
-      formRef.value.validate((valid) => {
+      profileFormRef.value.validate((valid) => {
         if (valid) {
-          Object.keys(formData.value).forEach((key) => {
-            Data.append(key, formData.value[key]);
-          });
           loading.value = true;
           store
-            .dispatch(Actions.PROFILE.UPDATE, Data)
-            .then(() => {
+            .dispatch(Actions.PROFILE.UPDATE, profileFormData.value)
+            .finally(() => {
               loading.value = false;
-              store.dispatch(Actions.PROFILE.VIEW);
-              Swal.fire({
-                text: "Successfully Updated!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                // router.go();
-              });
-            })
-            .catch(({ response }) => {
-              loading.value = false;
-              console.log(response.data.error);
             });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
-
-    watchEffect(() => {
-      formData.value = profileData.value;
-    });
 
     onMounted(() => {
       loading.value = true;
@@ -299,8 +267,8 @@ export default defineComponent({
     });
 
     return {
-      formData,
-      formRef,
+      profileFormData,
+      profileFormRef,
       rules,
       upload,
       dialogVisible,

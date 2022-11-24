@@ -131,7 +131,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
+import { validatePhone } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "add-org",
@@ -240,7 +240,7 @@ export default defineComponent({
       if (!formRef.value) {
         return;
       }
-
+      loading.value = true;
       formRef.value.validate((valid) => {
         if (valid) {
           Object.keys(formData.value).forEach((key) => {
@@ -250,29 +250,13 @@ export default defineComponent({
             (key === "has_billing" || key == "has_coding") &&
               Data.append(key, formData.value[key] ? 1 : 0);
           });
-          store
-            .dispatch(Actions.ORG.CREATE, Data)
-            .then(() => {
-              loading.value = false;
-              store.dispatch(Actions.ORG.LIST);
-              Swal.fire({
-                text: "New Organisation Created!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                router.push({ name: "organisations" });
-              });
-            })
-            .catch(({ response }) => {
-              loading.value = false;
-              console.log(response.data.error);
+
+          store.dispatch(Actions.ORG.CREATE, Data).then((data) => {
+            loading.value = false;
+            store.dispatch(Actions.ORG.LIST).then(() => {
+              router.push({ name: "organisations" });
             });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
+          });
         }
       });
     };

@@ -45,7 +45,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
 import KTMenu from "@/layout/aside/Menu.vue";
 import { asideTheme } from "@/core/helpers/config";
 import { useStore } from "vuex";
@@ -60,7 +59,6 @@ export default defineComponent({
     darkLogo: String,
   },
   setup() {
-    const { t } = useI18n();
     const store = useStore();
     const currentUser = computed(() => store.getters.currentUser);
     const logo = ref("");
@@ -86,7 +84,6 @@ export default defineComponent({
 
     return {
       asideTheme,
-      t,
       logo,
     };
   },

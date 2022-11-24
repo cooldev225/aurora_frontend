@@ -2,7 +2,11 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-
+import {
+  displayServerError,
+  displaySuccessModal,
+  displaySuccessToast,
+} from "@/helpers/helpers";
 export interface IOrg {
   id: number;
   first_name: string;
@@ -63,13 +67,10 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
       ApiService.setHeader();
       ApiService.get("organizations")
         .then(({ data }) => {
-          console.log(data.data);
           this.context.commit(Mutations.SET_ORG.LIST, data.data);
-          return data.data;
         })
-        .catch(() => {
-          // console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+        .catch((response) => {
+          return displayServerError(response, "Listing organizations");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -83,12 +84,12 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
     };
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("organizations", payload, config)
-        .then(({ data }) => {
-          return data.data;
+      return ApiService.post("organizations", payload, config)
+        .then(() => {
+          return displaySuccessModal("Organization created successfully");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Creating a new organization");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -101,11 +102,10 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
       ApiService.setHeader();
       ApiService.update("organizations", payload.id, payload.data)
         .then(({ data }) => {
-          return data.data;
+          return displaySuccessToast("Organization updated");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Updating an organization");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -117,11 +117,11 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.delete("organizations/" + id)
-        .then(({ data }) => {
-          return data.data;
+        .then(() => {
+          return displaySuccessToast("Organization Deleted");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Deleting an organization");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -135,11 +135,9 @@ export default class OrganisationModule extends VuexModule implements OrgInfo {
       return ApiService.get("organizations/" + id)
         .then(({ data }) => {
           this.context.commit(Mutations.SET_ORG.SELECT, data.data);
-          return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Showing a single organization");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

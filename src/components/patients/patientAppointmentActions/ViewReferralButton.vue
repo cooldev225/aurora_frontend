@@ -1,7 +1,7 @@
 <template>
   <LargeIconButton text="View Referral" @click="handleReferral()" />
   <AppointmentReferralModal
-    :selectedApt="appointment"
+    :appointment="appointment"
   ></AppointmentReferralModal>
 </template>
 

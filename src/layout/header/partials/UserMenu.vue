@@ -23,7 +23,7 @@
         <!--begin::Username-->
         <div class="d-flex flex-column">
           <div class="fw-bolder d-flex align-items-center fs-5">
-            {{ profileData.first_name + " " + profileData.last_name }}
+            {{ profileData.full_name }}
           </div>
           <span
             class="text-break pe-1 fw-bold text-muted text-hover-primary fs-7"
@@ -56,49 +56,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
-import { useI18n } from "vue-i18n";
+import { defineComponent, PropType } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Actions } from "@/store/enums/StoreEnums";
+import IUserProfile from "@/store/interfaces/IUserProfile";
 
 export default defineComponent({
   name: "kt-user-menu",
   components: {},
   props: {
-    profileData: Object,
+    profileData: { type: Object as PropType<IUserProfile>, required: true },
   },
   setup() {
     const router = useRouter();
-    const i18n = useI18n();
     const store = useStore();
-
-    i18n.locale.value = localStorage.getItem("lang")
-      ? (localStorage.getItem("lang") as string)
-      : "en";
-
-    const countries = {
-      en: {
-        flag: "media/flags/united-states.svg",
-        name: "English",
-      },
-      es: {
-        flag: "media/flags/spain.svg",
-        name: "Spanish",
-      },
-      de: {
-        flag: "media/flags/germany.svg",
-        name: "German",
-      },
-      ja: {
-        flag: "media/flags/japan.svg",
-        name: "Japanese",
-      },
-      fr: {
-        flag: "media/flags/france.svg",
-        name: "French",
-      },
-    };
 
     const handleProfile = () => {
       router.push({ name: "profile" });
@@ -110,26 +82,9 @@ export default defineComponent({
         .then(() => router.push({ name: "sign-in" }));
     };
 
-    const setLang = (lang) => {
-      localStorage.setItem("lang", lang);
-      i18n.locale.value = lang;
-    };
-
-    const currentLanguage = (lang) => {
-      return i18n.locale.value === lang;
-    };
-
-    const currentLanguageLocale = computed(() => {
-      return countries[i18n.locale.value];
-    });
-
     return {
       handleProfile,
       signOut,
-      setLang,
-      currentLanguage,
-      currentLanguageLocale,
-      countries,
     };
   },
 });

@@ -24,14 +24,14 @@ const SettingsRoutes = [
       import("@/views/settings/report-templates/ReportTemplates.vue"),
   },
   {
+    path: "/settings/patient-print-label-setting",
+    name: "patientPrintLabelSettings",
+    component: () => import("@/views/settings/PatientLabelPrintSettings.vue"),
+  },
+  {
     path: "/settings/health-fund",
     name: "healthFund",
     component: () => import("@/views/settings/health-fund/HealthFund.vue"),
-  },
-  {
-    path: "/settings/birthCode",
-    name: "birthCode",
-    component: () => import("@/views/settings/birth-code/BirthCode.vue"),
   },
   {
     path: "/settings",

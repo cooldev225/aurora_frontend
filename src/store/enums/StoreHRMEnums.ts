@@ -20,6 +20,15 @@ const HRMActions = {
     },
     ANESTHETIST: {
         LIST: 'AnesthetistList'
+    },
+    EMPLOYEE_LEAVE: {
+        LIST: "setEmployeeLeaveList",
+        CREATE: "setEmployeeLeaveCreate",
+        UPDATE: "setEmployeeLeaveUpdate",
+        DELETE: "setEmployeeLeaveDelete",
+    },
+    DEALLOCATE_APPOINTMENTS: {
+        LIST: "setSpecialistLeaveAppointments"
     }
 };
 
@@ -40,6 +49,10 @@ const HRMMutations = {
     },
     ANESTHETIST: {
         SET_LIST: 'setAnesthetistList'
+    },
+    DATA: {
+        SET_LIST: "hrmList",
+        SET_SELECT: "hrmSelected",
     }
 };
 

@@ -224,7 +224,7 @@ import { countryList, timeZoneList } from "@/core/data/country";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
+import { validatePhone } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "create-clinic",
@@ -358,32 +358,7 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          // Object.keys(formData.value).forEach((key) => {
-          //   Data.append(key, formData.value[key]);
-          // });
-          store
-            .dispatch(formInfo.submitAction, formData.value)
-            .then(() => {
-              loading.value = false;
-              store.dispatch(Actions.CLINICS.LIST);
-              Swal.fire({
-                text: formInfo.submittedText,
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                router.push({ name: "clinics" });
-              });
-            })
-            .catch(({ response }) => {
-              loading.value = false;
-              console.log(response.data.error);
-            });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
+          store.dispatch(formInfo.submitAction, formData.value);
         }
       });
     };

@@ -262,7 +262,7 @@ import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
+import { validatePhone } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "pre-admission-form2",

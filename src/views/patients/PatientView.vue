@@ -1,6 +1,6 @@
 <template>
   <!--begin::Navbar-->
-  <div class="card mb-5 mb-xxl-8">
+  <div v-if="patient" class="card mb-5 mb-xxl-8">
     <div class="card-body pt-3 pb-0">
       <!--begin::Details-->
       <div class="d-flex flex-wrap flex-sm-nowrap mb-3">
@@ -13,11 +13,11 @@
             <span
               class="my-auto text-gray-800 text-hover-primary fs-2 fw-bolder me-1"
             >
-              {{ patientData.first_name }} {{ patientData.last_name }}
+              {{ patient.first_name }} {{ patient.last_name }}
             </span>
 
             <div class="d-flex gap-2 flex-row">
-              <template v-for="alert in patientData.alerts" :key="alert.id">
+              <template v-for="alert in patient.alerts" :key="alert.id">
                 <template v-if="!alert.is_dismissed">
                   <PatientAlert :alert="alert" />
                   <ViewPatientAlertModal :alert="alert" />
@@ -28,8 +28,8 @@
             <!--begin::Actions-->
             <div class="my-4">
               <div class="d-flex gap-3">
-                <UploadDocumentButton :patient="patientData" />
-                <AddAlertButton :patient="patientData" />
+                <UploadDocumentButton :patient="patient" />
+                <AddAlertButton :patient="patient" />
               </div>
             </div>
           </div>
@@ -41,19 +41,19 @@
       <!--begin::Info-->
       <div class="d-flex flex-wrap fw-bold fs-6 mb-4 pe-2">
         <IconText iconSRC="media/icons/duotune/communication/com011.svg">
-          {{ patientData.email }}
+          {{ patient.email }}
         </IconText>
 
         <IconText iconSRC="media/icons/duotune/general/gen018.svg">
-          {{ patientData.address }}
+          {{ patient.address }}
         </IconText>
 
         <IconText iconSRC="media/icons/duotune/files/fil002.svg">
-          {{ new Date(patientData.date_of_birth).toLocaleDateString("en-AU") }}
+          {{ new Date(patient.date_of_birth).toLocaleDateString("en-AU") }}
         </IconText>
 
         <IconText iconSRC="media/icons/duotune/electronics/elc002.svg">
-          {{ patientData.contact_number }}
+          {{ patient.contact_number }}
         </IconText>
       </div>
       <!--end::Info-->
@@ -65,7 +65,7 @@
           <!--begin::Nav item-->
           <li class="nav-item">
             <router-link
-              :to="'/patients/' + patientData.id + '/documents'"
+              :to="'/patients/' + patient.id + '/documents'"
               class="nav-link text-active-primary me-6"
               active-class="active"
             >
@@ -77,7 +77,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              :to="'/patients/' + patientData.id + '/appointments'"
+              :to="'/patients/' + patient.id + '/appointments'"
               active-class="active"
             >
               Appointments
@@ -88,7 +88,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              :to="'/patients/' + patientData.id + '/claim-sources'"
+              :to="'/patients/' + patient.id + '/claim-sources'"
               active-class="active"
               v-if="userRole != 'specialist'"
             >
@@ -100,7 +100,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              :to="'/patients/' + patientData.id + '/clinical'"
+              :to="'/patients/' + patient.id + '/clinical'"
               active-class="active"
             >
               Clinical Information
@@ -111,7 +111,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              :to="'/patients/' + patientData.id + '/administration'"
+              :to="'/patients/' + patient.id + '/administration'"
               active-class="active"
             >
               Demographic
@@ -122,7 +122,7 @@
           <li class="nav-item">
             <router-link
               class="nav-link text-active-primary me-6"
-              :to="'/patients/' + patientData.id + '/recalls'"
+              :to="'/patients/' + patient.id + '/recalls'"
               active-class="active"
             >
               Recalls
@@ -147,6 +147,7 @@ import UploadDocumentButton from "@/components/patients//patientActions/UploadDo
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
 import store from "@/store";
 import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue";
+import IPatient from "@/store/interfaces/IPatient";
 
 export default defineComponent({
   name: "patients-view",
@@ -164,25 +165,15 @@ export default defineComponent({
   },
 
   setup() {
-    const patientData = ref({
-      id: "",
-      first_name: "",
-      last_name: "",
-      address: "",
-      email: "",
-      date_of_birth: "",
-      contact_number: "",
-      alerts: [],
-    });
+    const patient = ref<IPatient>();
 
     watchEffect(() => {
-      patientData.value = store.getters.selectedPatient;
+      patient.value = store.getters.selectedPatient;
     });
 
     return {
-      patientData,
+      patient,
       PatientAlert,
-
       ViewPatientAlertModal,
     };
   },

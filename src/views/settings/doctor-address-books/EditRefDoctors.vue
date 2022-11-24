@@ -13,174 +13,158 @@
         <div class="py-10 px-lg-17">
           <!--begin::Scroll-->
           <div class="row">
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Provider No" prop="providerno">
-                <el-input
-                  v-model="formData.provider_no"
-                  type="text"
-                  placeholder="Enter the Provider No"
-                  v-mask="'#######A'"
+            <InputWrapper class="col-2" label="Title" prop="title">
+              <el-select
+                class="w-100"
+                v-model="formData.title"
+                placeholder="Select Title"
+              >
+                <el-option
+                  v-for="item in titles"
+                  :key="item.value"
+                  :value="item.value"
+                  :label="item.label"
                 />
-              </InputWrapper>
-            </div>
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Title" prop="title">
-                <el-input
-                  v-model="formData.title"
-                  type="text"
-                  placeholder="Enter the Title"
-                />
-              </InputWrapper>
-            </div>
+              </el-select>
+            </InputWrapper>
 
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="First Name" prop="firstname">
-                <el-input
-                  v-model="formData.first_name"
-                  type="text"
-                  placeholder="Enter the first name"
-                />
-              </InputWrapper>
-            </div>
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Last Name" prop="lastname">
-                <el-input
-                  v-model="formData.last_name"
-                  type="text"
-                  placeholder="Enter the last name"
-                />
-              </InputWrapper>
-            </div>
+            <InputWrapper
+              class="col-5"
+              required
+              label="First Name"
+              prop="firstname"
+            >
+              <el-input
+                v-model="formData.first_name"
+                type="text"
+                placeholder="Enter the first name"
+              />
+            </InputWrapper>
 
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Address" prop="address">
-                <el-input
-                  v-model="formData.address"
-                  type="text"
-                  placeholder="Enter the address"
-                />
-              </InputWrapper>
-            </div>
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Street" prop="street">
-                <el-input
-                  v-model="formData.street"
-                  type="text"
-                  placeholder="Enter the street"
-                />
-              </InputWrapper>
-            </div>
-
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="City" prop="city">
-                <el-input
-                  v-model="formData.city"
-                  type="text"
-                  placeholder="Enter the city"
-                />
-              </InputWrapper>
-            </div>
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="State" prop="state">
-                <el-input
-                  v-model="formData.state"
-                  type="text"
-                  placeholder="Enter the state"
-                />
-              </InputWrapper>
-            </div>
-
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Country" prop="country">
-                <el-input
-                  v-model="formData.country"
-                  type="text"
-                  placeholder="Enter the country"
-                />
-              </InputWrapper>
-            </div>
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Postcode" prop="postcode">
-                <el-input
-                  v-model="formData.postcode"
-                  type="text"
-                  placeholder="Enter the postcode"
-                />
-              </InputWrapper>
-            </div>
-
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Phone" prop="phone">
-                <el-input
-                  v-model="formData.phone"
-                  type="text"
-                  v-mask="'0#-####-####'"
-                  placeholder="Enter phone number"
-                />
-              </InputWrapper>
-            </div>
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Fax" prop="fax">
-                <el-input
-                  v-model="formData.fax"
-                  type="text"
-                  placeholder="Enter the fax"
-                />
-              </InputWrapper>
-            </div>
-
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Mobile" prop="mobile">
-                <el-input
-                  v-model="formData.mobile"
-                  type="text"
-                  v-mask="'0#-####-####'"
-                  placeholder="Enter the mobile"
-                />
-              </InputWrapper>
-            </div>
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Email" prop="email">
-                <el-input
-                  v-model="formData.email"
-                  type="text"
-                  placeholder="Enter email address"
-                />
-              </InputWrapper>
-            </div>
-
-            <div class="col-sm-6 mb-5">
-              <InputWrapper required label="Practice Name" prop="practicename">
-                <el-input
-                  v-model="formData.practice_name"
-                  type="text"
-                  placeholder="Enter practice name"
-                />
-              </InputWrapper>
-            </div>
-            <div class="col-sm-6 mb-5">
-              <InputWrapper label="Health Link" prop="healthlink_edi">
-                <el-input
-                  v-model="formData.healthlink_edi"
-                  type="text"
-                  placeholder="Enter health link"
-                />
-              </InputWrapper>
-            </div>
-            <div class="col-sm-6 mb-5 upload-file">
-              <InputWrapper label="Upload File" prop="uploadfile">
-                <el-upload
-                  action="#"
-                  ref="upload"
-                  :limit="2"
-                  :file-list="formData.upload_file"
-                  :on-change="handleChange"
-                  :auto-upload="false"
-                  accept="*/*"
+            <InputWrapper
+              class="col-5"
+              required
+              label="Last Name"
+              prop="lastname"
+            >
+              <el-input
+                v-model="formData.last_name"
+                type="text"
+                placeholder="Enter the last name"
+              />
+            </InputWrapper>
+            <InputWrapper
+              class="col-6"
+              required
+              label="Provider No"
+              prop="providerno"
+            >
+              <el-input
+                v-model="formData.provider_no"
+                type="text"
+                placeholder="Enter the Provider No"
+                v-mask="'#######A'"
+              />
+            </InputWrapper>
+            <InputWrapper
+              class="col-6"
+              required
+              label="Preferred Communication Method"
+              prop="preferred_communication_method"
+            >
+              <el-select
+                class="w-100"
+                v-model="formData.preferred_communication_method"
+                placeholder="Select Title"
+              >
+                <el-option value="EMAIL" label="Email" />
+                <el-option value="FAX" label="Fax" />
+                <el-option value="HEALTHLINK" label="Healthlink" />
+              </el-select>
+            </InputWrapper>
+            <InputWrapper
+              class="col-6"
+              required
+              label="Practice Name"
+              prop="practice_name"
+            >
+              <el-input
+                v-model="formData.practice_name"
+                type="text"
+                placeholder="Enter practice name"
+              />
+            </InputWrapper>
+            <InputWrapper
+              class="col-6"
+              label="Practice Address"
+              prop="practice_address"
+            >
+              <div class="el-input">
+                <GMapAutocomplete
+                  :value="formData.practice_address"
+                  placeholder="Enter the Address"
+                  @place_changed="updateAddress"
+                  :options="{
+                    componentRestrictions: {
+                      country: 'au',
+                    },
+                  }"
                 >
-                  <i class="fa fa-plus"></i> </el-upload
-              ></InputWrapper>
-            </div>
+                </GMapAutocomplete>
+              </div>
+            </InputWrapper>
+
+            <InputWrapper
+              class="col-6"
+              required
+              label="Practice Phone"
+              prop="practice_phone"
+            >
+              <el-input
+                v-model="formData.practice_phone"
+                type="text"
+                v-mask="'0#-####-####'"
+                placeholder="Enter phone number"
+              />
+            </InputWrapper>
+
+            <InputWrapper
+              class="col-6"
+              label="Practice Fax"
+              v-mask="'0#-####-####'"
+              prop="practice_fax"
+            >
+              <el-input
+                v-model="formData.practice_fax"
+                type="text"
+                placeholder="Enter the fax"
+              />
+            </InputWrapper>
+
+            <InputWrapper
+              class="col-6"
+              required
+              label="Practice Email"
+              prop="practice_email"
+            >
+              <el-input
+                v-model="formData.practice_email"
+                type="text"
+                placeholder="Enter email address"
+              />
+            </InputWrapper>
+
+            <InputWrapper
+              class="col-6"
+              label="Health Link"
+              prop="healthlink_edi"
+            >
+              <el-input
+                v-model="formData.healthlink_edi"
+                type="text"
+                placeholder="Enter health link"
+              />
+            </InputWrapper>
           </div>
         </div>
         <!--end::Scroll-->
@@ -254,8 +238,8 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
-
+import { validatePhone } from "@/helpers/helpers";
+import titles from "@/core/data/titles";
 export default defineComponent({
   name: "edit-doctor-address-books",
   directives: {
@@ -283,23 +267,16 @@ export default defineComponent({
 
     const formData = ref({
       provider_no: "",
-      title: "",
+      title: "dr",
       first_name: "",
       last_name: "",
-      address: "",
-      street: "",
-      city: "",
-      state: "",
-      country: "",
-      postcode: "",
-      phone: "",
-      fax: "",
-      mobile: "",
-      email: "",
+      practice_address: "",
+      practice_phone: "",
+      practice_fax: "",
+      practice_email: "",
       practice_name: "",
       healthlink_edi: "",
-      upload_file_name: "",
-      upload_file: [],
+      preferred_communication_method: "EMAIL",
     });
 
     const rules = ref({
@@ -331,49 +308,8 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      address: [
-        {
-          required: true,
-          message: "Address cannot be blank",
-          trigger: "change",
-        },
-      ],
-      street: [
-        {
-          required: true,
-          message: "Street cannot be blank",
-          trigger: "change",
-        },
-      ],
-      city: [
-        {
-          required: true,
-          message: "City cannot be blank",
-          trigger: "change",
-        },
-      ],
-      state: [
-        {
-          required: true,
-          message: "State cannot be blank",
-          trigger: "change",
-        },
-      ],
-      country: [
-        {
-          required: true,
-          message: "Country cannot be blank",
-          trigger: "change",
-        },
-      ],
-      postcode: [
-        {
-          required: true,
-          message: "Postcode cannot be blank",
-          trigger: "change",
-        },
-      ],
-      phone: [
+
+      practice_phone: [
         {
           required: true,
           message: "Phone Number cannot be blank",
@@ -388,15 +324,8 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      mobile: [
-        {
-          required: true,
-          message: "Mobile Number cannot be blank",
-          trigger: "change",
-        },
-        { validator: validatePhone, trigger: "blur" },
-      ],
-      email: [
+
+      practice_email: [
         {
           required: true,
           message: "Email cannot be blank",
@@ -454,18 +383,11 @@ export default defineComponent({
           loading.value = true;
           let Data = {};
           Object.keys(formData.value).forEach((key) => {
-            if (key == "upload_file") {
-              if (formData.value[key].length) {
-                Data.file = formData.value[key][0].raw;
-              }
-            } else {
-              Data[key] = formData.value[key];
-            }
+            Data[key] = formData.value[key];
           });
           store
             .dispatch(formInfo.submitAction, Data)
             .then(() => {
-              loading.value = false;
               store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
               Swal.fire({
                 text: formInfo.submittedText,
@@ -479,17 +401,17 @@ export default defineComponent({
                 router.push({ name: "refDoctors" });
               });
             })
-            .catch(({ response }) => {
+            .finally(() => {
               loading.value = false;
-              console.log(response.data.error);
             });
           formRef.value.resetFields();
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
 
+    const updateAddress = (e) => {
+      formData.value.practice_address = e.formatted_address;
+    };
     return {
       formData,
       formInfo,
@@ -498,6 +420,8 @@ export default defineComponent({
       loading,
       submit,
       handleChange,
+      titles,
+      updateAddress,
     };
   },
 });

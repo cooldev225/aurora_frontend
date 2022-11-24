@@ -234,7 +234,7 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
-import { validatePass } from "@/helpers/helpers.js";
+import { validatePass } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "add-org-manager-modal",

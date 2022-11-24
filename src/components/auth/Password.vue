@@ -104,7 +104,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import ProfileNavigation from "@/components/auth/ProfileNavigation";
 import { PasswordMeterComponent } from "@/assets/ts/components/_PasswordMeterComponent";
-import { validatePass } from "@/helpers/helpers.js";
+import { validatePass } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "password-change",
@@ -181,12 +181,9 @@ export default defineComponent({
                 },
               });
             })
-            .catch(({ response }) => {
+            .finally(() => {
               loading.value = false;
-              console.log(response.data.error);
             });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
@@ -194,8 +191,6 @@ export default defineComponent({
     onMounted(() => {
       setCurrentPageBreadcrumbs("Password", ["Profile"]);
       PasswordMeterComponent.createInstances();
-      // var el = document.querySelector("#kt_password_meter_control");
-      // var passwordMeter = PasswordMeterComponent.createInstance(el);
     });
 
     return {

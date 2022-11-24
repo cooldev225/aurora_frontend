@@ -72,6 +72,7 @@
       :employeeList="employeeList"
       :clinicFilter="clinicFilter"
       :dateOptions="dateRange"
+      :leaveList="leaveList"
       :canEdit="true"
     />
   </div>
@@ -89,7 +90,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import HRMTimeScheduleTable from "@/components/HRM/HRMWeeklyScheduleTable";
 import moment from "moment";
 import { HRMActions } from "@/store/enums/StoreHRMEnums";
-import FillFromTemplateModal from "@/views/HRM/FillFromTemplateModal";
+import FillFromTemplateModal from "@/views/HRM/modals/FillFromTemplateModal";
 import Swal from "sweetalert2";
 import { ElNotification } from "element-plus";
 
@@ -132,6 +133,7 @@ export default defineComponent({
     });
 
     const clinics = computed(() => store.getters.clinicsList);
+    const leaveList = computed(() => store.getters.hrmDataList);
     const employeeList = computed(() => {
       const allEmployees = store.getters.hrmWeeklyTemplatesData;
       let filteredList = [];
@@ -215,8 +217,16 @@ export default defineComponent({
           date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
         })
         .then(() => {
-          loading.value = false;
+          store
+            .dispatch(HRMActions.EMPLOYEE_LEAVE.LIST, {
+              date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+              status: "Approved",
+            })
+            .then((e) => {
+              loading.value = false;
+            });
         });
+
       let day = dateRange.value.startDate;
       dateRange.value.datesInWeek = [];
       if (day !== null) {
@@ -247,6 +257,7 @@ export default defineComponent({
       return result;
     });
 
+    // send the request to copy data from template to hrm weekly schedule
     const processFillFromTemplate = (data) => {
       isShowFillFromTemplate.value = false;
       if (data)
@@ -260,6 +271,7 @@ export default defineComponent({
       });
     };
 
+    // Find if there unpublished shifts available in selected date range
     const findUnpublishedShifts = () => {
       let result = {
         unpublishedShiftFound: false,
@@ -368,6 +380,7 @@ export default defineComponent({
       processFillFromTemplate,
       PublishAllSlots,
       canPullFromTemplate,
+      leaveList,
     };
   },
 });

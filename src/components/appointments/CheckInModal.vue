@@ -291,7 +291,6 @@ import { hideModal } from "@/core/helpers/dom";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 
 import { mask } from "vue-the-mask";
-// import { validatePhone } from "@/helpers/helpers.js";
 
 export default defineComponent({
   name: "create-apt-modal",

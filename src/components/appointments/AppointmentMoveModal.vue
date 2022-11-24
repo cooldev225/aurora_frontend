@@ -29,6 +29,15 @@
           <h2 class="select-new-apt-caption" v-if="aptData.step === 1">
             Select New Appointment Time
           </h2>
+          <div class="d-flex justify-content-between">
+            <button
+              class="btn btn-primary"
+              v-if="aptData.step"
+              @click.prevent="handleBack"
+            >
+              Back
+            </button>
+          </div>
           <div
             id="kt_modal_add_customer_close"
             data-bs-dismiss="modal"
@@ -51,13 +60,16 @@
             data-kt-scroll-offset="300px"
           >
             <el-form :model="formData" ref="formRef" v-if="aptData.step === 0">
-              <div class="appointment-type">
+              <div class="row appointment-type">
                 <InputWrapper prop="appointment_type_id">
                   <el-select
-                    :disabled="props.isDisableAptTypeList"
+                    :disabled="
+                      props.isDisableAptTypeList && aptData.action === 'move'
+                    "
                     class="w-100"
                     placeholder="Select Appointment Type"
                     v-model="formData.appointment_type_id"
+                    @change="handleChangeAppointmentType"
                   >
                     <el-option
                       v-for="item in aptTypelist"
@@ -68,7 +80,6 @@
                   </el-select>
                 </InputWrapper>
               </div>
-              <el-divider />
               <div class="row">
                 <InputWrapper class="col-6">
                   <el-select
@@ -102,7 +113,6 @@
                   </el-select>
                 </InputWrapper>
               </div>
-              <el-divider />
               <div class="row">
                 <InputWrapper class="col-6">
                   <el-select
@@ -119,27 +129,36 @@
                     />
                   </el-select>
                 </InputWrapper>
-                <InputWrapper class="col-6">
+                <div class="col-6 d-flex px-6">
+                  <el-input
+                    style="width: 100px"
+                    type="number"
+                    v-model="formData.timeframe_count"
+                    min="0"
+                    prop="timeframe_count"
+                    placeholder=""
+                  />
                   <el-select
                     class="w-100"
                     placeholder="Select Time frame"
-                    v-model="formData.x_weeks"
+                    v-model="formData.timeframe_type"
                   >
-                    <el-option
-                      v-for="(item, index) in aptWeeksList"
-                      :value="index"
-                      :label="item"
-                      :key="index"
-                    />
+                    <el-option value="weeks" label="week(s)" />
+                    <el-option value="months" label="month(s)" />
+                    <el-option value="years" label="year(s)" />
                   </el-select>
-                </InputWrapper>
+                </div>
               </div>
-              <button
-                class="btn btn-primary mt-3 w-100"
-                @click.prevent="handleSearch"
-              >
-                SEARCH
-              </button>
+              <div class="row">
+                <div class="px-6">
+                  <button
+                    class="btn btn-primary mt-3 w-100"
+                    @click.prevent="handleSearch"
+                  >
+                    SEARCH
+                  </button>
+                </div>
+              </div>
             </el-form>
             <el-form
               :model="formData"
@@ -180,11 +199,17 @@
                 </span>
                 <span class="me-1">Time Frame:</span>
                 <span class="caption-content me-2">
-                  {{ aptWeeksList[formData.x_weeks] }}
+                  {{
+                    formData.timeframe_count == 0
+                      ? "This " + formData.timeframe_type.replace("s", "")
+                      : formData.timeframe_count == 1
+                      ? "Next " + formData.timeframe_type.replace("s", "")
+                      : formData.timeframe_count + " " + formData.timeframe_type
+                  }}
                 </span>
                 <span class="me-1">Appointment Type:</span>
                 <span class="caption-content me-2">
-                  {{ aptData.appointment_type_name }}
+                  {{ formData.appointment_type_name }}
                 </span>
               </div>
               <WeeklyTimeSlotsTable
@@ -314,7 +339,6 @@ import { defineComponent, computed, ref, onMounted, watch } from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
-import aptWeeksList from "@/core/data/apt-weeks";
 import WeeklyTimeSlotsTable from "@/components/appointments/partials/WeeklyTimeSlotsTable";
 import {
   AppointmentMutations,
@@ -346,10 +370,12 @@ export default defineComponent({
     const bookingData = computed(() => store.getters.bookingDatas);
     const formData = ref({
       appointment_type_id: null,
+      appointment_type_name: "",
       clinic_id: null,
       specialist_id: null,
       time_requirement: 0,
-      x_weeks: "0",
+      timeframe_count: 0,
+      timeframe_type: "weeks",
       date: null,
     });
     const aptInfoData = ref({
@@ -397,9 +423,17 @@ export default defineComponent({
       no_referral_reason: "",
     });
 
+    const handleChangeAppointmentType = () => {
+      formData.value.appointment_type_name = aptTypelist.value.filter(
+        (t) => t.id === formData.value.appointment_type_id
+      )[0].name;
+    };
+
     watch(aptData, () => {
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST).then(() => {
         formData.value.appointment_type_id = aptData.value.appointment_type?.id;
+        formData.value.appointment_type_name =
+          aptData.value.appointment_type?.name;
       });
       store.dispatch(Actions.CLINICS.LIST).then(() => {
         formData.value.clinic_id = aptData.value.clinic_id;
@@ -415,7 +449,11 @@ export default defineComponent({
 
     const handleSearch = () => {
       aptData.value.step = 1;
-      //store.commit(AppointmentMutations.SET_APT.OTHER_SELECT, aptData.value);
+      // store.commit(AppointmentMutations.SET_APT.OTHER_SELECT, aptData.value);
+    };
+
+    const handleBack = () => {
+      aptData.value.step = aptData.value.step - 1;
     };
 
     const handleConfirm = () => {
@@ -444,6 +482,9 @@ export default defineComponent({
       aptInfoData.value.specialist_id = bookingData.value.specialist_id;
       aptInfoData.value.clinic_id = bookingData.value.clinic_id;
       aptInfoData.value.clinic_name = bookingData.value.clinic_name;
+
+      aptInfoData.value.appointment_type_id =
+        formData.value.appointment_type_id;
 
       let submitData = {
         ...aptInfoData.value,
@@ -485,7 +526,6 @@ export default defineComponent({
       cliniclist,
       allSpecialist,
       aptTimeRequirelist,
-      aptWeeksList,
       formData,
       MoveAptModalRef,
       loading,
@@ -493,6 +533,8 @@ export default defineComponent({
       handleConfirm,
       bookingData,
       moment,
+      handleChangeAppointmentType,
+      handleBack,
     };
   },
 });

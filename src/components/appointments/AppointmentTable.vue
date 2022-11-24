@@ -1,6 +1,9 @@
 <template>
   <CardSection class="mt-2">
     <template v-if="calendarOptions">
+      <div id="appointment_table_right_buttons">
+        <AppointmentKey />
+      </div>
       <FullCalendar
         ref="appointmentCalendarRef"
         class="demo-app-calendar"
@@ -48,15 +51,15 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import resourceTimeGridPlugin from "@fullcalendar/resource-timegrid";
-import {
-  AppointmentActions,
-  AppointmentMutations,
-} from "@/store/enums/StoreAppointmentEnums";
+import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
 import AppointmentTableData from "./partials/AppointmentTableData.vue";
 import { Modal } from "bootstrap";
+import AppointmentKey from "@/components/appointments/partials/AppointmentKey";
 import MoveModal from "@/components/appointments/AppointmentMoveModal.vue";
+import $ from "jquery";
 export default defineComponent({
   components: {
+    AppointmentKey,
     FullCalendar,
     AppointmentTableData,
     MoveModal,
@@ -151,6 +154,8 @@ export default defineComponent({
         eventClick: handleShowAppointmentDrawer,
         select: handleCreateAppointment,
       };
+
+      //  .append(buttons);
     });
 
     watch(appointments, () => {
@@ -163,6 +168,10 @@ export default defineComponent({
             .addEvent(appointments.value[index]);
         }
       }
+
+      let buttons = $("#appointment_table_right_buttons");
+      let toolbar = $(".fc-toolbar-chunk").last();
+      toolbar.append(buttons);
     });
 
     watch(props.visibleDate, () => {

@@ -1,7 +1,7 @@
 <template>
   <div
     class="modal fade patient-alert"
-    :id="'modal_patient_alert_' + alertData.id"
+    :id="'modal_patient_alert_' + alert.id"
     tabindex="-1"
     aria-hidden="true"
     ref="viewAlertModalRef"
@@ -12,7 +12,7 @@
           <h2 class="fw-bolder">
             <span :class="'svg-icon svg-icon-2hx svg-icon-' + color">
               <inline-svg :src="icon" />
-              {{ alertData.title }}
+              {{ alert.title }}
             </span>
           </h2>
           <div
@@ -37,12 +37,12 @@
             data-kt-scroll-offset="300px"
           >
             <div>
-              {{ alertData.explanation }}
+              {{ alert.explanation }}
             </div>
             <p class="pt-10">
               <IconText iconSRC="media/icons/duotune/files/fil002.svg">
-                {{ alertData.created_by_name }} on
-                {{ new Date(alertData.created_at).toLocaleDateString("en-AU") }}
+                {{ alert.created_by_name }} on
+                {{ new Date(alert.created_at).toLocaleDateString("en-AU") }}
               </IconText>
             </p>
           </div>
@@ -64,26 +64,25 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { PatientActions } from "@/store/enums/StorePatientEnums";
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, PropType } from "vue";
 import icons from "@/core/data/icons";
 import IconText from "@/components/presets/GeneralElements/IconText.vue";
-import { useStore } from "vuex";
+import IPatientAlert from "@/store/interfaces/IPatientAlert";
+import store from "@/store/index";
 export default defineComponent({
   name: "patient-alert-view-modal",
   props: {
-    alert: { required: true, type: Object },
+    alert: { required: true, type: Object as PropType<IPatientAlert> },
   },
   components: {
     IconText,
   },
   setup(props) {
-    const store = useStore();
-    const loading = ref(false);
-    const alertData = ref("");
-    const icon = ref("");
-    const color = ref("");
+    const loading = ref<boolean>(false);
+    const icon = ref<string>("");
+    const color = ref<string>("");
 
     const dismissHandle = () => {
       store
@@ -100,7 +99,6 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      alertData.value = props.alert;
       if (props.alert.alert_level === "WARNING") {
         icon.value = icons.pencil;
         color.value = "warning";
@@ -115,7 +113,6 @@ export default defineComponent({
 
     return {
       loading,
-      alertData,
       icon,
       color,
       dismissHandle,

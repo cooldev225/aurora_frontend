@@ -2,34 +2,32 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-
-export interface IProfile {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  photo: string;
-}
+import {
+  displayServerError,
+  displaySuccessModal,
+  displaySuccessToast,
+} from "@/helpers/helpers";
+import IUserProfile from "../interfaces/IUserProfile";
 
 export interface ProfileInfo {
-  profileSelectedData: IProfile;
+  profile: IUserProfile;
 }
 
 @Module
 export default class ProfileModule extends VuexModule implements ProfileInfo {
-  profileSelectedData = {} as IProfile;
+  profile = {} as IUserProfile;
 
   /**
    * Get current user object
    * @returns profileSelectedData
    */
-  get getProfileSelected(): IProfile {
-    return this.profileSelectedData;
+  get userProfile(): IUserProfile {
+    return this.profile;
   }
 
   @Mutation
   [Mutations.SET_PROFILE](data) {
-    this.profileSelectedData = data;
+    this.profile = data;
   }
 
   @Action
@@ -38,11 +36,10 @@ export default class ProfileModule extends VuexModule implements ProfileInfo {
       ApiService.setHeader();
       ApiService.get("profile")
         .then(({ data }) => {
-          this.context.commit(Mutations.SET_PROFILE, data);
+          this.context.commit(Mutations.SET_PROFILE, data.data);
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "viewing user profile");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -54,12 +51,11 @@ export default class ProfileModule extends VuexModule implements ProfileInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("update-profile", item)
-        .then(({ data }) => {
-          return data.data;
+        .then(() => {
+          return displaySuccessToast("Profile Updated");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Updating user profile");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -71,12 +67,11 @@ export default class ProfileModule extends VuexModule implements ProfileInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("users/change-password", item)
-        .then(({ data }) => {
-          return data.data;
+        .then(() => {
+          return displaySuccessToast("Password Updated");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Updating user password");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -88,12 +83,11 @@ export default class ProfileModule extends VuexModule implements ProfileInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.post("profile/signature", data)
-        .then(({ data }) => {
-          return data.data;
+        .then(() => {
+          return displaySuccessToast("Signature Updated");
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Updating user signature");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

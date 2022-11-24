@@ -54,17 +54,17 @@
   </ModalWrapper>
 </template>
 
-<script>
-import { defineComponent, ref, computed, watch } from "vue";
-import { useStore } from "vuex";
+<script lang="ts">
+import { defineComponent, ref, PropType } from "vue";
+
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-
+import IAppointment from "@/store/interfaces/IAppointment";
 import { mask } from "vue-the-mask";
-import { validatePhone } from "@/helpers/helpers.js";
-
+import { validatePhone } from "@/helpers/helpers";
+import store from "@/store";
 export default defineComponent({
   name: "update-collecting-person-modal",
   directives: {
@@ -72,20 +72,18 @@ export default defineComponent({
   },
   components: {},
   props: {
-    selectedApt: { type: Object, required: true },
+    appointment: { type: Object as PropType<IAppointment>, required: true },
   },
   setup(props) {
-    console.log(props.selectedApt);
-    const store = useStore();
-    const formRef = ref(null);
+    const formRef = ref();
     const collectingPersonModalRef = ref(null);
-    const loading = ref(false);
+    const loading = ref<boolean>(false);
 
     const formData = ref({
-      collecting_person_name: props.selectedApt.collecting_person_name,
-      collecting_person_phone: props.selectedApt.collecting_person_phone,
+      collecting_person_name: props.appointment.collecting_person_name,
+      collecting_person_phone: props.appointment.collecting_person_phone,
       collecting_person_alternate_contact:
-        props.selectedApt.collecting_person_alternate_contact,
+        props.appointment.collecting_person_alternate_contact,
     });
 
     const rules = ref({
@@ -123,7 +121,7 @@ export default defineComponent({
           loading.value = true;
           store
             .dispatch(AppointmentActions.COLLECTING_PERSON.UPDATE, {
-              id: props.selectedApt.id,
+              id: props.appointment.id,
               ...formData.value,
             })
             .then(() => {
@@ -139,14 +137,13 @@ export default defineComponent({
               }).then(() => {
                 store.dispatch(
                   PatientActions.VIEW,
-                  props.selectedApt.patient_id
+                  props.appointment.patient_id
                 );
                 hideModal(collectingPersonModalRef.value);
               });
             })
             .catch(({ response }) => {
               loading.value = false;
-              console.log(response.data.error);
             });
           formRef.value.resetFields();
         } else {
