@@ -104,4 +104,20 @@ export default class CodingModule extends VuexModule implements AptInfo {
         return displayServerError(response, "Storing a pre admissions form");
       });
   }
+
+  @Action
+  [CodingActions.GENERATE_CODING_REPORT](payload) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post("generate-coding-report", payload)
+        .then(({ data }) => {
+          return data;
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Generating a coding report");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }

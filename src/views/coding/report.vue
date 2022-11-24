@@ -69,6 +69,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { CodingActions, CodingMutations } from "@/store/enums/StoreCodingEnums";
 import { codingReportTypes } from "@/core/data/coding-report-types";
 import moment from "moment";
+import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
   name: "coding-reports",
@@ -141,14 +142,29 @@ export default defineComponent({
             .dispatch(CodingActions.CHECK_APPOINTMENTS_COMPLETE, {
               from_date: formData.value.date[0],
               to_date: formData.value.date[1],
-              type: formData.value.type,
             })
             .then((data) => {
               loading.value = false;
               if (data) {
-                //
+                store
+                  .dispatch(CodingActions.GENERATE_CODING_REPORT, {
+                    from_date: formData.value.date[0],
+                    to_date: formData.value.date[1],
+                    type: formData.value.type,
+                  })
+                  .then((data) => {
+                    //download file
+                  });
               } else {
-                alert("uncompleted");
+                Swal.fire({
+                  text: "Cannot generate report some appointment are missing information",
+                  icon: "warning",
+                  buttonsStyling: false,
+                  confirmButtonText: "Ok, got it!",
+                  customClass: {
+                    confirmButton: "btn btn-primary",
+                  },
+                });
               }
             });
           formRef.value.resetFields();
