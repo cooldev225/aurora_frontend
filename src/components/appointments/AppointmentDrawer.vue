@@ -239,11 +239,11 @@
       </div>
     </div>
   </div>
-  <CheckInModal></CheckInModal>
+  <CheckInModal :appointment="aptData" :patient="patientData" />
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, watchEffect } from "vue";
+import { defineComponent, reactive, watch, computed, watchEffect } from "vue";
 import {
   AppointmentActions,
   AppointmentMutations,
@@ -272,6 +272,7 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const aptData = computed(() => store.getters.getAptSelected);
+    const patientData = computed(() => store.getters.selectedPatient);
     const searchVal = computed(() => store.getters.getSearchVariable);
     const userRole = computed(() => store.getters.userRole);
 
@@ -288,6 +289,10 @@ export default defineComponent({
       procedure_approval_status: "",
       anesthetist_name: "",
       estimated_price: 0,
+    });
+
+    watch(aptData, () => {
+      store.dispatch(PatientActions.VIEW, aptData.value.patient_id);
     });
 
     const handleView = () => {
@@ -433,6 +438,7 @@ export default defineComponent({
       handleCopy,
       userRole,
       convertToCurrency,
+      patientData,
     };
   },
 });

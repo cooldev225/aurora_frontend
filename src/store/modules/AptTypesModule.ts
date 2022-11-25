@@ -6,27 +6,23 @@ import {
   AppointmentActions,
   AppointmentMutations,
 } from "../enums/StoreAppointmentEnums";
-
-export interface IAptTypes {
-  id: number;
-  name: string;
-}
+import IAppointmentType from "../interfaces/IAppointmentType";
 
 export interface AptTypesInfo {
-  aptTypesData: Array<IAptTypes>;
-  aptTypesSelectData: IAptTypes;
+  aptTypesData: Array<IAppointmentType>;
+  aptTypesSelectData: IAppointmentType;
 }
 
 @Module
 export default class AptTypesModule extends VuexModule implements AptTypesInfo {
-  aptTypesData = [] as Array<IAptTypes>;
-  aptTypesSelectData = {} as IAptTypes;
+  aptTypesData = [] as Array<IAppointmentType>;
+  aptTypesSelectData = {} as IAppointmentType;
 
   /**
    * Get current user object
    * @returns AdminList
    */
-  get getAptTypesList(): Array<IAptTypes> {
+  get getAptTypesList(): Array<IAppointmentType> {
     return this.aptTypesData;
   }
 
@@ -34,7 +30,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
    * Get current user object
    * @returns SelectedaptTypesData
    */
-  get getAptTypesSelected(): IAptTypes {
+  get getAptTypesSelected(): IAppointmentType {
     return this.aptTypesSelectData;
   }
 

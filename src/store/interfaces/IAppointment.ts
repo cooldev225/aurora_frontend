@@ -1,4 +1,5 @@
 import IAppointmentReferral from "./IAppointmentReferral";
+import IAppointmentType from "./IAppointmentType";
 import IClinic from "./IClinic";
 export default interface IAppointment {
   id: number;
@@ -7,6 +8,7 @@ export default interface IAppointment {
   clinic_id: number;
   appointment_type_id: number;
   specialist_id: number;
+  specialist_name: string;
   room_id: number;
   anesthetist_id: number;
   is_wait_listed: boolean;
@@ -17,10 +19,12 @@ export default interface IAppointment {
   arrival_time: string;
   start_time: string;
   end_time: string;
+  formatted_appointment_time: string;
   note: string;
   collecting_person_name: string;
   collecting_person_phone: string;
   collecting_person_alternate_contact: string;
   clinic: IClinic;
   referral: IAppointmentReferral;
+  appointment_type: IAppointmentType;
 }

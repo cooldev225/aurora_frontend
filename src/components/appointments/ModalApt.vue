@@ -1198,6 +1198,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { StepperComponent } from "@/assets/ts/components";
+import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
 import { countryList, timeZoneList } from "@/core/data/country";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
@@ -1210,7 +1211,7 @@ import AptOverview from "@/components/appointments/partials/AppointmentOverview"
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers";
 import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
-import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
+
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue";

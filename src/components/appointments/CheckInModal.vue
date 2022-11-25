@@ -1,390 +1,285 @@
 <template>
+  <!--begin::Modal - Create App-->
   <div
     class="modal fade"
     id="modal_check_in_apt"
+    ref="createAptModalRef"
     tabindex="-1"
     aria-hidden="true"
-    ref="checkInAptModalRef"
+    data-bs-backdrop="static"
   >
     <!--begin::Modal dialog-->
-    <div class="modal-dialog modal-dialog-centered mw-650px">
+    <div class="modal-dialog modal-dialog-centered mw-1000px">
       <!--begin::Modal content-->
       <div class="modal-content">
         <!--begin::Modal header-->
-        <div class="modal-header" id="kt_modal_add_customer_header">
+        <div class="modal-header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">
-            Check In {{ aptData.first_name }} {{ aptData.last_name }}
-          </h2>
-          <!--end::Modal title-->
-          <div>
-            <div class="btn btn-lg btn-light-danger me-3 mb-1">
-              Print Hospital Cerificate
-            </div>
-            <div
-              id="kt_modal_add_customer_close"
-              data-bs-dismiss="modal"
-              class="btn btn-icon btn-sm btn-active-icon-primary"
-            >
-              <span class="svg-icon svg-icon-1">
-                <InlineSVG icon="cross" />
-              </span>
-            </div>
+          <div class="f-flex flex-column">
+            <h2>Checking in {{ patient.full_name }}</h2>
+            <h3>
+              {{ appointment.appointment_type?.name }},
+              {{ appointment.specialist_name }} @
+              {{ appointment.formatted_appointment_time }}
+            </h3>
           </div>
+          <!--end::Modal title-->
+
           <!--begin::Close-->
+          <button
+            type="button"
+            class="btn btn-lg btn-light-danger me-3 mb-1"
+            @click="handleCancel"
+            data-bs-dismiss="modal"
+          >
+            <span class="svg-icon svg-icon-3 my-auto">
+              <InlineSVG icon="cross" />
+            </span>
+            Cancel
+          </button>
           <!--end::Close-->
         </div>
         <!--end::Modal header-->
+
         <!--begin::Modal body-->
-        <div class="modal-body py-10 px-lg-17">
-          <!--begin::Scroll-->
+        <div class="modal-body py-lg-10 px-lg-10">
+          <!--begin::Stepper-->
           <div
-            class="scroll-y me-n7 pe-7"
-            id="kt_modal_add_customer_scroll"
-            data-kt-scroll="true"
-            data-kt-scroll-activate="{default: false, lg: true}"
-            data-kt-scroll-max-height="auto"
-            data-kt-scroll-dependencies="#kt_modal_add_customer_header"
-            data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
-            data-kt-scroll-offset="300px"
+            class="stepper stepper-pills stepper-column d-flex flex-column flex-xl-row flex-row-fluid"
+            id="modal_check_in_apt_stepper"
+            ref="checkInAptStepperRef"
           >
-            <el-form>
-              <!--begin::Input group-->
-              <div class="card-info">
-                <div class="fs-3 fw-bold text-muted mb-6">
-                  Doctor Address Book Information
-                </div>
-                <div class="row">
-                  <div class="col-sm-6">
-                    <!--begin::Input group-->
-                    <div class="fv-row mb-7">
-                      <!--begin::Label-->
-                      <label class="fs-6 fw-bold mb-2">
-                        Doctor Address Book
-                      </label>
-                      <!--end::Label-->
-                      <!--begin::Input-->
-                      <el-form-item prop="doctor_address_book">
-                        <el-autocomplete
-                          class="w-100"
-                          v-model="aptData.doctor_address_book_name"
-                          value-key="full_name"
-                          :fetch-suggestions="searchDoctorAddressBook"
-                          placeholder="Please input"
-                          :trigger-on-focus="false"
-                          @select="handleSelect"
-                        >
-                          <template #default="{ item }">
-                            <div class="name">
-                              {{ item.title }}
-                              {{ item.first_name }} {{ item.last_name }}
-                            </div>
-                            <div class="address">{{ item.address }}</div>
-                          </template>
-                        </el-autocomplete>
-                      </el-form-item>
-                      <!--end::Input-->
-                    </div>
-                    <!--end::Input group-->
-                  </div>
+            <!--begin::Aside-->
+            <div
+              class="d-flex justify-content-center justify-content-xl-start flex-row w-100 w-xl-350px"
+            >
+              <!--begin::Nav-->
+              <div class="">
+                <StepperNavItem
+                  @click="gotoPage(1)"
+                  dataStepperElement="nav"
+                  stepperNumber="1"
+                  stepperTitle="Patient Details"
+                  stepperDescription=""
+                />
 
-                  <div class="col-sm-6">
-                    <!--begin::Input group-->
-                    <div class="fv-row mb-7">
-                      <!--begin::Label-->
-                      <label class="fs-6 fw-bold mb-2">Doctor Address</label>
-                      <!--end::Label-->
-                      <!--begin::Input-->
-                      <el-form-item prop="doctor_address_file">
-                        <el-space wrap>
-                          <el-upload
-                            action="#"
-                            ref="upload"
-                            class="mr-20"
-                            :limit="1"
-                            :auto-upload="false"
-                          >
-                            <el-button type="primary" class="btn btn-primary"
-                              >Choose File</el-button
-                            >
-                          </el-upload>
-                          <button
-                            v-show="
-                              aptData.referral_file !== null &&
-                              aptData.referral_file !== ''
-                            "
-                            class="btn btn-success"
-                            @click="handleClickReferralFile"
-                          >
-                            View
-                          </button>
-                        </el-space>
-                      </el-form-item>
-                      <!--end::Input-->
-                    </div>
-                    <!--end::Input group-->
-                  </div>
+                <StepperNavItem
+                  @click="gotoPage(2)"
+                  dataStepperElement="nav"
+                  stepperNumber="2"
+                  stepperTitle="Billing Info"
+                  stepperDescription=""
+                />
 
-                  <div class="col-sm-6">
-                    <!--begin::Input group-->
-                    <div class="fv-row mb-7">
-                      <!--begin::Label-->
-                      <label class="fs-6 fw-bold mb-2">Referral Date</label>
-                      <!--end::Label-->
-                      <!--begin::Input-->
-                      <el-form-item prop="referral_date">
-                        <el-date-picker
-                          class="w-100"
-                          v-model="aptData.referral_date"
-                          format="YYYY-MM-DD"
-                          placeholder="Enter Referral Date"
-                        />
-                      </el-form-item>
-                      <!--end::Input-->
-                    </div>
-                    <!--end::Input group-->
-                  </div>
+                <StepperNavItem
+                  @click="gotoPage(3)"
+                  dataStepperElement="nav"
+                  stepperNumber="3"
+                  stepperTitle="Appointment Referral"
+                  stepperDescription=""
+                />
 
-                  <div class="col-sm-6">
-                    <!--begin::Input group-->
-                    <div class="fv-row mb-7">
-                      <!--begin::Label-->
-                      <label class="fs-6 fw-bold mb-2">Referral Duration</label>
-                      <!--end::Label-->
-                      <!--begin::Input-->
-                      <el-form-item prop="c">
-                        <el-input
-                          type="number"
-                          class="w-50 text-center col mr-4"
-                          :min="0"
-                          :max="24"
-                          v-model="aptData.referral_duration"
-                        />
-                        Months
-                      </el-form-item>
-                      <!--end::Input-->
-                    </div>
-                    <!--end::Input group-->
-                  </div>
+                <StepperNavItem
+                  @click="gotoPage(4)"
+                  dataStepperElement="nav"
+                  stepperNumber="4"
+                  stepperTitle="Collecting Person"
+                  stepperDescription=""
+                />
+
+                <StepperNavItem
+                  @click="gotoPage(5)"
+                  dataStepperElement="nav"
+                  stepperNumber="5"
+                  stepperTitle="Print Labels/Documents"
+                  stepperDescription=""
+                />
+              </div>
+
+              <!--end::Nav-->
+            </div>
+            <!--begin::Aside-->
+
+            <div class="flex-row-fluid py-lg-5 px-lg-15">
+              <div class="current" data-kt-stepper-element="content">
+                <PatientDetailsForm
+                  :patient="patient"
+                  :on-submit-extras="onPatientDetailsSubmit"
+                />
+              </div>
+
+              <div data-kt-stepper-element="content">PAGE 2</div>
+
+              <div data-kt-stepper-element="content">PAGE 3</div>
+
+              <div data-kt-stepper-element="content" class="w-100">
+                <AppointmentCollectingPersonForm
+                  class="w-100"
+                  :on-submit-extras="onCollectingPersonSubmit"
+                  :appointment="appointment"
+                  button-text="Update and Next"
+                />
+              </div>
+
+              <div data-kt-stepper-element="content">
+                <PrintLabelButton
+                  :appointment="appointment"
+                  :patient="patient"
+                />
+
+                <PrintHospitalCertificateButton
+                  :appointment="appointment"
+                  :patient="patient"
+                />
+                <div class="modal-footer flex-center">
+                  <!--begin::Button-->
+                  <button
+                    :data-kt-indicator="loading ? 'on' : null"
+                    class="btn btn-lg btn-primary"
+                    @click="handleCheckIn(true)"
+                  >
+                    <span v-if="!loading" class="indicator-label">
+                      Make Payment and Check In
+                    </span>
+                    <span v-if="loading" class="indicator-progress">
+                      Please wait...
+                      <span
+                        class="spinner-border spinner-border-sm align-middle ms-2"
+                      ></span>
+                    </span>
+                  </button>
+
+                  <button
+                    :data-kt-indicator="loading ? 'on' : null"
+                    class="btn btn-lg btn-primary"
+                    @click="handleCheckIn(false)"
+                  >
+                    <span v-if="!loading" class="indicator-label">
+                      Check In Only
+                    </span>
+                    <span v-if="loading" class="indicator-progress">
+                      Please wait...
+                      <span
+                        class="spinner-border spinner-border-sm align-middle ms-2"
+                      ></span>
+                    </span>
+                  </button>
+                  <!--end::Button-->
                 </div>
               </div>
-              <el-divider />
-              <div class="card-info">
-                <div class="fs-3 fw-bold text-muted mb-6">Colleting Person</div>
-                <div class="row">
-                  <div class="col-sm-6">
-                    <!--begin::Input group-->
-                    <div class="fv-row mb-7">
-                      <!--begin::Label-->
-                      <label class="fs-6 fw-bold mb-2">Name</label>
-                      <!--end::Label-->
-
-                      <!--begin::Input-->
-                      <el-form-item prop="collecting_person_name">
-                        <el-input
-                          type="text"
-                          v-model="aptData.collecting_person_name"
-                          placeholder="Enter Name"
-                        />
-                      </el-form-item>
-                      <!--end::Input-->
-                    </div>
-                    <!--end::Input group-->
-                  </div>
-
-                  <div class="col-sm-6">
-                    <!--begin::Input group-->
-                    <div class="fv-row mb-7">
-                      <!--begin::Label-->
-                      <label class="fs-6 fw-bold mb-2">Phone Number</label>
-                      <!--end::Label-->
-
-                      <!--begin::Input-->
-                      <el-form-item prop="collecting_person_phone">
-                        <el-input
-                          type="text"
-                          v-model="aptData.collecting_person_phone"
-                          placeholder="Enter Phone Number"
-                        />
-                      </el-form-item>
-                      <!--end::Input-->
-                    </div>
-                    <!--end::Input group-->
-                  </div>
-
-                  <div class="col-sm-12">
-                    <!--begin::Input group-->
-                    <div class="fv-row mb-7">
-                      <!--begin::Label-->
-                      <label class="fs-6 fw-bold mb-2">Contact</label>
-                      <!--end::Label-->
-
-                      <!--begin::Input-->
-                      <el-form-item prop="collecting_person_alternate_contact">
-                        <el-input
-                          type="text"
-                          v-mask="'0#-####-####'"
-                          v-model="aptData.collecting_person_alternate_contact"
-                          placeholder="Enter Phone Number"
-                        />
-                      </el-form-item>
-                      <!--end::Input-->
-                    </div>
-                    <!--end::Input group-->
-                  </div>
-                </div>
-              </div>
-              <!--end::Input group-->
-            </el-form>
+            </div>
           </div>
-          <!--end::Scroll-->
         </div>
-        <!--end::Modal body-->
-
-        <!--begin::Modal footer-->
-        <div class="modal-footer flex-center">
-          <!--begin::Button-->
-          <button
-            :data-kt-indicator="loadingPay ? 'on' : null"
-            class="btn btn-lg btn-primary"
-            @click="handleCheckIn(true)"
-          >
-            <span v-if="!loadingPay" class="indicator-label">
-              Make Payment and Check In
-            </span>
-            <span v-if="loadingPay" class="indicator-progress">
-              Please wait...
-              <span
-                class="spinner-border spinner-border-sm align-middle ms-2"
-              ></span>
-            </span>
-          </button>
-
-          <button
-            :data-kt-indicator="loading ? 'on' : null"
-            class="btn btn-lg btn-primary"
-            @click="handleCheckIn(false)"
-          >
-            <span v-if="!loading" class="indicator-label"> Check In Only </span>
-            <span v-if="loading" class="indicator-progress">
-              Please wait...
-              <span
-                class="spinner-border spinner-border-sm align-middle ms-2"
-              ></span>
-            </span>
-          </button>
-          <!--end::Button-->
-        </div>
-        <!--end::Modal footer-->
       </div>
     </div>
   </div>
+  <!--end::Modal - Create App-->
 </template>
 
-<script>
-import { defineComponent, computed, ref, onMounted } from "vue";
-import { Actions } from "@/store/enums/StoreEnums";
+<script lang="ts">
+import { defineComponent, watch, ref, PropType } from "vue";
+import { StepperComponent } from "@/assets/ts/components";
+import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
+import AppointmentCollectingPersonForm from "./partials/AppointmentCollectingPersonForm.vue";
+import IAppointment from "@/store/interfaces/IAppointment";
+import store from "@/store";
+import PrintLabelButton from "../patients/patientAppointmentActions/PrintLabelButton.vue";
+import IPatient from "@/store/interfaces/IPatient";
+import PrintHospitalCertificateButton from "../patients/patientAppointmentActions/PrintHospitalCertificateButton.vue";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
-import { useStore } from "vuex";
+import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
-import { hideModal } from "@/core/helpers/dom";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
-
-import { mask } from "vue-the-mask";
+import PatientDetailsForm from "../patients/PatientDetailsForm.vue";
 
 export default defineComponent({
-  name: "create-apt-modal",
-  directives: {
-    mask,
+  components: {
+    StepperNavItem,
+    AppointmentCollectingPersonForm,
+    PrintLabelButton,
+    PrintHospitalCertificateButton,
+    PatientDetailsForm,
   },
-  components: {},
-  setup() {
-    const store = useStore();
-    const aptData = computed(() => store.getters.getAptSelected);
-    const doctorAddressBooks = computed(
-      () => store.getters.getDoctorAddressBookList
-    );
-    const checkInAptModalRef = ref(null);
+  name: "Apt-Modal",
+  props: {
+    appointment: { required: true, type: Object as PropType<IAppointment> },
+    patient: { required: true, type: Object as PropType<IPatient> },
+  },
+  setup(props) {
+    const checkInAptStepperRef = ref<HTMLElement>();
+    const _stepperObj = ref<StepperComponent | null>(null);
     const router = useRouter();
-    const loadingPay = ref(false);
-    const loading = ref(false);
+    const currentPage = ref<number>(1);
+    const loading = ref<boolean>(false);
 
-    const handleSelect = (item) => {
-      aptData.value.doctor_address_book_id = item.id;
+    const gotoPage = (page) => {
+      console.log(props.appointment);
+      currentPage.value = page;
+      if (_stepperObj.value) {
+        _stepperObj.value.goto(page);
+      }
     };
 
-    let timeout;
-    const searchDoctorAddressBook = (term, cb) => {
-      const results = term
-        ? doctorAddressBooks.value.filter(createFilter(term))
-        : doctorAddressBooks.value;
+    watch(checkInAptStepperRef, () => {
+      if (checkInAptStepperRef.value != undefined) {
+        _stepperObj.value = StepperComponent.createInstance(
+          checkInAptStepperRef.value
+        );
+      }
+    });
 
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        cb(results);
-      }, 1000);
+    const onPatientDetailsSubmit = () => {
+      gotoPage(2);
     };
 
-    const createFilter = (term) => {
-      const keyword = term.toString();
-      return (doctorAddressBook) => {
-        const full_name =
-          doctorAddressBook.title +
-          " " +
-          doctorAddressBook.first_name +
-          " " +
-          doctorAddressBook.last_name;
-        const full_name_pos = full_name
-          .toLowerCase()
-          .indexOf(keyword.toLowerCase());
-        const address_pos = doctorAddressBook.address
-          .toLowerCase()
-          .indexOf(keyword.toLowerCase());
-        return full_name_pos !== -1 || address_pos !== -1;
-      };
+    const onPatientBillingSubmit = () => {
+      gotoPage(3);
     };
 
-    const handleClickReferralFile = () => {
-      window.open(aptData.value.referral_file, "_blank");
+    const onPatientReferralSubmit = () => {
+      gotoPage(4);
     };
 
-    const handleCheckIn = async (is_move) => {
-      if (is_move) loadingPay.value = true;
-      else loading.value = true;
-      await store
-        .dispatch(AppointmentActions.APT.CHECK_IN, aptData.value)
+    const onCollectingPersonSubmit = () => {
+      gotoPage(5);
+    };
+
+    const handleCancel = () => {
+      console.log("close modal");
+    };
+
+    const handleCheckIn = (is_pay) => {
+      loading.value = true;
+      store
+        .dispatch(AppointmentActions.APT.CHECK_IN)
         .then(() => {
-          store.dispatch(AppointmentActions.LIST).then(() => {
-            if (is_move) loadingPay.value = false;
-            else loading.value = false;
-            hideModal(checkInAptModalRef.value);
-            if (is_move === true) {
-              router.push({ name: "make-payment-pay" });
-              store.dispatch(Actions.MAKE_PAYMENT.VIEW, aptData.value.id);
-              DrawerComponent?.getInstance("appointment-drawer")?.hide();
-            } else {
-              DrawerComponent?.getInstance("appointment-drawer")?.hide();
-            }
-          });
+          if (is_pay) {
+            store
+              .dispatch(Actions.MAKE_PAYMENT.VIEW, props.appointment.id)
+              .then(() => {
+                router.push({ name: "make-payment-pay" });
+              });
+          } else {
+            store.dispatch(AppointmentActions.LIST);
+          }
         })
-        .catch(({ response }) => {
-          console.log(response);
+        .finally(() => {
+          loading.value = false;
+          DrawerComponent?.getInstance("appointment-drawer")?.hide();
         });
     };
 
-    onMounted(() => {
-      store.dispatch(Actions.DOCTOR_ADDRESS_BOOK.LIST);
-    });
-
     return {
-      aptData,
-      handleClickReferralFile,
       handleCheckIn,
-      searchDoctorAddressBook,
-      handleSelect,
-      checkInAptModalRef,
+
+      onPatientDetailsSubmit,
+      onPatientBillingSubmit,
+      onPatientReferralSubmit,
+      onCollectingPersonSubmit,
+      gotoPage,
+      checkInAptStepperRef,
       loading,
-      loadingPay,
+      handleCancel,
     };
   },
 });
