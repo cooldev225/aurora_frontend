@@ -13,54 +13,47 @@
         label="No referral required"
       />
 
-      <template v-if="!formData.is_no_referral">
-        <InputWrapper
-          required
-          label="Referring Doctor"
-          prop="doctor_address_book_id"
+      <InputWrapper label="Referring Doctor" prop="doctor_address_book_id">
+        <el-select
+          class="w-100"
+          v-model="formData.doctor_address_book_id"
+          placeholder="Select Referring Doctor"
         >
-          <el-select
-            class="w-100"
-            v-model="formData.doctor_address_book_id"
-            placeholder="Select Referring Doctor"
-          >
-            <el-option
-              v-for="item in doctorAddressBookList"
-              :key="item.id"
-              :value="item.id"
-              :label="item.full_name"
-            />
-          </el-select>
-        </InputWrapper>
+          <el-option
+            v-for="item in doctorAddressBookList"
+            :key="item.id"
+            :value="item.id"
+            :label="item.full_name"
+          />
+        </el-select>
+      </InputWrapper>
 
-        <InputWrapper required label="Referral Date" prop="referral_date">
-          <el-date-picker
-            editable
-            class="w-100"
-            format="DD-MM-YYYY"
-            v-model="formData.referral_date"
+      <InputWrapper label="Referral Date" prop="referral_date">
+        <el-date-picker
+          editable
+          class="w-100"
+          format="DD-MM-YYYY"
+          v-model="formData.referral_date"
+        />
+      </InputWrapper>
+
+      <div class="d-flex align-items-center ms-n6">
+        <InputWrapper
+          label="Referral Duration"
+          prop="referral_duration"
+          class="flex-grow-1 fill-out"
+        >
+          <el-input
+            v-model="formData.referral_duration"
+            type="number"
+            min="0"
+            max="24"
+            placeholder="Enter Referral Duration"
           />
         </InputWrapper>
 
-        <div class="d-flex align-items-center ms-n6">
-          <InputWrapper
-            required
-            label="Referral Duration"
-            prop="referral_duration"
-            class="flex-grow-1 fill-out"
-          >
-            <el-input
-              v-model="formData.referral_duration"
-              type="number"
-              min="0"
-              max="24"
-              placeholder="Enter Referral Duration"
-            />
-          </InputWrapper>
-
-          <p class="flex-grow-0 mb-0 fs-6">Months</p>
-        </div>
-      </template>
+        <p class="flex-grow-0 mb-0 fs-6">Months</p>
+      </div>
 
       <div class="modal-footer flex-end">
         <button
@@ -92,10 +85,8 @@ import {
   computed,
   watch,
 } from "vue";
-import { validatePhone } from "@/helpers/helpers";
 import store from "@/store";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
-import { mask } from "vue-the-mask";
 import { Actions } from "@/store/enums/StoreEnums";
 import IAppointmentReferral from "@/store/interfaces/IAppointmentReferral";
 
@@ -104,9 +95,6 @@ export default defineComponent({
     onSubmitExtras: { required: false, type: Function },
     appointment: { required: true, type: Object as PropType<IAppointment> },
     buttonText: { required: false, type: String, default: "Update" },
-  },
-  directives: {
-    mask,
   },
   setup(props) {
     const formRef = ref<HTMLFormElement>();
@@ -119,25 +107,10 @@ export default defineComponent({
     );
 
     const rules = ref({
-      collecting_person_name: [
+      is_no_referral: [
         {
           required: true,
-          message: "Name can not be blank",
-          trigger: "change",
-        },
-      ],
-      collecting_person_phone: [
-        {
-          required: true,
-          message: "Phone can not be blank",
-          trigger: "change",
-        },
-        { validator: validatePhone, trigger: "blur" },
-      ],
-      collecting_person_alternate_contact: [
-        {
-          required: true,
-          message: "Alternate contact can not be blank",
+          message: "Must select if referral is required",
           trigger: "change",
         },
       ],

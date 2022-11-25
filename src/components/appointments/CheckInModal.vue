@@ -29,7 +29,6 @@
           <button
             type="button"
             class="btn btn-lg btn-light-danger me-3 mb-1"
-            @click="handleCancel"
             data-bs-dismiss="modal"
           >
             <span class="svg-icon svg-icon-3 my-auto">
@@ -100,28 +99,29 @@
             </div>
             <!--begin::Aside-->
 
-            <div class="flex-row-fluid py-lg-5 px-lg-10">
+            <div class="w-100 py-lg-5 px-lg-10">
               <div class="current" data-kt-stepper-element="content">
                 <PatientDetailsForm
                   :patient="patient"
                   :on-submit-extras="onPatientDetailsSubmit"
+                  button-text="Save and Next"
                 />
               </div>
 
-              <div data-kt-stepper-element="content">
+              <div data-kt-stepper-element="content" class="w-100">
                 <PatientBillingForm
                   :patient="patient"
                   :appointment="appointment"
                   :on-submit-extras="onPatientBillingSubmit"
-                  button-text="Update and Next"
+                  button-text="Save and Next"
                 />
               </div>
 
-              <div data-kt-stepper-element="content">
+              <div data-kt-stepper-element="content" class="w-100">
                 <AppointmentReferralForm
                   :appointment="appointment"
                   :on-submit-extras="onPatientReferralSubmit"
-                  button-text="Update and Next"
+                  button-text="Save and Next"
                 />
               </div>
 
@@ -130,54 +130,65 @@
                   class="w-100"
                   :on-submit-extras="onCollectingPersonSubmit"
                   :appointment="appointment"
-                  button-text="Update and Next"
+                  button-text="Save and Next"
                 />
               </div>
 
-              <div data-kt-stepper-element="content">
-                <PrintLabelButton
-                  :appointment="appointment"
-                  :patient="patient"
-                />
+              <div data-kt-stepper-element="content" class="w-100 min-h-100">
+                <div
+                  class="w-100 min-h-100 d-flex flex-column justify-content-between gap-4"
+                >
+                  <div class="d-flex flex-column gap-4">
+                    <HeadingText text="Appointment Actions" />
 
-                <PrintHospitalCertificateButton
-                  :appointment="appointment"
-                  :patient="patient"
-                />
-                <div class="modal-footer flex-center">
-                  <!--begin::Button-->
-                  <button
-                    :data-kt-indicator="loading ? 'on' : null"
-                    class="btn btn-lg btn-primary"
-                    @click="handleCheckIn(true)"
-                  >
-                    <span v-if="!loading" class="indicator-label">
-                      Make Payment and Check In
-                    </span>
-                    <span v-if="loading" class="indicator-progress">
-                      Please wait...
-                      <span
-                        class="spinner-border spinner-border-sm align-middle ms-2"
-                      ></span>
-                    </span>
-                  </button>
+                    <PrintLabelButton
+                      :appointment="appointment"
+                      :patient="patient"
+                      class="w-100"
+                    />
 
-                  <button
-                    :data-kt-indicator="loading ? 'on' : null"
-                    class="btn btn-lg btn-primary"
-                    @click="handleCheckIn(false)"
-                  >
-                    <span v-if="!loading" class="indicator-label">
-                      Check In Only
-                    </span>
-                    <span v-if="loading" class="indicator-progress">
-                      Please wait...
-                      <span
-                        class="spinner-border spinner-border-sm align-middle ms-2"
-                      ></span>
-                    </span>
-                  </button>
-                  <!--end::Button-->
+                    <PrintHospitalCertificateButton
+                      :appointment="appointment"
+                      :patient="patient"
+                      class="w-100"
+                    />
+                  </div>
+
+                  <div class="d-flex justify-content-end gap-4">
+                    <!--begin::Button-->
+                    <button
+                      :data-kt-indicator="loading ? 'on' : null"
+                      class="btn btn-lg btn-primary"
+                      @click="handleCheckIn(true)"
+                    >
+                      <span v-if="!loading" class="indicator-label">
+                        Make Payment and Check In
+                      </span>
+                      <span v-if="loading" class="indicator-progress">
+                        Please wait...
+                        <span
+                          class="spinner-border spinner-border-sm align-middle ms-2"
+                        ></span>
+                      </span>
+                    </button>
+
+                    <button
+                      :data-kt-indicator="loading ? 'on' : null"
+                      class="btn btn-lg btn-primary"
+                      @click="handleCheckIn(false)"
+                    >
+                      <span v-if="!loading" class="indicator-label">
+                        Check In Only
+                      </span>
+                      <span v-if="loading" class="indicator-progress">
+                        Please wait...
+                        <span
+                          class="spinner-border spinner-border-sm align-middle ms-2"
+                        ></span>
+                      </span>
+                    </button>
+                    <!--end::Button-->
+                  </div>
                 </div>
               </div>
             </div>
@@ -206,6 +217,7 @@ import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import PatientDetailsForm from "../patients/PatientDetailsForm.vue";
 import PatientBillingForm from "../patients/billing/PatientBillingForm.vue";
 import AppointmentReferralForm from "./partials/AppointmentReferralForm.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   components: {
@@ -224,6 +236,7 @@ export default defineComponent({
   },
   setup(props) {
     const checkInAptStepperRef = ref<HTMLElement>();
+    const createAptModalRef = ref<HTMLElement>();
     const _stepperObj = ref<StepperComponent | null>(null);
     const router = useRouter();
     const currentPage = ref<number>(1);
@@ -261,13 +274,13 @@ export default defineComponent({
     };
 
     const handleCancel = () => {
-      console.log("close modal");
+      Modal.getInstance(createAptModalRef.value).hide();
     };
 
     const handleCheckIn = (is_pay) => {
       loading.value = true;
       store
-        .dispatch(AppointmentActions.APT.CHECK_IN)
+        .dispatch(AppointmentActions.APT.CHECK_IN, props.appointment.id)
         .then(() => {
           if (is_pay) {
             store
@@ -282,18 +295,19 @@ export default defineComponent({
         .finally(() => {
           loading.value = false;
           DrawerComponent?.getInstance("appointment-drawer")?.hide();
+          handleCancel();
         });
     };
 
     return {
       handleCheckIn,
-
       onPatientDetailsSubmit,
       onPatientBillingSubmit,
       onPatientReferralSubmit,
       onCollectingPersonSubmit,
       gotoPage,
       checkInAptStepperRef,
+      createAptModalRef,
       loading,
       handleCancel,
     };

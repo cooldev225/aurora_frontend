@@ -49,7 +49,7 @@
 </template>
 <script lang="ts">
 import IAppointment from "@/store/interfaces/IAppointment";
-import { PropType, ref, defineComponent } from "vue";
+import { PropType, ref, defineComponent, watch } from "vue";
 import { validatePhone } from "@/helpers/helpers";
 import store from "@/store";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
@@ -119,6 +119,11 @@ export default defineComponent({
         });
       }
     };
+
+    watch(props, () => {
+      formData.value = props.appointment;
+    });
+
     return {
       formData,
       rules,

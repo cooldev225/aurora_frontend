@@ -227,12 +227,12 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   }
 
   @Action
-  [AppointmentActions.APT.CHECK_IN](data) {
+  [AppointmentActions.APT.CHECK_IN](appointmentId) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("appointments/check-in", data.id, data)
+      ApiService.post(`appointments/check-in/${appointmentId}`, {})
         .then(({ data }) => {
-          return data.data;
+          return displaySuccessToast("Patient checked in!");
         })
         .catch(({ response }) => {
           return displayServerError(response, "Checking in an appointment");
@@ -246,9 +246,9 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   [AppointmentActions.APT.CHECK_OUT](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("appointments/check-out", data.id, {})
+      ApiService.post(`appointments/check-in/${data.id}`, {})
         .then(({ data }) => {
-          return data.data;
+          return displaySuccessToast("Patient checked out!");
         })
         .catch(({ response }) => {
           return displayServerError(response, "Checking out an appointment");
