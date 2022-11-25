@@ -130,7 +130,9 @@ import store from "@/store";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import IAppointmentReferral from "@/store/interfaces/IAppointmentReferral";
+import IFile from "@/store/interfaces/IFile";
 import pdf from "pdfobject";
+import moment from "moment";
 
 export default defineComponent({
   props: {
@@ -148,7 +150,7 @@ export default defineComponent({
     const formData = ref(
       props.appointment?.referral ?? ({} as IAppointmentReferral)
     );
-    const files = ref<Array<Record<string, unknown>>>([]);
+    const files = ref<Array<IFile>>([]);
     const pdfType = "application/pdf";
 
     const rules = ref({
@@ -196,12 +198,26 @@ export default defineComponent({
       if (formRef.value) {
         formRef.value.validate((valid) => {
           if (valid) {
+            let submitData = new FormData();
+            if (files.value?.length && files.value.length > 0) {
+              submitData.append("file", files.value[0]?.raw);
+            }
+            submitData.append(
+              "doctor_address_book_id",
+              formData.value.doctor_address_book_id.toString()
+            );
+            submitData.append(
+              "referral_date",
+              moment(formData.value.referral_date).format("YYYY-MM-DD")
+            );
+            submitData.append(
+              "referral_duration",
+              formData.value.referral_duration
+            );
+
             const updateData = {
               appointment_id: props.appointment.id,
-              submitData: {
-                ...formData.value,
-                file: files.value[0]?.raw ?? null,
-              },
+              submitData,
             };
 
             loading.value = true;
@@ -248,6 +264,7 @@ export default defineComponent({
               status: "ready",
               uid: new Date(),
             };
+
             files.value = [file];
             pdf.embed(objectUrl, "#divPDFViewer");
           });
