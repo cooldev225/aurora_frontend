@@ -19,6 +19,21 @@
         ref="formRef"
       >
         <div class="report-template-wrapper">
+          <InputWrapper class="fill-out" label="Report Template">
+            <el-select
+              class="w-100"
+              v-model="templateData"
+              placeholder="Select Report Template"
+            >
+              <el-option
+                v-for="(option, idx) in reportTemplatesData"
+                :key="option.id"
+                :value="idx"
+                :label="option.title"
+              />
+            </el-select>
+          </InputWrapper>
+
           <InputWrapper class="title-input-wrapper fill-out" prop="title">
             <el-input
               v-model="formData.title"
@@ -46,6 +61,8 @@
               />
             </el-select>
           </InputWrapper>
+
+          <el-divider />
 
           <InputWrapper
             class="fill-out"
@@ -190,7 +207,7 @@
               </div>
             </div>
           </InputWrapper>
-
+          <el-divider />
           <div class="d-flex flex-column gap-2 mb-6">
             <InfoSection heading="Patient"
               >{{ patientData?.title }} {{ patientData?.first_name }}
@@ -206,7 +223,7 @@
             </InfoSection>
           </div>
           <div
-            v-for="section in templateData?.sections"
+            v-for="section in reportSections"
             class="d-flex flex-column gap-2"
             :key="section.id"
           >
@@ -284,17 +301,23 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, watchEffect, ref, onMounted, computed } from "vue";
+import {
+  defineComponent,
+  watchEffect,
+  ref,
+  onMounted,
+  computed,
+  watch,
+} from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { StoreReportActions } from "@/store/enums/StoreReportEnums";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import moment from "moment";
 import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import InputWrapper from "../../components/presets/FormElements/InputWrapper.vue";
 import { Actions } from "@/store/enums/StoreEnums";
-import { ElMessage } from "element-plus";
 import { IScheduleItem } from "@/store/modules/ScheduleItemModule";
 
 export default defineComponent({
@@ -304,21 +327,27 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const formRef = ref(null);
-    const templateData = computed(
-      () => store.getters.getReportTemplateSelected
+    const route = useRoute();
+    const patientId = route.params.patientId;
+    const appointmentId = route.params.appointmentId;
+
+    const reportTemplatesData = computed(
+      () => store.getters.getReportTemplateList
     );
-    const patientList = computed(() => store.getters.selectedPatient);
+    const patientData = computed(() => store.getters.selectedPatient);
+
+    const templateData = ref();
+    const reportSections = ref([]);
     const headerFooterList = computed(
       () => store.getters.getHeaderFooterTemplateList
     );
-    const appointmentData = computed(
-      () => store.getters.getReportAppointmentSelected
-    );
+
+    const appointmentData = ref();
     const scheduleItems = computed(() => store.getters.scheduleItemList);
     const proceduresUndertakenDataFiltered = ref<Array<IScheduleItem>>([]);
     const extraItemsUsedDataFiltered = ref<Array<IScheduleItem>>([]);
     const adminItemsUsedDataFiltered = ref<Array<IScheduleItem>>([]);
-    const patientData = ref();
+
     const formData = ref({
       title: "",
       section: {},
@@ -451,28 +480,24 @@ export default defineComponent({
         return;
       }
 
-      // if (formData.value.headerFooter == null) {
-      //   ElMessage.error("Header/Footer Template cannot be blank");
-      //   loading.value = false;
-      //   return;
-      // }
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (formRef.value as any).validate(async (valid) => {
         if (valid) {
-          const reportData: unknown[] = [];
-          const icd_10_code: string[] = [];
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          // (templateData.value.sections as any).forEach((data) => {
-          //   reportData.push({
-          //     sectionId: data.id,
-          //     free_text_default: data.free_text_default,
-          //     value: formData.value.section["section" + data.id],
-          //   });
-          //   data.auto_texts.forEach((auto) => {
-          //     icd_10_code.push(auto.icd_10_code);
-          //   });
-          // });
+          const reportData: any[] = [];
+          const icd_10_code: string[] = [];
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          reportSections.value.forEach((section: any) => {
+            reportData.push({
+              sectionId: section.id,
+              free_text_default: section.free_text_default,
+              value: formData.value.section["section" + section.id],
+            });
+            section.auto_texts.forEach((auto) => {
+              icd_10_code.push(auto.icd_10_code);
+            });
+          });
 
           const proceduresUndertaken = [] as Array<Record<string, unknown>>;
           formData.value.procedures_undertaken.forEach((item) => {
@@ -500,8 +525,7 @@ export default defineComponent({
 
           const data = {
             title: formData.value.title,
-            // patient_id: patientList.value.id,
-            patient_id: 1,
+            patient_id: patientId,
             reportData: reportData,
             doctorAddressBook:
               appointmentData.value.referral?.doctor_address_book_name,
@@ -526,7 +550,7 @@ export default defineComponent({
                 id: data,
               });
               router.push({
-                path: "/patients/" + patientList.value.id + "/documents",
+                path: "/patients/" + patientId + "/documents",
               });
             });
         }
@@ -550,9 +574,25 @@ export default defineComponent({
       return name.join(" - ");
     };
 
+    watch(templateData, () => {
+      formData.value.title =
+        reportTemplatesData.value[templateData.value].title;
+      reportSections.value =
+        reportTemplatesData.value[templateData.value].sections;
+    });
+
+    watch(patientData, () => {
+      if (patientData.value)
+        appointmentData.value = patientData.value.appointments?.find(
+          (appointment) => appointment.id === Number(appointmentId)
+        );
+    });
+
     watchEffect(() => {
-      patientData.value = patientList.value;
-      formData.value.title = templateData.value.title;
+      if (patientData.value)
+        appointmentData.value = patientData.value.appointments?.find(
+          (appointment) => appointment.id === Number(appointmentId)
+        );
     });
 
     onMounted(() => {
@@ -572,7 +612,9 @@ export default defineComponent({
       formRef,
       rules,
       templateData,
+      reportSections,
       patientData,
+      reportTemplatesData,
       appointmentData,
       formData,
       moment,

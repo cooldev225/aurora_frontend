@@ -4,7 +4,7 @@
     <AddRecallButton :appointment="appointment" :patient="patient" />
     <AddLetterButton :appointment="appointment" :patient="patient" />
     <AddAudioButton :appointment="appointment" :patient="patient" />
-    <CreateReportButton :appointment="appointment" />
+    <CreateReportButton :appointment="appointment" :patient="patient" />
   </template>
 
   <!--Admin only actions-->
