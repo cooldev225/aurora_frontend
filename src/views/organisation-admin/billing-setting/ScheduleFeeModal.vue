@@ -3,7 +3,7 @@
     :title="`${isAdd ? 'Add' : 'Edit'} Fee`"
     modalId="schedule_fee"
     modalRef="scheduleFeeModalRef"
-    :static="true"
+    :is-static="true"
   >
     <!--begin::Form-->
     <el-form

@@ -145,29 +145,39 @@
           </div>
           <!-- DOCUMENT ACTIONS -->
           <div class="d-flex p-6 flex-column" v-if="showDocumentActions">
-            <IconButton label="Print" @click="handlePrint" />
-            <IconButton label="Email" @click="handleSendEmail" />
+            <IconButton class="mb-2" label="Print" @click="handlePrint" />
+            <IconButton class="mb-2" label="Email" @click="handleSendEmail" />
             <IconButton
+              class="mb-2"
+              label="HealthLink"
+              @click="handleSendHealthLink"
+            />
+            <IconButton
+              class="mb-2"
               v-if="userRole == 'specialist' && !selectedDocument.is_read"
               label="Mark Read"
               @click="handleMarkRead(true)"
             />
             <IconButton
+              class="mb-2"
               v-if="userRole == 'specialist' && selectedDocument.is_read"
               label="Mark UnRead"
               @click="handleMarkRead(false)"
             />
             <IconButton
+              class="mb-2"
               v-if="userRole == 'specialist' && !selectedDocument.is_urgent"
               label="Mark Urgent"
               @click="handleMarkUrgent(true)"
             />
             <IconButton
+              class="mb-2"
               v-if="userRole == 'specialist' && selectedDocument.is_urgent"
               label="Mark Not Urgent"
               @click="handleMarkUrgent(false)"
             />
             <IconButton
+              class="mb-2"
               v-if="
                 userRole == 'specialist' &&
                 !selectedDocument.is_incorrectly_assigned
@@ -176,6 +186,7 @@
               @click="handleMarkCorrect(true)"
             />
             <IconButton
+              class="mb-2"
               v-if="
                 userRole == 'specialist' &&
                 selectedDocument.is_incorrectly_assigned
@@ -185,6 +196,13 @@
             />
           </div>
           <!-- DOCUMENT VIEW DIV -->
+          <div class="d-flex p-6 flex-column">
+            <IconButton
+              class="mb-2"
+              label="View logs"
+              @click="handleViewLogs"
+            />
+          </div>
         </div>
         <div class="h-450px" id="documentField">
           <div class="fv-row pdf_viewer_wrapper">
@@ -198,6 +216,14 @@
     v-if="selectedDocument"
     :document="selectedDocument"
   ></SendDocumentViaEmailModal>
+  <SendDocumentViaHealthLinkModal
+    v-if="selectedDocument"
+    :document="selectedDocument"
+  ></SendDocumentViaHealthLinkModal>
+  <DocumentActionLogModal
+    v-if="selectedDocument"
+    :document="selectedDocument"
+  ></DocumentActionLogModal>
   <AssignPatientModal
     :document="selectedDocument"
     :handle-set-selected-document="handleSetSelectedDocument"
@@ -229,14 +255,19 @@ import { defineComponent, computed, watch, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import pdf from "pdfobject";
 import patientDocumentTypes from "@/core/data/patient-document-types";
+import patientDocumentActionStatus from "@/core/data/patient-document-action-status";
 import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import DocumentLabel from "@/views/patients/documents/DocumentLabel.vue";
 import SendDocumentViaEmailModal from "@/views/patients/documents/SendDocumentViaEmailModal.vue";
+import SendDocumentViaHealthLinkModal from "@/views/patients/documents/SendDocumentViaHealthLinkModal.vue";
+
+import DocumentActionLogModal from "@/views/patients/documents/DocumentActionLogModal.vue";
 import { Modal } from "bootstrap";
 import AssignPatientModal from "@/views/specialist/modals/AssignPatientModal.vue";
 import AssignSpecialistModal from "@/views/specialist/modals/AssignSpecialistModal.vue";
 import AssignAppointmentModal from "@/views/specialist/modals/AssignAppointmentModal.vue";
+
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 
 export default defineComponent({
@@ -244,6 +275,9 @@ export default defineComponent({
 
   components: {
     DocumentLabel,
+    SendDocumentViaEmailModal,
+    SendDocumentViaHealthLinkModal,
+    DocumentActionLogModal,
     AssignPatientModal,
     AssignSpecialistModal,
     AssignAppointmentModal,
@@ -357,9 +391,14 @@ export default defineComponent({
       }
     });
 
-    watch(currentUser, () => {
-      if (currentUser.value) {
-        specialistFilter.value = currentUser.value.profile.id;
+    watch([currentUser, specialists], () => {
+      if (currentUser.value && specialists.value?.length > 0) {
+        if (
+          specialists.value.some(
+            (item) => item.id === currentUser.value.profile.id
+          )
+        )
+          specialistFilter.value = currentUser.value.profile.id;
       }
     });
 
@@ -399,6 +438,13 @@ export default defineComponent({
       modal.show();
     };
 
+    const handleSendHealthLink = () => {
+      const modal = new Modal(
+        document.getElementById("modal_send_health_link")
+      );
+      modal.show();
+    };
+
     const handlePrint = () => {
       if (selectedDocument.value.file_type === "PDF") {
         var blob = new Blob([tempFile.value], { type: "application/pdf" });
@@ -409,6 +455,17 @@ export default defineComponent({
 
         iframe.style.display = "none";
         iframe.src = blobURL;
+        let Data = new FormData();
+        Data.append("patient_document_id", selectedDocument.value.id);
+        Data.append("status", patientDocumentActionStatus.PRINTED);
+        store
+          .dispatch(DocumentActions.ACTION_LOGS.CREATE, {
+            patient_document_id: selectedDocument.value.id,
+            data: Data,
+          })
+          .then(() => {
+            console.log("Document printed.");
+          });
         iframe.onload = function () {
           setTimeout(function () {
             iframe.focus();
@@ -416,6 +473,14 @@ export default defineComponent({
           }, 1);
         };
       }
+    };
+
+    const handleViewLogs = () => {
+      console.log("");
+      const modal = new Modal(
+        document.getElementById("modal_document_action_log")
+      );
+      modal.show();
     };
 
     const showAssignPatientModal = () => {
@@ -605,14 +670,17 @@ export default defineComponent({
 
     return {
       patientDocumentTypes,
+      patientDocumentActionStatus,
       DocumentLabel,
       filteredDocuments,
       documentTypeFilter,
       appointmentFilter,
       selectedDocument,
-      handleSendEmail,
-      SendDocumentViaEmailModal,
       handlePrint,
+      handleSendEmail,
+      handleSendHealthLink,
+      handleViewLogs,
+      SendDocumentViaEmailModal,
       showAssignPatientModal,
       showAssignSpecialistModal,
       showAssignAppointmentModal,

@@ -3,7 +3,7 @@
     title="Add New Claim Source"
     modalId="add_claim_source"
     modalRef="addClaimSourceRef"
-    :static="true"
+    :is-static="true"
   >
     <el-form
       @submit.prevent

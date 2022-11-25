@@ -3,7 +3,7 @@
     :title="modalTitle"
     :modalId="modalId"
     modalRef="verifyOrganizationPinModalRef"
-    :static="true"
+    :is-static="true"
   >
     <p v-if="message">{{ message }}</p>
 

@@ -1,22 +1,20 @@
 <template>
   <ModalWrapper
-    title="Send Via Email"
-    modalId="send_email"
+    title="Send Via Health Link"
+    modalId="send_health_link"
     :updateRef="updateRef"
   >
     <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
-      <InputWrapper prop="practice_email">
+      <InputWrapper prop="email">
         <el-select
           class="w-100"
-          placeholder="Enter emails"
-          v-model="formData.to_user_emails"
+          placeholder="Search doctor address book"
+          v-model="formData.receiving_doctor_id"
           filterable
-          allow-create
-          multiple
         >
           <el-option
             v-for="doctorAddressBook in doctorAddressBooks"
-            :value="doctorAddressBook.practice_email"
+            :value="doctorAddressBook.id"
             :label="
               doctorAddressBook.first_name +
               ' ' +
@@ -25,7 +23,7 @@
               doctorAddressBook.practice_email +
               '>'
             "
-            :key="doctorAddressBook.practice_email"
+            :key="doctorAddressBook.id"
           />
         </el-select>
       </InputWrapper>
@@ -56,7 +54,7 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
-  name: "send-email-modal",
+  name: "send-health-link-modal",
   components: {},
   props: {
     document: { type: String, required: true },
@@ -64,7 +62,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const formRef = ref(null);
-    const sendEmailModalRef = ref(null);
+    const sendHealthLinkModalRef = ref(null);
     const loading = ref(false);
     const letter_template = ref("");
     const documentId = computed(() => props.document.id);
@@ -75,8 +73,8 @@ export default defineComponent({
     // const sendableUsers = computed(() => store.getters.getUserList);
 
     const formData = ref({
-      document_id: documentId,
-      to_user_emails: [],
+      patient_document_id: documentId,
+      receiving_doctor_id: null,
     });
 
     const rules = ref({
@@ -104,7 +102,7 @@ export default defineComponent({
     });
 
     const updateRef = (_ref) => {
-      sendEmailModalRef.value = _ref;
+      sendHealthLinkModalRef.value = _ref;
     };
 
     const submit = () => {
@@ -115,11 +113,14 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store
-            .dispatch(PatientActions.DOCUMENTS.SEND_VIA_EMAIL, formData.value)
+            .dispatch(
+              PatientActions.DOCUMENTS.SEND_VIA_HEALTH_LINK,
+              formData.value
+            )
             .then(() => {
               loading.value = false;
               formRef.value.resetFields();
-              hideModal(sendEmailModalRef.value);
+              hideModal(sendHealthLinkModalRef.value);
               Swal.fire({
                 text: "Successfully Sent!",
                 icon: "success",
@@ -150,7 +151,7 @@ export default defineComponent({
       formRef,
       loading,
       doctorAddressBooks,
-      sendEmailModalRef,
+      sendHealthLinkModalRef,
       letter_template,
       submit,
       updateRef,

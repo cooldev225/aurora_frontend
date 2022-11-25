@@ -86,4 +86,36 @@ export default class DocumentModule extends VuexModule implements Documents {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [DocumentActions.ACTION_LOGS.CREATE](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post("patients/documents/action/logs", data.data)
+        .then(({ data }) => {
+          return data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [DocumentActions.ACTION_LOGS.LIST](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.get("patients/documents/action/logs", "", data)
+        .then(({ data }) => {
+          return data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }
