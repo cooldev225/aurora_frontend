@@ -28,7 +28,7 @@
               <el-select
                 class="w-100"
                 placeholder="Select Time frame"
-                v-model="formData.type"
+                v-model="formData.coding_type"
               >
                 <el-option
                   v-for="item in codingReportTypes"
@@ -79,7 +79,7 @@ export default defineComponent({
     const formRef = ref(null);
     const formData = ref({
       date: [moment().add(-1, "weeks"), moment()],
-      type: null,
+      coding_type: null,
     });
 
     const rules = ref({
@@ -90,7 +90,7 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      type: [
+      coding_type: [
         {
           required: true,
           message: "Type cannot be blank",
@@ -145,15 +145,20 @@ export default defineComponent({
             })
             .then((data) => {
               loading.value = false;
-              if (data) {
+              if (!data) {
                 store
                   .dispatch(CodingActions.GENERATE_CODING_REPORT, {
                     from_date: formData.value.date[0],
                     to_date: formData.value.date[1],
-                    type: formData.value.type,
+                    type: formData.value.coding_type,
                   })
                   .then((data) => {
-                    //download file
+                    console.log(data);
+                    const link = document.createElement("a");
+                    link.href = data;
+                    link.download = "sdf";
+                    link.click();
+                    URL.revokeObjectURL(link.href);
                   });
               } else {
                 Swal.fire({
