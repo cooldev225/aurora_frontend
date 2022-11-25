@@ -27,4 +27,5 @@ export default interface IAppointment {
   clinic: IClinic;
   referral: IAppointmentReferral;
   appointment_type: IAppointmentType;
+  charge_type: string;
 }

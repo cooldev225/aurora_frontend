@@ -15,7 +15,7 @@
         <!--begin::Modal header-->
         <div class="modal-header">
           <!--begin::Modal title-->
-          <div class="f-flex flex-column">
+          <div class="d-flex flex-column">
             <h2>Checking in {{ patient.full_name }}</h2>
             <h3>
               {{ appointment.appointment_type?.name }},
@@ -100,7 +100,7 @@
             </div>
             <!--begin::Aside-->
 
-            <div class="flex-row-fluid py-lg-5 px-lg-15">
+            <div class="flex-row-fluid py-lg-5 px-lg-10">
               <div class="current" data-kt-stepper-element="content">
                 <PatientDetailsForm
                   :patient="patient"
@@ -108,7 +108,14 @@
                 />
               </div>
 
-              <div data-kt-stepper-element="content">PAGE 2</div>
+              <div data-kt-stepper-element="content">
+                <PatientBillingForm
+                  :patient="patient"
+                  :appointment="appointment"
+                  :on-submit-extras="onPatientBillingSubmit"
+                  button-text="Update and Next"
+                />
+              </div>
 
               <div data-kt-stepper-element="content">PAGE 3</div>
 
@@ -191,6 +198,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useRouter } from "vue-router";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import PatientDetailsForm from "../patients/PatientDetailsForm.vue";
+import PatientBillingForm from "../patients/billing/PatientBillingForm.vue";
 
 export default defineComponent({
   components: {
@@ -199,8 +207,9 @@ export default defineComponent({
     PrintLabelButton,
     PrintHospitalCertificateButton,
     PatientDetailsForm,
+    PatientBillingForm,
   },
-  name: "Apt-Modal",
+  name: "check-in-modal",
   props: {
     appointment: { required: true, type: Object as PropType<IAppointment> },
     patient: { required: true, type: Object as PropType<IPatient> },
@@ -213,7 +222,6 @@ export default defineComponent({
     const loading = ref<boolean>(false);
 
     const gotoPage = (page) => {
-      console.log(props.appointment);
       currentPage.value = page;
       if (_stepperObj.value) {
         _stepperObj.value.goto(page);

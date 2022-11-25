@@ -1,7 +1,7 @@
 <template>
   <ModalWrapper
     title="Add New Claim Source"
-    modalId="add_claim_source"
+    :modalId="customId"
     modalRef="addClaimSourceRef"
     :static="true"
   >
@@ -193,6 +193,7 @@ export default defineComponent({
     patient: { required: true },
     claimSource: { type: String },
     shouldEmit: { type: Boolean, default: false },
+    modalId: { type: [String, null] },
   },
   emits: ["addClaimSource", "closeModal", "updateDetails"],
   components: {
@@ -203,6 +204,7 @@ export default defineComponent({
     const shouldEmit = computed(() => props.shouldEmit);
     const parentModal = ref(null);
     const addClaimSourceFormRef = ref(null);
+    const addClaimSourceRef = ref(null);
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const minorId = computed(() => store.getters.latestMinorId);
     const loading = ref(false);
@@ -211,6 +213,7 @@ export default defineComponent({
     const validationMessage = ref(null);
     const concessionValidated = ref(null);
     const concessionValidationMessage = ref(null);
+    const customId = computed(() => props.modalId ?? "add_claim_source");
     const formData = ref({
       member_number: null,
       member_reference_number: null,
@@ -503,7 +506,7 @@ export default defineComponent({
     );
 
     onMounted(() => {
-      parentModal.value = document.getElementById("modal_add_claim_source");
+      parentModal.value = document.getElementById(`modal_${customId.value}`);
       parentModal.value.addEventListener("hidden.bs.modal", function () {
         resetForm();
       });
@@ -512,6 +515,7 @@ export default defineComponent({
     return {
       loading,
       addClaimSourceFormRef,
+      addClaimSourceRef,
       moment,
       validated,
       validationMessage,
@@ -529,6 +533,7 @@ export default defineComponent({
       updateDetails,
       detailsToUpdateExist,
       handleUpdateDetails,
+      customId,
     };
   },
 });

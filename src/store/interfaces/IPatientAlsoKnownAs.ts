@@ -1,5 +1,5 @@
 export default interface IPatientAlsoKnownAs {
-  id: number;
+  id: number | null;
   patient_id: number;
   first_name: string;
   last_name: string;

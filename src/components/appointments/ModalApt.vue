@@ -803,6 +803,7 @@
 
                         <AddClaimSourceModal
                           :patient="patientInfoData"
+                          :modalId="addClaimSourceModalId"
                           v-on:addClaimSource="addNewClaimSource"
                           v-on:closeModal="closeAddClaimSourceModal"
                           v-on:updateDetails="updatePatientDetails"
@@ -1253,6 +1254,7 @@ export default defineComponent({
     const formRef_4 = ref(null);
     const loading = ref(false);
     const tableKey = ref(0);
+    const addClaimSourceModalId = `add_claim_source_modal_${props.modalId}`;
 
     const doctorAddressBooks = computed(
       () => store.getters.getDoctorAddressBookList
@@ -1509,7 +1511,7 @@ export default defineComponent({
     const showAddClaimSourceModal = () => {
       if (!claimSourceModal.value) {
         claimSourceModal.value = new Modal(
-          document.getElementById("modal_add_claim_source")
+          document.getElementById(`modal_${addClaimSourceModalId}`)
         );
       }
 
@@ -2089,7 +2091,7 @@ export default defineComponent({
         billingInfoData.value[key] = item[key];
       }
 
-      billingInfoData.value.claim_sources = item.billing;
+      billingInfoData.value.claim_sources = item.billings;
 
       patientInfoData.value.also_known_as = item.also_known_as;
 
@@ -2288,6 +2290,7 @@ export default defineComponent({
       allergiesList,
       convertToCurrency,
       aptOverlapCheck,
+      addClaimSourceModalId,
     };
   },
 });

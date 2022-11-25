@@ -53,12 +53,16 @@ import { PropType, ref, defineComponent } from "vue";
 import { validatePhone } from "@/helpers/helpers";
 import store from "@/store";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
+import { mask } from "vue-the-mask";
 
 export default defineComponent({
   props: {
     onSubmitExtras: { required: false, type: Function },
     appointment: { required: true, type: Object as PropType<IAppointment> },
     buttonText: { required: false, type: String, default: "Update" },
+  },
+  directives: {
+    mask,
   },
   setup(props) {
     const formRef = ref<HTMLFormElement>();
