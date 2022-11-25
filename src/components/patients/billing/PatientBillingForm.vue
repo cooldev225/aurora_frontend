@@ -227,9 +227,7 @@ export default defineComponent({
     const submit = () => {
       const updateData = {
         ...formData.value,
-        first_name: selectedPatient.value.first_name,
-        last_name: selectedPatient.value.last_name,
-        date_of_birth: selectedPatient.value.date_of_birth,
+        ...props.patient,
         appointment_confirm_method:
           selectedPatient.value.appointment_confirm_method,
       };

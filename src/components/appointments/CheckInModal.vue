@@ -117,7 +117,13 @@
                 />
               </div>
 
-              <div data-kt-stepper-element="content">PAGE 3</div>
+              <div data-kt-stepper-element="content">
+                <AppointmentReferralForm
+                  :appointment="appointment"
+                  :on-submit-extras="onPatientReferralSubmit"
+                  button-text="Update and Next"
+                />
+              </div>
 
               <div data-kt-stepper-element="content" class="w-100">
                 <AppointmentCollectingPersonForm
@@ -199,6 +205,7 @@ import { useRouter } from "vue-router";
 import { DrawerComponent } from "@/assets/ts/components/_DrawerComponent";
 import PatientDetailsForm from "../patients/PatientDetailsForm.vue";
 import PatientBillingForm from "../patients/billing/PatientBillingForm.vue";
+import AppointmentReferralForm from "./partials/AppointmentReferralForm.vue";
 
 export default defineComponent({
   components: {
@@ -208,6 +215,7 @@ export default defineComponent({
     PrintHospitalCertificateButton,
     PatientDetailsForm,
     PatientBillingForm,
+    AppointmentReferralForm,
   },
   name: "check-in-modal",
   props: {
