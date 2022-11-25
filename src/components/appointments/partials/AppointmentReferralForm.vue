@@ -8,52 +8,59 @@
     <HeadingText text="Appointment Referral" />
 
     <div class="row justify-content-md-center mt-4">
-      <InputWrapper
-        required
-        label="Referring Doctor"
-        prop="doctor_address_book_id"
-      >
-        <el-select
-          class="w-100"
-          v-model="formData.doctor_address_book_id"
-          placeholder="Select Referring Doctor"
-        >
-          <el-option
-            v-for="item in doctorAddressBookList"
-            :key="item.id"
-            :value="item.id"
-            :label="item.full_name"
-          />
-        </el-select>
-      </InputWrapper>
+      <el-checkbox
+        v-model="formData.is_no_referral"
+        label="No referral required"
+      />
 
-      <InputWrapper required label="Referral Date" prop="referral_date">
-        <el-date-picker
-          editable
-          class="w-100"
-          format="DD-MM-YYYY"
-          v-model="formData.referral_date"
-        />
-      </InputWrapper>
-
-      <div class="d-flex align-items-center ms-n6">
+      <template v-if="!formData.is_no_referral">
         <InputWrapper
           required
-          label="Referral Duration"
-          prop="referral_duration"
-          class="flex-grow-1 fill-out"
+          label="Referring Doctor"
+          prop="doctor_address_book_id"
         >
-          <el-input
-            v-model="formData.referral_duration"
-            type="number"
-            min="0"
-            max="24"
-            placeholder="Enter Referral Duration"
+          <el-select
+            class="w-100"
+            v-model="formData.doctor_address_book_id"
+            placeholder="Select Referring Doctor"
+          >
+            <el-option
+              v-for="item in doctorAddressBookList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.full_name"
+            />
+          </el-select>
+        </InputWrapper>
+
+        <InputWrapper required label="Referral Date" prop="referral_date">
+          <el-date-picker
+            editable
+            class="w-100"
+            format="DD-MM-YYYY"
+            v-model="formData.referral_date"
           />
         </InputWrapper>
 
-        <p class="flex-grow-0 mb-0 fs-6">Months</p>
-      </div>
+        <div class="d-flex align-items-center ms-n6">
+          <InputWrapper
+            required
+            label="Referral Duration"
+            prop="referral_duration"
+            class="flex-grow-1 fill-out"
+          >
+            <el-input
+              v-model="formData.referral_duration"
+              type="number"
+              min="0"
+              max="24"
+              placeholder="Enter Referral Duration"
+            />
+          </InputWrapper>
+
+          <p class="flex-grow-0 mb-0 fs-6">Months</p>
+        </div>
+      </template>
 
       <div class="modal-footer flex-end">
         <button
