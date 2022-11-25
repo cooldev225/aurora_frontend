@@ -292,7 +292,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
       data.submitData
     )
       .then(({ data }) => {
-        return data;
+        return displaySuccessToast("Referral updated!");
       })
       .catch(({ response }) => {
         return displayServerError(response, "Updating a referral");
