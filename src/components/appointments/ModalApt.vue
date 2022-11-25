@@ -1196,7 +1196,10 @@ import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
-import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "@/store/enums/StoreAppointmentEnums";
 import { StepperComponent } from "@/assets/ts/components";
 import { countryList, timeZoneList } from "@/core/data/country";
 import ApiService from "@/core/services/ApiService";
@@ -1812,6 +1815,20 @@ export default defineComponent({
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
       store.dispatch(PatientActions.ALLERGIES_LIST).then((data) => {
         allergiesList.value = data;
+      });
+      const myModalEl = document.getElementById("modal_create_apt");
+      myModalEl.addEventListener("hide.bs.modal", () => {
+        const draftAptId = store.getters.getDraftAptId;
+        if (draftAptId && aptInfoData.value.date) {
+          store
+            .dispatch(AppointmentActions.APT.DRAFT.DELETE, draftAptId)
+            .then(() => {
+              store.dispatch(AppointmentActions.LIST, {
+                date: aptInfoData.value.date,
+              });
+            });
+          store.commit(AppointmentMutations.DRAFT.SET, null);
+        }
       });
     });
 
