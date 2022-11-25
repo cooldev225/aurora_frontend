@@ -61,7 +61,7 @@
     <span
       class="opacity-50 badge badge-light-dark disabled text-uppercase fw-bolder"
     >
-      SOMEONE IS UPDATING THIS TIMESLOT
+      {{ appointment.creator_name + " is updating this spot" }}
     </span>
   </div>
 </template>

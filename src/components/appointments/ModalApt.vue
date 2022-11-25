@@ -1833,7 +1833,7 @@ export default defineComponent({
     });
 
     const getAvailableRooms = () => {
-      if (JwtService.getToken()) {
+      if (JwtService.getToken() && aptInfoData.value.clinic_id) {
         ApiService.setHeader();
         ApiService.get(
           "clinics/" + aptInfoData.value.clinic_id + "/rooms"
