@@ -63,10 +63,10 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import { CodingActions, CodingMutations } from "@/store/enums/StoreCodingEnums";
+import { CodingActions } from "@/store/enums/StoreCodingEnums";
 import { codingReportTypes } from "@/core/data/coding-report-types";
 import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -79,22 +79,15 @@ export default defineComponent({
     const formRef = ref(null);
     const formData = ref({
       date: [moment().add(-1, "weeks"), moment()],
-      coding_type: null,
+      coding_type: codingReportTypes[0],
     });
 
     const rules = ref({
-      date: [
-        {
-          required: true,
-          message: "Date cannot be blank",
-          trigger: "change",
-        },
-      ],
       coding_type: [
         {
           required: true,
           message: "Type cannot be blank",
-          trigger: "change",
+          trigger: ["blur", "change"],
         },
       ],
     });
@@ -140,23 +133,33 @@ export default defineComponent({
           loading.value = true;
           store
             .dispatch(CodingActions.CHECK_APPOINTMENTS_COMPLETE, {
-              from_date: formData.value.date[0],
-              to_date: formData.value.date[1],
+              from_date: moment(formData.value.date[0]).format("YYYY-MM-DD"),
+              to_date: moment(formData.value.date[1]).format("YYYY-MM-DD"),
             })
             .then((data) => {
               loading.value = false;
               if (!data) {
                 store
                   .dispatch(CodingActions.GENERATE_CODING_REPORT, {
-                    from_date: formData.value.date[0],
-                    to_date: formData.value.date[1],
+                    from_date: moment(formData.value.date[0]).format(
+                      "YYYY-MM-DD"
+                    ),
+                    to_date: moment(formData.value.date[1]).format(
+                      "YYYY-MM-DD"
+                    ),
                     type: formData.value.coding_type,
                   })
                   .then((data) => {
-                    console.log(data);
+                    const blob = new Blob([data], { type: "text/plain" });
+                    const url = window.URL.createObjectURL(blob);
                     const link = document.createElement("a");
-                    link.href = data;
-                    link.download = "sdf";
+                    link.href = url;
+                    link.download =
+                      formData.value.coding_type +
+                      "-" +
+                      moment(formData.value.date[0]).format("DD_MM_YYYY") +
+                      "-" +
+                      moment(formData.value.date[0]).format("DD_MM_YYYY");
                     link.click();
                     URL.revokeObjectURL(link.href);
                   });

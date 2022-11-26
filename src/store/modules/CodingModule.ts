@@ -109,7 +109,9 @@ export default class CodingModule extends VuexModule implements AptInfo {
   [CodingActions.GENERATE_CODING_REPORT](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      return ApiService.post("generate-coding-report", payload)
+      return ApiService.post("generate-coding-report", payload, {
+        responseType: "blob",
+      })
         .then(({ data }) => {
           return data;
         })
