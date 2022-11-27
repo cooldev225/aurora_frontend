@@ -129,7 +129,7 @@ export const getChargeTypes = (patient) => {
     label: "Self-Insured",
   });
 
-  patient.billing.forEach((source) => {
+  patient.billings.forEach((source) => {
     if (source.is_valid) {
       switch (source.billing_type) {
         case 1:

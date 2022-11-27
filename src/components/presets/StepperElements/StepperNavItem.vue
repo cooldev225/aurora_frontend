@@ -1,5 +1,8 @@
 <template>
-  <div class="stepper-item" :data-kt-stepper-element="dataStepperElement">
+  <div
+    class="stepper-item cursor-pointer"
+    :data-kt-stepper-element="dataStepperElement"
+  >
     <!--begin::Line-->
     <div class="stepper-line w-40px"></div>
     <!--end::Line-->

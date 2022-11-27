@@ -70,10 +70,6 @@ export default defineComponent({
       store.dispatch(Actions.PROFILE.VIEW);
     });
 
-    watch(profileData, () => {
-      console.log(profileData);
-    });
-
     return {
       profileData,
     };

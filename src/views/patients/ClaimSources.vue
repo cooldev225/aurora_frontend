@@ -469,7 +469,7 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      tableData.value = selectedPatient.value?.billing ?? [];
+      tableData.value = selectedPatient.value?.billings ?? [];
       renderTable();
     });
 

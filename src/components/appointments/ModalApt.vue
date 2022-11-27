@@ -803,6 +803,7 @@
 
                         <AddClaimSourceModal
                           :patient="patientInfoData"
+                          :modalId="addClaimSourceModalId"
                           v-on:addClaimSource="addNewClaimSource"
                           v-on:closeModal="closeAddClaimSourceModal"
                           v-on:updateDetails="updatePatientDetails"
@@ -1198,6 +1199,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { StepperComponent } from "@/assets/ts/components";
+import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
 import { countryList, timeZoneList } from "@/core/data/country";
 import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
@@ -1210,7 +1212,7 @@ import AptOverview from "@/components/appointments/partials/AppointmentOverview"
 import { mask } from "vue-the-mask";
 import { validatePhone } from "@/helpers/helpers";
 import AppointmentHistory from "@/components/presets/PatientElements/AppointmentHistory.vue";
-import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
+
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 import PatientAlert from "@/components/presets/PatientElements/PatientAlert.vue";
@@ -1252,6 +1254,7 @@ export default defineComponent({
     const formRef_4 = ref(null);
     const loading = ref(false);
     const tableKey = ref(0);
+    const addClaimSourceModalId = `add_claim_source_modal_${props.modalId}`;
 
     const doctorAddressBooks = computed(
       () => store.getters.getDoctorAddressBookList
@@ -1508,7 +1511,7 @@ export default defineComponent({
     const showAddClaimSourceModal = () => {
       if (!claimSourceModal.value) {
         claimSourceModal.value = new Modal(
-          document.getElementById("modal_add_claim_source")
+          document.getElementById(`modal_${addClaimSourceModalId}`)
         );
       }
 
@@ -2088,7 +2091,7 @@ export default defineComponent({
         billingInfoData.value[key] = item[key];
       }
 
-      billingInfoData.value.claim_sources = item.billing;
+      billingInfoData.value.claim_sources = item.billings;
 
       patientInfoData.value.also_known_as = item.also_known_as;
 
@@ -2287,6 +2290,7 @@ export default defineComponent({
       allergiesList,
       convertToCurrency,
       aptOverlapCheck,
+      addClaimSourceModalId,
     };
   },
 });

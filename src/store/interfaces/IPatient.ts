@@ -39,4 +39,5 @@ export default interface IPatient {
   alerts: Array<IPatientAlert>;
   appointments: Array<IAppointment>;
   also_known_as: Array<IPatientAlsoKnownAs>;
+  billings: Array<IPatientBilling>;
 }
