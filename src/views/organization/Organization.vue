@@ -31,11 +31,16 @@
             placeholder="Appointment length"
           />
         </InputWrapper>
-        <InputWrapper class="col-sm-3 mb-5" required label="ABN" prop="abn">
+        <InputWrapper
+          class="col-sm-3 mb-5"
+          required
+          label="ABN/ACN"
+          prop="abn_acn"
+        >
           <el-input
-            v-model="formData.abn"
+            v-model="formData.abn_acn"
             type="text"
-            placeholder="Organization ABN"
+            placeholder="Organization ABN/ACN"
           />
         </InputWrapper>
       </div>
@@ -124,14 +129,14 @@ export default defineComponent({
       start_time: null,
       end_time: null,
       appointment_length: null,
-      abn: null,
+      abn_acn: null,
     });
-    const confirmABN = (rule, value, callback) => {
-      var ABN_regex = /^([0-9]{11})$/;
+    const confirmAbnAcn = (rule, value, callback) => {
+      var abn_acn_regex = /^([0-9]{9,11})$/;
       if (value === "") {
-        callback(new Error("ABN cannot be blank."));
-      } else if (value.match(ABN_regex) === null) {
-        callback(new Error("ABN should be always 11 digits long."));
+        callback(new Error("ABN/ACN cannot be blank."));
+      } else if (value.match(abn_acn_regex) === null) {
+        callback(new Error("ABN/ACN should be always 11 or 9 digits long."));
       } else {
         callback();
       }
@@ -165,14 +170,14 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      abn: [
+      abn_acn: [
         {
           required: true,
-          message: "ABN cannot be blank.",
+          message: "ABN/ACN cannot be blank.",
           trigger: "change",
         },
         {
-          validator: confirmABN,
+          validator: confirmAbnAcn,
           trigger: ["blur"],
         },
       ],
@@ -204,7 +209,7 @@ export default defineComponent({
             "appointment_length",
             formData.value.appointment_length
           );
-          submitData.append("abn", formData.value.abn);
+          submitData.append("abn_acn", formData.value.abn_acn);
           var flag =
             initialAppointmentLength.value ===
             formData.value.appointment_length;
@@ -241,7 +246,7 @@ export default defineComponent({
     watch(currentUser, () => {
       if (currentUser.value) {
         formData.value.name = currentUser.value.organization.name;
-        formData.value.abn = currentUser.value.organization.abn;
+        formData.value.abn_acn = currentUser.value.organization.abn_acn;
         formData.value.appointment_length =
           currentUser.value.organization.appointment_length;
         formData.value.start_time = new Date(
