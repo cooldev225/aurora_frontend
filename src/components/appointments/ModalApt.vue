@@ -1998,13 +1998,17 @@ export default defineComponent({
       const billingInfo = billingInfoData.value;
       const patientInfo = patientInfoData.value;
 
-      billingInfo.claim_sources = billingInfo.claim_sources.filter((source) => {
-        return !Object.prototype.hasOwnProperty.call(source, "id");
-      });
+      billingInfo.claim_sources = billingInfo.claim_sources?.filter(
+        (source) => {
+          return !Object.prototype.hasOwnProperty.call(source, "id");
+        }
+      );
 
-      patientInfo.also_known_as = patientInfo.also_known_as.filter((source) => {
-        return !Object.prototype.hasOwnProperty.call(source, "id");
-      });
+      patientInfo.also_known_as = patientInfo.also_known_as?.filter(
+        (source) => {
+          return !Object.prototype.hasOwnProperty.call(source, "id");
+        }
+      );
 
       store
         .dispatch(AppointmentActions.APT.CREATE, {
