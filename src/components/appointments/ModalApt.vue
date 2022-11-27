@@ -1197,7 +1197,10 @@ import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
-import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
+import {
+  AppointmentActions,
+  AppointmentMutations,
+} from "@/store/enums/StoreAppointmentEnums";
 import { StepperComponent } from "@/assets/ts/components";
 import StepperNavItem from "@/components/presets/StepperElements/StepperNavItem.vue";
 import { countryList, timeZoneList } from "@/core/data/country";
@@ -1816,10 +1819,24 @@ export default defineComponent({
       store.dispatch(PatientActions.ALLERGIES_LIST).then((data) => {
         allergiesList.value = data;
       });
+      const myModalEl = document.getElementById("modal_create_apt");
+      myModalEl.addEventListener("hide.bs.modal", () => {
+        const draftAptId = store.getters.getDraftAptId;
+        if (draftAptId && aptInfoData.value.date) {
+          store
+            .dispatch(AppointmentActions.APT.DRAFT.DELETE, draftAptId)
+            .then(() => {
+              store.dispatch(AppointmentActions.LIST, {
+                date: aptInfoData.value.date,
+              });
+            });
+          store.commit(AppointmentMutations.DRAFT.SET, null);
+        }
+      });
     });
 
     const getAvailableRooms = () => {
-      if (JwtService.getToken()) {
+      if (JwtService.getToken() && aptInfoData.value.clinic_id) {
         ApiService.setHeader();
         ApiService.get(
           "clinics/" + aptInfoData.value.clinic_id + "/rooms"
@@ -1984,13 +2001,17 @@ export default defineComponent({
       const billingInfo = billingInfoData.value;
       const patientInfo = patientInfoData.value;
 
-      billingInfo.claim_sources = billingInfo.claim_sources.filter((source) => {
-        return !Object.prototype.hasOwnProperty.call(source, "id");
-      });
+      billingInfo.claim_sources = billingInfo.claim_sources?.filter(
+        (source) => {
+          return !Object.prototype.hasOwnProperty.call(source, "id");
+        }
+      );
 
-      patientInfo.also_known_as = patientInfo.also_known_as.filter((source) => {
-        return !Object.prototype.hasOwnProperty.call(source, "id");
-      });
+      patientInfo.also_known_as = patientInfo.also_known_as?.filter(
+        (source) => {
+          return !Object.prototype.hasOwnProperty.call(source, "id");
+        }
+      );
 
       store
         .dispatch(AppointmentActions.APT.CREATE, {

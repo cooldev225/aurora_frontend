@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="!appointment.draft_status"
     class="py-2 px-4 cursor-pointer h-100 justify-content-center"
     :style="{
       'background-color':
@@ -15,13 +16,13 @@
       <span class="text-uppercase fw-bolder" v-if="userRole == 'specialist'">
         {{ appointment.appointment_type_name }}
       </span>
-      <span class="text-uppercase fs-6">
+      <span class="text-uppercase fs-6" v-if="appointment.patient">
         {{ appointment.patient.first_name }}
         {{ appointment.patient.last_name }}
         ({{ appointment.patient.contact_number }})
         <span v-if="userRole != 'specialist'"
-          >-{{ appointment.clinic.nickname_code }}</span
-        >
+          >-{{ appointment.clinic.nickname_code }}
+        </span>
         <span
           v-if="appointment.patient.allergies"
           class="badge badge-light-danger opacity-50 mx-2"
@@ -51,6 +52,17 @@
         </span>
       </span>
     </div>
+  </div>
+  <div
+    class="py-2 px-4 h-100 d-flex flex-column justify-content-center align-items-center"
+    style="background-color: #5d5c5c"
+    v-else-if="appointment.draft_status"
+  >
+    <span
+      class="opacity-50 badge badge-light-dark disabled text-uppercase fw-bolder"
+    >
+      {{ appointment.creator_name + " is updating this spot" }}
+    </span>
   </div>
 </template>
 <script lang="ts">
