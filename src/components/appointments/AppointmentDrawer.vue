@@ -113,13 +113,20 @@
               }}</span></label
             >
           </div>
-          <el-divider v-if="patient.allergies" />
+          <el-divider />
           <div>
             <label class="fs-5 text-danger"
               >Allergies:
-              <template v-for="allergy in patient.allergies" :key="allergy.id">
-                <span class="text-black fs-5">{{ allergy.name + " " }}</span>
-              </template>
+              <span v-if="patient.allergies.length > 0">
+                <template
+                  v-for="allergy in patient.allergies"
+                  :key="allergy.id"
+                >
+                  <span class="text-black fs-5">{{ allergy.name + " " }}</span>
+                </template>
+              </span>
+
+              <span v-else> No allergies recorded </span>
             </label>
           </div>
           <el-divider />
