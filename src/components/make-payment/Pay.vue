@@ -325,6 +325,82 @@
         </div>
       </div>
     </div>
+
+    <div class="card mb-5 mb-xxl-8">
+      <div class="card-header pt-5">
+        <h3 class="card-title align-items-start flex-column">
+          <span class="card-label fw-bold fs-3 mb-1">Previous Payments</span>
+        </h3>
+      </div>
+      <div class="card-body pt-3 pb-0">
+        <div class="row">
+          <Datatable
+            :table-header="prevPaymentsTableHeader"
+            :table-data="billingData.payments_list"
+            :enable-items-per-page-dropdown="false"
+            empty-table-text="No items paid"
+          >
+            <template v-slot:cell-invoice_number="{ row: item }">
+              {{ item.full_invoice_number }}
+            </template>
+
+            <template v-slot:cell-amount="{ row: item }">
+              {{ convertToCurrency(item.amount / 100) }}
+            </template>
+
+            <template v-slot:cell-method="{ row: item }">
+              {{ item.payment_type }}
+            </template>
+
+            <template v-slot:cell-date="{ row: item }">
+              {{
+                moment(item.created_at).format("DD/MM/YYYY HH:mm").toString()
+              }}
+            </template>
+
+            <template v-slot:cell-actions="{ row: item }">
+              <div class="">
+                <button
+                  class="btn btn-light-primary w-100 mt-6"
+                  :disabled="sendingInvoice"
+                  :data-kt-indicator="sendingInvoice ? 'on' : null"
+                  @click="sendInvoice"
+                >
+                  <span v-if="!sendingInvoice" class="indicator-label">
+                    Resend Invoice to Patient {{ item }}
+                  </span>
+
+                  <span v-if="sendingInvoice" class="indicator-progress">
+                    Sending...
+                    <span
+                      class="spinner-border spinner-border-sm align-middle ms-2"
+                    ></span>
+                  </span>
+                </button>
+
+                <button
+                  class="btn btn-light-primary w-100 mt-2"
+                  :disabled="viewingInvoice"
+                  :data-kt-indicator="viewingInvoice ? 'on' : null"
+                  @click="viewInvoice"
+                >
+                  <span v-if="!viewingInvoice" class="indicator-label">
+                    View Invoice
+                  </span>
+
+                  <span v-if="viewingInvoice" class="indicator-progress">
+                    Loading...
+                    <span
+                      class="spinner-border spinner-border-sm align-middle ms-2"
+                    ></span>
+                  </span>
+                </button>
+              </div>
+            </template>
+          </Datatable>
+        </div>
+      </div>
+    </div>
     <!--end::Card-->
 
     <VerifyPinModal
@@ -355,7 +431,7 @@ import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import PaymentItemModal from "@/components/make-payment/PaymentItemModal.vue";
 import VerifyPinModal from "@/components/organisations/VerifyPinModal.vue";
 import { Modal } from "bootstrap";
-import { object } from "yup";
+import moment from "moment";
 
 export default defineComponent({
   name: "make-payment-pay",
@@ -433,6 +509,34 @@ export default defineComponent({
         name: "Price",
         key: "price",
         sortable: false,
+      },
+      {
+        name: "Actions",
+        key: "actions",
+        sortable: false,
+      },
+    ]);
+
+    const prevPaymentsTableHeader = ref([
+      {
+        name: "Invoice Number",
+        key: "invoice_number",
+        sortable: true,
+      },
+      {
+        name: "Amount",
+        key: "amount",
+        sortable: true,
+      },
+      {
+        name: "Method",
+        key: "method",
+        sortable: true,
+      },
+      {
+        name: "Date",
+        key: "date",
+        sortable: true,
       },
       {
         name: "Actions",
@@ -768,6 +872,8 @@ export default defineComponent({
       sendInvoice,
       viewingInvoice,
       viewInvoice,
+      prevPaymentsTableHeader,
+      moment,
     };
   },
 });
