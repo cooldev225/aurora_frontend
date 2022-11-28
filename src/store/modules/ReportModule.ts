@@ -21,4 +21,21 @@ export default class ReportModule extends VuexModule {
         });
     }
   }
+
+  @Action
+  [StoreReportActions.REPORT.PATIENT_PREVIEW](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post(
+        "patients/documents/report/preview/" + data.patient_id,
+        data
+      )
+        .then(({ data }) => {
+          return data.data;
+        })
+        .catch(({ response }) => {
+          console.log(response.data.error);
+        });
+    }
+  }
 }

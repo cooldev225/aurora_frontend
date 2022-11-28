@@ -283,7 +283,7 @@
     <!--end::Card body-->
   </div>
   <!--end::details View-->
-  <ReportPreviewModal></ReportPreviewModal>
+  <ReportPreviewModal :patient="patientData"></ReportPreviewModal>
 </template>
 
 <style lang="scss">
@@ -554,14 +554,16 @@ export default defineComponent({
             icd_10_code: icd_10_code,
           };
           store
-            .dispatch(StoreReportActions.REPORT.PATIENT, data)
+            .dispatch(StoreReportActions.REPORT.PATIENT_PREVIEW, data)
             .then((data) => {
-              store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
-                id: data,
-              });
-              router.push({
-                path: "/patients/" + patientId + "/documents",
-              });
+              console.log("report result", data);
+              handlePreviewModal();
+              // store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
+              //   id: data,
+              // });
+              // router.push({
+              //   path: "/patients/" + patientId + "/documents",
+              // });
             });
         }
       });
