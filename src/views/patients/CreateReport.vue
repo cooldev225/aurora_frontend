@@ -283,7 +283,10 @@
     <!--end::Card body-->
   </div>
   <!--end::details View-->
-  <ReportPreviewModal :patient="patientData"></ReportPreviewModal>
+  <ReportPreviewModal
+    :patient="patientData"
+    :appointment="appointmentData"
+  ></ReportPreviewModal>
 </template>
 
 <style lang="scss">
