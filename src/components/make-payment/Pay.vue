@@ -336,7 +336,7 @@
         <div class="row">
           <Datatable
             :table-header="prevPaymentsTableHeader"
-            :table-data="billingData.payments_list"
+            :table-data="billingData.payment_list"
             :enable-items-per-page-dropdown="false"
             empty-table-text="No items paid"
           >
@@ -364,10 +364,10 @@
                   class="btn btn-light-primary w-100 mt-6"
                   :disabled="sendingInvoice"
                   :data-kt-indicator="sendingInvoice ? 'on' : null"
-                  @click="sendInvoice"
+                  @click="resendInvoice(item.id)"
                 >
                   <span v-if="!sendingInvoice" class="indicator-label">
-                    Resend Invoice to Patient {{ item }}
+                    Resend Invoice to Patient
                   </span>
 
                   <span v-if="sendingInvoice" class="indicator-progress">
@@ -665,6 +665,11 @@ export default defineComponent({
       paymentItemModal.value.show();
     };
 
+    //billingData
+    watch(billingData, () => {
+      console.log(["billingData=", billingData.value]);
+    });
+
     const deleteItem = (category, item) => {
       const index = billingData.value.charges[category].findIndex(
         (charge) => charge.id === item.id
@@ -722,6 +727,13 @@ export default defineComponent({
     const sendInvoice = () => {
       sendingInvoice.value = true;
       store.dispatch(Actions.INVOICE.SEND, appointmentId).finally(() => {
+        sendingInvoice.value = false;
+      });
+    };
+
+    const resendInvoice = (id) => {
+      sendingInvoice.value = true;
+      store.dispatch(Actions.MAKE_PAYMENT.INVOICE.SEND, id).finally(() => {
         sendingInvoice.value = false;
       });
     };
@@ -874,6 +886,7 @@ export default defineComponent({
       viewInvoice,
       prevPaymentsTableHeader,
       moment,
+      resendInvoice,
     };
   },
 });

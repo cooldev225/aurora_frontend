@@ -107,4 +107,25 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
       this.context.commit(Mutations.PURGE_AUTH);
     }
   }
+
+  @Action
+  [Actions.MAKE_PAYMENT.INVOICE.SEND](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post("payments/" + id + "/send", {})
+        .then(() => {
+          return Promise.resolve();
+        })
+        .catch(({ response }) => {
+          let message = "Could not send invoice.";
+          if (response?.data?.message) {
+            message = response.data.message;
+          }
+
+          return Promise.reject(message);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
 }
