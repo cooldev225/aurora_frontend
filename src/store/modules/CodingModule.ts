@@ -4,7 +4,7 @@ import { CodingActions, CodingMutations } from "@/store/enums/StoreCodingEnums";
 import { Mutations } from "@/store/enums/StoreEnums";
 import axios from "axios";
 import { Module, Action, VuexModule, Mutation } from "vuex-module-decorators";
-import { displayServerError } from "@/helpers/helpers.ts";
+import { displayServerError } from "@/helpers/helpers";
 
 interface IApt {
   id: number;
