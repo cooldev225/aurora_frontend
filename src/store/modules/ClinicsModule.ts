@@ -103,6 +103,7 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
       ApiService.setHeader();
       ApiService.post("clinics", payload)
         .then(({ data }) => {
+          displaySuccessToast("Clinic created");
           return data.data;
         })
         .catch(({ response }) => {
