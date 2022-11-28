@@ -382,7 +382,7 @@
                   class="btn btn-light-primary w-100 mt-2"
                   :disabled="viewingInvoice"
                   :data-kt-indicator="viewingInvoice ? 'on' : null"
-                  @click="viewInvoice"
+                  @click="reviewInvoice(item.id)"
                 >
                   <span v-if="!viewingInvoice" class="indicator-label">
                     View Invoice
@@ -752,6 +752,20 @@ export default defineComponent({
         });
     };
 
+    const reviewInvoice = (id) => {
+      viewingInvoice.value = true;
+      store
+        .dispatch(Actions.MAKE_PAYMENT.INVOICE.VIEW, id)
+        .then((data) => {
+          let blob = new Blob([data], { type: "application/pdf" });
+          let objectUrl = URL.createObjectURL(blob);
+          window.open(objectUrl, "_blank");
+        })
+        .finally(() => {
+          viewingInvoice.value = false;
+        });
+    };
+
     const handleSubmitPayment = () => {
       if (formData.value.amount > amountOutstanding.value) {
         Swal.fire({
@@ -887,6 +901,7 @@ export default defineComponent({
       prevPaymentsTableHeader,
       moment,
       resendInvoice,
+      reviewInvoice,
     };
   },
 });
