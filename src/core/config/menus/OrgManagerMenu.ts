@@ -56,6 +56,16 @@ const OrgManagerMenu = [
     heading: "Coding",
     route: "/coding",
     svgIcon: icons.paper,
+    pages: [
+      {
+        heading: "Coding List",
+        route: "/coding",
+      },
+      {
+        heading: "Coding Reports",
+        route: "/coding-reports",
+      },
+    ],
   },
   {
     heading: "Communication",

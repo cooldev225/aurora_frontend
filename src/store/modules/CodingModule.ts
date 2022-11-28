@@ -4,6 +4,7 @@ import { CodingActions, CodingMutations } from "@/store/enums/StoreCodingEnums";
 import { Mutations } from "@/store/enums/StoreEnums";
 import axios from "axios";
 import { Module, Action, VuexModule, Mutation } from "vuex-module-decorators";
+import { displayServerError } from "@/helpers/helpers.js";
 
 interface IApt {
   id: number;
@@ -55,8 +56,7 @@ export default class CodingModule extends VuexModule implements AptInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Listing all codings");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -72,7 +72,7 @@ export default class CodingModule extends VuexModule implements AptInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Storing a coading update form");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -90,8 +90,36 @@ export default class CodingModule extends VuexModule implements AptInfo {
       );
       return data;
     } catch (error) {
-      alert(error);
-      console.log(error);
+      return displayServerError(error, "Storing a search diagnoses form");
+    }
+  }
+
+  @Action
+  [CodingActions.CHECK_APPOINTMENTS_COMPLETE](data) {
+    return ApiService.post("coding/check-appointments-complete", data)
+      .then(({ data }) => {
+        return data.data;
+      })
+      .catch(({ response }) => {
+        return displayServerError(response, "Storing a pre admissions form");
+      });
+  }
+
+  @Action
+  [CodingActions.GENERATE_CODING_REPORT](payload) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post("generate-coding-report", payload, {
+        responseType: "blob",
+      })
+        .then(({ data }) => {
+          return data;
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Generating a coding report");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
     }
   }
 }
