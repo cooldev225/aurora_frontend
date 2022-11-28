@@ -283,6 +283,7 @@
     <!--end::Card body-->
   </div>
   <!--end::details View-->
+  <ReportPreviewModal></ReportPreviewModal>
 </template>
 
 <style lang="scss">
@@ -319,10 +320,12 @@ import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import InputWrapper from "../../components/presets/FormElements/InputWrapper.vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { IScheduleItem } from "@/store/modules/ScheduleItemModule";
+import { Modal } from "bootstrap";
+import ReportPreviewModal from "@/views/patients/modals/ReportPreviewModal.vue";
 
 export default defineComponent({
   name: "patient-report",
-  components: { InfoSection, InputWrapper },
+  components: { InfoSection, InputWrapper, ReportPreviewModal },
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -473,6 +476,13 @@ export default defineComponent({
       formData.value.admin_items_used.splice(index, 1);
     };
 
+    const handlePreviewModal = () => {
+      console.log("");
+      const modal = new Modal(
+        document.getElementById("modal_report_document_preview")
+      );
+      modal.show();
+    };
     const submit = () => {
       loading.value = true;
       if (!formRef.value) {
@@ -636,6 +646,7 @@ export default defineComponent({
       selectNewAdminItems,
       deleteAdminItems,
       getItemName,
+      handlePreviewModal,
     };
   },
 });

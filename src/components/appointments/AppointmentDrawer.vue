@@ -117,7 +117,7 @@
           <div>
             <label class="fs-5 text-danger"
               >Allergies:
-              <span v-if="patient.allergies.length > 0">
+              <span v-if="patient.allergies?.length > 0">
                 <template
                   v-for="allergy in patient.allergies"
                   :key="allergy.id"
