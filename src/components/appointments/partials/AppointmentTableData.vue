@@ -24,7 +24,7 @@
           >-{{ appointment.clinic.nickname_code }}
         </span>
         <span
-          v-if="appointment.patient.allergies"
+          v-if="appointment.patient.allergies.length > 0"
           class="badge badge-light-danger opacity-50 mx-2"
           data-bs-toggle="tooltip"
           data-bs-html="true"
