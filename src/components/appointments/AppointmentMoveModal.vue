@@ -464,7 +464,7 @@ export default defineComponent({
       for (let key in patientInfoData.value)
         patientInfoData.value[key] = aptData.value.patient[key];
       for (let key in billingInfoData.value)
-        if (aptData.value.patient.billing.length)
+        if (aptData.value.patient.billing?.length)
           billingInfoData.value[key] = aptData.value.patient.billing[0][key];
       for (let key in otherInfoData.value)
         if (aptData.value.referral[key] !== undefined)
