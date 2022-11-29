@@ -6,13 +6,24 @@
   >
     {{ pdfId }}
     <div class="h-450px" id="documentField">
-      <div class="fv-row pdf_viewer_wrapper">
+      <div class="fv-row pdf_previewer_wrapper">
         <div id="document-preview" class="pdf_viewer"></div>
       </div>
     </div>
   </ModalWrapper>
 </template>
-
+<style lang="scss">
+.pdf_previewer_wrapper {
+  height: 100%;
+  > .pdf_viewer {
+    height: 100%;
+    overflow: auto;
+  }
+}
+.filter-appointment {
+  width: calc(100% - 215px);
+}
+</style>
 <script>
 import { defineComponent, ref, watchEffect, computed, watch } from "vue";
 import { useStore } from "vuex";
@@ -40,22 +51,23 @@ export default defineComponent({
 
     const tempFile = ref();
 
-    watch([], () => {
-      document.getElementById("document-preview").innerHTML = "";
-      store
-        .dispatch(Actions.FILE.PREVIEW, {
-          path: props.pdfId,
-          type: "PATIENT_PREVIEW_DOCUMENT",
-        })
-        .then((data) => {
-          tempFile.value = data;
-          let blob = new Blob([data], { type: "application/pdf" });
-          let objectUrl = URL.createObjectURL(blob);
-          pdf.embed(objectUrl + "#toolbar=0", "#document-preview");
-        })
-        .catch(() => {
-          console.log("Document Load Error");
-        });
+    watchEffect(() => {
+      props.pdfId &&
+        store
+          .dispatch(Actions.FILE.VIEW, {
+            path: props.pdfId,
+            type: "PATIENT_PREVIEW_DOCUMENT",
+          })
+          .then((data) => {
+            document.getElementById("document-preview").innerHTML = "";
+            tempFile.value = data;
+            let blob = new Blob([data], { type: "application/pdf" });
+            let objectUrl = URL.createObjectURL(blob);
+            pdf.embed(objectUrl + "#toolbar=0", "#document-preview");
+          })
+          .catch(() => {
+            console.log("Document Load Error");
+          });
     });
 
     return {

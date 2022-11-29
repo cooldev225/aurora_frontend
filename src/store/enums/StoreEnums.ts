@@ -18,7 +18,6 @@ const Actions = {
 
   FILE: {
     VIEW: "fileView",
-    PREVIEW: "filePreview",
   },
 
   PROFILE: {
