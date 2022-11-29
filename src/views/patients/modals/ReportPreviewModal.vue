@@ -7,17 +7,19 @@
     {{ pdfId }}
     <div class="h-450px" id="documentField">
       <div class="fv-row pdf_viewer_wrapper">
-        <div id="document-view" class="pdf_viewer"></div>
+        <div id="document-preview" class="pdf_viewer"></div>
       </div>
     </div>
   </ModalWrapper>
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect, computed } from "vue";
+import { defineComponent, ref, watchEffect, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Mutations } from "@/store/enums/StoreEnums";
+import { Actions } from "@/store/enums/StoreEnums";
+import pdf from "pdfobject";
 
 export default defineComponent({
   name: "report-preview-modal",
@@ -28,11 +30,34 @@ export default defineComponent({
     pdfId: { required: true },
   },
   setup(props) {
+    const store = useStore();
+
     const documentReportRef = ref();
     console.log("props", props);
     const updateRef = (_ref) => {
       documentReportRef.value = _ref;
     };
+
+    const tempFile = ref();
+
+    watch([], () => {
+      document.getElementById("document-preview").innerHTML = "";
+      store
+        .dispatch(Actions.FILE.PREVIEW, {
+          path: props.pdfId,
+          type: "PATIENT_PREVIEW_DOCUMENT",
+        })
+        .then((data) => {
+          tempFile.value = data;
+          let blob = new Blob([data], { type: "application/pdf" });
+          let objectUrl = URL.createObjectURL(blob);
+          pdf.embed(objectUrl + "#toolbar=0", "#document-preview");
+        })
+        .catch(() => {
+          console.log("Document Load Error");
+        });
+    });
+
     return {
       documentReportRef,
       updateRef,
