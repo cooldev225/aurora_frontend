@@ -16,8 +16,8 @@
               <el-form-item label="Photo">
                 <div class="d-flex">
                   <img
-                    v-if="showOldPhoto"
-                    :src="'http://52.64.63.21/' + profileFormData.photo"
+                    v-if="showOldPhoto && profileFormData.photo"
+                    :src="profileFormData.photo"
                     className="rounded me-2"
                     width="146"
                     height="146"
@@ -150,7 +150,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
+import { defineComponent, ref, onMounted, computed, watch } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -243,22 +243,48 @@ export default defineComponent({
       dialogVisible.value = true;
     };
 
+    const loadProfileImage = () => {
+      store
+        .dispatch(Actions.FILE.VIEW, {
+          type: "USER_PHOTO",
+          path: profileFormData.value.photo,
+        })
+        .then((data) => {
+          const blob = new Blob([data], { type: "application/image" });
+          const objectUrl = URL.createObjectURL(blob);
+          profileFormData.value.photo = objectUrl;
+        })
+        .catch(() => {
+          console.log("image load error");
+        });
+    };
+
     const submit = () => {
       if (!profileFormRef.value) {
         return;
       }
 
+      Object.keys(profileFormData.value).forEach((key) => {
+        if (key != "photo" && key != "abn_acn") {
+          Data.append(key, profileFormData.value[key]);
+        }
+      });
+
       profileFormRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          store
-            .dispatch(Actions.PROFILE.UPDATE, profileFormData.value)
-            .finally(() => {
-              loading.value = false;
-            });
+          store.dispatch(Actions.PROFILE.UPDATE, Data).finally(() => {
+            store.dispatch(Actions.PROFILE.VIEW);
+            loading.value = false;
+          });
         }
       });
     };
+
+    watch(profileFormData, () => {
+      console.log(["profileFormData", profileFormData.value]);
+      loadProfileImage();
+    });
 
     onMounted(() => {
       loading.value = true;
