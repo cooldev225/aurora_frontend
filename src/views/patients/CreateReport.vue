@@ -489,6 +489,7 @@ export default defineComponent({
       );
       modal.show();
     };
+
     const submit = () => {
       loading.value = true;
       if (!formRef.value) {
@@ -564,6 +565,7 @@ export default defineComponent({
             .then((data) => {
               console.log("report result", data);
               reportPreviewPdfId.value = data;
+              loading.value = false;
               handlePreviewModal();
               // store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
               //   id: data,
