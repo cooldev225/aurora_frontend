@@ -1,6 +1,6 @@
 <template>
   <LargeIconButton text="Add Alert" @click="handleAddAlert" />
-  <CreatePatientAlertModal :patientId="patient.id" />
+  <CreatePatientAlertModal :patientId="props.patient.id" />
 </template>
 
 <script lang="ts">
@@ -16,13 +16,13 @@ export default {
       type: Object as PropType<IPatient>,
     },
   },
-  setup() {
+  setup(props) {
     const handleAddAlert = () => {
       const modal = new Modal(document.getElementById("modal_patient_alert"));
       modal.show();
     };
 
-    return { handleAddAlert };
+    return { handleAddAlert, props };
   },
 };
 </script>

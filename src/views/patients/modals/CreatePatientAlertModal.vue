@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect } from "vue";
+import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -94,7 +94,6 @@ export default defineComponent({
     patientId: { type: Number, required: true },
   },
   setup(props) {
-    console.log(props);
     const store = useStore();
     const formRef = ref();
     const patientAlertModal = ref();

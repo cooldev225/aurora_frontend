@@ -161,7 +161,6 @@ export default defineComponent({
     };
 
     watchEffect(() => {
-      console.log(patient.value);
       tableData.value = patient.value.appointments;
     });
 
