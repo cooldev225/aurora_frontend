@@ -40,6 +40,7 @@
           class="btn btn-lg btn-primary"
           data-bs-dismiss="modal"
           type="button"
+          @click="save(true)"
         >
           Save And Send
         </button>
@@ -47,6 +48,7 @@
           class="btn btn-lg btn-primary"
           data-bs-dismiss="modal"
           type="button"
+          @click="save(false)"
         >
           Save
         </button>
@@ -99,6 +101,7 @@ export default defineComponent({
     patient: { required: true },
     appointment: { required: true },
     pdfId: { required: true },
+    handleSave: { required: true },
   },
   setup(props) {
     const store = useStore();
@@ -112,13 +115,8 @@ export default defineComponent({
 
     const tempFile = ref();
 
-    const submit = () => {
-      store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
-        id: data,
-      });
-      router.push({
-        path: "/patients/" + patientId + "/documents",
-      });
+    const save = (flag) => {
+      props.handleSave(flag);
     };
 
     watchEffect(() => {
@@ -143,6 +141,7 @@ export default defineComponent({
     return {
       documentReportRef,
       updateRef,
+      save,
     };
   },
 });

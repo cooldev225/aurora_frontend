@@ -287,6 +287,7 @@
     :patient="patientData"
     :appointment="appointmentData"
     :pdfId="reportPreviewPdfId"
+    :handleSave="handleSave"
   ></ReportPreviewModal>
 </template>
 
@@ -578,6 +579,84 @@ export default defineComponent({
       });
     };
 
+    const handleSave = (flag = false) => {
+      setTimeout(() => {
+        loading.value = true;
+        if (!formRef.value) {
+          loading.value = false;
+          return;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (formRef.value as any).validate(async (valid) => {
+          if (valid) {
+            const icd_10_code: string[] = [];
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            reportSections.value.forEach((section: any) => {
+              section.auto_texts.forEach((auto) => {
+                icd_10_code.push(auto.icd_10_code);
+              });
+            });
+
+            const proceduresUndertaken = [] as Array<Record<string, unknown>>;
+            formData.value.procedures_undertaken.forEach((item) => {
+              proceduresUndertaken.push({
+                id: item.id,
+                price: item.amount,
+              });
+            });
+
+            const extraItems = [] as Array<Record<string, unknown>>;
+            formData.value.extra_items_used.forEach((item) => {
+              extraItems.push({
+                id: item.id,
+                price: item.amount,
+              });
+            });
+
+            const adminItems = [] as Array<Record<string, unknown>>;
+            formData.value.admin_items_used.forEach((item) => {
+              adminItems.push({
+                id: item.id,
+                price: item.amount,
+              });
+            });
+
+            const data = {
+              title: formData.value.title,
+              patient_id: patientId,
+              doctorAddressBook:
+                appointmentData.value.referral?.doctor_address_book_name,
+              patientName:
+                patientData.value.first_name +
+                " " +
+                patientData.value.last_name,
+              appointmentId: appointmentData.value.id,
+              specialistId: appointmentData.value.specialist_id,
+              documentName: appointmentData.value.appointment_type_name,
+              procedures_undertaken: proceduresUndertaken,
+              extra_items_used: extraItems,
+              admin_items_used: adminItems,
+              icd_10_code: icd_10_code,
+              flag: flag,
+              file_name: reportPreviewPdfId.value,
+            };
+            store
+              .dispatch(StoreReportActions.REPORT.PATIENT, data)
+              .then((data) => {
+                loading.value = false;
+                store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
+                  id: data,
+                });
+                router.push({
+                  path: "/patients/" + patientId + "/documents",
+                });
+              });
+          }
+        });
+      }, 1000);
+    };
     const getItemName = (item: IScheduleItem) => {
       const isMbs = item.mbs_item_code ? true : false;
 
@@ -659,6 +738,7 @@ export default defineComponent({
       getItemName,
       handlePreviewModal,
       reportPreviewPdfId,
+      handleSave,
     };
   },
 });
