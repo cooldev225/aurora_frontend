@@ -10,3 +10,12 @@ export const convertToCurrency = (amount) => {
     currency: "AUD",
   }).format(total);
 };
+
+export const isMedicareValidationEnabled = () => {
+  const isEnabled = process.env.VUE_APP_ENABLE_MEDICARE_VALIDATION;
+  if (isEnabled && isEnabled != "false") {
+    return true;
+  }
+
+  return false;
+};
