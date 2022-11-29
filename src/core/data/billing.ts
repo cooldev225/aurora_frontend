@@ -13,9 +13,9 @@ export const convertToCurrency = (amount) => {
 
 export const isMedicareValidationEnabled = () => {
   const isEnabled = process.env.VUE_APP_ENABLE_MEDICARE_VALIDATION;
-  if (isEnabled && isEnabled != "false") {
-    return true;
+  if (isEnabled && isEnabled == "false") {
+    return false;
   }
 
-  return false;
+  return true;
 };
