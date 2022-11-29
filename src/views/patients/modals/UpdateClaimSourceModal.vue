@@ -3,6 +3,7 @@
     title="Update Claim Source"
     modalId="update_claim_source"
     modalRef="updateClaimSourceRef"
+    :is-static="true"
   >
     <el-form
       @submit.prevent
@@ -118,40 +119,44 @@
         Update Details
       </button>
 
-      <button
-        v-if="!validated"
-        :data-kt-indicator="loading ? 'on' : null"
-        class="btn btn-lg btn-primary me-2"
-        :disabled="loading"
-        @click="validateSource"
-      >
-        <span v-if="!loading" class="indicator-label">Validate</span>
-        <span v-if="loading" class="indicator-progress">
-          Validating...
-          <span
-            class="spinner-border spinner-border-sm align-middle ms-2"
-          ></span>
-        </span>
-      </button>
+      <template v-if="enableMedicareValidation">
+        <button
+          v-if="!validated"
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-primary me-2"
+          :disabled="loading"
+          @click="validateSource"
+        >
+          <span v-if="!loading" class="indicator-label">Validate</span>
+          <span v-if="loading" class="indicator-progress">
+            Validating...
+            <span
+              class="spinner-border spinner-border-sm align-middle ms-2"
+            ></span>
+          </span>
+        </button>
+
+        <button
+          v-if="validated && formData.billing_type == 1"
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-primary me-2"
+          :disabled="loading"
+          @click="handleCheckConcession"
+        >
+          <span v-if="!loading" class="indicator-label">Check Concession</span>
+          <span v-if="loading" class="indicator-progress">
+            Validating...
+            <span
+              class="spinner-border spinner-border-sm align-middle ms-2"
+            ></span>
+          </span>
+        </button>
+      </template>
 
       <button
-        v-if="validated && formData.billing_type == 1"
-        :data-kt-indicator="loading ? 'on' : null"
-        class="btn btn-lg btn-primary me-2"
-        :disabled="loading"
-        @click="handleCheckConcession"
-      >
-        <span v-if="!loading" class="indicator-label">Check Concession</span>
-        <span v-if="loading" class="indicator-progress">
-          Validating...
-          <span
-            class="spinner-border spinner-border-sm align-middle ms-2"
-          ></span>
-        </span>
-      </button>
-
-      <button
-        v-if="validated"
+        v-if="
+          (enableMedicareValidation && validated) || !enableMedicareValidation
+        "
         :data-kt-indicator="loading ? 'on' : null"
         class="btn btn-lg btn-primary me-2"
         :disabled="loading"
@@ -185,6 +190,7 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
 import PatientBillingTypes from "@/core/data/patient-billing-types";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
+import { isMedicareValidationEnabled } from "@/core/data/billing";
 
 export default defineComponent({
   name: "update-claim-source-modal",
@@ -209,6 +215,9 @@ export default defineComponent({
     const validationMessage = ref(null);
     const concessionValidated = ref(null);
     const concessionValidationMessage = ref(null);
+    const enableMedicareValidation = computed(() =>
+      isMedicareValidationEnabled()
+    );
     const formData = ref({
       member_number: null,
       member_reference_number: null,
@@ -384,6 +393,10 @@ export default defineComponent({
         });
     };
 
+    const closeModal = () => {
+      emit("closeModal");
+    };
+
     const validateSource = () => {
       if (minorId.value.minorId == null) {
         Swal.fire({
@@ -461,7 +474,7 @@ export default defineComponent({
       store
         .dispatch(PatientActions.CLAIM_SOURCE.UPDATE, data)
         .then(() => {
-          parentModal.value.hide();
+          closeModal();
         })
         .finally(() => {
           loading.value = false;
@@ -525,6 +538,8 @@ export default defineComponent({
       updateDetails,
       detailsToUpdateExist,
       handleUpdateDetails,
+      enableMedicareValidation,
+      closeModal,
     };
   },
 });

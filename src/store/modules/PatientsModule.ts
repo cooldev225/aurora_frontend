@@ -261,10 +261,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   [PatientActions.CLAIM_SOURCE.ADD](source) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.put("patients/billing", source)
+      return ApiService.put("patients/billing", source)
         .then(({ data }) => {
           this.context.dispatch(PatientActions.VIEW, source.patient_id);
-          return data;
+          return displaySuccessToast("Claim source added successfully");
         })
         .catch(({ response }) => {
           return displayServerError(response, "Add a patient claim source");
@@ -278,10 +278,10 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   [PatientActions.CLAIM_SOURCE.UPDATE](source) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.update("patients/billing", source.id, source)
+      return ApiService.update("patients/billing", source.id, source)
         .then(({ data }) => {
           this.context.dispatch(PatientActions.VIEW, source.patient_id);
-          return data;
+          return displaySuccessToast("Claim source updated successfully");
         })
         .catch(({ response }) => {
           return displayServerError(
