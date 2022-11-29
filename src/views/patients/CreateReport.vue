@@ -286,6 +286,7 @@
   <ReportPreviewModal
     :patient="patientData"
     :appointment="appointmentData"
+    :pdfId="reportPreviewPdfId"
   ></ReportPreviewModal>
 </template>
 
@@ -353,6 +354,8 @@ export default defineComponent({
     const proceduresUndertakenDataFiltered = ref<Array<IScheduleItem>>([]);
     const extraItemsUsedDataFiltered = ref<Array<IScheduleItem>>([]);
     const adminItemsUsedDataFiltered = ref<Array<IScheduleItem>>([]);
+
+    const reportPreviewPdfId = ref(null);
 
     const formData = ref({
       title: "",
@@ -560,6 +563,7 @@ export default defineComponent({
             .dispatch(StoreReportActions.REPORT.PATIENT_PREVIEW, data)
             .then((data) => {
               console.log("report result", data);
+              reportPreviewPdfId.value = data;
               handlePreviewModal();
               // store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
               //   id: data,
@@ -652,6 +656,7 @@ export default defineComponent({
       deleteAdminItems,
       getItemName,
       handlePreviewModal,
+      reportPreviewPdfId,
     };
   },
 });
