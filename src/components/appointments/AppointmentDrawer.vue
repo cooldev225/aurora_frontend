@@ -314,11 +314,9 @@ export default defineComponent({
       DrawerComponent?.getInstance("appointment-drawer")?.hide();
     };
 
-    const step = ref<number>();
-    const action = ref<string>();
     const handleMove = async () => {
-      step.value = 0;
-      action.value = "move";
+      aptData.value.step = 0;
+      aptData.value.action = "move";
       store.commit(AppointmentMutations.SET_APT.SELECT, aptData.value);
       const modal = new Modal(document.getElementById("modal_move_apt"));
       modal.show();
@@ -326,8 +324,8 @@ export default defineComponent({
     };
 
     const handleCopy = async () => {
-      step.value = 0;
-      action.value = "copy";
+      aptData.value.step = 0;
+      aptData.value.action = "copy";
       store.commit(AppointmentMutations.SET_APT.SELECT, aptData.value);
       const modal = new Modal(document.getElementById("modal_move_apt"));
       modal.show();

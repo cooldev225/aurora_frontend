@@ -30,4 +30,6 @@ export default interface IAppointment {
   appointment_type: IAppointmentType;
   charge_type: string;
   notes: string;
+  action: string;
+  step: number;
 }
