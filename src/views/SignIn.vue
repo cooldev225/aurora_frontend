@@ -10,7 +10,12 @@
       {{ errorMessage }}
     </div>
 
-    <el-form @submit.prevent="submit" :model="formData" :rules="rules">
+    <el-form
+      @submit.prevent="submit"
+      :model="formData"
+      :rules="rules"
+      id="sign-in-form"
+    >
       <div class="d-flex flex-column gap-4">
         <div v-if="!show2fa">
           <label class="fs-6 fw-bolder mb-2">Username</label>
@@ -135,34 +140,36 @@
   <!--end::Wrapper-->
 </template>
 
-<style>
-.el-input__inner {
-  background-color: #f5f8fa;
-  border-color: #f5f8fa;
-  color: #5e6278;
-  border-radius: 0.625rem;
-  font-size: 1.15rem;
-  padding: 0.825rem 1.5rem;
-  transition: color 0.2s ease, background-color 0.2s ease;
-  min-height: calc(1.5em + 1.65rem + 2px);
-  font-weight: 500;
-  line-height: 1.5;
-}
+<style lang="scss">
+#sign-in-form {
+  .el-input__inner {
+    background-color: #f5f8fa;
+    border-color: #f5f8fa;
+    color: #5e6278;
+    border-radius: 0.625rem;
+    font-size: 1.15rem;
+    padding: 0.825rem 1.5rem;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    min-height: calc(1.5em + 1.65rem + 2px);
+    font-weight: 500;
+    line-height: 1.5;
+  }
 
-.el-input__inner:hover {
-  border-color: #f5f8fa;
-}
+  .el-input__inner:hover {
+    border-color: #f5f8fa;
+  }
 
-.el-input__inner:active,
-.el-input__inner:focus {
-  background-color: #eef3f7;
-  border-color: #eef3f7;
-  outline: none;
-}
+  .el-input__inner:active,
+  .el-input__inner:focus {
+    background-color: #eef3f7;
+    border-color: #eef3f7;
+    outline: none;
+  }
 
-.two-factor > .el-input__inner {
-  font-size: 24px;
-  text-align: center;
+  .two-factor > .el-input__inner {
+    font-size: 24px;
+    text-align: center;
+  }
 }
 </style>
 
