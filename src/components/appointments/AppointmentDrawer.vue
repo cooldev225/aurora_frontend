@@ -105,12 +105,10 @@
           </div>
           <!--end::Appointment Info-->
           <el-divider />
-          <div v-if="appointment.notes">
+          <div v-if="appointment.note">
             <label class="fs-5 text-primary"
               >Notes:
-              <span class="text-black fs-5">{{
-                appointment.notes
-              }}</span></label
+              <span class="text-black fs-5">{{ appointment.note }}</span></label
             >
           </div>
           <el-divider />
