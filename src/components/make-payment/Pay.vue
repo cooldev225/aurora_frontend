@@ -665,11 +665,6 @@ export default defineComponent({
       paymentItemModal.value.show();
     };
 
-    //billingData
-    watch(billingData, () => {
-      console.log(["billingData=", billingData.value]);
-    });
-
     const deleteItem = (category, item) => {
       const index = billingData.value.charges[category].findIndex(
         (charge) => charge.id === item.id
