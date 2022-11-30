@@ -69,19 +69,43 @@
                 empty-table-text="No items added"
               >
                 <template v-slot:cell-mbs_code="{ row: item }">
-                  {{ item.mbs_item_code }}
+                  <span
+                    :class="{
+                      'text-decoration-line-through': item?.deleted_by,
+                    }"
+                  >
+                    {{ item.mbs_item_code }}
+                  </span>
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
-                  {{ item.description }}
+                  <template v-if="item.deleted_by">
+                    <span class="f2-7 fw-bold text-danger">
+                      Delete authorized by:
+                      {{ item.deleted_by?.full_name }}
+                    </span>
+                  </template>
+
+                  <template v-else>
+                    {{ item.name }}
+                  </template>
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
                   {{ convertToCurrency(item.price / 100) }}
+
+                  <template v-if="item.authorized_by && !item?.deleted_by">
+                    <br />
+                    <span class="f2-7 fw-bold text-muted">
+                      Authorized by:
+                      {{ item.authorized_by?.full_name }}
+                    </span>
+                  </template>
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
                   <button
+                    v-if="!item?.deleted_by"
                     type="button"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                     @click="handleEditItem('procedures', item)"
@@ -113,19 +137,43 @@
                 empty-table-text="No items added"
               >
                 <template v-slot:cell-mbs_code="{ row: item }">
-                  {{ item.mbs_item_code }}
+                  <span
+                    :class="{
+                      'text-decoration-line-through': item?.deleted_by,
+                    }"
+                  >
+                    {{ item.mbs_item_code }}
+                  </span>
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
-                  {{ item.description }}
+                  <template v-if="item.deleted_by">
+                    <span class="f2-7 fw-bold text-danger">
+                      Delete authorized by:
+                      {{ item.deleted_by?.full_name }}
+                    </span>
+                  </template>
+
+                  <template v-else>
+                    {{ item.name }}
+                  </template>
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
                   {{ convertToCurrency(item.price / 100) }}
+
+                  <template v-if="item.authorized_by && !item?.deleted_by">
+                    <br />
+                    <span class="f2-7 fw-bold text-muted">
+                      Authorized by:
+                      {{ item.authorized_by?.full_name }}
+                    </span>
+                  </template>
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
                   <button
+                    v-if="!item?.deleted_by"
                     type="button"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                     @click="handleEditItem('extra_items', item)"
@@ -156,20 +204,44 @@
                 :enable-items-per-page-dropdown="false"
                 empty-table-text="No items added"
               >
-                <template v-slot:cell-mbs_code="{ row: item }">
-                  {{ item.mbs_item_code }}
+                <template v-slot:cell-name="{ row: item }">
+                  <span
+                    :class="{
+                      'text-decoration-line-through': item?.deleted_by,
+                    }"
+                  >
+                    {{ item.name }}
+                  </span>
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
-                  {{ item.description }}
+                  <template v-if="item.deleted_by">
+                    <span class="f2-7 fw-bold text-danger">
+                      Delete authorized by:
+                      {{ item.deleted_by?.full_name }}
+                    </span>
+                  </template>
+
+                  <template v-else>
+                    {{ item.description }}
+                  </template>
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
                   {{ convertToCurrency(item.price / 100) }}
+
+                  <template v-if="item.authorized_by && !item?.deleted_by">
+                    <br />
+                    <span class="f2-7 fw-bold text-muted">
+                      Authorized by:
+                      {{ item.authorized_by?.full_name }}
+                    </span>
+                  </template>
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
                   <button
+                    v-if="!item?.deleted_by"
                     type="button"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                     @click="handleEditItem('admin_items', item)"
@@ -358,6 +430,12 @@
 
             <template v-slot:cell-amount="{ row: item }">
               {{ convertToCurrency(item.amount / 100) }}
+              <template v-if="item.amount < 0">
+                <br />
+                <span class="fs-7 fw-bold text-muted">
+                  Authorized by: {{ item.authorizing_user_name }}
+                </span>
+              </template>
             </template>
 
             <template v-slot:cell-method="{ row: item }">
@@ -436,7 +514,7 @@
     <!--end::Card-->
 
     <VerifyPinModal
-      customMessage="You are attempting to issue a refund. Please confirm your organization pin to continue."
+      customMessage="You are attempting to issue a refund."
       v-on:verified="verifyRefund"
       v-on:closeModal="closePinConfirmModal"
     />
@@ -461,7 +539,7 @@ import CardSection from "../presets/GeneralElements/CardSection.vue";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import PaymentItemModal from "@/components/make-payment/PaymentItemModal.vue";
-import VerifyPinModal from "@/components/organisations/VerifyPinModal.vue";
+import VerifyPinModal from "@/components/organisation-admins/VerifyPinModal.vue";
 import { Modal } from "bootstrap";
 import moment from "moment";
 
@@ -488,6 +566,7 @@ export default defineComponent({
     const viewingPaymentInvoice = ref<number | null>(null);
     const sendingAppointmentInvoice = ref<boolean>(false);
     const viewingAppointmentInvoice = ref<boolean>(false);
+    const authorizedBy = ref<number | null>(null);
     const refundVerified = ref(false);
     const formRef = ref<null | HTMLFormElement>(null);
     const formData = ref({
@@ -591,10 +670,18 @@ export default defineComponent({
         const charges = billingData.value.charges.procedures;
 
         charges.forEach((charge) => {
-          list.push({
+          const item = {
             id: charge.id,
             price: charge.price,
-          });
+            authorized_by: charge?.authorized_by
+              ? charge.authorized_by?.id ?? charge.authorized_by
+              : null,
+            deleted_by: charge?.deleted_by
+              ? charge.deleted_by?.id ?? charge.deleted_by
+              : null,
+          };
+
+          list.push(item);
         });
       }
 
@@ -608,10 +695,18 @@ export default defineComponent({
         const charges = billingData.value.charges.extra_items;
 
         charges.forEach((charge) => {
-          list.push({
+          const item = {
             id: charge.id,
             price: charge.price,
-          });
+            authorized_by: charge?.authorized_by
+              ? charge.authorized_by?.id ?? charge.authorized_by
+              : null,
+            deleted_by: charge?.deleted_by
+              ? charge.deleted_by?.id ?? charge.deleted_by
+              : null,
+          };
+
+          list.push(item);
         });
       }
 
@@ -625,10 +720,18 @@ export default defineComponent({
         const charges = billingData.value.charges.admin_items;
 
         charges.forEach((charge) => {
-          list.push({
+          const item = {
             id: charge.id,
             price: charge.price,
-          });
+            authorized_by: charge?.authorized_by
+              ? charge.authorized_by?.id ?? charge.authorized_by
+              : null,
+            deleted_by: charge?.deleted_by
+              ? charge.deleted_by?.id ?? charge.deleted_by
+              : null,
+          };
+
+          list.push(item);
         });
       }
 
@@ -667,11 +770,11 @@ export default defineComponent({
       return total;
     });
 
-    const handleDeleteItem = () => {
+    const handleDeleteItem = (authorizedBy) => {
       const category = paymentItemModalData.value.category;
       const item = paymentItemModalData.value.item;
 
-      deleteItem(category, item);
+      deleteItem(category, item, authorizedBy);
     };
 
     const handleEditItem = (category, item) => {
@@ -704,12 +807,14 @@ export default defineComponent({
       paymentItemModal.value.show();
     };
 
-    const deleteItem = (category, item) => {
-      const index = billingData.value.charges[category].findIndex(
+    const deleteItem = (category, item, authorizedBy) => {
+      const deletingItem = billingData.value.charges[category].find(
         (charge) => charge.id === item.id
       );
 
-      billingData.value.charges[category].splice(index, 1);
+      deletingItem.price = 0;
+      deletingItem.deleted_by = authorizedBy;
+      console.log(proceduresUndertakenList.value);
       updateAppointmentDetail();
     };
 
@@ -724,6 +829,7 @@ export default defineComponent({
     };
 
     const addPaymentItem = (item) => {
+      console.log("Pay", item);
       item.price = item.price * 100;
       billingData.value.charges[paymentItemModalData.value.category].push(item);
       updateAppointmentDetail();
@@ -753,8 +859,9 @@ export default defineComponent({
       verifyPinModal.value.hide();
     };
 
-    const verifyRefund = () => {
+    const verifyRefund = (authorizingUser) => {
       refundVerified.value = true;
+      authorizedBy.value = authorizingUser;
       closePinConfirmModal();
     };
 
@@ -825,7 +932,7 @@ export default defineComponent({
       if (formData.value.amount < 0 && refundVerified.value === false) {
         if (!verifyPinModal.value) {
           verifyPinModal.value = new Modal(
-            document.getElementById("modal_verify_organization_pin")
+            document.getElementById("modal_verify_authorization_pin")
           );
         }
 
@@ -847,10 +954,23 @@ export default defineComponent({
           billingData.value.appointment.patient_details.email;
       }
 
+      let submitData = {};
+
+      if (authorizedBy.value) {
+        submitData = {
+          ...formData.value,
+          authorized_by: authorizedBy.value,
+        };
+      } else {
+        submitData = {
+          ...formData.value,
+        };
+      }
+
       loading.value = true;
 
       store
-        .dispatch(Actions.MAKE_PAYMENT.CREATE, formData.value)
+        .dispatch(Actions.MAKE_PAYMENT.CREATE, submitData)
         .then(() => {
           store.dispatch(
             Actions.MAKE_PAYMENT.VIEW,
@@ -880,6 +1000,7 @@ export default defineComponent({
         .finally(() => {
           loading.value = false;
           refundVerified.value = false;
+          authorizedBy.value = null;
         });
     };
 

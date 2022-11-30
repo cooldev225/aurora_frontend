@@ -98,7 +98,7 @@ import { convertToCurrency } from "@/core/data/billing";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
 import { Modal } from "bootstrap";
-import VerifyPinModal from "@/components/organisations/VerifyPinModal.vue";
+import VerifyPinModal from "@/components/organisation-admins/VerifyPinModal.vue";
 
 export default defineComponent({
   name: "payment-item-modal",
@@ -123,7 +123,8 @@ export default defineComponent({
     const category = ref("");
     const scheduleItems = computed(() => store.getters.scheduleItemList);
     const canEditItem = ref(false);
-    const verifyOrganizationPinModal = ref();
+    const verifyAuthorizationPinModal = ref();
+    const authorizedBy = ref(null);
 
     const rules = ref({
       billing_type: [
@@ -149,23 +150,25 @@ export default defineComponent({
       ],
     });
 
-    const enableEditPrice = () => {
+    const enableEditPrice = (authorizingUser) => {
+      console.log("User", authorizingUser);
       canEditItem.value = true;
+      authorizedBy.value = authorizingUser;
       closePinConfirmModal();
     };
 
     const openPinConfirmModal = () => {
-      if (!verifyOrganizationPinModal.value) {
-        verifyOrganizationPinModal.value = new Modal(
+      if (!verifyAuthorizationPinModal.value) {
+        verifyAuthorizationPinModal.value = new Modal(
           document.getElementById("modal_verify_org_pin_item_modal")
         );
       }
 
-      verifyOrganizationPinModal.value.show();
+      verifyAuthorizationPinModal.value.show();
     };
 
     const closePinConfirmModal = () => {
-      verifyOrganizationPinModal.value.hide();
+      verifyAuthorizationPinModal.value.hide();
     };
 
     const closeModal = () => {
@@ -190,7 +193,7 @@ export default defineComponent({
         },
       }).then((result) => {
         if (result.isConfirmed) {
-          emit("deleteItem");
+          emit("deleteItem", authorizedBy.value);
           closeModal();
         }
       });
@@ -205,6 +208,10 @@ export default defineComponent({
         price: formData.value.price,
       };
 
+      if (authorizedBy.value) {
+        data.authorized_by = authorizedBy.value;
+      }
+      console.log(data);
       emit("submitItem", data);
     };
 
