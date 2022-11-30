@@ -317,7 +317,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref, onMounted, } from "vue";
+import { defineComponent, computed, ref, onMounted } from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
