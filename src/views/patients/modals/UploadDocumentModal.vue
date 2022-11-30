@@ -4,34 +4,61 @@
     modalId="upload_document"
     :modalRef="uploadDocumentRef"
   >
-    <el-form @submit.prevent="submit()" :model="formData" ref="formRef">
+    <el-form
+      @submit.prevent="submit()"
+      :model="formData"
+      :rules="rules"
+      ref="formRef"
+    >
       <div class="row">
-        <InputWrapper class="col-6" label="Document Title" prop="document_name">
+        <InputWrapper
+          required
+          class="col-6"
+          label="Document Title"
+          prop="document_name"
+        >
           <el-input type="text" v-model.number="formData.document_name" />
         </InputWrapper>
-        <InputWrapper class="col-6" label="Document Type" prop="document_type">
+        <InputWrapper
+          required
+          class="col-6"
+          label="Document Type"
+          prop="document_type"
+        >
           <el-select
             class="w-100 mb-5"
             placeholder="Select Document Type"
             v-model="formData.document_type"
           >
-            <template v-for="type in patientDocumentTypes" :key="type.value">
-              <el-option :value="type.value" :label="type.label">
-                <inline-svg class="me-5" :src="type.icon" />
-                {{ type.label }}
+            <template
+              v-for="docType in patientDocumentTypes"
+              :key="docType.value"
+            >
+              <el-option :value="docType.value" :label="docType.label">
+                <inline-svg class="me-5" :src="docType.icon" />
+                {{ docType.label }}
               </el-option>
             </template>
           </el-select>
         </InputWrapper>
 
-        <InputWrapper class="col-12 f-row row" label="Attach document to: ">
-          <el-radio-group v-model="attachmentType" size="large">
-            <el-radio-button value="appointment" label="Appointment" />
-            <el-radio-button value="specialist" label="Specialist" />
+        <InputWrapper
+          required
+          class="col-6 f-row row"
+          label="Attach document to:"
+          v-if="attachmentType"
+        >
+          <el-radio-group
+            v-if="attachmentType"
+            v-model="attachmentType"
+            size="large"
+          >
+            <el-radio-button label="Appointment" />
+            <el-radio-button label="Specialist" />
           </el-radio-group>
         </InputWrapper>
         <InputWrapper
-          v-if="attachmentType != 'specialist'"
+          v-if="attachmentType.toLocaleLowerCase() === 'appointment'"
           class="col-6"
           label="Appointment"
           prop="appointment"
@@ -53,12 +80,19 @@
             />
           </el-select>
         </InputWrapper>
-        <InputWrapper class="col-6" label="Specialist" prop="specialist">
+        <InputWrapper
+          class="col-6"
+          label="Specialist"
+          prop="specialist"
+          v-if="attachmentType.toLocaleLowerCase() !== 'appointment'"
+        >
           <el-select
             v-model="formData.specialist_id"
             class="w-100"
             placeholder="Select Specialist"
-            :disabled="attachmentType == 'appointment' ? true : false"
+            :disabled="
+              attachmentType.toLocaleLowerCase() == 'appointment' ? true : false
+            "
           >
             <el-option
               v-for="item in specialistList"
@@ -124,7 +158,6 @@ import { defineComponent, ref, computed, onMounted, PropType } from "vue";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
-import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import patientDocumentTypes from "@/core/data/patient-document-types";
@@ -145,7 +178,7 @@ export default defineComponent({
     const uploadDisabled = ref<boolean>(false);
     const loading = ref<boolean>(false);
     const upload = ref();
-    const attachmentType = ref("appointment");
+    const attachmentType = ref("Appointment");
     let Data = new FormData();
     const fileList = ref([]);
 
@@ -195,6 +228,7 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
+          console.log(formData.value);
           loading.value = true;
           Object.keys(formData.value).forEach((key) => {
             Data.append(key, formData.value[key]);
@@ -222,8 +256,6 @@ export default defineComponent({
           formRef.value.resetFields();
           upload.value.clearFiles();
           fileList.value = [];
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
@@ -232,16 +264,15 @@ export default defineComponent({
       store.dispatch(Actions.SPECIALIST.LIST);
     });
 
-    const handleChange = (file, fileList) => {
+    const handleChange = (file) => {
       Data = new FormData();
       upload.value.clearFiles();
       uploadDisabled.value = false;
       Data.append("file", file.raw);
-      //uploadDisabled.value = fileList.length >= 1;
     };
 
-    const handleRemove = (file, fileList) => {
-      //uploadDisabled.value = fileList.length - 1;
+    const handleRemove = () => {
+      fileList.value = [];
       Data.delete("file");
     };
 

@@ -28,8 +28,8 @@
             <!--begin::Actions-->
             <div class="my-4">
               <div class="d-flex gap-3">
-                <UploadDocumentButton :patient="patient" />
-                <AddAlertButton :patient="patient" />
+                <UploadDocumentButton v-if="patient.id" :patient="patient" />
+                <AddAlertButton v-if="patient.id" :patient="patient" />
               </div>
             </div>
           </div>
