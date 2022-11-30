@@ -29,5 +29,6 @@ export default interface IAppointment {
   referral: IAppointmentReferral;
   appointment_type: IAppointmentType;
   charge_type: string;
-  notes: string;
+  action: string;
+  step: number;
 }

@@ -105,19 +105,18 @@
           </div>
           <!--end::Appointment Info-->
           <el-divider />
-          <div v-if="appointment.notes">
+          <div v-if="appointment.note">
             <label class="fs-5 text-primary"
               >Notes:
-              <span class="text-black fs-5">{{
-                appointment.notes
-              }}</span></label
+              <span class="text-black fs-5">{{ appointment.note }}</span></label
             >
           </div>
           <el-divider />
           <div>
             <label class="fs-5 text-danger"
               >Allergies:
-              <span v-if="patient.allergies?.length > 0">
+              <span v-if="patient.allergies && patient.allergies.length > 0">
+
                 <template
                   v-for="allergy in patient.allergies"
                   :key="allergy.id"
@@ -314,11 +313,9 @@ export default defineComponent({
       DrawerComponent?.getInstance("appointment-drawer")?.hide();
     };
 
-    const step = ref<number>();
-    const action = ref<string>();
     const handleMove = async () => {
-      step.value = 0;
-      action.value = "move";
+      aptData.value.step = 0;
+      aptData.value.action = "move";
       store.commit(AppointmentMutations.SET_APT.SELECT, aptData.value);
       const modal = new Modal(document.getElementById("modal_move_apt"));
       modal.show();
@@ -326,8 +323,8 @@ export default defineComponent({
     };
 
     const handleCopy = async () => {
-      step.value = 0;
-      action.value = "copy";
+      aptData.value.step = 0;
+      aptData.value.action = "copy";
       store.commit(AppointmentMutations.SET_APT.SELECT, aptData.value);
       const modal = new Modal(document.getElementById("modal_move_apt"));
       modal.show();
