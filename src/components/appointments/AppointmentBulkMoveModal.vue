@@ -4,7 +4,7 @@
     id="modal_bulk_move_apt"
     tabindex="-1"
     aria-hidden="true"
-    ref="BulkMoveAptModalRef"
+    ref="bulkMoveAptModalRef"
   >
     <div
       :class="
@@ -348,7 +348,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
 
-    const MoveAptModalRef = ref(null);
+    const bulkMoveAptModalRef = ref(null);
     const loading = ref(false);
     const aptData = computed(() => store.getters.getAptSelected);
     const aptTypelist = computed(() => store.getters.getAptTypesList);
@@ -429,6 +429,7 @@ export default defineComponent({
 
       bulkModal.addEventListener("hidden.bs.modal", function () {
         clearData();
+        formData.value.r
       });
     });
 
@@ -481,7 +482,7 @@ export default defineComponent({
         .then(() => {
           handleCancel();
         });
-      hideModal(MoveAptModalRef.value);
+      hideModal(bulkMoveAptModalRef.value);
     };
 
     const getAppointmentsFrom = () => {
@@ -693,7 +694,9 @@ export default defineComponent({
 
       updatedAppointments.value.oldApt.push({ ...apt });
       apt.start_time = startTime;
-      apt.arrival_time = startTime;
+      apt.arrival_time = moment(date + "T" + startTime)
+        .subtract(30, "minutes")
+        .format("HH:mm:ss");
       apt.end_time = endTime;
       apt.specialist_id = specialist.id;
       apt.specialist = specialist;
@@ -775,7 +778,7 @@ export default defineComponent({
 
     const handleCancel = () => {
       clearData();
-      hideModal(MoveAptModalRef.value);
+      hideModal(bulkMoveAptModalRef.value);
     };
 
     return {
@@ -785,7 +788,7 @@ export default defineComponent({
       cliniclist,
       allSpecialist,
       formData,
-      MoveAptModalRef,
+      bulkMoveAptModalRef,
       loading,
       handleSearch,
       handleMove,
