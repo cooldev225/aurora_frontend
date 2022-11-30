@@ -233,15 +233,21 @@
 
                 <button
                   class="btn btn-light-primary w-100 mt-6"
-                  :disabled="sendingInvoice"
-                  :data-kt-indicator="sendingInvoice ? 'on' : null"
-                  @click="sendInvoice"
+                  :disabled="sendingAppointmentInvoice"
+                  :data-kt-indicator="sendingAppointmentInvoice ? 'on' : null"
+                  @click="sendAppointmentInvoice"
                 >
-                  <span v-if="!sendingInvoice" class="indicator-label">
+                  <span
+                    v-if="!sendingAppointmentInvoice"
+                    class="indicator-label"
+                  >
                     Send Appointment Invoice
                   </span>
 
-                  <span v-if="sendingInvoice" class="indicator-progress">
+                  <span
+                    v-if="sendingAppointmentInvoice"
+                    class="indicator-progress"
+                  >
                     Sending...
                     <span
                       class="spinner-border spinner-border-sm align-middle ms-2"
@@ -251,15 +257,21 @@
 
                 <button
                   class="btn btn-light-primary w-100 mt-2"
-                  :disabled="viewingInvoice"
-                  :data-kt-indicator="viewingInvoice ? 'on' : null"
-                  @click="viewInvoice"
+                  :disabled="viewingAppointmentInvoice"
+                  :data-kt-indicator="viewingAppointmentInvoice ? 'on' : null"
+                  @click="viewAppointmentInvoice"
                 >
-                  <span v-if="!viewingInvoice" class="indicator-label">
+                  <span
+                    v-if="!viewingAppointmentInvoice"
+                    class="indicator-label"
+                  >
                     View Appointment Invoice
                   </span>
 
-                  <span v-if="viewingInvoice" class="indicator-progress">
+                  <span
+                    v-if="viewingAppointmentInvoice"
+                    class="indicator-progress"
+                  >
                     Loading...
                     <span
                       class="spinner-border spinner-border-sm align-middle ms-2"
@@ -358,19 +370,31 @@
               }}
             </template>
 
+            <template v-slot:cell-confirmed_by="{ row: item }">
+              {{ item.confirmed_user.full_name }}
+            </template>
+
             <template v-slot:cell-actions="{ row: item }">
               <div class="">
                 <button
                   class="btn btn-light-primary w-100 mt-6"
-                  :disabled="sendingInvoice"
-                  :data-kt-indicator="sendingInvoice ? 'on' : null"
-                  @click="resendInvoice(item.id)"
+                  :disabled="sendingPaymentInvoice == item.id"
+                  :data-kt-indicator="
+                    sendingPaymentInvoice == item.id ? 'on' : null
+                  "
+                  @click="sendPaymentInvoice(item.id)"
                 >
-                  <span v-if="!sendingInvoice" class="indicator-label">
-                    Resend Invoice to Patient
+                  <span
+                    v-if="sendingPaymentInvoice != item.id"
+                    class="indicator-label"
+                  >
+                    Send Invoice to Patient
                   </span>
 
-                  <span v-if="sendingInvoice" class="indicator-progress">
+                  <span
+                    v-if="sendingPaymentInvoice == item.id"
+                    class="indicator-progress"
+                  >
                     Sending...
                     <span
                       class="spinner-border spinner-border-sm align-middle ms-2"
@@ -380,15 +404,23 @@
 
                 <button
                   class="btn btn-light-primary w-100 mt-2"
-                  :disabled="viewingInvoice"
-                  :data-kt-indicator="viewingInvoice ? 'on' : null"
-                  @click="reviewInvoice(item.id)"
+                  :disabled="viewingPaymentInvoice == item.id"
+                  :data-kt-indicator="
+                    viewingPaymentInvoice == item.id ? 'on' : null
+                  "
+                  @click="viewPaymentInvoice(item.id)"
                 >
-                  <span v-if="!viewingInvoice" class="indicator-label">
+                  <span
+                    v-if="viewingPaymentInvoice != item.id"
+                    class="indicator-label"
+                  >
                     View Invoice
                   </span>
 
-                  <span v-if="viewingInvoice" class="indicator-progress">
+                  <span
+                    v-if="viewingPaymentInvoice == item.id"
+                    class="indicator-progress"
+                  >
                     Loading...
                     <span
                       class="spinner-border spinner-border-sm align-middle ms-2"
@@ -452,8 +484,10 @@ export default defineComponent({
     const paymentItemModal = ref();
     const verifyPinModal = ref();
     const loading = ref(false);
-    const sendingInvoice = ref(false);
-    const viewingInvoice = ref(false);
+    const sendingPaymentInvoice = ref<number | null>(null);
+    const viewingPaymentInvoice = ref<number | null>(null);
+    const sendingAppointmentInvoice = ref<boolean>(false);
+    const viewingAppointmentInvoice = ref<boolean>(false);
     const refundVerified = ref(false);
     const formRef = ref<null | HTMLFormElement>(null);
     const formData = ref({
@@ -536,6 +570,11 @@ export default defineComponent({
       {
         name: "Date",
         key: "date",
+        sortable: true,
+      },
+      {
+        name: "Confirmed By",
+        key: "confirmed_by",
         sortable: true,
       },
       {
@@ -719,22 +758,22 @@ export default defineComponent({
       closePinConfirmModal();
     };
 
-    const sendInvoice = () => {
-      sendingInvoice.value = true;
+    const sendAppointmentInvoice = () => {
+      sendingAppointmentInvoice.value = true;
       store.dispatch(Actions.INVOICE.SEND, appointmentId).finally(() => {
-        sendingInvoice.value = false;
+        sendingAppointmentInvoice.value = false;
       });
     };
 
-    const resendInvoice = (id) => {
-      sendingInvoice.value = true;
+    const sendPaymentInvoice = (id) => {
+      sendingPaymentInvoice.value = id;
       store.dispatch(Actions.MAKE_PAYMENT.INVOICE.SEND, id).finally(() => {
-        sendingInvoice.value = false;
+        sendingPaymentInvoice.value = null;
       });
     };
 
-    const viewInvoice = () => {
-      viewingInvoice.value = true;
+    const viewAppointmentInvoice = () => {
+      viewingAppointmentInvoice.value = true;
       store
         .dispatch(Actions.INVOICE.VIEW, appointmentId)
         .then((data) => {
@@ -743,12 +782,12 @@ export default defineComponent({
           window.open(objectUrl, "_blank");
         })
         .finally(() => {
-          viewingInvoice.value = false;
+          viewingAppointmentInvoice.value = false;
         });
     };
 
-    const reviewInvoice = (id) => {
-      viewingInvoice.value = true;
+    const viewPaymentInvoice = (id) => {
+      viewingPaymentInvoice.value = id;
       store
         .dispatch(Actions.MAKE_PAYMENT.INVOICE.VIEW, id)
         .then((data) => {
@@ -757,7 +796,7 @@ export default defineComponent({
           window.open(objectUrl, "_blank");
         })
         .finally(() => {
-          viewingInvoice.value = false;
+          viewingPaymentInvoice.value = null;
         });
     };
 
@@ -889,14 +928,16 @@ export default defineComponent({
       handleSubmitPayment,
       verifyRefund,
       closePinConfirmModal,
-      sendingInvoice,
-      sendInvoice,
-      viewingInvoice,
-      viewInvoice,
+      sendingPaymentInvoice,
+      sendAppointmentInvoice,
+      viewingPaymentInvoice,
+      viewAppointmentInvoice,
       prevPaymentsTableHeader,
       moment,
-      resendInvoice,
-      reviewInvoice,
+      sendPaymentInvoice,
+      viewPaymentInvoice,
+      sendingAppointmentInvoice,
+      viewingAppointmentInvoice,
     };
   },
 });
