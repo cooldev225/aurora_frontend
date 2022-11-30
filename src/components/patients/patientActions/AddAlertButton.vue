@@ -1,6 +1,9 @@
 <template>
   <LargeIconButton text="Add Alert" @click="handleAddAlert" />
-  <CreatePatientAlertModal :patientId="props.patient.id" />
+  <CreatePatientAlertModal
+    v-if="props.patient.id"
+    :patientId="props.patient.id"
+  />
 </template>
 
 <script lang="ts">
