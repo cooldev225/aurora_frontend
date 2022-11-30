@@ -2,14 +2,17 @@
   <ModalWrapper
     :title="modalTitle"
     :modalId="modalId"
-    modalRef="verifyOrganizationPinModalRef"
+    modalRef="verifyAuthorizationPinModalRef"
     :is-static="true"
   >
-    <p v-if="message">{{ message }}</p>
+    <p class="fs-6 text-center mb-6">
+      {{ message }}
+      Please enter an administrator pin to continue.
+    </p>
 
     <div class="row justify-content-md-center mb-4">
       <label class="text-muted fs-6 fw-bold mb-2 d-block">
-        Organization Pin
+        Authorize Access
       </label>
 
       <el-input
@@ -18,13 +21,6 @@
         placeholder="Enter pin"
       />
     </div>
-
-    <AlertBadge
-      v-if="verificationFailed"
-      text="The pin entered is incorrect"
-      color="danger"
-      icon=""
-    />
 
     <div class="d-flex justify-content-end">
       <button
@@ -65,13 +61,9 @@ import {
 import { useStore } from "vuex";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
-import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 
 export default defineComponent({
   name: "verify-organization-pin-modal",
-  components: {
-    AlertBadge,
-  },
   emits: ["verified", "closeModal"],
   props: {
     title: { type: [String, null] },
@@ -81,14 +73,15 @@ export default defineComponent({
   setup(props, { emit }) {
     const store = useStore();
     const user = computed(() => store.getters.currentUser);
-    const verifyOrganizationPinModalRef = ref(null);
+    const verifyAuthorizationPinModalRef = ref(null);
     const formData = ref({
       pin: "",
     });
     const loading = ref(false);
-    const verificationFailed = ref(false);
     const modalTitle = computed(() => props.title ?? "Verify Access");
-    const modalId = computed(() => props.customId ?? "verify_organization_pin");
+    const modalId = computed(
+      () => props.customId ?? "verify_authorization_pin"
+    );
     const message = computed(() => props.customMessage);
 
     const closeModal = () => {
@@ -96,33 +89,11 @@ export default defineComponent({
     };
 
     const submit = () => {
-      const data = {
-        organization_id: user.value.organization.id,
-        pin: formData.value.pin,
-      };
-
       loading.value = true;
       store
-        .dispatch(Actions.ORG.PIN.VERIFY, data)
-        .then((verified) => {
-          if (verified) {
-            Swal.fire({
-              text: `Pin verified!`,
-              icon: "success",
-              buttonsStyling: false,
-              confirmButtonText: "Okay",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-            });
-
-            emit("verified");
-          } else {
-            throw new Error();
-          }
-        })
-        .catch(({ error }) => {
-          verificationFailed.value = true;
+        .dispatch(Actions.PROFILE.PIN.VERIFY, formData.value)
+        .then((data) => {
+          emit("verified", data.confirming_user);
         })
         .finally(() => {
           loading.value = false;
@@ -130,11 +101,10 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      const modal = document.getElementById("modal_verify_organization_pin");
+      const modal = document.getElementById("modal_verify_authorization_pin");
       modal.addEventListener("shown.bs.modal", function () {
         loading.value = false;
         formData.value.pin = "";
-        verificationFailed.value = false;
       });
     });
 
@@ -144,7 +114,6 @@ export default defineComponent({
       loading,
       closeModal,
       submit,
-      verificationFailed,
       modalTitle,
       modalId,
       message,

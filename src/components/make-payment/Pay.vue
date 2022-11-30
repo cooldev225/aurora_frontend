@@ -73,11 +73,27 @@
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
-                  {{ item.description }}
+                  {{ item.name }}
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
                   {{ convertToCurrency(item.price / 100) }}
+
+                  <template v-if="item.authorized_by">
+                    <br />
+                    <span class="f2-7 fw-bold text-muted">
+                      Authorized by:
+                      {{ item.authorized_by?.full_name }}
+                    </span>
+                  </template>
+
+                  <template v-if="item.deleted_by">
+                    <br />
+                    <span class="f2-7 fw-bold text-danger">
+                      Deleted by:
+                      {{ item.deleted_by?.full_name }}
+                    </span>
+                  </template>
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
@@ -358,6 +374,12 @@
 
             <template v-slot:cell-amount="{ row: item }">
               {{ convertToCurrency(item.amount / 100) }}
+              <template v-if="item.amount < 0">
+                <br />
+                <span class="fs-7 fw-bold text-muted">
+                  Authorized by: {{ item.authorizing_user_name }}
+                </span>
+              </template>
             </template>
 
             <template v-slot:cell-method="{ row: item }">
@@ -436,7 +458,7 @@
     <!--end::Card-->
 
     <VerifyPinModal
-      customMessage="You are attempting to issue a refund. Please confirm your organization pin to continue."
+      customMessage="You are attempting to issue a refund."
       v-on:verified="verifyRefund"
       v-on:closeModal="closePinConfirmModal"
     />
@@ -461,7 +483,7 @@ import CardSection from "../presets/GeneralElements/CardSection.vue";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import PaymentItemModal from "@/components/make-payment/PaymentItemModal.vue";
-import VerifyPinModal from "@/components/organisations/VerifyPinModal.vue";
+import VerifyPinModal from "@/components/organisation-admins/VerifyPinModal.vue";
 import { Modal } from "bootstrap";
 import moment from "moment";
 
@@ -488,6 +510,7 @@ export default defineComponent({
     const viewingPaymentInvoice = ref<number | null>(null);
     const sendingAppointmentInvoice = ref<boolean>(false);
     const viewingAppointmentInvoice = ref<boolean>(false);
+    const authorizedBy = ref<number | null>(null);
     const refundVerified = ref(false);
     const formRef = ref<null | HTMLFormElement>(null);
     const formData = ref({
@@ -591,10 +614,21 @@ export default defineComponent({
         const charges = billingData.value.charges.procedures;
 
         charges.forEach((charge) => {
-          list.push({
-            id: charge.id,
-            price: charge.price,
-          });
+          let item = {};
+
+          if (charge?.authorized_by) {
+            item = {
+              id: charge.id,
+              price: charge.price,
+              authorized_by: charge.authorized_by,
+            };
+          } else {
+            item = {
+              id: charge.id,
+              price: charge.price,
+            };
+          }
+          list.push(item);
         });
       }
 
@@ -608,10 +642,21 @@ export default defineComponent({
         const charges = billingData.value.charges.extra_items;
 
         charges.forEach((charge) => {
-          list.push({
-            id: charge.id,
-            price: charge.price,
-          });
+          let item = {};
+
+          if (charge?.authorized_by) {
+            item = {
+              id: charge.id,
+              price: charge.price,
+              authorized_by: charge.authorized_by,
+            };
+          } else {
+            item = {
+              id: charge.id,
+              price: charge.price,
+            };
+          }
+          list.push(item);
         });
       }
 
@@ -625,10 +670,21 @@ export default defineComponent({
         const charges = billingData.value.charges.admin_items;
 
         charges.forEach((charge) => {
-          list.push({
-            id: charge.id,
-            price: charge.price,
-          });
+          let item = {};
+
+          if (charge?.authorized_by) {
+            item = {
+              id: charge.id,
+              price: charge.price,
+              authorized_by: charge.authorized_by,
+            };
+          } else {
+            item = {
+              id: charge.id,
+              price: charge.price,
+            };
+          }
+          list.push(item);
         });
       }
 
@@ -724,6 +780,7 @@ export default defineComponent({
     };
 
     const addPaymentItem = (item) => {
+      console.log("Pay", item);
       item.price = item.price * 100;
       billingData.value.charges[paymentItemModalData.value.category].push(item);
       updateAppointmentDetail();
@@ -753,8 +810,9 @@ export default defineComponent({
       verifyPinModal.value.hide();
     };
 
-    const verifyRefund = () => {
+    const verifyRefund = (authorizingUser) => {
       refundVerified.value = true;
+      authorizedBy.value = authorizingUser;
       closePinConfirmModal();
     };
 
@@ -825,7 +883,7 @@ export default defineComponent({
       if (formData.value.amount < 0 && refundVerified.value === false) {
         if (!verifyPinModal.value) {
           verifyPinModal.value = new Modal(
-            document.getElementById("modal_verify_organization_pin")
+            document.getElementById("modal_verify_authorization_pin")
           );
         }
 
@@ -847,10 +905,23 @@ export default defineComponent({
           billingData.value.appointment.patient_details.email;
       }
 
+      let submitData = {};
+
+      if (authorizedBy.value) {
+        submitData = {
+          ...formData.value,
+          authorized_by: authorizedBy.value,
+        };
+      } else {
+        submitData = {
+          ...formData.value,
+        };
+      }
+
       loading.value = true;
 
       store
-        .dispatch(Actions.MAKE_PAYMENT.CREATE, formData.value)
+        .dispatch(Actions.MAKE_PAYMENT.CREATE, submitData)
         .then(() => {
           store.dispatch(
             Actions.MAKE_PAYMENT.VIEW,
@@ -880,6 +951,7 @@ export default defineComponent({
         .finally(() => {
           loading.value = false;
           refundVerified.value = false;
+          authorizedBy.value = null;
         });
     };
 
