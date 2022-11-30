@@ -69,35 +69,43 @@
                 empty-table-text="No items added"
               >
                 <template v-slot:cell-mbs_code="{ row: item }">
-                  {{ item.mbs_item_code }}
+                  <span
+                    :class="{
+                      'text-decoration-line-through': item?.deleted_by,
+                    }"
+                  >
+                    {{ item.mbs_item_code }}
+                  </span>
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
-                  {{ item.name }}
+                  <template v-if="item.deleted_by">
+                    <span class="f2-7 fw-bold text-danger">
+                      Delete authorized by:
+                      {{ item.deleted_by?.full_name }}
+                    </span>
+                  </template>
+
+                  <template v-else>
+                    {{ item.name }}
+                  </template>
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
                   {{ convertToCurrency(item.price / 100) }}
 
-                  <template v-if="item.authorized_by">
+                  <template v-if="item.authorized_by && !item?.deleted_by">
                     <br />
                     <span class="f2-7 fw-bold text-muted">
                       Authorized by:
                       {{ item.authorized_by?.full_name }}
                     </span>
                   </template>
-
-                  <template v-if="item.deleted_by">
-                    <br />
-                    <span class="f2-7 fw-bold text-danger">
-                      Deleted by:
-                      {{ item.deleted_by?.full_name }}
-                    </span>
-                  </template>
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
                   <button
+                    v-if="!item?.deleted_by"
                     type="button"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                     @click="handleEditItem('procedures', item)"
@@ -129,19 +137,43 @@
                 empty-table-text="No items added"
               >
                 <template v-slot:cell-mbs_code="{ row: item }">
-                  {{ item.mbs_item_code }}
+                  <span
+                    :class="{
+                      'text-decoration-line-through': item?.deleted_by,
+                    }"
+                  >
+                    {{ item.mbs_item_code }}
+                  </span>
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
-                  {{ item.description }}
+                  <template v-if="item.deleted_by">
+                    <span class="f2-7 fw-bold text-danger">
+                      Delete authorized by:
+                      {{ item.deleted_by?.full_name }}
+                    </span>
+                  </template>
+
+                  <template v-else>
+                    {{ item.name }}
+                  </template>
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
                   {{ convertToCurrency(item.price / 100) }}
+
+                  <template v-if="item.authorized_by && !item?.deleted_by">
+                    <br />
+                    <span class="f2-7 fw-bold text-muted">
+                      Authorized by:
+                      {{ item.authorized_by?.full_name }}
+                    </span>
+                  </template>
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
                   <button
+                    v-if="!item?.deleted_by"
                     type="button"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                     @click="handleEditItem('extra_items', item)"
@@ -172,20 +204,44 @@
                 :enable-items-per-page-dropdown="false"
                 empty-table-text="No items added"
               >
-                <template v-slot:cell-mbs_code="{ row: item }">
-                  {{ item.mbs_item_code }}
+                <template v-slot:cell-name="{ row: item }">
+                  <span
+                    :class="{
+                      'text-decoration-line-through': item?.deleted_by,
+                    }"
+                  >
+                    {{ item.name }}
+                  </span>
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
-                  {{ item.description }}
+                  <template v-if="item.deleted_by">
+                    <span class="f2-7 fw-bold text-danger">
+                      Delete authorized by:
+                      {{ item.deleted_by?.full_name }}
+                    </span>
+                  </template>
+
+                  <template v-else>
+                    {{ item.description }}
+                  </template>
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
                   {{ convertToCurrency(item.price / 100) }}
+
+                  <template v-if="item.authorized_by && !item?.deleted_by">
+                    <br />
+                    <span class="f2-7 fw-bold text-muted">
+                      Authorized by:
+                      {{ item.authorized_by?.full_name }}
+                    </span>
+                  </template>
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
                   <button
+                    v-if="!item?.deleted_by"
                     type="button"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                     @click="handleEditItem('admin_items', item)"
@@ -614,20 +670,17 @@ export default defineComponent({
         const charges = billingData.value.charges.procedures;
 
         charges.forEach((charge) => {
-          let item = {};
+          const item = {
+            id: charge.id,
+            price: charge.price,
+            authorized_by: charge?.authorized_by
+              ? charge.authorized_by?.id ?? charge.authorized_by
+              : null,
+            deleted_by: charge?.deleted_by
+              ? charge.deleted_by?.id ?? charge.deleted_by
+              : null,
+          };
 
-          if (charge?.authorized_by) {
-            item = {
-              id: charge.id,
-              price: charge.price,
-              authorized_by: charge.authorized_by,
-            };
-          } else {
-            item = {
-              id: charge.id,
-              price: charge.price,
-            };
-          }
           list.push(item);
         });
       }
@@ -642,20 +695,17 @@ export default defineComponent({
         const charges = billingData.value.charges.extra_items;
 
         charges.forEach((charge) => {
-          let item = {};
+          const item = {
+            id: charge.id,
+            price: charge.price,
+            authorized_by: charge?.authorized_by
+              ? charge.authorized_by?.id ?? charge.authorized_by
+              : null,
+            deleted_by: charge?.deleted_by
+              ? charge.deleted_by?.id ?? charge.deleted_by
+              : null,
+          };
 
-          if (charge?.authorized_by) {
-            item = {
-              id: charge.id,
-              price: charge.price,
-              authorized_by: charge.authorized_by,
-            };
-          } else {
-            item = {
-              id: charge.id,
-              price: charge.price,
-            };
-          }
           list.push(item);
         });
       }
@@ -670,20 +720,17 @@ export default defineComponent({
         const charges = billingData.value.charges.admin_items;
 
         charges.forEach((charge) => {
-          let item = {};
+          const item = {
+            id: charge.id,
+            price: charge.price,
+            authorized_by: charge?.authorized_by
+              ? charge.authorized_by?.id ?? charge.authorized_by
+              : null,
+            deleted_by: charge?.deleted_by
+              ? charge.deleted_by?.id ?? charge.deleted_by
+              : null,
+          };
 
-          if (charge?.authorized_by) {
-            item = {
-              id: charge.id,
-              price: charge.price,
-              authorized_by: charge.authorized_by,
-            };
-          } else {
-            item = {
-              id: charge.id,
-              price: charge.price,
-            };
-          }
           list.push(item);
         });
       }
@@ -723,11 +770,11 @@ export default defineComponent({
       return total;
     });
 
-    const handleDeleteItem = () => {
+    const handleDeleteItem = (authorizedBy) => {
       const category = paymentItemModalData.value.category;
       const item = paymentItemModalData.value.item;
 
-      deleteItem(category, item);
+      deleteItem(category, item, authorizedBy);
     };
 
     const handleEditItem = (category, item) => {
@@ -760,12 +807,14 @@ export default defineComponent({
       paymentItemModal.value.show();
     };
 
-    const deleteItem = (category, item) => {
-      const index = billingData.value.charges[category].findIndex(
+    const deleteItem = (category, item, authorizedBy) => {
+      const deletingItem = billingData.value.charges[category].find(
         (charge) => charge.id === item.id
       );
 
-      billingData.value.charges[category].splice(index, 1);
+      deletingItem.price = 0;
+      deletingItem.deleted_by = authorizedBy;
+      console.log(proceduresUndertakenList.value);
       updateAppointmentDetail();
     };
 

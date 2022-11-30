@@ -193,7 +193,7 @@ export default defineComponent({
         },
       }).then((result) => {
         if (result.isConfirmed) {
-          emit("deleteItem");
+          emit("deleteItem", authorizedBy.value);
           closeModal();
         }
       });

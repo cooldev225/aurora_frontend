@@ -22,7 +22,7 @@
             to="/profile/password-change"
             active-class="active"
           >
-            Password
+            Password & Pin
           </router-link>
         </li>
         <!--end::Nav item-->
