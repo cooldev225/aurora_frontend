@@ -179,35 +179,37 @@
     <CardSection heading="Billing Details"> </CardSection>
     <div class="separator separator-dashed"></div>
 
-    <template
-      v-for="section in patientData.pre_admission_sections"
-      :key="section.id"
-    >
-      <CardSection :heading="section.title">
-        <template v-for="question in section.questions" :key="question.id">
-          <InputWrapper :label="question.text">
-            <el-input
-              v-if="question.answer_format === 'TEXT'"
-              v-model="
-                pre_admission_answers[
-                  's' + section.id.toString() + '/q' + question.id.toString()
-                ]
-              "
-            />
-            <el-radio-group
-              v-if="question.answer_format === 'BOOLEAN'"
-              v-model="
-                pre_admission_answers[
-                  's' + section.id.toString() + '/q' + question.id.toString()
-                ]
-              "
-            >
-              <el-radio label="Yes" size="large">Yes</el-radio>
-              <el-radio label="No" size="large">No</el-radio>
-            </el-radio-group>
-          </InputWrapper>
-        </template>
-      </CardSection>
+    <template v-if="patientData.appointment_type?.type === 'PROCEDURE'">
+      <template
+        v-for="section in patientData.pre_admission_sections"
+        :key="section.id"
+      >
+        <CardSection :heading="section.title">
+          <template v-for="question in section.questions" :key="question.id">
+            <InputWrapper :label="question.text">
+              <el-input
+                v-if="question.answer_format === 'TEXT'"
+                v-model="
+                  pre_admission_answers[
+                    's' + section.id.toString() + '/q' + question.id.toString()
+                  ]
+                "
+              />
+              <el-radio-group
+                v-if="question.answer_format === 'BOOLEAN'"
+                v-model="
+                  pre_admission_answers[
+                    's' + section.id.toString() + '/q' + question.id.toString()
+                  ]
+                "
+              >
+                <el-radio label="Yes" size="large">Yes</el-radio>
+                <el-radio label="No" size="large">No</el-radio>
+              </el-radio-group>
+            </InputWrapper>
+          </template>
+        </CardSection>
+      </template>
     </template>
 
     <div class="separator separator-dashed"></div>

@@ -45,7 +45,6 @@
     "sweetalert2": "^9.10.12",
     "vee-validate": "^4.5.2",
     "vue": "^3.2.13",
-    "vue-accessible-color-picker": "^4.0.3",
     "vue-axios": "^3.3.7",
     "vue-ctk-date-time-picker": "^3.0.0-alpha.0",
     "vue-currency-input": "^2.1.0",
