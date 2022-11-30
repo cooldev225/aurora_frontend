@@ -2,6 +2,7 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import { displayServerError } from "@/helpers/helpers";
 
 export interface IMPayment {
   id: number;
@@ -102,6 +103,49 @@ export default class MPaymentModule extends VuexModule implements MPaymentInfo {
         })
         .catch(({ response }) => {
           return Promise.reject();
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAKE_PAYMENT.INVOICE.SEND](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post("payments/" + id + "/send", {})
+        .then(() => {
+          return Promise.resolve();
+        })
+        .catch(({ response }) => {
+          let message = "Could not send invoice.";
+          if (response?.data?.message) {
+            message = response.data.message;
+          }
+
+          return Promise.reject(message);
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [Actions.MAKE_PAYMENT.INVOICE.VIEW](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post(
+        "payments/" + id,
+        {},
+        {
+          responseType: "blob",
+        }
+      )
+        .then(({ data }) => {
+          return data;
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Viewing invoice");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
