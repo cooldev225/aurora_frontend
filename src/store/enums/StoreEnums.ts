@@ -167,6 +167,10 @@ const Actions = {
     LIST: "listMakePayment",
     VIEW: "viewMakePayment",
     CREATE: "createMakePayment",
+    INVOICE: {
+      SEND: "sendInvoiceMakePayment",
+      VIEW: "viewInvoiceMakePayment",
+    }
   },
 
   HEADER_FOOTER_TEMPLATE: {
