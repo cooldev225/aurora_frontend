@@ -14,16 +14,16 @@
     >
       <div class="modal-content">
         <div class="modal-header" id="kt_modal_move_appointment_header">
-          <div class="d-block">
+          <div class="d-block" v-if="step === 0">
             <h2 class="fw-bolder">Bulk Move Appointments:</h2>
           </div>
           <h2 class="select-new-apt-caption" v-if="step === 1">
             Please Confirm Changes
           </h2>
-          <div class="d-flex justify-content-between">
+          <div class="d-flex justify-content-end w-600px" v-if="step === 1">
             <button
               class="btn btn-primary"
-              v-if="step"
+              v-if="step === 1"
               @click.prevent="handleBack"
             >
               Back
@@ -115,9 +115,19 @@
                 </el-form-item>
               </div>
               <div class="row">
-                <el-form-item label="Allow Double Booking">
-                  <el-switch v-model="formData.allowDoubleBooking" />
-                </el-form-item>
+                <el-popover
+                  placement="left"
+                  :width="250"
+                  title="Warning !"
+                  trigger="click"
+                >
+                  <template #reference>
+                    <el-form-item label="Allow Double Booking">
+                      <el-switch ref="" v-model="formData.allowDoubleBooking" />
+                    </el-form-item>
+                  </template>
+                  <p>This will overlap with other appointments</p>
+                </el-popover>
                 <el-form-item label="Match appointment restrictions">
                   <el-switch v-model="formData.matchAppointmentRestrictions" />
                 </el-form-item>
@@ -290,25 +300,28 @@
                   </template>
                 </div>
               </div>
-              <div class="row appointment-type d-flex justify-content-center">
-                <div class="col-6 px-4 d-flex justify-content-center">
-                  <button
-                    class="btn btn-primary mt-3 w-25 mx-4"
-                    type="button"
-                    @click="handleMove"
-                  >
-                    CONFIRM
-                  </button>
-                  <button
-                    class="btn btn-warning mt-3 w-25 mx-4"
-                    @click="handleCancel"
-                    type="button"
-                  >
-                    CANCEL
-                  </button>
-                </div>
-              </div>
             </el-form>
+          </div>
+          <div
+            class="row appointment-type d-flex justify-content-center mt-6"
+            v-if="step === 1"
+          >
+            <div class="col-6 px-4 d-flex justify-content-center">
+              <button
+                class="btn btn-primary mt-3 w-25 mx-4"
+                type="button"
+                @click="handleMove"
+              >
+                CONFIRM
+              </button>
+              <button
+                class="btn btn-warning mt-3 w-25 mx-4"
+                @click="handleCancel"
+                type="button"
+              >
+                CANCEL
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -444,8 +457,7 @@ export default defineComponent({
         return;
       }
 
-      const test = await checkAppointmentsClinic();
-
+      await checkAppointmentsClinic();
       moveAppointments();
       if (updatedAppointments.value.newApt.length > 0) {
         step.value = 1;
@@ -474,6 +486,7 @@ export default defineComponent({
 
     const getAppointmentsFrom = () => {
       if (!formData.value.from_date) return;
+      loading.value = true;
       const fromDate = moment(formData.value.from_date).format("YYYY-MM-DD");
       store
         .dispatch(AppointmentActions.LIST, {
@@ -491,6 +504,7 @@ export default defineComponent({
 
     const getAppointmentsTo = () => {
       if (!formData.value.to_date) return;
+      loading.value = true;
       const toDate = moment(formData.value.to_date).format("YYYY-MM-DD");
       store
         .dispatch(AppointmentActions.APT.BULK.LIST, {
@@ -545,15 +559,10 @@ export default defineComponent({
         }
       });
 
-      // console.log("from clinis" + fromClinics);
-      // console.log(fromClinics);
-      // console.log("to clinis" + toClinics);
-      // console.log(toClinics);
-
       if (fromClinics.length > 1) {
         warnings.push(
           moment(formData.value.from_date).format("YYYY-MM-DD") +
-            " appointments have more than one clinc"
+            " appointments have more than one clinic"
         );
       }
       if (toClinics.length > 1) {
@@ -671,10 +680,6 @@ export default defineComponent({
           });
         }
       });
-      console.log("All to appointments");
-      console.log(toApts);
-      console.log("updated appointments");
-      console.log(updatedAppointments.value);
     };
 
     const updateAppointment = (apt, startTime, endTime, date, specialistId) => {
@@ -702,8 +707,6 @@ export default defineComponent({
     const canAddAppointment = (start_time, end_time, toApts) => {
       let result = -1;
       const restrictions = appointmentRestriction.value;
-      console.log("toAPT");
-      console.log(start_time, end_time);
       selectedSpecialistTimeSlot.value.forEach((slot) => {
         if (
           restrictions.includes(slot.restriction) &&
@@ -718,6 +721,9 @@ export default defineComponent({
           });
         }
       });
+
+      if (formData.value.allowDoubleBooking && result <= 1 && result > -1)
+        return true;
       return result === 0;
     };
 
@@ -843,6 +849,6 @@ export default defineComponent({
 }
 
 .apt-wrapper {
-  max-height: 100px;
+  max-height: 500px;
 }
 </style>
