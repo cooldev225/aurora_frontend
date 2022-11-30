@@ -39,7 +39,6 @@
                   v-model="formData.color"
                   class="py-1"
                   size="large"
-                  show-alpha
                   :predefine="predefineColors"
                 />
               </InputWrapper>
