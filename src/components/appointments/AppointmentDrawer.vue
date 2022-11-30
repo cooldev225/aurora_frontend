@@ -104,7 +104,7 @@
             }}</InfoSection>
           </div>
           <!--end::Appointment Info-->
-          <el-divider />
+          <el-divider v-if="appointment.note" />
           <div v-if="appointment.note">
             <label class="fs-5 text-primary"
               >Notes:
