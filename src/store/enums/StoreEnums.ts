@@ -26,9 +26,9 @@ const Actions = {
     UPDATE_PASSWORD: "updatePassword",
     UPDATE_SIGNATURE: "updateSignature",
     PIN: {
-      SET: "setOrganizationPin",
-      VERIFY: "verifyOrganizationPin",
-      SHOW: "showOrganizationPin",
+      SET: "setUserPin",
+      VERIFY: "verifyUserPin",
+      SHOW: "showUserPin",
     },
   },
 
