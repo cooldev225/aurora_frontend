@@ -33,22 +33,25 @@
               </InputWrapper>
             </div>
 
-            <div class="col-sm-12 mb-5">
-              <InputWrapper label="Appointment Color Preview" prop="type">
+            <div class="col-sm-3 mb-5">
+              <InputWrapper label="Appointment Color" prop="type">
+                <el-color-picker
+                  v-model="formData.color"
+                  class="py-1"
+                  size="large"
+                  :predefine="predefineColors"
+                />
+              </InputWrapper>
+            </div>
+            <div class="col-sm-9 mb-5 py-5">
+              <InputWrapper class="mt-2" prop="type">
                 <span
                   class="text-white p-5"
                   :style="{ 'background-color': formData.color }"
-                  >John Smith</span
                 >
+                  Appointment Color Preview
+                </span>
               </InputWrapper>
-
-              <ColorPicker
-                :prop="color"
-                :color="formData.color"
-                @color-change="changeColor"
-                default-format="hex"
-                alpha-channel="hide"
-              />
             </div>
 
             <!--Input: Invoice By -->
@@ -179,18 +182,11 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
-import { ColorPicker } from "vue-accessible-color-picker";
 
 export default defineComponent({
   name: "edit-apt-type",
   components: {
     InputWrapper,
-    ColorPicker,
-  },
-  methods: {
-    changeColor(color) {
-      this.formData.color = color.cssColor;
-    },
   },
   setup() {
     const store = useStore();
@@ -202,6 +198,22 @@ export default defineComponent({
     const reportTemplates = computed(() => store.getters.getReportTemplateList);
     const scheduleItems = computed(() => store.getters.scheduleItemList);
     const loading = ref(false);
+    const predefineColors = ref([
+      "#ff4500",
+      "#ff8c00",
+      "#ffd700",
+      "#90ee90",
+      "#00ced1",
+      "#1e90ff",
+      "#c71585",
+      "rgba(255, 69, 0, 0.68)",
+      "rgb(255, 120, 0)",
+      "hsv(51, 100, 98)",
+      "hsva(120, 40, 94, 0.5)",
+      "hsl(181, 100%, 37%)",
+      "hsla(209, 100%, 56%, 0.73)",
+      "#c7158577",
+    ]);
 
     const formInfo = reactive({
       title: "Create Appointment Type",
@@ -287,8 +299,6 @@ export default defineComponent({
               console.log(response.data.error);
             });
           formRef.value.resetFields();
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };
@@ -303,6 +313,7 @@ export default defineComponent({
       reportTemplates,
       submit,
       scheduleItems,
+      predefineColors,
     };
   },
 });
