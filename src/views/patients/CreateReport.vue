@@ -639,7 +639,7 @@ export default defineComponent({
               extra_items_used: extraItems,
               admin_items_used: adminItems,
               icd_10_code: icd_10_code,
-              flag: flag,
+              flag: flag ? 1 : 0,
               file_name: reportPreviewPdfId.value,
             };
             store
