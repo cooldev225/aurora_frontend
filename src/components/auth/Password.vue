@@ -5,7 +5,7 @@
     <div class="card-body pt-9 pb-0">
       <!--begin::Details-->
       <div class="row">
-        <div class="col-sm-6">
+        <div :class="{ 'col-sm-6': currentUser.role === 'organizationAdmin' }">
           <el-form
             @submit.prevent="submit()"
             :model="formData"
@@ -104,7 +104,7 @@
           </el-form>
         </div>
 
-        <div class="col-sm-6">
+        <div v-if="currentUser.role === 'organizationAdmin'" class="col-sm-6">
           <el-form
             @submit.prevent="updatePin()"
             :model="pinFormData"
@@ -177,7 +177,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -205,6 +205,7 @@ export default defineComponent({
     const pinLoading = ref(false);
     const oldPin = ref("");
     const showPin = ref(false);
+    const currentUser = computed(() => store.getters.currentUser);
 
     const validatePass2 = (rule, value, callback) => {
       if (value === "") {
@@ -264,6 +265,10 @@ export default defineComponent({
     });
 
     const getUserPin = () => {
+      if (currentUser.value.role !== "organizationAdmin") {
+        return;
+      }
+
       store.dispatch(Actions.PROFILE.PIN.SHOW).then((data) => {
         oldPin.value = data;
       });
@@ -337,6 +342,7 @@ export default defineComponent({
       updatePin,
       pinLoading,
       loading,
+      currentUser,
     };
   },
 });

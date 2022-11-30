@@ -22,7 +22,11 @@
             to="/profile/password-change"
             active-class="active"
           >
-            Password & Pin
+            {{
+              currentUser?.role === "organizationAdmin"
+                ? "Password & Pin"
+                : "Password"
+            }}
           </router-link>
         </li>
         <!--end::Nav item-->
@@ -42,10 +46,19 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "profile-page-navigation",
   components: {},
+  setup() {
+    const store = useStore();
+    const currentUser = computed(() => store.getters.currentUser);
+
+    return {
+      currentUser,
+    };
+  },
 });
 </script>
