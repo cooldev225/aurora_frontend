@@ -7,6 +7,17 @@ export function validatePhone(rule, value, callback) {
   }
 }
 
+export function validateAbnAcn(rule, value, callback) {
+  const abn_acn_regex = /^([0-9]{9,11})$/;
+  if (value === "") {
+    callback();
+  } else if (value.match(abn_acn_regex) === null) {
+    callback(new Error("ABN/ACN should be always 11 or 9 digits long."));
+  } else {
+    callback();
+  }
+}
+
 export function validatePass(rule, value, callback) {
   if (value === "") {
     callback(new Error("Please input the password"));

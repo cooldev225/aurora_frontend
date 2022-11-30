@@ -110,6 +110,14 @@
           </div>
           <div v-if="formData.role_id == 5">
             <el-divider />
+            <InputWrapper class="col-sm-6 mb-5" label="ABN/ACN" prop="abn_acn">
+              <el-input
+                v-model="formData.abn_acn"
+                type="text"
+                placeholder="Enter ABN/ACN"
+              />
+            </InputWrapper>
+            <el-divider />
             <HeadingText text="Provider Number" />
             <div
               class="row"
@@ -230,6 +238,7 @@ import restrictionsTypes from "@/core/data/apt-restriction";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import { mask } from "vue-the-mask";
 import HRMTimeScheduleTable from "@/components/HRM/HRMTimeScheduleTable.vue";
+import { validateAbnAcn } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "create-employee",
@@ -277,6 +286,7 @@ export default defineComponent({
           provider_number: null,
         },
       ],
+      abn_acn: "",
     });
 
     const commonRoles = {
@@ -336,6 +346,12 @@ export default defineComponent({
           },
         ],
       },
+      abn_acn: [
+        {
+          validator: validateAbnAcn,
+          trigger: ["blur"],
+        },
+      ],
     };
 
     const rules = ref(commonRoles);
@@ -426,8 +442,6 @@ export default defineComponent({
               loading.value = false;
               console.log(response.data.error);
             });
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
         }
       });
     };

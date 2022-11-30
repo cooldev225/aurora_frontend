@@ -115,6 +115,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import moment from "moment";
 import JwtService from "@/core/services/JwtService";
+import { validateAbnAcn } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "organization-settings",
@@ -131,16 +132,7 @@ export default defineComponent({
       appointment_length: null,
       abn_acn: null,
     });
-    const confirmAbnAcn = (rule, value, callback) => {
-      var abn_acn_regex = /^([0-9]{9,11})$/;
-      if (value === "") {
-        callback(new Error("ABN/ACN cannot be blank."));
-      } else if (value.match(abn_acn_regex) === null) {
-        callback(new Error("ABN/ACN should be always 11 or 9 digits long."));
-      } else {
-        callback();
-      }
-    };
+
     const rules = ref({
       name: [
         {
@@ -177,7 +169,7 @@ export default defineComponent({
           trigger: "change",
         },
         {
-          validator: confirmAbnAcn,
+          validator: validateAbnAcn,
           trigger: ["blur"],
         },
       ],
