@@ -71,6 +71,7 @@ import {
   computed,
   watchEffect,
   onUpdated,
+  onUnmounted,
 } from "vue";
 import { useStore } from "vuex";
 import AptModal from "@/components/appointments/ModalApt.vue";
@@ -117,6 +118,8 @@ export default defineComponent({
       () => store.getters.getMonthAvailabilities
     );
 
+    const aptTimer = ref({});
+
     watch(monthAvailabilities, () => {
       $(".datepicker-days")
         .children()
@@ -153,7 +156,7 @@ export default defineComponent({
       store.dispatch(Actions.EMPLOYEE.LIST);
       store.dispatch(AppointmentActions.LIST, { date: formattedDate });
 
-      window.setInterval(() => {
+      aptTimer.value = window.setInterval(() => {
         store.dispatch(AppointmentActions.LIST, {
           date: moment(date_search.date).format("YYYY-MM-DD").toString(),
         });
@@ -170,6 +173,10 @@ export default defineComponent({
         month_string: month,
         year_string: year,
       });
+    });
+
+    onUnmounted(() => {
+      window.clearInterval(aptTimer.value);
     });
 
     onUpdated(() => {
