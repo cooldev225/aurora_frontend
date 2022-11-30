@@ -2,7 +2,7 @@
   <ModalWrapper
     title="Upload Document"
     modalId="upload_document"
-    :modalRef="uploadDocumentRef"
+    :updateRef="updateRef"
   >
     <el-form
       @submit.prevent="submit()"
@@ -17,7 +17,7 @@
           label="Document Title"
           prop="document_name"
         >
-          <el-input type="text" v-model.number="formData.document_name" />
+          <el-input type="text" v-model="formData.document_name" />
         </InputWrapper>
         <InputWrapper
           required
@@ -26,7 +26,7 @@
           prop="document_type"
         >
           <el-select
-            class="w-100 mb-5"
+            class="w-100"
             placeholder="Select Document Type"
             v-model="formData.document_type"
           >
@@ -41,10 +41,8 @@
             </template>
           </el-select>
         </InputWrapper>
-
         <InputWrapper
-          required
-          class="col-6 f-row row"
+          class="col-6"
           label="Attach document to:"
           v-if="attachmentType"
         >
@@ -58,6 +56,7 @@
           </el-radio-group>
         </InputWrapper>
         <InputWrapper
+          required
           v-if="attachmentType.toLocaleLowerCase() === 'appointment'"
           class="col-6"
           label="Appointment"
@@ -81,6 +80,7 @@
           </el-select>
         </InputWrapper>
         <InputWrapper
+          required
           class="col-6"
           label="Specialist"
           prop="specialist"
@@ -103,8 +103,9 @@
           </el-select>
         </InputWrapper>
       </div>
-      <InputWrapper label="Upload File" prop="specialist">
+      <InputWrapper required label="Upload File" prop="specialist">
         <el-upload
+          v-if="!uploadDisabled"
           action="#"
           ref="upload"
           :class="{ disabled: uploadDisabled }"
@@ -163,6 +164,8 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import patientDocumentTypes from "@/core/data/patient-document-types";
 import moment from "moment";
 import IPatient from "@/store/interfaces/IPatient";
+import { ElMessage } from "element-plus";
+
 export default defineComponent({
   name: "create-letter-template-modal",
   props: {
@@ -171,7 +174,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const formRef = ref();
-    const uploadDocumentRef = ref();
+    const uploadDocumentRef = ref(null);
 
     const specialistList = computed(() => store.getters.getSpecialistList);
     const aptList = computed(() => store.getters.getAptList);
@@ -228,15 +231,37 @@ export default defineComponent({
 
       formRef.value.validate((valid) => {
         if (valid) {
-          console.log(formData.value);
+          if (Data.get("file") === null) {
+            ElMessage.error("Upload file!");
+            return;
+          }
+          if (
+            attachmentType.value.toLocaleLowerCase() === "appointment" &&
+            formData.value.appointment_id === ""
+          ) {
+            ElMessage.error("Appointment field cannot be blank.");
+            return;
+          }
+          if (
+            attachmentType.value.toLocaleLowerCase() === "specialist" &&
+            formData.value.specialist_id === ""
+          ) {
+            ElMessage.error("Specialist field cannot be blank.");
+            return;
+          }
           loading.value = true;
-          Object.keys(formData.value).forEach((key) => {
-            Data.append(key, formData.value[key]);
-          });
+          Data.append("patient_id", formData.value.patient_id + "");
+          Data.append("document_name", formData.value.document_name);
+          Data.append("document_type", formData.value.document_type);
+          if (formData.value.appointment_id !== "")
+            Data.append("appointment_id", formData.value.appointment_id);
+          if (formData.value.specialist_id !== "")
+            Data.append("specialist_id", formData.value.specialist_id);
           store
             .dispatch(PatientActions.DOCUMENTS.CREATE, Data)
             .then(() => {
               loading.value = false;
+              hideModal(uploadDocumentRef.value);
               Swal.fire({
                 text: "Successfully Uploaded!",
                 icon: "success",
@@ -245,8 +270,6 @@ export default defineComponent({
                 customClass: {
                   confirmButton: "btn btn-primary",
                 },
-              }).then(() => {
-                hideModal(uploadDocumentRef.value);
               });
             })
             .catch(({ response }) => {
@@ -258,6 +281,10 @@ export default defineComponent({
           fileList.value = [];
         }
       });
+    };
+
+    const updateRef = (_ref) => {
+      uploadDocumentRef.value = _ref;
     };
 
     onMounted(() => {
@@ -282,7 +309,7 @@ export default defineComponent({
       upload,
       formRef,
       loading,
-      uploadDocumentRef,
+      updateRef,
       specialistList,
       aptList,
       moment,
