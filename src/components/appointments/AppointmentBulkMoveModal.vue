@@ -495,11 +495,9 @@ export default defineComponent({
       store
         .dispatch(AppointmentActions.LIST, {
           date: fromDate,
-          specialist_id:
-            formData.value.specialist_id_from ||
-            formData.value.specialist_id_from !== ""
-              ? formData.value.specialist_id_from
-              : null,
+          specialist_id: formData.value.specialist_id_from
+            ? formData.value.specialist_id_from
+            : null,
         })
         .then(() => {
           loading.value = false;
@@ -513,7 +511,7 @@ export default defineComponent({
       store
         .dispatch(AppointmentActions.APT.BULK.LIST, {
           date: toDate,
-          specialist_id: formData.value.specialist_id_from
+          specialist_id: formData.value.specialist_id_to
             ? formData.value.specialist_id_to
             : null,
         })
