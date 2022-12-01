@@ -283,6 +283,12 @@
     <!--end::Card body-->
   </div>
   <!--end::details View-->
+  <ReportPreviewModal
+    :patient="patientData"
+    :appointment="appointmentData"
+    :pdfId="reportPreviewPdfId"
+    :handleSave="handleSave"
+  ></ReportPreviewModal>
 </template>
 
 <style lang="scss">
@@ -319,10 +325,12 @@ import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import InputWrapper from "../../components/presets/FormElements/InputWrapper.vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { IScheduleItem } from "@/store/modules/ScheduleItemModule";
+import { Modal } from "bootstrap";
+import ReportPreviewModal from "@/views/patients/modals/ReportPreviewModal.vue";
 
 export default defineComponent({
   name: "patient-report",
-  components: { InfoSection, InputWrapper },
+  components: { InfoSection, InputWrapper, ReportPreviewModal },
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -347,6 +355,8 @@ export default defineComponent({
     const proceduresUndertakenDataFiltered = ref<Array<IScheduleItem>>([]);
     const extraItemsUsedDataFiltered = ref<Array<IScheduleItem>>([]);
     const adminItemsUsedDataFiltered = ref<Array<IScheduleItem>>([]);
+
+    const reportPreviewPdfId = ref(null);
 
     const formData = ref({
       title: "",
@@ -473,6 +483,14 @@ export default defineComponent({
       formData.value.admin_items_used.splice(index, 1);
     };
 
+    const handlePreviewModal = () => {
+      console.log("");
+      const modal = new Modal(
+        document.getElementById("modal_report_document_preview")
+      );
+      modal.show();
+    };
+
     const submit = () => {
       loading.value = true;
       if (!formRef.value) {
@@ -544,19 +562,101 @@ export default defineComponent({
             icd_10_code: icd_10_code,
           };
           store
-            .dispatch(StoreReportActions.REPORT.PATIENT, data)
+            .dispatch(StoreReportActions.REPORT.PATIENT_PREVIEW, data)
             .then((data) => {
-              store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
-                id: data,
-              });
-              router.push({
-                path: "/patients/" + patientId + "/documents",
-              });
+              console.log("report result", data);
+              reportPreviewPdfId.value = data;
+              loading.value = false;
+              handlePreviewModal();
+              // store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
+              //   id: data,
+              // });
+              // router.push({
+              //   path: "/patients/" + patientId + "/documents",
+              // });
             });
         }
       });
     };
 
+    const handleSave = (flag = false) => {
+      setTimeout(() => {
+        loading.value = true;
+        if (!formRef.value) {
+          loading.value = false;
+          return;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (formRef.value as any).validate(async (valid) => {
+          if (valid) {
+            const icd_10_code: string[] = [];
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            reportSections.value.forEach((section: any) => {
+              section.auto_texts.forEach((auto) => {
+                icd_10_code.push(auto.icd_10_code);
+              });
+            });
+
+            const proceduresUndertaken = [] as Array<Record<string, unknown>>;
+            formData.value.procedures_undertaken.forEach((item) => {
+              proceduresUndertaken.push({
+                id: item.id,
+                price: item.amount,
+              });
+            });
+
+            const extraItems = [] as Array<Record<string, unknown>>;
+            formData.value.extra_items_used.forEach((item) => {
+              extraItems.push({
+                id: item.id,
+                price: item.amount,
+              });
+            });
+
+            const adminItems = [] as Array<Record<string, unknown>>;
+            formData.value.admin_items_used.forEach((item) => {
+              adminItems.push({
+                id: item.id,
+                price: item.amount,
+              });
+            });
+
+            const data = {
+              title: formData.value.title,
+              patient_id: patientId,
+              doctorAddressBook:
+                appointmentData.value.referral?.doctor_address_book_name,
+              patientName:
+                patientData.value.first_name +
+                " " +
+                patientData.value.last_name,
+              appointmentId: appointmentData.value.id,
+              specialistId: appointmentData.value.specialist_id,
+              documentName: appointmentData.value.appointment_type_name,
+              procedures_undertaken: proceduresUndertaken,
+              extra_items_used: extraItems,
+              admin_items_used: adminItems,
+              icd_10_code: icd_10_code,
+              flag: flag ? 1 : 0,
+              file_name: reportPreviewPdfId.value,
+            };
+            store
+              .dispatch(StoreReportActions.REPORT.PATIENT, data)
+              .then((data) => {
+                loading.value = false;
+                store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
+                  id: data,
+                });
+                router.push({
+                  path: "/patients/" + patientId + "/documents",
+                });
+              });
+          }
+        });
+      }, 1000);
+    };
     const getItemName = (item: IScheduleItem) => {
       const isMbs = item.mbs_item_code ? true : false;
 
@@ -636,6 +736,9 @@ export default defineComponent({
       selectNewAdminItems,
       deleteAdminItems,
       getItemName,
+      handlePreviewModal,
+      reportPreviewPdfId,
+      handleSave,
     };
   },
 });
