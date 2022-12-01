@@ -429,7 +429,6 @@ export default defineComponent({
 
       bulkModal.addEventListener("hidden.bs.modal", function () {
         clearData();
-        formData.value.r
       });
     });
 
