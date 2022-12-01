@@ -86,12 +86,9 @@
 }
 </style>
 <script>
-import { defineComponent, ref, watchEffect, computed, watch } from "vue";
+import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
-import { Mutations } from "@/store/enums/StoreEnums";
 import { Actions } from "@/store/enums/StoreEnums";
-import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
 import pdf from "pdfobject";
 
 export default defineComponent({
@@ -105,10 +102,8 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const router = useRouter();
 
     const documentReportRef = ref();
-    console.log("props", props);
     const updateRef = (_ref) => {
       documentReportRef.value = _ref;
     };
