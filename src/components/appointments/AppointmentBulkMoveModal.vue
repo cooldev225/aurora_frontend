@@ -479,9 +479,13 @@ export default defineComponent({
           appointments: updatedAppointments.value.newApt,
         })
         .then(() => {
+          ElMessage({
+            message: "Appointments moved successfully!",
+            grouping: false,
+            type: "success",
+          });
           handleCancel();
         });
-      hideModal(bulkMoveAptModalRef.value);
     };
 
     const getAppointmentsFrom = () => {
