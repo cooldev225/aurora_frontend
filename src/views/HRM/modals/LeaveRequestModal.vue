@@ -307,7 +307,6 @@ export default defineComponent({
       if (!formRef.value) return;
       await formRef.value.validate((valid) => {
         if (valid) {
-          console.log(formData.value);
           emit("sendRequest", formData.value);
           hideModal(leaveRequestModalRef.value);
         } else {

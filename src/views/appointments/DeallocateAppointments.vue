@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto w-100">
     <div class="d-flex flex-row-fluid flex-start bg-white rounded my-4 p-4">
-      <div class="d-flex flex-row justify-content-start p-4">
+      <div class="d-flex flex-row justify-content-between p-4">
         <HeadingText class="px-4 m-0" text="Search Appointments" />
         <el-date-picker
           class="ml-4"
@@ -15,6 +15,15 @@
           size="large"
           @change="updateTable"
         />
+      </div>
+      <div class="d-flex flex-row w-100 justify-content-end p-4">
+        <button
+          class="btn btn-primary w-25"
+          type="button"
+          @click="handleBulkMove"
+        >
+          Bulk Move Appointments
+        </button>
       </div>
     </div>
   </div>
@@ -30,6 +39,7 @@
     :loading="loading"
     title="Deallocate Anesthetist Appointments"
   />
+  <BulkMoveAptModal />
 </template>
 <script lang="ts">
 import {
@@ -47,13 +57,15 @@ import { mask } from "vue-the-mask";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import moment from "moment";
 import AptTable from "@/components/appointments/DeallocateAppointmentTable.vue";
+import BulkMoveAptModal from "@/components/appointments/AppointmentBulkMoveModal.vue";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "deallocate-appointments",
   directives: {
     mask,
   },
-  components: { AptTable },
+  components: { BulkMoveAptModal, AptTable },
   setup() {
     const store = useStore();
     const tableHeader = ref([
@@ -208,6 +220,13 @@ export default defineComponent({
         end_date: moment(selectedDate.value[1]).format("YYYY-MM-DD"),
       });
     };
+
+    const handleBulkMove = () => {
+      store.dispatch(Actions.SPECIALIST.LIST);
+      const modal = new Modal(document.getElementById("modal_bulk_move_apt"));
+      modal.show();
+    };
+
     return {
       tagClass,
       tableHeader,
@@ -217,6 +236,7 @@ export default defineComponent({
       tableAnesthetistHeader,
       selectedDate,
       updateTable,
+      handleBulkMove,
     };
   },
 });

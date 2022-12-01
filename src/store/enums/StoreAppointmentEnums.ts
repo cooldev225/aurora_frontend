@@ -46,6 +46,10 @@ const AppointmentActions = {
     DRAFT: {
       CREATE: "createDraftApt",
       DELETE: "deleteDraftApt",
+    },
+    BULK: {
+      LIST: "listApt",
+      UPDATE: "updateApts"
     }
   },
   BOOKING: {
@@ -90,6 +94,7 @@ const AppointmentMutations = {
       },
     },
     USER_APT: {
+      LIST: "setUserApt",
       SELECT: "setSelectUserApt",
     },
   },
