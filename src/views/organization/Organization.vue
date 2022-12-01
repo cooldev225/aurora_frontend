@@ -17,7 +17,6 @@
                   className="rounded me-2"
                   width="146"
                   height="146"
-                  alt="profile photo"
                 />
 
                 <el-upload
@@ -220,6 +219,24 @@ export default defineComponent({
       logoFile.value = file.raw;
     };
 
+    const loadLogoImage = () => {
+      if (formData.value.logo) {
+        store
+          .dispatch(Actions.FILE.VIEW, {
+            type: "ORGANIZATION_LOGO",
+            path: formData.value.logo,
+          })
+          .then((data) => {
+            const blob = new Blob([data], { type: "application/image" });
+            const objectUrl = URL.createObjectURL(blob);
+            formData.value.logo = objectUrl;
+          })
+          .catch(() => {
+            console.log("image load error");
+          });
+      }
+    };
+
     const submit = () => {
       formRef.value.validate((valid) => {
         if (valid) {
@@ -291,6 +308,8 @@ export default defineComponent({
         );
         initialAppointmentLength.value =
           currentUser.value.organization.appointment_length;
+        formData.value.logo = currentUser.value.organization.logo;
+        loadLogoImage();
       }
     });
 
