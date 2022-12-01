@@ -1,6 +1,6 @@
 <template>
   <LargeIconButton text="Add Letter" @click="handleAddLetter" />
-  <ReferralModal :patientId="patient.id"></ReferralModal>
+  <ReferralModal v-if="patient.id" patientId="patient.id" />
 </template>
 
 <script lang="ts">
@@ -11,10 +11,6 @@ import ReferralModal from "@/views/patients/modals/ReferralModal.vue";
 export default {
   components: { ReferralModal },
   props: {
-    appointment: {
-      required: true,
-      type: Object,
-    },
     patient: {
       required: true,
       type: Object,

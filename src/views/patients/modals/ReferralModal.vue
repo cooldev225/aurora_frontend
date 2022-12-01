@@ -190,7 +190,7 @@ export default defineComponent({
     LargeIconButton,
   },
   props: {
-    appointment: { required: true },
+    patientId: { required: true },
   },
   setup(props) {
     const store = useStore();

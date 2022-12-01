@@ -2,7 +2,7 @@
   <!--Specialist only actions-->
   <template v-if="userRole == 'specialist'">
     <AddRecallButton :appointment="appointment" :patient="patient" />
-    <AddLetterButton :appointment="appointment" :patient="patient" />
+    <AddLetterButton :patient="patient" />
     <AddAudioButton :appointment="appointment" :patient="patient" />
     <CreateReportButton :appointment="appointment" :patient="patient" />
   </template>

@@ -129,13 +129,10 @@ export default {
 
       formAlsoKnowAsRef.value.validate((valid) => {
         if (valid) {
-          console.log(formAlsoKnowAsData.value);
           const data = formAlsoKnowAsData.value.filter(
             (item) => item.first_name || item.last_name
           );
-          console.log(data);
           store.dispatch(PatientActions.ALSO_KNOWN_AS.BULK, {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             id: (formAlsoKnowAsData.value as any).id,
             data: data,
           });
