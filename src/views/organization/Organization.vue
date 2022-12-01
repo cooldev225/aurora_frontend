@@ -7,8 +7,36 @@
       ref="formRef"
     >
       <div class="row mt-10 me-5 ms-5">
+        <div class="col-sm-12">
+          <div class="fv-row mb-7">
+            <el-form-item label="Logo">
+              <div class="d-flex">
+                <img
+                  v-if="formData.logo"
+                  :src="formData.logo"
+                  className="rounded me-2"
+                  width="146"
+                  height="146"
+                  alt="profile photo"
+                />
+
+                <el-upload
+                  action="#"
+                  ref="uploadRef"
+                  list-type="picture-card"
+                  :limit="1"
+                  :on-change="handleUploadChange"
+                  :auto-upload="false"
+                  accept="image/*"
+                >
+                  <i class="fa fa-plus"></i>
+                </el-upload>
+              </div>
+            </el-form-item>
+          </div>
+        </div>
         <InputWrapper
-          class="col-sm-3 mb-5"
+          class="col-sm-4 mb-5"
           required
           label="Organization name"
           prop="name"
@@ -20,7 +48,7 @@
           />
         </InputWrapper>
         <InputWrapper
-          class="col-sm-3 mb-5"
+          class="col-sm-4 mb-5"
           required
           label="Appointment length"
           prop="appointment_length"
@@ -32,7 +60,7 @@
           />
         </InputWrapper>
         <InputWrapper
-          class="col-sm-3 mb-5"
+          class="col-sm-4 mb-5"
           required
           label="ABN/ACN"
           prop="abn_acn"
@@ -46,12 +74,13 @@
       </div>
       <div class="row me-5 ms-5">
         <InputWrapper
-          class="col-sm-3 mb-5"
+          class="col-sm-4 mb-5"
           required
           label="Start time"
           prop="start_time"
         >
           <el-time-picker
+            class="w-100"
             v-model="formData.start_time"
             arrow-control
             format="HH:mm"
@@ -59,12 +88,13 @@
           />
         </InputWrapper>
         <InputWrapper
-          class="col-sm-3 mb-5"
+          class="col-sm-4 mb-5"
           required
           label="End time"
           prop="end_time"
         >
           <el-time-picker
+            class="w-100"
             v-model="formData.end_time"
             arrow-control
             format="HH:mm"
@@ -125,12 +155,14 @@ export default defineComponent({
     const store = useStore();
     const loading = ref(false);
     const initialAppointmentLength = ref(null);
+    const logoFile = ref(null);
     const formData = ref({
       name: null,
       start_time: null,
       end_time: null,
       appointment_length: null,
       abn_acn: null,
+      logo: null,
     });
 
     const rules = ref({
@@ -183,6 +215,11 @@ export default defineComponent({
         appointment_length: null,
       };
     };
+
+    const handleUploadChange = (file) => {
+      logoFile.value = file.raw;
+    };
+
     const submit = () => {
       formRef.value.validate((valid) => {
         if (valid) {
@@ -202,6 +239,7 @@ export default defineComponent({
             formData.value.appointment_length
           );
           submitData.append("abn_acn", formData.value.abn_acn);
+          if (logoFile.value) submitData.append("logo", logoFile.value);
           var flag =
             initialAppointmentLength.value ===
             formData.value.appointment_length;
@@ -268,6 +306,7 @@ export default defineComponent({
       formRef,
       loading,
       initialAppointmentLength,
+      handleUploadChange,
     };
   },
 });
