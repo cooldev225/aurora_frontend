@@ -88,9 +88,6 @@
       <router-link to="/setting/schedule-fee" class="btn btn-light-primary m-2">
         Schedule Fees
       </router-link>
-      <router-link to="/setting/billing-pin" class="btn btn-light-primary m-2">
-        Billing Pin
-      </router-link>
     </div>
   </div>
 </template>

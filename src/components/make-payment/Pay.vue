@@ -69,19 +69,43 @@
                 empty-table-text="No items added"
               >
                 <template v-slot:cell-mbs_code="{ row: item }">
-                  {{ item.mbs_item_code }}
+                  <span
+                    :class="{
+                      'text-decoration-line-through': item?.deleted_by,
+                    }"
+                  >
+                    {{ item.mbs_item_code }}
+                  </span>
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
-                  {{ item.description }}
+                  <template v-if="item.deleted_by">
+                    <span class="f2-7 fw-bold text-danger">
+                      Delete authorized by:
+                      {{ item.deleted_by?.full_name }}
+                    </span>
+                  </template>
+
+                  <template v-else>
+                    {{ item.name }}
+                  </template>
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
                   {{ convertToCurrency(item.price / 100) }}
+
+                  <template v-if="item.authorized_by && !item?.deleted_by">
+                    <br />
+                    <span class="f2-7 fw-bold text-muted">
+                      Authorized by:
+                      {{ item.authorized_by?.full_name }}
+                    </span>
+                  </template>
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
                   <button
+                    v-if="!item?.deleted_by"
                     type="button"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                     @click="handleEditItem('procedures', item)"
@@ -113,19 +137,43 @@
                 empty-table-text="No items added"
               >
                 <template v-slot:cell-mbs_code="{ row: item }">
-                  {{ item.mbs_item_code }}
+                  <span
+                    :class="{
+                      'text-decoration-line-through': item?.deleted_by,
+                    }"
+                  >
+                    {{ item.mbs_item_code }}
+                  </span>
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
-                  {{ item.description }}
+                  <template v-if="item.deleted_by">
+                    <span class="f2-7 fw-bold text-danger">
+                      Delete authorized by:
+                      {{ item.deleted_by?.full_name }}
+                    </span>
+                  </template>
+
+                  <template v-else>
+                    {{ item.name }}
+                  </template>
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
                   {{ convertToCurrency(item.price / 100) }}
+
+                  <template v-if="item.authorized_by && !item?.deleted_by">
+                    <br />
+                    <span class="f2-7 fw-bold text-muted">
+                      Authorized by:
+                      {{ item.authorized_by?.full_name }}
+                    </span>
+                  </template>
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
                   <button
+                    v-if="!item?.deleted_by"
                     type="button"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                     @click="handleEditItem('extra_items', item)"
@@ -156,20 +204,44 @@
                 :enable-items-per-page-dropdown="false"
                 empty-table-text="No items added"
               >
-                <template v-slot:cell-mbs_code="{ row: item }">
-                  {{ item.mbs_item_code }}
+                <template v-slot:cell-name="{ row: item }">
+                  <span
+                    :class="{
+                      'text-decoration-line-through': item?.deleted_by,
+                    }"
+                  >
+                    {{ item.name }}
+                  </span>
                 </template>
 
                 <template v-slot:cell-description="{ row: item }">
-                  {{ item.description }}
+                  <template v-if="item.deleted_by">
+                    <span class="f2-7 fw-bold text-danger">
+                      Delete authorized by:
+                      {{ item.deleted_by?.full_name }}
+                    </span>
+                  </template>
+
+                  <template v-else>
+                    {{ item.description }}
+                  </template>
                 </template>
 
                 <template v-slot:cell-price="{ row: item }">
                   {{ convertToCurrency(item.price / 100) }}
+
+                  <template v-if="item.authorized_by && !item?.deleted_by">
+                    <br />
+                    <span class="f2-7 fw-bold text-muted">
+                      Authorized by:
+                      {{ item.authorized_by?.full_name }}
+                    </span>
+                  </template>
                 </template>
 
                 <template v-slot:cell-actions="{ row: item }">
                   <button
+                    v-if="!item?.deleted_by"
                     type="button"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                     @click="handleEditItem('admin_items', item)"
@@ -233,15 +305,21 @@
 
                 <button
                   class="btn btn-light-primary w-100 mt-6"
-                  :disabled="sendingInvoice"
-                  :data-kt-indicator="sendingInvoice ? 'on' : null"
-                  @click="sendInvoice"
+                  :disabled="sendingAppointmentInvoice"
+                  :data-kt-indicator="sendingAppointmentInvoice ? 'on' : null"
+                  @click="sendAppointmentInvoice"
                 >
-                  <span v-if="!sendingInvoice" class="indicator-label">
+                  <span
+                    v-if="!sendingAppointmentInvoice"
+                    class="indicator-label"
+                  >
                     Send Appointment Invoice
                   </span>
 
-                  <span v-if="sendingInvoice" class="indicator-progress">
+                  <span
+                    v-if="sendingAppointmentInvoice"
+                    class="indicator-progress"
+                  >
                     Sending...
                     <span
                       class="spinner-border spinner-border-sm align-middle ms-2"
@@ -251,15 +329,21 @@
 
                 <button
                   class="btn btn-light-primary w-100 mt-2"
-                  :disabled="viewingInvoice"
-                  :data-kt-indicator="viewingInvoice ? 'on' : null"
-                  @click="viewInvoice"
+                  :disabled="viewingAppointmentInvoice"
+                  :data-kt-indicator="viewingAppointmentInvoice ? 'on' : null"
+                  @click="viewAppointmentInvoice"
                 >
-                  <span v-if="!viewingInvoice" class="indicator-label">
+                  <span
+                    v-if="!viewingAppointmentInvoice"
+                    class="indicator-label"
+                  >
                     View Appointment Invoice
                   </span>
 
-                  <span v-if="viewingInvoice" class="indicator-progress">
+                  <span
+                    v-if="viewingAppointmentInvoice"
+                    class="indicator-progress"
+                  >
                     Loading...
                     <span
                       class="spinner-border spinner-border-sm align-middle ms-2"
@@ -325,10 +409,112 @@
         </div>
       </div>
     </div>
+
+    <div class="card mb-5 mb-xxl-8">
+      <div class="card-header pt-5">
+        <h3 class="card-title align-items-start flex-column">
+          <span class="card-label fw-bold fs-3 mb-1">Previous Payments</span>
+        </h3>
+      </div>
+      <div class="card-body pt-3 pb-0">
+        <div class="row">
+          <Datatable
+            :table-header="prevPaymentsTableHeader"
+            :table-data="billingData.payment_list"
+            :enable-items-per-page-dropdown="false"
+            empty-table-text="No items paid"
+          >
+            <template v-slot:cell-invoice_number="{ row: item }">
+              {{ item.full_invoice_number }}
+            </template>
+
+            <template v-slot:cell-amount="{ row: item }">
+              {{ convertToCurrency(item.amount / 100) }}
+              <template v-if="item.amount < 0">
+                <br />
+                <span class="fs-7 fw-bold text-muted">
+                  Authorized by: {{ item.authorizing_user_name }}
+                </span>
+              </template>
+            </template>
+
+            <template v-slot:cell-method="{ row: item }">
+              {{ item.payment_type }}
+            </template>
+
+            <template v-slot:cell-date="{ row: item }">
+              {{
+                moment(item.created_at).format("DD/MM/YYYY HH:mm").toString()
+              }}
+            </template>
+
+            <template v-slot:cell-confirmed_by="{ row: item }">
+              {{ item.confirmed_user.full_name }}
+            </template>
+
+            <template v-slot:cell-actions="{ row: item }">
+              <div class="">
+                <button
+                  class="btn btn-light-primary w-100 mt-6"
+                  :disabled="sendingPaymentInvoice == item.id"
+                  :data-kt-indicator="
+                    sendingPaymentInvoice == item.id ? 'on' : null
+                  "
+                  @click="sendPaymentInvoice(item.id)"
+                >
+                  <span
+                    v-if="sendingPaymentInvoice != item.id"
+                    class="indicator-label"
+                  >
+                    Send Invoice to Patient
+                  </span>
+
+                  <span
+                    v-if="sendingPaymentInvoice == item.id"
+                    class="indicator-progress"
+                  >
+                    Sending...
+                    <span
+                      class="spinner-border spinner-border-sm align-middle ms-2"
+                    ></span>
+                  </span>
+                </button>
+
+                <button
+                  class="btn btn-light-primary w-100 mt-2"
+                  :disabled="viewingPaymentInvoice == item.id"
+                  :data-kt-indicator="
+                    viewingPaymentInvoice == item.id ? 'on' : null
+                  "
+                  @click="viewPaymentInvoice(item.id)"
+                >
+                  <span
+                    v-if="viewingPaymentInvoice != item.id"
+                    class="indicator-label"
+                  >
+                    View Invoice
+                  </span>
+
+                  <span
+                    v-if="viewingPaymentInvoice == item.id"
+                    class="indicator-progress"
+                  >
+                    Loading...
+                    <span
+                      class="spinner-border spinner-border-sm align-middle ms-2"
+                    ></span>
+                  </span>
+                </button>
+              </div>
+            </template>
+          </Datatable>
+        </div>
+      </div>
+    </div>
     <!--end::Card-->
 
     <VerifyPinModal
-      customMessage="You are attempting to issue a refund. Please confirm your organization pin to continue."
+      customMessage="You are attempting to issue a refund."
       v-on:verified="verifyRefund"
       v-on:closeModal="closePinConfirmModal"
     />
@@ -353,9 +539,9 @@ import CardSection from "../presets/GeneralElements/CardSection.vue";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import PaymentItemModal from "@/components/make-payment/PaymentItemModal.vue";
-import VerifyPinModal from "@/components/organisations/VerifyPinModal.vue";
+import VerifyPinModal from "@/components/organisation-admins/VerifyPinModal.vue";
 import { Modal } from "bootstrap";
-import { object } from "yup";
+import moment from "moment";
 
 export default defineComponent({
   name: "make-payment-pay",
@@ -376,8 +562,11 @@ export default defineComponent({
     const paymentItemModal = ref();
     const verifyPinModal = ref();
     const loading = ref(false);
-    const sendingInvoice = ref(false);
-    const viewingInvoice = ref(false);
+    const sendingPaymentInvoice = ref<number | null>(null);
+    const viewingPaymentInvoice = ref<number | null>(null);
+    const sendingAppointmentInvoice = ref<boolean>(false);
+    const viewingAppointmentInvoice = ref<boolean>(false);
+    const authorizedBy = ref<number | null>(null);
     const refundVerified = ref(false);
     const formRef = ref<null | HTMLFormElement>(null);
     const formData = ref({
@@ -441,6 +630,39 @@ export default defineComponent({
       },
     ]);
 
+    const prevPaymentsTableHeader = ref([
+      {
+        name: "Invoice Number",
+        key: "invoice_number",
+        sortable: true,
+      },
+      {
+        name: "Amount",
+        key: "amount",
+        sortable: true,
+      },
+      {
+        name: "Method",
+        key: "method",
+        sortable: true,
+      },
+      {
+        name: "Date",
+        key: "date",
+        sortable: true,
+      },
+      {
+        name: "Confirmed By",
+        key: "confirmed_by",
+        sortable: true,
+      },
+      {
+        name: "Actions",
+        key: "actions",
+        sortable: false,
+      },
+    ]);
+
     const proceduresUndertakenList = computed(() => {
       let list = [] as Array<Record<string, unknown>>;
 
@@ -448,10 +670,18 @@ export default defineComponent({
         const charges = billingData.value.charges.procedures;
 
         charges.forEach((charge) => {
-          list.push({
+          const item = {
             id: charge.id,
             price: charge.price,
-          });
+            authorized_by: charge?.authorized_by
+              ? charge.authorized_by?.id ?? charge.authorized_by
+              : null,
+            deleted_by: charge?.deleted_by
+              ? charge.deleted_by?.id ?? charge.deleted_by
+              : null,
+          };
+
+          list.push(item);
         });
       }
 
@@ -465,10 +695,18 @@ export default defineComponent({
         const charges = billingData.value.charges.extra_items;
 
         charges.forEach((charge) => {
-          list.push({
+          const item = {
             id: charge.id,
             price: charge.price,
-          });
+            authorized_by: charge?.authorized_by
+              ? charge.authorized_by?.id ?? charge.authorized_by
+              : null,
+            deleted_by: charge?.deleted_by
+              ? charge.deleted_by?.id ?? charge.deleted_by
+              : null,
+          };
+
+          list.push(item);
         });
       }
 
@@ -482,10 +720,18 @@ export default defineComponent({
         const charges = billingData.value.charges.admin_items;
 
         charges.forEach((charge) => {
-          list.push({
+          const item = {
             id: charge.id,
             price: charge.price,
-          });
+            authorized_by: charge?.authorized_by
+              ? charge.authorized_by?.id ?? charge.authorized_by
+              : null,
+            deleted_by: charge?.deleted_by
+              ? charge.deleted_by?.id ?? charge.deleted_by
+              : null,
+          };
+
+          list.push(item);
         });
       }
 
@@ -524,11 +770,11 @@ export default defineComponent({
       return total;
     });
 
-    const handleDeleteItem = () => {
+    const handleDeleteItem = (authorizedBy) => {
       const category = paymentItemModalData.value.category;
       const item = paymentItemModalData.value.item;
 
-      deleteItem(category, item);
+      deleteItem(category, item, authorizedBy);
     };
 
     const handleEditItem = (category, item) => {
@@ -561,12 +807,14 @@ export default defineComponent({
       paymentItemModal.value.show();
     };
 
-    const deleteItem = (category, item) => {
-      const index = billingData.value.charges[category].findIndex(
+    const deleteItem = (category, item, authorizedBy) => {
+      const deletingItem = billingData.value.charges[category].find(
         (charge) => charge.id === item.id
       );
 
-      billingData.value.charges[category].splice(index, 1);
+      deletingItem.price = 0;
+      deletingItem.deleted_by = authorizedBy;
+      console.log(proceduresUndertakenList.value);
       updateAppointmentDetail();
     };
 
@@ -581,6 +829,7 @@ export default defineComponent({
     };
 
     const addPaymentItem = (item) => {
+      console.log("Pay", item);
       item.price = item.price * 100;
       billingData.value.charges[paymentItemModalData.value.category].push(item);
       updateAppointmentDetail();
@@ -610,20 +859,28 @@ export default defineComponent({
       verifyPinModal.value.hide();
     };
 
-    const verifyRefund = () => {
+    const verifyRefund = (authorizingUser) => {
       refundVerified.value = true;
+      authorizedBy.value = authorizingUser;
       closePinConfirmModal();
     };
 
-    const sendInvoice = () => {
-      sendingInvoice.value = true;
+    const sendAppointmentInvoice = () => {
+      sendingAppointmentInvoice.value = true;
       store.dispatch(Actions.INVOICE.SEND, appointmentId).finally(() => {
-        sendingInvoice.value = false;
+        sendingAppointmentInvoice.value = false;
       });
     };
 
-    const viewInvoice = () => {
-      viewingInvoice.value = true;
+    const sendPaymentInvoice = (id) => {
+      sendingPaymentInvoice.value = id;
+      store.dispatch(Actions.MAKE_PAYMENT.INVOICE.SEND, id).finally(() => {
+        sendingPaymentInvoice.value = null;
+      });
+    };
+
+    const viewAppointmentInvoice = () => {
+      viewingAppointmentInvoice.value = true;
       store
         .dispatch(Actions.INVOICE.VIEW, appointmentId)
         .then((data) => {
@@ -632,7 +889,21 @@ export default defineComponent({
           window.open(objectUrl, "_blank");
         })
         .finally(() => {
-          viewingInvoice.value = false;
+          viewingAppointmentInvoice.value = false;
+        });
+    };
+
+    const viewPaymentInvoice = (id) => {
+      viewingPaymentInvoice.value = id;
+      store
+        .dispatch(Actions.MAKE_PAYMENT.INVOICE.VIEW, id)
+        .then((data) => {
+          let blob = new Blob([data], { type: "application/pdf" });
+          let objectUrl = URL.createObjectURL(blob);
+          window.open(objectUrl, "_blank");
+        })
+        .finally(() => {
+          viewingPaymentInvoice.value = null;
         });
     };
 
@@ -661,7 +932,7 @@ export default defineComponent({
       if (formData.value.amount < 0 && refundVerified.value === false) {
         if (!verifyPinModal.value) {
           verifyPinModal.value = new Modal(
-            document.getElementById("modal_verify_organization_pin")
+            document.getElementById("modal_verify_authorization_pin")
           );
         }
 
@@ -683,10 +954,23 @@ export default defineComponent({
           billingData.value.appointment.patient_details.email;
       }
 
+      let submitData = {};
+
+      if (authorizedBy.value) {
+        submitData = {
+          ...formData.value,
+          authorized_by: authorizedBy.value,
+        };
+      } else {
+        submitData = {
+          ...formData.value,
+        };
+      }
+
       loading.value = true;
 
       store
-        .dispatch(Actions.MAKE_PAYMENT.CREATE, formData.value)
+        .dispatch(Actions.MAKE_PAYMENT.CREATE, submitData)
         .then(() => {
           store.dispatch(
             Actions.MAKE_PAYMENT.VIEW,
@@ -716,6 +1000,7 @@ export default defineComponent({
         .finally(() => {
           loading.value = false;
           refundVerified.value = false;
+          authorizedBy.value = null;
         });
     };
 
@@ -764,10 +1049,16 @@ export default defineComponent({
       handleSubmitPayment,
       verifyRefund,
       closePinConfirmModal,
-      sendingInvoice,
-      sendInvoice,
-      viewingInvoice,
-      viewInvoice,
+      sendingPaymentInvoice,
+      sendAppointmentInvoice,
+      viewingPaymentInvoice,
+      viewAppointmentInvoice,
+      prevPaymentsTableHeader,
+      moment,
+      sendPaymentInvoice,
+      viewPaymentInvoice,
+      sendingAppointmentInvoice,
+      viewingAppointmentInvoice,
     };
   },
 });

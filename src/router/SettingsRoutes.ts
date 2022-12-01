@@ -103,12 +103,6 @@ const SettingsRoutes = [
     component: () =>
       import("@/views/organisation-admin/billing-setting/ScheduleItemView.vue"),
   },
-  {
-    path: "/setting/billing-pin",
-    name: "setting-billing-pin",
-    component: () =>
-      import("@/views/organisation-admin/billing-setting/BillingPin.vue"),
-  },
 ];
 
 export default SettingsRoutes;

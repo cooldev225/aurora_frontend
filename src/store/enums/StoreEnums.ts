@@ -25,6 +25,11 @@ const Actions = {
     UPDATE: "updateProfile",
     UPDATE_PASSWORD: "updatePassword",
     UPDATE_SIGNATURE: "updateSignature",
+    PIN: {
+      SET: "setUserPin",
+      VERIFY: "verifyUserPin",
+      SHOW: "showUserPin",
+    },
   },
 
   ADMIN: {
@@ -40,11 +45,6 @@ const Actions = {
     DELETE: "deleteOrg",
     UPDATE: "updateOrg",
     SELECT: "selectOrg",
-    PIN: {
-      SET: "setOrganizationPin",
-      VERIFY: "verifyOrganizationPin",
-      SHOW: "showOrganizationPin",
-    }
   },
 
   ORG_ADMIN: {
@@ -56,13 +56,13 @@ const Actions = {
     LOAD_ORGANIZATION_DATA: "loadOrganizationData",
     ORGANIZATION: {
       SETTINGS: {
-        UPDATE: "updateOrganizationSettings"
+        UPDATE: "updateOrganizationSettings",
       },
       PRE_ADMISSION_SECTION: {
         LIST: "listPreAdmissionSections",
         UPDATE: "updatePreAdmissionSections",
       },
-    }
+    },
   },
 
   CLINICS: {
@@ -92,7 +92,6 @@ const Actions = {
       LIST: "listSearchSpecialist",
     },
   },
-
 
   EMPLOYEE: {
     LIST: "listEmployee",
@@ -143,7 +142,6 @@ const Actions = {
     UPDATE: "updateAptTimeRequirement",
   },
 
-
   DOCTOR_ADDRESS_BOOK: {
     LIST: "searchDoctorAddressBook", // (get) 'doctor-address-books'
     CREATE: "createDoctorAddressBook",
@@ -162,11 +160,14 @@ const Actions = {
     CREATE: "createLetter",
   },
 
-
   MAKE_PAYMENT: {
     LIST: "listMakePayment",
     VIEW: "viewMakePayment",
     CREATE: "createMakePayment",
+    INVOICE: {
+      SEND: "sendInvoiceMakePayment",
+      VIEW: "viewInvoiceMakePayment",
+    },
   },
 
   HEADER_FOOTER_TEMPLATE: {
@@ -245,7 +246,7 @@ const Mutations = {
   SET_ORG_MANAGER: {
     LIST: "setOrgManagerList",
     SELECT: "setSelectOrgManager",
-    ORGNIZATION: "settingOrganization"
+    ORGNIZATION: "settingOrganization",
   },
 
   SET_ORG_ADMIN: {
@@ -265,21 +266,16 @@ const Mutations = {
     LIST: "setHealthFundsList",
   },
 
-  
-
   SET_EMPLOYEE: {
     LIST: "setEmployeeList",
     SELECT: "setSelectEmployee",
   },
-
 
   SET_ANESTHETIST_QUES: {
     LIST: "setAnesQuesList",
     SELECT: "setSelectAnesQuesSelect",
     ACTIVE_LIST: "setAnesQuesActiveList",
   },
-
-
 
   SET_DOCTOR_ADDRESS_BOOK: {
     LIST: "setDoctorAddressBook",
@@ -314,7 +310,7 @@ const Mutations = {
     LIST: "setNtfTemplates",
     SELECT: "setSelectNtfTemplates",
   },
-  
+
   SET_MAKE_PAYMENT: {
     LIST: "setMakePayment",
     SELECT: "setSelectMakePayment",
