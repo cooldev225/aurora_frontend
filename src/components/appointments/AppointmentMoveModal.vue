@@ -459,8 +459,9 @@ export default defineComponent({
     const handleConfirm = () => {
       loading.value = true;
 
-      for (let key in aptInfoData.value)
-        aptInfoData.value[key] = aptData.value[key];
+      for (let key in aptInfoData.value) {
+        if (key in aptData.value) aptInfoData.value[key] = aptData.value[key];
+      }
       for (let key in patientInfoData.value)
         patientInfoData.value[key] = aptData.value.patient[key];
       for (let key in billingInfoData.value)
