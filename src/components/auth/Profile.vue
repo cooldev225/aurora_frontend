@@ -282,7 +282,6 @@ export default defineComponent({
     };
 
     watch(profileFormData, () => {
-      console.log(["profileFormData", profileFormData.value]);
       loadProfileImage();
     });
 

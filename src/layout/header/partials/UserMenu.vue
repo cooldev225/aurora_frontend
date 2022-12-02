@@ -14,7 +14,7 @@
             :src="
               profileData.photo == undefined
                 ? 'media/avatars/blank.png'
-                : profileData.photo
+                : userPhoto
             "
           />
         </div>
@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -68,9 +68,29 @@ export default defineComponent({
   props: {
     profileData: { type: Object as PropType<IUserProfile>, required: true },
   },
-  setup() {
+  setup(props) {
     const router = useRouter();
     const store = useStore();
+    const userPhoto = ref("");
+
+    watchEffect(() => {
+      if (props.profileData.photo)
+        if (
+          props.profileData.photo !== null &&
+          props.profileData.photo !== ""
+        ) {
+          store
+            .dispatch(Actions.FILE.VIEW, {
+              type: "USER_PHOTO",
+              path: props.profileData.photo,
+            })
+            .then((data) => {
+              const blob = new Blob([data], { type: "application/image" });
+              const objectUrl = URL.createObjectURL(blob);
+              userPhoto.value = objectUrl;
+            });
+        }
+    });
 
     const handleProfile = () => {
       router.push({ name: "profile" });
@@ -85,6 +105,7 @@ export default defineComponent({
     return {
       handleProfile,
       signOut,
+      userPhoto,
     };
   },
 });
