@@ -14,6 +14,8 @@ import ClinicRoutes from "./ClinicRoutes";
 import OrganizationRoutes from "./OrganizationRoutes";
 import PreAdmissionRoutes from "./PreAdmissionRoutes";
 import MiscRoutes from "./MiscRoutes";
+import { computed } from "vue";
+import moment from "moment";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -85,16 +87,49 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(() => {
+router.beforeEach(async (to) => {
   // reset config to initial state
   store.commit(Mutations.RESET_LAYOUT_CONFIG);
 
-  store.dispatch(Actions.VERIFY_AUTH, { api_token: JwtService.getToken() });
+  await verifyToken();
+
+  const isUserAuthenticated = computed(() => store.getters.isUserAuthenticated);
+  const user = computed(() => store.getters.currentUser);
+  const organization = computed(() => store.getters.userOrganization);
+  const allowedRoutes = ["my-schedule", "sign-in"];
 
   // Scroll page to top on every route change
   setTimeout(() => {
     window.scrollTo(0, 0);
   }, 100);
+
+  if (isUserAuthenticated.value && !user.value.outside_hours) {
+    if (
+      allowedRoutes.includes(<string>to.name) ||
+      user.value.role == "organizationAdmin"
+    ) {
+      return true;
+    }
+
+    const orgStartTime = moment(organization.value.start_time, "HH:mm:ss");
+    const orgEndTime = moment(organization.value.end_time, "HH:mm:ss");
+
+    if (moment().isAfter(orgStartTime) && moment().isBefore(orgEndTime))
+      return true;
+    return false;
+  }
 });
+
+const verifyToken = () => {
+  return new Promise(function (resolve) {
+    store
+      .dispatch(Actions.VERIFY_AUTH, {
+        api_token: JwtService.getToken(),
+      })
+      .then(() => {
+        resolve("");
+      });
+  });
+};
 
 export default router;

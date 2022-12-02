@@ -87,6 +87,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import * as Yup from "yup";
+import moment from "moment";
 
 export default defineComponent({
   name: "sign-in",
@@ -98,6 +99,9 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const userRole = computed(() => store.getters.userRole);
+    const user = computed(() => store.getters.currentUser);
+    const organization = computed(() => store.getters.userOrganization);
+
     const errorMessage = ref("");
 
     const submitButton = ref<HTMLButtonElement | null>(null);
@@ -111,7 +115,7 @@ export default defineComponent({
     //Form submit function
     const onSubmitLogin = async (values) => {
       // Clear existing errors
-      store.dispatch(Actions.LOGOUT);
+      await store.dispatch(Actions.LOGOUT);
 
       if (submitButton.value) {
         // eslint-disable-next-line
@@ -121,11 +125,21 @@ export default defineComponent({
       }
 
       // Send login request
-      await store.dispatch(Actions.LOGIN, values);
+      await loginAction(values);
+
+      const user = store.getters.currentUser;
       const error = store.getters.getErrors["status"];
 
       if (error != "failed") {
         // Go to page after successfully login
+        if (userRole.value === "organizationAdmin")
+          router.push({ name: "org-admin-settings" });
+
+        if (!user.outside_hours && !outsideHoursAccess()) {
+          router.push({ name: "my-schedule" });
+          return;
+        }
+
         if (
           userRole.value === "organizationManager" ||
           userRole.value === "receptionist"
@@ -133,9 +147,9 @@ export default defineComponent({
           router.push({ name: "booking-dashboard" });
         if (userRole.value === "anesthetist")
           router.push({ name: "anesthetist-dashboard" });
-        if (userRole.value === "organizationAdmin")
-          router.push({ name: "org-admin-settings" });
+
         if (userRole.value === "admin") router.push({ name: "organisations" });
+
         if (userRole.value === "specialist")
           router.push({ name: "employee-booking-dashboard" });
       } else {
@@ -148,6 +162,25 @@ export default defineComponent({
         submitButton.value!.disabled = false;
     };
 
+    const outsideHoursAccess = () => {
+      if (user.value.role !== "organizationAdmin") {
+        const timeNow = moment();
+        const orgStartTime = moment(organization.value.start_time, "HH:mm:ss");
+        const orgEndTime = moment(organization.value.end_time, "HH:mm:ss");
+        if (timeNow.isAfter(orgStartTime) && timeNow.isBefore(orgEndTime))
+          return true;
+        return false;
+      }
+      return true;
+    };
+
+    const loginAction = (values) => {
+      return new Promise(function (resolve) {
+        store.dispatch(Actions.LOGIN, values).then(() => {
+          resolve("");
+        });
+      });
+    };
     return {
       onSubmitLogin,
       login,

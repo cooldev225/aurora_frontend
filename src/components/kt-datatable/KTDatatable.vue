@@ -220,10 +220,6 @@ export default defineComponent({
       }
     });
 
-    watch(props, () => {
-      data.value = props.tableData;
-    });
-
     const currentPageChange = (val) => {
       if ("onCurrentChange" in vnodeProps) {
         emit("current-change", val);

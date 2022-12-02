@@ -105,7 +105,7 @@ export default defineComponent({
       const user = store.getters.currentUser;
       let filteredList = [];
       allEmployees.filter((employee) => {
-        if (employee.id === user.profile.id) {
+        if (employee && employee.id === user.profile.id) {
           filteredList.push(employee);
           return employee;
         }
