@@ -435,12 +435,9 @@ export default defineComponent({
         formData.value.appointment_type_name =
           aptData.value.appointment_type?.name;
       });
-      store.dispatch(Actions.CLINICS.LIST).then(() => {
-        formData.value.clinic_id = aptData.value.clinic_id;
-      });
-      store.dispatch(Actions.SPECIALIST.LIST).then(() => {
-        formData.value.specialist_id = aptData.value.specialist_id;
-      });
+
+      formData.value.clinic_id = aptData.value.clinic_id;
+      formData.value.specialist_id = aptData.value.specialist_id;
     });
 
     onMounted(() => {
