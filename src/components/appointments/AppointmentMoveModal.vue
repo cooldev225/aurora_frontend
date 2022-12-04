@@ -435,12 +435,9 @@ export default defineComponent({
         formData.value.appointment_type_name =
           aptData.value.appointment_type?.name;
       });
-      store.dispatch(Actions.CLINICS.LIST).then(() => {
-        formData.value.clinic_id = aptData.value.clinic_id;
-      });
-      store.dispatch(Actions.SPECIALIST.LIST).then(() => {
-        formData.value.specialist_id = aptData.value.specialist_id;
-      });
+
+      formData.value.clinic_id = aptData.value.clinic_id;
+      formData.value.specialist_id = aptData.value.specialist_id;
     });
 
     onMounted(() => {
@@ -459,8 +456,9 @@ export default defineComponent({
     const handleConfirm = () => {
       loading.value = true;
 
-      for (let key in aptInfoData.value)
-        aptInfoData.value[key] = aptData.value[key];
+      for (let key in aptInfoData.value) {
+        if (key in aptData.value) aptInfoData.value[key] = aptData.value[key];
+      }
       for (let key in patientInfoData.value)
         patientInfoData.value[key] = aptData.value.patient[key];
       for (let key in billingInfoData.value)
