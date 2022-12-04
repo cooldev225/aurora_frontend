@@ -74,7 +74,6 @@
             arrow-control
             format="HH:mm"
             placeholder="Start time"
-            class="w-100"
           />
         </InputWrapper>
 
@@ -90,7 +89,6 @@
             arrow-control
             format="HH:mm"
             placeholder="End time"
-            class="w-100"
           />
         </InputWrapper>
       </div>
