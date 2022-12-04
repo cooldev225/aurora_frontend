@@ -31,7 +31,7 @@
           :alt="profileData.full_name"
         />
       </div>
-      <UserMenu :profile-data="profileData"></UserMenu>
+      <UserMenu :profile-data="profileData" :user-photo="userPhoto"></UserMenu>
     </div>
 
     <div
@@ -66,6 +66,7 @@ export default defineComponent({
     const store = useStore();
     const profileData = computed<IUserProfile>(() => store.getters.userProfile);
     const userPhoto = ref("");
+    userPhoto.value = "media/avatars/blank.png";
 
     watch(profileData, () => {
       if (profileData.value)

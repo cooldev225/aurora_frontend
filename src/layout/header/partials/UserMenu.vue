@@ -9,14 +9,7 @@
       <div class="menu-content d-flex align-items-center px-3">
         <!--begin::Avatar-->
         <div class="symbol symbol-50px me-5">
-          <img
-            alt="Logo"
-            :src="
-              profileData.photo == undefined
-                ? 'media/avatars/blank.png'
-                : userPhoto
-            "
-          />
+          <img alt="User Avatar" :src="userPhoto" />
         </div>
         <!--end::Avatar-->
 
@@ -56,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watchEffect } from "vue";
+import { defineComponent, PropType } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -67,30 +60,11 @@ export default defineComponent({
   components: {},
   props: {
     profileData: { type: Object as PropType<IUserProfile>, required: true },
+    userPhoto: { type: String as PropType<string>, required: true },
   },
   setup(props) {
     const router = useRouter();
     const store = useStore();
-    const userPhoto = ref("");
-
-    watchEffect(() => {
-      if (props.profileData.photo)
-        if (
-          props.profileData.photo !== null &&
-          props.profileData.photo !== ""
-        ) {
-          store
-            .dispatch(Actions.FILE.VIEW, {
-              type: "USER_PHOTO",
-              path: props.profileData.photo,
-            })
-            .then((data) => {
-              const blob = new Blob([data], { type: "application/image" });
-              const objectUrl = URL.createObjectURL(blob);
-              userPhoto.value = objectUrl;
-            });
-        }
-    });
 
     const handleProfile = () => {
       router.push({ name: "profile" });
@@ -105,7 +79,6 @@ export default defineComponent({
     return {
       handleProfile,
       signOut,
-      userPhoto,
     };
   },
 });
