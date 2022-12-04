@@ -92,9 +92,10 @@
             }}</InfoSection>
 
             <InfoSection :heading="'Anaesthetist'">
-              <span v-if="appointment.anesthetist_name !== ''">
-                {{ appointment.anesthetist_name }}</span
-              ><span v-else> No Anaesthetist Assigned </span>
+              <span v-if="appointment.anesthetist_name">
+                {{ appointment.anesthetist_name }}
+              </span>
+              <span v-else> No Anaesthetist Assigned </span>
             </InfoSection>
 
             <InfoSection :heading="'Estimated Price'">{{
