@@ -75,10 +75,8 @@
   <MoveModal :isDisableAptTypeList="true" />
 </template>
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent } from "vue";
 import { useStore } from "vuex";
-import { HRMMutations } from "@/store/enums/StoreHRMEnums";
-
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Modal } from "bootstrap";
 import { AppointmentMutations } from "@/store/enums/StoreAppointmentEnums";
@@ -117,7 +115,8 @@ export default defineComponent({
         return data[0].leave_type;
       }
     };
-    const handleMove = async (item) => {
+
+    const handleMove = (item) => {
       item.step = 0;
       item.action = "move";
       store.commit(AppointmentMutations.SET_APT.SELECT, item);

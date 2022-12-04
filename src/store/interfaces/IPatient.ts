@@ -1,5 +1,6 @@
 import IAppointment from "./IAppointment";
 import IPatientAlert from "./IPatientAlert";
+import IPatientAllergy from "./IPatientAllergy";
 import IPatientAlsoKnownAs from "./IPatientAlsoKnownAs";
 import IPatientBilling from "./IPatientBilling";
 
@@ -40,4 +41,5 @@ export default interface IPatient {
   appointments: Array<IAppointment>;
   also_known_as: Array<IPatientAlsoKnownAs>;
   billings: Array<IPatientBilling>;
+  allergies: Array<IPatientAllergy>;
 }

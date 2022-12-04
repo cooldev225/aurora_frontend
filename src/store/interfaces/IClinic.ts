@@ -2,6 +2,7 @@ export default interface IClinic {
   id: number;
   organization_id: number;
   name: string;
+  clinic_name: string;
   nickname_code: string;
   email: string;
   phone_number: string;

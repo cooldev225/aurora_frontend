@@ -44,206 +44,216 @@
           <!--begin::Approval Status Badges-->
 
           <AlertBadge
-            v-if="displayData.procedure_approval_status === 'NOT_APPROVED'"
+            v-if="appointment.procedure_approval_status === 'NOT_APPROVED'"
             :text="'This procedure has not been approved'"
             :color="'danger'"
             :iconPath="'media/icons/duotune/arrows/arr015.svg'"
           />
 
           <AlertBadge
-            v-if="displayData.procedure_approval_status === 'NOT_ASSESSED'"
+            v-if="appointment.procedure_approval_status === 'NOT_ASSESSED'"
             :text="'This procedure has not yet been accessed'"
             :color="'warning'"
             :iconPath="'media/icons/duotune/arrows/arr015.svg'"
           />
 
           <AlertBadge
-            v-if="displayData.procedure_approval_status === 'APPROVED'"
+            v-if="appointment.procedure_approval_status === 'APPROVED'"
             :text="'This procedure has been approved'"
             :color="'success'"
             :iconPath="'media/icons/duotune/arrows/arr016.svg'"
           />
 
           <AlertBadge
-            v-if="displayData.procedure_approval_status === 'CONSULT_REQUIRED'"
+            v-if="appointment.procedure_approval_status === 'CONSULT_REQUIRED'"
             :text="'This procedure requires a consult prior'"
             :color="'danger'"
             :iconPath="'media/icons/duotune/arrows/arr015.svg'"
           />
 
           <!--end::Approval Status Badges-->
-
           <!--begin::Appointment Info-->
           <div class="d-flex flex-column gap-3">
             <InfoSection :heading="'Patient'"
-              >{{ displayData.patient_name }} ({{ displayData.patient_number }})
+              >{{ patient.full_name }} ({{ patient.contact_number }})
             </InfoSection>
-            <InfoSection :heading="'Clinic'">{{
-              displayData.clinic_name
-            }}</InfoSection>
-
             <InfoSection :heading="'Time'">
-              {{ displayData.time }}
+              {{ appointment.formatted_appointment_time }}
             </InfoSection>
-
+            <InfoSection :heading="'Clinic'">
+              {{ appointment.clinic?.name }}
+            </InfoSection>
             <InfoSection :heading="'Type'">{{
-              displayData.appointment_type_name
+              appointment.appointment_type?.name
             }}</InfoSection>
 
             <InfoSection :heading="'Specialist'">{{
-              displayData.specialist_name
+              appointment.specialist_name
             }}</InfoSection>
 
             <InfoSection :heading="'Anaesthetist'">
-              <span v-if="displayData.anesthetist_name !== ''">
-                {{ displayData.anesthetist_name }}</span
-              ><span> No Anaesthetist Assigned </span>
+              <span v-if="appointment.anesthetist_name">
+                {{ appointment.anesthetist_name }}
+              </span>
+              <span v-else> No Anaesthetist Assigned </span>
             </InfoSection>
 
             <InfoSection :heading="'Estimated Price'">{{
-              convertToCurrency(displayData.estimated_price / 100)
+              convertToCurrency(
+                appointment.appointment_type?.default_items_quote / 100
+              )
             }}</InfoSection>
           </div>
           <!--end::Appointment Info-->
-          <el-divider />
-          <div v-if="displayData.notes">
+          <el-divider v-if="appointment.note" />
+          <div v-if="appointment.note">
             <label class="fs-5 text-primary"
               >Notes:
-              <span class="text-black fs-5">{{
-                displayData.notes
-              }}</span></label
+              <span class="text-black fs-5">{{ appointment.note }}</span></label
             >
-            <el-divider v-if="displayData.allergies" />
-            <div>
-              <label class="fs-5 text-danger"
-                >Allergies:
+          </div>
+          <el-divider />
+          <div>
+            <label class="fs-5 text-danger"
+              >Allergies:
+              <span v-if="patient.allergies?.length > 0">
                 <template
-                  v-for="allergie in displayData.allergies"
-                  :key="allergie.id"
+                  v-for="allergy in patient.allergies"
+                  :key="allergy.id"
                 >
-                  <span class="text-black fs-5">{{ allergie.name + " " }}</span>
+                  <span class="text-black fs-5">{{ allergy.name + " " }}</span>
                 </template>
-              </label>
-            </div>
-            <el-divider />
+              </span>
+
+              <span v-else> No allergies recorded </span>
+            </label>
           </div>
+          <el-divider />
         </div>
-        <!--end::Appointment Info-->
-        <!--begin::Appointment Actions-->
-        <div class="d-flex flex-column gap-3 mt-5">
-          <!--Check In Button-->
-          <LargeIconButton
-            v-if="
-              aptData.attendance_status === 'NOT_PRESENT' &&
-              userRole !== 'specialist' &&
-              userRole !== 'anesthetist'
-            "
-            @click="handleCheckIn"
-            :heading="'Check In'"
-            :iconPath="'media/icons/duotune/arrows/arr024.svg'"
-            :color="'primary'"
-            justify="start"
-            iconSize="3"
-          />
-
-          <!--Check Out Button-->
-          <LargeIconButton
-            v-if="
-              aptData.attendance_status === 'CHECKED_IN' &&
-              userRole !== 'specialist' &&
-              userRole !== 'anesthetist'
-            "
-            @click="handleCheckOut"
-            :heading="'Check Out'"
-            :iconPath="'media/icons/duotune/arrows/arr021.svg'"
-            :color="'primary'"
-            justify="start"
-            iconSize="3"
-          />
-          <!--Checked Out Label-->
-          <LargeIconButton
-            v-if="
-              aptData.attendance_status === 'CHECKED_OUT' &&
-              userRole !== 'specialist' &&
-              userRole !== 'anesthetist'
-            "
-            :heading="'Checked Out'"
-            :iconPath="'media/icons/duotune/arrows/arr021.svg'"
-            :color="'grey'"
-            justify="start"
-            iconSize="3"
-          />
-
-          <!--View Patient-->
-          <LargeIconButton
-            @click="handleView"
-            :heading="'View'"
-            :iconPath="'media/icons/duotune/medicine/med001.svg'"
-            :color="'primary'"
-            justify="start"
-            iconSize="3"
-          />
-
-          <!--Edit Appointment-->
-          <LargeIconButton
-            v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
-            @click="handleEdit"
-            :heading="'Edit'"
-            :iconPath="'media/icons/duotune/general/gen055.svg'"
-            :color="'success'"
-            justify="start"
-            iconSize="3"
-          />
-
-          <div class="d-flex flex-row w-full">
-            <!--Move Appointment-->
-            <div class="col-6">
-              <LargeIconButton
-                class="me-1"
-                v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
-                @click="handleMove"
-                :heading="'Move'"
-                :iconPath="'media/icons/duotune/arrows/arr035.svg'"
-                :color="'success'"
-                justify="start"
-                iconSize="3"
-              />
-            </div>
-            <div class="col-6">
-              <!--Move Appointment-->
-              <LargeIconButton
-                class="ms-1"
-                v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
-                @click="handleCopy"
-                :heading="'Copy'"
-                :iconPath="'media/icons/duotune/arrows/arr058.svg'"
-                :color="'success'"
-                justify="start"
-                iconSize="3"
-              />
-            </div>
-          </div>
-
-          <!--Cancel Appointment Button-->
-          <LargeIconButton
-            v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
-            @click="handleCancel"
-            :heading="'Cancel'"
-            :iconPath="'media/icons/duotune/arrows/arr011.svg'"
-            :color="'danger'"
-            justify="start"
-            iconSize="3"
-          />
-        </div>
-        <!--end::Appointment Actions-->
       </div>
+      <!--end::Appointment Info-->
+      <!--begin::Appointment Actions-->
+      <div class="d-flex p-6 flex-column gap-3 mt-5">
+        <!--Check In Button-->
+        <LargeIconButton
+          v-if="
+            aptData.attendance_status === 'NOT_PRESENT' &&
+            userRole !== 'specialist' &&
+            userRole !== 'anesthetist'
+          "
+          @click="handleCheckIn"
+          :heading="'Check In'"
+          :iconPath="'media/icons/duotune/arrows/arr024.svg'"
+          :color="'primary'"
+          justify="start"
+          iconSize="3"
+        />
+
+        <!--Check Out Button-->
+        <LargeIconButton
+          v-if="
+            aptData.attendance_status === 'CHECKED_IN' &&
+            userRole !== 'specialist' &&
+            userRole !== 'anesthetist'
+          "
+          @click="handleCheckOut"
+          :heading="'Check Out'"
+          :iconPath="'media/icons/duotune/arrows/arr021.svg'"
+          :color="'primary'"
+          justify="start"
+          iconSize="3"
+        />
+        <!--Checked Out Label-->
+        <LargeIconButton
+          v-if="
+            aptData.attendance_status === 'CHECKED_OUT' &&
+            userRole !== 'specialist' &&
+            userRole !== 'anesthetist'
+          "
+          :heading="'Checked Out'"
+          :iconPath="'media/icons/duotune/arrows/arr021.svg'"
+          :color="'grey'"
+          justify="start"
+          iconSize="3"
+        />
+
+        <!--View Patient-->
+        <LargeIconButton
+          @click="handleView"
+          :heading="'View'"
+          :iconPath="'media/icons/duotune/medicine/med001.svg'"
+          :color="'primary'"
+          justify="start"
+          iconSize="3"
+        />
+
+        <!--Edit Appointment-->
+        <LargeIconButton
+          v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
+          @click="handleEdit"
+          :heading="'Edit'"
+          :iconPath="'media/icons/duotune/general/gen055.svg'"
+          :color="'success'"
+          justify="start"
+          iconSize="3"
+        />
+
+        <div class="d-flex flex-row w-full">
+          <!--Move Appointment-->
+          <div class="col-6">
+            <LargeIconButton
+              class="me-1"
+              v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
+              @click="handleMove"
+              :heading="'Move'"
+              :iconPath="'media/icons/duotune/arrows/arr035.svg'"
+              :color="'success'"
+              justify="start"
+              iconSize="3"
+            />
+          </div>
+          <div class="col-6">
+            <!--Move Appointment-->
+            <LargeIconButton
+              class="ms-1"
+              v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
+              @click="handleCopy"
+              :heading="'Copy'"
+              :iconPath="'media/icons/duotune/arrows/arr058.svg'"
+              :color="'success'"
+              justify="start"
+              iconSize="3"
+            />
+          </div>
+        </div>
+
+        <!--Cancel Appointment Button-->
+        <LargeIconButton
+          v-if="userRole !== 'specialist' && userRole !== 'anesthetist'"
+          @click="handleCancel"
+          :heading="'Cancel'"
+          :iconPath="'media/icons/duotune/arrows/arr011.svg'"
+          :color="'danger'"
+          justify="start"
+          iconSize="3"
+        />
+      </div>
+      <!--end::Appointment Actions-->
     </div>
   </div>
-  <CheckInModal :appointment="aptData" :patient="patientData" />
+
+  <CheckInModal :appointment="aptData" :patient="patient" />
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, watch, computed, watchEffect } from "vue";
+import {
+  defineComponent,
+  reactive,
+  watch,
+  computed,
+  watchEffect,
+  ref,
+} from "vue";
 import {
   AppointmentActions,
   AppointmentMutations,
@@ -259,6 +269,8 @@ import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButto
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import { convertToCurrency } from "@/core/data/billing";
+import IPatient from "@/store/interfaces/IPatient";
+import IAppointment from "@/store/interfaces/IAppointment";
 
 export default defineComponent({
   name: "booing-drawer",
@@ -266,30 +278,19 @@ export default defineComponent({
     CheckInModal,
     LargeIconButton,
     AlertBadge,
-    InfoSection,
+    //  InfoSection,
   },
   setup() {
     const store = useStore();
     const router = useRouter();
-    const aptData = computed(() => store.getters.getAptSelected);
-    const patientData = computed(() => store.getters.selectedPatient);
+    const aptData = computed<IAppointment>(() => store.getters.getAptSelected);
+    const appointment = computed<IAppointment>(
+      () => store.getters.getAptSelected
+    );
+
+    const patient = computed<IPatient>(() => store.getters.selectedPatient);
     const searchVal = computed(() => store.getters.getSearchVariable);
     const userRole = computed(() => store.getters.userRole);
-
-    const displayData = reactive({
-      clinic_name: "",
-      time: "",
-      arrival_time: "",
-      appointment_type_name: "",
-      specialist_name: "",
-      notes: "",
-      allergies: "",
-      patient_name: "",
-      patient_number: "",
-      procedure_approval_status: "",
-      anesthetist_name: "",
-      estimated_price: 0,
-    });
 
     watch(aptData, () => {
       store.dispatch(PatientActions.VIEW, aptData.value.patient_id);
@@ -405,29 +406,7 @@ export default defineComponent({
         });
     };
 
-    watchEffect(() => {
-      displayData.clinic_name = aptData.value.clinic_details?.name;
-      displayData.appointment_type_name = aptData.value.appointment_type?.name;
-      displayData.specialist_name = aptData.value.specialist_name;
-      displayData.allergies = aptData.value.patient?.allergies;
-      displayData.patient_name = aptData.value.patient_name?.full;
-      displayData.patient_number =
-        aptData.value.patient_details?.contact_number;
-      displayData.time = aptData.value.formatted_appointment_time;
-      displayData.arrival_time = aptData.value.arrival_time;
-      displayData.specialist_name = aptData.value.specialist_name;
-      displayData.notes = aptData.value.note;
-      displayData.procedure_approval_status =
-        aptData.value.procedure_approval_status;
-      displayData.anesthetist_name = aptData.value.anesthetist
-        ? aptData.value.anesthetist.name
-        : "";
-      displayData.estimated_price =
-        aptData.value.appointment_type?.default_items_quote;
-    });
-
     return {
-      displayData,
       aptData,
       handleEdit,
       handleView,
@@ -438,7 +417,8 @@ export default defineComponent({
       handleCopy,
       userRole,
       convertToCurrency,
-      patientData,
+      patient,
+      appointment,
     };
   },
 });

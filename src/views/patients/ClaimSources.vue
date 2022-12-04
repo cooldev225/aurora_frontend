@@ -42,7 +42,7 @@
             }}
 
             <span
-              v-if="item.verified_at"
+              v-if="enableMedicareValidation && item.verified_at"
               class="badge opacity-50 mx-2"
               :class="{
                 'badge-success': item.is_valid,
@@ -54,6 +54,7 @@
           </div>
 
           <button
+            v-if="enableMedicareValidation"
             class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
             @click="revalidateSource(item)"
             :disabled="loading != null"
@@ -73,7 +74,7 @@
         <template v-slot:cell-actions="{ row: item }">
           <div class="d-flex flex-column">
             <button
-              v-if="item.billing_type == 1"
+              v-if="enableMedicareValidation && item.billing_type == 1"
               class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
               :disabled="loading != null || !item.is_valid"
               @click="handleCheckConcession(item)"
@@ -118,6 +119,7 @@
       <UpdateClaimSourceModal
         :patient="selectedPatient"
         :claimSource="updatingSource"
+        v-on:closeModal="closeUpdateClaimSourceModal"
         v-on:updateDetails="updatePatientDetails"
       />
     </template>
@@ -139,6 +141,7 @@ import UpdateClaimSourceModal from "@/views/patients/modals/UpdateClaimSourceMod
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import { Modal } from "bootstrap";
 import PatientBillingTypes from "@/core/data/patient-billing-types";
+import { isMedicareValidationEnabled } from "@/core/data/billing";
 
 export default defineComponent({
   name: "patient-claim-sources",
@@ -159,6 +162,9 @@ export default defineComponent({
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const selectedPatient = computed(() => store.getters.selectedPatient);
     const minorId = computed(() => store.getters.latestMinorId);
+    const enableMedicareValidation = computed(() =>
+      isMedicareValidationEnabled()
+    );
     const loading = ref(null);
     const tableHeader = ref([
       {
@@ -192,6 +198,7 @@ export default defineComponent({
     const updateDetails = ref({});
     const updatingSource = ref(null);
     const addClaimSourceModal = ref(null);
+    const updateClaimSourceModal = ref(null);
 
     const renderTable = () => tableKey.value++;
 
@@ -221,10 +228,14 @@ export default defineComponent({
 
     const handleUpdateClaimSource = (source) => {
       updatingSource.value = source;
-      const modal = new Modal(
-        document.getElementById("modal_update_claim_source")
-      );
-      modal.show();
+
+      if (!updateClaimSourceModal.value) {
+        updateClaimSourceModal.value = new Modal(
+          document.getElementById("modal_update_claim_source")
+        );
+      }
+
+      updateClaimSourceModal.value.show();
     };
 
     const handleDeleteSource = (item) => {
@@ -455,6 +466,11 @@ export default defineComponent({
       addClaimSourceModal.value.hide();
     };
 
+    const closeUpdateClaimSourceModal = () => {
+      renderTable();
+      updateClaimSourceModal.value.hide();
+    };
+
     onMounted(() => {
       const id = route.params.id;
       store.dispatch(PatientActions.VIEW, id);
@@ -492,7 +508,9 @@ export default defineComponent({
       updatingSource,
       handleUpdateClaimSource,
       closeAddClaimSourceModal,
+      closeUpdateClaimSourceModal,
       updatePatientDetails,
+      enableMedicareValidation,
     };
   },
 });

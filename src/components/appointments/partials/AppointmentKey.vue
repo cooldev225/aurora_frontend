@@ -30,9 +30,6 @@ export default {
   components: {
     IconTooltip,
   },
-  props: {
-    appointment: { required: true, type: Object },
-  },
   setup() {
     const aptTypeList = computed(() => store.getters.getAptTypesList);
 

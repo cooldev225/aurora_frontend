@@ -7,8 +7,35 @@
       ref="formRef"
     >
       <div class="row mt-10 me-5 ms-5">
+        <div class="col-sm-12">
+          <div class="fv-row mb-7">
+            <el-form-item label="Logo">
+              <div class="d-flex">
+                <img
+                  v-if="formData.logo"
+                  :src="formData.logo"
+                  className="rounded me-2"
+                  width="146"
+                  height="146"
+                />
+
+                <el-upload
+                  action="#"
+                  ref="uploadRef"
+                  list-type="picture-card"
+                  :limit="1"
+                  :on-change="handleUploadChange"
+                  :auto-upload="false"
+                  accept="image/*"
+                >
+                  <i class="fa fa-plus"></i>
+                </el-upload>
+              </div>
+            </el-form-item>
+          </div>
+        </div>
         <InputWrapper
-          class="col-sm-6"
+          class="col-sm-4 mb-5"
           required
           label="Organization name"
           prop="name"
@@ -21,7 +48,7 @@
         </InputWrapper>
 
         <InputWrapper
-          class="col-sm-6"
+          class="col-sm-4 mb-5"
           required
           label="Appointment length"
           prop="appointment_length"
@@ -36,12 +63,13 @@
 
       <div class="row mt-5 me-5 ms-5">
         <InputWrapper
-          class="col-sm-6"
+          class="col-sm-4 mb-5"
           required
           label="Start time"
           prop="start_time"
         >
           <el-time-picker
+            class="w-100"
             v-model="formData.start_time"
             arrow-control
             format="HH:mm"
@@ -51,12 +79,13 @@
         </InputWrapper>
 
         <InputWrapper
-          class="col-sm-6"
+          class="col-sm-4 mb-5"
           required
           label="End time"
           prop="end_time"
         >
           <el-time-picker
+            class="w-100"
             v-model="formData.end_time"
             arrow-control
             format="HH:mm"
@@ -148,6 +177,7 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import moment from "moment";
 import JwtService from "@/core/services/JwtService";
+import { validateAbnAcn } from "@/helpers/helpers";
 
 export default defineComponent({
   name: "organization-settings",
@@ -157,26 +187,18 @@ export default defineComponent({
     const store = useStore();
     const loading = ref<boolean>(false);
     const initialAppointmentLength = ref<string | null>(null);
+    const logoFile = ref(null);
     const formData = ref<Record<string, unknown>>({
       name: null,
       start_time: null,
       end_time: null,
       appointment_length: null,
       abn_acn: null,
+      logo: null,
       ip_whitelist: [] as Array<string>,
     });
 
-    const confirmAbnAcn = (rule, value, callback) => {
-      var abn_acn_regex = /^([0-9]{9,11})$/;
-      if (value === "") {
-        callback(new Error("ABN/ACN cannot be blank."));
-      } else if (value.match(abn_acn_regex) === null) {
-        callback(new Error("ABN/ACN should be always 11 or 9 digits long."));
-      } else {
-        callback();
-      }
-    };
-    const rules = ref<Record<string, unknown>>({
+    const rules = ref({
       name: [
         {
           required: true,
@@ -212,7 +234,7 @@ export default defineComponent({
           trigger: "change",
         },
         {
-          validator: confirmAbnAcn,
+          validator: validateAbnAcn,
           trigger: ["blur"],
         },
       ],
@@ -227,6 +249,29 @@ export default defineComponent({
         ip_whitelist: [] as Array<string>,
       };
     };
+
+    const handleUploadChange = (file) => {
+      logoFile.value = file.raw;
+    };
+
+    const loadLogoImage = () => {
+      if (formData.value.logo) {
+        store
+          .dispatch(Actions.FILE.VIEW, {
+            type: "ORGANIZATION_LOGO",
+            path: formData.value.logo,
+          })
+          .then((data) => {
+            const blob = new Blob([data], { type: "application/image" });
+            const objectUrl = URL.createObjectURL(blob);
+            formData.value.logo = objectUrl;
+          })
+          .catch(() => {
+            console.log("image load error");
+          });
+      }
+    };
+
     const submit = () => {
       if (!formRef.value) {
         return false;
@@ -281,6 +326,8 @@ export default defineComponent({
           currentUser.value.organization.ip_whitelist;
         initialAppointmentLength.value =
           currentUser.value.organization.appointment_length;
+        formData.value.logo = currentUser.value.organization.logo;
+        loadLogoImage();
       }
     });
 
@@ -296,6 +343,7 @@ export default defineComponent({
       formRef,
       loading,
       initialAppointmentLength,
+      handleUploadChange,
     };
   },
 });

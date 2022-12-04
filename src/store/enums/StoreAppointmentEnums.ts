@@ -43,6 +43,14 @@ const AppointmentActions = {
     UPDATE: "updateApt",
     CHECK_IN: "checkInApt",
     CHECK_OUT: "checkOutApt",
+    DRAFT: {
+      CREATE: "createDraftApt",
+      DELETE: "deleteDraftApt",
+    },
+    BULK: {
+      LIST: "listApt",
+      UPDATE: "updateApts"
+    }
   },
   BOOKING: {
     SEARCH: {
@@ -66,7 +74,9 @@ const AppointmentMutations = {
       NEXT_APTS: "setNextAptList",
     },
   },
-
+  DRAFT: {
+    SET: "setAppointmentDraftId"
+  },
   SET_APT: {
     LIST: "setApt",
     LISTBYID: "setAptById",
@@ -84,6 +94,7 @@ const AppointmentMutations = {
       },
     },
     USER_APT: {
+      LIST: "setUserApt",
       SELECT: "setSelectUserApt",
     },
   },

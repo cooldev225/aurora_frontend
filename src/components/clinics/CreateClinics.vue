@@ -354,11 +354,15 @@ export default defineComponent({
       if (!formRef.value) {
         return;
       }
+      loading.value = true;
 
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          store.dispatch(formInfo.submitAction, formData.value);
+          store.dispatch(formInfo.submitAction, formData.value).then(() => {
+            loading.value = false;
+            router.push({ name: "clinics" });
+          });
         }
       });
     };

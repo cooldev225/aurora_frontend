@@ -26,6 +26,11 @@ const Actions = {
     UPDATE: "updateProfile",
     UPDATE_PASSWORD: "updatePassword",
     UPDATE_SIGNATURE: "updateSignature",
+    PIN: {
+      SET: "setUserPin",
+      VERIFY: "verifyUserPin",
+      SHOW: "showUserPin",
+    },
   },
 
   ADMIN: {
@@ -41,11 +46,6 @@ const Actions = {
     DELETE: "deleteOrg",
     UPDATE: "updateOrg",
     SELECT: "selectOrg",
-    PIN: {
-      SET: "setOrganizationPin",
-      VERIFY: "verifyOrganizationPin",
-      SHOW: "showOrganizationPin",
-    },
   },
 
   ORG_ADMIN: {
@@ -165,6 +165,10 @@ const Actions = {
     LIST: "listMakePayment",
     VIEW: "viewMakePayment",
     CREATE: "createMakePayment",
+    INVOICE: {
+      SEND: "sendInvoiceMakePayment",
+      VIEW: "viewInvoiceMakePayment",
+    },
   },
 
   HEADER_FOOTER_TEMPLATE: {

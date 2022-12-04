@@ -25,6 +25,7 @@ export interface AptInfo {
   selectedSpecialistData;
   userAptList: Array<IAppointment>;
   aptUserSelectedData: IAppointment;
+  aptDraftId: number;
 }
 
 @Module
@@ -37,6 +38,7 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   selectedSpecialistData = null;
   userAptList = [] as Array<IAppointment>;
   aptUserSelectedData = {} as IAppointment;
+  aptDraftId = 0 as number;
   /**
    * Get current user object
    * @returns AdminList
@@ -100,6 +102,9 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   get getAptUserSelected(): IAppointment {
     return this.aptUserSelectedData;
   }
+  get getDraftAptId(): number {
+    return this.aptDraftId;
+  }
 
   @Mutation
   [AppointmentMutations.SET_APT.LIST](aptData) {
@@ -134,6 +139,16 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
   @Mutation
   [AppointmentMutations.SET_APT.USER_APT.SELECT](data) {
     this.aptUserSelectedData = data;
+  }
+
+  @Mutation
+  [AppointmentMutations.SET_APT.USER_APT.LIST](data) {
+    this.userAptList = data;
+  }
+
+  @Mutation
+  [AppointmentMutations.DRAFT.SET](data) {
+    this.aptDraftId = data;
   }
 
   @Action
@@ -186,6 +201,41 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
       return ApiService.post("appointments", payload).catch(({ response }) => {
         return displayServerError(response, "Creating an appointment");
       });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [AppointmentActions.APT.DRAFT.CREATE](payload) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post("appointments/draft", payload)
+        .then(({ data }) => {
+          this.context.commit(AppointmentMutations.DRAFT.SET, data.data.id);
+          // this.context.commit(AppointmentMutations.SET_APT.SELECT, data.data);
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Creating an draft appointment");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [AppointmentActions.APT.DRAFT.DELETE](id) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.delete("appointments/draft/" + id)
+        .then(({ data }) => {
+          if (data.data == id) {
+            this.context.commit(AppointmentMutations.DRAFT.SET, null);
+          }
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Deleting an draft appointment");
+        });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
     }
@@ -357,5 +407,42 @@ export default class AppointmentModule extends VuexModule implements AptInfo {
       .catch(({ response }) => {
         return displayServerError(response, "Updating appointment detail's");
       });
+  }
+
+  @Action
+  [AppointmentActions.APT.BULK.LIST](params) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.query("appointments", { params: params })
+        .then(({ data }) => {
+          this.context.commit(
+            AppointmentMutations.SET_APT.USER_APT.LIST,
+            data.data
+          );
+          return data.data;
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Listing all appointments");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [AppointmentActions.APT.BULK.UPDATE](params) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.put("appointments/bulk", params)
+        .then(({ data }) => {
+          this.context.dispatch(AppointmentActions.LIST);
+          return data.data;
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Update all appointments");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
   }
 }

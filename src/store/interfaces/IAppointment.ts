@@ -9,8 +9,9 @@ export default interface IAppointment {
   appointment_type_id: number;
   specialist_id: number;
   specialist_name: string;
-  room_id: number;
   anesthetist_id: number;
+  anesthetist_name: string;
+  room_id: number;
   is_wait_listed: boolean;
   procedure_approval_status: string;
   confirmation_status: string;
@@ -28,4 +29,6 @@ export default interface IAppointment {
   referral: IAppointmentReferral;
   appointment_type: IAppointmentType;
   charge_type: string;
+  action: string;
+  step: number;
 }
