@@ -289,6 +289,7 @@ export default defineComponent({
             end_time: moment(formData.value.end_time as Date).format(
               "HH:mm:ss"
             ),
+            logo: logoFile.value ?? null,
           };
 
           store
