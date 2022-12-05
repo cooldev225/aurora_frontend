@@ -406,14 +406,14 @@ export default defineComponent({
     });
 
     watch([currentUser, specialists], () => {
-      if (currentUser.value && specialists.value?.length > 0) {
-        if (
-          specialists.value.some(
-            (item) => item.id === currentUser.value.profile.id
-          )
-        )
-          specialistFilter.value = currentUser.value.profile.id;
-      }
+      // if (currentUser.value && specialists.value?.length > 0) {
+      //   if (
+      //     specialists.value.some(
+      //       (item) => item.id === currentUser.value.profile.id
+      //     )
+      //   )
+      //     specialistFilter.value = currentUser.value.profile.id;
+      // }
     });
 
     // Loads the selected document from the server to the view window
