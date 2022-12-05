@@ -335,6 +335,7 @@ export default defineComponent({
       }
       return null;
     });
+
     return {
       handleAddApt,
       availableSlotsByDate,
