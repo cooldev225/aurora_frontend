@@ -17,7 +17,11 @@
                 <div class="d-flex">
                   <img
                     v-if="showOldPhoto && profileFormData.photo"
-                    :src="profileFormData.photo"
+                    :src="
+                      profileFormData.photo.trim().startsWith(`blob:`)
+                        ? profileFormData.photo
+                        : `media/avatars/blank.png`
+                    "
                     className="rounded me-2"
                     width="146"
                     height="146"
@@ -29,7 +33,6 @@
                     ref="upload"
                     list-type="picture-card"
                     :class="{ disabled: uploadDisabled }"
-                    :limit="1"
                     :on-change="handleChange"
                     :on-remove="handleRemove"
                     :on-preview="handlePreview"
@@ -179,7 +182,7 @@ export default defineComponent({
       last_name: [
         {
           required: true,
-          message: "Last Name cannnot be blank",
+          message: "Last Name cannot be blank",
           trigger: "change",
         },
       ],
@@ -227,6 +230,7 @@ export default defineComponent({
     };
 
     const handleChange = (file) => {
+      console.log(upload.value.fileList);
       showOldPhoto.value = false;
       upload.value.clearFiles();
       uploadDisabled.value = false;
@@ -236,6 +240,7 @@ export default defineComponent({
 
     const handleRemove = () => {
       uploadDisabled.value = false;
+      showOldPhoto.value = true;
     };
 
     const handlePreview = (uploadFile) => {
@@ -274,7 +279,10 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
           store.dispatch(Actions.PROFILE.UPDATE, Data).finally(() => {
-            store.dispatch(Actions.PROFILE.VIEW);
+            store.dispatch(Actions.PROFILE.VIEW).then(() => {
+              showOldPhoto.value = true;
+              upload.value.clearFiles();
+            });
             loading.value = false;
           });
         }
@@ -282,7 +290,6 @@ export default defineComponent({
     };
 
     watch(profileFormData, () => {
-      console.log(["profileFormData", profileFormData.value]);
       loadProfileImage();
     });
 
