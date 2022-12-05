@@ -174,7 +174,6 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { hideModal } from "@/core/helpers/dom";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import patientDocumentTypes from "@/core/data/patient-document-types";
 import moment from "moment";
 import IPatient from "@/store/interfaces/IPatient";
@@ -205,7 +204,7 @@ export default defineComponent({
     const formData = ref({
       patient_id: props.patient.id,
       specialist_id: "",
-      document_type: "",
+      document_type: "OTHER",
       appointment_id: "",
       document_name: "",
       is_read: true,
@@ -283,21 +282,12 @@ export default defineComponent({
             .then((data) => {
               loading.value = false;
               hideModal(uploadDocumentRef.value);
-              Swal.fire({
-                text: "Successfully Uploaded!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
-                  id: data.id,
-                });
-                router.push({
-                  path: "/patients/" + formData.value.patient_id + "/documents",
-                });
+
+              store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
+                id: data.id,
+              });
+              router.push({
+                path: "/patients/" + formData.value.patient_id + "/documents",
               });
             })
             .catch(({ response }) => {

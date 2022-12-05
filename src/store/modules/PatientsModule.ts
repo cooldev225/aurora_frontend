@@ -206,6 +206,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
         data
       )
         .then(({ data }) => {
+          displaySuccessToast("Document uploaded");
           return data.data;
         })
         .catch(({ response }) => {
