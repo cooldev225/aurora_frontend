@@ -24,6 +24,13 @@
       </div>
       <div class="flex">
         <div class="search-params d-flex flex-wrap gap-4">
+          <el-alert
+            v-if="notification"
+            title="Warning!"
+            :description="notification"
+            type="warning"
+            show-icon
+          />
           <h4 class="text-nowrap" style="color: var(--el-color-info)">
             Clinic:
             <span class="text-primary">{{ clinic_name }}</span>
@@ -55,67 +62,75 @@
         </div>
         <div class="scroll h-500px">
           <template v-if="availableSlotsByDate">
-            <div class="row justify-content-center">
-              <div
-                :class="getClass(date)"
-                v-for="date in availableSlotsByDate"
-                :key="date"
-              >
-                <h3
-                  class="py-3 position-fixed border-bottom border-bottom-dashed border-bottom-primary"
-                  style="
-                    background: white;
-                    border-bottom: solid black 2px;
-                    padding-right: 50px;
-                    text-align: center;
-                  "
+            <div class="row justify-content-center h-100">
+              <template v-if="availableSlotsByDate.length > 0">
+                <div
+                  :class="getClass(date)"
+                  v-for="date in availableSlotsByDate"
+                  :key="date"
                 >
-                  {{ date.day }} <br />{{ moment(date.date).format("DD/MM") }}
-                </h3>
-                <div class="mt-20">
-                  <template
-                    v-for="time_slot in date.available_timeslots"
-                    :key="time_slot"
+                  <h3
+                    class="py-3 position-fixed border-bottom border-bottom-dashed border-bottom-primary"
+                    style="
+                      background: white;
+                      border-bottom: solid black 2px;
+                      padding-right: 50px;
+                      text-align: center;
+                    "
                   >
-                    <div
-                      class="mt-3 justify-content-center align-items-center mw-250 text-wrap"
+                    {{ date.day }} <br />{{ moment(date.date).format("DD/MM") }}
+                  </h3>
+                  <div class="mt-20">
+                    <template
+                      v-for="time_slot in date.available_timeslots"
+                      :key="time_slot"
                     >
-                      <span
-                        class="w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
-                        style="color: var(--el-color-primary)"
-                        data-kt-drawer-toggle="true"
-                        data-kt-drawer-target="#kt_drawer_chat"
-                        @click="
-                          handleAddApt(
-                            time_slot.specialist_id,
-                            date.date,
-                            time_slot.time
-                          )
-                        "
+                      <div
+                        class="mt-3 justify-content-center align-items-center mw-250 text-wrap"
                       >
-                        {{ time_slot.time }}
-                      </span>
-                      <p
-                        class="mb-1 small"
-                        style="color: var(--el-text-color-secondary)"
-                        v-if="clinic_name == 'Any'"
-                      >
-                        {{ time_slot.clinic_name }}
-                      </p>
-                      <p
-                        class="small"
-                        style="color: var(--el-color-warning)"
-                        v-if="specialist_name == 'Any'"
-                      >
-                        {{ time_slot.specialist_name }}
-                      </p>
-                    </div>
-                  </template>
+                        <span
+                          class="w-100 h-100 fw-bold d-block cursor-pointer fs-3 mb-1"
+                          style="color: var(--el-color-primary)"
+                          data-kt-drawer-toggle="true"
+                          data-kt-drawer-target="#kt_drawer_chat"
+                          @click="
+                            handleAddApt(
+                              time_slot.specialist_id,
+                              date.date,
+                              time_slot.time
+                            )
+                          "
+                        >
+                          {{ time_slot.time }}
+                        </span>
+                        <p
+                          class="mb-1 small"
+                          style="color: var(--el-text-color-secondary)"
+                          v-if="clinic_name == 'Any'"
+                        >
+                          {{ time_slot.clinic_name }}
+                        </p>
+                        <p
+                          class="small"
+                          style="color: var(--el-color-warning)"
+                          v-if="specialist_name == 'Any'"
+                        >
+                          {{ time_slot.specialist_name }}
+                        </p>
+                      </div>
+                    </template>
+                  </div>
                 </div>
-              </div>
+              </template>
+              <template v-else>
+                <div
+                  class="align-items-center justify-content-center d-flex h-100"
+                >
+                  <h3 class="text-center">No Next available Appointments.</h3>
+                </div>
+              </template>
             </div>
           </template>
-          <p v-else>No Next available Appointments.</p>
         </div>
       </div>
       <div class="d-flex align-items-center justify-content-center">
@@ -302,6 +317,25 @@ export default defineComponent({
       }, 300);
     });
 
+    const notification = computed(() => {
+      if (availableSlotsByDate.value.length > 0 && searchParam.value.date) {
+        const searchDate = moment(searchParam.value.date, "DD/MM/YYYY").startOf(
+          "isoWeek"
+        );
+        const resultFirstDate = moment(availableSlotsByDate.value[0].date);
+        const resultEndDate = moment(availableSlotsByDate.value[6].date);
+        if (!searchDate.isSame(resultFirstDate)) {
+          return (
+            "There are no appointments available in the selected week, the next available appointment is between " +
+            resultFirstDate.format("DD/MM/YYYY") +
+            " and " +
+            resultEndDate.format("DD/MM/YYYY")
+          );
+        }
+      }
+      return null;
+    });
+
     return {
       handleAddApt,
       availableSlotsByDate,
@@ -314,6 +348,7 @@ export default defineComponent({
       getClass,
       loading,
       props,
+      notification,
     };
   },
 });

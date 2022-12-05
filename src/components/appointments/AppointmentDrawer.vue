@@ -246,14 +246,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  watch,
-  computed,
-  watchEffect,
-  ref,
-} from "vue";
+import { defineComponent, watch, computed } from "vue";
 import {
   AppointmentActions,
   AppointmentMutations,
@@ -267,7 +260,6 @@ import CheckInModal from "@/components/appointments/CheckInModal.vue";
 import { Modal } from "bootstrap";
 import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
 import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
-import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import { convertToCurrency } from "@/core/data/billing";
 import IPatient from "@/store/interfaces/IPatient";
 import IAppointment from "@/store/interfaces/IAppointment";
