@@ -72,7 +72,7 @@
     </table> -->
   </CardSection>
 </template>
-<script lang="ts">
+<script>
 // import PatientAllergiesRow from "./PatientAllergiesRow.vue";
 // export default {
 //   props: {
@@ -120,7 +120,7 @@ export default defineComponent({
       colString: "col-12 col-sm-6 ",
     };
   },
-  setup() {
+  setup(props) {
     const store = useStore();
     const route = useRoute();
     const healthFundsList = computed(() => store.getters.healthFundsList);
@@ -164,10 +164,10 @@ export default defineComponent({
     const handleAddAllergy = () => {
       if (!addClaimSourceModal.value) {
         addClaimSourceModal.value = new Modal(
-          document.getElementById("modal_add_claim_source")
+          document.getElementById("modal_add_allergy")
         );
       }
-
+      console.log(addClaimSourceModal.value);
       addClaimSourceModal.value.show();
     };
 
@@ -180,7 +180,7 @@ export default defineComponent({
         );
       }
 
-      updateClaimSourceModal.value.show();
+      // updateClaimSourceModal.value.show();
     };
 
     const handleDeleteAllergy = (item) => {
@@ -251,12 +251,12 @@ export default defineComponent({
 
     const closeAddClaimSourceModal = () => {
       renderTable();
-      addClaimSourceModal.value.hide();
+      // addClaimSourceModal.value.hide();
     };
 
     const closeUpdateClaimSourceModal = () => {
       renderTable();
-      updateClaimSourceModal.value.hide();
+      // updateClaimSourceModal.value.hide();
     };
 
     onMounted(() => {
@@ -266,14 +266,15 @@ export default defineComponent({
       store.dispatch(Actions.HEALTH_FUND.LIST);
 
       const updateModal = document.getElementById("modal_update_claim_source");
-      updateModal.addEventListener("hidden.bs.modal", function () {
+      updateModal?.addEventListener("hidden.bs.modal", function () {
         updatingSource.value = null;
         renderTable();
       });
     });
 
     watchEffect(() => {
-      tableData.value = selectedPatient.value?.billings ?? [];
+      console.log(props.patient.allergies);
+      tableData.value = props.patient.allergies ?? [];
       renderTable();
     });
 
@@ -286,9 +287,7 @@ export default defineComponent({
       tableKey,
       PatientBillingTypes,
       moment,
-      revalidateSource,
       handleDeleteAllergy,
-      handleCheckConcession,
       updateDetails,
       handleAddAllergy,
       updatingSource,
