@@ -178,7 +178,9 @@ import { defineComponent, ref, computed } from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import moment from "moment";
 import { mask } from "vue-the-mask";
+import IUserAuth from "@/store/interfaces/IUserAuth";
 
 export default defineComponent({
   name: "sign-in",
@@ -189,6 +191,8 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const userRole = computed(() => store.getters.userRole);
+    const user = computed(() => store.getters.currentUser);
+    const organization = computed(() => store.getters.userOrganization);
     const errorMessage = ref<string>("");
     const show2fa = ref<boolean>(false);
     const loading = ref<boolean>(false);
@@ -300,7 +304,9 @@ export default defineComponent({
     //Form submit function
     const submit = async () => {
       // Clear existing errors
-      store.dispatch(Actions.LOGOUT);
+      await store.dispatch(Actions.LOGOUT);
+
+      const user = store.getters.currentUser;
 
       loading.value = true;
 
@@ -328,6 +334,15 @@ export default defineComponent({
             show2fa.value = true;
             setStopResendTimer();
           } else {
+            if (userRole.value === "organizationAdmin") {
+              router.push({ name: "org-admin-settings" });
+            }
+
+            if (!user.outside_hours && !outsideHoursAccess()) {
+              router.push({ name: "my-schedule" });
+              return;
+            }
+
             switch (userRole.value) {
               case "organizationManager":
               case "receptionist":
@@ -335,9 +350,6 @@ export default defineComponent({
                 break;
               case "anesthetist":
                 router.push({ name: "anesthetist-dashboard" });
-                break;
-              case "organizationAdmin":
-                router.push({ name: "org-admin-settings" });
                 break;
               case "admin":
                 router.push({ name: "organisations" });
@@ -360,6 +372,18 @@ export default defineComponent({
         .finally(() => {
           loading.value = false;
         });
+    };
+
+    const outsideHoursAccess = () => {
+      if (user.value.role !== "organizationAdmin") {
+        const timeNow = moment();
+        const orgStartTime = moment(organization.value.start_time, "HH:mm:ss");
+        const orgEndTime = moment(organization.value.end_time, "HH:mm:ss");
+        if (timeNow.isAfter(orgStartTime) && timeNow.isBefore(orgEndTime))
+          return true;
+        return false;
+      }
+      return true;
     };
 
     return {
