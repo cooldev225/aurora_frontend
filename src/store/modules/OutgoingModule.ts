@@ -53,6 +53,7 @@ export default class OutgoingModule
       return ApiService.get("communication/outgoing-log", "", params)
         .then(({ data }) => {
           this.context.commit(Mutations.SET_OUTGOING.LIST, data.data);
+          console.log(data.data);
           return data.data;
         })
         .catch(({ response }) => {

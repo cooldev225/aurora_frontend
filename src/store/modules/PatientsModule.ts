@@ -226,8 +226,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          displayServerError(response, "Sending a document via email");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -240,16 +239,12 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
       ApiService.setHeader();
       ApiService.post("patients/documents/send/health-link", data)
         .then(({ data }) => {
-          // self.context.dispatch(
-          //   PatientActions.DOCUMENTS.LIST,
-          //   data.get("patient_id")
-          // );
           return data.data;
         })
         .catch(({ response }) => {
           return displayServerError(
             response,
-            "Sending a patient document via emails"
+            "Sending a patient document via health link"
           );
         });
     } else {
