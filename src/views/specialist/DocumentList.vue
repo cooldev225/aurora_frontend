@@ -343,7 +343,10 @@ export default defineComponent({
 
         if (documentTitleFilter.value) {
           temp = temp.filter(
-            (item) => item.document_name.indexOf(documentTitleFilter.value) > -1
+            (item) =>
+              item.document_name
+                .toLowerCase()
+                .indexOf(documentTitleFilter.value.toLowerCase()) > -1
           );
         }
 
