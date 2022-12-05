@@ -1,16 +1,9 @@
 <template>
   <CardSection>
     <div class="row">
-      <CardSection class="col-md-6 col-sm-12" heading="Allergies">
-        <PatientAllergiesTable :patient="patient" />
-      </CardSection>
-      <CardSection class="col-md-6 col-sm-12" heading="Medications">
-        <PatientMedicationsTable :patient="patient" />
-      </CardSection>
-
-      <CardSection class="col-md-6 col-sm-12" heading="Medical History">
-        <PatientMedicalHistoryTable :patient="patient" />
-      </CardSection>
+      <PatientAllergiesTable :patient="patient" />
+      <PatientMedicationsTable :patient="patient" />
+      <PatientMedicalHistoryTable :patient="patient" />
     </div>
   </CardSection>
 </template>
