@@ -1,23 +1,19 @@
 <template>
-  <ModalWrapper
-    title="Document action log"
-    modalId="document_action_log"
-    :updateRef="letterModalRef"
-  >
-    <template v-for="(item, index) in logData" :key="index">
+  <ModalWrapper title="Document action log" modalId="document_action_log">
+    <template v-for="(log, index) in outgoingLogs" :key="index">
       <div>
-        {{ item.status }}, {{ item.user.full_name }}
-        {{ moment(item.created_at).format("DD/MM/YYYY").toString() }}
+        Sent via {{ log.send_method }}, by {{ log.sending_user_name }}
+        {{ moment(log.created_at).format("DD/MM/YYYY").toString() }}
       </div>
     </template>
   </ModalWrapper>
 </template>
 
-<script>
-import { defineComponent, ref, computed, watchEffect } from "vue";
+<script lang="ts">
+import { defineComponent, ref, computed } from "vue";
 import { useStore } from "vuex";
-import { DocumentActions } from "@/store/enums/StoreDocumentEnums";
 import moment from "moment";
+import IOutgoingMessageLog from "@/store/interfaces/IOutgoingMessageLog";
 
 export default defineComponent({
   name: "send-email-modal",
@@ -25,33 +21,20 @@ export default defineComponent({
   props: {
     document: { type: Object, required: true },
   },
-  setup(props) {
+  setup() {
     const store = useStore();
     const actionLogModalRef = ref(null);
-    const loading = ref(false);
-    const documentId = computed(() => props.document.id);
+    const outgoingLogs = computed<IOutgoingMessageLog[]>(
+      () => store.getters.getOutgoingList
+    );
     const updateRef = (_ref) => {
       actionLogModalRef.value = _ref;
     };
 
-    const logData = ref([]);
-
-    watchEffect(() => {
-      documentId.value &&
-        store
-          .dispatch(DocumentActions.ACTION_LOGS.LIST, {
-            patient_document_id: documentId.value,
-          })
-          .then(({ data }) => {
-            logData.value = data || [];
-          });
-    });
-
     return {
-      loading,
       actionLogModalRef,
       updateRef,
-      logData,
+      outgoingLogs,
       moment,
     };
   },

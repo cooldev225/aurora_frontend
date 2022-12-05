@@ -472,14 +472,10 @@ export default defineComponent({
         let Data = new FormData();
         Data.append("patient_document_id", selectedDocument.value.id);
         Data.append("status", patientDocumentActionStatus.PRINTED);
-        store
-          .dispatch(DocumentActions.ACTION_LOGS.CREATE, {
-            patient_document_id: selectedDocument.value.id,
-            data: Data,
-          })
-          .then(() => {
-            console.log("Document printed.");
-          });
+        store.dispatch(DocumentActions.ACTION_LOGS.CREATE, {
+          patient_document_id: selectedDocument.value.id,
+          data: Data,
+        });
         iframe.onload = function () {
           setTimeout(function () {
             iframe.focus();
@@ -490,7 +486,9 @@ export default defineComponent({
     };
 
     const handleViewLogs = () => {
-      console.log("");
+      store.dispatch(Actions.OUTGOING.LIST, {
+        document_id: selectedDocument.value.id,
+      });
       const modal = new Modal(
         document.getElementById("modal_document_action_log")
       );
