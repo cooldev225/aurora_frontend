@@ -2,7 +2,7 @@
   <CardSection>
     <Datatable
       :table-header="tableHeader"
-      :table-data="tableData"
+      :table-data="outgoingLogs"
       :loading="loading"
       :rows-per-page="10"
       :enable-items-per-page-dropdown="true"
@@ -23,12 +23,10 @@
         {{ item.send_method + ", " + item.send_status }}
       </template>
       <template v-slot:cell-patient_id="{ row: item }">
-        {{
-          item.patient.full_name +
-          " (" +
-          moment(item.patient.date_of_birth).format("DD/MM/YYYY").toString() +
-          ")"
-        }}
+        {{ item.patient.title }} {{ item.patient.first_name }}
+        {{ item.patient.last_name }} ({{
+          moment(item.patient.date_of_birth).format("DD/MM/YYYY").toString()
+        }})
       </template>
       <template v-slot:cell-actions="{ row: item }">
         <button
@@ -45,15 +43,8 @@
   <OutgoingModal />
 </template>
 
-<script>
-import {
-  defineComponent,
-  onMounted,
-  watchEffect,
-  watch,
-  computed,
-  ref,
-} from "vue";
+<script lang="ts">
+import { defineComponent, onMounted, computed, ref } from "vue";
 import { useStore } from "vuex";
 import moment from "moment";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
@@ -61,6 +52,7 @@ import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import OutgoingModal from "@/views/communication/OutgoingModal.vue";
 import { Modal } from "bootstrap";
+import IOutgoingMessageLog from "@/store/interfaces/IOutgoingMessageLog";
 
 export default defineComponent({
   name: "communication-outgoing",
@@ -70,9 +62,9 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    const tableData = ref([]);
-    const currentUser = computed(() => store.getters.currentUser);
-    const outgoingLogs = computed(() => store.getters.getOutgoingList);
+    const outgoingLogs = computed<IOutgoingMessageLog[]>(
+      () => store.getters.getOutgoingList
+    );
     const loading = ref(false);
     const tableHeader = ref([
       {
@@ -111,27 +103,12 @@ export default defineComponent({
       },
     ]);
 
-    watchEffect(() => {
-      tableData.value = outgoingLogs;
-    });
-
-    watch(currentUser, () => {
-      let title = "Outgoing Log";
-      let params = {};
-      if (currentUser.value.profile.role_id === 5) {
-        title = "Outgoing";
-        params.sending_user = currentUser.value.profile.id;
-      }
-      setCurrentPageBreadcrumbs(title, ["Communication"]);
-
+    onMounted(() => {
+      setCurrentPageBreadcrumbs("Outgoing logs", ["Communication"]);
       loading.value = true;
-      store.dispatch(Actions.OUTGOING.LIST, params).then(() => {
+      store.dispatch(Actions.OUTGOING.LIST).then(() => {
         loading.value = false;
       });
-    });
-
-    onMounted(() => {
-      //
     });
 
     const handleView = (item) => {
@@ -141,7 +118,7 @@ export default defineComponent({
     };
 
     return {
-      tableData,
+      outgoingLogs,
       tableHeader,
       loading,
       handleView,

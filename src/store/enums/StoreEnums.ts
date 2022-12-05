@@ -9,6 +9,7 @@ const Actions = {
   VERIFY_AUTH: "verifyAuth",
   LOGIN: "login",
   LOGOUT: "logout",
+  RESEND_TWO_FACTOR_CODE: "resendTwoFactorCode",
   REGISTER: "register",
   UPDATE_USER: "updateUser",
   FORGOT_PASSWORD: "forgotPassword",

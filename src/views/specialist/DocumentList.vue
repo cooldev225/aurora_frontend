@@ -2,6 +2,11 @@
   <CardSection>
     <div class="row">
       <div class="col-md-4">
+        <el-input
+          v-model="documentTitleFilter"
+          class="w-100 mb-6"
+          placeholder="Please input search title"
+        />
         <!-- DOCUMENT TYPE FILTER SELECT-->
         <el-select
           class="w-100 mb-6"
@@ -301,6 +306,8 @@ export default defineComponent({
     const specialists = computed(() => store.getters.getSpecialistList);
 
     const filteredDocuments = ref();
+
+    const documentTitleFilter = ref("");
     const documentTypeFilter = ref("ALL");
     const appointmentFilter = ref("ALL");
     const specialistFilter = ref("ALL");
@@ -316,6 +323,7 @@ export default defineComponent({
     // Filters the documents by appointment and document type.
     watch(
       [
+        documentTitleFilter,
         documentTypeFilter,
         appointmentFilter,
         specialistFilter,
@@ -330,6 +338,12 @@ export default defineComponent({
         if (documentTypeFilter.value !== "ALL") {
           temp = documents.value.filter(
             (item) => item.document_type === documentTypeFilter.value
+          );
+        }
+
+        if (documentTitleFilter.value) {
+          temp = temp.filter(
+            (item) => item.document_name.indexOf(documentTitleFilter.value) > -1
           );
         }
 
@@ -458,14 +472,10 @@ export default defineComponent({
         let Data = new FormData();
         Data.append("patient_document_id", selectedDocument.value.id);
         Data.append("status", patientDocumentActionStatus.PRINTED);
-        store
-          .dispatch(DocumentActions.ACTION_LOGS.CREATE, {
-            patient_document_id: selectedDocument.value.id,
-            data: Data,
-          })
-          .then(() => {
-            console.log("Document printed.");
-          });
+        store.dispatch(DocumentActions.ACTION_LOGS.CREATE, {
+          patient_document_id: selectedDocument.value.id,
+          data: Data,
+        });
         iframe.onload = function () {
           setTimeout(function () {
             iframe.focus();
@@ -476,7 +486,9 @@ export default defineComponent({
     };
 
     const handleViewLogs = () => {
-      console.log("");
+      store.dispatch(Actions.OUTGOING.LIST, {
+        document_id: selectedDocument.value.id,
+      });
       const modal = new Modal(
         document.getElementById("modal_document_action_log")
       );
@@ -673,6 +685,7 @@ export default defineComponent({
       patientDocumentActionStatus,
       DocumentLabel,
       filteredDocuments,
+      documentTitleFilter,
       documentTypeFilter,
       appointmentFilter,
       selectedDocument,

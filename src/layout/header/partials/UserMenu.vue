@@ -9,14 +9,7 @@
       <div class="menu-content d-flex align-items-center px-3">
         <!--begin::Avatar-->
         <div class="symbol symbol-50px me-5">
-          <img
-            alt="Logo"
-            :src="
-              profileData.photo == undefined
-                ? 'media/avatars/blank.png'
-                : profileData.photo
-            "
-          />
+          <img alt="User Avatar" :src="userPhoto" />
         </div>
         <!--end::Avatar-->
 
@@ -67,8 +60,9 @@ export default defineComponent({
   components: {},
   props: {
     profileData: { type: Object as PropType<IUserProfile>, required: true },
+    userPhoto: { type: String as PropType<string>, required: true },
   },
-  setup() {
+  setup(props) {
     const router = useRouter();
     const store = useStore();
 
