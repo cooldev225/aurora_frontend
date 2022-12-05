@@ -1,7 +1,7 @@
 <template>
   <CardSection class="col-md-6 col-sm-12" heading="Allergies">
     <template #header-actions>
-      <IconButton label="Create New" @click="handleAddAllergy" />
+      <IconButton label="Create New" @click.prevent="handleAddAllergy" />
     </template>
 
     <template #default>
@@ -25,36 +25,62 @@
         </template>
 
         <template v-slot:cell-actions="{ row: item }">
-          <div class="d-flex flex-column">
+          <div class="d-flex">
             <button
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+              @click="handleUpdateAllergy(item)"
+            >
+              <span class="svg-icon svg-icon-3">
+                <InlineSVG icon="pencil" />
+              </span>
+            </button>
+
+            <!-- <button
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            >
+              <span class="svg-icon svg-icon-3">
+                <InlineSVG icon="save" />
+              </span>
+            </button> -->
+
+            <button
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+              @click="handleDeleteAllergy(item)"
+            >
+              <span class="svg-icon svg-icon-3">
+                <InlineSVG icon="bin" />
+              </span>
+            </button>
+
+            <!-- <button
               class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
               :disabled="loading != null"
               @click="handleUpdateAllergy(item)"
             >
               Update Details
-            </button>
+            </button> -->
 
-            <button
+            <!-- <button
               class="btn btn-bg-danger btn-sm mt-2"
               :disabled="loading != null"
               @click="handleDeleteAllergy(item)"
             >
               Delete Source
-            </button>
+            </button> -->
           </div>
         </template>
       </Datatable>
 
-      <AddClaimSourceModal
+      <AddPatientAllergyModal
         :patient="selectedPatient"
-        v-on:closeModal="closeAddClaimSourceModal"
+        v-on:closeModal="closeAddPatientAllergyModal"
         v-on:updateDetails="updatePatientDetails"
       />
 
-      <UpdateClaimSourceModal
+      <UpdatePatientAllergyModal
         :patient="selectedPatient"
-        :claimSource="updatingSource"
-        v-on:closeModal="closeUpdateClaimSourceModal"
+        :allergy="updatingAllergy"
+        v-on:closeModal="closeUpdatePatientAllergyModal"
         v-on:updateDetails="updatePatientDetails"
       />
     </template>
@@ -97,8 +123,8 @@ import { Actions } from "@/store/enums/StoreEnums";
 import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import AddClaimSourceModal from "@/views/patients/modals/AddClaimSourceModal.vue";
-import UpdateClaimSourceModal from "@/views/patients/modals/UpdateClaimSourceModal.vue";
+import AddPatientAllergyModal from "@/views/patients/modals/AddPatientAllergyModal.vue";
+import UpdatePatientAllergyModal from "@/views/patients/modals/UpdatePatientAllergyModal.vue";
 import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import { Modal } from "bootstrap";
 import PatientBillingTypes from "@/core/data/patient-billing-types";
@@ -110,8 +136,8 @@ export default defineComponent({
     patient: { required: true, type: Object },
   },
   components: {
-    AddClaimSourceModal,
-    UpdateClaimSourceModal,
+    AddPatientAllergyModal,
+    UpdatePatientAllergyModal,
     IconButton,
     Datatable,
   },
@@ -155,32 +181,32 @@ export default defineComponent({
     const tableData = ref([]);
     const tableKey = ref(0);
     const updateDetails = ref({});
-    const updatingSource = ref(null);
-    const addClaimSourceModal = ref(null);
-    const updateClaimSourceModal = ref(null);
+    const updatingAllergy = ref(null);
+    const addPatientAllergyModal = ref(null);
+    const updatePatientAllergyModal = ref(null);
 
     const renderTable = () => tableKey.value++;
 
     const handleAddAllergy = () => {
-      if (!addClaimSourceModal.value) {
-        addClaimSourceModal.value = new Modal(
+      if (!addPatientAllergyModal.value) {
+        addPatientAllergyModal.value = new Modal(
           document.getElementById("modal_add_allergy")
         );
       }
-      console.log(addClaimSourceModal.value);
-      addClaimSourceModal.value.show();
+      console.log("------", addPatientAllergyModal.value);
+      addPatientAllergyModal.value.show();
     };
 
     const handleUpdateAllergy = (source) => {
-      updatingSource.value = source;
+      updatingAllergy.value = source;
 
-      if (!updateClaimSourceModal.value) {
-        updateClaimSourceModal.value = new Modal(
+      if (!updatePatientAllergyModal.value) {
+        updatePatientAllergyModal.value = new Modal(
           document.getElementById("modal_update_claim_source")
         );
       }
 
-      // updateClaimSourceModal.value.show();
+      // updatePatientAllergyModal.value.show();
     };
 
     const handleDeleteAllergy = (item) => {
@@ -249,14 +275,14 @@ export default defineComponent({
         });
     };
 
-    const closeAddClaimSourceModal = () => {
+    const closeAddPatientAllergyModal = () => {
       renderTable();
-      // addClaimSourceModal.value.hide();
+      // addPatientAllergyModal.value.hide();
     };
 
-    const closeUpdateClaimSourceModal = () => {
+    const closeUpdatePatientAllergyModal = () => {
       renderTable();
-      // updateClaimSourceModal.value.hide();
+      // updatePatientAllergyModal.value.hide();
     };
 
     onMounted(() => {
@@ -265,9 +291,11 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Billing", ["Patients"]);
       store.dispatch(Actions.HEALTH_FUND.LIST);
 
-      const updateModal = document.getElementById("modal_update_claim_source");
+      const updateModal = document.getElementById(
+        "modal_update_patient_allergy"
+      );
       updateModal?.addEventListener("hidden.bs.modal", function () {
-        updatingSource.value = null;
+        updatingAllergy.value = null;
         renderTable();
       });
     });
@@ -290,10 +318,10 @@ export default defineComponent({
       handleDeleteAllergy,
       updateDetails,
       handleAddAllergy,
-      updatingSource,
+      updatingAllergy,
       handleUpdateAllergy,
-      closeAddClaimSourceModal,
-      closeUpdateClaimSourceModal,
+      closeAddPatientAllergyModal,
+      closeUpdatePatientAllergyModal,
       updatePatientDetails,
       enableMedicareValidation,
     };
