@@ -20,7 +20,7 @@
         Notification Settings
       </router-link>
       <router-link
-        to="/settings/report-templates"
+        to="/settings/document-templates"
         class="btn btn-light-primary m-2"
       >
         Patient Report Templates

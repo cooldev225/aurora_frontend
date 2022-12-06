@@ -52,7 +52,7 @@
       </Datatable>
     </div>
   </div>
-  <CreateReportTemplate />
+  <CreateDocumentTemplate />
 </template>
 
 <script>
@@ -60,16 +60,16 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import CreateReportTemplate from "@/views/settings/report-templates/CreateReportTemplate.vue";
+import CreateDocumentTemplate from "@/views/settings/document-templates/CreateDocumentTemplate.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 
 export default defineComponent({
-  name: "report-templates",
+  name: "document-templates",
 
   components: {
     Datatable,
-    CreateReportTemplate,
+    CreateDocumentTemplate,
   },
 
   setup() {
@@ -87,7 +87,9 @@ export default defineComponent({
     ]);
 
     const tableData = ref([]);
-    const reportTemplates = computed(() => store.getters.getReportTemplateList);
+    const documentTemplates = computed(
+      () => store.getters.getDocumentTemplateList
+    );
 
     const handleAdd = () => {
       const new_item = {
@@ -96,34 +98,34 @@ export default defineComponent({
         sections: [],
       };
 
-      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, {
+      store.commit(Mutations.SET_DOCUMENT_TEMPLATES.SELECT, {
         template: new_item,
         appointment: null,
         headerFooter: null,
       });
       const modal = new Modal(
-        document.getElementById("modal_add_report_template")
+        document.getElementById("modal_add_document_template")
       );
       modal.show();
     };
 
     const handleEdit = (item) => {
-      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, {
+      store.commit(Mutations.SET_DOCUMENT_TEMPLATES.SELECT, {
         template: item,
         appointment: null,
         headerFooter: null,
       });
       const modal = new Modal(
-        document.getElementById("modal_add_report_template")
+        document.getElementById("modal_add_document_template")
       );
       modal.show();
     };
 
     const handleDelete = (id) => {
       store
-        .dispatch(Actions.REPORT_TEMPLATES.DELETE, id)
+        .dispatch(Actions.DOCUMENT_TEMPLATES.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.REPORT_TEMPLATES.LIST);
+          store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
         })
         .catch((response) => {
           console.log(response);
@@ -131,12 +133,12 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Report Templates", ["Settings"]);
-      store.dispatch(Actions.REPORT_TEMPLATES.LIST);
+      setCurrentPageBreadcrumbs("Document Templates", ["Settings"]);
+      store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
     });
 
     watchEffect(() => {
-      tableData.value = reportTemplates;
+      tableData.value = documentTemplates.value;
     });
 
     return { tableHeader, tableData, handleAdd, handleEdit, handleDelete };

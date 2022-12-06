@@ -24,7 +24,7 @@ export default {
   setup(props) {
     const router = useRouter();
     const handleReport = () => {
-      store.dispatch(Actions.REPORT_TEMPLATES.LIST);
+      store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
       // const modal = new Modal(document.getElementById("modal_report"));
       // modal.show();
       router.push({

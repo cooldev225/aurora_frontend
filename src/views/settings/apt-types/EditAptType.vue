@@ -195,7 +195,9 @@ export default defineComponent({
     const formRef = ref(null);
     const createAptTypeModalRef = ref(null);
     const aptTypes = computed(() => store.getters.getAptTypesList);
-    const reportTemplates = computed(() => store.getters.getReportTemplateList);
+    const reportTemplates = computed(
+      () => store.getters.getDocumentTemplateList
+    );
     const scheduleItems = computed(() => store.getters.scheduleItemList);
     const loading = ref(false);
     const predefineColors = ref([
@@ -265,7 +267,7 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
-      store.dispatch(Actions.REPORT_TEMPLATES.LIST);
+      store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
       store.dispatch(Actions.SCHEDULE_ITEM.LIST);
     });
 

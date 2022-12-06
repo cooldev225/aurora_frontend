@@ -115,11 +115,11 @@ const Actions = {
     UPDATE: "updateNtfyTemplates",
   },
 
-  REPORT_TEMPLATES: {
-    LIST: "listReportTemplate",
-    CREATE: "createReportTemplate",
-    UPDATE: "updateReportTemplate",
-    DELETE: "deleteReportTemplate",
+  DOCUMENT_TEMPLATES: {
+    LIST: "listDocumentTemplate",
+    CREATE: "createDocumentTemplate",
+    UPDATE: "updateDocumentTemplate",
+    DELETE: "deleteDocumentTemplate",
   },
 
   MAILS: {
@@ -287,14 +287,14 @@ const Mutations = {
     SELECT: "setLetterTemplateSelect",
   },
 
-  SET_REPORT_TEMPLATES: {
-    LIST: "setReportTemplates",
-    SELECT: "setSelectReportTemplate",
+  SET_DOCUMENT_TEMPLATES: {
+    LIST: "setDocumentTemplates",
+    SELECT: "setSelectDocumentTemplate",
   },
 
-  SET_REPORT_APPOINTMENTS: {
-    LIST: "setReportAppointments",
-    SELECT: "setSelectReportAppointment",
+  SET_DOCUMENT_APPOINTMENTS: {
+    LIST: "setDocumentAppointments",
+    SELECT: "setSelectDocumentAppointment",
   },
 
   SET_MAILS: {

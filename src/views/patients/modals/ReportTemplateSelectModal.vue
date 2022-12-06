@@ -69,7 +69,7 @@ export default defineComponent({
     const router = useRouter();
     const store = useStore();
     const reportTemplatesData = computed(
-      () => store.getters.getReportTemplateList
+      () => store.getters.getDocumentTemplateList
     );
     const patientData = computed(() => store.getters.selectedPatient);
     const loading = ref(false);
@@ -88,7 +88,7 @@ export default defineComponent({
         appointment: appointmentsData.value[appointment.value],
         headerFooter: null,
       };
-      store.commit(Mutations.SET_REPORT_TEMPLATES.SELECT, selected_report);
+      store.commit(Mutations.SET_DOCUMENT_TEMPLATES.SELECT, selected_report);
 
       router.push({ name: "patients-report" });
     };

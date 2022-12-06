@@ -18,10 +18,10 @@ const SettingsRoutes = [
       ),
   },
   {
-    path: "/settings/report-templates",
-    name: "reportTemplates",
+    path: "/settings/document-templates",
+    name: "documentTemplates",
     component: () =>
-      import("@/views/settings/report-templates/ReportTemplates.vue"),
+      import("@/views/settings/document-templates/DocumentTemplates.vue"),
   },
   {
     path: "/settings/patient-print-label-setting",

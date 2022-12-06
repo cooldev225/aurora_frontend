@@ -340,7 +340,7 @@ export default defineComponent({
     const appointmentId = route.params.appointmentId;
 
     const reportTemplatesData = computed(
-      () => store.getters.getReportTemplateList
+      () => store.getters.getDocumentTemplateList
     );
     const patientData = computed(() => store.getters.selectedPatient);
 
