@@ -7,47 +7,37 @@ import {
   displaySuccessModal,
   displaySuccessToast,
 } from "@/helpers/helpers";
-export interface INtfTemplates {
-  id: number;
-}
-
-export interface NtfTemplatesInfo {
-  ntfTemplatesData: Array<INtfTemplates>;
-  ntfTemplatesSelected: INtfTemplates;
-}
+import INotificationTemplate from "../interfaces/INotificationTemplate";
 
 @Module
-export default class NtfTemplatesModule
-  extends VuexModule
-  implements NtfTemplatesInfo
-{
-  ntfTemplatesData = [] as Array<INtfTemplates>;
-  ntfTemplatesSelected = {} as INtfTemplates;
+export default class NotificationTemplatesModule extends VuexModule {
+  notificationTemplatesData = [] as Array<INotificationTemplate>;
+  notificationTemplateSelected = {} as INotificationTemplate;
 
   /**
-   * Get Active NtfTemplates List
+   * Get list of all organization notification templates
    * @returns ntfTemplatesData
    */
-  get getNtfTemplatesList(): Array<INtfTemplates> {
-    return this.ntfTemplatesData;
+  get getNotificationTemplatesList(): Array<INotificationTemplate> {
+    return this.notificationTemplatesData;
   }
 
   /**
-   * Get current user object
-   * @returns ntfTemplatesSelected
+   * Get the selected notification template
+   * @returns notificationTemplatesSelected
    */
-  get getNtfTemplatesSelected(): INtfTemplates {
-    return this.ntfTemplatesSelected;
+  get getNotificationTemplateSelected(): INotificationTemplate {
+    return this.notificationTemplateSelected;
   }
 
   @Mutation
-  [Mutations.SET_NTF_TEMPLATES.LIST](ntfTemplatesData) {
-    this.ntfTemplatesData = ntfTemplatesData;
+  [Mutations.SET_NTF_TEMPLATES.LIST](notificationTemplatesData) {
+    this.notificationTemplatesData = notificationTemplatesData;
   }
 
   @Mutation
   [Mutations.SET_NTF_TEMPLATES.SELECT](data) {
-    this.ntfTemplatesSelected = data;
+    this.notificationTemplateSelected = data;
   }
 
   @Action
