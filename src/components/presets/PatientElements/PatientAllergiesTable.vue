@@ -1,7 +1,7 @@
 <template>
   <CardSection class="col-md-6 col-sm-12" heading="Allergies">
     <template #header-actions>
-      <IconButton label="Create New" @click.prevent="handleAddAllergy" />
+      <IconButton label="Create New" @click.prevent="showAddAllergyModal" />
     </template>
 
     <template #default>
@@ -28,20 +28,12 @@
           <div class="d-flex">
             <button
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-              @click="handleUpdateAllergy(item)"
+              @click.prevent="showUpdateAllergyModal(item)"
             >
               <span class="svg-icon svg-icon-3">
                 <InlineSVG icon="pencil" />
               </span>
             </button>
-
-            <!-- <button
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            >
-              <span class="svg-icon svg-icon-3">
-                <InlineSVG icon="save" />
-              </span>
-            </button> -->
 
             <button
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
@@ -51,22 +43,6 @@
                 <InlineSVG icon="bin" />
               </span>
             </button>
-
-            <!-- <button
-              class="btn btn-bg-light btn-active-color-primary btn-sm mt-2"
-              :disabled="loading != null"
-              @click="handleUpdateAllergy(item)"
-            >
-              Update Details
-            </button> -->
-
-            <!-- <button
-              class="btn btn-bg-danger btn-sm mt-2"
-              :disabled="loading != null"
-              @click="handleDeleteAllergy(item)"
-            >
-              Delete Source
-            </button> -->
           </div>
         </template>
       </Datatable>
@@ -74,46 +50,17 @@
       <AddPatientAllergyModal
         :patient="selectedPatient"
         v-on:closeModal="closeAddPatientAllergyModal"
-        v-on:updateDetails="updatePatientDetails"
       />
 
       <UpdatePatientAllergyModal
         :patient="selectedPatient"
         :allergy="updatingAllergy"
         v-on:closeModal="closeUpdatePatientAllergyModal"
-        v-on:updateDetails="updatePatientDetails"
       />
     </template>
-
-    <!-- <table class="table">
-      <tr class="fw-bold">
-        <th>Name</th>
-        <th>Severity</th>
-        <th>Symptoms</th>
-        <th></th>
-      </tr>
-      <template v-for="allergy in patient.allergies" :key="allergy.id">
-        <PatientAllergiesRow :allergy="allergy" />
-      </template>
-    </table> -->
   </CardSection>
 </template>
 <script>
-// import PatientAllergiesRow from "./PatientAllergiesRow.vue";
-// export default {
-//   props: {
-//     patient: { required: true, type: Object },
-//   },
-//   components: { PatientAllergiesRow },
-//   setup() {
-//     const handleAddAllergy = () => {
-//       alert("");
-//     };
-//     return {
-//       handleAddAllergy,
-//     };
-//   },
-// };
 import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
@@ -141,20 +88,12 @@ export default defineComponent({
     IconButton,
     Datatable,
   },
-  data: function () {
-    return {
-      colString: "col-12 col-sm-6 ",
-    };
-  },
   setup(props) {
     const store = useStore();
     const route = useRoute();
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const selectedPatient = computed(() => store.getters.selectedPatient);
-    const minorId = computed(() => store.getters.latestMinorId);
-    const enableMedicareValidation = computed(() =>
-      isMedicareValidationEnabled()
-    );
+    // const minorId = computed(() => store.getters.latestMinorId);
     const loading = ref(null);
     const tableHeader = ref([
       {
@@ -165,7 +104,7 @@ export default defineComponent({
       {
         name: "Severity",
         key: "severity",
-        sortable: false,
+        sortable: true,
       },
       {
         name: "Symptoms",
@@ -187,26 +126,24 @@ export default defineComponent({
 
     const renderTable = () => tableKey.value++;
 
-    const handleAddAllergy = () => {
+    const showAddAllergyModal = () => {
       if (!addPatientAllergyModal.value) {
         addPatientAllergyModal.value = new Modal(
-          document.getElementById("modal_add_allergy")
+          document.getElementById("modal_add_patient_allergy")
         );
       }
-      console.log("------", addPatientAllergyModal.value);
       addPatientAllergyModal.value.show();
     };
 
-    const handleUpdateAllergy = (source) => {
+    const showUpdateAllergyModal = (source) => {
       updatingAllergy.value = source;
 
       if (!updatePatientAllergyModal.value) {
         updatePatientAllergyModal.value = new Modal(
-          document.getElementById("modal_update_claim_source")
+          document.getElementById("modal_update_patient_allergy")
         );
       }
-
-      // updatePatientAllergyModal.value.show();
+      updatePatientAllergyModal.value.show();
     };
 
     const handleDeleteAllergy = (item) => {
@@ -229,50 +166,7 @@ export default defineComponent({
     };
 
     const deleteAllergy = (item) => {
-      // store.dispatch(PatientActions.CLAIM_SOURCE.DELETE, item);
-    };
-
-    const updatePatientDetails = (details) => {
-      const previousData = {
-        patient_id: selectedPatient.value.id,
-        first_name: selectedPatient.value.first_name,
-        last_name: selectedPatient.value.last_name,
-      };
-
-      const updateData = {
-        id: selectedPatient.value.id,
-        first_name: selectedPatient.value.first_name,
-        last_name: selectedPatient.value.last_name,
-        date_of_birth: selectedPatient.value.date_of_birth,
-      };
-
-      for (const detailName in details) {
-        updateData[detailName] = details[detailName];
-      }
-
-      store
-        .dispatch(PatientActions.UPDATE, updateData)
-        .then(() => {
-          store.dispatch(PatientActions.LIST);
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        })
-        .finally(() => {
-          loading.value = null;
-        });
-
-      store
-        .dispatch(PatientActions.ALSO_KNOWN_AS.CREATE, previousData)
-        .then(() => {
-          store.dispatch(PatientActions.LIST);
-        })
-        .catch(({ response }) => {
-          console.log(response.data.error);
-        })
-        .finally(() => {
-          loading.value = null;
-        });
+      store.dispatch(PatientActions.ALLERGY.DELETE, item);
     };
 
     const closeAddPatientAllergyModal = () => {
@@ -317,13 +211,11 @@ export default defineComponent({
       moment,
       handleDeleteAllergy,
       updateDetails,
-      handleAddAllergy,
+      showAddAllergyModal,
       updatingAllergy,
-      handleUpdateAllergy,
+      showUpdateAllergyModal,
       closeAddPatientAllergyModal,
       closeUpdatePatientAllergyModal,
-      updatePatientDetails,
-      enableMedicareValidation,
     };
   },
 });

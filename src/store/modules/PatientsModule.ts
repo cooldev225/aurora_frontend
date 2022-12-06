@@ -311,6 +311,24 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
+  [PatientActions.ALLERGY.DELETE](allergy) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.delete(`patients/allergies/${allergy.id}`)
+        .then(() => {
+          this.context.dispatch(PatientActions.VIEW, allergy.patient_id);
+
+          return displaySuccessToast("Successfully deleted allergy");
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Deleting a patient allergy");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
   [PatientActions.ALSO_KNOWN_AS.CREATE](details) {
     if (JwtService.getToken()) {
       ApiService.setHeader();

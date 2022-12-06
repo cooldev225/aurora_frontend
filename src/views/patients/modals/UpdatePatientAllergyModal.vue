@@ -133,7 +133,7 @@
         :disabled="loading"
         @click="updateClaimSource"
       >
-        <span v-if="!loading" class="indicator-label">Update Claim Source</span>
+        <span v-if="!loading" class="indicator-label">Update Allergy</span>
         <span v-if="loading" class="indicator-progress">
           Please wait...
           <span
@@ -164,7 +164,7 @@ import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 import { isMedicareValidationEnabled } from "@/core/data/billing";
 
 export default defineComponent({
-  name: "update-claim-source-modal",
+  name: "update-patient-allergy-modal",
   props: {
     patient: { required: true },
     allergy: { type: Object },
@@ -214,7 +214,8 @@ export default defineComponent({
     //       return "Reference Number";
     //   }
     // });
-    const updateDetails = ref({});
+    // const updateDetails = ref({});
+    console.log(formData.value);
 
     const rules = ref({
       name: [
@@ -240,216 +241,216 @@ export default defineComponent({
       ],
     });
 
-    const detailsToUpdateExist = computed(() => {
-      for (const detailName in updateDetails.value) {
-        if (updateDetails.value[detailName].update) {
-          return true;
-        }
-      }
+    // const detailsToUpdateExist = computed(() => {
+    //   for (const detailName in updateDetails.value) {
+    //     if (updateDetails.value[detailName].update) {
+    //       return true;
+    //     }
+    //   }
 
-      return false;
-    });
+    //   return false;
+    // });
 
-    const handleUpdateDetails = () => {
-      let detailsToEmit = {};
-      let shouldEmit = false;
+    // const handleUpdateDetails = () => {
+    //   let detailsToEmit = {};
+    //   let shouldEmit = false;
 
-      for (const detailName in updateDetails.value) {
-        switch (detailName) {
-          case "first_name":
-            detailsToEmit.first_name = updateDetails.value[detailName].newVal;
-            shouldEmit = true;
-            break;
-          case "last_name":
-            detailsToEmit.last_name = updateDetails.value[detailName].newVal;
-            shouldEmit = true;
-            break;
-          case "member_reference_number":
-            formData.value.member_reference_number =
-              updateDetails.value[detailName].newVal;
-            break;
-        }
-      }
+    //   for (const detailName in updateDetails.value) {
+    //     switch (detailName) {
+    //       case "first_name":
+    //         detailsToEmit.first_name = updateDetails.value[detailName].newVal;
+    //         shouldEmit = true;
+    //         break;
+    //       case "last_name":
+    //         detailsToEmit.last_name = updateDetails.value[detailName].newVal;
+    //         shouldEmit = true;
+    //         break;
+    //       case "member_reference_number":
+    //         formData.value.member_reference_number =
+    //           updateDetails.value[detailName].newVal;
+    //         break;
+    //     }
+    //   }
 
-      if (shouldEmit) {
-        emit("updateDetails", detailsToEmit);
-      }
+    //   if (shouldEmit) {
+    //     emit("updateDetails", detailsToEmit);
+    //   }
 
-      updateDetails.value = {};
-    };
+    //   updateDetails.value = {};
+    // };
 
-    const doValidation = (endpoint, data, isConcession = false) => {
-      loading.value = true;
-      updateDetails.value = {};
+    // const doValidation = (endpoint, data, isConcession = false) => {
+    //   loading.value = true;
+    //   updateDetails.value = {};
 
-      store
-        .dispatch(endpoint, data)
-        .then(() => {
-          const validation = store.getters.validationResponse;
+    //   store
+    //     .dispatch(endpoint, data)
+    //     .then(() => {
+    //       const validation = store.getters.validationResponse;
 
-          if (validation.data.verified) {
-            if (isConcession) {
-              concessionValidated.value = true;
-              concessionValidationMessage.value = validation.data.message;
-            } else {
-              validated.value = true;
-              validationMessage.value = validation.data.message;
-            }
-          }
+    //       if (validation.data.verified) {
+    //         if (isConcession) {
+    //           concessionValidated.value = true;
+    //           concessionValidationMessage.value = validation.data.message;
+    //         } else {
+    //           validated.value = true;
+    //           validationMessage.value = validation.data.message;
+    //         }
+    //       }
 
-          if (!validation.data.verified) {
-            if (isConcession) {
-              concessionValidated.value = false;
-              concessionValidationMessage.value = validation.data.message;
-            } else {
-              validated.value = false;
-              validationMessage.value = validation.data.message;
-            }
-          }
+    //       if (!validation.data.verified) {
+    //         if (isConcession) {
+    //           concessionValidated.value = false;
+    //           concessionValidationMessage.value = validation.data.message;
+    //         } else {
+    //           validated.value = false;
+    //           validationMessage.value = validation.data.message;
+    //         }
+    //       }
 
-          if (
-            !Object.prototype.hasOwnProperty.call(
-              validation.data,
-              "update_details"
-            )
-          ) {
-            for (const detailName in validation.data.update_details) {
-              switch (detailName) {
-                case "givenName":
-                  updateDetails.value.first_name = {
-                    label: "First Name",
-                    oldVal: patient.value.first_name,
-                    newVal: validation.data.update_details[detailName],
-                    update: false,
-                  };
-                  break;
-                case "familyName":
-                  updateDetails.value.last_name = {
-                    label: "Last Name",
-                    oldVal: patient.value.last_name,
-                    newVal: validation.data.update_details[detailName],
-                    update: false,
-                  };
-                  break;
-                case "memberRefNumber":
-                  updateDetails.value.member_reference_number = {
-                    label: "Reference Number",
-                    oldVal: formData.value.member_reference_number,
-                    newVal: validation.data.update_details[detailName],
-                    update: false,
-                  };
-                  break;
-              }
-            }
-          }
-        })
-        .catch(() => {
-          const errors = store.getters.getErrors;
-          let message;
+    //       if (
+    //         !Object.prototype.hasOwnProperty.call(
+    //           validation.data,
+    //           "update_details"
+    //         )
+    //       ) {
+    //         for (const detailName in validation.data.update_details) {
+    //           switch (detailName) {
+    //             case "givenName":
+    //               updateDetails.value.first_name = {
+    //                 label: "First Name",
+    //                 oldVal: patient.value.first_name,
+    //                 newVal: validation.data.update_details[detailName],
+    //                 update: false,
+    //               };
+    //               break;
+    //             case "familyName":
+    //               updateDetails.value.last_name = {
+    //                 label: "Last Name",
+    //                 oldVal: patient.value.last_name,
+    //                 newVal: validation.data.update_details[detailName],
+    //                 update: false,
+    //               };
+    //               break;
+    //             case "memberRefNumber":
+    //               updateDetails.value.member_reference_number = {
+    //                 label: "Reference Number",
+    //                 oldVal: formData.value.member_reference_number,
+    //                 newVal: validation.data.update_details[detailName],
+    //                 update: false,
+    //               };
+    //               break;
+    //           }
+    //         }
+    //       }
+    //     })
+    //     .catch(() => {
+    //       const errors = store.getters.getErrors;
+    //       let message;
 
-          if (
-            Object.prototype.hasOwnProperty.call(errors, "errors") &&
-            errors.errors.length >= 1
-          ) {
-            message = errors.errors[0];
-          } else {
-            message = "Unknown Error. Please try again.";
-          }
+    //       if (
+    //         Object.prototype.hasOwnProperty.call(errors, "errors") &&
+    //         errors.errors.length >= 1
+    //       ) {
+    //         message = errors.errors[0];
+    //       } else {
+    //         message = "Unknown Error. Please try again.";
+    //       }
 
-          validationMessage.value = message;
-        })
-        .finally(() => {
-          loading.value = false;
-        });
-    };
+    //       validationMessage.value = message;
+    //     })
+    //     .finally(() => {
+    //       loading.value = false;
+    //     });
+    // };
 
     const closeModal = () => {
       emit("closeModal");
     };
 
-    const validateSource = () => {
-      if (minorId.value.minorId == null) {
-        Swal.fire({
-          text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
-          icon: "error",
-          buttonsStyling: true,
-          confirmButtonText: "Okay",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-        }).then(() => {
-          return;
-        });
-      }
+    // const validateSource = () => {
+    //   if (minorId.value.minorId == null) {
+    //     Swal.fire({
+    //       text: `No Minor ID could be found. Please ensure all clinics have an assigned Minor ID.`,
+    //       icon: "error",
+    //       buttonsStyling: true,
+    //       confirmButtonText: "Okay",
+    //       customClass: {
+    //         confirmButton: "btn btn-primary",
+    //       },
+    //     }).then(() => {
+    //       return;
+    //     });
+    //   }
 
-      let validationData = {
-        first_name: patient.value.first_name,
-        last_name: patient.value.last_name,
-        date_of_birth: patient.value.date_of_birth,
-        sex: patient.value.gender,
-        minor_id: minorId.value.minorId,
-      };
-      let endpoint;
+    //   let validationData = {
+    //     first_name: patient.value.first_name,
+    //     last_name: patient.value.last_name,
+    //     date_of_birth: patient.value.date_of_birth,
+    //     sex: patient.value.gender,
+    //     minor_id: minorId.value.minorId,
+    //   };
+    //   let endpoint;
 
-      switch (formData.value.billing_type) {
-        case 1:
-          // Medicare card
-          validationData.medicare_number = formData.value.member_number;
-          validationData.medicare_reference_number =
-            formData.value.member_reference_number;
-          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_MEDICARE;
-          break;
-        case 2: {
-          // Health Fund
-          validationData.fund_member_number = formData.value.member_number;
-          validationData.fund_reference_number =
-            formData.value.member_reference_number;
-          validationData.fund_organisation_code = formData.value.health_fund_id;
-          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND;
-          break;
-        }
-        case 3:
-          // DVA
-          validationData.veteran_number = formData.value.member_number;
-          endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_DVA;
-          break;
-      }
+    //   switch (formData.value.billing_type) {
+    //     case 1:
+    //       // Medicare card
+    //       validationData.medicare_number = formData.value.member_number;
+    //       validationData.medicare_reference_number =
+    //         formData.value.member_reference_number;
+    //       endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_MEDICARE;
+    //       break;
+    //     case 2: {
+    //       // Health Fund
+    //       validationData.fund_member_number = formData.value.member_number;
+    //       validationData.fund_reference_number =
+    //         formData.value.member_reference_number;
+    //       validationData.fund_organisation_code = formData.value.health_fund_id;
+    //       endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_HEALTH_FUND;
+    //       break;
+    //     }
+    //     case 3:
+    //       // DVA
+    //       validationData.veteran_number = formData.value.member_number;
+    //       endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_DVA;
+    //       break;
+    //   }
 
-      doValidation(endpoint, validationData);
-    };
+    //   doValidation(endpoint, validationData);
+    // };
 
-    const handleCheckConcession = () => {
-      const validationData = {
-        first_name: patient.value.first_name,
-        last_name: patient.value.last_name,
-        date_of_birth: patient.value.date_of_birth,
-        medicare_number: formData.value.member_number,
-        medicare_reference_number: formData.value.member_reference_number,
-        minor_id: minorId.value.minorId,
-      };
-      const endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_CONCESSION;
+    // const handleCheckConcession = () => {
+    //   const validationData = {
+    //     first_name: patient.value.first_name,
+    //     last_name: patient.value.last_name,
+    //     date_of_birth: patient.value.date_of_birth,
+    //     medicare_number: formData.value.member_number,
+    //     medicare_reference_number: formData.value.member_reference_number,
+    //     minor_id: minorId.value.minorId,
+    //   };
+    //   const endpoint = PatientActions.CLAIM_SOURCE.VALIDATE_CONCESSION;
 
-      doValidation(endpoint, validationData, true);
-    };
+    //   doValidation(endpoint, validationData, true);
+    // };
 
-    const updateClaimSource = () => {
-      loading.value = true;
-      const data = {
-        id: allergy.value.id,
-        is_valid: true,
-        patient_id: patient.value.id,
-        ...formData.value,
-      };
+    // const updateClaimSource = () => {
+    //   loading.value = true;
+    //   const data = {
+    //     id: allergy.value.id,
+    //     is_valid: true,
+    //     patient_id: patient.value.id,
+    //     ...formData.value,
+    //   };
 
-      store
-        .dispatch(PatientActions.CLAIM_SOURCE.UPDATE, data)
-        .then(() => {
-          closeModal();
-        })
-        .finally(() => {
-          loading.value = false;
-        });
-    };
+    //   store
+    //     .dispatch(PatientActions.CLAIM_SOURCE.UPDATE, data)
+    //     .then(() => {
+    //       closeModal();
+    //     })
+    //     .finally(() => {
+    //       loading.value = false;
+    //     });
+    // };
 
     const resetForm = () => {
       updatePatientAllergyFormRef.value.resetFields();
@@ -471,11 +472,11 @@ export default defineComponent({
       () => {
         resetForm();
 
-        formData.value.billing_type = allergy.value?.billing_type;
-        formData.value.member_number = allergy.value?.member_number;
-        formData.value.member_reference_number =
-          allergy.value?.member_reference_number;
-        formData.value.health_fund_id = allergy.value?.health_fund_id;
+        // formData.value.billing_type = allergy.value?.billing_type;
+        // formData.value.member_number = allergy.value?.member_number;
+        // formData.value.member_reference_number =
+        //   allergy.value?.member_reference_number;
+        // formData.value.health_fund_id = allergy.value?.health_fund_id;
       },
       { deep: true }
     );
@@ -501,13 +502,13 @@ export default defineComponent({
       formData,
       PatientBillingTypes,
       healthFundsList,
-      validateSource,
-      handleCheckConcession,
+      // validateSource,
+      // handleCheckConcession,
       rules,
-      updateClaimSource,
-      updateDetails,
-      detailsToUpdateExist,
-      handleUpdateDetails,
+      // updateClaimSource,
+      // updateDetails,
+      // detailsToUpdateExist,
+      // handleUpdateDetails,
       enableMedicareValidation,
       closeModal,
     };

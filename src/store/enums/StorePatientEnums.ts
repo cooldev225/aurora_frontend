@@ -24,6 +24,9 @@ const PatientActions = {
     CREATE: "createPatientAlert",
     UPDATE: "updatePatientAlert",
   },
+  ALLERGY: {
+    DELETE: "deletePatientAllergy",
+  },
   CLAIM_SOURCE: {
     VALIDATE_MEDICARE: "validatePatientsBillingMedicare",
     VALIDATE_CONCESSION: "validatePatientsBillingConcession",

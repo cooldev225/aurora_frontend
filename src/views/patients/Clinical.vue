@@ -32,12 +32,8 @@ export default defineComponent({
     const patient = computed(() => store.getters.selectedPatient);
     const route = useRoute();
 
-    watch(patient, () => {
-      console.log(patient);
-    });
-
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Documents", ["Patients"]);
+      setCurrentPageBreadcrumbs("Clinical Information", ["Patients"]);
       const id = route.params.id;
       store.dispatch(PatientActions.VIEW, id);
     });

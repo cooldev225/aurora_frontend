@@ -118,7 +118,7 @@ export default defineComponent({
     const validationMessage = ref(null);
     const concessionValidated = ref(null);
     const concessionValidationMessage = ref(null);
-    const customId = computed(() => props.modalId ?? "add_allergy");
+    const customId = computed(() => props.modalId ?? "add_patient_allergy");
     const formData = ref({
       name: null,
       severity: null,
