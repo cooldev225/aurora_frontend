@@ -1,72 +1,54 @@
 <template>
-  <div class="card w-75 mx-auto">
-    <div class="card-body pt-0">
-      <Datatable
-        :table-header="tableHeader"
-        :table-data="tableData"
-        :rows-per-page="10"
-        :enable-items-per-page-dropdown="false"
-      >
-        <template v-slot:cell-title="{ row: item }">
-          <div class="row">
-            <div class="col-auto">
-              <button
-                @click="handleEdit(item)"
-                class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
-              >
-                <span class="svg-icon svg-icon-3">
-                  <InlineSVG icon="pencil" />
-                </span>
-              </button>
-            </div>
-            <div class="col-auto">
-              <span class="text-primary">{{ item.title }}</span> <br />
-              <span v-if="item.allow_day_edit != 0"
-                >Days Before: {{ item.days_before }}<br />
+  <CardSection>
+    <div class="d-flex flex-column">
+      <template v-for="template in notificationTemplates" :key="template.id">
+        <div class="row">
+          <div class="col-auto">
+            <button
+              @click="handleEdit(template)"
+              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
+            >
+              <span class="svg-icon svg-icon-3">
+                <InlineSVG icon="pencil" />
               </span>
-              Status: {{ item.status }} <br />
-              {{ item.description }} <br />
-            </div>
+            </button>
           </div>
-        </template>
-      </Datatable>
+          <div class="col-auto">
+            <span class="text-primary">{{ template.title }}</span> <br />
+            <span v-if="template.allow_day_edit == true"
+              >Days Before: {{ template.days_before }}<br />
+            </span>
+            Status: {{ template.status }} <br />
+            {{ template.description }} <br />
+          </div>
+        </div>
+      </template>
     </div>
-  </div>
+  </CardSection>
   <EditModal></EditModal>
 </template>
 
-<script>
-import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
+<script lang="ts">
+import { defineComponent, onMounted, computed } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import EditModal from "@/views/settings/notification-templates/EditNotificationTemplate.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
-
+import INotificationTemplate from "@/store/interfaces/INotificationTemplate";
+import CardSection from "@/components/presets/GeneralElements/CardSection.vue";
 export default defineComponent({
-  name: "notifiaction-templates",
-
   components: {
-    Datatable,
     EditModal,
+    CardSection,
   },
 
   setup() {
     const store = useStore();
-    const tableHeader = ref([
-      {
-        name: "Notification Type",
-        key: "title",
-        sortable: true,
-      },
-      {
-        name: "",
-        key: "action",
-      },
-    ]);
-    const tableData = ref([]);
-    const ntfTemplates = computed(() => store.getters.getNtfTemplatesList);
+
+    const notificationTemplates = computed<INotificationTemplate[]>(
+      () => store.getters.getNotificationTemplatesList
+    );
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_NTF_TEMPLATES.SELECT, item);
@@ -79,14 +61,9 @@ export default defineComponent({
     onMounted(() => {
       setCurrentPageBreadcrumbs("Patient Notifications", ["Settings"]);
       store.dispatch(Actions.NTF_TEMPLATES.LIST);
-      tableData.value = ntfTemplates;
     });
 
-    watchEffect(() => {
-      tableData.value = ntfTemplates;
-    });
-
-    return { tableHeader, tableData, handleEdit };
+    return { notificationTemplates, handleEdit };
   },
 });
 </script>
