@@ -106,7 +106,7 @@
   <ProviderModal></ProviderModal>
   <EmployeePasswordModal></EmployeePasswordModal>
 </template>
-<script>
+<script lang="ts">
 import {
   defineComponent,
   onMounted,
@@ -171,8 +171,8 @@ export default defineComponent({
         key: "action",
       },
     ]);
-    const tableData = ref([]);
-    const filteredData = ref([]);
+    const tableData = ref<Array<unknown>>([]);
+    const filteredData = ref<Array<unknown>>([]);
     const list = computed(() => store.getters.employeeList);
     //const organization = computed(() => store.getters.organization);
     const loading = ref(true);
@@ -281,7 +281,7 @@ export default defineComponent({
       loading.value = true;
       setCurrentPageBreadcrumbs("Employees", []);
       store.dispatch(Actions.EMPLOYEE.LIST).then(() => {
-        tableData.value = list;
+        tableData.value = list.value;
         loading.value = false;
       });
     });
@@ -326,7 +326,7 @@ export default defineComponent({
       } else {
         filteredData.value = list.value;
       }
-      tableData.value = filteredData;
+      tableData.value = filteredData.value;
     };
 
     watchEffect(() => {
