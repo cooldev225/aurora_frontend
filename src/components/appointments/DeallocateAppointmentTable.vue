@@ -97,10 +97,7 @@ export default defineComponent({
 
     watch(props, () => {
       if (props.tableData && props.tableData?.length > 0) {
-        filteredTableData.value = [];
-        props.tableData.forEach((data) => {
-          filteredTableData.value.push(data);
-        });
+        filteredTableData.value = props.tableData.map((data) => data);
       }
     });
 
