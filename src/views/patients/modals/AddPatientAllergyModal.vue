@@ -81,7 +81,7 @@ import { useStore } from "vuex";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import patientAllergyTypes from "@/core/data/patient-allergy-types";
-// import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
+import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 
 export default defineComponent({
   name: "add-patient-allergy-modal",
@@ -92,7 +92,7 @@ export default defineComponent({
   },
   emits: ["addAllergy", "closeModal"],
   components: {
-    // AlertBadge,
+    AlertBadge,
   },
   setup(props, { emit }) {
     const store = useStore();
