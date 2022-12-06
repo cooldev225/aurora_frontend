@@ -257,7 +257,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       return ApiService.put("patients/billing", source)
-        .then(({ data }) => {
+        .then(() => {
           this.context.dispatch(PatientActions.VIEW, source.patient_id);
           return displaySuccessToast("Claim source added successfully");
         })
@@ -304,6 +304,24 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
             response,
             "Deleting a patient claim source"
           );
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [PatientActions.ALLERGY.ADD](allergy) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post(`patients/allergies`, allergy)
+        .then(() => {
+          this.context.dispatch(PatientActions.VIEW, allergy.patient_id);
+
+          return displaySuccessToast("Patient allergy added successfully");
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Adding a patient allergy");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

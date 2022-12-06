@@ -25,6 +25,8 @@ const PatientActions = {
     UPDATE: "updatePatientAlert",
   },
   ALLERGY: {
+    ADD: "addPatientAllergy",
+    UPDATE: "updatePatientAllergy",
     DELETE: "deletePatientAllergy",
   },
   CLAIM_SOURCE: {

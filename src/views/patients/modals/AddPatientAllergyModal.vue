@@ -41,19 +41,12 @@
       </div>
     </el-form>
 
-    <!-- <AlertBadge
+    <AlertBadge
       v-if="validationMessage != null"
       :text="validationMessage"
       :color="validated ? 'success' : 'warning'"
       icon=""
     />
-
-    <AlertBadge
-      v-if="concessionValidationMessage != null"
-      :text="concessionValidationMessage"
-      :color="concessionValidated ? 'success' : 'warning'"
-      icon=""
-    /> -->
 
     <div class="d-flex justify-content-end">
       <button
@@ -87,33 +80,28 @@ import { defineComponent, ref, computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-import moment from "moment";
 import patientAllergyTypes from "@/core/data/patient-allergy-types";
-import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
-import { isMedicareValidationEnabled } from "@/core/data/billing";
+// import AlertBadge from "@/components/presets/GeneralElements/AlertBadge.vue";
 
 export default defineComponent({
   name: "add-patient-allergy-modal",
   props: {
     patient: { required: true },
-    claimSource: { type: String },
     shouldEmit: { type: Boolean, default: false },
     modalId: { type: [String, null] },
   },
-  emits: ["addClaimSource", "closeModal", "updateDetails"],
+  emits: ["addAllergy", "closeModal"],
   components: {
     // AlertBadge,
   },
   setup(props, { emit }) {
     const store = useStore();
-    // const shouldEmit = computed(() => props.shouldEmit);
+    const shouldEmit = computed(() => props.shouldEmit);
     const parentModal = ref(null);
     const addPatientAllergyFormRef = ref(null);
     const addPatientAllergyRef = ref(null);
-    const healthFundsList = computed(() => store.getters.healthFundsList);
-    // const minorId = computed(() => store.getters.latestMinorId);
     const loading = ref(false);
-    // const patient = computed(() => props.patient);
+    const patient = computed(() => props.patient);
     const validated = ref(null);
     const validationMessage = ref(null);
     const concessionValidated = ref(null);
@@ -124,7 +112,6 @@ export default defineComponent({
       severity: null,
       symptoms: null,
     });
-    const updateDetails = ref({});
 
     const rules = ref({
       name: [
@@ -143,7 +130,7 @@ export default defineComponent({
       ],
       symptoms: [
         {
-          required: false,
+          required: true,
           message: "Symptoms cannot be blank",
           trigger: "change",
         },
@@ -155,25 +142,23 @@ export default defineComponent({
     };
 
     const addNewAllergy = () => {
-      // const claimSource = JSON.parse(JSON.stringify(formData))._value;
-      // claimSource.has_medicare_concession = concessionValidated.value;
+      const allergySource = JSON.parse(JSON.stringify(formData))._value;
 
-      // if (shouldEmit.value) {
-      //   emit("addClaimSource", claimSource);
-      //   closeModal();
-      // } else {
-      //   loading.value = true;
-      //   claimSource.patient_id = patient.value.id;
-      //   store
-      //     .dispatch(PatientActions.CLAIM_SOURCE.ADD, claimSource)
-      //     .then(() => {
-      //       closeModal();
-      //     })
-      //     .finally(() => {
-      //       loading.value = false;
-      //     });
-      // }
-      console.log("add new allergy");
+      if (shouldEmit.value) {
+        emit("addAllergy", allergySource);
+        closeModal();
+      } else {
+        loading.value = true;
+        allergySource.patient_id = patient.value.id;
+        store
+          .dispatch(PatientActions.ALLERGY.ADD, allergySource)
+          .then(() => {
+            closeModal();
+          })
+          .finally(() => {
+            loading.value = false;
+          });
+      }
     };
 
     const resetForm = () => {
@@ -184,9 +169,7 @@ export default defineComponent({
       () => formData,
       () => {
         validated.value = null;
-        concessionValidated.value = null;
         validationMessage.value = null;
-        concessionValidationMessage.value = null;
       },
       { deep: true }
     );
@@ -202,17 +185,12 @@ export default defineComponent({
       loading,
       addPatientAllergyFormRef,
       addPatientAllergyRef,
-      moment,
       validated,
       validationMessage,
-      concessionValidated,
-      concessionValidationMessage,
       formData,
       patientAllergyTypes,
-      healthFundsList,
       rules,
       addNewAllergy,
-      updateDetails,
       customId,
     };
   },
