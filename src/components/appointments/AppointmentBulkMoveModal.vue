@@ -329,8 +329,8 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, computed, ref, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, computed, ref, onMounted, reactive } from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
@@ -338,6 +338,7 @@ import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import moment from "moment";
 import { ElMessage } from "element-plus";
 import swal from "sweetalert2";
+import type { FormInstance, FormRules } from "element-plus";
 
 export default defineComponent({
   name: "bulk-move-apt-modal",
@@ -348,7 +349,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
 
-    const bulkMoveAptModalRef = ref(null);
+    const bulkMoveAptModalRef = ref<HTMLElement | null>(null);
     const loading = ref(false);
     const aptData = computed(() => store.getters.getAptSelected);
     const aptTypelist = computed(() => store.getters.getAptTypesList);
@@ -358,8 +359,7 @@ export default defineComponent({
     const aptListTo = computed(() => store.getters.getUserAptList);
     const organization = computed(() => store.getters.userOrganization);
 
-    const step = ref(0);
-
+    const step = ref<number>(0);
     const formData = ref({
       appointment_type_id: null,
       appointment_type_name: "",
@@ -376,8 +376,8 @@ export default defineComponent({
       matchAppointmentRestrictions: false,
     });
 
-    const formRef = ref(null);
-    const rules = {
+    const formRef = ref<FormInstance>();
+    const rules = reactive<FormRules>({
       specialist_id_from: [
         {
           required: true,
@@ -407,10 +407,21 @@ export default defineComponent({
           trigger: "blur",
         },
       ],
-    };
+    });
 
-    const selectedToSpecialist = ref(null);
-    const updatedAppointments = ref({
+    interface updateApt {
+      oldApt: Array<unknown>;
+      newApt: Array<unknown>;
+    }
+
+    interface spt {
+      schedule_timeslots: Array<unknown>;
+      full_name: string;
+    }
+
+    const selectedToSpecialist = ref<spt>();
+
+    const updatedAppointments = ref<updateApt>({
       oldApt: [],
       newApt: [],
     });
@@ -425,7 +436,9 @@ export default defineComponent({
     onMounted(() => {
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
-      const bulkModal = document.getElementById("modal_bulk_move_apt");
+      const bulkModal = document.getElementById(
+        "modal_bulk_move_apt"
+      ) as HTMLInputElement;
 
       bulkModal.addEventListener("hidden.bs.modal", function () {
         clearData();
@@ -538,23 +551,25 @@ export default defineComponent({
         selectedToSpecialist.value = specialist[0];
         return true;
       }
-      selectedToSpecialist.value = null;
+      selectedToSpecialist.value = undefined;
       return false;
     };
 
     // check clinics are same or not
     const checkAppointmentsClinic = async () => {
-      let fromClinics = [];
-      let toClinics = [];
-      let warnings = [];
-      const toDate = moment(formData.value.to_date).format("ddd").toUpperCase();
+      let fromClinics: number[] = [];
+      let toClinics: number[] = [];
+      let warnings: string[] = [];
+      const toDate: string = moment(formData.value.to_date)
+        .format("ddd")
+        .toUpperCase();
 
       aptListFrom.value.forEach((apt) => {
         if (!fromClinics.includes(apt.clinic_id))
           fromClinics.push(apt.clinic_id);
       });
 
-      selectedToSpecialist.value.schedule_timeslots.forEach((slot) => {
+      selectedToSpecialist.value?.schedule_timeslots.forEach((slot: any) => {
         if (slot.week_day === toDate) {
           if (!toClinics.includes(slot.clinic_id))
             toClinics.push(slot.clinic_id);
@@ -569,7 +584,7 @@ export default defineComponent({
       }
       if (toClinics.length > 1) {
         warnings.push(
-          selectedToSpecialist.value.full_name +
+          selectedToSpecialist.value?.full_name +
             " is working more than one clinic on " +
             moment(formData.value.to_date).format("YYYY-MM-DD")
         );
@@ -754,7 +769,7 @@ export default defineComponent({
           })
           .then((result) => {
             if (result.value) {
-              resolve();
+              resolve(null);
             }
           });
       });
