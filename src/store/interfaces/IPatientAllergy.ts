@@ -1,5 +1,6 @@
 export default interface IPatientAllergy {
-  id: string;
+  id: number;
+  patient_id: number;
   name: string;
   severity: string;
   symptoms: string;

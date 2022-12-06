@@ -6,29 +6,29 @@
 
     <template #default>
       <Datatable
+        v-if="tableData != undefined"
         :table-header="tableHeader"
         :table-data="tableData"
-        :key="tableKey"
         :rows-per-page="5"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-name="{ row: item }">
-          {{ item.name }}
+        <template v-slot:cell-name="{ row: allergy }">
+          {{ allergy.name }}
         </template>
 
-        <template v-slot:cell-severity="{ row: item }">
-          {{ item.severity }}
+        <template v-slot:cell-severity="{ row: allergy }">
+          {{ allergy.severity }}
         </template>
 
-        <template v-slot:cell-symptoms="{ row: item }">
-          {{ item.symptoms }}
+        <template v-slot:cell-symptoms="{ row: allergy }">
+          {{ allergy.symptoms }}
         </template>
 
-        <template v-slot:cell-actions="{ row: item }">
+        <template v-slot:cell-actions="{ row: allergy }">
           <div class="d-flex">
             <button
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-              @click.prevent="showUpdateAllergyModal(item)"
+              @click.prevent="showUpdateAllergyModal(allergy)"
             >
               <span class="svg-icon svg-icon-3">
                 <InlineSVG icon="pencil" />
@@ -37,7 +37,7 @@
 
             <button
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-              @click="handleDeleteAllergy(item)"
+              @click="handleDeleteAllergy(allergy)"
             >
               <span class="svg-icon svg-icon-3">
                 <InlineSVG icon="bin" />
@@ -60,7 +60,7 @@
     </template>
   </CardSection>
 </template>
-<script>
+<script lang="ts">
 import { defineComponent, ref, watchEffect, onMounted, computed } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
@@ -70,8 +70,9 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import AddPatientAllergyModal from "@/views/patients/modals/AddPatientAllergyModal.vue";
 import UpdatePatientAllergyModal from "@/views/patients/modals/UpdatePatientAllergyModal.vue";
-import IconButton from "@/components/presets/GeneralElements/IconButton.vue";
 import { Modal } from "bootstrap";
+import IPatientAllergy from "@/store/interfaces/IPatientAllergy";
+import IPatient from "@/store/interfaces/IPatient";
 
 export default defineComponent({
   name: "patient-allergies-table",
@@ -81,14 +82,15 @@ export default defineComponent({
   components: {
     AddPatientAllergyModal,
     UpdatePatientAllergyModal,
-    IconButton,
     Datatable,
   },
   setup(props) {
     const store = useStore();
     const route = useRoute();
-    const selectedPatient = computed(() => store.getters.selectedPatient);
-    const loading = ref(null);
+    const selectedPatient = computed<IPatient>(
+      () => store.getters.selectedPatient
+    );
+    const loading = ref<boolean>(false);
     const tableHeader = ref([
       {
         name: "Name",
@@ -111,13 +113,10 @@ export default defineComponent({
         sortable: false,
       },
     ]);
-    const tableData = ref([]);
-    const tableKey = ref(0);
-    const updatingAllergy = ref(null);
-    const addPatientAllergyModal = ref(null);
-    const updatePatientAllergyModal = ref(null);
-
-    const renderTable = () => tableKey.value++;
+    const tableData = ref<IPatientAllergy[]>();
+    const updatingAllergy = ref<IPatientAllergy>();
+    const addPatientAllergyModal = ref<Modal>();
+    const updatePatientAllergyModal = ref<Modal>();
 
     const showAddAllergyModal = () => {
       if (!addPatientAllergyModal.value) {
@@ -125,7 +124,9 @@ export default defineComponent({
           document.getElementById("modal_add_patient_allergy")
         );
       }
-      addPatientAllergyModal.value.show();
+      if (addPatientAllergyModal.value != undefined) {
+        addPatientAllergyModal.value.show();
+      }
     };
 
     const showUpdateAllergyModal = (source) => {
@@ -163,12 +164,10 @@ export default defineComponent({
     };
 
     const closeAddPatientAllergyModal = () => {
-      renderTable();
       addPatientAllergyModal.value.hide();
     };
 
     const closeUpdatePatientAllergyModal = () => {
-      renderTable();
       updatePatientAllergyModal.value.hide();
     };
 
@@ -182,14 +181,12 @@ export default defineComponent({
       );
 
       updateModal?.addEventListener("hidden.bs.modal", function () {
-        updatingAllergy.value = null;
-        renderTable();
+        updatingAllergy.value = undefined;
       });
     });
 
     watchEffect(() => {
       tableData.value = props.patient.allergies ?? [];
-      renderTable();
     });
 
     return {
@@ -197,7 +194,6 @@ export default defineComponent({
       loading,
       tableHeader,
       tableData,
-      tableKey,
       handleDeleteAllergy,
       showAddAllergyModal,
       updatingAllergy,
