@@ -51,7 +51,11 @@
         <template v-slot:cell-name="{ row: item }">
           <div class="d-flex align-items-center">
             <div class="symbol symbol-50px me-2">
-              <img :src="item.logo" class="h-50 align-self-center" />
+              <img
+                v-if="item.logo"
+                :src="item.logo"
+                class="h-50 align-self-center"
+              />
             </div>
             <span class="text-dark fw-bolder text-hover-primary m-2 fs-3">
               {{ item.name }}
