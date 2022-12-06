@@ -17,7 +17,7 @@
         <el-divider border-style="double" />
         <Datatable
           :table-header="tableHeader"
-          :table-data="leaveList"
+          :table-data="testTableData"
           :loading="loading"
           :rows-per-page="10"
           :enable-items-per-page-dropdown="true"
@@ -343,6 +343,15 @@ export default defineComponent({
       };
       return formData;
     };
+
+    const testTableData = ref<Array<unknown>>([]);
+
+    watch(leaveList, () => {
+      leaveList.value.forEach((data) => {
+        testTableData.value.push(data);
+      });
+    });
+
     return {
       editRequest,
       tagClass,
@@ -358,6 +367,7 @@ export default defineComponent({
       updateApproval,
       confirmDeleteRequest,
       user,
+      testTableData,
     };
   },
 });

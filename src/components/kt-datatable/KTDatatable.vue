@@ -182,6 +182,7 @@ export default defineComponent({
   components: {},
   setup(props, { emit }) {
     const data = ref(props.tableData);
+    // const data = ref<Array<unknown>>([]);
     const currentSort = ref<string>("");
     const order = ref(props.order);
     const label = ref(props.sortLabel);
@@ -199,6 +200,15 @@ export default defineComponent({
         currentSort.value = label.value + order.value;
       } else {
         pagination.value.total = data.value.length;
+      }
+    });
+
+    watch(props, () => {
+      if (props.tableData && props.tableData?.length > 0) {
+        data.value = [];
+        props.tableData.forEach((x) => {
+          data.value.push(x);
+        });
       }
     });
 
