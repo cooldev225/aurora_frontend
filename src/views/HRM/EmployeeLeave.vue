@@ -17,7 +17,7 @@
         <el-divider border-style="double" />
         <Datatable
           :table-header="tableHeader"
-          :table-data="testTableData"
+          :table-data="tableData"
           :loading="loading"
           :rows-per-page="10"
           :enable-items-per-page-dropdown="true"
@@ -199,6 +199,7 @@ export default defineComponent({
         key: "action",
       },
     ]);
+
     const formData = ref({
       leaveType: "",
       date: [new Date(), new Date()],
@@ -211,6 +212,8 @@ export default defineComponent({
       userId: user.value.profile.id,
     });
 
+    const tableData = ref<Array<unknown>>([]);
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("Employee Availability", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
@@ -220,6 +223,10 @@ export default defineComponent({
 
     onBeforeUnmount(() => {
       store.commit(HRMMutations.DATA.SET_LIST, []);
+    });
+
+    watch(leaveList, () => {
+      tableData.value = leaveList.value.map((data) => data);
     });
 
     const editRequest = ($event) => {
@@ -344,14 +351,6 @@ export default defineComponent({
       return formData;
     };
 
-    const testTableData = ref<Array<unknown>>([]);
-
-    watch(leaveList, () => {
-      leaveList.value.forEach((data) => {
-        testTableData.value.push(data);
-      });
-    });
-
     return {
       editRequest,
       tagClass,
@@ -367,7 +366,7 @@ export default defineComponent({
       updateApproval,
       confirmDeleteRequest,
       user,
-      testTableData,
+      tableData,
     };
   },
 });

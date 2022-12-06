@@ -204,7 +204,6 @@ export default defineComponent({
 
     watch(props, () => {
       if (props.tableData && props.tableData?.length > 0) {
-        data.value = [];
         data.value = props.tableData.map((x) => x);
       }
     });
