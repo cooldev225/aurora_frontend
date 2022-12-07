@@ -236,25 +236,20 @@ export default defineComponent({
         },
       }).then((result) => {
         if (result.value == "success") {
-          store
-            .dispatch(Actions.EMPLOYEE.DELETE, item.id)
-            .then(() => {
+          store.dispatch(Actions.EMPLOYEE.DELETE, item.id).then(() => {
+            store.dispatch(Actions.EMPLOYEE.LIST);
+            Swal.fire({
+              text: "Successfully Deleted!",
+              icon: "success",
+              buttonsStyling: false,
+              confirmButtonText: "Ok, got it!",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+            }).then(() => {
               store.dispatch(Actions.EMPLOYEE.LIST);
-              Swal.fire({
-                text: "Successfully Deleted!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                store.dispatch(Actions.EMPLOYEE.LIST);
-              });
-            })
-            .catch(({ response }) => {
-              console.log(response.data.error);
             });
+          });
         }
       });
     };
@@ -313,7 +308,6 @@ export default defineComponent({
         filteredData.value = list.value;
       }
       tableData.value = filteredData.value;
-      console.log(tableData.value);
     };
 
     watchEffect(() => {
