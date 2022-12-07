@@ -2,7 +2,6 @@
   <div
     class="modal fade"
     id="modal_bulk_move_apt"
-    tabindex="-1"
     aria-hidden="true"
     ref="bulkMoveAptModalRef"
   >
@@ -326,6 +325,7 @@ import swal from "sweetalert2";
 import type { FormInstance, FormRules } from "element-plus";
 import ScheduleOverview from "@/components/appointments/partials/ScheduleOverview.vue";
 import { ISpecialist } from "@/store/modules/SpecialistsModule";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "bulk-move-apt-modal",
@@ -481,6 +481,8 @@ export default defineComponent({
             grouping: false,
             type: "success",
           });
+          getAppointmentsFrom();
+          getAppointmentsTo();
           handleCancel();
         });
     };
@@ -745,6 +747,7 @@ export default defineComponent({
       });
       html += "</ul></div>";
 
+      hideModal(bulkMoveAptModalRef.value);
       return new Promise(function (resolve) {
         swal
           .fire({
@@ -757,6 +760,10 @@ export default defineComponent({
             cancelButtonText: "Cancel",
           })
           .then((result) => {
+            const modal = new Modal(
+              document.getElementById("modal_bulk_move_apt")
+            );
+            modal.show();
             if (result.value) {
               resolve(null);
             }
