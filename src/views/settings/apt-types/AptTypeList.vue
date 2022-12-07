@@ -1,71 +1,63 @@
 <template>
-  <div class="card w-75 mx-auto">
-    <div class="card-header row border-0 p-6">
-      <div class="card-title col"></div>
-      <!--begin::Add button-->
-      <div class="card-toolbar col-12">
-        <router-link
-          to="/settings/apt-types/create"
-          type="button"
-          class="text-nowrap btn btn-light-primary ms-auto"
-        >
-          <span class="svg-icon svg-icon-2">
-            <InlineSVG icon="plus" />
-          </span>
-          Add
-        </router-link>
-      </div>
-      <!--end::Add button-->
-    </div>
-    <div class="card-body pt-0">
+  <CardSection>
+    <template #header-actions>
+      <router-link
+        to="/settings/apt-types/create"
+        type="button"
+        class="text-nowrap btn btn-light-primary ms-auto"
+      >
+        <span class="svg-icon svg-icon-2">
+          <InlineSVG icon="plus" />
+        </span>
+        Add
+      </router-link>
+    </template>
+    <template #default>
       <Datatable
         :table-header="tableHeader"
-        :table-data="tableData"
+        :table-data="aptTypes"
         :rows-per-page="20"
         :enable-items-per-page-dropdown="true"
       >
-        <template v-slot:cell-name="{ row: item }">
+        <template v-slot:cell-name="{ row: appointmentType }">
           <div class="d-flex align-items-center">
-            <button
-              @click="handleEdit(item)"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            >
-              <span class="svg-icon svg-icon-3">
-                <InlineSVG icon="pencil" />
-              </span>
-            </button>
+            <IconButton
+              @click="handleEdit(appointmentType.id)"
+              :iconSRC="icons.pencil"
+              tooltip="edit appointment type"
+            />
 
-            <button
-              @click="handleDelete(item.id)"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-5"
-            >
-              <span class="svg-icon svg-icon-3">
-                <InlineSVG icon="bin" />
-              </span>
-            </button>
+            <IconButton
+              @click="handleDelete(appointmentType.id)"
+              :iconSRC="icons.bin"
+              tooltip="Delete appointment type"
+            />
+
             <span
               class="p-3 text-white"
               :style="{
                 'border-radius': '5px',
                 color: 'black',
-                'background-color': item.color,
+                'background-color': appointmentType.color,
               }"
-              >{{ item.name }}</span
+              >{{ appointmentType.name }}</span
             >
           </div>
         </template>
-        <template v-slot:cell-type="{ row: item }">
-          {{ item.type }}
+        <template v-slot:cell-type="{ row: appointmentType }">
+          {{ appointmentType.type }}
         </template>
-        <template v-slot:cell-appointment_time="{ row: item }">
-          <span class="text-capitalize">{{ item.appointment_time }}</span>
+        <template v-slot:cell-appointment_time="{ row: appointmentType }">
+          <span class="text-capitalize">{{
+            appointmentType.appointment_time
+          }}</span>
         </template>
       </Datatable>
-    </div>
-  </div>
+    </template>
+  </CardSection>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -73,12 +65,15 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
-
+import CardSection from "@/components/presets/GeneralElements/CardSection.vue";
+import icons from "@/core/data/icons";
+import IAppointmentType from "@/store/interfaces/IAppointmentType";
 export default defineComponent({
   name: "apt-types",
 
   components: {
     Datatable,
+    CardSection,
   },
 
   setup() {
@@ -102,7 +97,9 @@ export default defineComponent({
       },
     ]);
     const tableData = ref([]);
-    const aptTypes = computed(() => store.getters.getAptTypesList);
+    const aptTypes = computed<IAppointmentType[]>(
+      () => store.getters.getAptTypesList
+    );
 
     const handleEdit = (item) => {
       router.push({ name: "editAptType", params: { id: item.id } });
@@ -133,11 +130,7 @@ export default defineComponent({
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
     });
 
-    watchEffect(() => {
-      tableData.value = aptTypes;
-    });
-
-    return { tableHeader, tableData, handleEdit, handleDelete };
+    return { tableHeader, aptTypes, handleEdit, handleDelete, icons };
   },
 });
 </script>

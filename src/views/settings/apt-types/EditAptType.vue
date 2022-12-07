@@ -84,14 +84,14 @@
               <el-input
                 v-model="formData.arrival_time"
                 type="number"
-                placeholder="Arrival Time"
+                placeholder="Arrival time"
               />
             </InputWrapper>
 
             <!--Input: Appointment Length -->
             <InputWrapper
               class="col-sm-6 mb-5"
-              label="Appointment Length"
+              label="Appointment length"
               prop="appointment_time"
             >
               <el-select v-model="formData.appointment_time" class="w-100">
@@ -104,7 +104,10 @@
 
           <div class="row">
             <div class="col-sm-12 px-0">
-              <InputWrapper label="Select Item" prop="default_items">
+              <InputWrapper
+                label="Select default billings items"
+                prop="default_items"
+              >
                 <el-select
                   class="w-100"
                   multiple
