@@ -15,7 +15,7 @@
     </span>
 
     <span class="d-block fw-bold text-start text-uppercase">
-      <span class="text-dark fw-bolder d-block fs-5">
+      <span class="fw-bolder d-block fs-5">
         {{ heading }}
       </span>
     </span>
@@ -24,7 +24,7 @@
 <script lang="ts">
 export default {
   props: {
-    iconPath: { type: String },
+    iconPath: { required: false, type: String },
     heading: { required: false, type: String },
     color: { default: "primary", type: String },
     justify: { default: "center", type: String },

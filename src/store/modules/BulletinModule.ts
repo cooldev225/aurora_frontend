@@ -3,11 +3,7 @@ import JwtService from "@/core/services/JwtService";
 import { Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 import { HRMActions, HRMMutations } from "../enums/StoreHRMEnums";
-
-export interface IBulletin {
-  id: number;
-  title: string;
-}
+import IBulletin from "../interfaces/IBulletin";
 
 export interface BulletinInfo {
   bulletinData: Array<IBulletin>;

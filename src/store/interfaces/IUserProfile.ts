@@ -1,3 +1,5 @@
+import IUserRole from "./IUserRole";
+
 export default interface IUserProfile {
   id: number;
   organization_id: number;
@@ -8,4 +10,6 @@ export default interface IUserProfile {
   mobile_number: string;
   address: string;
   photo: string;
+  username: string;
+  role: IUserRole;
 }

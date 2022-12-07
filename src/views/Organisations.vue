@@ -89,15 +89,6 @@
         </template>
 
         <template v-slot:cell-action="{ row: item }">
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen019.svg" />
-            </span>
-          </a>
-
           <button
             @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
