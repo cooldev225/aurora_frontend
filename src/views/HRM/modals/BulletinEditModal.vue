@@ -1,7 +1,7 @@
 <template>
   <div
     class="modal fade"
-    id="modal_edit_bulletin"
+    id="modal_eidt_bulletin"
     tabindex="-1"
     aria-hidden="true"
     ref="editBulletinModalRef"
@@ -62,7 +62,44 @@
                   <ckeditor :editor="ClassicEditor" v-model="formData.body" />
                 </el-form-item>
               </InputWrapper>
-            </div>
+              <!--
+              <div class="d-flex">
+                <InputWrapper
+                  prop="create_by"
+                  label="Created by"
+                  class="col-6"
+                  required
+                >
+                  <el-select
+                    class="w-100"
+                    v-model="formData.created_by"
+                    filterable
+                  >
+                    <el-option
+                      v-for="item in employeeList"
+                      :value="item.id"
+                      :label="item.full_name"
+                      :key="item.id"
+                    />
+                  </el-select>
+                </InputWrapper>
+
+                <InputWrapper
+                  label="Created At"
+                  prop="created_at"
+                  class="col-6"
+                  required
+                >
+                  <el-date-picker
+                    editable
+                    class="w-100"
+                    v-model="formData.created_at"
+                    format="DD-MM-YYYY"
+                    placeholder="01-01-1990"
+                  />
+                </InputWrapper>
+              </div>
+            --></div>
             <!--end::Scroll-->
           </div>
           <!--end::Modal body-->
@@ -112,7 +149,6 @@ import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useStore } from "vuex";
-import IBulletin from "@/store/interfaces/IBulletin"
 
 export default defineComponent({
   name: "bulletin-edit-modal",
@@ -124,9 +160,10 @@ export default defineComponent({
     const loading = ref(true);
     const formRef = ref(null);
     const editBulletinModalRef = ref(null);
+    const employeeList = computed(() => store.getters.employeeList);
     const bulletin = computed(() => store.getters.getBulletinSelected);
 
-    const formData = ref<IBulletin>();
+    const formData = ref();
 
     const rules = ref({
       title: [
@@ -140,6 +177,20 @@ export default defineComponent({
         {
           required: true,
           message: "Body cannot be blank",
+          trigger: "change",
+        },
+      ],
+      created_by: [
+        {
+          required: true,
+          message: "Author cannnot be blank",
+          trigger: "change",
+        },
+      ],
+      created_at: [
+        {
+          required: true,
+          message: "Date cannot be blank",
           trigger: "change",
         },
       ],
@@ -169,7 +220,9 @@ export default defineComponent({
             .dispatch(formData.value._submit, {
               id: formData.value.id,
               title: formData.value.title,
-              body: formData.value.body
+              body: formData.value.body,
+              created_by: formData.value.created_by,
+              created_at: formData.value.created_at,
             })
             .then(() => {
               loading.value = false;
@@ -200,6 +253,7 @@ export default defineComponent({
       formData,
       rules,
       ClassicEditor,
+      employeeList,
       submit,
       editBulletinModalRef,
       formRef,
