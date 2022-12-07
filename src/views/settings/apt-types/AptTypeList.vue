@@ -25,7 +25,7 @@
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-name="{ row: item }">
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center gap-1">
             <button
               @click="handleEdit(item)"
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"

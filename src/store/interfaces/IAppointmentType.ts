@@ -13,4 +13,6 @@ export default interface IAppointmentType {
   default_items_quote: number;
   report_template: number;
   type: string;
+  pre_procedure_instructions: string;
+  consent: string;
 }

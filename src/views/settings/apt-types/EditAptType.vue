@@ -1,200 +1,191 @@
 <template>
-  <!--begin::Stepper-->
-  <div class="card">
-    <div class="card-body">
-      <!--begin::Form-->
-      <el-form
-        @submit.prevent="submit()"
-        :model="formData"
-        :rules="rules"
-        ref="formRef"
-      >
-        <!--begin::Modal body-->
-        <div class="py-10 px-lg-17">
-          <!--begin::Scroll-->
-          <div class="row">
-            <div class="col-sm-6 mb-5">
-              <!--Input: Appointment Type Name-->
-              <InputWrapper required label="Appointment Type Name" prop="name">
-                <el-input
-                  v-model="formData.name"
-                  type="text"
-                  placeholder="e.g. Long Consultation"
-                />
-              </InputWrapper>
-            </div>
-            <div class="col-sm-6 mb-5">
-              <!--Input: Appointment Type -->
-              <InputWrapper label="Type" prop="type">
-                <el-select v-model="formData.type" class="w-100">
-                  <el-option value="CONSULTATION" label="Consultation" />
-                  <el-option value="PROCEDURE" label="Procedure" />
-                </el-select>
-              </InputWrapper>
-            </div>
-
-            <div class="col-sm-3 mb-5">
-              <InputWrapper label="Appointment Color" prop="type">
-                <el-color-picker
-                  v-model="formData.color"
-                  class="py-1"
-                  size="large"
-                  :predefine="predefineColors"
-                />
-              </InputWrapper>
-            </div>
-            <div class="col-sm-9 mb-5 py-5">
-              <InputWrapper class="mt-2" prop="type">
-                <span
-                  class="text-white p-5"
-                  :style="{ 'background-color': formData.color }"
-                >
-                  Appointment Color Preview
-                </span>
-              </InputWrapper>
-            </div>
-
-            <!--Input: Invoice By -->
-            <InputWrapper
-              class="col-sm-6 mb-5"
-              label="Invoice By"
-              prop="invoice_by"
-            >
-              <el-select v-model="formData.invoice_by" class="w-100">
-                <el-option value="CLINIC" label="Clinic" />
-                <el-option value="SPECIALIST" label="Specialist" />
-              </el-select>
-            </InputWrapper>
-
-            <!--Input: Anesthetist Required-->
-            <InputWrapper class="col-sm-6 mb-5" prop="anesthetist_required">
-              <el-checkbox
-                type="checkbox"
-                v-model="formData.anesthetist_required"
-                label="Anesthetist Required"
-              />
-            </InputWrapper>
-
-            <!--Input: Arrival Time-->
-            <InputWrapper
-              class="col-sm-6 mb-5"
-              label="Arrival extra time"
-              prop="arrival_time"
-            >
-              <el-input
-                v-model="formData.arrival_time"
-                type="number"
-                placeholder="Arrival Time"
-              />
-            </InputWrapper>
-
-            <!--Input: Appointment Length -->
-            <InputWrapper
-              class="col-sm-6 mb-5"
-              label="Appointment Length"
-              prop="appointment_time"
-            >
-              <el-select v-model="formData.appointment_time" class="w-100">
-                <el-option value="SINGLE" label="Single" />
-                <el-option value="DOUBLE" label="Double" />
-                <el-option value="TRIPLE" label="Triple" />
-              </el-select>
-            </InputWrapper>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12 px-0 mb-5">
-              <InputWrapper label="Select Item" prop="default_items">
-                <el-select
-                  class="w-100"
-                  multiple
-                  filterable
-                  allow-create
-                  default-first-option
-                  :reserve-keyword="false"
-                  v-model="formData.default_items"
-                >
-                  <el-option
-                    v-for="item in scheduleItems"
-                    :value="item.id"
-                    :label="item.label_name"
-                    :key="item.id"
-                  />
-                </el-select>
-              </InputWrapper>
-            </div>
-          </div>
-
-          <div class="row">
-            <!-- Input: Pre Procedure Instructions -->
-            <InputWrapper
-              v-if="formData.type == 'PROCEDURE'"
-              label="Pre Procedure Instructions"
-              prop="pre_procedure_instructions"
-              class="col-sm-6"
-            >
-              <el-form-item prop="body">
-                <ckeditor
-                  :editor="ClassicEditor"
-                  v-model="formData.pre_procedure_instructions"
-                />
-              </el-form-item>
-            </InputWrapper>
-
-            <!-- Input: Consent -->
-            <InputWrapper
-              label="Consent"
-              prop="consent"
-              :class="[formData.type == 'PROCEDURE' ? 'col-sm-6' : '']"
-            >
-              <el-form-item prop="body">
-                <ckeditor :editor="ClassicEditor" v-model="formData.consent" />
-              </el-form-item>
-            </InputWrapper>
-          </div>
-        </div>
-        <!--end::Scroll-->
-
-        <!--end::Modal body-->
-
-        <!--begin::Modal footer-->
-        <div class="modal-footer flex-center">
-          <!--begin::Button-->
-          <router-link
-            type="reset"
-            to="/settings/apt-types"
-            class="btn btn-light me-3"
+  <CardSection>
+    <el-form
+      v-if="formData"
+      @submit.prevent="submit()"
+      :model="formData"
+      :rules="rules"
+      ref="formRef"
+    >
+      <!--begin::Modal body-->
+      <div class="py-10 px-lg-17">
+        <!--begin::Scroll-->
+        <div class="row">
+          <InputWrapper
+            class="col-sm-6"
+            required
+            label="Appointment Type Name"
+            prop="name"
           >
-            Cancel
-          </router-link>
-          <!--end::Button-->
+            <el-input
+              v-model="formData.name"
+              type="text"
+              placeholder="e.g. Long Consultation"
+            />
+          </InputWrapper>
 
-          <!--begin::Button-->
-          <button
-            :data-kt-indicator="loading ? 'on' : null"
-            class="btn btn-lg btn-primary"
-            type="submit"
-          >
-            <span v-if="!loading" class="indicator-label">
-              {{ formInfo.submitButtonName }}
-            </span>
-            <span v-if="loading" class="indicator-progress">
-              Please wait...
+          <InputWrapper class="col-sm-6" label="Type" prop="type">
+            <el-select v-model="formData.type" class="w-100">
+              <el-option value="CONSULTATION" label="Consultation" />
+              <el-option value="PROCEDURE" label="Procedure" />
+            </el-select>
+          </InputWrapper>
+
+          <InputWrapper class="col-sm-4" label="Appointment Color" prop="type">
+            <div class="d-flex flex-row my-auto gap-2">
+              <el-color-picker
+                v-model="formData.color"
+                class="py-1"
+                size="large"
+                :predefine="predefineColors"
+              />
               <span
-                class="spinner-border spinner-border-sm align-middle ms-2"
-              ></span>
-            </span>
-          </button>
-          <!--end::Button-->
+                class="text-white px-2"
+                :style="{ 'background-color': formData.color }"
+              >
+                Appointment Color Preview
+              </span>
+            </div>
+          </InputWrapper>
+
+          <!--Input: Invoice By -->
+          <InputWrapper class="col-sm-4" label="Invoice By" prop="invoice_by">
+            <el-select v-model="formData.invoice_by" class="w-100">
+              <el-option value="CLINIC" label="Clinic" />
+              <el-option value="SPECIALIST" label="Specialist" />
+            </el-select>
+          </InputWrapper>
+
+          <!--Input: Anesthetist Required-->
+          <InputWrapper class="col-sm-4 mb-5" prop="anesthetist_required">
+            <el-checkbox
+              type="checkbox"
+              v-model="formData.anesthetist_required"
+              label="Anesthetist Required"
+            />
+          </InputWrapper>
+
+          <!--Input: Arrival Time-->
+          <InputWrapper
+            class="col-sm-6 mb-5"
+            label="Arrival extra time"
+            prop="arrival_time"
+          >
+            <el-input
+              v-model="formData.arrival_time"
+              type="number"
+              placeholder="Arrival Time"
+            />
+          </InputWrapper>
+
+          <!--Input: Appointment Length -->
+          <InputWrapper
+            class="col-sm-6 mb-5"
+            label="Appointment Length"
+            prop="appointment_time"
+          >
+            <el-select v-model="formData.appointment_time" class="w-100">
+              <el-option value="SINGLE" label="Single" />
+              <el-option value="DOUBLE" label="Double" />
+              <el-option value="TRIPLE" label="Triple" />
+            </el-select>
+          </InputWrapper>
         </div>
-        <!--end::Modal footer-->
-      </el-form>
-      <!--end::Form-->
-    </div>
-  </div>
+
+        <div class="row">
+          <div class="col-sm-12 px-0 mb-5">
+            <InputWrapper
+              label="Select Default Billing Items"
+              prop="default_items"
+            >
+              <el-select
+                class="w-100"
+                multiple
+                filterable
+                allow-create
+                default-first-option
+                :reserve-keyword="false"
+                v-model="formData.default_items"
+              >
+                <el-option
+                  v-for="item in scheduleItems"
+                  :value="item.id"
+                  :label="item.label_name"
+                  :key="item.id"
+                />
+              </el-select>
+            </InputWrapper>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Input: Pre Procedure Instructions -->
+          <InputWrapper
+            v-if="formData.type == 'PROCEDURE'"
+            label="Pre Procedure Instructions"
+            prop="pre_procedure_instructions"
+            class="col-sm-6"
+          >
+            <el-form-item prop="body">
+              <ckeditor
+                :editor="ClassicEditor"
+                v-model="formData.pre_procedure_instructions"
+              />
+            </el-form-item>
+          </InputWrapper>
+
+          <!-- Input: Consent -->
+          <InputWrapper
+            label="Consent"
+            prop="consent"
+            :class="[formData.type == 'PROCEDURE' ? 'col-sm-6' : '']"
+          >
+            <el-form-item prop="body">
+              <ckeditor :editor="ClassicEditor" v-model="formData.consent" />
+            </el-form-item>
+          </InputWrapper>
+        </div>
+      </div>
+      <!--end::Scroll-->
+
+      <!--end::Modal body-->
+
+      <!--begin::Modal footer-->
+      <div class="modal-footer flex-center">
+        <!--begin::Button-->
+        <router-link
+          type="reset"
+          to="/settings/apt-types"
+          class="btn btn-light me-3"
+        >
+          Cancel
+        </router-link>
+        <!--end::Button-->
+
+        <!--begin::Button-->
+        <button
+          :data-kt-indicator="loading ? 'on' : null"
+          class="btn btn-lg btn-primary"
+          type="submit"
+        >
+          <span v-if="!loading" class="indicator-label">
+            {{ formInfo.submitButtonName }}
+          </span>
+          <span v-if="loading" class="indicator-progress">
+            Please wait...
+            <span
+              class="spinner-border spinner-border-sm align-middle ms-2"
+            ></span>
+          </span>
+        </button>
+        <!--end::Button-->
+      </div>
+      <!--end::Modal footer-->
+    </el-form>
+  </CardSection>
 </template>
 
-<script>
+<script lang="ts">
 import {
   defineComponent,
   onMounted,
@@ -212,18 +203,21 @@ import { Actions } from "@/store/enums/StoreEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import IAppointmentType from "@/store/interfaces/IAppointmentType";
+import CardSection from "@/components/presets/GeneralElements/CardSection.vue";
 
 export default defineComponent({
   name: "edit-apt-type",
   components: {
     InputWrapper,
     ckeditor: CKEditor.component,
+    CardSection,
   },
   setup() {
     const store = useStore();
     const router = useRouter();
     const route = useRoute();
-    const formRef = ref(null);
+    const formRef = ref<HTMLFormElement>();
     const createAptTypeModalRef = ref(null);
     const aptTypes = computed(() => store.getters.getAptTypesList);
     const reportTemplates = computed(() => store.getters.getReportTemplateList);
@@ -237,13 +231,6 @@ export default defineComponent({
       "#00ced1",
       "#1e90ff",
       "#c71585",
-      "rgba(255, 69, 0, 0.68)",
-      "rgb(255, 120, 0)",
-      "hsv(51, 100, 98)",
-      "hsva(120, 40, 94, 0.5)",
-      "hsl(181, 100%, 37%)",
-      "hsla(209, 100%, 56%, 0.73)",
-      "#c7158577",
     ]);
 
     const formInfo = reactive({
@@ -253,21 +240,7 @@ export default defineComponent({
       submittedText: "New Appointment Type Created",
     });
 
-    const formData = ref({
-      name: "",
-      type: "CONSULTATION",
-      anesthetist_required: 0,
-      color: "#eeeeee",
-      mbs_code: 0,
-      clinical_code: 0,
-      invoice_by: "CLINIC",
-      arrival_time: 0,
-      appointment_time: "SINGLE",
-      report_template: null,
-      default_items: [],
-      pre_procedure_instructions: "",
-      consent: "",
-    });
+    const formData = ref<IAppointmentType>();
 
     const rules = ref({
       name: [
@@ -331,7 +304,9 @@ export default defineComponent({
               loading.value = false;
               console.log(response.data.error);
             });
-          formRef.value.resetFields();
+          if (formRef.value != undefined) {
+            formRef.value.resetFields();
+          }
         }
       });
     };
