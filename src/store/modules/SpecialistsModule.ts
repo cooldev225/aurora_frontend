@@ -6,8 +6,10 @@ import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
 export interface ISpecialist {
   id: number;
   name: string;
+  full_name: string;
   updated_at: string;
   created_at: string;
+  schedule_timeslots: Array<unknown>;
 }
 
 export interface SpecalistInfo {
