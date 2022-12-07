@@ -103,7 +103,7 @@
           </div>
 
           <div class="row">
-            <div class="col-sm-12 px-0">
+            <div class="col-sm-12 px-0 mb-5">
               <InputWrapper label="Select Item" prop="default_items">
                 <el-select
                   class="w-100"
@@ -123,6 +123,34 @@
                 </el-select>
               </InputWrapper>
             </div>
+          </div>
+
+          <div class="row">
+            <!-- Input: Pre Procedure Instructions -->
+            <InputWrapper
+              v-if="formData.type == 'PROCEDURE'"
+              label="Pre Procedure Instructions"
+              prop="pre_procedure_instructions"
+              class="col-sm-6"
+            >
+              <el-form-item prop="body">
+                <ckeditor
+                  :editor="ClassicEditor"
+                  v-model="formData.pre_procedure_instructions"
+                />
+              </el-form-item>
+            </InputWrapper>
+
+            <!-- Input: Consent -->
+            <InputWrapper
+              label="Consent"
+              prop="consent"
+              :class="[formData.type == 'PROCEDURE' ? 'col-sm-6' : '']"
+            >
+              <el-form-item prop="body">
+                <ckeditor :editor="ClassicEditor" v-model="formData.consent" />
+              </el-form-item>
+            </InputWrapper>
           </div>
         </div>
         <!--end::Scroll-->
@@ -182,11 +210,14 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import { Actions } from "@/store/enums/StoreEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
+import CKEditor from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default defineComponent({
   name: "edit-apt-type",
   components: {
     InputWrapper,
+    ckeditor: CKEditor.component,
   },
   setup() {
     const store = useStore();
@@ -234,6 +265,8 @@ export default defineComponent({
       appointment_time: "SINGLE",
       report_template: null,
       default_items: [],
+      pre_procedure_instructions: "",
+      consent: "",
     });
 
     const rules = ref({
@@ -314,6 +347,7 @@ export default defineComponent({
       submit,
       scheduleItems,
       predefineColors,
+      ClassicEditor,
     };
   },
 });
