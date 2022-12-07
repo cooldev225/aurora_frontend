@@ -19,8 +19,9 @@
         :rows-per-page="20"
         :enable-items-per-page-dropdown="true"
       >
+
         <template v-slot:cell-name="{ row: appointmentType }">
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center gap-1">
             <IconButton
               @click="handleEdit(appointmentType.id)"
               :iconSRC="icons.pencil"
