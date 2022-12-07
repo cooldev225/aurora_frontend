@@ -1,7 +1,7 @@
 <template>
   <CardSection class="col-md-6 col-sm-12" heading="Allergies">
     <template #header-actions>
-      <IconButton label="Add Allergy" @click.prevent="showAddAllergyModal" />
+      <IconButton label="Add Allergy" @click.prevent="showAllergyModal(null)" />
     </template>
 
     <template #default>
@@ -28,7 +28,7 @@
           <div class="d-flex">
             <button
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-              @click.prevent="showUpdateAllergyModal(allergy)"
+              @click.prevent="showAllergyModal(allergy)"
             >
               <span class="svg-icon svg-icon-3">
                 <InlineSVG icon="pencil" />
@@ -47,15 +47,10 @@
         </template>
       </Datatable>
 
-      <AddPatientAllergyModal
-        :patient="selectedPatient"
-        v-on:closeModal="closeAddPatientAllergyModal"
-      />
-
-      <UpdatePatientAllergyModal
+      <PatientAllergyModal
         :patient="selectedPatient"
         :allergy="updatingAllergy"
-        v-on:closeModal="closeUpdatePatientAllergyModal"
+        v-on:closeModal="closePatientAllergyModal"
       />
     </template>
   </CardSection>
@@ -68,8 +63,7 @@ import { useRoute } from "vue-router";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import AddPatientAllergyModal from "@/views/patients/modals/AddPatientAllergyModal.vue";
-import UpdatePatientAllergyModal from "@/views/patients/modals/UpdatePatientAllergyModal.vue";
+import PatientAllergyModal from "@/views/patients/modals/PatientAllergyModal.vue";
 import { Modal } from "bootstrap";
 import IPatientAllergy from "@/store/interfaces/IPatientAllergy";
 import IPatient from "@/store/interfaces/IPatient";
@@ -80,8 +74,7 @@ export default defineComponent({
     patient: { required: true, type: Object },
   },
   components: {
-    AddPatientAllergyModal,
-    UpdatePatientAllergyModal,
+    PatientAllergyModal,
     Datatable,
   },
   setup(props) {
@@ -115,29 +108,17 @@ export default defineComponent({
     ]);
     const tableData = ref<IPatientAllergy[]>();
     const updatingAllergy = ref<IPatientAllergy>();
-    const addPatientAllergyModal = ref<Modal>();
-    const updatePatientAllergyModal = ref<Modal>();
+    const patientAllergyModal = ref<Modal>();
 
-    const showAddAllergyModal = () => {
-      if (!addPatientAllergyModal.value) {
-        addPatientAllergyModal.value = new Modal(
-          document.getElementById("modal_add_patient_allergy")
-        );
-      }
-      if (addPatientAllergyModal.value != undefined) {
-        addPatientAllergyModal.value.show();
-      }
-    };
-
-    const showUpdateAllergyModal = (source) => {
+    const showAllergyModal = (source) => {
       updatingAllergy.value = source;
 
-      if (!updatePatientAllergyModal.value) {
-        updatePatientAllergyModal.value = new Modal(
-          document.getElementById("modal_update_patient_allergy")
+      if (!patientAllergyModal.value) {
+        patientAllergyModal.value = new Modal(
+          document.getElementById("modal_patient_allergy")
         );
       }
-      updatePatientAllergyModal.value.show();
+      patientAllergyModal.value.show();
     };
 
     const handleDeleteAllergy = (item) => {
@@ -163,12 +144,8 @@ export default defineComponent({
       store.dispatch(PatientActions.ALLERGY.DELETE, item);
     };
 
-    const closeAddPatientAllergyModal = () => {
-      addPatientAllergyModal.value.hide();
-    };
-
-    const closeUpdatePatientAllergyModal = () => {
-      updatePatientAllergyModal.value.hide();
+    const closePatientAllergyModal = () => {
+      patientAllergyModal.value.hide();
     };
 
     onMounted(() => {
@@ -176,11 +153,9 @@ export default defineComponent({
       store.dispatch(PatientActions.VIEW, id);
       setCurrentPageBreadcrumbs("Clinical Information", ["Patients"]);
 
-      const updateModal = document.getElementById(
-        "modal_update_patient_allergy"
-      );
+      const modal = document.getElementById("modal_patient_allergy");
 
-      updateModal?.addEventListener("hidden.bs.modal", function () {
+      modal?.addEventListener("hidden.bs.modal", function () {
         updatingAllergy.value = undefined;
       });
     });
@@ -195,11 +170,9 @@ export default defineComponent({
       tableHeader,
       tableData,
       handleDeleteAllergy,
-      showAddAllergyModal,
+      showAllergyModal,
       updatingAllergy,
-      showUpdateAllergyModal,
-      closeAddPatientAllergyModal,
-      closeUpdatePatientAllergyModal,
+      closePatientAllergyModal,
     };
   },
 });
