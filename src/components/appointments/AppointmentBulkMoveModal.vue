@@ -321,7 +321,6 @@ import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import moment from "moment";
 import { ElMessage } from "element-plus";
 import swal from "sweetalert2";
-import type { FormInstance, FormRules } from "element-plus";
 import ScheduleOverview from "@/components/appointments/partials/ScheduleOverview.vue";
 import { ISpecialist } from "@/store/modules/SpecialistsModule";
 import { Modal } from "bootstrap";
@@ -361,9 +360,9 @@ export default defineComponent({
       matchAppointmentTime: false,
     });
 
-    const formRef = ref<FormInstance>();
-    const confirmFormRef = ref<FormInstance>();
-    const rules = reactive<FormRules>({
+    const formRef = ref();
+    const confirmFormRef = ref();
+    const rules = reactive({
       specialist_id_from: [
         {
           required: true,
