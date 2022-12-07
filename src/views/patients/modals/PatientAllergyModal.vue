@@ -76,7 +76,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch } from "vue";
+import {
+  defineComponent,
+  ref,
+  computed,
+  onMounted,
+  watch,
+  PropType,
+} from "vue";
 import { useStore } from "vuex";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
@@ -89,10 +96,10 @@ import { Modal } from "bootstrap";
 export default defineComponent({
   name: "patient-allergy-modal",
   props: {
-    patient: { required: true, type: Object },
-    allergy: { type: [Object, null] },
+    patient: { required: true, type: Object as PropType<IPatient> },
+    allergy: Object as PropType<IPatientAllergy>,
     shouldEmit: { type: Boolean, default: false },
-    modalId: { type: [String, null] },
+    modalId: { type: String },
   },
   emits: ["closeModal"],
   components: {
@@ -100,10 +107,12 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const store = useStore();
-    const allergy = computed<IPatientAllergy>(() => props.allergy);
+    const allergy = computed<null | IPatientAllergy>(() => {
+      return props.allergy ? props.allergy : null;
+    });
     const parentModal = ref<Modal>(null);
-    const patientAllergyFormRef = ref(null);
-    const patientAllergyRef = ref(null);
+    const patientAllergyFormRef = ref<null | HTMLFormElement>(null);
+    const patientAllergyRef = ref<null | HTMLElement>(null);
     const loading = ref<boolean>(false);
     const patient = computed<IPatient>(() => props.patient);
     const validated = ref(null);
@@ -114,9 +123,9 @@ export default defineComponent({
     );
     const isDataUnchanged = ref<boolean>(allergy.value ? true : false);
     const formData = ref({
-      name: null,
-      severity: null,
-      symptoms: null,
+      name: "",
+      severity: "",
+      symptoms: "",
     });
 
     const rules = ref({
@@ -169,7 +178,7 @@ export default defineComponent({
     const updateAllergy = () => {
       loading.value = true;
       const data = {
-        id: allergy.value.id,
+        id: allergy?.value?.id,
         patient_id: patient.value.id,
         ...formData.value,
       };
@@ -187,7 +196,7 @@ export default defineComponent({
 
     const resetForm = () => {
       if (allergy.value) isDataUnchanged.value = true;
-      patientAllergyFormRef.value.resetFields();
+      patientAllergyFormRef?.value?.resetFields();
     };
 
     watch(
@@ -210,9 +219,9 @@ export default defineComponent({
       () => {
         resetForm();
 
-        formData.value.name = allergy.value?.name;
-        formData.value.severity = allergy.value?.severity;
-        formData.value.symptoms = allergy.value?.symptoms;
+        formData.value.name = allergy?.value?.name ?? "";
+        formData.value.severity = allergy?.value?.severity ?? "";
+        formData.value.symptoms = allergy?.value?.symptoms ?? "";
       },
       { deep: true }
     );
