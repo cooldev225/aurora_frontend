@@ -1,8 +1,8 @@
 <template>
   <div class="card mb-6">
-    <div v-if="heading" class="card-header">
+    <div class="card-header">
       <div class="card-title m-0">
-        <HeadingText :text="heading" />
+        <HeadingText v-if="heading" :text="heading" />
       </div>
       <span class="my-auto">
         <slot name="header-actions"></slot>

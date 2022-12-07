@@ -94,7 +94,6 @@ import icons from "@/core/data/icons";
 import ProviderModal from "@/views/employees/modals/ProviderModal.vue";
 import EmployeePasswordModal from "@/views/employees/modals/EmployeePasswordModal.vue";
 import { Modal } from "bootstrap";
-import LargeIconButton from "@/components/presets/GeneralElements/LargeIconButton.vue";
 import IUserProfile from "@/store/interfaces/IUserProfile";
 import IOrganization from "@/store/interfaces/IOrganization";
 export default defineComponent({
@@ -104,7 +103,6 @@ export default defineComponent({
     Datatable,
     ProviderModal,
     EmployeePasswordModal,
-    LargeIconButton,
   },
 
   setup() {

@@ -1,24 +1,15 @@
 <template>
-  <div class="card w-75 mx-auto">
-    <div class="card-header row p-6">
-      <div class="card-title col"></div>
-      <!--begin::Add button-->
-      <div class="card-toolbar text-center col-sm-2">
-        <button
-          type="button"
-          class="btn btn-light-primary ms-auto text-nowrap"
-          @click="handleAdd()"
-        >
-          <span class="svg-icon svg-icon-2">
-            <InlineSVG icon="plus" />
-          </span>
-          Add
-        </button>
-      </div>
-      <!--end::Add button-->
-    </div>
-    <div class="card-body pt-0">
+  <CardSection>
+    <template #header-actions>
+      <IconButton
+        @click="handleAdd"
+        label="Add New Bulletin"
+        :iconSRC="icons.plus"
+      />
+    </template>
+    <template #default>
       <Datatable
+        v-if="tableData"
         :table-header="tableHeader"
         :table-data="tableData"
         :loading="loading"
@@ -41,31 +32,27 @@
           </div>
         </template>
         <template v-slot:cell-action="{ row: item }">
-          <button
-            @click="handleEdit(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <InlineSVG icon="pencil" />
-            </span>
-          </button>
-
-          <button
-            @click="handleDelete(item.id)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-          >
-            <span class="svg-icon svg-icon-3">
-              <InlineSVG icon="bin" />
-            </span>
-          </button>
+          <div class="d-flex justify-content-end gap-1">
+            <IconButton
+              @click="handleEdit(item)"
+              :iconSRC="icons.pencil"
+              tooltip="Edit bulletin"
+            />
+            <IconButton
+              @click="handleDelete(item.id)"
+              :iconSRC="icons.bin"
+              tooltip="Delete bulletin"
+            />
+          </div>
         </template>
       </Datatable>
-    </div>
-  </div>
+    </template>
+  </CardSection>
+
   <BulletinEditModal></BulletinEditModal>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, onMounted, computed, ref, watchEffect } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
@@ -73,19 +60,25 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import BulletinEditModal from "@/views/HRM/modals/BulletinEditModal.vue";
 import { useStore } from "vuex";
 import { Modal } from "bootstrap";
+import icons from "@/core/data/icons";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import IBulletin from "@/store/interfaces/IBulletin";
+import CardSection from "@/components/presets/GeneralElements/CardSection.vue";
 
 export default defineComponent({
   name: "bulletin-manage",
   components: {
     Datatable,
     BulletinEditModal,
+    CardSection,
   },
   setup() {
     const store = useStore();
-    const loading = ref(true);
-    const tableData = ref(null);
-    const bulletins = computed(() => store.getters.getBulletinList);
+    const loading = ref<boolean>(true);
+    const tableData = ref();
+    const bulletins = computed<IBulletin[]>(
+      () => store.getters.getBulletinList
+    );
 
     const tableHeader = ref([
       {
@@ -110,6 +103,7 @@ export default defineComponent({
     ]);
 
     watchEffect(() => {
+      console.log(bulletins);
       tableData.value = bulletins;
     });
 
@@ -134,7 +128,7 @@ export default defineComponent({
       };
 
       store.commit(HRMMutations.BULLETIN.SET_SELECT, new_item);
-      const modal = new Modal(document.getElementById("modal_eidt_bulletin"));
+      const modal = new Modal(document.getElementById("modal_edit_bulletin"));
       modal.show();
     };
 
@@ -145,7 +139,7 @@ export default defineComponent({
       item._submit_text = "Successfully Updated!";
 
       store.commit(HRMMutations.BULLETIN.SET_SELECT, item);
-      const modal = new Modal(document.getElementById("modal_eidt_bulletin"));
+      const modal = new Modal(document.getElementById("modal_edit_bulletin"));
       modal.show();
     };
 
@@ -171,6 +165,7 @@ export default defineComponent({
     };
 
     return {
+      icons,
       bulletins,
       loading,
       tableData,
