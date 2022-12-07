@@ -42,6 +42,11 @@ const PatientRoutes = [
     ],
   },
   {
+    path: "/patients/:patientId/document/:appointmentId/:documentType",
+    name: "patients-document",
+    component: () => import("@/views/patients/CreateDocument.vue"),
+  },
+  {
     path: "/patients/:patientId/report/:appointmentId",
     name: "patients-report",
     component: () => import("@/views/patients/CreateReport.vue"),

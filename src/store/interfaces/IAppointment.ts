@@ -7,6 +7,7 @@ export default interface IAppointment {
   organization_id: number;
   clinic_id: number;
   appointment_type_id: number;
+  appointment_type_name: string;
   specialist_id: number;
   specialist_name: string;
   anesthetist_id: number;

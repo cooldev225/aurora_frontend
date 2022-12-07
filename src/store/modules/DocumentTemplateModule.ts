@@ -67,10 +67,18 @@ export default class DocumentTemplateModule
   }
 
   @Action
-  [Actions.DOCUMENT_TEMPLATES.LIST]() {
+  [Actions.DOCUMENT_TEMPLATES.LIST](documentType = null) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      return ApiService.get("document-templates")
+      let params = {};
+
+      if (documentType) {
+        params = {
+          type: documentType,
+        };
+      }
+
+      return ApiService.query("document-templates", { params: params })
         .then(({ data }) => {
           this.context.commit(Mutations.SET_DOCUMENT_TEMPLATES.LIST, data.data);
           return Promise.resolve();

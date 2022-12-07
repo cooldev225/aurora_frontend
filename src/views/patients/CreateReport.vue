@@ -284,6 +284,7 @@
   </div>
   <!--end::details View-->
   <ReportPreviewModal
+    v-if="patientData && appointmentData"
     :patient="patientData"
     :appointment="appointmentData"
     :pdfId="reportPreviewPdfId"
@@ -327,6 +328,7 @@ import { Actions } from "@/store/enums/StoreEnums";
 import { IScheduleItem } from "@/store/modules/ScheduleItemModule";
 import { Modal } from "bootstrap";
 import ReportPreviewModal from "@/views/patients/modals/ReportPreviewModal.vue";
+import IDocumentSection from "@/store/interfaces/IDocumentSection";
 
 export default defineComponent({
   name: "patient-report",
@@ -345,7 +347,7 @@ export default defineComponent({
     const patientData = computed(() => store.getters.selectedPatient);
 
     const templateData = ref();
-    const reportSections = ref([]);
+    const reportSections = ref<Array<IDocumentSection>>([]);
     const headerFooterList = computed(
       () => store.getters.getHeaderFooterTemplateList
     );
@@ -698,6 +700,10 @@ export default defineComponent({
     onMounted(() => {
       setCurrentPageBreadcrumbs("Report", ["Patients"]);
       loading.value = true;
+      store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST, "report");
+      store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST).then(() => {
+        loading.value = false;
+      });
       store.dispatch(Actions.HEADER_FOOTER_TEMPLATE.LIST).then(() => {
         loading.value = false;
       });
