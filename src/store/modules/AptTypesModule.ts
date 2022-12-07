@@ -7,7 +7,11 @@ import {
   AppointmentMutations,
 } from "../enums/StoreAppointmentEnums";
 import IAppointmentType from "../interfaces/IAppointmentType";
-
+import {
+  displayServerError,
+  displaySuccessModal,
+  displaySuccessToast,
+} from "@/helpers/helpers";
 export interface AptTypesInfo {
   aptTypesData: Array<IAppointmentType>;
   aptTypesSelectData: IAppointmentType;
@@ -57,8 +61,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Listing appointment types");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -74,7 +77,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Creating an appointment type");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -90,8 +93,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(response, "Updating an appointment type");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -107,7 +109,7 @@ export default class AptTypesModule extends VuexModule implements AptTypesInfo {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "Deleting an appointment type");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
