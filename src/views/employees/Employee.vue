@@ -43,43 +43,28 @@
           {{ item.email }}
         </template>
         <template v-slot:cell-action="{ row: item }">
-          <div class="d-flex justify-content-end">
-            <button
-              @click="handleEditProviderNumber(item)"
+          <div class="d-flex justify-content-end gap-1">
+            <IconButton
               v-if="item.role_id == 5"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            >
-              <span class="svg-icon svg-icon-3">
-                <inline-svg src="media/icons/duotune/general/gen018.svg" />
-              </span>
-            </button>
-
-            <button
+              @click="handleEditProviderNumber(item)"
+              :iconSRC="icons.location_pin"
+              tooltip="Manage provider numbers"
+            />
+            <IconButton
               @click="handleUpdatePassword(item)"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            >
-              <span class="svg-icon svg-icon-3">
-                <inline-svg src="media/icons/duotune/coding/cod008.svg" />
-              </span>
-            </button>
-
-            <button
+              :iconSRC="icons.broken_chain"
+              tooltip="Manage password"
+            />
+            <IconButton
               @click="handleEdit(item)"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            >
-              <span class="svg-icon svg-icon-3">
-                <InlineSVG icon="pencil" />
-              </span>
-            </button>
-
-            <button
+              :iconSRC="icons.pencil"
+              tooltip="Edit employee"
+            />
+            <IconButton
               @click="handleDelete(item)"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-            >
-              <span class="svg-icon svg-icon-3">
-                <InlineSVG icon="bin" />
-              </span>
-            </button>
+              :iconSRC="icons.bin"
+              tooltip="Delete employee"
+            />
           </div>
         </template>
       </Datatable>

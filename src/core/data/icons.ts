@@ -19,6 +19,8 @@ export const icons = {
   left: "media/icons/duotune/arrows/arr022.svg", // Left
   right: "media/icons/duotune/arrows/arr023.svg", // Right
   next: "media/icons/duotune/arrows/arr064.svg", // Next
+  location_pin: "media/icons/duotune/general/gen018.svg", // specialist provider no
+  broken_chain: "media/icons/duotune/coding/cod008.svg", // reset password
 };
 
 export default icons;
