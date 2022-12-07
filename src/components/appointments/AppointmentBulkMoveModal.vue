@@ -2,14 +2,13 @@
   <div
     class="modal fade"
     id="modal_bulk_move_apt"
-    tabindex="-1"
     aria-hidden="true"
     ref="bulkMoveAptModalRef"
   >
     <div
       :class="
         'modal-dialog modal-dialog-centered ' +
-        (step === 0 ? 'mw-800px' : 'mw-1000px')
+        (step === 0 ? 'mw-1000px' : 'mw-1000px')
       "
     >
       <div class="modal-content">
@@ -55,111 +54,114 @@
               ref="formRef"
               v-if="step === 0"
               :rules="rules"
+              v-loading="loading"
             >
               <div class="row">
-                <el-form-item class="col-6" prop="specialist_id_from">
-                  <el-select
-                    class="w-100"
-                    placeholder="Select Specialist"
-                    v-model="formData.specialist_id_from"
-                    filterable
-                    @change="getAppointmentsFrom"
-                  >
-                    <el-option value="" label="Any Specialist" />
-                    <el-option
-                      v-for="specialist in allSpecialist"
-                      :value="specialist.id"
-                      :label="specialist?.full_name"
-                      :key="specialist.id"
+                <div class="col-6 apt-card">
+                  <el-form-item prop="specialist_id_from">
+                    <el-select
+                      class="w-100"
+                      placeholder="Select Specialist"
+                      v-model="formData.specialist_id_from"
+                      filterable
+                      @change="getAppointmentsFrom"
+                    >
+                      <el-option value="" label="Any Specialist" />
+                      <el-option
+                        v-for="specialist in allSpecialist"
+                        :value="specialist.id"
+                        :label="specialist?.full_name"
+                        :key="specialist.id"
+                      />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item class="col-6" prop="from_date">
+                    <el-date-picker
+                      v-model="formData.from_date"
+                      type="date"
+                      placeholder="Pick a day"
+                      :editable="false"
+                      :clearable="false"
+                      @change="getAppointmentsFrom()"
                     />
-                  </el-select>
-                </el-form-item>
-                <el-form-item class="col-6" prop="specialist_id_to">
-                  <el-select
-                    class="w-100"
-                    placeholder="Select Specialist"
-                    v-model="formData.specialist_id_to"
-                    filterable
-                    @change="getAppointmentsTo"
-                  >
-                    <el-option value="" label="Any Specialist" />
-                    <el-option
-                      v-for="specialist in allSpecialist"
-                      :value="specialist.id"
-                      :label="specialist?.full_name"
-                      :key="specialist.id"
-                    />
-                  </el-select>
-                </el-form-item>
-              </div>
-              <div class="row">
-                <el-form-item class="col-6" prop="from_date">
-                  <el-date-picker
-                    v-model="formData.from_date"
-                    type="date"
-                    placeholder="Pick a day"
-                    :editable="false"
-                    :clearable="false"
-                    @change="getAppointmentsFrom()"
-                  />
-                </el-form-item>
-                <el-form-item class="col-6 d-flex px-6" prop="to_date">
-                  <el-date-picker
-                    v-model="formData.to_date"
-                    type="date"
-                    placeholder="Pick a day"
-                    :editable="false"
-                    :clearable="false"
-                    @change="getAppointmentsTo()"
-                  />
-                </el-form-item>
-              </div>
-              <div class="row">
-                <el-popover
-                  placement="left"
-                  :width="250"
-                  title="Warning !"
-                  trigger="click"
-                >
-                  <template #reference>
-                    <el-form-item label="Allow Double Booking">
-                      <el-switch ref="" v-model="formData.allowDoubleBooking" />
+                  </el-form-item>
+                  <div class="row">
+                    <el-popover
+                      placement="left"
+                      :width="250"
+                      title="Warning !"
+                      trigger="click"
+                    >
+                      <template #reference>
+                        <el-form-item label="Allow Double Booking">
+                          <el-switch
+                            ref=""
+                            v-model="formData.allowDoubleBooking"
+                          />
+                        </el-form-item>
+                      </template>
+                      <p>This will overlap with other appointments</p>
+                    </el-popover>
+                    <el-form-item label="Match Appointment Time">
+                      <el-switch v-model="formData.matchAppointmentTime" />
                     </el-form-item>
-                  </template>
-                  <p>This will overlap with other appointments</p>
-                </el-popover>
-                <el-form-item label="Match appointment restrictions">
-                  <el-switch v-model="formData.matchAppointmentRestrictions" />
-                </el-form-item>
+                    <el-form-item label="Match appointment restrictions">
+                      <el-switch
+                        v-model="formData.matchAppointmentRestrictions"
+                      />
+                    </el-form-item>
+                  </div>
+                </div>
+
+                <div class="col-6 apt-card">
+                  <el-form-item prop="specialist_id_to">
+                    <el-select
+                      class="w-100"
+                      placeholder="Select Specialist"
+                      v-model="formData.specialist_id_to"
+                      filterable
+                      @change="getAppointmentsTo"
+                    >
+                      <el-option value="" label="Any Specialist" />
+                      <el-option
+                        v-for="specialist in allSpecialist"
+                        :value="specialist.id"
+                        :label="specialist?.full_name"
+                        :key="specialist.id"
+                      />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item class="col-6 d-flex px-6" prop="to_date">
+                    <el-date-picker
+                      v-model="formData.to_date"
+                      type="date"
+                      placeholder="Pick a day"
+                      :editable="false"
+                      :clearable="false"
+                      @change="getAppointmentsTo()"
+                    />
+                  </el-form-item>
+                </div>
               </div>
               <div class="pt-5 row">
                 <div class="col-6">
                   <template v-if="formData.from_date">
-                    <div v-if="aptListFrom.length > 0">
+                    <div class="caption-content" v-if="aptListFrom.length > 0">
                       {{ aptListFrom.length + " " }} Appointment{{
                         aptListFrom.length > 1 ? "s " : " "
                       }}
                       found
                     </div>
-                    <div v-else-if="aptListFrom.length === 0">
+                    <div
+                      class="select-new-apt-caption"
+                      v-else-if="aptListFrom.length === 0"
+                    >
                       No Appointments found on selected date
                     </div>
-                    <template v-if="selectedFromSpecialistTimeSlot.length > 0">
-                      <div
-                        v-for="slot in selectedFromSpecialistTimeSlot"
-                        :key="slot.id"
-                        class="my-4 p-2 border border-secondary"
-                      >
-                        <span>
-                          Time : {{ slot.start_time }} -
-                          {{ slot.end_time }}</span
-                        >
-                        <br />
-                        <span> Clinic Name : {{ slot.clinic_name }}</span>
-                        <br />
-                        <span> Restriction : {{ slot.restriction }}</span>
-                      </div>
-                    </template>
+                    <schedule-overview
+                      :time-slots="selectedFromSpecialistTimeSlot"
+                      :specialist-id="formData.specialist_id_from"
+                    />
                   </template>
                 </div>
                 <div class="col-6">
@@ -170,30 +172,13 @@
                       }}
                       found
                     </div>
-                    <div v-else-if="aptListTo.length === 0">
+                    <div class="no-Apt" v-else-if="aptListTo.length === 0">
                       No Appointments found on selected date
                     </div>
-                    <template v-if="selectedSpecialistTimeSlot.length > 0">
-                      <div
-                        v-for="slot in selectedSpecialistTimeSlot"
-                        :key="slot.id"
-                        class="my-4 p-2 border border-secondary"
-                      >
-                        <span>
-                          Time : {{ slot.start_time }} -
-                          {{ slot.end_time }}</span
-                        >
-                        <br />
-                        <span> Clinic Name : {{ slot.clinic_name }}</span>
-                        <br />
-                        <span> Restriction : {{ slot.restriction }}</span>
-                      </div>
-                    </template>
-                    <template v-else>
-                      <span>
-                        Selected Specialist doesn't work on selected date</span
-                      >
-                    </template>
+                    <schedule-overview
+                      :time-slots="selectedSpecialistTimeSlot"
+                      :specialist-id="formData.specialist_id_to"
+                    />
                   </template>
                 </div>
               </div>
@@ -208,25 +193,31 @@
                 </div>
               </div>
             </el-form>
-            <el-form :model="formData" ref="timeslotsformRef" v-if="step === 1">
+            <el-form
+              :model="formData"
+              ref="confirmFormRef"
+              v-if="step === 1"
+              v-loading="loading"
+            >
               <div class="apt-description">
-                <span class="me-1">Clinic:</span>
-                <span class="caption-content me-2">
-                  {{
-                    cliniclist.filter((c) => c.id === formData.clinic_id)[0]
-                      ? cliniclist.filter((c) => c.id === formData.clinic_id)[0]
-                          .name
-                      : "Any"
-                  }}
-                </span>
                 <span class="me-1">Specialist:</span>
                 <span class="caption-content me-2">
                   {{
                     allSpecialist.filter(
-                      (c) => c.id === formData.specialist_id
+                      (c) => c.id === formData.specialist_id_from
                     )[0]
                       ? allSpecialist.filter(
-                          (c) => c.id === formData.specialist_id
+                          (c) => c.id === formData.specialist_id_from
+                        )[0].full_name
+                      : "Any"
+                  }}
+                  <span class="text-muted"> to </span>
+                  {{
+                    allSpecialist.filter(
+                      (c) => c.id === formData.specialist_id_to
+                    )[0]
+                      ? allSpecialist.filter(
+                          (c) => c.id === formData.specialist_id_to
                         )[0].full_name
                       : "Any"
                   }}
@@ -234,26 +225,18 @@
                 <span class="me-1">Time Requirement:</span>
                 <span class="caption-content me-2">
                   {{
-                    formData.time_requirement
-                      ? aptTimeRequirelist.filter(
-                          (c) => c.id === formData.time_requirement
-                        )[0].title
-                      : "Any"
+                    formData.matchAppointmentTime
+                      ? " Time matching"
+                      : " Time not matching"
                   }}
                 </span>
-                <span class="me-1">Time Frame:</span>
+                <span class="me-1">Allow DoubleBooking:</span>
                 <span class="caption-content me-2">
-                  {{
-                    formData.timeframe_count == 0
-                      ? "This " + formData.timeframe_type.replace("s", "")
-                      : formData.timeframe_count == 1
-                      ? "Next " + formData.timeframe_type.replace("s", "")
-                      : formData.timeframe_count + " " + formData.timeframe_type
-                  }}
+                  {{ formData.allowDoubleBooking ? " Yes" : " No" }}
                 </span>
-                <span class="me-1">Appointment Type:</span>
+                <span class="me-1">Appointment Type Matching:</span>
                 <span class="caption-content me-2">
-                  {{ formData.appointment_type_name }}
+                  {{ formData.matchAppointmentTime ? " Yes" : " No" }}
                 </span>
               </div>
               <div class="row apt-wrapper">
@@ -329,8 +312,8 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, computed, ref, onMounted } from "vue";
+<script lang="ts">
+import { defineComponent, computed, ref, onMounted, reactive } from "vue";
 import { Actions } from "@/store/enums/StoreEnums";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
@@ -338,9 +321,13 @@ import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import moment from "moment";
 import { ElMessage } from "element-plus";
 import swal from "sweetalert2";
+import ScheduleOverview from "@/components/appointments/partials/ScheduleOverview.vue";
+import { ISpecialist } from "@/store/modules/SpecialistsModule";
+import { Modal } from "bootstrap";
 
 export default defineComponent({
   name: "bulk-move-apt-modal",
+  components: { ScheduleOverview },
   props: {
     isDisableAptTypeList: { type: Boolean },
     action: { type: String },
@@ -348,7 +335,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
 
-    const bulkMoveAptModalRef = ref(null);
+    const bulkMoveAptModalRef = ref<HTMLElement | null>(null);
     const loading = ref(false);
     const aptData = computed(() => store.getters.getAptSelected);
     const aptTypelist = computed(() => store.getters.getAptTypesList);
@@ -358,26 +345,24 @@ export default defineComponent({
     const aptListTo = computed(() => store.getters.getUserAptList);
     const organization = computed(() => store.getters.userOrganization);
 
-    const step = ref(0);
-
+    const step = ref<number>(0);
     const formData = ref({
       appointment_type_id: null,
       appointment_type_name: "",
       clinic_id: null,
       specialist_id_from: null,
       specialist_id_to: null,
-      time_requirement: 0,
-      timeframe_count: 0,
-      timeframe_type: "weeks",
       date: null,
       to_date: null,
       from_date: null,
       allowDoubleBooking: false,
       matchAppointmentRestrictions: false,
+      matchAppointmentTime: false,
     });
 
-    const formRef = ref(null);
-    const rules = {
+    const formRef = ref();
+    const confirmFormRef = ref();
+    const rules = reactive({
       specialist_id_from: [
         {
           required: true,
@@ -407,10 +392,16 @@ export default defineComponent({
           trigger: "blur",
         },
       ],
-    };
+    });
 
-    const selectedToSpecialist = ref(null);
-    const updatedAppointments = ref({
+    interface updateApt {
+      oldApt: Array<unknown>;
+      newApt: Array<unknown>;
+    }
+
+    const selectedToSpecialist = ref<ISpecialist>();
+
+    const updatedAppointments = ref<updateApt>({
       oldApt: [],
       newApt: [],
     });
@@ -425,7 +416,9 @@ export default defineComponent({
     onMounted(() => {
       store.dispatch(Actions.SPECIALIST.LIST);
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
-      const bulkModal = document.getElementById("modal_bulk_move_apt");
+      const bulkModal = document.getElementById(
+        "modal_bulk_move_apt"
+      ) as HTMLInputElement;
 
       bulkModal.addEventListener("hidden.bs.modal", function () {
         clearData();
@@ -484,6 +477,10 @@ export default defineComponent({
             grouping: false,
             type: "success",
           });
+          loading.value = false;
+          resetForm();
+          getAppointmentsFrom();
+          getAppointmentsTo();
           handleCancel();
         });
     };
@@ -538,23 +535,25 @@ export default defineComponent({
         selectedToSpecialist.value = specialist[0];
         return true;
       }
-      selectedToSpecialist.value = null;
+      selectedToSpecialist.value = undefined;
       return false;
     };
 
     // check clinics are same or not
     const checkAppointmentsClinic = async () => {
-      let fromClinics = [];
-      let toClinics = [];
-      let warnings = [];
-      const toDate = moment(formData.value.to_date).format("ddd").toUpperCase();
+      let fromClinics: number[] = [];
+      let toClinics: number[] = [];
+      let warnings: string[] = [];
+      const toDate: string = moment(formData.value.to_date)
+        .format("ddd")
+        .toUpperCase();
 
       aptListFrom.value.forEach((apt) => {
         if (!fromClinics.includes(apt.clinic_id))
           fromClinics.push(apt.clinic_id);
       });
 
-      selectedToSpecialist.value.schedule_timeslots.forEach((slot) => {
+      selectedToSpecialist.value?.schedule_timeslots.forEach((slot: any) => {
         if (slot.week_day === toDate) {
           if (!toClinics.includes(slot.clinic_id))
             toClinics.push(slot.clinic_id);
@@ -569,7 +568,7 @@ export default defineComponent({
       }
       if (toClinics.length > 1) {
         warnings.push(
-          selectedToSpecialist.value.full_name +
+          selectedToSpecialist.value?.full_name +
             " is working more than one clinic on " +
             moment(formData.value.to_date).format("YYYY-MM-DD")
         );
@@ -609,6 +608,7 @@ export default defineComponent({
       updatedAppointments.value.oldApt = [];
       updatedAppointments.value.newApt = [];
       const restriction = appointmentRestriction.value;
+      const isSameTime = formData.value.matchAppointmentTime;
       const tempDate = moment(formData.value.to_date).format("YYYY-MM-DD");
       let toApts = aptListTo.value.map((aptT) => {
         return { ...aptT };
@@ -633,7 +633,11 @@ export default defineComponent({
           // get max start time we can go when there is more than one time slots
           let found = false;
           selectedSpecialistTimeSlot.value.forEach((slot) => {
-            if (!found && restriction.includes(slot.restriction)) {
+            if (
+              !found &&
+              restriction.includes(slot.restriction) &&
+              !isSameTime
+            ) {
               const aptStartTime = moment(apt.date + "T" + apt.start_time);
               const aptEndTime = moment(apt.date + "T" + apt.end_time);
 
@@ -719,7 +723,7 @@ export default defineComponent({
         ) {
           result = 0;
           toApts.forEach((apt) => {
-            if (apt.start_time < end_time && start_time <= apt.end_time) {
+            if (apt.start_time < end_time && start_time < apt.end_time) {
               ++result;
             }
           });
@@ -741,6 +745,7 @@ export default defineComponent({
       });
       html += "</ul></div>";
 
+      hideModal(bulkMoveAptModalRef.value);
       return new Promise(function (resolve) {
         swal
           .fire({
@@ -753,8 +758,12 @@ export default defineComponent({
             cancelButtonText: "Cancel",
           })
           .then((result) => {
+            const modal = new Modal(
+              document.getElementById("modal_bulk_move_apt")
+            );
+            modal.show();
             if (result.value) {
-              resolve();
+              resolve(null);
             }
           });
       });
@@ -782,6 +791,13 @@ export default defineComponent({
       hideModal(bulkMoveAptModalRef.value);
     };
 
+    const resetForm = () => {
+      formData.value.specialist_id_from = null;
+      formData.value.specialist_id_to = null;
+      formData.value.to_date = null;
+      formData.value.from_date = null;
+    };
+
     return {
       props,
       aptData,
@@ -802,18 +818,20 @@ export default defineComponent({
       aptListTo,
       rules,
       formRef,
+      confirmFormRef,
       selectedSpecialistTimeSlot,
       selectedFromSpecialistTimeSlot,
       updatedAppointments,
       handleCancel,
       step,
+      selectedToSpecialist,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-#modal_move_apt {
+#modal_bulk_move_apt {
   .el-divider--horizontal {
     margin: 0px;
   }
@@ -828,10 +846,15 @@ export default defineComponent({
     font-weight: bold;
   }
 
+  .no-Apt {
+    color: #309b41;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
   .apt-description {
     font-size: 16px;
-    padding-left: 25px;
-    padding-right: 25px;
+    padding-bottom: 15px;
   }
 
   .caption-content {
@@ -845,6 +868,8 @@ export default defineComponent({
     padding: 20px;
     border-color: #3e7ba0;
     border-width: 2px;
+    margin: 0 19px;
+    width: 45%;
   }
 }
 

@@ -474,7 +474,7 @@ export default defineComponent({
     onMounted(() => {
       const id = route.params.id;
       store.dispatch(PatientActions.VIEW, id);
-      setCurrentPageBreadcrumbs("Billing", ["Patients"]);
+      setCurrentPageBreadcrumbs("Claim Sources", ["Patients"]);
       store.dispatch(Actions.HEALTH_FUND.LIST);
 
       const updateModal = document.getElementById("modal_update_claim_source");
