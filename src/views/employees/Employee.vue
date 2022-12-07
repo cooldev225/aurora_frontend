@@ -15,10 +15,10 @@
           />
         </div>
 
-        <LargeIconButton
+        <IconButton
           @click="handleCreate"
-          heading="Add New Employee"
-          :iconPath="icons.plus"
+          label="Add New Employee"
+          :iconSRC="icons.plus"
         />
       </div>
 
