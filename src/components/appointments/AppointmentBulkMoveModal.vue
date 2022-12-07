@@ -200,23 +200,24 @@
               v-loading="loading"
             >
               <div class="apt-description">
-                <span class="me-1">Clinic:</span>
-                <span class="caption-content me-2">
-                  {{
-                    cliniclist.filter((c) => c.id === formData.clinic_id)[0]
-                      ? cliniclist.filter((c) => c.id === formData.clinic_id)[0]
-                          .name
-                      : "Any"
-                  }}
-                </span>
                 <span class="me-1">Specialist:</span>
                 <span class="caption-content me-2">
                   {{
                     allSpecialist.filter(
-                      (c) => c.id === formData.specialist_id
+                      (c) => c.id === formData.specialist_id_from
                     )[0]
                       ? allSpecialist.filter(
-                          (c) => c.id === formData.specialist_id
+                          (c) => c.id === formData.specialist_id_from
+                        )[0].full_name
+                      : "Any"
+                  }}
+                  <span class="text-muted"> to </span>
+                  {{
+                    allSpecialist.filter(
+                      (c) => c.id === formData.specialist_id_to
+                    )[0]
+                      ? allSpecialist.filter(
+                          (c) => c.id === formData.specialist_id_to
                         )[0].full_name
                       : "Any"
                   }}
@@ -224,26 +225,18 @@
                 <span class="me-1">Time Requirement:</span>
                 <span class="caption-content me-2">
                   {{
-                    formData.time_requirement
-                      ? aptTimeRequirelist.filter(
-                          (c) => c.id === formData.time_requirement
-                        )[0].title
-                      : "Any"
+                    formData.matchAppointmentTime
+                      ? " Time matching"
+                      : " Time not matching"
                   }}
                 </span>
-                <span class="me-1">Time Frame:</span>
+                <span class="me-1">Allow DoubleBooking:</span>
                 <span class="caption-content me-2">
-                  {{
-                    formData.timeframe_count == 0
-                      ? "This " + formData.timeframe_type.replace("s", "")
-                      : formData.timeframe_count == 1
-                      ? "Next " + formData.timeframe_type.replace("s", "")
-                      : formData.timeframe_count + " " + formData.timeframe_type
-                  }}
+                  {{ formData.allowDoubleBooking ? " Yes" : " No" }}
                 </span>
-                <span class="me-1">Appointment Type:</span>
+                <span class="me-1">Appointment Type Matching:</span>
                 <span class="caption-content me-2">
-                  {{ formData.appointment_type_name }}
+                  {{ formData.matchAppointmentTime ? " Yes" : " No" }}
                 </span>
               </div>
               <div class="row apt-wrapper">
@@ -360,9 +353,6 @@ export default defineComponent({
       clinic_id: null,
       specialist_id_from: null,
       specialist_id_to: null,
-      time_requirement: 0,
-      timeframe_count: 0,
-      timeframe_type: "weeks",
       date: null,
       to_date: null,
       from_date: null,
