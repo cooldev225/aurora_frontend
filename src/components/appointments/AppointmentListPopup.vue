@@ -318,7 +318,7 @@ export default defineComponent({
     });
 
     const notification = computed(() => {
-      if (availableSlotsByDate.value.length > 0 && searchParam.value.date) {
+      if (availableSlotsByDate.value.length > 0 && searchParam.value) {
         const searchDate = moment(searchParam.value.date, "DD/MM/YYYY").startOf(
           "isoWeek"
         );
