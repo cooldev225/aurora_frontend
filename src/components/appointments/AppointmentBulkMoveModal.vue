@@ -54,6 +54,7 @@
               ref="formRef"
               v-if="step === 0"
               :rules="rules"
+              v-loading="loading"
             >
               <div class="row">
                 <div class="col-6 apt-card">
@@ -192,7 +193,12 @@
                 </div>
               </div>
             </el-form>
-            <el-form :model="formData" ref="timeslotsformRef" v-if="step === 1">
+            <el-form
+              :model="formData"
+              ref="confirmFormRef"
+              v-if="step === 1"
+              v-loading="loading"
+            >
               <div class="apt-description">
                 <span class="me-1">Clinic:</span>
                 <span class="caption-content me-2">
@@ -366,6 +372,7 @@ export default defineComponent({
     });
 
     const formRef = ref<FormInstance>();
+    const confirmFormRef = ref<FormInstance>();
     const rules = reactive<FormRules>({
       specialist_id_from: [
         {
@@ -481,6 +488,8 @@ export default defineComponent({
             grouping: false,
             type: "success",
           });
+          loading.value = false;
+          resetForm();
           getAppointmentsFrom();
           getAppointmentsTo();
           handleCancel();
@@ -725,7 +734,7 @@ export default defineComponent({
         ) {
           result = 0;
           toApts.forEach((apt) => {
-            if (apt.start_time < end_time && start_time <= apt.end_time) {
+            if (apt.start_time < end_time && start_time < apt.end_time) {
               ++result;
             }
           });
@@ -793,6 +802,13 @@ export default defineComponent({
       hideModal(bulkMoveAptModalRef.value);
     };
 
+    const resetForm = () => {
+      formData.value.specialist_id_from = null;
+      formData.value.specialist_id_to = null;
+      formData.value.to_date = null;
+      formData.value.from_date = null;
+    };
+
     return {
       props,
       aptData,
@@ -813,6 +829,7 @@ export default defineComponent({
       aptListTo,
       rules,
       formRef,
+      confirmFormRef,
       selectedSpecialistTimeSlot,
       selectedFromSpecialistTimeSlot,
       updatedAppointments,
