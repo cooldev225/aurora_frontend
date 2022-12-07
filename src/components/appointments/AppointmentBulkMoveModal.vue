@@ -9,7 +9,7 @@
     <div
       :class="
         'modal-dialog modal-dialog-centered ' +
-        (step === 0 ? 'mw-800px' : 'mw-1000px')
+        (step === 0 ? 'mw-1000px' : 'mw-1000px')
       "
     >
       <div class="modal-content">
@@ -57,109 +57,111 @@
               :rules="rules"
             >
               <div class="row">
-                <el-form-item class="col-6" prop="specialist_id_from">
-                  <el-select
-                    class="w-100"
-                    placeholder="Select Specialist"
-                    v-model="formData.specialist_id_from"
-                    filterable
-                    @change="getAppointmentsFrom"
-                  >
-                    <el-option value="" label="Any Specialist" />
-                    <el-option
-                      v-for="specialist in allSpecialist"
-                      :value="specialist.id"
-                      :label="specialist?.full_name"
-                      :key="specialist.id"
+                <div class="col-6 apt-card">
+                  <el-form-item prop="specialist_id_from">
+                    <el-select
+                      class="w-100"
+                      placeholder="Select Specialist"
+                      v-model="formData.specialist_id_from"
+                      filterable
+                      @change="getAppointmentsFrom"
+                    >
+                      <el-option value="" label="Any Specialist" />
+                      <el-option
+                        v-for="specialist in allSpecialist"
+                        :value="specialist.id"
+                        :label="specialist?.full_name"
+                        :key="specialist.id"
+                      />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item class="col-6" prop="from_date">
+                    <el-date-picker
+                      v-model="formData.from_date"
+                      type="date"
+                      placeholder="Pick a day"
+                      :editable="false"
+                      :clearable="false"
+                      @change="getAppointmentsFrom()"
                     />
-                  </el-select>
-                </el-form-item>
-                <el-form-item class="col-6" prop="specialist_id_to">
-                  <el-select
-                    class="w-100"
-                    placeholder="Select Specialist"
-                    v-model="formData.specialist_id_to"
-                    filterable
-                    @change="getAppointmentsTo"
-                  >
-                    <el-option value="" label="Any Specialist" />
-                    <el-option
-                      v-for="specialist in allSpecialist"
-                      :value="specialist.id"
-                      :label="specialist?.full_name"
-                      :key="specialist.id"
-                    />
-                  </el-select>
-                </el-form-item>
-              </div>
-              <div class="row">
-                <el-form-item class="col-6" prop="from_date">
-                  <el-date-picker
-                    v-model="formData.from_date"
-                    type="date"
-                    placeholder="Pick a day"
-                    :editable="false"
-                    :clearable="false"
-                    @change="getAppointmentsFrom()"
-                  />
-                </el-form-item>
-                <el-form-item class="col-6 d-flex px-6" prop="to_date">
-                  <el-date-picker
-                    v-model="formData.to_date"
-                    type="date"
-                    placeholder="Pick a day"
-                    :editable="false"
-                    :clearable="false"
-                    @change="getAppointmentsTo()"
-                  />
-                </el-form-item>
-              </div>
-              <div class="row">
-                <el-popover
-                  placement="left"
-                  :width="250"
-                  title="Warning !"
-                  trigger="click"
-                >
-                  <template #reference>
-                    <el-form-item label="Allow Double Booking">
-                      <el-switch ref="" v-model="formData.allowDoubleBooking" />
+                  </el-form-item>
+                  <div class="row">
+                    <el-popover
+                      placement="left"
+                      :width="250"
+                      title="Warning !"
+                      trigger="click"
+                    >
+                      <template #reference>
+                        <el-form-item label="Allow Double Booking">
+                          <el-switch
+                            ref=""
+                            v-model="formData.allowDoubleBooking"
+                          />
+                        </el-form-item>
+                      </template>
+                      <p>This will overlap with other appointments</p>
+                    </el-popover>
+                    <el-form-item label="Match Appointment Time">
+                      <el-switch v-model="formData.matchAppointmentTime" />
                     </el-form-item>
-                  </template>
-                  <p>This will overlap with other appointments</p>
-                </el-popover>
-                <el-form-item label="Match appointment restrictions">
-                  <el-switch v-model="formData.matchAppointmentRestrictions" />
-                </el-form-item>
+                    <el-form-item label="Match appointment restrictions">
+                      <el-switch
+                        v-model="formData.matchAppointmentRestrictions"
+                      />
+                    </el-form-item>
+                  </div>
+                </div>
+
+                <div class="col-6 apt-card">
+                  <el-form-item prop="specialist_id_to">
+                    <el-select
+                      class="w-100"
+                      placeholder="Select Specialist"
+                      v-model="formData.specialist_id_to"
+                      filterable
+                      @change="getAppointmentsTo"
+                    >
+                      <el-option value="" label="Any Specialist" />
+                      <el-option
+                        v-for="specialist in allSpecialist"
+                        :value="specialist.id"
+                        :label="specialist?.full_name"
+                        :key="specialist.id"
+                      />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item class="col-6 d-flex px-6" prop="to_date">
+                    <el-date-picker
+                      v-model="formData.to_date"
+                      type="date"
+                      placeholder="Pick a day"
+                      :editable="false"
+                      :clearable="false"
+                      @change="getAppointmentsTo()"
+                    />
+                  </el-form-item>
+                </div>
               </div>
               <div class="pt-5 row">
                 <div class="col-6">
                   <template v-if="formData.from_date">
-                    <div v-if="aptListFrom.length > 0">
+                    <div class="caption-content" v-if="aptListFrom.length > 0">
                       {{ aptListFrom.length + " " }} Appointment{{
                         aptListFrom.length > 1 ? "s " : " "
                       }}
                       found
                     </div>
-                    <div v-else-if="aptListFrom.length === 0">
+                    <div
+                      class="select-new-apt-caption"
+                      v-else-if="aptListFrom.length === 0"
+                    >
                       No Appointments found on selected date
                     </div>
-                    <template v-if="selectedFromSpecialistTimeSlot.length > 0">
-                      <div
-                        v-for="slot in selectedFromSpecialistTimeSlot"
-                        :key="slot.id"
-                        class="my-4 p-2 border border-secondary"
-                      >
-                        <span>
-                          Time : {{ slot.start_time }} -
-                          {{ slot.end_time }}</span
-                        >
-                        <br />
-                        <span> Clinic Name : {{ slot.clinic_name }}</span>
-                        <br />
-                        <span> Restriction : {{ slot.restriction }}</span>
-                      </div>
-                    </template>
+                    <schedule-overview
+                      :time-slots="selectedFromSpecialistTimeSlot"
+                      :specialist-id="formData.specialist_id_from"
+                    />
                   </template>
                 </div>
                 <div class="col-6">
@@ -170,30 +172,13 @@
                       }}
                       found
                     </div>
-                    <div v-else-if="aptListTo.length === 0">
+                    <div class="no-Apt" v-else-if="aptListTo.length === 0">
                       No Appointments found on selected date
                     </div>
-                    <template v-if="selectedSpecialistTimeSlot.length > 0">
-                      <div
-                        v-for="slot in selectedSpecialistTimeSlot"
-                        :key="slot.id"
-                        class="my-4 p-2 border border-secondary"
-                      >
-                        <span>
-                          Time : {{ slot.start_time }} -
-                          {{ slot.end_time }}</span
-                        >
-                        <br />
-                        <span> Clinic Name : {{ slot.clinic_name }}</span>
-                        <br />
-                        <span> Restriction : {{ slot.restriction }}</span>
-                      </div>
-                    </template>
-                    <template v-else>
-                      <span>
-                        Selected Specialist doesn't work on selected date</span
-                      >
-                    </template>
+                    <schedule-overview
+                      :time-slots="selectedSpecialistTimeSlot"
+                      :specialist-id="formData.specialist_id_to"
+                    />
                   </template>
                 </div>
               </div>
@@ -339,9 +324,12 @@ import moment from "moment";
 import { ElMessage } from "element-plus";
 import swal from "sweetalert2";
 import type { FormInstance, FormRules } from "element-plus";
+import ScheduleOverview from "@/components/appointments/partials/ScheduleOverview.vue";
+import { ISpecialist } from "@/store/modules/SpecialistsModule";
 
 export default defineComponent({
   name: "bulk-move-apt-modal",
+  components: { ScheduleOverview },
   props: {
     isDisableAptTypeList: { type: Boolean },
     action: { type: String },
@@ -374,6 +362,7 @@ export default defineComponent({
       from_date: null,
       allowDoubleBooking: false,
       matchAppointmentRestrictions: false,
+      matchAppointmentTime: false,
     });
 
     const formRef = ref<FormInstance>();
@@ -414,12 +403,7 @@ export default defineComponent({
       newApt: Array<unknown>;
     }
 
-    interface spt {
-      schedule_timeslots: Array<unknown>;
-      full_name: string;
-    }
-
-    const selectedToSpecialist = ref<spt>();
+    const selectedToSpecialist = ref<ISpecialist>();
 
     const updatedAppointments = ref<updateApt>({
       oldApt: [],
@@ -624,6 +608,7 @@ export default defineComponent({
       updatedAppointments.value.oldApt = [];
       updatedAppointments.value.newApt = [];
       const restriction = appointmentRestriction.value;
+      const isSameTime = formData.value.matchAppointmentTime;
       const tempDate = moment(formData.value.to_date).format("YYYY-MM-DD");
       let toApts = aptListTo.value.map((aptT) => {
         return { ...aptT };
@@ -648,7 +633,11 @@ export default defineComponent({
           // get max start time we can go when there is more than one time slots
           let found = false;
           selectedSpecialistTimeSlot.value.forEach((slot) => {
-            if (!found && restriction.includes(slot.restriction)) {
+            if (
+              !found &&
+              restriction.includes(slot.restriction) &&
+              !isSameTime
+            ) {
               const aptStartTime = moment(apt.date + "T" + apt.start_time);
               const aptEndTime = moment(apt.date + "T" + apt.end_time);
 
@@ -822,13 +811,14 @@ export default defineComponent({
       updatedAppointments,
       handleCancel,
       step,
+      selectedToSpecialist,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-#modal_move_apt {
+#modal_bulk_move_apt {
   .el-divider--horizontal {
     margin: 0px;
   }
@@ -843,10 +833,15 @@ export default defineComponent({
     font-weight: bold;
   }
 
+  .no-Apt {
+    color: #309b41;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
   .apt-description {
     font-size: 16px;
-    padding-left: 25px;
-    padding-right: 25px;
+    padding-bottom: 15px;
   }
 
   .caption-content {
@@ -860,6 +855,8 @@ export default defineComponent({
     padding: 20px;
     border-color: #3e7ba0;
     border-width: 2px;
+    margin: 0 19px;
+    width: 45%;
   }
 }
 
