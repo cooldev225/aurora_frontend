@@ -5,7 +5,16 @@
         class="btn btn-icon btn-active-light-primary position-relative w-30px h-30px w-md-40px h-md-40px"
         href="#/mailbox/list"
       >
-        <span class="svg-icon svg-icon-2x">
+        <el-badge
+          v-if="profileData?.unread_mails?.length"
+          :value="profileData?.unread_mails?.length"
+          class="item"
+        >
+          <span class="svg-icon svg-icon-2x">
+            <inline-svg src="media/icons/duotune/communication/com002.svg" />
+          </span>
+        </el-badge>
+        <span v-else class="svg-icon svg-icon-2x">
           <inline-svg src="media/icons/duotune/communication/com002.svg" />
         </span>
       </a>

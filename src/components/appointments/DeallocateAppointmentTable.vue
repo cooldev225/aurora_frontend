@@ -10,7 +10,7 @@
         <el-divider border-style="double" />
         <Datatable
           :table-header="header"
-          :table-data="tableData"
+          :table-data="filteredTableData"
           :loading="loading"
           :rows-per-page="10"
           :enable-items-per-page-dropdown="true"
@@ -75,7 +75,7 @@
   <MoveModal :isDisableAptTypeList="true" />
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType, ref, watch } from "vue";
 import { useStore } from "vuex";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { Modal } from "bootstrap";
@@ -85,7 +85,7 @@ import MoveModal from "@/components/appointments/AppointmentMoveModal.vue";
 export default defineComponent({
   name: "deallocate-appointments-table",
   props: {
-    tableData: { type: Object },
+    tableData: { type: Array as PropType<Array<unknown>> },
     header: { type: Object },
     title: { type: String },
     loading: { type: Boolean },
@@ -93,6 +93,13 @@ export default defineComponent({
   components: { Datatable, MoveModal },
   setup(props) {
     const store = useStore();
+    const filteredTableData = ref<Array<unknown>>([]);
+
+    watch(props, () => {
+      if (props.tableData && props.tableData?.length > 0) {
+        filteredTableData.value = props.tableData.map((data) => data);
+      }
+    });
 
     const tagClass = (data) => {
       if (data == "PENDING") return "";
@@ -129,6 +136,7 @@ export default defineComponent({
       tagClass,
       props,
       filterCancelReason,
+      filteredTableData,
     };
   },
 });

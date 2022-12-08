@@ -51,7 +51,11 @@
         <template v-slot:cell-name="{ row: item }">
           <div class="d-flex align-items-center">
             <div class="symbol symbol-50px me-2">
-              <img :src="item.logo" class="h-50 align-self-center" />
+              <img
+                v-if="item.logo"
+                :src="item.logo"
+                class="h-50 align-self-center"
+              />
             </div>
             <span class="text-dark fw-bolder text-hover-primary m-2 fs-3">
               {{ item.name }}
@@ -85,15 +89,6 @@
         </template>
 
         <template v-slot:cell-action="{ row: item }">
-          <a
-            href="#"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/general/gen019.svg" />
-            </span>
-          </a>
-
           <button
             @click="handleEdit(item)"
             class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"

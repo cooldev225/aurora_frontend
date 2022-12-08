@@ -202,6 +202,12 @@ export default defineComponent({
       }
     });
 
+    watch(props, () => {
+      if (props.tableData && props.tableData?.length > 0) {
+        data.value = props.tableData.map((x) => x);
+      }
+    });
+
     onMounted(() => {
       currentSort.value = label.value + order.value;
       pagination.value.total = props.total ? props.total : data.value.length;
@@ -218,10 +224,6 @@ export default defineComponent({
           pagination.value.rowsPerPage;
         return clone.splice(startFrom, pagination.value.rowsPerPage);
       }
-    });
-
-    watch(props, () => {
-      data.value = props.tableData;
     });
 
     const currentPageChange = (val) => {

@@ -1,5 +1,7 @@
+import IOrganization from "./IOrganization";
+
 export default interface IUserAuth {
-  organization: object;
+  organization: IOrganization;
   username: string;
   email: string;
   access_token: string;

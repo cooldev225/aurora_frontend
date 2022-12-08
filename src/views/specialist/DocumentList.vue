@@ -343,7 +343,10 @@ export default defineComponent({
 
         if (documentTitleFilter.value) {
           temp = temp.filter(
-            (item) => item.document_name.indexOf(documentTitleFilter.value) > -1
+            (item) =>
+              item.document_name
+                .toLowerCase()
+                .indexOf(documentTitleFilter.value.toLowerCase()) > -1
           );
         }
 
@@ -406,14 +409,14 @@ export default defineComponent({
     });
 
     watch([currentUser, specialists], () => {
-      if (currentUser.value && specialists.value?.length > 0) {
-        if (
-          specialists.value.some(
-            (item) => item.id === currentUser.value.profile.id
-          )
-        )
-          specialistFilter.value = currentUser.value.profile.id;
-      }
+      // if (currentUser.value && specialists.value?.length > 0) {
+      //   if (
+      //     specialists.value.some(
+      //       (item) => item.id === currentUser.value.profile.id
+      //     )
+      //   )
+      //     specialistFilter.value = currentUser.value.profile.id;
+      // }
     });
 
     // Loads the selected document from the server to the view window

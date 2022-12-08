@@ -240,9 +240,10 @@ export default defineComponent({
       if (!formRef.value) {
         return;
       }
-      loading.value = true;
+
       formRef.value.validate((valid) => {
         if (valid) {
+          loading.value = true;
           Object.keys(formData.value).forEach((key) => {
             key !== "has_billing" &&
               key !== "has_coding" &&

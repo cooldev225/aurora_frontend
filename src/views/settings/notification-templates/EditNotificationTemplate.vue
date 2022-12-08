@@ -14,7 +14,7 @@
         <!--begin::Modal header-->
         <div class="modal-header" id="kt_modal_add_customer_header">
           <!--begin::Modal title-->
-          <h2 class="fw-bolder">
+          <h2 v-if="formData" class="fw-bolder">
             Edit Notification Template: {{ formData.title }}
           </h2>
           <!--end::Modal title-->
@@ -38,6 +38,7 @@
           :model="formData"
           :rules="rules"
           ref="formRef"
+          v-if="formData"
         >
           <!--begin::Modal body-->
           <div class="modal-body py-10 px-lg-17">
@@ -53,7 +54,7 @@
               data-kt-scroll-offset="300px"
             >
               <!--begin::Input group-->
-              <div v-if="formData.allow_day_edit != 0" class="fv-row mb-7">
+              <div v-if="formData.allow_day_edit == true" class="fv-row mb-7">
                 <!--begin::Label-->
                 <label class="required fs-6 fw-bold mb-2">Days Before</label>
                 <!--end::Label-->
@@ -147,27 +148,23 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
+import INotificationTemplate from "@/store/interfaces/INotificationTemplate";
 
 export default defineComponent({
   name: "edit-notification-template",
   components: {},
   setup() {
     const store = useStore();
-    const formRef = ref(null);
+    const formRef = ref<HTMLFormElement>();
     const editNtfTemplateModalRef = ref(null);
-    const loading = ref(false);
+    const loading = ref<boolean>(false);
 
-    const formData = ref({
-      days_before: "",
-      sms_template: "",
-      email_print_template: "",
-    });
+    const formData = ref<INotificationTemplate>();
 
     const rules = ref({
       sms_template: [
@@ -187,7 +184,7 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      formData.value = store.getters.getNtfTemplatesSelected;
+      formData.value = store.getters.getNotificationTemplateSelected;
     });
 
     const submit = () => {
@@ -209,7 +206,9 @@ export default defineComponent({
               loading.value = false;
               hideModal(editNtfTemplateModalRef.value);
             });
-          formRef.value.resetFields();
+          if (formRef.value != undefined) {
+            formRef.value.resetFields();
+          }
         }
       });
     };

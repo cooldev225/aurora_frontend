@@ -201,12 +201,12 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   [PatientActions.DOCUMENTS.CREATE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("patients/documents/" + data.get("patient_id"), data)
+      return ApiService.post(
+        "patients/documents/" + data.get("patient_id"),
+        data
+      )
         .then(({ data }) => {
-          this.context.dispatch(
-            PatientActions.DOCUMENTS.LIST,
-            data.get("patient_id")
-          );
+          displaySuccessToast("Document uploaded");
           return data.data;
         })
         .catch(({ response }) => {
@@ -257,7 +257,7 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       return ApiService.put("patients/billing", source)
-        .then(({ data }) => {
+        .then(() => {
           this.context.dispatch(PatientActions.VIEW, source.patient_id);
           return displaySuccessToast("Claim source added successfully");
         })
@@ -304,6 +304,60 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
             response,
             "Deleting a patient claim source"
           );
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [PatientActions.ALLERGY.ADD](allergy) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post(`patients/allergies`, allergy)
+        .then(() => {
+          this.context.dispatch(PatientActions.VIEW, allergy.patient_id);
+
+          return displaySuccessToast("Patient allergy added successfully");
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Adding a patient allergy");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [PatientActions.ALLERGY.UPDATE](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.update(`patients/allergies`, data.id, data)
+        .then(() => {
+          this.context.dispatch(PatientActions.VIEW, data.patient_id);
+
+          return displaySuccessToast("Patient allergy updated successfully");
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Updating a patient allergy");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [PatientActions.ALLERGY.DELETE](allergy) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.delete(`patients/allergies/${allergy.id}`)
+        .then(() => {
+          this.context.dispatch(PatientActions.VIEW, allergy.patient_id);
+
+          return displaySuccessToast("Successfully deleted allergy");
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Deleting a patient allergy");
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

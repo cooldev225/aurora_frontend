@@ -163,12 +163,7 @@ export default defineComponent({
     const employeeList = computed(() => store.getters.employeeList);
     const bulletin = computed(() => store.getters.getBulletinSelected);
 
-    const formData = ref({
-      title: "",
-      body: "",
-      created_by: "",
-      created_at: "",
-    });
+    const formData = ref();
 
     const rules = ref({
       title: [

@@ -33,12 +33,6 @@
     :loading="loading"
     title="Deallocate Specialist Appointments"
   />
-  <AptTable
-    :tableData="anesthetistAptList"
-    :header="tableAnesthetistHeader"
-    :loading="loading"
-    title="Deallocate Anesthetist Appointments"
-  />
   <BulkMoveAptModal />
 </template>
 <script lang="ts">
@@ -48,7 +42,6 @@ import {
   onBeforeUnmount,
   onMounted,
   ref,
-  watch,
 } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";

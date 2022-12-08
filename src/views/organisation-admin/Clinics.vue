@@ -43,32 +43,23 @@
           {{ item.phone_number }}
         </template>
         <template v-slot:cell-action="{ row: item }">
-          <button
-            @click="handleRoomEdit(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <inline-svg src="media/icons/duotune/abstract/abs010.svg" />
-            </span>
-          </button>
-
-          <button
-            @click="handleEdit(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <InlineSVG icon="pencil" />
-            </span>
-          </button>
-
-          <button
-            @click="handleDelete(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-          >
-            <span class="svg-icon svg-icon-3">
-              <InlineSVG icon="bin" />
-            </span>
-          </button>
+          <div class="d-flex gap-1">
+            <IconButton
+              @click="handleRoomEdit(item)"
+              :iconSRC="icons.broken_chain"
+              tooltip="Manage rooms"
+            />
+            <IconButton
+              @click="handleEdit(item)"
+              :iconSRC="icons.pencil"
+              tooltip="Edit clinic"
+            />
+            <IconButton
+              @click="handleDelete(item)"
+              :iconSRC="icons.bin"
+              tooltip="Delete clinic"
+            />
+          </div>
         </template>
       </Datatable>
     </div>
@@ -84,6 +75,7 @@ import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import IClinic from "@/store/interfaces/IClinic";
+import icons from "@/core/data/icons";
 export default defineComponent({
   name: "clinics-main",
   components: {
@@ -176,7 +168,14 @@ export default defineComponent({
       tableData.value = clinicsList.value;
     });
 
-    return { tableHeader, tableData, handleEdit, handleDelete, handleRoomEdit };
+    return {
+      tableHeader,
+      tableData,
+      handleEdit,
+      handleDelete,
+      handleRoomEdit,
+      icons,
+    };
   },
 });
 </script>

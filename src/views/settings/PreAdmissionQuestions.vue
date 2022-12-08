@@ -41,9 +41,9 @@
             ) in preAdmissionSection.questions"
             :key="questionIndex"
           >
-            <div class="d-flex">
+            <div class="d-flex flex-row gap-2">
               <el-form-item
-                class="mb-2 px-6 flex items-center text-sm answer-format"
+                class="col-auto mb-2px-6 flex items-center text-sm answer-format"
                 :prop="'answer-format-' + questionIndex"
               >
                 <el-radio-group
@@ -55,7 +55,7 @@
                 </el-radio-group>
               </el-form-item>
               <el-form-item
-                class=""
+                class="w-100"
                 :key="'question-' + questionIndex"
                 :prop="'question-' + questionIndex"
                 :rules="{
@@ -65,6 +65,7 @@
                 }"
               >
                 <el-input
+                  class="w-100"
                   v-model="preAdmissionQuestion.text"
                   placeholder="Question Text"
                 />

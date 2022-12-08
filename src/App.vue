@@ -3,15 +3,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, onMounted } from "vue";
+import {
+  defineComponent,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  watchEffect,
+} from "vue";
 import { useStore } from "vuex";
-import { Mutations } from "@/store/enums/StoreEnums";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { initializeComponents } from "@/core/plugins/keenthemes";
 
 export default defineComponent({
   name: "app",
   setup() {
     const store = useStore();
+    const reloadProfile = () =>
+      setInterval(() => {
+        store.dispatch(Actions.PROFILE.VIEW);
+      }, 15000);
+    watchEffect(() => {
+      if (store.getters.isUserAuthenticated) {
+        reloadProfile();
+      }
+    });
 
     onMounted(() => {
       /**
@@ -22,6 +37,9 @@ export default defineComponent({
       nextTick(() => {
         initializeComponents();
       });
+    });
+    onUnmounted(() => {
+      clearInterval();
     });
   },
 });

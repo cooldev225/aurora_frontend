@@ -55,6 +55,20 @@
             <el-radio-button label="Specialist" />
           </el-radio-group>
         </InputWrapper>
+        <InputWrapper class="col-3" label="&nbsp;" prop="is_read">
+          <el-checkbox
+            v-model="formData.is_read"
+            label="Mark as read"
+            size="large"
+          />
+        </InputWrapper>
+        <InputWrapper class="col-3" label="&nbsp;" prop="is_urgent">
+          <el-checkbox
+            v-model="formData.is_urgent"
+            label="Mark as urgent"
+            size="large"
+          />
+        </InputWrapper>
         <InputWrapper
           required
           v-if="attachmentType.toLocaleLowerCase() === 'appointment'"
@@ -160,11 +174,12 @@ import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import { hideModal } from "@/core/helpers/dom";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import patientDocumentTypes from "@/core/data/patient-document-types";
 import moment from "moment";
 import IPatient from "@/store/interfaces/IPatient";
 import { ElMessage } from "element-plus";
+import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "create-letter-template-modal",
@@ -173,6 +188,7 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
+    const router = useRouter();
     const formRef = ref();
     const uploadDocumentRef = ref(null);
 
@@ -188,9 +204,11 @@ export default defineComponent({
     const formData = ref({
       patient_id: props.patient.id,
       specialist_id: "",
-      document_type: "",
+      document_type: "OTHER",
       appointment_id: "",
       document_name: "",
+      is_read: true,
+      is_urgent: false,
     });
 
     const rules = ref({
@@ -253,23 +271,23 @@ export default defineComponent({
           Data.append("patient_id", formData.value.patient_id + "");
           Data.append("document_name", formData.value.document_name);
           Data.append("document_type", formData.value.document_type);
+          Data.append("is_read", formData.value.is_read ? "1" : "0");
+          Data.append("is_urgent", formData.value.is_urgent ? "1" : "0");
           if (formData.value.appointment_id !== "")
             Data.append("appointment_id", formData.value.appointment_id);
           if (formData.value.specialist_id !== "")
             Data.append("specialist_id", formData.value.specialist_id);
           store
             .dispatch(PatientActions.DOCUMENTS.CREATE, Data)
-            .then(() => {
+            .then((data) => {
               loading.value = false;
               hideModal(uploadDocumentRef.value);
-              Swal.fire({
-                text: "Successfully Uploaded!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
+
+              store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
+                id: data.id,
+              });
+              router.push({
+                path: "/patients/" + formData.value.patient_id + "/documents",
               });
             })
             .catch(({ response }) => {

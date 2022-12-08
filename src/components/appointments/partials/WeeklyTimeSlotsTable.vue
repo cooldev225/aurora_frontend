@@ -1,4 +1,11 @@
 <template>
+  <el-alert
+    v-if="notification"
+    title="Warning!"
+    :description="notification"
+    type="warning"
+    show-icon
+  />
   <div class="timeslot-table mt-5 d-flex" v-loading="loading">
     <div class="arrow left d-flex align-items-center">
       <svg
@@ -18,7 +25,7 @@
       </svg>
     </div>
     <div class="table-content scroll h-500px">
-      <template v-if="availableSlotsByDate">
+      <template v-if="availableSlotsByDate.length > 0">
         <div class="row justify-content-center">
           <div
             :class="getClass(date)"
@@ -80,6 +87,11 @@
               </template>
             </div>
           </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="align-items-center justify-content-center d-flex h-100">
+          <h3 class="text-center">No Next available Appointments.</h3>
         </div>
       </template>
     </div>
@@ -277,6 +289,26 @@ export default defineComponent({
       store.commit(AppointmentMutations.SET_APT.SELECT, apt);
     };
 
+    const notification = computed(() => {
+      if (availableSlotsByDate.value.length > 0 && search_params.value.date) {
+        const searchDate = moment(
+          search_params.value.date,
+          "DD/MM/YYYY"
+        ).startOf("isoWeek");
+        const resultFirstDate = moment(availableSlotsByDate.value[0].date);
+        const resultEndDate = moment(availableSlotsByDate.value[6].date);
+        if (!searchDate.isSame(resultFirstDate)) {
+          return (
+            "There are no appointments available in the selected week, the next available appointment is between " +
+            resultFirstDate.format("DD/MM/YYYY") +
+            " and " +
+            resultEndDate.format("DD/MM/YYYY")
+          );
+        }
+      }
+      return null;
+    });
+
     return {
       props,
       loading,
@@ -287,6 +319,7 @@ export default defineComponent({
       moment,
       handleAddApt,
       search_params,
+      notification,
     };
   },
 });

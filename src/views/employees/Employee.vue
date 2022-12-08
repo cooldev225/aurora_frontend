@@ -1,9 +1,7 @@
 <template>
-  <div class="card w-75 mx-auto">
-    <div class="card-header border-0 pt-6">
-      <!--begin::Card title-->
-      <div class="card-title">
-        <!--begin::Search-->
+  <CardSection>
+    <template #default>
+      <div class="d-flex flex-row justify-content-between">
         <div class="d-flex align-items-center position-relative my-1">
           <span class="svg-icon svg-icon-1 position-absolute ms-6">
             <InlineSVG icon="search" />
@@ -16,32 +14,16 @@
             v-model="filterAndSort.searchText"
           />
         </div>
-        <!--end::Search-->
-      </div>
-      <!--begin::Card title-->
 
-      <!--begin::Card toolbar-->
-      <div class="card-toolbar">
-        <!--begin::Toolbar-->
-        <div
-          class="d-flex justify-content-end"
-          data-kt-subscription-table-toolbar="base"
-        >
-          <!--begin::Add subscription-->
-          <a @click="handleCreate" class="btn btn-primary">
-            <span class="svg-icon svg-icon-2">
-              <InlineSVG icon="plus" />
-            </span>
-            Add
-          </a>
-          <!--end::Add subscription-->
-        </div>
-        <!--end::Toolbar-->
+        <IconButton
+          @click="handleCreate"
+          label="Add New Employee"
+          :iconSRC="icons.plus"
+        />
       </div>
-      <!--end::Card toolbar-->
-    </div>
-    <div class="card-body pt-0">
+
       <Datatable
+        v-if="tableData != undefined"
         :table-header="tableHeader"
         :table-data="tableData"
         :loading="loading"
@@ -61,52 +43,38 @@
           {{ item.email }}
         </template>
         <template v-slot:cell-action="{ row: item }">
-          <div class="d-flex justify-content-end">
-            <button
-              @click="handleEditProviderNumber(item)"
+          <div class="d-flex justify-content-end gap-1">
+            <IconButton
               v-if="item.role_id == 5"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            >
-              <span class="svg-icon svg-icon-3">
-                <inline-svg src="media/icons/duotune/general/gen018.svg" />
-              </span>
-            </button>
-
-            <button
+              @click="handleEditProviderNumber(item)"
+              :iconSRC="icons.location_pin"
+              tooltip="Manage provider numbers"
+            />
+            <IconButton
               @click="handleUpdatePassword(item)"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            >
-              <span class="svg-icon svg-icon-3">
-                <inline-svg src="media/icons/duotune/coding/cod008.svg" />
-              </span>
-            </button>
-
-            <button
+              :iconSRC="icons.broken_chain"
+              tooltip="Manage password"
+            />
+            <IconButton
               @click="handleEdit(item)"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            >
-              <span class="svg-icon svg-icon-3">
-                <InlineSVG icon="pencil" />
-              </span>
-            </button>
-
-            <button
+              :iconSRC="icons.pencil"
+              tooltip="Edit employee"
+            />
+            <IconButton
               @click="handleDelete(item)"
-              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-            >
-              <span class="svg-icon svg-icon-3">
-                <InlineSVG icon="bin" />
-              </span>
-            </button>
+              :iconSRC="icons.bin"
+              tooltip="Delete employee"
+            />
           </div>
         </template>
       </Datatable>
-    </div>
-  </div>
+    </template>
+  </CardSection>
+
   <ProviderModal></ProviderModal>
   <EmployeePasswordModal></EmployeePasswordModal>
 </template>
-<script>
+<script lang="ts">
 import {
   defineComponent,
   onMounted,
@@ -122,10 +90,12 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
+import icons from "@/core/data/icons";
 import ProviderModal from "@/views/employees/modals/ProviderModal.vue";
 import EmployeePasswordModal from "@/views/employees/modals/EmployeePasswordModal.vue";
 import { Modal } from "bootstrap";
-
+import IUserProfile from "@/store/interfaces/IUserProfile";
+import IOrganization from "@/store/interfaces/IOrganization";
 export default defineComponent({
   name: "employee-main",
 
@@ -138,6 +108,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+    const loading = ref<boolean>(false);
     const filterAndSort = reactive({
       searchText: "",
     });
@@ -171,15 +142,14 @@ export default defineComponent({
         key: "action",
       },
     ]);
-    const tableData = ref([]);
-    const filteredData = ref([]);
-    const list = computed(() => store.getters.employeeList);
-    //const organization = computed(() => store.getters.organization);
-    const loading = ref(true);
+    const tableData = ref<IUserProfile[]>();
+    const filteredData = ref<IUserProfile[]>();
+    const list = computed<IUserProfile[]>(() => store.getters.employeeList);
+    const organization = computed<IOrganization>(
+      () => store.getters.userOrganization
+    );
 
     const handleCreate = () => {
-      router.push({ name: "employees-create" });
-      /*
       if (organization.value.is_max_users) {
         const html =
           "<h3>You have reached your max allowed users.</h3><p>Please buy new user licenses to add more.</p><br/>";
@@ -196,7 +166,6 @@ export default defineComponent({
       } else {
         router.push({ name: "employees-create" });
       }
-      */
     };
 
     const handleEdit = (item) => {
@@ -250,25 +219,20 @@ export default defineComponent({
         },
       }).then((result) => {
         if (result.value == "success") {
-          store
-            .dispatch(Actions.EMPLOYEE.DELETE, item.id)
-            .then(() => {
+          store.dispatch(Actions.EMPLOYEE.DELETE, item.id).then(() => {
+            store.dispatch(Actions.EMPLOYEE.LIST);
+            Swal.fire({
+              text: "Successfully Deleted!",
+              icon: "success",
+              buttonsStyling: false,
+              confirmButtonText: "Ok, got it!",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+            }).then(() => {
               store.dispatch(Actions.EMPLOYEE.LIST);
-              Swal.fire({
-                text: "Successfully Deleted!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
-                customClass: {
-                  confirmButton: "btn btn-primary",
-                },
-              }).then(() => {
-                store.dispatch(Actions.EMPLOYEE.LIST);
-              });
-            })
-            .catch(({ response }) => {
-              console.log(response.data.error);
             });
+          });
         }
       });
     };
@@ -281,16 +245,16 @@ export default defineComponent({
       loading.value = true;
       setCurrentPageBreadcrumbs("Employees", []);
       store.dispatch(Actions.EMPLOYEE.LIST).then(() => {
-        tableData.value = list;
+        tableData.value = list.value;
         loading.value = false;
       });
     });
 
     const applyFilterAndSort = () => {
       if (filterAndSort.searchText != "") {
-        filteredData.value = list.value.filter((org) => {
+        filteredData.value = list.value.filter((employee) => {
           if (
-            org.full_name
+            employee.full_name
               .toLowerCase()
               .search(filterAndSort.searchText.toLowerCase()) >= 0
           ) {
@@ -298,7 +262,7 @@ export default defineComponent({
           }
 
           if (
-            org.email
+            employee.email
               .toLowerCase()
               .search(filterAndSort.searchText.toLowerCase()) >= 0
           ) {
@@ -306,7 +270,7 @@ export default defineComponent({
           }
 
           if (
-            org.username
+            employee.username
               .toLowerCase()
               .search(filterAndSort.searchText.toLowerCase()) >= 0
           ) {
@@ -314,7 +278,7 @@ export default defineComponent({
           }
 
           if (
-            org.role.name
+            employee.role.name
               .toLowerCase()
               .search(filterAndSort.searchText.toLowerCase()) >= 0
           ) {
@@ -326,7 +290,7 @@ export default defineComponent({
       } else {
         filteredData.value = list.value;
       }
-      tableData.value = filteredData;
+      tableData.value = filteredData.value;
     };
 
     watchEffect(() => {
@@ -346,6 +310,8 @@ export default defineComponent({
       filterAndSort,
       handleEditProviderNumber,
       handleUpdatePassword,
+      icons,
+      loading,
     };
   },
 });
