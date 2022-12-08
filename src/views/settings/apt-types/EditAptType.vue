@@ -1,7 +1,6 @@
 <template>
   <CardSection>
     <el-form
-      v-if="formData"
       @submit.prevent="submit()"
       :model="formData"
       :rules="rules"
@@ -137,7 +136,7 @@
         <div class="row">
           <!-- Input: Pre Procedure Instructions -->
           <InputWrapper
-            v-if="formData.type == 'PROCEDURE'"
+            v-if="formData?.type == 'PROCEDURE'"
             label="Pre Procedure Instructions"
             prop="pre_procedure_instructions"
             class="col-sm-6"
@@ -155,7 +154,7 @@
           <InputWrapper
             label="Consent"
             prop="consent"
-            :class="[formData.type == 'PROCEDURE' ? 'col-sm-6' : '']"
+            :class="[formData?.type == 'PROCEDURE' ? 'col-sm-6' : '']"
             :tooltip="helpTexts.forms.appointmentType.consent"
           >
             <el-form-item prop="body">
@@ -237,11 +236,12 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const formRef = ref<HTMLFormElement>();
-    const createAptTypeModalRef = ref(null);
+
+    const formData = ref<IAppointmentType>(<IAppointmentType>{});
     const aptTypes = computed(() => store.getters.getAptTypesList);
     const reportTemplates = computed(() => store.getters.getReportTemplateList);
     const scheduleItems = computed(() => store.getters.scheduleItemList);
-    const loading = ref(false);
+    const loading = ref<boolean>(false);
     const predefineColors = ref([
       "#ff4500",
       "#ff8c00",
@@ -258,8 +258,6 @@ export default defineComponent({
       submitButtonName: "CREATE",
       submittedText: "New Appointment Type Created",
     });
-
-    const formData = ref<IAppointmentType>();
 
     const rules = ref({
       name: [
@@ -336,7 +334,6 @@ export default defineComponent({
       rules,
       formRef,
       loading,
-      createAptTypeModalRef,
       reportTemplates,
       submit,
       scheduleItems,

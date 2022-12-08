@@ -48,64 +48,64 @@
         :loading="loading"
         :enable-items-per-page-dropdown="false"
       >
-        <template v-slot:cell-name="{ row: item }">
+        <template v-slot:cell-name="{ row: organization }">
           <div class="d-flex align-items-center">
             <div class="symbol symbol-50px me-2">
               <img
-                v-if="item.logo"
-                :src="item.logo"
+                v-if="organization.logo"
+                :src="organization.logo"
                 class="h-50 align-self-center"
               />
             </div>
             <span class="text-dark fw-bolder text-hover-primary m-2 fs-3">
-              {{ item.name }}
+              {{ organization.name }}
             </span>
           </div>
         </template>
-        <template v-slot:cell-contact="{ row: item }">
+        <template v-slot:cell-contact="{ row: organization }">
           <span class="text-dark fw-bolder text-hover-primary mb-1 fs-6">{{
-            item.username
+            organization.username
           }}</span>
           <span class="text-muted fw-bold d-block">{{
-            item.mobile_number
+            organization.mobile_number
           }}</span>
-          <span class="text-muted fw-bold d-block">{{ item.email }}</span>
+          <span class="text-muted fw-bold d-block">{{
+            organization.email
+          }}</span>
         </template>
-        <template v-slot:cell-stats="{ row: item }">
+        <template v-slot:cell-stats="{ row: organization }">
           <div class="d-flex flex-column">
             <div class="mb-2">
               <i class="bi bi-building fs-1x"></i>
               <span class="">
-                {{ item.clinic_count }} / {{ item.max_clinics }}</span
+                {{ organization.clinic_count }} /
+                {{ organization.max_clinics }}</span
               >
             </div>
             <div>
               <i class="bi bi-person-fill fs-1x"></i>
               <span class="">
-                {{ item.user_count }} / {{ item.max_employees }}</span
+                {{ organization.user_count }} /
+                {{ organization.max_employees }}</span
               >
             </div>
           </div>
         </template>
 
-        <template v-slot:cell-action="{ row: item }">
-          <button
-            @click="handleEdit(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-          >
-            <span class="svg-icon svg-icon-3">
-              <InlineSVG icon="pencil" />
-            </span>
-          </button>
+        <template v-slot:cell-action="{ row: organization }">
+          <div class="d-flex flex-row gap-1">
+            <IconButton
+              @click="handleEdit(organization)"
+              :iconSRC="icons.pencil"
+              tooltip="Edit organisation"
+            />
 
-          <button
-            @click="handleDelete(item)"
-            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-          >
-            <span class="svg-icon svg-icon-3">
-              <InlineSVG icon="bin" />
-            </span>
-          </button>
+            <IconButton
+              @click="handleDelete(organization)"
+              :iconSRC="icons.bin"
+              tooltip="Delete organisation"
+            />
+          </div>
         </template>
       </Datatable>
     </div>
@@ -128,7 +128,7 @@ import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
-
+import icons from "@/core/data/icons";
 export default defineComponent({
   name: "org-main",
 
@@ -311,6 +311,7 @@ export default defineComponent({
       filterAndSort,
       handleDelete,
       loading,
+      icons,
     };
   },
 });

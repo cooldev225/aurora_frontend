@@ -22,13 +22,13 @@
         <template v-slot:cell-name="{ row: appointmentType }">
           <div class="d-flex align-items-center gap-1">
             <IconButton
-              @click="handleEdit(appointmentType.id)"
+              @click="handleEdit(appointmentType)"
               :iconSRC="icons.pencil"
               tooltip="Edit appointment type"
             />
 
             <IconButton
-              @click="handleDelete(appointmentType.id)"
+              @click="handleDelete(appointmentType)"
               :iconSRC="icons.bin"
               tooltip="Delete appointment type"
             />

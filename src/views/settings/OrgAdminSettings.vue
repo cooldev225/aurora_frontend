@@ -47,7 +47,7 @@
         to="/settings/pre-admission-consent"
         class="btn btn-light-primary m-2"
       >
-        Pre-admission Consent
+        Pre-Admission Consent
       </router-link>
       <router-link
         to="/settings/letter-templates"
@@ -91,20 +91,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import { defineComponent, onMounted } from "vue";
-import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-
-export default defineComponent({
-  name: "org-admin-settings",
-
-  components: {},
-
-  setup() {
-    onMounted(() => {
-      setCurrentPageBreadcrumbs("All Settings", ["Settings"]);
-    });
-  },
-});
-</script>
