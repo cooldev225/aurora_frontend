@@ -130,7 +130,7 @@ export default defineComponent({
       schedule._title = "Edit Time Slot - " + day.label;
       schedule._action = "edit_weekly_time";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
-      schedule.clinic_id = props.clinicFilter.value;
+      schedule.clinic_id = props.clinicFilter;
       store.dispatch(HRMActions.ANESTHETIST.LIST, {
         day: day.value,
       });

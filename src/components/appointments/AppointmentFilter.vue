@@ -250,7 +250,7 @@ export default defineComponent({
           label: `Dr.${specialist.first_name} ${specialist.last_name}`,
           id: specialist.id,
           title: `Dr.${specialist.first_name} ${specialist.last_name}`,
-          businessHours: getBusinessHours(specialist.hrm_weekly_schedule),
+          businessHours: getBusinessHours(specialist.hrm_work_schedule),
         });
       });
 
@@ -262,7 +262,7 @@ export default defineComponent({
             .format("ddd")
             .toUpperCase();
           let workOnDay = false;
-          specialist.hrm_weekly_schedule.map((slot) => {
+          specialist.hrm_work_schedule.map((slot) => {
             if (slot.week_day == viewDay) {
               workOnDay = true;
             }
@@ -287,12 +287,12 @@ export default defineComponent({
       if (!isShowAllClinics.value) {
         const result = [];
         specialists.value.map((specialist) => {
-          specialist.hrm_weekly_schedule.map((slot) => {
+          specialist.hrm_work_schedule.map((slot) => {
             clinicsData.value.map((clinic) => {
               if (
                 clinic == slot.clinic_id &&
                 !result.includes(specialist.id) &&
-                slot.week_day ==
+                slot.week_day ===
                   moment(props.date_search.date).format("ddd").toUpperCase()
               ) {
                 result.push(specialist.id);
