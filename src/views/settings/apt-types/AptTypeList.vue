@@ -24,7 +24,7 @@
             <IconButton
               @click="handleEdit(appointmentType.id)"
               :iconSRC="icons.pencil"
-              tooltip="edit appointment type"
+              tooltip="Edit appointment type"
             />
 
             <IconButton
