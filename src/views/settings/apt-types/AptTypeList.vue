@@ -101,8 +101,8 @@ export default defineComponent({
       () => store.getters.getAptTypesList
     );
 
-    const handleEdit = (item) => {
-      router.push({ name: "editAptType", params: { id: item.id } });
+    const handleEdit = (id) => {
+      router.push({ name: "editAptType", params: { id: id } });
     };
 
     const handleDelete = (id) => {
