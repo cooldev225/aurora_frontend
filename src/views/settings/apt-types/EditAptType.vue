@@ -237,7 +237,7 @@ export default defineComponent({
     const route = useRoute();
     const formRef = ref<HTMLFormElement>();
 
-    const formData = ref<IAppointmentType>(<IAppointmentType>{});
+    const formData = ref<IAppointmentType>();
     const aptTypes = computed(() => store.getters.getAptTypesList);
     const reportTemplates = computed(() => store.getters.getReportTemplateList);
     const scheduleItems = computed(() => store.getters.scheduleItemList);
