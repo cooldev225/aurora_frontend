@@ -19,11 +19,11 @@
           {{ medication.name }}
         </template>
 
-        <template v-slot:cell-severity="{ row: medication }">
-          {{ medication.instruction }}
+        <template v-slot:cell-instructions="{ row: medication }">
+          {{ medication.instructions }}
         </template>
 
-        <template v-slot:cell-symptoms="{ row: medication }">
+        <template v-slot:cell-active="{ row: medication }">
           {{ medication.active }}
         </template>
 
@@ -94,8 +94,8 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "Instruction",
-        key: "instruction",
+        name: "Instructions",
+        key: "instructions",
         sortable: false,
       },
       {
@@ -164,6 +164,7 @@ export default defineComponent({
     });
 
     watchEffect(() => {
+      console.log(props.patient.medications.instructions);
       tableData.value = props.patient.medications ?? [];
     });
 

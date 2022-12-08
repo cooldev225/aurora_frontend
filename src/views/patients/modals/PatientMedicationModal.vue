@@ -16,11 +16,11 @@
           <el-input type="text" v-model="formData.name" placeholder="Name" />
         </InputWrapper>
 
-        <InputWrapper label="Instruction" prop="instruction">
+        <InputWrapper label="Instructions" prop="instructions">
           <el-input
             type="text"
-            v-model="formData.instruction"
-            placeholder="Instruction"
+            v-model="formData.instructions"
+            placeholder="Instructions"
           />
         </InputWrapper>
 
@@ -118,7 +118,7 @@ export default defineComponent({
     const isDataUnchanged = ref<boolean>(medication.value ? true : false);
     const formData = ref({
       name: "",
-      instruction: "",
+      instructions: "",
       active: "",
     });
 
@@ -130,10 +130,10 @@ export default defineComponent({
           trigger: "change",
         },
       ],
-      instruction: [
+      instructions: [
         {
           required: true,
-          message: "Instruction cannot be blank",
+          message: "Instructions cannot be blank",
           trigger: "change",
         },
       ],
@@ -214,7 +214,7 @@ export default defineComponent({
         resetForm();
 
         formData.value.name = medication?.value?.name ?? "";
-        formData.value.instruction = medication?.value?.instruction ?? "";
+        formData.value.instructions = medication?.value?.instructions ?? "";
         formData.value.active = medication?.value?.active ?? "";
       },
       { deep: true }
