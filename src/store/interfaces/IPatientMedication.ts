@@ -3,5 +3,6 @@ export default interface IPatientMedication {
   patient_id: number;
   name: string;
   instructions: string;
-  active: string;
+  start_date: string;
+  end_date: string;
 }

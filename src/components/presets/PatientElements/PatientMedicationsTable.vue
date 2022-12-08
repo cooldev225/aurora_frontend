@@ -23,8 +23,12 @@
           {{ medication.instructions }}
         </template>
 
-        <template v-slot:cell-active="{ row: medication }">
-          {{ medication.active }}
+        <template v-slot:cell-start_date="{ row: medication }">
+          {{ medication.start_date }}
+        </template>
+
+        <template v-slot:cell-end_date="{ row: medication }">
+          {{ medication.end_date }}
         </template>
 
         <template v-slot:cell-actions="{ row: medication }">
@@ -99,8 +103,13 @@ export default defineComponent({
         sortable: false,
       },
       {
-        name: "Active",
-        key: "active",
+        name: "Start date",
+        key: "start_date",
+        sortable: false,
+      },
+      {
+        name: "End date",
+        key: "end_date",
         sortable: false,
       },
       {
@@ -164,7 +173,6 @@ export default defineComponent({
     });
 
     watchEffect(() => {
-      console.log(props.patient.medications.instructions);
       tableData.value = props.patient.medications ?? [];
     });
 
