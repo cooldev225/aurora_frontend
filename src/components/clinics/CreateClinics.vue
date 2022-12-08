@@ -362,9 +362,9 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          store.dispatch(formInfo.submitAction, formData.value).then(() => {
+          store.dispatch(formInfo.submitAction, formData.value).then((data) => {
             loading.value = false;
-            router.push({ name: "clinics" });
+            data && router.push({ name: "clinics" });
           });
         }
       });

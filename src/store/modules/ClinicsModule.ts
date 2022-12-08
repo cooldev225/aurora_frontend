@@ -101,9 +101,13 @@ export default class ClinicsModule extends VuexModule implements ClinicsInfo {
   [Actions.CLINICS.CREATE](payload) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("clinics", payload)
+      return ApiService.post("clinics", payload)
         .then(({ data }) => {
-          displaySuccessToast("Clinic created");
+          if (data.data) {
+            displaySuccessToast("Clinic created");
+          } else {
+            displayServerError(data.message, "Creating a clinic");
+          }
           return data.data;
         })
         .catch(({ response }) => {
