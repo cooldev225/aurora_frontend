@@ -43,7 +43,7 @@
         <ckeditor :editor="ClassicEditor" v-model="formData.body" />
       </el-form-item>
 
-      <el-form-item label="Attachment">
+      <!-- <el-form-item label="Attachment">
         <el-upload
           action="#"
           ref="upload"
@@ -59,7 +59,7 @@
             >Choose Files</el-button
           >
         </el-upload>
-      </el-form-item>
+      </el-form-item> -->
 
       <div class="d-flex flex-row-reverse">
         <router-link
@@ -123,28 +123,28 @@ export default defineComponent({
       body: "",
     });
     const Data = new FormData();
-    const uploadDisabled = ref(false);
-    const upload = ref(null);
-    const dialogImageUrl = ref("");
-    const dialogVisible = ref(false);
+    // const uploadDisabled = ref(false);
+    // const upload = ref(null);
+    // const dialogImageUrl = ref("");
+    // const dialogVisible = ref(false);
     const sendableUsers = computed(() => store.getters.getUserList);
 
-    const handleChange = (file, fileList) => {
-      upload.value.clearFiles();
-      uploadDisabled.value = false;
-      Data.append("attachment[" + file.raw.uid + "]", file.raw);
-      uploadDisabled.value = fileList.length >= 1;
-    };
+    // const handleChange = (file, fileList) => {
+    //   upload.value.clearFiles();
+    //   uploadDisabled.value = false;
+    //   Data.append("attachment[" + file.raw.uid + "]", file.raw);
+    //   uploadDisabled.value = fileList.length >= 1;
+    // };
 
-    const handleRemove = (file, fileList) => {
-      Data.delete("attachment[" + file.raw.uid + "]");
-      uploadDisabled.value = fileList.length - 1;
-    };
+    // const handleRemove = (file, fileList) => {
+    //   Data.delete("attachment[" + file.raw.uid + "]");
+    //   uploadDisabled.value = fileList.length - 1;
+    // };
 
-    const handlePreview = (uploadFile) => {
-      dialogImageUrl.value = uploadFile.url;
-      dialogVisible.value = true;
-    };
+    // const handlePreview = (uploadFile) => {
+    //   dialogImageUrl.value = uploadFile.url;
+    //   dialogVisible.value = true;
+    // };
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Compose", ["Mail"]);
@@ -212,13 +212,13 @@ export default defineComponent({
 
     return {
       rules,
-      upload,
-      handleChange,
-      handleRemove,
-      handlePreview,
+      // upload,
+      // handleChange,
+      // handleRemove,
+      // handlePreview,
       handleSave,
-      dialogVisible,
-      dialogImageUrl,
+      // dialogVisible,
+      // dialogImageUrl,
       sendableUsers,
       formData,
       submit,
