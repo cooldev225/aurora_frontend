@@ -53,7 +53,7 @@
       <PatientMedicationModal
         :patient="selectedPatient"
         :medication="updatingMedication"
-        v-on:closeModal="closeMedicationModal"
+        v-on:closeModal="closePatientMedicationModal"
       />
     </template>
   </CardSection>
