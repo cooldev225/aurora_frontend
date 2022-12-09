@@ -1,16 +1,16 @@
 <template>
   <CardSection>
     <template #header-actions>
-      <router-link
-        to="/settings/apt-types/create"
+      <button
         type="button"
         class="text-nowrap btn btn-light-primary ms-auto"
+        @click.prevent="handleAdd"
       >
         <span class="svg-icon svg-icon-2">
           <InlineSVG icon="plus" />
         </span>
         Add
-      </router-link>
+      </button>
     </template>
     <template #default>
       <Datatable
@@ -101,6 +101,22 @@ export default defineComponent({
       () => store.getters.getAptTypesList
     );
 
+    const handleAdd = () => {
+      Swal.fire({
+        text: "Before an appointment type can be created the billing item should be created",
+        buttonsStyling: false,
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Manage Billing Items",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-light-primary",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) router.push({ name: "setting-schedule-fee" });
+      });
+    };
+
     const handleEdit = (id) => {
       router.push({ name: "editAptType", params: { id: id } });
     };
@@ -130,7 +146,14 @@ export default defineComponent({
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
     });
 
-    return { tableHeader, aptTypes, handleEdit, handleDelete, icons };
+    return {
+      tableHeader,
+      aptTypes,
+      handleAdd,
+      handleEdit,
+      handleDelete,
+      icons,
+    };
   },
 });
 </script>
