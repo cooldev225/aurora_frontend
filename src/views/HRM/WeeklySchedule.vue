@@ -217,14 +217,16 @@ export default defineComponent({
           date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
         })
         .then(() => {
-          store
-            .dispatch(HRMActions.EMPLOYEE_LEAVE.LIST, {
-              date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
-              status: "Approved",
-            })
-            .then((e) => {
-              loading.value = false;
-            });
+          setTimeout(() => {
+            store
+              .dispatch(HRMActions.EMPLOYEE_LEAVE.LIST, {
+                date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+                status: "Approved",
+              })
+              .then(() => {
+                loading.value = false;
+              });
+          }, 1000);
         });
 
       let day = dateRange.value.startDate;
@@ -260,15 +262,23 @@ export default defineComponent({
     // send the request to copy data from template to hrm weekly schedule
     const processFillFromTemplate = (data) => {
       isShowFillFromTemplate.value = false;
-      if (data)
+      if (data) {
+        loading.value = true;
         data.date = moment(dateRange.value.startDate)
           .format("YYYY-MM-DD")
           .toString();
-      store.dispatch(HRMActions.WEEKLY_TEMPLATE.CREATE, data).then(() => {
-        store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
-          date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+        store.dispatch(HRMActions.WEEKLY_SCHEDULE.CREATE, data).then(() => {
+          setTimeout(() => {
+            store
+              .dispatch(HRMActions.WEEKLY_SCHEDULE.LIST, {
+                date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+              })
+              .then(() => {
+                loading.value = false;
+              });
+          }, 2000);
         });
-      });
+      }
     };
 
     // Find if there unpublished shifts available in selected date range
