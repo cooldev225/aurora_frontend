@@ -324,7 +324,7 @@ import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import InputWrapper from "../../components/presets/FormElements/InputWrapper.vue";
 import { Actions } from "@/store/enums/StoreEnums";
-import { IScheduleItem } from "@/store/modules/ScheduleItemModule";
+import IScheduleItem from "@/store/interfaces/IScheduleItem";
 import { Modal } from "bootstrap";
 import ReportPreviewModal from "@/views/patients/modals/ReportPreviewModal.vue";
 
