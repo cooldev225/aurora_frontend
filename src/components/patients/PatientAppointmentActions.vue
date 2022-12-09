@@ -2,9 +2,22 @@
   <!--Specialist only actions-->
   <template v-if="userRole == 'specialist'">
     <AddRecallButton :appointment="appointment" :patient="patient" />
-    <AddLetterButton :patient="patient" />
     <AddAudioButton :appointment="appointment" :patient="patient" />
-    <CreateReportButton :appointment="appointment" :patient="patient" />
+    <CreateDocumentButton
+      :appointment="appointment"
+      :patient="patient"
+      document-type="letter"
+    />
+    <CreateDocumentButton
+      :appointment="appointment"
+      :patient="patient"
+      document-type="report"
+    />
+    <CreateDocumentButton
+      :appointment="appointment"
+      :patient="patient"
+      document-type="referral"
+    />
   </template>
 
   <!--Admin only actions-->
@@ -28,10 +41,9 @@
 import { defineComponent, computed, PropType } from "vue";
 import store from "@/store";
 import PreAdmissionFormButton from "./patientAppointmentActions/PreAdmissionFormButton.vue";
-import CreateReportButton from "./patientAppointmentActions/CreateReportButton.vue";
+import CreateDocumentButton from "./patientAppointmentActions/CreateDocumentButton.vue";
 import PrintLabelButton from "./patientAppointmentActions/PrintLabelButton.vue";
 import AddRecallButton from "./patientAppointmentActions/AddRecallButton.vue";
-import AddLetterButton from "./patientAppointmentActions/AddLetterButton.vue";
 import AddAudioButton from "./patientAppointmentActions/AddAudioButton.vue";
 import PrintHospitalCertificateButton from "./patientAppointmentActions/PrintHospitalCertificateButton.vue";
 import MakePaymentButton from "./patientAppointmentActions/MakePaymentButton.vue";
@@ -41,11 +53,10 @@ export default defineComponent({
   name: "patient-appointment-actions",
   components: {
     PreAdmissionFormButton,
-    CreateReportButton,
+    CreateDocumentButton,
     PrintLabelButton,
     PrintHospitalCertificateButton,
     AddRecallButton,
-    AddLetterButton,
     AddAudioButton,
     MakePaymentButton,
   },

@@ -22,7 +22,7 @@ export default {
   setup() {
     const handleAddRecall = () => {
       const modal = new Modal(
-        document.getElementById("patient_recall_reminder")
+        document.getElementById("modal_patient_recall_reminder")
       );
       modal.show();
     };

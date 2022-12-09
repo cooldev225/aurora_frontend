@@ -1,9 +1,13 @@
 <template>
-  <LargeIconButton text="Create Report" @click="handleReport()" />
+  <LargeIconButton
+    :text="`Create ${toSentenceCase(documentType)}`"
+    @click="handleButton()"
+  />
 </template>
 
 <script lang="ts">
 import { useRouter } from "vue-router";
+import { toSentenceCase } from "@/core/helpers/text";
 export default {
   props: {
     appointment: {
@@ -14,20 +18,29 @@ export default {
       required: true,
       type: Object,
     },
+    documentType: {
+      required: true,
+      type: String,
+    },
   },
   setup(props) {
     const router = useRouter();
-    const handleReport = () => {
+
+    const handleButton = () => {
       router.push({
         name: "patients-document",
         params: {
           patientId: props.patient.id,
           appointmentId: props.appointment.id,
+          documentType: props.documentType,
         },
       });
     };
 
-    return { handleReport };
+    return {
+      handleButton,
+      toSentenceCase,
+    };
   },
 };
 </script>
