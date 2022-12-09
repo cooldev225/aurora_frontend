@@ -98,7 +98,6 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const tableData = ref();
     const selectedEmployees = ref([]);
     const filterOptions = ref([
       {
@@ -115,7 +114,6 @@ export default defineComponent({
       },
     ]);
     const clinics = computed(() => store.getters.clinicsList);
-    const scheduleTemplates = computed(() => store.getters.hrmScheduleList);
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Weekly Schedule Template", ["HRM"]);
@@ -123,9 +121,6 @@ export default defineComponent({
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
 
-    watch(scheduleTemplates, () => {
-      tableData.value = scheduleTemplates.value;
-    });
     const handleEditTemplateTimeslots = (schedule, day) => {
       schedule._title = "Edit Time Slot - " + day.label;
       schedule._action = "edit_weekly_time";
@@ -171,13 +166,11 @@ export default defineComponent({
     };
 
     return {
-      scheduleTemplates,
       weekdays,
       moment,
       handleEditTemplateTimeslots,
       clinics,
       employeeRoles,
-      tableData,
       timeslotClinicName,
       filterOptions,
       anesthetistName,

@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    v-model="props.dialogVisible"
+    v-model="isShow"
     title="Confirm which data would you like to fill from template"
     width="30%"
     :before-close="handleClose"
@@ -56,7 +56,7 @@
   </el-dialog>
 </template>
 <script>
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, ref, watch } from "vue";
 import { useStore } from "vuex";
 
 export default defineComponent({
@@ -67,13 +67,16 @@ export default defineComponent({
   emits: ["selectedData"],
   setup(props, { emit }) {
     const store = useStore();
-
-    const dialogVisible = ref(false);
+    const isShow = ref(false);
     const isAllClinics = ref(true);
     const isAllEmployees = ref(true);
     const selectedEmployees = ref([]);
     const clinics = computed(() => store.getters.clinicsList);
     const clinicFilter = ref([]);
+
+    watch(props, () => {
+      isShow.value = props.dialogVisible;
+    });
 
     // return employee list based on user selected employee types
     const employeeList = computed(() => {
@@ -122,7 +125,7 @@ export default defineComponent({
     });
 
     const handleClose = () => {
-      dialogVisible.value = true;
+      isShow.value = true;
     };
 
     const submit = () => {
@@ -132,14 +135,17 @@ export default defineComponent({
         employees: store.getters.hrmWeeklyTemplatesData,
         clinics: store.getters.clinicsList,
       });
-      dialogVisible.value = false;
+      isShow.value = false;
     };
+
     const cancel = () => {
       emit("selectedData");
-      dialogVisible.value = false;
+      isShow.value = false;
     };
+
     return {
       handleClose,
+      isShow,
       submit,
       cancel,
       props,
