@@ -470,11 +470,13 @@ export default defineComponent({
           store
             .dispatch(schedule.value._submit, formData.value)
             .then(() => {
-              loading.value = false;
-              store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
-                clinic_id: formData.value.clinic_id,
-              });
-              store.dispatch(Actions.EMPLOYEE.LIST);
+              store
+                .dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
+                  clinic_id: formData.value.clinic_id,
+                })
+                .then(() => {
+                  loading.value = false;
+                });
             })
             .catch(({ response }) => {
               loading.value = false;
