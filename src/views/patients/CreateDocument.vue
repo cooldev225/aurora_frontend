@@ -5,7 +5,9 @@
     <div class="card-header cursor-pointer">
       <!--begin::Card title-->
       <div class="card-title m-0">
-        <h3 class="fw-bolder m-0">Procedure Report:</h3>
+        <h3 class="fw-bolder m-0">
+          Procedure {{ toSentenceCase(documentType.toString()) }}
+        </h3>
       </div>
       <!--end::Card title-->
     </div>
@@ -19,11 +21,16 @@
         ref="formRef"
       >
         <div class="report-template-wrapper">
-          <InputWrapper class="fill-out" label="Report Template">
+          <InputWrapper
+            class="fill-out"
+            :label="`${toSentenceCase(documentType.toString())} Template`"
+          >
             <el-select
               class="w-100"
               v-model="templateData"
-              placeholder="Select Report Template"
+              :placeholder="`Select ${toSentenceCase(
+                documentType.toString()
+              )} Template`"
             >
               <el-option
                 v-for="(option, idx) in reportTemplatesData"
@@ -53,6 +60,7 @@
               placeholder="Select Header/Footer Template"
               props="header_footer_templates_select"
             >
+              <el-option :value="0" label="Use Default" />
               <el-option
                 v-for="(option, idx) in headerFooterList"
                 :key="option.id"
@@ -137,6 +145,76 @@
                   :label="getItemName(item)"
                 />
               </el-select>
+            </InputWrapper>
+          </template>
+
+          <template v-else>
+            <!-- If the document is anything but a report -->
+            <InputWrapper
+              v-if="documentType == 'referral'"
+              class="fill-out"
+              label="Doctor Address Book"
+              prop="doctor_address_book"
+            >
+              <el-autocomplete
+                class="w-100"
+                v-model="formData.doctor_address_book_name"
+                value-key="full_name"
+                :fetch-suggestions="searchDoctorAddressBook"
+                placeholder="Enter Doctor Name"
+                :trigger-on-focus="true"
+                @select="handleSelect"
+              >
+                <template #default="{ item }">
+                  <div class="name">
+                    {{ item.title }}
+                    {{ item.first_name }} {{ item.last_name }}
+                  </div>
+                  <div class="address">{{ item.address }}</div>
+                </template>
+              </el-autocomplete>
+            </InputWrapper>
+
+            <InputWrapper class="fill-out" label="Include:" prop="include">
+              <div class="d-flex">
+                <el-checkbox
+                  size="large"
+                  class="col-6"
+                  v-model="formData.patient_demographic"
+                  :checked="false"
+                >
+                  Patient Demographic
+                </el-checkbox>
+
+                <el-checkbox
+                  size="large"
+                  class="col-6"
+                  v-model="formData.current_medications"
+                  :checked="false"
+                >
+                  Current Medications
+                </el-checkbox>
+              </div>
+
+              <div class="d-flex">
+                <el-checkbox
+                  size="large"
+                  class="col-6"
+                  v-model="formData.patient_allergies"
+                  :checked="false"
+                >
+                  Patient Allergies
+                </el-checkbox>
+
+                <el-checkbox
+                  size="large"
+                  class="col-6"
+                  v-model="formData.past_medical_history"
+                  :checked="false"
+                >
+                  Past Medical history
+                </el-checkbox>
+              </div>
             </InputWrapper>
           </template>
 
@@ -247,11 +325,13 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed, watch } from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
-import { StoreReportActions } from "@/store/enums/StoreReportEnums";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import moment from "moment";
-import { DocumentMutations } from "@/store/enums/StoreDocumentEnums";
+import {
+  DocumentActions,
+  DocumentMutations,
+} from "@/store/enums/StoreDocumentEnums";
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import InputWrapper from "../../components/presets/FormElements/InputWrapper.vue";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -276,16 +356,26 @@ export default defineComponent({
     const patientId = route.params.patientId;
     const appointmentId = route.params.appointmentId;
     const documentType = route.params.documentType;
+    const doctorAddressBooks = computed(
+      () => store.getters.getDoctorAddressBookList
+    );
     const formRef = ref<typeof ElForm | null>(null);
     const templateData = ref<number | null>(null);
     const appointmentData = ref<IAppointment | null>(null);
     const reportPreviewPdfId = ref(null);
     const reportSections = ref<Array<IDocumentSection>>([]);
+    const timeout = ref<number | null>(null);
 
     const formData = ref({
       title: "",
       section: [],
       headerFooter: null,
+      doctor_address_book_name: "",
+      patient_demographic: false,
+      current_medications: false,
+      patient_allergies: false,
+      past_medical_history: false,
+      doctor_address_book_id: 0,
       procedures_undertaken: [] as Array<IScheduleItem>,
       extra_items_used: [] as Array<IScheduleItem>,
       admin_items_used: [] as Array<IScheduleItem>,
@@ -349,6 +439,42 @@ export default defineComponent({
         document.getElementById("modal_report_document_preview")
       );
       modal.show();
+    };
+
+    const searchDoctorAddressBook = (term, cb) => {
+      const results = term
+        ? doctorAddressBooks.value.filter(createFilter(term))
+        : doctorAddressBooks.value;
+
+      if (timeout.value) {
+        clearTimeout(timeout.value);
+      }
+      timeout.value = setTimeout(() => {
+        cb(results);
+      }, 1000);
+    };
+
+    const createFilter = (term) => {
+      const keyword = term.toString();
+      return (doctorAddressBook) => {
+        const full_name =
+          doctorAddressBook.title +
+          " " +
+          doctorAddressBook.first_name +
+          " " +
+          doctorAddressBook.last_name;
+        const full_name_pos = full_name
+          .toLowerCase()
+          .indexOf(keyword.toLowerCase());
+        const address_pos = doctorAddressBook.address
+          .toLowerCase()
+          .indexOf(keyword.toLowerCase());
+        return full_name_pos !== -1 || address_pos !== -1;
+      };
+    };
+
+    const handleSelect = (item) => {
+      formData.value.doctor_address_book_id = item.id;
     };
 
     const submit = () => {
@@ -422,15 +548,17 @@ export default defineComponent({
             extra_items_used: extraItems,
             admin_items_used: adminItems,
             icd_10_code: icd_10_code,
+            patient_demographic: formData.value.patient_demographic,
+            current_medications: formData.value.current_medications,
+            patient_allergies: formData.value.patient_allergies,
+            past_medical_history: formData.value.past_medical_history,
           };
 
-          store
-            .dispatch(StoreReportActions.REPORT.PATIENT_PREVIEW, data)
-            .then((data) => {
-              loading.value = false;
-              reportPreviewPdfId.value = data;
-              handlePreviewModal();
-            });
+          store.dispatch(DocumentActions.PATIENT_PREVIEW, data).then((data) => {
+            loading.value = false;
+            reportPreviewPdfId.value = data;
+            handlePreviewModal();
+          });
         }
       });
     };
@@ -485,8 +613,8 @@ export default defineComponent({
             const data = {
               title: formData.value.title,
               patient_id: patientId,
-              doctorAddressBook:
-                appointmentData.value?.referral?.doctor_address_book_name,
+              doctor_address_book_name: formData.value.doctor_address_book_name,
+              doctor_address_book_id: formData.value.doctor_address_book_id,
               patientName:
                 patientData.value.first_name +
                 " " +
@@ -500,20 +628,22 @@ export default defineComponent({
               icd_10_code: icd_10_code,
               flag: flag ? 1 : 0,
               file_name: reportPreviewPdfId.value,
+              patient_demographic: formData.value.patient_demographic,
+              current_medications: formData.value.current_medications,
+              patient_allergies: formData.value.patient_allergies,
+              past_medical_history: formData.value.past_medical_history,
             };
 
-            store
-              .dispatch(StoreReportActions.REPORT.PATIENT, data)
-              .then((data) => {
-                loading.value = false;
+            store.dispatch(DocumentActions.SAVE, data).then((data) => {
+              loading.value = false;
 
-                store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
-                  id: data,
-                });
-                router.push({
-                  path: "/patients/" + patientId + "/documents",
-                });
+              store.commit(DocumentMutations.SET_SELECTED_DOCUMENT, {
+                id: data,
               });
+              router.push({
+                path: "/patients/" + patientId + "/documents",
+              });
+            });
           }
         });
       }, 1000);
@@ -529,10 +659,20 @@ export default defineComponent({
     });
 
     watch(patientData, () => {
-      if (patientData.value)
+      if (patientData.value) {
         appointmentData.value = patientData.value.appointments?.find(
           (appointment) => appointment.id === Number(appointmentId)
         );
+      }
+    });
+
+    watch(appointmentData, () => {
+      if (appointmentData.value && appointmentData.value.referral) {
+        formData.value.doctor_address_book_name =
+          appointmentData.value.referral.doctor_address_book_name;
+        formData.value.doctor_address_book_id =
+          appointmentData.value.referral.doctor_address_book_id;
+      }
     });
 
     onMounted(() => {
@@ -576,6 +716,9 @@ export default defineComponent({
       reportPreviewPdfId,
       handleSave,
       documentType,
+      toSentenceCase,
+      searchDoctorAddressBook,
+      handleSelect,
     };
   },
 });

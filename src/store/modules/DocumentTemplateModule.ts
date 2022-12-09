@@ -3,6 +3,7 @@ import JwtService from "@/core/services/JwtService";
 import { displayServerError, displaySuccessToast } from "@/helpers/helpers";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import store from "..";
 import IDocumentSection from "../interfaces/IDocumentTemplate";
 
 export interface DocumentTemplateInfo {
@@ -100,6 +101,7 @@ export default class DocumentTemplateModule
       ApiService.setHeader();
       return ApiService.post("document-templates", item)
         .then(({ data }) => {
+          store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
           return displaySuccessToast("Document template created successfully");
         })
         .catch(({ response }) => {
@@ -116,6 +118,7 @@ export default class DocumentTemplateModule
       ApiService.setHeader();
       return ApiService.update("document-templates", item.id, item)
         .then(({ data }) => {
+          store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
           return displaySuccessToast("Document template updated successfully");
         })
         .catch(({ response }) => {
@@ -132,6 +135,7 @@ export default class DocumentTemplateModule
       ApiService.setHeader();
       return ApiService.delete("document-templates/" + id)
         .then((data) => {
+          store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
           return displaySuccessToast("Document template deleted successfully");
         })
         .catch((response) => {

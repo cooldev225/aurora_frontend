@@ -73,7 +73,7 @@
                     <el-select
                       class="w-100"
                       placeholder="Select Document Type"
-                      v-model="formData.document_type"
+                      v-model="formData.type"
                     >
                       <template
                         v-for="docType in patientDocumentTemplateTypes"
@@ -93,18 +93,6 @@
                 </div>
                 <!--end::Input group-->
 
-                <!--begin::Input group-->
-                <div class="fv-row col-12 mb-5">
-                  <el-form-item>
-                    <el-checkbox
-                      type="checkbox"
-                      v-model="formData.use_autotext"
-                      label="Use autotexts?"
-                    />
-                  </el-form-item>
-                </div>
-                <!--end::Input group-->
-
                 <div
                   class="border border-5 border-muted mb-10 p-10"
                   v-for="(documentSection, sectionIndex) in formData.sections"
@@ -119,6 +107,16 @@
                     />
                   </el-form-item>
 
+                  <div class="fv-row col-12 mb-5">
+                    <el-form-item>
+                      <el-checkbox
+                        type="checkbox"
+                        v-model="documentSection.use_autotext"
+                        label="Use autotexts?"
+                      />
+                    </el-form-item>
+                  </div>
+
                   <el-divider />
 
                   <el-form-item>
@@ -129,7 +127,7 @@
                     />
                   </el-form-item>
 
-                  <template v-if="formData.use_autotext">
+                  <template v-if="documentSection.use_autotext">
                     <h3 class="mb-4" style="font-size: 1.5rem">Auto Texts</h3>
 
                     <div
@@ -293,6 +291,7 @@ export default defineComponent({
         title: "",
         free_text_default: "",
         auto_texts: [] as Array<Record<string, string>>,
+        use_autotext: true,
       };
 
       formData.value.sections.push(new_section);
@@ -324,55 +323,22 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
 
-          if (is_create) {
-            store
-              .dispatch(Actions.DOCUMENT_TEMPLATES.CREATE, formData.value)
-              .then(() => {
-                loading.value = false;
-                store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
-                Swal.fire({
-                  text: "Successfully Created!",
-                  icon: "success",
-                  buttonsStyling: false,
-                  confirmButtonText: "Ok, got it!",
-                  customClass: {
-                    confirmButton: "btn btn-primary",
-                  },
-                }).then(() => {
-                  hideModal(createDocumentTemplateModalRef.value);
-                });
-              })
-              .catch(({ response }) => {
-                loading.value = false;
-                console.log(response.data.error);
-              });
-          } else {
-            store
-              .dispatch(Actions.DOCUMENT_TEMPLATES.UPDATE, formData.value)
-              .then(() => {
-                loading.value = false;
-                store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
-                Swal.fire({
-                  text: "Successfully Updated!",
-                  icon: "success",
-                  buttonsStyling: false,
-                  confirmButtonText: "Ok, got it!",
-                  customClass: {
-                    confirmButton: "btn btn-primary",
-                  },
-                }).then(() => {
-                  hideModal(createDocumentTemplateModalRef.value);
-                });
-              })
-              .catch(({ response }) => {
-                loading.value = false;
-                console.log(response.data.error);
-              });
-          }
+          const action = is_create
+            ? Actions.DOCUMENT_TEMPLATES.CREATE
+            : Actions.DOCUMENT_TEMPLATES.UPDATE;
 
-          formRef.value.resetFields();
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
+          store
+            .dispatch(action, formData.value)
+            .then(() => {
+              hideModal(createDocumentTemplateModalRef.value);
+            })
+            .finally(() => {
+              loading.value = false;
+
+              if (formRef.value) {
+                formRef.value.resetFields();
+              }
+            });
         }
       });
     };

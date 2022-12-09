@@ -29,7 +29,6 @@ import DoctorAddressBookModule from "@/store/modules/DoctorAddressBookModule";
 import ProcedureApprovalsModule from "@/store/modules/ProcedureApprovalsModule";
 import LetterModule from "@/store/modules/LetterModule";
 import DocumentModule from "@/store/modules/DocumentModule";
-import ReportModule from "@/store/modules/ReportModule";
 import HRMModule from "@/store/modules/HRMModule";
 import PatientsAlertModule from "@/store/modules/PatientsAlertModule";
 import HeaderFooterModule from "@/store/modules/HeaderFooterModule";
@@ -76,7 +75,6 @@ const store = createStore({
     ProcedureApprovalsModule,
     LetterModule,
     DocumentModule,
-    ReportModule,
     HRMModule,
     PatientsAlertModule,
     HeaderFooterModule,

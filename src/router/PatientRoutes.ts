@@ -46,11 +46,6 @@ const PatientRoutes = [
     name: "patients-document",
     component: () => import("@/views/patients/CreateDocument.vue"),
   },
-  {
-    path: "/patients/:patientId/report/:appointmentId",
-    name: "patients-report",
-    component: () => import("@/views/patients/CreateReport.vue"),
-  },
 ];
 
 export default PatientRoutes;
