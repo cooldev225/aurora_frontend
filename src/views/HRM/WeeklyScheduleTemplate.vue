@@ -51,7 +51,7 @@
     :clinicFilter="clinicFilter"
   />
 </template>
-<script>
+<script lang="ts">
 import {
   defineComponent,
   onMounted,
@@ -63,8 +63,9 @@ import {
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
-import HRMTimeScheduleTable from "@/components/HRM/HRMTimeScheduleTable";
-import { HRMMutations } from "@/store/enums/StoreHRMEnums";
+import HRMTimeScheduleTable from "@/components/HRM/HRMTimeScheduleTable.vue";
+import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
+import { IUser } from "@/store/modules/UserModule";
 
 export default defineComponent({
   name: "hrm-weekly-schedule-template",
@@ -93,10 +94,10 @@ export default defineComponent({
     ]);
     const clinics = computed(() => store.getters.clinicsList);
     const employeeList = computed(() => {
-      const allEmployees = store.getters.employeeList;
-      let filteredList = [];
+      const allEmployees = store.getters.hrmScheduleList;
+      let filteredList = [] as Array<IUser>;
       if (selectedEmployees.value.length > 0) {
-        allEmployees.filter((employee) => {
+        allEmployees.filter((employee: IUser) => {
           selectedEmployees.value.map((role) => {
             if (employee.role_id === role) {
               filteredList.push(employee);
@@ -109,9 +110,9 @@ export default defineComponent({
     });
 
     const employeeTypeList = computed(() => {
-      const allEmployees = store.getters.employeeList;
-      let list = [];
-      allEmployees.map((employee) => {
+      const allEmployees = store.getters.hrmScheduleList;
+      let list = [] as Array<unknown>;
+      allEmployees.map((employee: IUser) => {
         if (!list.includes(employee)) list.push(employee.role);
       });
       const uniqueArray = list.filter((value, index) => {
@@ -130,6 +131,7 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Weekly Schedule Template", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
+      store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST);
     });
 
     onBeforeUnmount(() => {
