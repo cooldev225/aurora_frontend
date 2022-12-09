@@ -15,9 +15,9 @@
   </IconTooltip>
   <span class="h-30px border-gray-200 border-start mx-2"></span>
   <IconTooltip :xOffset="-30" icon="plus">
-    <div><i :class="'fa fa-plus text-primary'"></i> Consultations Only</div>
-    <div><i :class="'fa fa-plus text-danger'"></i> Procedures Only</div>
-    <div><i :class="'fa fa-plus text-success'"></i> No Restrictions</div>
+    <div><em :class="'fa fa-plus text-primary'"></em> Consultations Only</div>
+    <div><em :class="'fa fa-plus text-danger'"></em> Procedures Only</div>
+    <div><em :class="'fa fa-plus text-success'"></em> No Restrictions</div>
   </IconTooltip>
 
   <span class="h-30px border-gray-200 border-start mx-2"></span>

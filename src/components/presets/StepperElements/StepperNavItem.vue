@@ -9,7 +9,7 @@
 
     <!--begin::Icon-->
     <div class="stepper-icon w-40px h-40px">
-      <i class="stepper-check fas fa-check"></i>
+      <em class="stepper-check fas fa-check"></em>
       <span class="stepper-number">{{ stepperNumber }}</span>
     </div>
     <!--end::Icon-->

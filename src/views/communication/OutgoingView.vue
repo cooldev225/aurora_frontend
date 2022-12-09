@@ -34,7 +34,7 @@
           class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
         >
           <span class="svg-icon svg-icon-3">
-            <i class="fas fa-eye"></i>
+            <em class="fas fa-eye"></em>
           </span>
         </button>
       </template>

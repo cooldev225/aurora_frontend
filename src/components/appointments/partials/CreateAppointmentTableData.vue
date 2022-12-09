@@ -5,7 +5,7 @@
       class="cursor-pointer"
       @click="handleCreateAppointment('info')"
     >
-      <i :class="'fa fa-plus ' + setColor()"></i>
+      <em :class="'fa fa-plus ' + setColor()"></em>
     </a>
   </td>
 </template>

@@ -84,11 +84,12 @@
                       "
                     >
                       <img
+                        alt="User Avatar"
                         v-if="formData.header"
                         :src="formData.header"
                         class="avatar"
                       />
-                      <i
+                      <em
                         v-if="!formData.header"
                         class="el-icon avatar-uploader-icon"
                       >
@@ -101,7 +102,7 @@
                             d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"
                           ></path>
                         </svg>
-                      </i>
+                      </em>
                     </el-upload>
                   </InputWrapper>
                   <InputWrapper
@@ -128,7 +129,7 @@
                         :src="formData.footer"
                         class="avatar"
                       />
-                      <i
+                      <em
                         v-if="!formData.footer"
                         class="el-icon avatar-uploader-icon"
                       >
@@ -141,7 +142,7 @@
                             d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"
                           ></path>
                         </svg>
-                      </i>
+                      </em>
                     </el-upload>
                   </InputWrapper>
                 </div>
@@ -264,12 +265,10 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           if (!formData.value.header_file) {
-            valid = false;
             ElMessage.error("Please upload header file!");
             return false;
           }
           if (!formData.value.footer_file) {
-            valid = false;
             ElMessage.error("Please upload footer file!");
             return false;
           }

@@ -1,6 +1,9 @@
 <template>
   <CardSection>
     <table class="w-100">
+      <caption>
+        The weekly schedule for all employees
+      </caption>
       <thead>
         <th>Employee Type</th>
         <th v-for="day in props.dateOptions.datesInWeek" :key="day.value">

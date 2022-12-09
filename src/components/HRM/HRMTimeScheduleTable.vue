@@ -1,6 +1,9 @@
 <template>
   <CardSection>
     <table class="w-100">
+      <caption>
+        The time sheet templates for all employees
+      </caption>
       <thead>
         <th>Employee Type</th>
         <th v-for="day in weekdays" :key="day.value">

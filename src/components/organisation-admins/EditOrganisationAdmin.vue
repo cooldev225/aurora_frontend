@@ -108,11 +108,11 @@
                 <!--begin::Label-->
                 <label class="fs-6 fw-bold mb-2">
                   <span class="required">Email</span>
-                  <i
+                  <em
                     class="fas fa-exclamation-circle ms-1 fs-7"
                     data-bs-toggle="tooltip"
                     title="Email address must be active"
-                  ></i>
+                  ></em>
                 </label>
                 <!--end::Label-->
 

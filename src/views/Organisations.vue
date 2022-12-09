@@ -76,14 +76,14 @@
         <template v-slot:cell-stats="{ row: organization }">
           <div class="d-flex flex-column">
             <div class="mb-2">
-              <i class="bi bi-building fs-1x"></i>
+              <em class="bi bi-building fs-1x"></em>
               <span class="">
                 {{ organization.clinic_count }} /
                 {{ organization.max_clinics }}</span
               >
             </div>
             <div>
-              <i class="bi bi-person-fill fs-1x"></i>
+              <em class="bi bi-person-fill fs-1x"></em>
               <span class="">
                 {{ organization.user_count }} /
                 {{ organization.max_employees }}</span

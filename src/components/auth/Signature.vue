@@ -62,11 +62,12 @@
                 "
               >
                 <img
+                  alt="User Signature"
                   v-if="formData.signature"
                   :src="formData.signature"
                   class="signature"
                 />
-                <i
+                <em
                   v-if="!formData.signature"
                   class="el-icon avatar-uploader-icon"
                 >
@@ -79,7 +80,7 @@
                       d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"
                     ></path>
                   </svg>
-                </i>
+                </em>
               </el-upload>
             </InputWrapper>
             <InputWrapper label="Sign Of" prop="sign_off">
@@ -220,7 +221,7 @@ export default defineComponent({
     };
 
     const submit = () => {
-      var signature = null;
+      let signature = null;
       if (isUpload.value === true) {
         signature = formData.value.signature_file;
       } else {
