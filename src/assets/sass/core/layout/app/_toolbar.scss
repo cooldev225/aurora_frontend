@@ -87,7 +87,7 @@
         // Aside panel
         [data-kt-app-toolbar-fixed="true"][data-kt-app-aside-panel-fixed="true"][data-kt-app-aside-panel-push-toolbar="true"] & {
             left: calc(
-                var(--kt-app-aside-width) +  
+                var(--kt-app-aside-width) + 
                 var(--kt-app-aside-gap-start, 0px) + 
                 var(--kt-app-aside-gap-end, 0px) + 
                 var(--kt-app-aside-panel-width) + 

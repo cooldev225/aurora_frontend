@@ -84,7 +84,7 @@
                       "
                     >
                       <img
-                        alt="User Avatar"
+                        alt="Header Image"
                         v-if="formData.header"
                         :src="formData.header"
                         class="avatar"
@@ -125,6 +125,7 @@
                       "
                     >
                       <img
+                        alt="Footer image"
                         v-if="formData.footer"
                         :src="formData.footer"
                         class="avatar"

@@ -10,7 +10,7 @@
        
           {{ formData.sign_off }}<br/>
      
-        <img style="height:80px" :src="signature" />
+        <img alt="User Signature" style="height:80px" :src="signature" />
         <div class="text-primary p-2idth-500 h6">
           {{userInfo?.full_name}}
         </div>

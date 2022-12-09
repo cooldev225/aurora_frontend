@@ -52,6 +52,7 @@
           <div class="d-flex align-items-center">
             <div class="symbol symbol-50px me-2">
               <img
+                alt="Org Logo"
                 v-if="organization.logo"
                 :src="organization.logo"
                 class="h-50 align-self-center"
