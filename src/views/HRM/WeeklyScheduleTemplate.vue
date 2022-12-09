@@ -52,11 +52,19 @@
   />
 </template>
 <script>
-import { defineComponent, onMounted, computed, watch, ref } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  computed,
+  watch,
+  ref,
+  onBeforeUnmount,
+} from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import HRMTimeScheduleTable from "@/components/HRM/HRMTimeScheduleTable";
+import { HRMMutations } from "@/store/enums/StoreHRMEnums";
 
 export default defineComponent({
   name: "hrm-weekly-schedule-template",
@@ -122,6 +130,11 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Weekly Schedule Template", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
+    });
+
+    onBeforeUnmount(() => {
+      store.commit(HRMMutations.SCHEDULE.SET_LIST, []);
+      store.commit(HRMMutations.SCHEDULE.SET_SELECT, []);
     });
 
     watch(clinics, () => {

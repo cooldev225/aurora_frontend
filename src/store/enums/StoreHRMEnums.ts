@@ -38,7 +38,6 @@ const HRMMutations = {
         SET_SELECT: "setScheduleTemplateSelect",
         SET_TIMESLOT: "setTimeslotTemplateSelect",
     },
-
     BULLETIN: {
         SET_LIST: "setBulletinList",
         SET_SELECT: "setBulletinSelect",

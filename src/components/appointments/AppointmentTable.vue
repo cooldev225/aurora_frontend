@@ -206,7 +206,7 @@ export default defineComponent({
       var check = moment(props.visibleDate.date, "YYYY/MM/DD");
       var day = check.format("ddd").toUpperCase();
       allSpecialists.value.forEach((specialist) => {
-        specialist.schedule_timeslots.forEach((timeslot) => {
+        specialist.hrm_work_schedule.forEach((timeslot) => {
           if (timeslot.week_day == day) {
             let date = moment(props.visibleDate.date, "YYYY/MM/DD").format(
               "YYYY-MM-DD"

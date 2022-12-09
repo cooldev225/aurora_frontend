@@ -83,13 +83,20 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, computed, watch, ref } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  computed,
+  watch,
+  ref,
+  onBeforeUnmount,
+} from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import HRMTimeScheduleTable from "@/components/HRM/HRMWeeklyScheduleTable";
 import moment from "moment";
-import { HRMActions } from "@/store/enums/StoreHRMEnums";
+import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import FillFromTemplateModal from "@/views/HRM/modals/FillFromTemplateModal";
 import Swal from "sweetalert2";
 import { ElNotification } from "element-plus";
@@ -171,6 +178,11 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Weekly Schedule", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       setDate(0);
+    });
+
+    onBeforeUnmount(() => {
+      store.commit(HRMMutations.SCHEDULE.SET_LIST, []);
+      store.commit(HRMMutations.SCHEDULE.SET_SELECT, []);
     });
 
     watch(clinics, () => {
