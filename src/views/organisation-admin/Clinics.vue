@@ -12,8 +12,18 @@
           class="d-flex justify-content-end"
           data-kt-subscription-table-toolbar="base"
         >
+          <el-alert
+            v-if="userProfile.is_max_clinic"
+            title="The number of clinics in the organization is the maximum."
+            type="warning"
+          />
           <!--begin::Add subscription-->
-          <router-link to="/clinics/create" class="btn btn-primary">
+          <router-link
+            v-else
+            disabled="true"
+            to="/clinics/create"
+            class="btn btn-primary"
+          >
             <span class="svg-icon svg-icon-2">
               <InlineSVG icon="plus" />
             </span>
@@ -107,6 +117,7 @@ export default defineComponent({
     const tableData = ref<IClinic[]>();
     const router = useRouter();
     const clinicsList = computed<IClinic[]>(() => store.getters.clinicsList);
+    const userProfile = computed(() => store.getters.userProfile);
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_CLINICS.SELECT, item);
@@ -171,6 +182,7 @@ export default defineComponent({
     return {
       tableHeader,
       tableData,
+      userProfile,
       handleEdit,
       handleDelete,
       handleRoomEdit,
