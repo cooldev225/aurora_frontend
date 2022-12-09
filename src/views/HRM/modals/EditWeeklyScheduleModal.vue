@@ -374,7 +374,7 @@ export default defineComponent({
 
     const employeeList = computed(() => store.getters.employeeList);
     const schedule = computed(() => store.getters.hrmScheduleSelected);
-    const timeslots = computed(() => store.getters.hrmTimeslotSelected);
+    const timeslots = computed(() => store.getters.hrmSelectedScheduleList);
     const anesthetists = computed(() => store.getters.hrmAnesthetist);
     const clinics = computed(() => store.getters.clinicsList);
     watch([schedule, timeslots], () => {

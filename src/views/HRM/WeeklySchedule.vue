@@ -135,7 +135,7 @@ export default defineComponent({
     const clinics = computed(() => store.getters.clinicsList);
     const leaveList = computed(() => store.getters.hrmDataList);
     const employeeList = computed(() => {
-      const allEmployees = store.getters.hrmWeeklyTemplatesData;
+      const allEmployees = store.getters.hrmScheduleList;
       let filteredList = [];
       if (selectedEmployees.value.length > 0) {
         allEmployees.filter((employee) => {
@@ -150,7 +150,7 @@ export default defineComponent({
       } else return allEmployees;
     });
     const employeeTypeList = computed(() => {
-      const allEmployees = store.getters.hrmWeeklyTemplatesData;
+      const allEmployees = store.getters.hrmScheduleList;
       let list = [];
       allEmployees.map((employee) => {
         if (!list.includes(employee)) list.push(employee.role);
@@ -213,7 +213,7 @@ export default defineComponent({
       }
       loading.value = true;
       store
-        .dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+        .dispatch(HRMActions.WEEKLY_SCHEDULE.LIST, {
           date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
         })
         .then(() => {
@@ -339,9 +339,9 @@ export default defineComponent({
         );
         if (shiftData.unpublishedShiftFound) {
           store
-            .dispatch(HRMActions.WEEKLY_TEMPLATE.UPDATE, shiftData.publishSlots)
+            .dispatch(HRMActions.WEEKLY_SCHEDULE.UPDATE, shiftData.publishSlots)
             .then(() => {
-              store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+              store.dispatch(HRMActions.WEEKLY_SCHEDULE.LIST, {
                 date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
               });
             });
@@ -356,7 +356,7 @@ export default defineComponent({
     };
     const canPullFromTemplate = computed(() => {
       let result = false;
-      const allEmployees = store.getters.hrmWeeklyTemplatesData;
+      const allEmployees = store.getters.hrmScheduleList;
       allEmployees.map((user) => {
         user.hrm_weekly_schedule.map((slot) => {
           if (slot.hrm_filled_week_id) result = true;
