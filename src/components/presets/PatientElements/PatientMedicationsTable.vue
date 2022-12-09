@@ -4,6 +4,9 @@
       <IconButton label="Create New" @click="handleAddMedication" />
     </template>
     <table class="table">
+      <caption>
+        Patient medication's table
+      </caption>
       <tr class="fw-bold">
         <th>Name</th>
         <th>Instructions</th>

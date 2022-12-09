@@ -12,6 +12,7 @@
             <el-form-item label="Logo">
               <div class="d-flex">
                 <img
+                  alt="Organization Logo"
                   v-if="formData.logo"
                   :src="formData.logo"
                   className="rounded me-2"
