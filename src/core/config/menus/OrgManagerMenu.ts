@@ -93,12 +93,32 @@ const OrgManagerMenu = [
     svgIcon: icons.person_circle,
     pages: [
       {
+        heading: "Weekly Schedule Template",
+        route: "/hrm/weekly-schedule-template",
+      },
+      {
+        heading: "Weekly Schedule",
+        route: "/hrm/weekly-schedule",
+      },
+      {
+        heading: "All Employees",
+        route: "/employees",
+      },
+      {
+        heading: "Administrators",
+        route: "/organisationAdmins",
+      },
+      {
         heading: "Bulletin Board",
         route: "/hrm/bulletin-board",
       },
       {
         heading: "Employee Availabilities",
         route: "/hrm/employee-availabilities",
+      },
+      {
+        heading: "Manage Bulletins",
+        route: "/hrm/bulletin-manage",
       },
     ],
   },
