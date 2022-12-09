@@ -150,13 +150,6 @@ const Actions = {
     UPDATE: "updateDoctorAddressBook",
   },
 
-  LETTER_TEMPLATE: {
-    LIST: "listLetterTemplate",
-    CREATE: "createLetterTemplate",
-    UPDATE: "updateLetterTemplate",
-    DELETE: "deleteLetterTemplate",
-  },
-
   LETTER: {
     CREATE: "createLetter",
   },
@@ -280,11 +273,6 @@ const Mutations = {
 
   SET_DOCTOR_ADDRESS_BOOK: {
     LIST: "setDoctorAddressBook",
-  },
-
-  SET_LETTER_TEMPLATE: {
-    LIST: "setLetterTemplate",
-    SELECT: "setLetterTemplateSelect",
   },
 
   SET_DOCUMENT_TEMPLATES: {
