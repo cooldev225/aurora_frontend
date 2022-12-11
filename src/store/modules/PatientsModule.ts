@@ -365,6 +365,60 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
+  [PatientActions.MEDICATION.ADD](medication) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.post(`patients/medications`, medication)
+        .then(() => {
+          this.context.dispatch(PatientActions.VIEW, medication.patient_id);
+
+          return displaySuccessToast("Patient medication added successfully");
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Adding a patient medication");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [PatientActions.MEDICATION.UPDATE](data) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.update(`patients/medications`, data.id, data)
+        .then(() => {
+          this.context.dispatch(PatientActions.VIEW, data.patient_id);
+
+          return displaySuccessToast("Patient medication updated successfully");
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Updating a patient medication");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
+  [PatientActions.MEDICATION.DELETE](medication) {
+    if (JwtService.getToken()) {
+      ApiService.setHeader();
+      return ApiService.delete(`patients/medications/${medication.id}`)
+        .then(() => {
+          this.context.dispatch(PatientActions.VIEW, medication.patient_id);
+
+          return displaySuccessToast("Successfully deleted medication");
+        })
+        .catch(({ response }) => {
+          return displayServerError(response, "Deleting a patient medication");
+        });
+    } else {
+      this.context.commit(Mutations.PURGE_AUTH);
+    }
+  }
+
+  @Action
   [PatientActions.ALSO_KNOWN_AS.CREATE](details) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
