@@ -2194,7 +2194,7 @@ export default defineComponent({
     };
 
     const aptOverlapCheck = () => {
-      if (props.modalId == "model_edit_apt") {
+      if (props.modalId === "modal_edit_apt") {
         handleStep_1();
         return;
       }
@@ -2202,6 +2202,7 @@ export default defineComponent({
       const endTime = aptInfoData.value.time_slot[1] + ":00";
       const filter = aptList.value.filter((apt) => {
         if (
+          !apt.draft_status &&
           aptInfoData.value.specialist_id === apt.specialist_id &&
           aptInfoData.value.clinic_id === apt.clinic_id
         ) {

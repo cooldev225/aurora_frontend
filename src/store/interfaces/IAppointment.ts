@@ -31,4 +31,5 @@ export default interface IAppointment {
   charge_type: string;
   action: string;
   step: number;
+  draft_status: boolean;
 }
