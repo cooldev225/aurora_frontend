@@ -31,12 +31,12 @@
         </template>
         <template v-slot:cell-header_file="{ row: item }">
           <div class="img-previewer">
-            <img :src="item.header" />
+            <img alt="header image preview" :src="item.header" />
           </div>
         </template>
         <template v-slot:cell-footer_file="{ row: item }">
           <div class="img-previewer">
-            <img :src="item.footer" />
+            <img alt="footer image preview" :src="item.footer" />
           </div>
         </template>
         <template v-slot:cell-action="{ row: item }">

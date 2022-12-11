@@ -4,6 +4,9 @@
       <IconButton label="Create New" @click="handleAddMedicalHistory" />
     </template>
     <table class="table">
+      <caption>
+        Patient medical history table
+      </caption>
       <tr class="fw-bold">
         <th>Timeframe</th>
         <th>Description</th>

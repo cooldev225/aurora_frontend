@@ -237,11 +237,11 @@ export default defineComponent({
     const route = useRoute();
     const formRef = ref<HTMLFormElement>();
 
-    const formData = ref<IAppointmentType>();
-    const aptTypes = computed(() => store.getters.getAptTypesList);
+    const loading = ref<boolean>(false);
+    const formData = ref<IAppointmentType>({} as IAppointmentType);
     const reportTemplates = computed(() => store.getters.getReportTemplateList);
     const scheduleItems = computed(() => store.getters.scheduleItemList);
-    const loading = ref<boolean>(false);
+    const aptTypes = computed(() => store.getters.getAptTypesList);
     const predefineColors = ref([
       "#ff4500",
       "#ff8c00",

@@ -101,7 +101,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
@@ -114,7 +114,7 @@ export default defineComponent({
   components: { InputWrapper },
   setup() {
     const store = useStore();
-    const formRef = ref(null);
+    const formRef = ref<HTMLFormElement>();
     const editRoomModalRef = ref(null);
     const loading = ref(false);
 
@@ -176,9 +176,9 @@ export default defineComponent({
               loading.value = false;
               console.log(response.data.error);
             });
-          formRef.value.resetFields();
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
+          if (formRef.value) {
+            formRef.value.resetFields();
+          }
         }
       });
     };

@@ -5,7 +5,7 @@
       class="cursor-pointer"
       @click="handleCreateAppointment('info')"
     >
-      <i :class="'fa fa-plus ' + setColor()"></i>
+      <em :class="'fa fa-plus ' + setColor()"></em>
     </a>
   </td>
 </template>
@@ -57,7 +57,7 @@ export default {
     };
 
     const specialistAvailable = () => {
-      if (!props.specialist.hrm_weekly_schedule) {
+      if (!props.specialist.hrm_work_schedule) {
         return false;
       } else {
         if (getTimeSlot()) {
@@ -68,7 +68,7 @@ export default {
 
     const getTimeSlot = () => {
       let result;
-      props.specialist.hrm_weekly_schedule.forEach(function (timeSlot) {
+      props.specialist.hrm_work_schedule.forEach(function (timeSlot) {
         let startTime = timeStr2Number(timeSlot.start_time);
         let endTime = timeStr2Number(timeSlot.end_time);
         let appointmentTime = timeStr2Number(props.startTime);

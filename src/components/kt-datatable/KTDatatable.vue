@@ -6,6 +6,11 @@
         class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer"
         role="grid"
       >
+        <caption>
+          {{
+            tableDescription
+          }}
+        </caption>
         <!--begin::Table head-->
         <thead v-if="!disableTableHeader">
           <!--begin::Table row-->
@@ -41,11 +46,6 @@
                 >
                   {{ cell.name }}
                 </div>
-                <!-- <input
-                  type="text"
-                  class="form-control form-control-solid w-max-250px"
-                  :class="!cell.searchable && 'invisible'"
-                /> -->
               </th>
             </template>
           </tr>
@@ -178,6 +178,7 @@ export default defineComponent({
     sortLabel: { type: String, default: "" },
     disableTableHeader: { type: Boolean, default: false },
     highlightToday: { type: Boolean, default: false },
+    tableDescription: { type: String, required: false },
   },
   components: {},
   setup(props, { emit }) {

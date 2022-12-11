@@ -412,9 +412,9 @@ export default defineComponent({
     });
     const orginalTimeslots = ref([]);
 
-    const employeeList = computed(() => store.getters.hrmWeeklyTemplatesData);
+    const employeeList = computed(() => store.getters.hrmScheduleList);
     const schedule = computed(() => store.getters.hrmScheduleSelected);
-    const timeslots = computed(() => store.getters.hrmWeeklyTemplateSelected);
+    const timeslots = computed(() => store.getters.hrmSelectedScheduleList);
     // need to get anesthetist based on their weekly template
     const anesthetists = computed(() => store.getters.hrmAnesthetist);
     const clinics = computed(() => store.getters.clinicsList);
@@ -638,7 +638,7 @@ export default defineComponent({
             .dispatch(schedule.value._submit, formData.value)
             .then(() => {
               loading.value = false;
-              store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+              store.dispatch(HRMActions.WEEKLY_SCHEDULE.LIST, {
                 date: schedule.value.dateOptions.date,
               });
             })

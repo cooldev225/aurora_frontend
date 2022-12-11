@@ -101,7 +101,7 @@
               class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
             >
               <span class="svg-icon svg-icon-3">
-                <i class="fas fa-eye"></i>
+                <em class="fas fa-eye"></em>
               </span>
             </button>
             {{ item.first_name }} {{ item.last_name }}

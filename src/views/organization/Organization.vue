@@ -12,6 +12,7 @@
             <el-form-item label="Logo">
               <div class="d-flex">
                 <img
+                  alt="Organization Logo"
                   v-if="formData.logo"
                   :src="formData.logo"
                   className="rounded me-2"
@@ -28,7 +29,7 @@
                   :auto-upload="false"
                   accept="image/*"
                 >
-                  <i class="fa fa-plus"></i>
+                  <em class="fa fa-plus"></em>
                 </el-upload>
               </div>
             </el-form-item>

@@ -20,11 +20,11 @@
           >
             <router-link class="menu-link menu-center" :to="item.route">
               <span v-if="item.svgIcon || item.fontIcon" class="menu-icon me-0">
-                <i
+                <em
                   v-if="asideMenuIcons === 'font'"
                   :class="item.fontIcon"
                   class="bi fs-2"
-                ></i>
+                ></em>
                 <span
                   v-else-if="asideMenuIcons === 'svg'"
                   class="svg-icon svg-icon-4x"
@@ -51,11 +51,11 @@
         >
           <span class="menu-link menu-center">
             <span v-if="item.svgIcon || item.fontIcon" class="menu-icon me-0">
-              <i
+              <em
                 v-if="asideMenuIcons === 'font'"
                 :class="item.fontIcon"
                 class="bi fs-2"
-              ></i>
+              ></em>
               <span
                 v-else-if="asideMenuIcons === 'svg'"
                 class="svg-icon svg-icon-4x"
