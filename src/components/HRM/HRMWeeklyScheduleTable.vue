@@ -1,6 +1,9 @@
 <template>
   <CardSection>
     <table class="w-100">
+      <caption>
+        The weekly schedule for all employees
+      </caption>
       <thead>
         <th>Employee Type</th>
         <th v-for="day in props.dateOptions.datesInWeek" :key="day.value">
@@ -119,15 +122,14 @@ export default defineComponent({
         label: "Anesthetist",
       },
     ]);
+
     const clinics = computed(() => store.getters.clinicsList);
-    const scheduleTemplates = computed(() => store.getters.hrmScheduleList);
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Weekly Schedule Template", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
-
     const handleEditTemplateTimeslots = (schedule, day) => {
       if (!props.canEdit) {
         return;
@@ -140,16 +142,16 @@ export default defineComponent({
       store.dispatch(HRMActions.ANESTHETIST.LIST, {
         date: day.date,
       });
-      if (schedule.id) schedule._submit = HRMActions.WEEKLY_TEMPLATE.UPDATE;
+      if (schedule.id) schedule._submit = HRMActions.WEEKLY_SCHEDULE.UPDATE;
       schedule._day = day.week_day;
-      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
+      store.commit(HRMMutations.SCHEDULE.SET_SELECT, schedule);
       let timeslots = schedule.hrm_weekly_schedule.filter(
         (t) => t.week_day == schedule._day
       );
       if (!timeslots.length) {
         timeslots = [];
       }
-      store.commit(HRMMutations.WEEKLY_TEMPLATE.SET_TIMESLOT, timeslots);
+      store.commit(HRMMutations.SCHEDULE.SET_TIMESLOT, timeslots);
       const modal = new Modal(
         document.getElementById("hrm_modal_edit_schedule")
       );
@@ -227,7 +229,6 @@ export default defineComponent({
       }
     };
     return {
-      scheduleTemplates,
       weekdays,
       moment,
       handleEditTemplateTimeslots,

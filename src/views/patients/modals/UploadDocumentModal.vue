@@ -130,7 +130,7 @@
           :auto-upload="false"
           accept="*/*"
         >
-          <i class="fa fa-plus"></i> </el-upload
+          <em class="fa fa-plus"></em> </el-upload
       ></InputWrapper>
 
       <!--begin::Modal footer-->

@@ -374,7 +374,7 @@ export default defineComponent({
 
     const employeeList = computed(() => store.getters.employeeList);
     const schedule = computed(() => store.getters.hrmScheduleSelected);
-    const timeslots = computed(() => store.getters.hrmTimeslotSelected);
+    const timeslots = computed(() => store.getters.hrmSelectedScheduleList);
     const anesthetists = computed(() => store.getters.hrmAnesthetist);
     const clinics = computed(() => store.getters.clinicsList);
     watch([schedule, timeslots], () => {
@@ -470,11 +470,13 @@ export default defineComponent({
           store
             .dispatch(schedule.value._submit, formData.value)
             .then(() => {
-              loading.value = false;
-              store.dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
-                clinic_id: formData.value.clinic_id,
-              });
-              store.dispatch(Actions.EMPLOYEE.LIST);
+              store
+                .dispatch(HRMActions.SCHEDULE_TEMPLATE.LIST, {
+                  clinic_id: formData.value.clinic_id,
+                })
+                .then(() => {
+                  loading.value = false;
+                });
             })
             .catch(({ response }) => {
               loading.value = false;

@@ -141,7 +141,7 @@ export default defineComponent({
     };
 
     const deleteAllergy = (item) => {
-      store.dispatch(PatientActions.ALLERGY.DELETE, item);
+      store.dispatch(PatientActions.MEDICATION.DELETE, item);
     };
 
     const closePatientAllergyModal = () => {

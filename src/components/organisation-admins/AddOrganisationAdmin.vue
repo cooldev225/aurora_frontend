@@ -108,11 +108,11 @@
                 <!--begin::Label-->
                 <label class="fs-6 fw-bold mb-2">
                   <span class="required">Email</span>
-                  <i
+                  <em
                     class="fas fa-exclamation-circle ms-1 fs-7"
                     data-bs-toggle="tooltip"
                     title="Email address must be active"
-                  ></i>
+                  ></em>
                 </label>
                 <!--end::Label-->
 
@@ -140,8 +140,8 @@
                     class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2"
                     data-kt-password-meter-control="visibility"
                   >
-                    <i class="bi bi-eye-slash fs-2"></i>
-                    <i class="bi bi-eye fs-2 d-none"></i>
+                    <em class="bi bi-eye-slash fs-2"></em>
+                    <em class="bi bi-eye fs-2 d-none"></em>
                   </span>
                 </el-form-item>
                 <div

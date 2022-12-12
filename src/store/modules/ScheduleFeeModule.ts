@@ -2,13 +2,7 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-
-export interface IScheduleFee {
-  id: number;
-  amount: number;
-  health_fund_code: string;
-  schedule_item_id: number;
-}
+import IScheduleFee from "../interfaces/IScheduleFee";
 
 export interface ScheduleFeeInfo {
   scheduleFeeData: Array<IScheduleFee>;

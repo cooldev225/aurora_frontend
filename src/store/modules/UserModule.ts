@@ -11,6 +11,8 @@ export interface IUser {
   username: string;
   email: string;
   photo: string;
+  role: Array<unknown>;
+  role_id: number;
 }
 
 export interface UserInfo {

@@ -3,6 +3,7 @@ import JwtService from "@/core/services/JwtService";
 import { Mutations } from "@/store/enums/StoreEnums";
 import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import { IUser } from "@/store/modules/UserModule";
 
 export interface IHRMWeeklyScheduleTimeslot {
   id: number;
@@ -13,11 +14,10 @@ export interface IHRMWeeklyScheduleTemplate {
 }
 
 export interface IHRMWeeklyScheduleTemplates {
-  hrmScheduleData: Array<IHRMWeeklyScheduleTemplate>;
   hrmScheduleSelectData: IHRMWeeklyScheduleTemplate;
-  hrmTimeslotSelectData: Array<IHRMWeeklyScheduleTimeslot>;
   hrmAnesthetists: Array<IHRMWeeklyScheduleTemplate>;
-  hrmWeeklyTemplateData: Array<IHRMWeeklyScheduleTemplate>;
+  hrmScheduleListData: Array<IUser>;
+  hrmSelectedScheduleListData: Array<IHRMWeeklyScheduleTemplate>;
   hrmData: Array<IHRMWeeklyScheduleTemplate>;
   hrmSelectedData: IHRMWeeklyScheduleTemplate;
 }
@@ -27,37 +27,27 @@ export default class HRMModule
   extends VuexModule
   implements IHRMWeeklyScheduleTemplates
 {
-  hrmScheduleData = [] as Array<IHRMWeeklyScheduleTemplate>;
   hrmScheduleSelectData = {} as IHRMWeeklyScheduleTemplate;
-  hrmTimeslotSelectData = [] as Array<IHRMWeeklyScheduleTimeslot>;
   hrmAnesthetists = [] as Array<IHRMWeeklyScheduleTemplate>;
-  hrmWeeklyTemplateData = [] as Array<IHRMWeeklyScheduleTemplate>;
-  hrmWeeklyTemplateSelectData = [] as Array<IHRMWeeklyScheduleTimeslot>;
   hrmData = [] as Array<IHRMWeeklyScheduleTemplate>;
   hrmSelectedData = {} as IHRMWeeklyScheduleTemplate;
-
-  get hrmScheduleList(): Array<IHRMWeeklyScheduleTemplate> {
-    return this.hrmScheduleData;
-  }
+  hrmScheduleListData = [] as Array<IUser>;
+  hrmSelectedScheduleListData = [] as Array<IHRMWeeklyScheduleTemplate>;
 
   get hrmScheduleSelected(): IHRMWeeklyScheduleTemplate {
     return this.hrmScheduleSelectData;
   }
 
-  get hrmTimeslotSelected(): Array<IHRMWeeklyScheduleTemplate> {
-    return this.hrmTimeslotSelectData;
+  get hrmScheduleList(): Array<IUser> {
+    return this.hrmScheduleListData;
+  }
+
+  get hrmSelectedScheduleList(): Array<IHRMWeeklyScheduleTemplate> {
+    return this.hrmSelectedScheduleListData;
   }
 
   get hrmAnesthetist(): Array<IHRMWeeklyScheduleTimeslot> {
     return this.hrmAnesthetists;
-  }
-
-  get hrmWeeklyTemplatesData(): Array<IHRMWeeklyScheduleTemplate> {
-    return this.hrmWeeklyTemplateData;
-  }
-
-  get hrmWeeklyTemplateSelected(): Array<IHRMWeeklyScheduleTemplate> {
-    return this.hrmWeeklyTemplateSelectData;
   }
 
   get hrmDataList(): Array<IHRMWeeklyScheduleTemplate> {
@@ -69,18 +59,13 @@ export default class HRMModule
   }
 
   @Mutation
-  [HRMMutations.SCHEDULE_TEMPLATE.SET_LIST](data) {
-    this.hrmScheduleData = data;
-  }
-
-  @Mutation
-  [HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT](data) {
+  [HRMMutations.SCHEDULE.SET_SELECT](data) {
     this.hrmScheduleSelectData = data;
   }
 
   @Mutation
-  [HRMMutations.SCHEDULE_TEMPLATE.SET_TIMESLOT](data) {
-    this.hrmTimeslotSelectData = data;
+  [HRMMutations.SCHEDULE.SET_TIMESLOT](data) {
+    this.hrmSelectedScheduleListData = data;
   }
 
   @Mutation
@@ -89,13 +74,8 @@ export default class HRMModule
   }
 
   @Mutation
-  [HRMMutations.WEEKLY_TEMPLATE.SET_LIST](data) {
-    this.hrmWeeklyTemplateData = data;
-  }
-
-  @Mutation
-  [HRMMutations.WEEKLY_TEMPLATE.SET_TIMESLOT](data) {
-    this.hrmWeeklyTemplateSelectData = data;
+  [HRMMutations.SCHEDULE.SET_LIST](data) {
+    this.hrmScheduleListData = data;
   }
 
   @Mutation
@@ -109,19 +89,12 @@ export default class HRMModule
   }
 
   @Action
-  [HRMActions.SCHEDULE_TEMPLATE.LIST](data) {
+  [HRMActions.SCHEDULE_TEMPLATE.LIST]() {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.query("hrm/schedule-template", {
-        params: {
-          clinic_id: data.clinic_id,
-        },
-      })
+      ApiService.query("hrm/schedule-template", {})
         .then(({ data }) => {
-          this.context.commit(
-            HRMMutations.SCHEDULE_TEMPLATE.SET_LIST,
-            data.data
-          );
+          this.context.commit(HRMMutations.SCHEDULE.SET_LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -182,7 +155,7 @@ export default class HRMModule
   }
 
   @Action
-  [HRMActions.WEEKLY_TEMPLATE.LIST](data) {
+  [HRMActions.WEEKLY_SCHEDULE.LIST](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.query("hrm/weekly-schedule", {
@@ -191,7 +164,7 @@ export default class HRMModule
         },
       })
         .then(({ data }) => {
-          this.context.commit(HRMMutations.WEEKLY_TEMPLATE.SET_LIST, data.data);
+          this.context.commit(HRMMutations.SCHEDULE.SET_LIST, data.data);
           return data.data;
         })
         .catch(({ response }) => {
@@ -203,10 +176,10 @@ export default class HRMModule
   }
 
   @Action
-  [HRMActions.WEEKLY_TEMPLATE.CREATE](item) {
+  [HRMActions.WEEKLY_SCHEDULE.CREATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      ApiService.post("hrm/weekly-schedule", item)
+      return ApiService.post("hrm/weekly-schedule", item)
         .then(({ data }) => {
           return data.data;
         })
@@ -219,7 +192,7 @@ export default class HRMModule
   }
 
   @Action
-  [HRMActions.WEEKLY_TEMPLATE.UPDATE](item) {
+  [HRMActions.WEEKLY_SCHEDULE.UPDATE](item) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
       ApiService.update("hrm/weekly-schedule", item.id, item)

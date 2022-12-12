@@ -159,7 +159,7 @@ export default defineComponent({
       }
       loading.value = true;
       store
-        .dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+        .dispatch(HRMActions.WEEKLY_SCHEDULE.LIST, {
           date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
         })
         .then(() => {
@@ -201,8 +201,8 @@ export default defineComponent({
         data.date = moment(dateRange.value.startDate)
           .format("YYYY-MM-DD")
           .toString();
-      store.dispatch(HRMActions.WEEKLY_TEMPLATE.CREATE, data).then(() => {
-        store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+      store.dispatch(HRMActions.WEEKLY_SCHEDULE.CREATE, data).then(() => {
+        store.dispatch(HRMActions.WEEKLY_SCHEDULE.LIST, {
           date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
         });
       });
@@ -245,9 +245,9 @@ export default defineComponent({
         });
         if (unpublishedShiftFound) {
           store
-            .dispatch(HRMActions.WEEKLY_TEMPLATE.UPDATE, publishSlots)
+            .dispatch(HRMActions.WEEKLY_SCHEDULE.UPDATE, publishSlots)
             .then(() => {
-              store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+              store.dispatch(HRMActions.WEEKLY_SCHEDULE.LIST, {
                 date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
               });
             });

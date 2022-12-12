@@ -83,13 +83,20 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, computed, watch, ref } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  computed,
+  watch,
+  ref,
+  onBeforeUnmount,
+} from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { Actions } from "@/store/enums/StoreEnums";
 import HRMTimeScheduleTable from "@/components/HRM/HRMWeeklyScheduleTable";
 import moment from "moment";
-import { HRMActions } from "@/store/enums/StoreHRMEnums";
+import { HRMActions, HRMMutations } from "@/store/enums/StoreHRMEnums";
 import FillFromTemplateModal from "@/views/HRM/modals/FillFromTemplateModal";
 import Swal from "sweetalert2";
 import { ElNotification } from "element-plus";
@@ -135,7 +142,7 @@ export default defineComponent({
     const clinics = computed(() => store.getters.clinicsList);
     const leaveList = computed(() => store.getters.hrmDataList);
     const employeeList = computed(() => {
-      const allEmployees = store.getters.hrmWeeklyTemplatesData;
+      const allEmployees = store.getters.hrmScheduleList;
       let filteredList = [];
       if (selectedEmployees.value.length > 0) {
         allEmployees.filter((employee) => {
@@ -150,7 +157,7 @@ export default defineComponent({
       } else return allEmployees;
     });
     const employeeTypeList = computed(() => {
-      const allEmployees = store.getters.hrmWeeklyTemplatesData;
+      const allEmployees = store.getters.hrmScheduleList;
       let list = [];
       allEmployees.map((employee) => {
         if (!list.includes(employee)) list.push(employee.role);
@@ -171,6 +178,11 @@ export default defineComponent({
       setCurrentPageBreadcrumbs("Weekly Schedule", ["HRM"]);
       store.dispatch(Actions.CLINICS.LIST);
       setDate(0);
+    });
+
+    onBeforeUnmount(() => {
+      store.commit(HRMMutations.SCHEDULE.SET_LIST, []);
+      store.commit(HRMMutations.SCHEDULE.SET_SELECT, []);
     });
 
     watch(clinics, () => {
@@ -213,18 +225,20 @@ export default defineComponent({
       }
       loading.value = true;
       store
-        .dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+        .dispatch(HRMActions.WEEKLY_SCHEDULE.LIST, {
           date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
         })
         .then(() => {
-          store
-            .dispatch(HRMActions.EMPLOYEE_LEAVE.LIST, {
-              date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
-              status: "Approved",
-            })
-            .then((e) => {
-              loading.value = false;
-            });
+          setTimeout(() => {
+            store
+              .dispatch(HRMActions.EMPLOYEE_LEAVE.LIST, {
+                date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+                status: "Approved",
+              })
+              .then(() => {
+                loading.value = false;
+              });
+          }, 1000);
         });
 
       let day = dateRange.value.startDate;
@@ -260,15 +274,23 @@ export default defineComponent({
     // send the request to copy data from template to hrm weekly schedule
     const processFillFromTemplate = (data) => {
       isShowFillFromTemplate.value = false;
-      if (data)
+      if (data) {
+        loading.value = true;
         data.date = moment(dateRange.value.startDate)
           .format("YYYY-MM-DD")
           .toString();
-      store.dispatch(HRMActions.WEEKLY_TEMPLATE.CREATE, data).then(() => {
-        store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
-          date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+        store.dispatch(HRMActions.WEEKLY_SCHEDULE.CREATE, data).then(() => {
+          setTimeout(() => {
+            store
+              .dispatch(HRMActions.WEEKLY_SCHEDULE.LIST, {
+                date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
+              })
+              .then(() => {
+                loading.value = false;
+              });
+          }, 2000);
         });
-      });
+      }
     };
 
     // Find if there unpublished shifts available in selected date range
@@ -339,9 +361,9 @@ export default defineComponent({
         );
         if (shiftData.unpublishedShiftFound) {
           store
-            .dispatch(HRMActions.WEEKLY_TEMPLATE.UPDATE, shiftData.publishSlots)
+            .dispatch(HRMActions.WEEKLY_SCHEDULE.UPDATE, shiftData.publishSlots)
             .then(() => {
-              store.dispatch(HRMActions.WEEKLY_TEMPLATE.LIST, {
+              store.dispatch(HRMActions.WEEKLY_SCHEDULE.LIST, {
                 date: moment(dateRange.value.startDate).format("YYYY-MM-DD"),
               });
             });
@@ -356,7 +378,7 @@ export default defineComponent({
     };
     const canPullFromTemplate = computed(() => {
       let result = false;
-      const allEmployees = store.getters.hrmWeeklyTemplatesData;
+      const allEmployees = store.getters.hrmScheduleList;
       allEmployees.map((user) => {
         user.hrm_weekly_schedule.map((slot) => {
           if (slot.hrm_filled_week_id) result = true;

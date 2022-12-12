@@ -6,7 +6,7 @@ const HRMActions = {
         UPDATE: 'ScheduleTemplateUpdate',
     },
 
-    WEEKLY_TEMPLATE: {
+    WEEKLY_SCHEDULE: {
         LIST: 'WeeklyTemplateList', // (get) 'hrm/weekly-schedule
         CREATE: 'WeeklyTemplateCreate',
         UPDATE: 'WeeklyTemplateUpdate',
@@ -33,15 +33,10 @@ const HRMActions = {
 };
 
 const HRMMutations = {
-    SCHEDULE_TEMPLATE: {
+    SCHEDULE: {
         SET_LIST: "setScheduleTemplateList",
         SET_SELECT: "setScheduleTemplateSelect",
         SET_TIMESLOT: "setTimeslotTemplateSelect",
-    },
-
-    WEEKLY_TEMPLATE: {
-        SET_LIST: 'setWeeklyTemplateList', // (get) 'hrm/weekly-schedule
-        SET_TIMESLOT: 'setWeeklyTemplateSelect'
     },
     BULLETIN: {
         SET_LIST: "setBulletinList",

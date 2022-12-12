@@ -261,6 +261,7 @@
                   class="my-4 p-2 col-2 d-flex align-content-center fill-height align-items-center justify-content-center"
                 >
                   <img
+                    alt="Move Arrow"
                     src="media/logos/bulk-move-arrow.png"
                     class="move-arrow"
                   />

@@ -3,8 +3,14 @@
     class="btn btn-outline btn-outline-dashed btn-outline-default mb-1 py-1 d-flex align-items-center"
     :for="document.id"
   >
-    <i v-if="document.is_urgent" class="bi bi-exclamation text-danger fs-1"></i>
-    <i v-if="!document.is_urgent" class="bi bi-exclamation fs-1 opacity-0"></i>
+    <em
+      v-if="document.is_urgent"
+      class="bi bi-exclamation text-danger fs-1"
+    ></em>
+    <em
+      v-if="!document.is_urgent"
+      class="bi bi-exclamation fs-1 opacity-0"
+    ></em>
     <span class="svg-icon svg-icon-2x me-2">
       <inline-svg
         :src="

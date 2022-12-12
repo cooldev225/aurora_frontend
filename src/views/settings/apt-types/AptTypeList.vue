@@ -1,16 +1,17 @@
 <template>
   <CardSection>
     <template #header-actions>
-      <router-link
-        to="/settings/apt-types/create"
+      <button
         type="button"
         class="text-nowrap btn btn-light-primary ms-auto"
+        :disabled="loading"
+        @click.prevent="handleAdd"
       >
         <span class="svg-icon svg-icon-2">
           <InlineSVG icon="plus" />
         </span>
         Add
-      </router-link>
+      </button>
     </template>
     <template #default>
       <Datatable
@@ -67,7 +68,9 @@ import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import CardSection from "@/components/presets/GeneralElements/CardSection.vue";
 import icons from "@/core/data/icons";
+import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import IAppointmentType from "@/store/interfaces/IAppointmentType";
+import IScheduleItem from "@/store/interfaces/IScheduleItem";
 export default defineComponent({
   name: "apt-types",
 
@@ -100,6 +103,31 @@ export default defineComponent({
     const aptTypes = computed<IAppointmentType[]>(
       () => store.getters.getAptTypesList
     );
+    const scheduleItems = computed<IScheduleItem[]>(
+      () => store.getters.scheduleItemList
+    );
+    const loading = ref(false);
+    const isAddPossible = ref(false);
+
+    const handleAdd = () => {
+      if (isAddPossible.value) {
+        router.push({ name: "createAptType" });
+      } else {
+        Swal.fire({
+          text: "Before an appointment type can be created the billing item should be created",
+          buttonsStyling: false,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+          confirmButtonText: "Manage Billing Items",
+          customClass: {
+            confirmButton: "btn btn-primary",
+            cancelButton: "btn btn-light-primary",
+          },
+        }).then((result) => {
+          if (result.isConfirmed) router.push({ name: "setting-schedule-fee" });
+        });
+      }
+    };
 
     const handleEdit = (id) => {
       router.push({ name: "editAptType", params: { id: id } });
@@ -126,11 +154,29 @@ export default defineComponent({
     };
 
     onMounted(() => {
+      loading.value = true;
       setCurrentPageBreadcrumbs("Appointment Types", ["Settings"]);
-      store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
+      store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST).then(() => {
+        store.dispatch(Actions.SCHEDULE_ITEM.LIST).then(() => {
+          if (scheduleItems.value.length) {
+            scheduleItems.value.forEach((item) => {
+              if (item.schedule_fees.length) isAddPossible.value = true;
+            });
+          }
+          loading.value = false;
+        });
+      });
     });
 
-    return { tableHeader, aptTypes, handleEdit, handleDelete, icons };
+    return {
+      tableHeader,
+      aptTypes,
+      handleAdd,
+      handleEdit,
+      handleDelete,
+      icons,
+      loading,
+    };
   },
 });
 </script>

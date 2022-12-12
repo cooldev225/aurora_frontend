@@ -38,6 +38,13 @@
       <a @click="handleProfile" class="menu-link px-5"> Profile </a>
     </div>
     <!--end::Menu item-->
+    <!--begin::Menu item-->
+    <div v-if="userRole == 'organizationManager'" class="menu-item px-5">
+      <a @click="handleSettings" class="menu-link px-5">
+        Organisation Settings
+      </a>
+    </div>
+    <!--end::Menu item-->
 
     <!--begin::Menu item-->
     <div class="menu-item px-5">
@@ -49,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Actions } from "@/store/enums/StoreEnums";
@@ -65,9 +72,12 @@ export default defineComponent({
   setup(props) {
     const router = useRouter();
     const store = useStore();
-
+    const userRole = computed(() => store.getters.userRole);
     const handleProfile = () => {
       router.push({ name: "profile" });
+    };
+    const handleSettings = () => {
+      router.push({ name: "org-admin-settings" });
     };
 
     const signOut = () => {
@@ -78,7 +88,9 @@ export default defineComponent({
 
     return {
       handleProfile,
+      handleSettings,
       signOut,
+      userRole,
     };
   },
 });

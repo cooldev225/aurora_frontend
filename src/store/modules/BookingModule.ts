@@ -6,6 +6,7 @@ import {
   AppointmentMutations,
 } from "@/store/enums/StoreAppointmentEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import IClinic from "@/store/interfaces/IClinic";
 
 export interface IWorkhour {
   available: boolean;
@@ -13,10 +14,33 @@ export interface IWorkhour {
   time_slot: Array<string>;
 }
 
+export interface ITimeSchedule {
+  id: number;
+  available: boolean;
+  organization_id: number;
+  clinic_id: number;
+  user_id: number;
+  specialist_name: string;
+  anesthetist_id: number;
+  anesthetist_name: string;
+  room_id: number;
+  is_wait_listed: boolean;
+  restriction: string;
+  category: string;
+  week_day: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  clinic_name: string;
+  clinic: IClinic;
+  anesthetist: ISpecialist;
+}
+
 export interface ISpecialist {
   id: string;
   name: string;
   work_hours: Array<IWorkhour>;
+  hrm_work_schedule: Array<ITimeSchedule>;
 }
 
 export interface IBookingData {

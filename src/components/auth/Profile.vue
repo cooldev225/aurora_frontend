@@ -39,7 +39,7 @@
                     :auto-upload="false"
                     accept="image/*"
                   >
-                    <i class="fa fa-plus"></i>
+                    <em class="fa fa-plus"></em>
                   </el-upload>
 
                   <el-dialog v-model="dialogVisible">

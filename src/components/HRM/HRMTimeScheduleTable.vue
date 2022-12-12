@@ -1,6 +1,9 @@
 <template>
   <CardSection>
     <table class="w-100">
+      <caption>
+        The time sheet templates for all employees
+      </caption>
       <thead>
         <th>Employee Type</th>
         <th v-for="day in weekdays" :key="day.value">
@@ -98,7 +101,6 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
-    const tableData = ref();
     const selectedEmployees = ref([]);
     const filterOptions = ref([
       {
@@ -115,7 +117,6 @@ export default defineComponent({
       },
     ]);
     const clinics = computed(() => store.getters.clinicsList);
-    const scheduleTemplates = computed(() => store.getters.hrmScheduleList);
 
     onMounted(() => {
       setCurrentPageBreadcrumbs("Weekly Schedule Template", ["HRM"]);
@@ -123,28 +124,25 @@ export default defineComponent({
       store.dispatch(Actions.EMPLOYEE.LIST);
     });
 
-    watch(scheduleTemplates, () => {
-      tableData.value = scheduleTemplates.value;
-    });
     const handleEditTemplateTimeslots = (schedule, day) => {
       schedule._title = "Edit Time Slot - " + day.label;
       schedule._action = "edit_weekly_time";
       schedule._submit = HRMActions.SCHEDULE_TEMPLATE.CREATE;
-      schedule.clinic_id = props.clinicFilter.value;
+      schedule.clinic_id = props.clinicFilter;
       store.dispatch(HRMActions.ANESTHETIST.LIST, {
         day: day.value,
       });
       if (schedule.id) schedule._submit = HRMActions.SCHEDULE_TEMPLATE.UPDATE;
       schedule._day = day.value;
 
-      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_SELECT, schedule);
+      store.commit(HRMMutations.SCHEDULE.SET_SELECT, schedule);
       let timeslots = schedule.schedule_timeslots.filter(
         (t) => t.week_day == schedule._day
       );
       if (!timeslots.length) {
         timeslots = [];
       }
-      store.commit(HRMMutations.SCHEDULE_TEMPLATE.SET_TIMESLOT, timeslots);
+      store.commit(HRMMutations.SCHEDULE.SET_TIMESLOT, timeslots);
       const modal = new Modal(document.getElementById("modal_edit_schedule"));
       modal.show();
     };
@@ -171,13 +169,11 @@ export default defineComponent({
     };
 
     return {
-      scheduleTemplates,
       weekdays,
       moment,
       handleEditTemplateTimeslots,
       clinics,
       employeeRoles,
-      tableData,
       timeslotClinicName,
       filterOptions,
       anesthetistName,

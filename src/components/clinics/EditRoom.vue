@@ -101,27 +101,26 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import InputWrapper from "@/components/presets/FormElements/InputWrapper.vue";
-
 export default defineComponent({
   name: "edit-anesthetic-question-modal",
   components: { InputWrapper },
   setup() {
     const store = useStore();
-    const formRef = ref(null);
+    const formRef = ref<HTMLFormElement>();
     const editRoomModalRef = ref(null);
     const loading = ref(false);
 
     const formData = ref({
       id: -1,
       name: "",
-      clinic: null,
+      clinic_id: -1,
     });
 
     const rules = ref({
@@ -136,7 +135,7 @@ export default defineComponent({
 
     watchEffect(() => {
       formData.value = store.getters.roomsSelected;
-      formData.value.clinic = store.getters.clinicsSelected;
+      formData.value.clinic_id = store.getters.clinicsSelected.id;
     });
 
     const submit = () => {
@@ -153,11 +152,10 @@ export default defineComponent({
             .dispatch(action_name, formData.value)
             .then(() => {
               loading.value = false;
-
               store.dispatch(Actions.CLINICS.LIST);
               store.dispatch(
                 Actions.CLINICS.ROOMS.LIST,
-                formData.value.clinic.id
+                formData.value.clinic_id
               );
 
               Swal.fire({
@@ -176,9 +174,9 @@ export default defineComponent({
               loading.value = false;
               console.log(response.data.error);
             });
-          formRef.value.resetFields();
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
+          if (formRef.value) {
+            formRef.value.resetFields();
+          }
         }
       });
     };

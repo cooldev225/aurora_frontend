@@ -2,7 +2,11 @@ import ApiService from "@/core/services/ApiService";
 import JwtService from "@/core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-
+import {
+  displayServerError,
+  displaySuccessModal,
+  displaySuccessToast,
+} from "@/helpers/helpers";
 export interface IAptTimeRequirement {
   id: number;
   title: string;
@@ -62,8 +66,10 @@ export default class AptTimeRequireModule
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(
+            response,
+            "Listing appointment time requirements"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -79,7 +85,10 @@ export default class AptTimeRequireModule
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(
+            response,
+            "Creating an appointment time requirement"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -95,8 +104,10 @@ export default class AptTimeRequireModule
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
-          // this.context.commit(Mutations.SET_ERROR, response.data.errors);
+          return displayServerError(
+            response,
+            "Updating an appointment time requirement"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);
@@ -112,7 +123,10 @@ export default class AptTimeRequireModule
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(
+            response,
+            "Deleting an appointment time requirement"
+          );
         });
     } else {
       this.context.commit(Mutations.PURGE_AUTH);

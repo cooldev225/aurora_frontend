@@ -42,7 +42,6 @@
         cursor: pointer;
         display: flex;
         align-items: center;
-        padding: 0;
         flex: 0 0 100%;
         padding: get($menu, link, self, padding-y) get($menu, link, self, padding-x);
         transition: none;
