@@ -1482,7 +1482,6 @@ export default defineComponent({
 
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
-    const proQuestions = computed(() => store.getters.getProQuestionActiveList);
     const aptTypeList = computed(() => store.getters.getAptTypesList);
     const aptTypeListWithRestriction = ref();
     const searchVal = computed(() => store.getters.getSearchVariable);
@@ -1713,16 +1712,6 @@ export default defineComponent({
         }
       }
       otherInfoData.value.anesthetic_answers = temp;
-    };
-
-    const handleProQuestions = () => {
-      let temp = [];
-      for (let i in proAnswers.value) {
-        if (proAnswers.value[i] === true) {
-          temp.push(proQuestions.value[i].id);
-        }
-      }
-      otherInfoData.value.procedure_answers = temp;
     };
 
     const matchExistPatientHandle = () => {
@@ -2260,7 +2249,6 @@ export default defineComponent({
       ava_specialist,
       healthFundsList,
       aneQuestions,
-      proQuestions,
       aneAnswers,
       proAnswers,
       aptTypeListWithRestriction,
@@ -2291,7 +2279,6 @@ export default defineComponent({
       countryList,
       timeZoneList,
       handleAneQuestions,
-      handleProQuestions,
       handleAddressChange,
       addressRef,
       patientStatus,
