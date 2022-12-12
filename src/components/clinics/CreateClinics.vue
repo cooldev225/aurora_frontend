@@ -58,6 +58,7 @@
               >
                 <GMapAutocomplete
                   ref="addressRef"
+                  :value="formData.address"
                   placeholder="Enter the Address"
                   @place_changed="handleAddressChange"
                   :options="{
@@ -242,6 +243,8 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const formRef = ref(null);
+    const addressRef = ref(null);
+
     const formInfo = reactive({
       isCreate: true,
       title: "Create Clinic",
@@ -359,9 +362,9 @@ export default defineComponent({
       formRef.value.validate((valid) => {
         if (valid) {
           loading.value = true;
-          store.dispatch(formInfo.submitAction, formData.value).then(() => {
+          store.dispatch(formInfo.submitAction, formData.value).then((data) => {
             loading.value = false;
-            router.push({ name: "clinics" });
+            data && router.push({ name: "clinics" });
           });
         }
       });
@@ -421,6 +424,7 @@ export default defineComponent({
       rules,
       submit,
       formRef,
+      addressRef,
       loading,
       createClinicsRef,
       currentStepIndex,

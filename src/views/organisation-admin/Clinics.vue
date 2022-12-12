@@ -12,13 +12,11 @@
           class="d-flex justify-content-end"
           data-kt-subscription-table-toolbar="base"
         >
-          <!--begin::Add subscription-->
-          <router-link to="/clinics/create" class="btn btn-primary">
-            <span class="svg-icon svg-icon-2">
-              <InlineSVG icon="plus" />
-            </span>
-            Add
-          </router-link>
+          <IconButton
+            @click="handleCreate"
+            label="Add New Clinic"
+            :iconSRC="icons.plus"
+          />
           <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
@@ -107,6 +105,7 @@ export default defineComponent({
     const tableData = ref<IClinic[]>();
     const router = useRouter();
     const clinicsList = computed<IClinic[]>(() => store.getters.clinicsList);
+    const userOrganization = computed(() => store.getters.userOrganization);
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_CLINICS.SELECT, item);
@@ -159,6 +158,25 @@ export default defineComponent({
       router.push({ name: "clinic-rooms", params: { id: item.id } });
     };
 
+    const handleCreate = () => {
+      console.log(userOrganization);
+      if (userOrganization.value.is_max_clinics) {
+        const html =
+          "<h3>You have reached your max allowed clinic.</h3><p>Please buy new clinic licenses to add more.</p><br/>";
+
+        Swal.fire({
+          html: html,
+          icon: "warning",
+          buttonsStyling: false,
+          confirmButtonText: "Ok, got it!",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+        });
+      } else {
+        router.push({ name: "clinic-create" });
+      }
+    };
     onMounted(() => {
       setCurrentPageBreadcrumbs("Clinics", []);
       store.dispatch(Actions.CLINICS.LIST);
@@ -171,6 +189,7 @@ export default defineComponent({
     return {
       tableHeader,
       tableData,
+      handleCreate,
       handleEdit,
       handleDelete,
       handleRoomEdit,
