@@ -114,7 +114,7 @@
                   :rules="rules"
                   :model="aptInfoData"
                   ref="formRef_1"
-                  @submit.prevent="aptOverlapCheck"
+                  @submit.prevent="handleStep_1"
                 >
                   <div class="row scroll h-520px">
                     <InputWrapper
@@ -268,7 +268,7 @@
                     <button
                       type="button"
                       class="btn btn-lg btn-primary align-self-end"
-                      @click="aptOverlapCheck"
+                      @click="handleStep_1"
                     >
                       Continue
                       <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -1205,7 +1205,6 @@ import {
   reactive,
 } from "vue";
 import { useStore } from "vuex";
-import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import {
@@ -1237,6 +1236,7 @@ import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import { convertToCurrency } from "@/core/data/billing";
 import { ElMessage } from "element-plus";
 import { Modal } from "bootstrap";
+import Swal from "sweetalert2";
 
 export default defineComponent({
   props: {
@@ -1606,46 +1606,46 @@ export default defineComponent({
 
     watch(cur_appointment_type_id, () => {
       getAptTypeName(cur_appointment_type_id.value);
+      aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
+
+      const _selected = aptTypeList.value.filter(
+        (aptType) => aptType.id === cur_appointment_type_id.value
+      )[0];
+
+      // setting up selected appointment type
+      if (typeof _selected === "undefined") {
+        appointment_name.value = "";
+        appointment_type_quote.value = 0;
+        _appointment_time.value = Number(appointment_time.value);
+        arrival_time.value = 30;
+
+        aptInfoData.value.clinical_code = "";
+        aptInfoData.value.mbs_code = "";
+        apt_type.value = "";
+      } else {
+        appointment_name.value = _selected.name;
+        appointmentType.value = _selected.type;
+        appointment_type_quote.value = _selected?.default_items_quote ?? 0;
+        _appointment_time.value = Number(
+          appointment_length[_selected.appointment_time] *
+            appointment_time.value
+        );
+        arrival_time.value = Number(_selected.arrival_time);
+        aptInfoData.value.clinical_code = _selected.clinical_code;
+        aptInfoData.value.mbs_code = _selected.mbs_code;
+        apt_type.value = _selected.type;
+      }
+      end_time.value = moment(start_time.value, "HH:mm")
+        .add(_appointment_time.value, "minutes")
+        .format("HH:mm")
+        .toString();
+      updateAptTime(start_time.value, end_time.value);
+      aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
+        .subtract(arrival_time.value, "minutes")
+        .format("HH:mm")
+        .toString();
+
       if (props.modalId == "modal_create_apt") {
-        // setting up selected appointment type
-        aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
-        const _selected = aptTypeList.value.filter(
-          (aptType) => aptType.id === cur_appointment_type_id.value
-        )[0];
-
-        if (typeof _selected === "undefined") {
-          appointment_name.value = "";
-          appointment_type_quote.value = 0;
-          _appointment_time.value = Number(appointment_time.value);
-          arrival_time.value = 30;
-
-          aptInfoData.value.clinical_code = "";
-          aptInfoData.value.mbs_code = "";
-          apt_type.value = "";
-        } else {
-          appointment_name.value = _selected.name;
-          appointmentType.value = _selected.type;
-          appointment_type_quote.value = _selected?.default_items_quote ?? 0;
-          _appointment_time.value = Number(
-            appointment_length[_selected.appointment_time] *
-              appointment_time.value
-          );
-          arrival_time.value = Number(_selected.arrival_time);
-          aptInfoData.value.clinical_code = _selected.clinical_code;
-          aptInfoData.value.mbs_code = _selected.mbs_code;
-          apt_type.value = _selected.type;
-        }
-
-        end_time.value = moment(start_time.value, "HH:mm")
-          .add(_appointment_time.value, "minutes")
-          .format("HH:mm")
-          .toString();
-        updateAptTime(start_time.value, end_time.value);
-        aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
-          .subtract(arrival_time.value, "minutes")
-          .format("HH:mm")
-          .toString();
-
         const specialist = store.getters.getSelectedSpecialist;
         if (apt_type.value === "Consultation") {
           otherInfoData.value.anesthetic_questions = false;
@@ -1860,11 +1860,12 @@ export default defineComponent({
       }
     };
 
-    const handleStep_1 = () => {
+    const handleStep_1 = async () => {
       if (!formRef_1.value) {
         return;
       }
 
+      await checkAptOverlap();
       //custom
       if (patientStatus.value === "new") {
         patientStep.value = 3;
@@ -1932,7 +1933,8 @@ export default defineComponent({
       });
     };
     // Send request to update exiting appointment
-    const handleSave = () => {
+    const handleSave = async () => {
+      await checkAptOverlap();
       loading.value = true;
       aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
       store
@@ -2140,8 +2142,8 @@ export default defineComponent({
       patientStep.value++;
     };
 
-    const gotoPage = (page) => {
-      aptOverlapCheck();
+    const gotoPage = async (page) => {
+      await checkAptOverlap();
       if (props.modalId === "modal_edit_apt") {
         currentStepIndex.value = Number(page - 1);
         _stepperObj.value.goto(page);
@@ -2160,7 +2162,7 @@ export default defineComponent({
     let timeout;
     const searchDoctorAddressBook = (term, cb) => {
       const results = term
-        ? doctorAddressBooks.value.filter(createDotorAddressBookFilter(term))
+        ? doctorAddressBooks.value.filter(createDoctorAddressBookFilter(term))
         : doctorAddressBooks.value;
 
       clearTimeout(timeout);
@@ -2169,7 +2171,7 @@ export default defineComponent({
       }, 1000);
     };
 
-    const createDotorAddressBookFilter = (term) => {
+    const createDoctorAddressBookFilter = (term) => {
       const keyword = term.toString();
       return (doctorAddressBook) => {
         const full_name =
@@ -2205,14 +2207,10 @@ export default defineComponent({
       patientInfoData.value.also_known_as.push(previousData);
     };
 
-    const aptOverlapCheck = () => {
-      if (props.modalId === "modal_edit_apt") {
-        handleStep_1();
-        return;
-      }
+    const checkAptOverlap = () => {
       const startTime = aptInfoData.value.time_slot[0] + ":00";
       const endTime = aptInfoData.value.time_slot[1] + ":00";
-      const filter = aptList.value.filter((apt) => {
+      let filteredAptList = aptList.value.filter((apt) => {
         if (
           !apt.draft_status &&
           aptInfoData.value.specialist_id === apt.specialist_id &&
@@ -2224,25 +2222,36 @@ export default defineComponent({
         }
       });
 
-      if (filter.length > 0) {
-        Swal.fire({
-          title: "Are you sure?",
-          text:
-            "You already have an appointment at " +
-            filter[0].start_time +
-            " - " +
-            filter[0].end_time +
-            ", This action will overlap with existing appointment!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, do it!",
-        }).then((result) => {
-          if (result.isConfirmed) handleStep_1();
+      if (props.modalId === "modal_edit_apt") {
+        filteredAptList = filteredAptList.filter(
+          (apt) => apt.id !== aptData.value.id
+        );
+      }
+
+      if (filteredAptList.length > 0) {
+        return new Promise(function (resolve) {
+          Swal.fire({
+            title: "Are you sure?",
+            text:
+              "You already have an appointment at " +
+              filteredAptList[0].start_time +
+              " - " +
+              filteredAptList[0].end_time +
+              ", This action will overlap with existing appointment!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, do it!",
+          }).then((result) => {
+            if (result.value) {
+              resolve(null);
+            }
+          });
         });
-      } else handleStep_1();
+      }
     };
+
     return {
       chargeTypes,
       rules,
@@ -2323,7 +2332,6 @@ export default defineComponent({
       updatePatientDetails,
       allergiesList,
       convertToCurrency,
-      aptOverlapCheck,
       addClaimSourceModalId,
     };
   },
