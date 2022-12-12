@@ -6,6 +6,7 @@ import {
   DocumentMutations,
 } from "@/store/enums/StoreDocumentEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
+import { displayServerError } from "@/helpers/helpers";
 
 export interface IDocument {
   id: number;
@@ -91,7 +92,7 @@ export default class DocumentModule extends VuexModule implements Documents {
   [DocumentActions.SAVE](data) {
     if (JwtService.getToken()) {
       ApiService.setHeader();
-      return ApiService.put("patients/documents/save/" + data.patient_id, data)
+      return ApiService.post("patients/documents/save/" + data.patient_id, data)
         .then(({ data }) => {
           return data;
         })
@@ -115,7 +116,7 @@ export default class DocumentModule extends VuexModule implements Documents {
           return data.data;
         })
         .catch(({ response }) => {
-          console.log(response.data.error);
+          return displayServerError(response, "previewing a patient document");
         });
     }
   }
