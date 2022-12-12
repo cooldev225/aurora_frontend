@@ -2016,6 +2016,9 @@ export default defineComponent({
         }
       );
 
+      // FORMAT patient date of birth
+      patientInfo.date_of_birth = formatDate(patientInfo.date_of_birth);
+
       store
         .dispatch(AppointmentActions.APT.CREATE, {
           ...aptInfoData.value,
@@ -2087,7 +2090,7 @@ export default defineComponent({
     const patientStep_1 = () => {
       patientTableData.value = [];
       for (let key in patientInfoData.value) patientInfoData.value[key] = "";
-      if (filterPatient.date_of_birth != "")
+      if (filterPatient.date_of_birth !== "")
         filterPatient.date_of_birth = moment(
           filterPatient.date_of_birth
         ).format("YYYY-MM-DD");
