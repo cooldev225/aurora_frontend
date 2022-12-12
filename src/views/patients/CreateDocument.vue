@@ -323,7 +323,14 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, watch } from "vue";
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  computed,
+  watch,
+  watchEffect,
+} from "vue";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
@@ -656,9 +663,8 @@ export default defineComponent({
       }
     });
 
-    watch(patientData, () => {
+    watchEffect(() => {
       if (patientData.value) {
-        console.log("hee");
         appointmentData.value = patientData.value.appointments?.find(
           (appointment) => appointment.id === Number(appointmentId)
         );
