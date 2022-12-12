@@ -88,8 +88,19 @@
                   :startTime="start_time"
                 />
                 <!--end::Appointment Overview-->
+                <el-form-item label="Appointment wait listed :">
+                  <el-switch
+                    v-model="aptInfoData.is_wait_listed"
+                    class="ml-2"
+                    width="40"
+                    inline-prompt
+                    active-text="Yes"
+                    inactive-text="No"
+                    :active-value="1"
+                    :inactive-value="0"
+                  />
+                </el-form-item>
               </div>
-
               <!--end::Nav-->
             </div>
             <!--begin::Aside-->
@@ -1279,6 +1290,7 @@ export default defineComponent({
       note: "",
       patient_id: null,
       start_time: null,
+      is_wait_listed: false,
     });
 
     const patientInfoData = ref({
