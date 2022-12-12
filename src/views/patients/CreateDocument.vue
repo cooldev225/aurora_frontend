@@ -248,7 +248,7 @@
                 {{ section.title }}
               </label>
 
-              <el-form-item v-if="reportTemplatesData.use_autotext">
+              <el-form-item v-if="section.use_autotext">
                 <el-select
                   class="w-100"
                   multiple
@@ -302,7 +302,7 @@
     v-if="patientData && appointmentData"
     :patient="patientData"
     :appointment="appointmentData"
-    :pdfId="reportPreviewPdfId"
+    :pdfId="documentPreviewFileName"
     :handleSave="handleSave"
   ></ReportPreviewModal>
 </template>
@@ -335,7 +335,7 @@ import {
 import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import InputWrapper from "../../components/presets/FormElements/InputWrapper.vue";
 import { Actions } from "@/store/enums/StoreEnums";
-import { IScheduleItem } from "@/store/modules/ScheduleItemModule";
+import IScheduleItem from "@/store/interfaces/IScheduleItem";
 import { Modal } from "bootstrap";
 import ReportPreviewModal from "@/views/patients/modals/ReportPreviewModal.vue";
 import { toSentenceCase } from "@/core/helpers/text";
@@ -343,6 +343,7 @@ import IDocumentSection from "@/store/interfaces/IDocumentSection";
 import IAppointment from "@/store/interfaces/IAppointment";
 import { ElForm } from "element-plus";
 import { FormRulesMap } from "element-plus/es/components/form/src/form.type";
+import { PatientActions } from "@/store/enums/StorePatientEnums";
 
 export default defineComponent({
   components: {
@@ -362,7 +363,7 @@ export default defineComponent({
     const formRef = ref<typeof ElForm | null>(null);
     const templateData = ref<number | null>(null);
     const appointmentData = ref<IAppointment | null>(null);
-    const reportPreviewPdfId = ref(null);
+    const documentPreviewFileName = ref(null);
     const reportSections = ref<Array<IDocumentSection>>([]);
     const timeout = ref<number | null>(null);
 
@@ -534,14 +535,15 @@ export default defineComponent({
             patient_id: patientId,
             report_data: reportData,
             doctor_address_book:
-              appointmentData.value?.referral?.doctor_address_book_name,
-            patient_name:
-              patientData.value.first_name + " " + patientData.value.last_name,
+              documentType == "referral"
+                ? formData.value.doctor_address_book_name
+                : appointmentData.value?.referral?.doctor_address_book_name,
             appointment_id: appointmentData.value?.id,
             specialist_id: appointmentData.value?.specialist_id,
             document_name: appointmentData.value?.appointment_type_name,
             header_footer_id:
-              formData.value.headerFooter != null
+              formData.value.headerFooter != null &&
+              formData.value.headerFooter !== 0
                 ? headerFooterList.value[formData.value.headerFooter].id
                 : null,
             procedures_undertaken: proceduresUndertaken,
@@ -552,11 +554,12 @@ export default defineComponent({
             current_medications: formData.value.current_medications,
             patient_allergies: formData.value.patient_allergies,
             past_medical_history: formData.value.past_medical_history,
+            document_type: documentType.toString().toUpperCase(),
           };
 
           store.dispatch(DocumentActions.PATIENT_PREVIEW, data).then((data) => {
             loading.value = false;
-            reportPreviewPdfId.value = data;
+            documentPreviewFileName.value = data;
             handlePreviewModal();
           });
         }
@@ -613,9 +616,6 @@ export default defineComponent({
             const data = {
               title: formData.value.title,
               patient_id: patientId,
-              doctor_address_book_name: formData.value.doctor_address_book_name,
-              doctor_address_book_id: formData.value.doctor_address_book_id,
-              patient_name: patientData.value.full_name,
               appointment_id: appointmentData.value?.id,
               specialist_id: appointmentData.value?.specialist_id,
               document_name: appointmentData.value?.appointment_type_name,
@@ -624,11 +624,12 @@ export default defineComponent({
               admin_items_used: adminItems,
               icd_10_code: icd_10_code,
               should_send: shouldSend ? 1 : 0,
-              file_name: reportPreviewPdfId.value,
+              file_name: documentPreviewFileName.value,
               patient_demographic: formData.value.patient_demographic,
               current_medications: formData.value.current_medications,
               patient_allergies: formData.value.patient_allergies,
               past_medical_history: formData.value.past_medical_history,
+              document_type: documentType.toString().toUpperCase(),
             };
 
             store.dispatch(DocumentActions.SAVE, data).then((data) => {
@@ -657,6 +658,7 @@ export default defineComponent({
 
     watch(patientData, () => {
       if (patientData.value) {
+        console.log("hee");
         appointmentData.value = patientData.value.appointments?.find(
           (appointment) => appointment.id === Number(appointmentId)
         );
@@ -678,6 +680,10 @@ export default defineComponent({
       ]);
 
       loading.value = true;
+
+      if (Object.keys(patientData.value).length === 0) {
+        store.dispatch(PatientActions.VIEW, patientId);
+      }
 
       store.dispatch(
         Actions.DOCUMENT_TEMPLATES.LIST,
@@ -710,7 +716,7 @@ export default defineComponent({
       reportSections,
       moment,
       ReportPreviewModal,
-      reportPreviewPdfId,
+      documentPreviewFileName,
       handleSave,
       documentType,
       toSentenceCase,
