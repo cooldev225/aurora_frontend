@@ -496,22 +496,6 @@ export default class PatientsModule extends VuexModule implements PatientsInfo {
   }
 
   @Action
-  [PatientActions.ALLERGIES_LIST]() {
-    if (JwtService.getToken()) {
-      ApiService.setHeader();
-      return ApiService.get("patients/allergies")
-        .then(({ data }) => {
-          return data.data;
-        })
-        .catch(({ response }) => {
-          return displayServerError(response, "Listing patient allergies");
-        });
-    } else {
-      this.context.commit(Mutations.PURGE_AUTH);
-    }
-  }
-
-  @Action
   [PatientActions.PRINT_LABEL](id) {
     if (JwtService.getToken()) {
       ApiService.setHeader();

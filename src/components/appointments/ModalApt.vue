@@ -1817,9 +1817,6 @@ export default defineComponent({
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
-      store.dispatch(PatientActions.ALLERGIES_LIST).then((data) => {
-        allergiesList.value = data;
-      });
       const myModalEl = document.getElementById("modal_create_apt");
       myModalEl.addEventListener("hide.bs.modal", () => {
         const draftAptId = store.getters.getDraftAptId;
