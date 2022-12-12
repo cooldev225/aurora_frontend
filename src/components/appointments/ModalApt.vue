@@ -2183,7 +2183,7 @@ export default defineComponent({
         const full_name_pos = full_name
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
-        const address_pos = doctorAddressBook.address
+        const address_pos = doctorAddressBook.practice_address
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
         return full_name_pos !== -1 || address_pos !== -1;
