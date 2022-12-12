@@ -12,23 +12,11 @@
           class="d-flex justify-content-end"
           data-kt-subscription-table-toolbar="base"
         >
-          <el-alert
-            v-if="userProfile.is_max_clinic"
-            title="The number of clinics in the organization is the maximum."
-            type="warning"
+          <IconButton
+            @click="handleCreate"
+            label="Add New Clinic"
+            :iconSRC="icons.plus"
           />
-          <!--begin::Add subscription-->
-          <router-link
-            v-else
-            disabled="true"
-            to="/clinics/create"
-            class="btn btn-primary"
-          >
-            <span class="svg-icon svg-icon-2">
-              <InlineSVG icon="plus" />
-            </span>
-            Add
-          </router-link>
           <!--end::Add subscription-->
         </div>
         <!--end::Toolbar-->
@@ -170,6 +158,24 @@ export default defineComponent({
       router.push({ name: "clinic-rooms", params: { id: item.id } });
     };
 
+    const handleCreate = () => {
+      if (userProfile.value.is_max_clinic) {
+        const html =
+          "<h3>You have reached your max allowed clinic.</h3><p>Please buy new clinic licenses to add more.</p><br/>";
+
+        Swal.fire({
+          html: html,
+          icon: "warning",
+          buttonsStyling: false,
+          confirmButtonText: "Ok, got it!",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+        });
+      } else {
+        router.push({ name: "clinic-create" });
+      }
+    };
     onMounted(() => {
       setCurrentPageBreadcrumbs("Clinics", []);
       store.dispatch(Actions.CLINICS.LIST);
@@ -183,6 +189,7 @@ export default defineComponent({
       tableHeader,
       tableData,
       userProfile,
+      handleCreate,
       handleEdit,
       handleDelete,
       handleRoomEdit,
