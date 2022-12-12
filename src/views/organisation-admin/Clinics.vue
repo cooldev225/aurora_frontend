@@ -105,7 +105,7 @@ export default defineComponent({
     const tableData = ref<IClinic[]>();
     const router = useRouter();
     const clinicsList = computed<IClinic[]>(() => store.getters.clinicsList);
-    const userProfile = computed(() => store.getters.userProfile);
+    const userOrganization = computed(() => store.getters.userOrganization);
 
     const handleEdit = (item) => {
       store.commit(Mutations.SET_CLINICS.SELECT, item);
@@ -159,7 +159,8 @@ export default defineComponent({
     };
 
     const handleCreate = () => {
-      if (userProfile.value.is_max_clinic) {
+      console.log(userOrganization);
+      if (userOrganization.value.is_max_clinics) {
         const html =
           "<h3>You have reached your max allowed clinic.</h3><p>Please buy new clinic licenses to add more.</p><br/>";
 
@@ -188,7 +189,6 @@ export default defineComponent({
     return {
       tableHeader,
       tableData,
-      userProfile,
       handleCreate,
       handleEdit,
       handleDelete,
