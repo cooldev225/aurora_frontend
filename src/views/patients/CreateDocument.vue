@@ -532,14 +532,14 @@ export default defineComponent({
           const data = {
             title: formData.value.title,
             patient_id: patientId,
-            reportData: reportData,
-            doctorAddressBook:
+            report_data: reportData,
+            doctor_address_book:
               appointmentData.value?.referral?.doctor_address_book_name,
-            patientName:
+            patient_name:
               patientData.value.first_name + " " + patientData.value.last_name,
-            appointmentId: appointmentData.value?.id,
-            specialistId: appointmentData.value?.specialist_id,
-            documentName: appointmentData.value?.appointment_type_name,
+            appointment_id: appointmentData.value?.id,
+            specialist_id: appointmentData.value?.specialist_id,
+            document_name: appointmentData.value?.appointment_type_name,
             header_footer_id:
               formData.value.headerFooter != null
                 ? headerFooterList.value[formData.value.headerFooter].id
@@ -563,7 +563,7 @@ export default defineComponent({
       });
     };
 
-    const handleSave = (flag = false) => {
+    const handleSave = (shouldSend = false) => {
       setTimeout(() => {
         loading.value = true;
         if (!formRef.value) {
@@ -615,18 +615,15 @@ export default defineComponent({
               patient_id: patientId,
               doctor_address_book_name: formData.value.doctor_address_book_name,
               doctor_address_book_id: formData.value.doctor_address_book_id,
-              patientName:
-                patientData.value.first_name +
-                " " +
-                patientData.value.last_name,
-              appointmentId: appointmentData.value?.id,
-              specialistId: appointmentData.value?.specialist_id,
-              documentName: appointmentData.value?.appointment_type_name,
+              patient_name: patientData.value.full_name,
+              appointment_id: appointmentData.value?.id,
+              specialist_id: appointmentData.value?.specialist_id,
+              document_name: appointmentData.value?.appointment_type_name,
               procedures_undertaken: proceduresUndertaken,
               extra_items_used: extraItems,
               admin_items_used: adminItems,
               icd_10_code: icd_10_code,
-              flag: flag ? 1 : 0,
+              should_send: shouldSend ? 1 : 0,
               file_name: reportPreviewPdfId.value,
               patient_demographic: formData.value.patient_demographic,
               current_medications: formData.value.current_medications,
