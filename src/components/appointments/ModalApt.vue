@@ -35,448 +35,240 @@
         <!--end::Modal header-->
 
         <!--begin::Modal body-->
-        <div class="modal-body py-lg-10 px-lg-10">
-          <!--begin::Stepper-->
-          <div
-            class="stepper stepper-pills stepper-column d-flex flex-column flex-xl-row flex-row-fluid"
-            id="modal_create_apt_stepper"
-            ref="createAptRef"
-          >
-            <!--begin::Aside-->
+        <el-container v-loading="loading">
+          <div class="modal-body py-lg-10 px-lg-10">
+            <!--begin::Stepper-->
             <div
-              class="d-flex justify-content-center justify-content-xl-start flex-row-auto w-100 w-xl-350px"
+              class="stepper stepper-pills stepper-column d-flex flex-column flex-xl-row flex-row-fluid"
+              id="modal_create_apt_stepper"
+              ref="createAptRef"
             >
-              <!--begin::Nav-->
-              <div class="stepper-nav ps-lg-10">
-                <StepperNavItem
-                  @click="gotoPage(1)"
-                  dataStepperElement="nav"
-                  stepperNumber="1"
-                  stepperTitle="Appointment"
-                  stepperDescription="Setup Appointment Info"
-                />
+              <!--begin::Aside-->
+              <div
+                class="d-flex justify-content-center justify-content-xl-start flex-row-auto w-100 w-xl-350px"
+              >
+                <!--begin::Nav-->
+                <div class="stepper-nav ps-lg-10">
+                  <StepperNavItem
+                    @click="gotoPage(1)"
+                    dataStepperElement="nav"
+                    stepperNumber="1"
+                    stepperTitle="Appointment"
+                    stepperDescription="Setup Appointment Info"
+                  />
 
-                <StepperNavItem
-                  @click="gotoPage(2)"
-                  dataStepperElement="nav"
-                  stepperNumber="2"
-                  stepperTitle="Patient Info"
-                  stepperDescription="Edit Patient Details"
-                />
+                  <StepperNavItem
+                    @click="gotoPage(2)"
+                    dataStepperElement="nav"
+                    stepperNumber="2"
+                    stepperTitle="Patient Info"
+                    stepperDescription="Edit Patient Details"
+                  />
 
-                <StepperNavItem
-                  @click="gotoPage(3)"
-                  dataStepperElement="nav"
-                  stepperNumber="3"
-                  stepperTitle="Patient Billing"
-                  stepperDescription="Edit Patient Billing Details"
-                />
+                  <StepperNavItem
+                    @click="gotoPage(3)"
+                    dataStepperElement="nav"
+                    stepperNumber="3"
+                    stepperTitle="Patient Billing"
+                    stepperDescription="Edit Patient Billing Details"
+                  />
 
-                <StepperNavItem
-                  @click="gotoPage(4)"
-                  dataStepperElement="nav"
-                  stepperNumber="4"
-                  stepperTitle="Other Info"
-                  stepperDescription="Doctor Address information and Appointment history"
-                />
-                <!--begin::Appointment Overview-->
-                <AptOverview
-                  :aptInfoData="aptInfoData"
-                  :patientInfoData="patientInfoData"
-                  :specialist="cur_specialist"
-                  :appointmentName="appointment_name"
-                  :startTime="start_time"
-                />
-                <!--end::Appointment Overview-->
+                  <StepperNavItem
+                    @click="gotoPage(4)"
+                    dataStepperElement="nav"
+                    stepperNumber="4"
+                    stepperTitle="Other Info"
+                    stepperDescription="Doctor Address information and Appointment history"
+                  />
+                  <!--begin::Appointment Overview-->
+                  <AptOverview
+                    :aptInfoData="aptInfoData"
+                    :patientInfoData="patientInfoData"
+                    :specialist="cur_specialist"
+                    :appointmentName="appointment_name"
+                  />
+                  <!--end::Appointment Overview-->
+                  <el-form-item label="Appointment wait listed :">
+                    <el-switch
+                      v-model="aptInfoData.is_wait_listed"
+                      class="ml-2"
+                      width="40"
+                      inline-prompt
+                      active-text="Yes"
+                      inactive-text="No"
+                      :active-value="1"
+                      :inactive-value="0"
+                    />
+                  </el-form-item>
+                </div>
+                <!--end::Nav-->
               </div>
+              <!--begin::Aside-->
 
-              <!--end::Nav-->
-            </div>
-            <!--begin::Aside-->
-
-            <!--begin::Content-->
-            <div class="flex-row-fluid py-lg-5 px-lg-15">
-              <!--begin::Step 1-->
-              <div class="current" data-kt-stepper-element="content">
-                <el-form
-                  class="w-100"
-                  :rules="rules"
-                  :model="aptInfoData"
-                  ref="formRef_1"
-                  @submit.prevent="aptOverlapCheck"
-                >
-                  <div class="row scroll h-520px">
-                    <InputWrapper
-                      label="Appointment Type"
-                      prop="appointment_type_id"
-                    >
-                      <el-select
-                        class="w-100"
-                        v-model="cur_appointment_type_id"
-                      >
-                        <el-option
-                          v-for="item in aptTypeListWithRestriction"
-                          :value="item.id"
-                          :label="item.name"
-                          :key="item.id"
-                        />
-                      </el-select>
-                    </InputWrapper>
-                    <div class="px-6" v-if="overlapping_cnt >= 1">
-                      <AlertBadge
-                        text="This appointment will overlap with an
-                          upcoming appointment"
-                        color="warning"
-                        iconPath="media/icons/duotune/arrows/arr015.svg"
-                      />
-                    </div>
-                    <InputWrapper label="Room" prop="room_id">
-                      <el-select
-                        class="w-100"
-                        v-model.number="aptInfoData.room_id"
-                      >
-                        <el-option
-                          v-for="item in rooms"
-                          :value="item.id"
-                          :label="item.name"
-                          :key="item.id"
-                        />
-                      </el-select>
-                    </InputWrapper>
-
-                    <InputWrapper label="Note" prop="note">
-                      <el-input
-                        type="textarea"
-                        v-model="aptInfoData.note"
-                        placeholder="Enter appointment notes"
-                      />
-                    </InputWrapper>
-                    <el-form-item
-                      class="px-6"
-                      v-if="modalId === 'modal_create_apt'"
-                    >
-                      <el-checkbox
-                        type="checkbox"
-                        v-model="aptInfoData.send_forms"
-                        :label="
-                          appointmentType === 'procedure'
-                            ? 'Send Pre-admission form with appointment confirmation?'
-                            : 'Send Patient form with appointment confirmation?'
-                        "
-                      />
-                    </el-form-item>
-
-                    <el-divider />
-                    <div
-                      class="card-info"
-                      v-if="modalId === 'modal_create_apt'"
-                    >
-                      <div class="d-flex flex-row gap-3">
-                        <!--begin::Col-->
-                        <div class="fv-row">
-                          <!--begin::Option-->
-                          <input
-                            type="radio"
-                            class="btn-check"
-                            name="patientType"
-                            value="new"
-                            checked="checked"
-                            id="create-new-patient"
-                            v-model="patientStatus"
-                          />
-                          <label
-                            class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-10"
-                            for="create-new-patient"
-                          >
-                            <span class="svg-icon svg-icon-3x me-5">
-                              <inline-svg
-                                src="media/icons/duotune/communication/com005.svg"
-                              />
-                            </span>
-
-                            <!--begin::Info-->
-                            <span class="d-block fw-bold text-start">
-                              <span
-                                class="text-dark fw-bolder d-block fs-4 mb-2"
-                              >
-                                New Patient
-                              </span>
-                              <span class="text-gray-400 fw-bold fs-6"
-                                >Create New Patient</span
-                              >
-                            </span>
-                            <!--end::Info-->
-                          </label>
-                          <!--end::Option-->
-                        </div>
-                        <!--end::Col-->
-
-                        <!--begin::Col-->
-                        <div class="fv-row">
-                          <!--begin::Option-->
-                          <input
-                            type="radio"
-                            class="btn-check"
-                            name="patientType"
-                            value="exist"
-                            id="select-existing-patient"
-                            v-model="patientStatus"
-                          />
-                          <label
-                            class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center"
-                            for="select-existing-patient"
-                          >
-                            <span class="svg-icon svg-icon-3x me-5">
-                              <inline-svg
-                                src="media/icons/duotune/finance/fin006.svg"
-                              />
-                            </span>
-
-                            <!--begin::Info-->
-                            <span class="d-block fw-bold text-start">
-                              <span
-                                class="text-dark fw-bolder d-block fs-4 mb-2"
-                                >Existing Patient</span
-                              >
-                              <span class="text-gray-400 fw-bold fs-6"
-                                >Import Existing Patient</span
-                              >
-                            </span>
-                            <!--end::Info-->
-                          </label>
-                          <!--end::Option-->
-                        </div>
-                        <!--end::Col-->
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="d-flex justify-content-between flex-row-reverse"
-                    v-if="modalId == 'modal_create_apt'"
-                  >
-                    <button
-                      type="button"
-                      class="btn btn-lg btn-primary align-self-end"
-                      @click="aptOverlapCheck"
-                    >
-                      Continue
-                      <span class="svg-icon svg-icon-4 ms-1 me-0">
-                        <inline-svg
-                          src="media/icons/duotune/arrows/arr064.svg"
-                        />
-                      </span>
-                    </button>
-                  </div>
-                  <div class="d-flex justify-content-end" v-else>
-                    <button
-                      type="button"
-                      class="btn btn-lg btn-light-primary me-3"
-                      @click="handleSave"
-                    >
-                      <span v-if="!loading" class="indicator-label">
-                        Save
-                      </span>
-                      <span v-if="loading" class="indicator-label">
-                        Please wait...
-                        <span
-                          class="spinner-border spinner-border-sm align-middle ms-2"
-                        ></span>
-                      </span>
-                    </button>
-                    <button
-                      type="submit"
-                      class="btn btn-lg btn-primary align-self-end"
-                    >
-                      Continue
-                      <span class="svg-icon svg-icon-4 ms-1 me-0">
-                        <inline-svg
-                          src="media/icons/duotune/arrows/arr064.svg"
-                        />
-                      </span>
-                    </button>
-                  </div>
-                </el-form>
-              </div>
-              <!--end::Step 1-->
-
-              <!--begin::Step 2-->
-              <div data-kt-stepper-element="content">
-                <div class="w-100">
+              <!--begin::Content-->
+              <div class="flex-row-fluid py-lg-5 px-lg-15">
+                <!--begin::Step 1-->
+                <div class="current" data-kt-stepper-element="content">
                   <el-form
-                    v-if="patientStep === 1"
                     class="w-100"
-                    :model="filterPatient"
-                    @submit.prevent=""
+                    :rules="rules"
+                    :model="aptInfoData"
+                    ref="formRef_1"
+                    @submit.prevent="handleStep_1"
                   >
-                    <div class="d-flex flex-column">
-                      <InputWrapper label="First Name" prop="filter_first_name">
-                        <el-input
-                          type="text"
-                          v-model="filterPatient.first_name"
-                          placeholder="First Name"
-                        />
-                      </InputWrapper>
-                      <InputWrapper label="Last Name" prop="filter_last_name">
-                        <el-input
-                          type="text"
-                          v-model="filterPatient.last_name"
-                          placeholder="Last Name"
-                        />
-                      </InputWrapper>
-                      <InputWrapper label="Date of Birth" prop="filter_date">
-                        <el-date-picker
-                          editable
+                    <div class="row scroll h-520px">
+                      <InputWrapper
+                        label="Appointment Type"
+                        prop="appointment_type_id"
+                      >
+                        <el-select
                           class="w-100"
-                          v-model="filterPatient.date_of_birth"
-                          format="DD-MM-YYYY"
-                          placeholder="01-01-1990"
+                          v-model="cur_appointment_type_id"
+                        >
+                          <el-option
+                            v-for="item in aptTypeListWithRestriction"
+                            :value="item.id"
+                            :label="item.name"
+                            :key="item.id"
+                          />
+                        </el-select>
+                      </InputWrapper>
+                      <div class="px-6" v-if="overlapping_cnt >= 1">
+                        <AlertBadge
+                          text="This appointment will overlap with an
+                          upcoming appointment"
+                          color="warning"
+                          iconPath="media/icons/duotune/arrows/arr015.svg"
                         />
+                      </div>
+                      <InputWrapper label="Room" prop="room_id">
+                        <el-select
+                          class="w-100"
+                          v-model.number="aptInfoData.room_id"
+                        >
+                          <el-option
+                            v-for="item in rooms"
+                            :value="item.id"
+                            :label="item.name"
+                            :key="item.id"
+                          />
+                        </el-select>
                       </InputWrapper>
 
-                      <div class="d-flex justify-content-between my-auto">
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-light-primary me-3"
-                          data-kt-stepper-action="previous"
-                          @click="previousStep"
-                        >
-                          <span class="svg-icon svg-icon-4 me-1">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr063.svg"
-                            />
-                          </span>
-                          Back
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-primary align-self-end"
-                          v-if="modalId == 'modal_create_apt'"
-                          @click="patientStep_1"
-                        >
-                          Search
-                          <span class="svg-icon svg-icon-4 ms-1 me-0">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr064.svg"
-                            />
-                          </span>
-                        </button>
-                      </div>
-                      <div v-if="modalId == 'modal_edit_apt'">
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-light-primary me-3"
-                          @click="handleSave"
-                        >
-                          <span v-if="!loading" class="indicator-label">
-                            Save
-                          </span>
-                          <span v-if="loading" class="indicator-label">
-                            Please wait...
-                            <span
-                              class="spinner-border spinner-border-sm align-middle ms-2"
-                            ></span>
-                          </span>
-                        </button>
-                        <button
-                          type="submit"
-                          :data-kt-indicator="loading ? 'on' : null"
-                          class="btn btn-lg btn-primary align-self-end"
-                        >
-                          Continue
-                          <span class="svg-icon svg-icon-4 ms-1 me-0">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr064.svg"
-                            />
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                    <!--end::Row-->
-                    <!--begin::Separator-->
-                  </el-form>
-                  <el-form
-                    v-if="patientStep === 2"
-                    class="w-100"
-                    @submit.prevent=""
-                  >
-                    <div class="row scroll h-300px">
-                      <Datatable
-                        :table-header="patientTableHeader"
-                        :table-data="patientTableData"
-                        :key="tableKey"
-                        :rows-per-page="5"
-                        :enable-items-per-page-dropdown="true"
+                      <InputWrapper label="Note" prop="note">
+                        <el-input
+                          type="textarea"
+                          v-model="aptInfoData.note"
+                          placeholder="Enter appointment notes"
+                        />
+                      </InputWrapper>
+                      <el-form-item
+                        class="px-6"
+                        v-if="modalId === 'modal_create_apt'"
                       >
-                        <template v-slot:cell-UR_number="{ row: item }">
-                          {{ item.UR_number }}
-                        </template>
-                        <template v-slot:cell-full_name="{ row: item }">
-                          <span
-                            class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
-                          >
-                            {{ item.first_name }} {{ item.last_name }}
-                          </span>
-                        </template>
-                        <template v-slot:cell-dob="{ row: item }">
-                          <span
-                            class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
-                          >
-                            {{ formatDate(item.date_of_birth) }}
-                          </span>
-                        </template>
-                        <template v-slot:cell-contact_number="{ row: item }">
-                          <span
-                            class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
-                          >
-                            {{ item.contact_number }}
-                          </span>
-                        </template>
-                        <template v-slot:cell-action="{ row: item }">
-                          <button
-                            @click="selectPatient(item)"
-                            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                          >
-                            <span class="svg-icon svg-icon-3">
-                              <em class="fas fa-check"></em>
-                            </span>
-                          </button>
-                        </template>
-                      </Datatable>
-                    </div>
-                    <span v-if="patientInfoData.is_ok === false">
-                      This patient is blacklisted and cannot be booked in.
-                      Please speak to your organization manager to resolve.
-                    </span>
-                    <div class="special-patient-alerts d-flex gap-2 flex-row">
-                      <template
-                        v-for="alert in patientInfoData.alerts"
-                        :key="alert.id"
+                        <el-checkbox
+                          type="checkbox"
+                          v-model="aptInfoData.send_forms"
+                          :label="
+                            appointmentType === 'procedure'
+                              ? 'Send Pre-admission form with appointment confirmation?'
+                              : 'Send Patient form with appointment confirmation?'
+                          "
+                        />
+                      </el-form-item>
+
+                      <el-divider />
+                      <div
+                        class="card-info"
+                        v-if="modalId === 'modal_create_apt'"
                       >
-                        <template v-if="!alert.is_dismissed">
-                          <PatientAlert :alert="alert" />
-                          <ViewPatientAlertModal :alert="alert" />
-                        </template>
-                      </template>
+                        <div class="d-flex flex-row gap-3">
+                          <!--begin::Col-->
+                          <div class="fv-row">
+                            <!--begin::Option-->
+                            <input
+                              type="radio"
+                              class="btn-check"
+                              name="patientType"
+                              value="new"
+                              checked="checked"
+                              id="create-new-patient"
+                              v-model="patientStatus"
+                            />
+                            <label
+                              class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-10"
+                              for="create-new-patient"
+                            >
+                              <span class="svg-icon svg-icon-3x me-5">
+                                <inline-svg
+                                  src="media/icons/duotune/communication/com005.svg"
+                                />
+                              </span>
+
+                              <!--begin::Info-->
+                              <span class="d-block fw-bold text-start">
+                                <span
+                                  class="text-dark fw-bolder d-block fs-4 mb-2"
+                                >
+                                  New Patient
+                                </span>
+                                <span class="text-gray-400 fw-bold fs-6"
+                                  >Create New Patient</span
+                                >
+                              </span>
+                              <!--end::Info-->
+                            </label>
+                            <!--end::Option-->
+                          </div>
+                          <!--end::Col-->
+
+                          <!--begin::Col-->
+                          <div class="fv-row">
+                            <!--begin::Option-->
+                            <input
+                              type="radio"
+                              class="btn-check"
+                              name="patientType"
+                              value="exist"
+                              id="select-existing-patient"
+                              v-model="patientStatus"
+                            />
+                            <label
+                              class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center"
+                              for="select-existing-patient"
+                            >
+                              <span class="svg-icon svg-icon-3x me-5">
+                                <inline-svg
+                                  src="media/icons/duotune/finance/fin006.svg"
+                                />
+                              </span>
+
+                              <!--begin::Info-->
+                              <span class="d-block fw-bold text-start">
+                                <span
+                                  class="text-dark fw-bolder d-block fs-4 mb-2"
+                                  >Existing Patient</span
+                                >
+                                <span class="text-gray-400 fw-bold fs-6"
+                                  >Import Existing Patient</span
+                                >
+                              </span>
+                              <!--end::Info-->
+                            </label>
+                            <!--end::Option-->
+                          </div>
+                          <!--end::Col-->
+                        </div>
+                      </div>
                     </div>
-                    <div class="d-flex justify-content-between">
+                    <div
+                      class="d-flex justify-content-between flex-row-reverse"
+                      v-if="modalId == 'modal_create_apt'"
+                    >
                       <button
                         type="button"
-                        class="btn btn-lg btn-light-primary me-3"
-                        data-kt-stepper-action="previous"
-                        @click="patientPrevStep"
-                      >
-                        <span class="svg-icon svg-icon-4 me-1">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr063.svg"
-                          />
-                        </span>
-                        Back
-                      </button>
-                      <button
-                        type="button"
-                        v-if="patientInfoData.is_ok"
                         class="btn btn-lg btn-primary align-self-end"
-                        @click="afterSelectPatient"
+                        @click="handleStep_1"
                       >
                         Continue
                         <span class="svg-icon svg-icon-4 ms-1 me-0">
@@ -486,640 +278,10 @@
                         </span>
                       </button>
                     </div>
-                  </el-form>
-                  <el-form
-                    v-if="patientStep === 3"
-                    class="w-100"
-                    :model="patientInfoData"
-                    :rules="rules"
-                    ref="formRef_2"
-                    @submit.prevent=""
-                  >
-                    <div class="row scroll h-500px">
-                      <InputWrapper
-                        required
-                        class="col-6"
-                        label="First Name"
-                        prop="first_name"
-                      >
-                        <el-input
-                          type="text"
-                          v-model="patientInfoData.first_name"
-                          @keyup="matchExistPatientHandle(event)"
-                          placeholder="Enter First Name"
-                        />
-                      </InputWrapper>
-                      <InputWrapper
-                        required
-                        class="col-6"
-                        label="Last Name"
-                        prop="last_name"
-                      >
-                        <el-input
-                          type="text"
-                          v-model="patientInfoData.last_name"
-                          @keyup="matchExistPatientHandle(event)"
-                          placeholder="Enter Last Name"
-                        />
-                      </InputWrapper>
-
-                      <InputWrapper
-                        required
-                        class="col-6"
-                        label="Date of Birth"
-                        prop="date_of_birth"
-                      >
-                        <el-date-picker
-                          editable
-                          class="w-100"
-                          format="DD-MM-YYYY"
-                          v-model="patientInfoData.date_of_birth"
-                          @change="matchExistPatientHandle(event)"
-                          placeholder=""
-                        />
-                      </InputWrapper>
-                      <InputWrapper
-                        required
-                        class="col-6"
-                        label="Contact Number"
-                        prop="contact_number"
-                      >
-                        <el-input
-                          type="text"
-                          v-mask="'0#-####-####'"
-                          v-model="patientInfoData.contact_number"
-                          placeholder="Enter Contact Number"
-                        />
-                      </InputWrapper>
-
-                      <div
-                        class="exist-message px-7 mt-2 mb-2"
-                        v-if="patientInfoData.is_exist"
-                      >
-                        <label class="mb-2">
-                          A patient matching these details already exists
-                        </label>
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-primary w-100 mb-5"
-                          @click="showMatchPatientsHandle"
-                        >
-                          Show match patients
-                        </button>
-                      </div>
-
-                      <InputWrapper label="Address" prop="address">
-                        <div class="el-input">
-                          <GMapAutocomplete
-                            :value="patientInfoData.address"
-                            ref="addressRef"
-                            placeholder="Enter the Address"
-                            @place_changed="handleAddressChange"
-                            :options="{
-                              componentRestrictions: {
-                                country: 'au',
-                              },
-                            }"
-                          >
-                          </GMapAutocomplete>
-                        </div>
-                      </InputWrapper>
-
-                      <InputWrapper class="col-6" label="Email" prop="email">
-                        <el-input
-                          type="text"
-                          v-model="patientInfoData.email"
-                          placeholder="Enter Email"
-                        />
-                      </InputWrapper>
-
-                      <InputWrapper
-                        class="col-6"
-                        label="Confirm Method"
-                        prop="appointment_confirm_method"
-                      >
-                        <el-select
-                          class="w-100"
-                          v-model="patientInfoData.appointment_confirm_method"
-                          placeholder="Confirm Method"
-                        >
-                          <el-option value="sms" label="SMS" />
-                          <el-option value="email" label="Email" />
-                        </el-select>
-                      </InputWrapper>
-
-                      <InputWrapper
-                        class="col-12"
-                        label="Clinical Alerts"
-                        prop="clinical_alerts"
-                      >
-                        <el-input
-                          type="textarea"
-                          v-model="patientInfoData.clinical_alerts"
-                          placeholder="Enter Clinical Alerts"
-                        />
-                      </InputWrapper>
-
-                      <!-- <InputWrapper
-                        class="col-6"
-                        label="Allergies"
-                        prop="allergies"
-                      >
-                        <el-input
-                          type="textarea"
-                          v-model="patientInfoData.allergies"
-                          placeholder="Enter Allergies"
-                        />
-                      </InputWrapper> -->
-                      <InputWrapper
-                        class="col-12"
-                        label="Allergies"
-                        prop="allergies"
-                      >
-                        <el-select
-                          class="w-100"
-                          multiple
-                          filterable
-                          allow-create
-                          default-first-option
-                          :reserve-keyword="false"
-                          v-model="patientInfoData.allergies"
-                        >
-                          <el-option
-                            v-for="item in allergiesList"
-                            :value="item.id"
-                            :label="item.name"
-                            :key="item.id"
-                          />
-                        </el-select>
-                      </InputWrapper>
-                    </div>
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-end" v-else>
                       <button
                         type="button"
                         class="btn btn-lg btn-light-primary me-3"
-                        data-kt-stepper-action="previous"
-                        @click="patientPrevStep"
-                      >
-                        <span class="svg-icon svg-icon-4 me-1">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr063.svg"
-                          />
-                        </span>
-                        Back
-                      </button>
-                      <div>
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-light-primary me-3"
-                          v-if="modalId == 'modal_edit_apt'"
-                          @click="handleSave"
-                        >
-                          <span v-if="!loading" class="indicator-label">
-                            Save
-                          </span>
-                          <span v-if="loading" class="indicator-label">
-                            Please wait...
-                            <span
-                              class="spinner-border spinner-border-sm align-middle ms-2"
-                            ></span>
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-primary align-self-end"
-                          @click="handleStep_2"
-                        >
-                          Continue
-                          <span class="svg-icon svg-icon-4 ms-1 me-0">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr064.svg"
-                            />
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  </el-form>
-                </div>
-              </div>
-              <!--end::Step 2-->
-
-              <!--begin::Step 3 -->
-              <div data-kt-stepper-element="content">
-                <div class="w-100">
-                  <el-form
-                    class="w-100"
-                    :model="billingInfoData"
-                    :rules="rules"
-                    ref="formRef_3"
-                    @submit.prevent=""
-                  >
-                    <div class="row">
-                      <InputWrapper
-                        class="col-12"
-                        label="Charge Type"
-                        prop="charge_type"
-                      >
-                        <el-select
-                          class="w-100"
-                          v-model="billingInfoData.charge_type"
-                          placeholder="Select Charge Type"
-                        >
-                          <el-option
-                            v-for="type in chargeTypes"
-                            :key="type.value"
-                            :value="type.value"
-                            :label="type.label"
-                          />
-                        </el-select>
-                      </InputWrapper>
-
-                      <div class="mb-4">
-                        <InfoSection :heading="'Estimated Appointment Price'">
-                          {{ convertToCurrency(appointment_type_quote / 100) }}
-                        </InfoSection>
-                      </div>
-
-                      <el-divider />
-
-                      <div>
-                        <button
-                          type="button"
-                          class="btn btn-light btn-icon-primary me-3 mb-3"
-                          @click="showAddClaimSourceModal"
-                        >
-                          Add Claim Source
-                        </button>
-
-                        <div
-                          v-for="(item, index) in billingInfoData.claim_sources"
-                          :key="`new-claim-source-${index}`"
-                          class="d-flex flex-row align-items-center justify-content-between p-3 mb-3 card border border-dashed border-primary gap-4"
-                        >
-                          <div>
-                            <label class="fs-5 text-primary">
-                              {{ getBillingType(item.billing_type) }}:
-
-                              <span class="text-black fs-5">
-                                {{ item.member_number }}
-                              </span>
-                            </label>
-
-                            <div
-                              v-if="item.billing_type != 3"
-                              class="d-flex gap-3"
-                            >
-                              <label class="text-primary">
-                                Reference:
-
-                                <span class="text-black">
-                                  {{ item.member_ref_number ?? "N/A" }}
-                                </span>
-                              </label>
-
-                              <label
-                                v-if="item.billing_type == 2"
-                                class="text-primary"
-                              >
-                                Fund:
-
-                                <span class="text-black">
-                                  {{ getHealthFund(item.health_fund_id) }}
-                                </span>
-                              </label>
-                            </div>
-                          </div>
-
-                          <button
-                            type="button"
-                            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                            @click="deleteClaimSource(item)"
-                          >
-                            <span class="svg-icon svg-icon-3">
-                              <InlineSVG icon="bin" />
-                            </span>
-                          </button>
-                        </div>
-
-                        <AddClaimSourceModal
-                          :patient="patientInfoData"
-                          :modalId="addClaimSourceModalId"
-                          v-on:addClaimSource="addNewClaimSource"
-                          v-on:closeModal="closeAddClaimSourceModal"
-                          v-on:updateDetails="updatePatientDetails"
-                          shouldEmit
-                        />
-                      </div>
-
-                      <el-divider />
-
-                      <InputWrapper
-                        v-if="billingInfoData.charge_type === 'pension-card'"
-                        class="col-6"
-                        label="Pension Card Number"
-                        prop="pension_card_number"
-                      >
-                        <el-input
-                          class="w-100"
-                          v-model="billingInfoData.pension_card_number"
-                        />
-                      </InputWrapper>
-
-                      <InputWrapper
-                        v-if="billingInfoData.charge_type === 'healthcare-card'"
-                        class="col-6"
-                        label="Healthcare Card Number"
-                        prop="healthcare_card_number"
-                      >
-                        <el-input
-                          class="w-100"
-                          v-model="billingInfoData.healthcare_card_number"
-                        />
-                      </InputWrapper>
-                      <InputWrapper
-                        v-if="
-                          billingInfoData.charge_type === 'healthcare-card' ||
-                          billingInfoData.charge_type === 'pension-card'
-                        "
-                        class="col-6"
-                        label="Expiry Date"
-                        prop="expiry_date"
-                      >
-                        <el-input
-                          class="w-100"
-                          v-model="billingInfoData.healthcare_card_number"
-                        />
-                      </InputWrapper>
-
-                      <div
-                        class="col-sm-6 d-flex align-items-center justify-content-center"
-                      >
-                        <!--begin::Input group-->
-                        <div class="fv-row">
-                          <!--begin::Input-->
-                          <el-form-item
-                            class="m-0"
-                            prop="add_other_account_holder"
-                          >
-                            <el-checkbox
-                              type="checkbox"
-                              v-model="billingInfoData.add_other_account_holder"
-                              label="Add other account holder"
-                            />
-                          </el-form-item>
-                          <!--end::Input-->
-                        </div>
-                        <!--end::Input group-->
-
-                        <!--end::Body-->
-                      </div>
-                      <el-divider />
-                    </div>
-                    <div class="d-flex justify-content-between">
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-light-primary me-3"
-                        data-kt-stepper-action="previous"
-                        @click="previousStep"
-                      >
-                        <span class="svg-icon svg-icon-4 me-1">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr063.svg"
-                          />
-                        </span>
-                        Back
-                      </button>
-                      <div>
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-light-primary me-3"
-                          v-if="modalId == 'modal_edit_apt'"
-                          @click="handleSave"
-                        >
-                          <span v-if="!loading" class="indicator-label">
-                            Save
-                          </span>
-                          <span v-if="loading" class="indicator-label">
-                            Please wait...
-                            <span
-                              class="spinner-border spinner-border-sm align-middle ms-2"
-                            ></span>
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-lg btn-primary align-self-end"
-                          @click="handleStep_3"
-                        >
-                          Continue
-                          <span class="svg-icon svg-icon-4 ms-1 me-0">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr064.svg"
-                            />
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  </el-form>
-                </div>
-              </div>
-              <!--end::Step 3-->
-
-              <!--begin::Step 4 -->
-              <div data-kt-stepper-element="content">
-                <div class="w-100">
-                  <el-form
-                    class="w-100"
-                    :model="otherInfoData"
-                    :rules="rules"
-                    ref="formRef_4"
-                    @submit.prevent=""
-                  >
-                    <div class="row scroll h-500px">
-                      <div v-if="apt_type == 'Procedure'" class="card-info">
-                        <div class="fs-3 fw-bold text-muted mb-6">
-                          Pre-Procedure Questions
-                        </div>
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <!--begin::Input group-->
-                            <div class="fv-row mb-7">
-                              <!--begin::Input-->
-                              <el-form-item prop="anesthetic_questions">
-                                <el-checkbox
-                                  class="w-100"
-                                  v-model="otherInfoData.anesthetic_questions"
-                                  label="Anesthetic Questions"
-                                  data-bs-toggle="collapse"
-                                  href="#toogle_ane_ques"
-                                />
-                              </el-form-item>
-                              <!--end::Input-->
-                            </div>
-                            <!--end::Input group-->
-                          </div>
-                          <div class="col-sm-12 collapse" id="toogle_ane_ques">
-                            <template
-                              v-for="(item, idx) in aneQuestions"
-                              :key="idx"
-                            >
-                              <div class="row mb-2">
-                                <div class="col-10">{{ item.question }}</div>
-                                <div class="col-2">
-                                  <el-switch
-                                    v-model="aneAnswers[idx]"
-                                    :active-value="true"
-                                    :inactive-value="false"
-                                    @change="handleAneQuestions"
-                                    style="
-                                      --el-switch-on-color: #13ce66;
-                                      --el-switch-off-color: #ff4949;
-                                    "
-                                    active-text="Y"
-                                    inactive-text="N"
-                                  />
-                                </div>
-                              </div>
-                            </template>
-                          </div>
-                          <el-divider />
-                        </div>
-                      </div>
-                      <!--start::Doctor Address Information-->
-                      <div class="card-info">
-                        <div class="mb-6 d-flex justify-content-between">
-                          <span class="fs-3 fw-bold text-muted"
-                            >Doctor Address Information</span
-                          >
-                          <el-checkbox
-                            type="checkbox"
-                            v-model="otherInfoData.no_referral"
-                            label="No Doctor Address"
-                          />
-                        </div>
-                        <div class="row">
-                          <template v-if="otherInfoData.no_referral">
-                            <InputWrapper
-                              class="col-6"
-                              label="No Doctor Reason"
-                              prop="no_doctor_reason"
-                            >
-                              <el-input
-                                type="text"
-                                v-model="otherInfoData.no_referral_reason"
-                                placeholder="Please Enter Reason"
-                              />
-                            </InputWrapper>
-                          </template>
-                          <template v-else>
-                            <InputWrapper
-                              class="col-6"
-                              label="Doctor Address Book"
-                              prop="doctor_address_book_id"
-                            >
-                              <el-autocomplete
-                                class="w-100"
-                                v-model="otherInfoData.doctor_address_book_name"
-                                value-key="full_name"
-                                :fetch-suggestions="searchDoctorAddressBook"
-                                placeholder="Please input"
-                                :trigger-on-focus="false"
-                                @select="handleSelectDoctorAddressBook"
-                              >
-                                <template #default="{ item }">
-                                  <div class="name">
-                                    {{ item.title }}
-                                    {{ item.first_name }}
-                                    {{ item.last_name }}
-                                  </div>
-                                  <div class="address">
-                                    {{ item.address }}
-                                  </div>
-                                </template>
-                              </el-autocomplete>
-                            </InputWrapper>
-                            <InputWrapper
-                              class="col-6"
-                              label="Referral Duration"
-                              prop="referral_duration"
-                            >
-                              <el-select
-                                class="w-100"
-                                v-model="otherInfoData.referral_duration"
-                                placeholder="Enter Referral Duration"
-                              >
-                                <el-option value="0" label="Indefinite" />
-                                <el-option value="3" label="3 Months" />
-                                <el-option value="12" label="12 Months" />
-                              </el-select>
-                            </InputWrapper>
-
-                            <InputWrapper
-                              class="col-6"
-                              label="Referral Date"
-                              prop="referral_date"
-                            >
-                              <el-date-picker
-                                editable
-                                class="w-100"
-                                format="DD-MM-YYYY"
-                                v-model="otherInfoData.referral_date"
-                              />
-                            </InputWrapper>
-                          </template>
-                        </div>
-                      </div>
-                      <!--end::Referral Information-->
-                      <!--start::Appointment History-->
-                      <div class="card-info" v-if="patientStatus === 'exist'">
-                        <span class="fs-3 fw-bold text-muted"
-                          >Appointment History</span
-                        >
-
-                        <div style="color: grey">
-                          <span class="me-2"
-                            >Total Appointments:
-                            {{ patientAptData.appointment_count }}
-                          </span>
-                          <span class="me-2">
-                            <span class="me-2">/</span>Cancelled:
-                            {{ patientAptData.cancelled_appointment_count }}
-                          </span>
-                          <span class="me-2">
-                            <span class="me-2">/</span>Missed:
-                            {{ patientAptData.missed_appointment_count }}
-                          </span>
-                        </div>
-
-                        <AppointmentHistory
-                          :pastAppointments="patientAptData.pastAppointments"
-                          :futureAppointments="
-                            patientAptData.futureAppointments
-                          "
-                        />
-                      </div>
-                    </div>
-                    <!--end::Appointment History-->
-
-                    <div class="d-flex justify-content-between">
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-light-primary me-3"
-                        data-kt-stepper-action="previous"
-                        @click="previousStep"
-                      >
-                        <span class="svg-icon svg-icon-4 me-1">
-                          <inline-svg
-                            src="media/icons/duotune/arrows/arr063.svg"
-                          />
-                        </span>
-                        Back
-                      </button>
-
-                      <button
-                        type="button"
-                        class="btn btn-lg btn-light-primary me-3"
-                        v-if="modalId == 'modal_edit_apt'"
                         @click="handleSave"
                       >
                         <span v-if="!loading" class="indicator-label">
@@ -1133,37 +295,904 @@
                         </span>
                       </button>
                       <button
-                        type="button"
+                        type="submit"
                         class="btn btn-lg btn-primary align-self-end"
-                        @click="submit"
-                        v-else
                       >
-                        <span v-if="!loading" class="indicator-label">
-                          Create Appointment
-                          <span class="svg-icon svg-icon-4 ms-1 me-0">
-                            <inline-svg
-                              src="media/icons/duotune/arrows/arr064.svg"
-                            />
-                          </span>
-                        </span>
-                        <span v-if="loading" class="indicator-label">
-                          Please wait...
-                          <span
-                            class="spinner-border spinner-border-sm align-middle ms-2"
-                          ></span>
+                        Continue
+                        <span class="svg-icon svg-icon-4 ms-1 me-0">
+                          <inline-svg
+                            src="media/icons/duotune/arrows/arr064.svg"
+                          />
                         </span>
                       </button>
                     </div>
                   </el-form>
                 </div>
+                <!--end::Step 1-->
+
+                <!--begin::Step 2-->
+                <div data-kt-stepper-element="content">
+                  <div class="w-100">
+                    <el-form
+                      v-if="patientStep === 1"
+                      class="w-100"
+                      :model="filterPatient"
+                      @submit.prevent=""
+                    >
+                      <div class="d-flex flex-column">
+                        <InputWrapper
+                          label="First Name"
+                          prop="filter_first_name"
+                        >
+                          <el-input
+                            type="text"
+                            v-model="filterPatient.first_name"
+                            placeholder="First Name"
+                          />
+                        </InputWrapper>
+                        <InputWrapper label="Last Name" prop="filter_last_name">
+                          <el-input
+                            type="text"
+                            v-model="filterPatient.last_name"
+                            placeholder="Last Name"
+                          />
+                        </InputWrapper>
+                        <InputWrapper label="Date of Birth" prop="filter_date">
+                          <el-date-picker
+                            editable
+                            class="w-100"
+                            v-model="filterPatient.date_of_birth"
+                            format="DD-MM-YYYY"
+                            placeholder="01-01-1990"
+                          />
+                        </InputWrapper>
+
+                        <div class="d-flex justify-content-between my-auto">
+                          <button
+                            type="button"
+                            class="btn btn-lg btn-light-primary me-3"
+                            data-kt-stepper-action="previous"
+                            @click="previousStep"
+                          >
+                            <span class="svg-icon svg-icon-4 me-1">
+                              <inline-svg
+                                src="media/icons/duotune/arrows/arr063.svg"
+                              />
+                            </span>
+                            Back
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-lg btn-primary align-self-end"
+                            v-if="modalId == 'modal_create_apt'"
+                            @click="patientStep_1"
+                          >
+                            Search
+                            <span class="svg-icon svg-icon-4 ms-1 me-0">
+                              <inline-svg
+                                src="media/icons/duotune/arrows/arr064.svg"
+                              />
+                            </span>
+                          </button>
+                        </div>
+                        <div v-if="modalId == 'modal_edit_apt'">
+                          <button
+                            type="button"
+                            class="btn btn-lg btn-light-primary me-3"
+                            @click="handleSave"
+                          >
+                            <span v-if="!loading" class="indicator-label">
+                              Save
+                            </span>
+                            <span v-if="loading" class="indicator-label">
+                              Please wait...
+                              <span
+                                class="spinner-border spinner-border-sm align-middle ms-2"
+                              ></span>
+                            </span>
+                          </button>
+                          <button
+                            type="submit"
+                            :data-kt-indicator="loading ? 'on' : null"
+                            class="btn btn-lg btn-primary align-self-end"
+                          >
+                            Continue
+                            <span class="svg-icon svg-icon-4 ms-1 me-0">
+                              <inline-svg
+                                src="media/icons/duotune/arrows/arr064.svg"
+                              />
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                      <!--end::Row-->
+                      <!--begin::Separator-->
+                    </el-form>
+                    <el-form
+                      v-if="patientStep === 2"
+                      class="w-100"
+                      @submit.prevent=""
+                    >
+                      <div class="row scroll h-300px">
+                        <Datatable
+                          :table-header="patientTableHeader"
+                          :table-data="patientTableData"
+                          :key="tableKey"
+                          :rows-per-page="5"
+                          :enable-items-per-page-dropdown="true"
+                        >
+                          <template v-slot:cell-UR_number="{ row: item }">
+                            {{ item.UR_number }}
+                          </template>
+                          <template v-slot:cell-full_name="{ row: item }">
+                            <span
+                              class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                            >
+                              {{ item.first_name }} {{ item.last_name }}
+                            </span>
+                          </template>
+                          <template v-slot:cell-dob="{ row: item }">
+                            <span
+                              class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                            >
+                              {{ formatDate(item.date_of_birth) }}
+                            </span>
+                          </template>
+                          <template v-slot:cell-contact_number="{ row: item }">
+                            <span
+                              class="text-dark fw-bolder text-hover-primary mb-1 fs-6"
+                            >
+                              {{ item.contact_number }}
+                            </span>
+                          </template>
+                          <template v-slot:cell-action="{ row: item }">
+                            <button
+                              @click="selectPatient(item)"
+                              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                            >
+                              <span class="svg-icon svg-icon-3">
+                                <em class="fas fa-check"></em>
+                              </span>
+                            </button>
+                          </template>
+                        </Datatable>
+                      </div>
+                      <span v-if="patientInfoData.is_ok === false">
+                        This patient is blacklisted and cannot be booked in.
+                        Please speak to your organization manager to resolve.
+                      </span>
+                      <div class="special-patient-alerts d-flex gap-2 flex-row">
+                        <template
+                          v-for="alert in patientInfoData.alerts"
+                          :key="alert.id"
+                        >
+                          <template v-if="!alert.is_dismissed">
+                            <PatientAlert :alert="alert" />
+                            <ViewPatientAlertModal :alert="alert" />
+                          </template>
+                        </template>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          data-kt-stepper-action="previous"
+                          @click="patientPrevStep"
+                        >
+                          <span class="svg-icon svg-icon-4 me-1">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr063.svg"
+                            />
+                          </span>
+                          Back
+                        </button>
+                        <button
+                          type="button"
+                          v-if="patientInfoData.is_ok"
+                          class="btn btn-lg btn-primary align-self-end"
+                          @click="afterSelectPatient"
+                        >
+                          Continue
+                          <span class="svg-icon svg-icon-4 ms-1 me-0">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr064.svg"
+                            />
+                          </span>
+                        </button>
+                      </div>
+                    </el-form>
+                    <el-form
+                      v-if="patientStep === 3"
+                      class="w-100"
+                      :model="patientInfoData"
+                      :rules="rules"
+                      ref="formRef_2"
+                      @submit.prevent=""
+                    >
+                      <div class="row scroll h-500px">
+                        <InputWrapper
+                          required
+                          class="col-6"
+                          label="First Name"
+                          prop="first_name"
+                        >
+                          <el-input
+                            type="text"
+                            v-model="patientInfoData.first_name"
+                            @keyup="matchExistPatientHandle(event)"
+                            placeholder="Enter First Name"
+                          />
+                        </InputWrapper>
+                        <InputWrapper
+                          required
+                          class="col-6"
+                          label="Last Name"
+                          prop="last_name"
+                        >
+                          <el-input
+                            type="text"
+                            v-model="patientInfoData.last_name"
+                            @keyup="matchExistPatientHandle(event)"
+                            placeholder="Enter Last Name"
+                          />
+                        </InputWrapper>
+
+                        <InputWrapper
+                          required
+                          class="col-6"
+                          label="Date of Birth"
+                          prop="date_of_birth"
+                        >
+                          <el-date-picker
+                            editable
+                            class="w-100"
+                            format="DD-MM-YYYY"
+                            v-model="patientInfoData.date_of_birth"
+                            @change="matchExistPatientHandle(event)"
+                            placeholder=""
+                          />
+                        </InputWrapper>
+                        <InputWrapper
+                          required
+                          class="col-6"
+                          label="Contact Number"
+                          prop="contact_number"
+                        >
+                          <el-input
+                            type="text"
+                            v-mask="'0#-####-####'"
+                            v-model="patientInfoData.contact_number"
+                            placeholder="Enter Contact Number"
+                          />
+                        </InputWrapper>
+
+                        <div
+                          class="exist-message px-7 mt-2 mb-2"
+                          v-if="patientInfoData.is_exist"
+                        >
+                          <label class="mb-2">
+                            A patient matching these details already exists
+                          </label>
+                          <button
+                            type="button"
+                            class="btn btn-lg btn-primary w-100 mb-5"
+                            @click="showMatchPatientsHandle"
+                          >
+                            Show match patients
+                          </button>
+                        </div>
+
+                        <InputWrapper label="Address" prop="address">
+                          <div class="el-input">
+                            <GMapAutocomplete
+                              :value="patientInfoData.address"
+                              ref="addressRef"
+                              placeholder="Enter the Address"
+                              @place_changed="handleAddressChange"
+                              :options="{
+                                componentRestrictions: {
+                                  country: 'au',
+                                },
+                              }"
+                            >
+                            </GMapAutocomplete>
+                          </div>
+                        </InputWrapper>
+
+                        <InputWrapper class="col-6" label="Email" prop="email">
+                          <el-input
+                            type="text"
+                            v-model="patientInfoData.email"
+                            placeholder="Enter Email"
+                          />
+                        </InputWrapper>
+
+                        <InputWrapper
+                          class="col-6"
+                          label="Confirm Method"
+                          prop="appointment_confirm_method"
+                        >
+                          <el-select
+                            class="w-100"
+                            v-model="patientInfoData.appointment_confirm_method"
+                            placeholder="Confirm Method"
+                          >
+                            <el-option value="sms" label="SMS" />
+                            <el-option value="email" label="Email" />
+                          </el-select>
+                        </InputWrapper>
+
+                        <InputWrapper
+                          class="col-12"
+                          label="Clinical Alerts"
+                          prop="clinical_alerts"
+                        >
+                          <el-input
+                            type="textarea"
+                            v-model="patientInfoData.clinical_alerts"
+                            placeholder="Enter Clinical Alerts"
+                          />
+                        </InputWrapper>
+
+                        <!-- <InputWrapper
+                        class="col-6"
+                        label="Allergies"
+                        prop="allergies"
+                      >
+                        <el-input
+                          type="textarea"
+                          v-model="patientInfoData.allergies"
+                          placeholder="Enter Allergies"
+                        />
+                      </InputWrapper> -->
+                        <InputWrapper
+                          class="col-12"
+                          label="Allergies"
+                          prop="allergies"
+                        >
+                          <el-select
+                            class="w-100"
+                            multiple
+                            filterable
+                            allow-create
+                            default-first-option
+                            :reserve-keyword="false"
+                            v-model="patientInfoData.allergies"
+                          >
+                            <el-option
+                              v-for="item in allergiesList"
+                              :value="item.id"
+                              :label="item.name"
+                              :key="item.id"
+                            />
+                          </el-select>
+                        </InputWrapper>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          data-kt-stepper-action="previous"
+                          @click="patientPrevStep"
+                        >
+                          <span class="svg-icon svg-icon-4 me-1">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr063.svg"
+                            />
+                          </span>
+                          Back
+                        </button>
+                        <div>
+                          <button
+                            type="button"
+                            class="btn btn-lg btn-light-primary me-3"
+                            v-if="modalId == 'modal_edit_apt'"
+                            @click="handleSave"
+                          >
+                            <span v-if="!loading" class="indicator-label">
+                              Save
+                            </span>
+                            <span v-if="loading" class="indicator-label">
+                              Please wait...
+                              <span
+                                class="spinner-border spinner-border-sm align-middle ms-2"
+                              ></span>
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-lg btn-primary align-self-end"
+                            @click="handleStep_2"
+                          >
+                            Continue
+                            <span class="svg-icon svg-icon-4 ms-1 me-0">
+                              <inline-svg
+                                src="media/icons/duotune/arrows/arr064.svg"
+                              />
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </el-form>
+                  </div>
+                </div>
+                <!--end::Step 2-->
+
+                <!--begin::Step 3 -->
+                <div data-kt-stepper-element="content">
+                  <div class="w-100">
+                    <el-form
+                      class="w-100"
+                      :model="billingInfoData"
+                      :rules="rules"
+                      ref="formRef_3"
+                      @submit.prevent=""
+                    >
+                      <div class="row">
+                        <InputWrapper
+                          class="col-12"
+                          label="Charge Type"
+                          prop="charge_type"
+                        >
+                          <el-select
+                            class="w-100"
+                            v-model="billingInfoData.charge_type"
+                            placeholder="Select Charge Type"
+                          >
+                            <el-option
+                              v-for="type in chargeTypes"
+                              :key="type.value"
+                              :value="type.value"
+                              :label="type.label"
+                            />
+                          </el-select>
+                        </InputWrapper>
+
+                        <div class="mb-4">
+                          <InfoSection :heading="'Estimated Appointment Price'">
+                            {{
+                              convertToCurrency(appointment_type_quote / 100)
+                            }}
+                          </InfoSection>
+                        </div>
+
+                        <el-divider />
+
+                        <div>
+                          <button
+                            type="button"
+                            class="btn btn-light btn-icon-primary me-3 mb-3"
+                            @click="showAddClaimSourceModal"
+                          >
+                            Add Claim Source
+                          </button>
+
+                          <div
+                            v-for="(
+                              item, index
+                            ) in billingInfoData.claim_sources"
+                            :key="`new-claim-source-${index}`"
+                            class="d-flex flex-row align-items-center justify-content-between p-3 mb-3 card border border-dashed border-primary gap-4"
+                          >
+                            <div>
+                              <label class="fs-5 text-primary">
+                                {{ getBillingType(item.billing_type) }}:
+
+                                <span class="text-black fs-5">
+                                  {{ item.member_number }}
+                                </span>
+                              </label>
+
+                              <div
+                                v-if="item.billing_type != 3"
+                                class="d-flex gap-3"
+                              >
+                                <label class="text-primary">
+                                  Reference:
+
+                                  <span class="text-black">
+                                    {{ item.member_ref_number ?? "N/A" }}
+                                  </span>
+                                </label>
+
+                                <label
+                                  v-if="item.billing_type == 2"
+                                  class="text-primary"
+                                >
+                                  Fund:
+
+                                  <span class="text-black">
+                                    {{ getHealthFund(item.health_fund_id) }}
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+
+                            <button
+                              type="button"
+                              class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                              @click="deleteClaimSource(item)"
+                            >
+                              <span class="svg-icon svg-icon-3">
+                                <InlineSVG icon="bin" />
+                              </span>
+                            </button>
+                          </div>
+
+                          <AddClaimSourceModal
+                            :patient="patientInfoData"
+                            :modalId="addClaimSourceModalId"
+                            v-on:addClaimSource="addNewClaimSource"
+                            v-on:closeModal="closeAddClaimSourceModal"
+                            v-on:updateDetails="updatePatientDetails"
+                            shouldEmit
+                          />
+                        </div>
+
+                        <el-divider />
+
+                        <InputWrapper
+                          v-if="billingInfoData.charge_type === 'pension-card'"
+                          class="col-6"
+                          label="Pension Card Number"
+                          prop="pension_card_number"
+                        >
+                          <el-input
+                            class="w-100"
+                            v-model="billingInfoData.pension_card_number"
+                          />
+                        </InputWrapper>
+
+                        <InputWrapper
+                          v-if="
+                            billingInfoData.charge_type === 'healthcare-card'
+                          "
+                          class="col-6"
+                          label="Healthcare Card Number"
+                          prop="healthcare_card_number"
+                        >
+                          <el-input
+                            class="w-100"
+                            v-model="billingInfoData.healthcare_card_number"
+                          />
+                        </InputWrapper>
+                        <InputWrapper
+                          v-if="
+                            billingInfoData.charge_type === 'healthcare-card' ||
+                            billingInfoData.charge_type === 'pension-card'
+                          "
+                          class="col-6"
+                          label="Expiry Date"
+                          prop="expiry_date"
+                        >
+                          <el-input
+                            class="w-100"
+                            v-model="billingInfoData.healthcare_card_number"
+                          />
+                        </InputWrapper>
+
+                        <div
+                          class="col-sm-6 d-flex align-items-center justify-content-center"
+                        >
+                          <!--begin::Input group-->
+                          <div class="fv-row">
+                            <!--begin::Input-->
+                            <el-form-item
+                              class="m-0"
+                              prop="add_other_account_holder"
+                            >
+                              <el-checkbox
+                                type="checkbox"
+                                v-model="
+                                  billingInfoData.add_other_account_holder
+                                "
+                                label="Add other account holder"
+                              />
+                            </el-form-item>
+                            <!--end::Input-->
+                          </div>
+                          <!--end::Input group-->
+
+                          <!--end::Body-->
+                        </div>
+                        <el-divider />
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          data-kt-stepper-action="previous"
+                          @click="previousStep"
+                        >
+                          <span class="svg-icon svg-icon-4 me-1">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr063.svg"
+                            />
+                          </span>
+                          Back
+                        </button>
+                        <div>
+                          <button
+                            type="button"
+                            class="btn btn-lg btn-light-primary me-3"
+                            v-if="modalId == 'modal_edit_apt'"
+                            @click="handleSave"
+                          >
+                            <span v-if="!loading" class="indicator-label">
+                              Save
+                            </span>
+                            <span v-if="loading" class="indicator-label">
+                              Please wait...
+                              <span
+                                class="spinner-border spinner-border-sm align-middle ms-2"
+                              ></span>
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-lg btn-primary align-self-end"
+                            @click="handleStep_3"
+                          >
+                            Continue
+                            <span class="svg-icon svg-icon-4 ms-1 me-0">
+                              <inline-svg
+                                src="media/icons/duotune/arrows/arr064.svg"
+                              />
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </el-form>
+                  </div>
+                </div>
+                <!--end::Step 3-->
+
+                <!--begin::Step 4 -->
+                <div data-kt-stepper-element="content">
+                  <div class="w-100">
+                    <el-form
+                      class="w-100"
+                      :model="otherInfoData"
+                      :rules="rules"
+                      ref="formRef_4"
+                      @submit.prevent=""
+                    >
+                      <div class="row scroll h-500px">
+                        <div v-if="apt_type == 'Procedure'" class="card-info">
+                          <div class="fs-3 fw-bold text-muted mb-6">
+                            Pre-Procedure Questions
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <!--begin::Input group-->
+                              <div class="fv-row mb-7">
+                                <!--begin::Input-->
+                                <el-form-item prop="anesthetic_questions">
+                                  <el-checkbox
+                                    class="w-100"
+                                    v-model="otherInfoData.anesthetic_questions"
+                                    label="Anesthetic Questions"
+                                    data-bs-toggle="collapse"
+                                    href="#toogle_ane_ques"
+                                  />
+                                </el-form-item>
+                                <!--end::Input-->
+                              </div>
+                              <!--end::Input group-->
+                            </div>
+                            <div
+                              class="col-sm-12 collapse"
+                              id="toogle_ane_ques"
+                            >
+                              <template
+                                v-for="(item, idx) in aneQuestions"
+                                :key="idx"
+                              >
+                                <div class="row mb-2">
+                                  <div class="col-10">{{ item.question }}</div>
+                                  <div class="col-2">
+                                    <el-switch
+                                      v-model="aneAnswers[idx]"
+                                      :active-value="true"
+                                      :inactive-value="false"
+                                      @change="handleAneQuestions"
+                                      style="
+                                        --el-switch-on-color: #13ce66;
+                                        --el-switch-off-color: #ff4949;
+                                      "
+                                      active-text="Y"
+                                      inactive-text="N"
+                                    />
+                                  </div>
+                                </div>
+                              </template>
+                            </div>
+                            <el-divider />
+                          </div>
+                        </div>
+                        <!--start::Doctor Address Information-->
+                        <div class="card-info">
+                          <div class="mb-6 d-flex justify-content-between">
+                            <span class="fs-3 fw-bold text-muted"
+                              >Doctor Address Information</span
+                            >
+                            <el-checkbox
+                              type="checkbox"
+                              v-model="otherInfoData.no_referral"
+                              label="No Doctor Address"
+                            />
+                          </div>
+                          <div class="row">
+                            <template v-if="otherInfoData.no_referral">
+                              <InputWrapper
+                                class="col-6"
+                                label="No Doctor Reason"
+                                prop="no_doctor_reason"
+                              >
+                                <el-input
+                                  type="text"
+                                  v-model="otherInfoData.no_referral_reason"
+                                  placeholder="Please Enter Reason"
+                                />
+                              </InputWrapper>
+                            </template>
+                            <template v-else>
+                              <InputWrapper
+                                class="col-6"
+                                label="Doctor Address Book"
+                                prop="doctor_address_book_id"
+                              >
+                                <el-autocomplete
+                                  class="w-100"
+                                  v-model="
+                                    otherInfoData.doctor_address_book_name
+                                  "
+                                  value-key="full_name"
+                                  :fetch-suggestions="searchDoctorAddressBook"
+                                  placeholder="Please input"
+                                  :trigger-on-focus="false"
+                                  @select="handleSelectDoctorAddressBook"
+                                >
+                                  <template #default="{ item }">
+                                    <div class="name">
+                                      {{ item.title }}
+                                      {{ item.first_name }}
+                                      {{ item.last_name }}
+                                    </div>
+                                    <div class="address">
+                                      {{ item.address }}
+                                    </div>
+                                  </template>
+                                </el-autocomplete>
+                              </InputWrapper>
+                              <InputWrapper
+                                class="col-6"
+                                label="Referral Duration"
+                                prop="referral_duration"
+                              >
+                                <el-select
+                                  class="w-100"
+                                  v-model="otherInfoData.referral_duration"
+                                  placeholder="Enter Referral Duration"
+                                >
+                                  <el-option value="0" label="Indefinite" />
+                                  <el-option value="3" label="3 Months" />
+                                  <el-option value="12" label="12 Months" />
+                                </el-select>
+                              </InputWrapper>
+
+                              <InputWrapper
+                                class="col-6"
+                                label="Referral Date"
+                                prop="referral_date"
+                              >
+                                <el-date-picker
+                                  editable
+                                  class="w-100"
+                                  format="DD-MM-YYYY"
+                                  v-model="otherInfoData.referral_date"
+                                />
+                              </InputWrapper>
+                            </template>
+                          </div>
+                        </div>
+                        <!--end::Referral Information-->
+                        <!--start::Appointment History-->
+                        <div class="card-info" v-if="patientStatus === 'exist'">
+                          <span class="fs-3 fw-bold text-muted"
+                            >Appointment History</span
+                          >
+
+                          <div style="color: grey">
+                            <span class="me-2"
+                              >Total Appointments:
+                              {{ patientAptData.appointment_count }}
+                            </span>
+                            <span class="me-2">
+                              <span class="me-2">/</span>Cancelled:
+                              {{ patientAptData.cancelled_appointment_count }}
+                            </span>
+                            <span class="me-2">
+                              <span class="me-2">/</span>Missed:
+                              {{ patientAptData.missed_appointment_count }}
+                            </span>
+                          </div>
+
+                          <AppointmentHistory
+                            :pastAppointments="patientAptData.pastAppointments"
+                            :futureAppointments="
+                              patientAptData.futureAppointments
+                            "
+                          />
+                        </div>
+                      </div>
+                      <!--end::Appointment History-->
+
+                      <div class="d-flex justify-content-between">
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          data-kt-stepper-action="previous"
+                          @click="previousStep"
+                        >
+                          <span class="svg-icon svg-icon-4 me-1">
+                            <inline-svg
+                              src="media/icons/duotune/arrows/arr063.svg"
+                            />
+                          </span>
+                          Back
+                        </button>
+
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-light-primary me-3"
+                          v-if="modalId == 'modal_edit_apt'"
+                          @click="handleSave"
+                        >
+                          <span v-if="!loading" class="indicator-label">
+                            Save
+                          </span>
+                          <span v-if="loading" class="indicator-label">
+                            Please wait...
+                            <span
+                              class="spinner-border spinner-border-sm align-middle ms-2"
+                            ></span>
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-lg btn-primary align-self-end"
+                          @click="submit"
+                          v-else
+                        >
+                          <span v-if="!loading" class="indicator-label">
+                            Create Appointment
+                            <span class="svg-icon svg-icon-4 ms-1 me-0">
+                              <inline-svg
+                                src="media/icons/duotune/arrows/arr064.svg"
+                              />
+                            </span>
+                          </span>
+                          <span v-if="loading" class="indicator-label">
+                            Please wait...
+                            <span
+                              class="spinner-border spinner-border-sm align-middle ms-2"
+                            ></span>
+                          </span>
+                        </button>
+                      </div>
+                    </el-form>
+                  </div>
+                </div>
+                <!--end::Step 4-->
               </div>
-              <!--end::Step 4-->
+              <!--end::Content-->
             </div>
-            <!--end::Content-->
+
+            <!--end::Stepper-->
           </div>
-          <!--end::Stepper-->
-        </div>
-        <!--end::Modal body-->
+          <!--end::Modal body-->
+        </el-container>
       </div>
       <!--end::Modal content-->
     </div>
@@ -1194,7 +1223,6 @@ import {
   reactive,
 } from "vue";
 import { useStore } from "vuex";
-import Swal from "sweetalert2/dist/sweetalert2.min.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
 import {
@@ -1226,6 +1254,7 @@ import InfoSection from "@/components/presets/GeneralElements/InfoSection.vue";
 import { convertToCurrency } from "@/core/data/billing";
 import { ElMessage } from "element-plus";
 import { Modal } from "bootstrap";
+import Swal from "sweetalert2";
 
 export default defineComponent({
   props: {
@@ -1279,6 +1308,7 @@ export default defineComponent({
       note: "",
       patient_id: null,
       start_time: null,
+      is_wait_listed: false,
     });
 
     const patientInfoData = ref({
@@ -1393,11 +1423,6 @@ export default defineComponent({
       ],
     });
 
-    const appointment_length = reactive({
-      SINGLE: 1,
-      DOUBLE: 2,
-      TRIPLE: 3,
-    });
     const appointment_time = ref(30);
     const _stepperObj = ref(null);
     const createAptRef = ref(null);
@@ -1470,7 +1495,6 @@ export default defineComponent({
 
     const healthFundsList = computed(() => store.getters.healthFundsList);
     const aneQuestions = computed(() => store.getters.getAneQuestionActiveList);
-    const proQuestions = computed(() => store.getters.getProQuestionActiveList);
     const aptTypeList = computed(() => store.getters.getAptTypesList);
     const aptTypeListWithRestriction = ref();
     const searchVal = computed(() => store.getters.getSearchVariable);
@@ -1479,6 +1503,7 @@ export default defineComponent({
     const aptData = computed(() => store.getters.getAptSelected);
     const aptList = computed(() => store.getters.getAptList);
     const bookingData = computed(() => store.getters.bookingDatas);
+    const orgData = computed(() => store.getters.userOrganization);
 
     // Setting modal Heading and Ids
     const setTitle = () => {
@@ -1571,15 +1596,11 @@ export default defineComponent({
         cur_specialist.value = aptData.value.specialist;
         for (let key in patientInfoData.value)
           patientInfoData.value[key] = aptData.value.patient[key];
-        /*
-
-         Set Billing options here when user edit
-         */
         //for (let key in billingInfoData.value)
         // billingInfoData.value[key] = aptData.value.patient.billing[0][key];
         for (let key in otherInfoData.value)
           otherInfoData.value[key] = aptData.value.referral[key];
-        // for (let key in patientInfoData.value)
+
         aptInfoData.value.clinic_id = aptData.value.clinic_id;
         aptInfoData.value.clinic_name = aptData.value.clinic.name;
         specialist_name.value = aptData.value.specialist.full_name;
@@ -1594,46 +1615,51 @@ export default defineComponent({
 
     watch(cur_appointment_type_id, () => {
       getAptTypeName(cur_appointment_type_id.value);
+      aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
+
+      const _selected = aptTypeList.value.filter(
+        (aptType) => aptType.id === cur_appointment_type_id.value
+      )[0];
+
+      // setting up selected appointment type
+      if (typeof _selected === "undefined") {
+        appointment_name.value = "";
+        appointment_type_quote.value = 0;
+        _appointment_time.value = Number(appointment_time.value);
+        arrival_time.value = 30;
+
+        aptInfoData.value.clinical_code = "";
+        aptInfoData.value.mbs_code = "";
+        apt_type.value = "";
+      } else {
+        appointment_time.value = orgData.value.appointment_length;
+        appointment_name.value = _selected.name;
+        appointmentType.value = _selected.type;
+        appointment_type_quote.value = _selected?.default_items_quote ?? 0;
+        _appointment_time.value = Number(
+          appointment_time.value * _selected.appointment_length_as_number
+        );
+        arrival_time.value = Number(_selected.arrival_time);
+        aptInfoData.value.clinical_code = _selected.clinical_code;
+        aptInfoData.value.mbs_code = _selected.mbs_code;
+        apt_type.value = _selected.type;
+      }
+
+      if (props.modalId == "modal_edit_apt") {
+        updateAptTime(aptData.value.start_time, aptData.value.end_time);
+      }
+
+      end_time.value = moment(start_time.value, "HH:mm")
+        .add(_appointment_time.value, "minutes")
+        .format("HH:mm")
+        .toString();
+      updateAptTime(start_time.value, end_time.value);
+      aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
+        .subtract(arrival_time.value, "minutes")
+        .format("HH:mm")
+        .toString();
+
       if (props.modalId == "modal_create_apt") {
-        // setting up selected appointment type
-        aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
-        const _selected = aptTypeList.value.filter(
-          (aptType) => aptType.id === cur_appointment_type_id.value
-        )[0];
-
-        if (typeof _selected === "undefined") {
-          appointment_name.value = "";
-          appointment_type_quote.value = 0;
-          _appointment_time.value = Number(appointment_time.value);
-          arrival_time.value = 30;
-
-          aptInfoData.value.clinical_code = "";
-          aptInfoData.value.mbs_code = "";
-          apt_type.value = "";
-        } else {
-          appointment_name.value = _selected.name;
-          appointmentType.value = _selected.type;
-          appointment_type_quote.value = _selected?.default_items_quote ?? 0;
-          _appointment_time.value = Number(
-            appointment_length[_selected.appointment_time] *
-              appointment_time.value
-          );
-          arrival_time.value = Number(_selected.arrival_time);
-          aptInfoData.value.clinical_code = _selected.clinical_code;
-          aptInfoData.value.mbs_code = _selected.mbs_code;
-          apt_type.value = _selected.type;
-        }
-
-        end_time.value = moment(start_time.value, "HH:mm")
-          .add(_appointment_time.value, "minutes")
-          .format("HH:mm")
-          .toString();
-        updateAptTime(start_time.value, end_time.value);
-        aptInfoData.value.arrival_time = moment(start_time.value, "HH:mm")
-          .subtract(arrival_time.value, "minutes")
-          .format("HH:mm")
-          .toString();
-
         const specialist = store.getters.getSelectedSpecialist;
         if (apt_type.value === "Consultation") {
           otherInfoData.value.anesthetic_questions = false;
@@ -1703,16 +1729,6 @@ export default defineComponent({
       otherInfoData.value.anesthetic_answers = temp;
     };
 
-    const handleProQuestions = () => {
-      let temp = [];
-      for (let i in proAnswers.value) {
-        if (proAnswers.value[i] === true) {
-          temp.push(proQuestions.value[i].id);
-        }
-      }
-      otherInfoData.value.procedure_answers = temp;
-    };
-
     const matchExistPatientHandle = () => {
       let filtered_patients = patientList.value.filter(
         (p) =>
@@ -1773,7 +1789,10 @@ export default defineComponent({
       if (cur_appointment_type_id.value == "") {
         overlapping_cnt.value = bookingData.overlapping_cnt;
       }
-      if (bookingData.selected_specialist) {
+      if (
+        bookingData.selected_specialist &&
+        props.modalId === "modal_create_apt"
+      ) {
         cur_specialist.value = bookingData.selected_specialist;
         if (bookingData.selected_specialist.anesthetist) {
           anesthetist.value = bookingData.selected_specialist.anesthetist;
@@ -1816,9 +1835,6 @@ export default defineComponent({
       store.dispatch(Actions.HEALTH_FUND.LIST);
       store.dispatch(Actions.ANESTHETIST_QUES.ACTIVE_LIST);
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
-      store.dispatch(PatientActions.ALLERGIES_LIST).then((data) => {
-        allergiesList.value = data;
-      });
       const myModalEl = document.getElementById("modal_create_apt");
       myModalEl.addEventListener("hide.bs.modal", () => {
         const draftAptId = store.getters.getDraftAptId;
@@ -1848,11 +1864,12 @@ export default defineComponent({
       }
     };
 
-    const handleStep_1 = () => {
+    const handleStep_1 = async () => {
       if (!formRef_1.value) {
         return;
       }
 
+      await checkAptOverlap();
       //custom
       if (patientStatus.value === "new") {
         patientStep.value = 3;
@@ -1920,7 +1937,8 @@ export default defineComponent({
       });
     };
     // Send request to update exiting appointment
-    const handleSave = () => {
+    const handleSave = async () => {
+      await checkAptOverlap();
       loading.value = true;
       aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
       store
@@ -2013,6 +2031,9 @@ export default defineComponent({
         }
       );
 
+      // FORMAT patient date of birth
+      patientInfo.date_of_birth = formatDate(patientInfo.date_of_birth);
+      loading.value = true;
       store
         .dispatch(AppointmentActions.APT.CREATE, {
           ...aptInfoData.value,
@@ -2021,36 +2042,37 @@ export default defineComponent({
           ...otherInfoData.value,
         })
         .then(() => {
-          loading.value = false;
-          store.dispatch(AppointmentActions.LIST, {
-            date: bookingData.value.date,
-          });
-          handleCancel();
-          Swal.fire({
-            text: "Successfully Created!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-              cancelButton: "btn btn-info",
-            },
-            showCancelButton: true,
-            cancelButtonText: "Deposit",
-          }).then((result) => {
-            hideModal(createAptModalRef.value);
-            resetCreateModal();
-            if (result.dismiss === "cancel") {
-              router.push({ name: "make-payment-pay" });
-            }
-          });
-        })
-        .finally(() => {
-          loading.value = false;
+          store
+            .dispatch(AppointmentActions.LIST, {
+              date: bookingData.value.date,
+            })
+            .finally(() => {
+              loading.value = false;
+              handleCancel();
+              Swal.fire({
+                text: "Successfully Created!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                  cancelButton: "btn btn-info",
+                },
+                showCancelButton: true,
+                cancelButtonText: "Deposit",
+              }).then((result) => {
+                hideModal(createAptModalRef.value);
+                resetCreateModal();
+                if (result.dismiss === "cancel") {
+                  router.push({ name: "make-payment-pay" });
+                }
+              });
+            });
         });
     };
 
     const updateApt = () => {
+      loading.value = true;
       const billingInfo = billingInfoData.value;
       const patientInfo = patientInfoData.value;
       aptInfoData.value.appointment_type_id = cur_appointment_type_id.value;
@@ -2084,7 +2106,7 @@ export default defineComponent({
     const patientStep_1 = () => {
       patientTableData.value = [];
       for (let key in patientInfoData.value) patientInfoData.value[key] = "";
-      if (filterPatient.date_of_birth != "")
+      if (filterPatient.date_of_birth !== "")
         filterPatient.date_of_birth = moment(
           filterPatient.date_of_birth
         ).format("YYYY-MM-DD");
@@ -2128,8 +2150,8 @@ export default defineComponent({
       patientStep.value++;
     };
 
-    const gotoPage = (page) => {
-      aptOverlapCheck();
+    const gotoPage = async (page) => {
+      await checkAptOverlap();
       if (props.modalId === "modal_edit_apt") {
         currentStepIndex.value = Number(page - 1);
         _stepperObj.value.goto(page);
@@ -2148,7 +2170,7 @@ export default defineComponent({
     let timeout;
     const searchDoctorAddressBook = (term, cb) => {
       const results = term
-        ? doctorAddressBooks.value.filter(createDotorAddressBookFilter(term))
+        ? doctorAddressBooks.value.filter(createDoctorAddressBookFilter(term))
         : doctorAddressBooks.value;
 
       clearTimeout(timeout);
@@ -2157,7 +2179,7 @@ export default defineComponent({
       }, 1000);
     };
 
-    const createDotorAddressBookFilter = (term) => {
+    const createDoctorAddressBookFilter = (term) => {
       const keyword = term.toString();
       return (doctorAddressBook) => {
         const full_name =
@@ -2169,7 +2191,7 @@ export default defineComponent({
         const full_name_pos = full_name
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
-        const address_pos = doctorAddressBook.address
+        const address_pos = doctorAddressBook.practice_address
           .toLowerCase()
           .indexOf(keyword.toLowerCase());
         return full_name_pos !== -1 || address_pos !== -1;
@@ -2193,43 +2215,51 @@ export default defineComponent({
       patientInfoData.value.also_known_as.push(previousData);
     };
 
-    const aptOverlapCheck = () => {
-      if (props.modalId == "model_edit_apt") {
-        handleStep_1();
-        return;
-      }
+    const checkAptOverlap = () => {
       const startTime = aptInfoData.value.time_slot[0] + ":00";
       const endTime = aptInfoData.value.time_slot[1] + ":00";
-      const filter = aptList.value.filter((apt) => {
+      let filteredAptList = aptList.value.filter((apt) => {
         if (
+          !apt.draft_status &&
           aptInfoData.value.specialist_id === apt.specialist_id &&
           aptInfoData.value.clinic_id === apt.clinic_id
         ) {
-          if (startTime < apt.end_time && apt.start_time <= endTime) {
+          if (startTime < apt.end_time && apt.start_time < endTime) {
             return apt;
           }
         }
       });
 
-      if (filter.length > 0) {
-        Swal.fire({
-          title: "Are you sure?",
-          text:
-            "You already have an appointment at " +
-            filter[0].start_time +
-            " - " +
-            filter[0].end_time +
-            ", This action will overlap with existing appointment!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, do it!",
-        }).then((result) => {
-          if (result.isConfirmed) handleStep_1();
+      if (props.modalId === "modal_edit_apt") {
+        filteredAptList = filteredAptList.filter(
+          (apt) => apt.id !== aptData.value.id
+        );
+      }
+
+      if (filteredAptList.length > 0) {
+        return new Promise(function (resolve) {
+          Swal.fire({
+            title: "Are you sure?",
+            text:
+              "You already have an appointment at " +
+              filteredAptList[0].start_time +
+              " - " +
+              filteredAptList[0].end_time +
+              ", This action will overlap with existing appointment!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, do it!",
+          }).then((result) => {
+            if (result.value) {
+              resolve(null);
+            }
+          });
         });
-      } else handleStep_1();
+      }
     };
+
     return {
       chargeTypes,
       rules,
@@ -2238,7 +2268,6 @@ export default defineComponent({
       ava_specialist,
       healthFundsList,
       aneQuestions,
-      proQuestions,
       aneAnswers,
       proAnswers,
       aptTypeListWithRestriction,
@@ -2269,7 +2298,6 @@ export default defineComponent({
       countryList,
       timeZoneList,
       handleAneQuestions,
-      handleProQuestions,
       handleAddressChange,
       addressRef,
       patientStatus,
@@ -2310,7 +2338,6 @@ export default defineComponent({
       updatePatientDetails,
       allergiesList,
       convertToCurrency,
-      aptOverlapCheck,
       addClaimSourceModalId,
     };
   },

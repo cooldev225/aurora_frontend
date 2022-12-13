@@ -35,6 +35,7 @@ export default interface IAppointment {
   charge_type: string;
   action: string;
   step: number;
+  draft_status: boolean;
   patient_name: IPatientName;
   patient_details: IPatientDetails;
 }

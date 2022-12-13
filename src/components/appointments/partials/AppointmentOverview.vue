@@ -12,7 +12,7 @@
     <InfoSection heading="Clinic">{{ aptInfoData.clinic_name }}</InfoSection>
 
     <InfoSection heading="Time">
-      {{ startTime }}
+      {{ aptInfoData.time_slot[0] }}
       - {{ aptInfoData.time_slot[1] }}
       <span v-if="aptInfoData.arrival_time" class="text-black fs-5">
         (Arrive: {{ aptInfoData.arrival_time }})</span
@@ -40,10 +40,6 @@ const props = defineProps({
   },
   specialist: {
     required: true,
-  },
-  startTime: {
-    required: true,
-    type: String,
   },
   aptInfoData: {
     required: true,
