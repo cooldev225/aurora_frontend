@@ -98,7 +98,7 @@
                   v-for="(documentSection, sectionIndex) in formData.sections"
                   :key="sectionIndex"
                 >
-                  <el-form-item :prop="'section-' + sectionIndex">
+                  <el-form-item :prop="'section-' + sectionIndex" class="mb-4">
                     <el-input
                       v-model="documentSection.title"
                       class="w-100"
@@ -107,7 +107,7 @@
                     />
                   </el-form-item>
 
-                  <div class="fv-row col-12 mb-5">
+                  <div class="fv-row col-12">
                     <el-form-item>
                       <el-checkbox
                         type="checkbox"
@@ -117,14 +117,13 @@
                     </el-form-item>
                   </div>
 
-                  <el-divider />
+                  <el-divider class="my-3" />
 
                   <el-form-item>
-                    <el-input
-                      type="textarea"
-                      v-model="documentSection.free_text_default"
-                      placeholder="Write Free Text Default"
-                    />
+                    <label class="text-muted fs-6 fw-bold mb-2 d-block">
+                      Free Text Default
+                    </label>
+                    <ckeditor :editor="ClassicEditor" v-model="formData.body" />
                   </el-form-item>
 
                   <template v-if="documentSection.use_autotext">
@@ -175,7 +174,7 @@
                     </div>
                     <LargeIconButton
                       @click="handleAddAutoText(sectionIndex)"
-                      heading="Add AutoText"
+                      text="Add AutoText"
                       iconPath="media/icons/duotune/arrows/arr024.svg"
                       :color="'success'"
                       iconSize="1"
@@ -185,7 +184,7 @@
                   <div class="d-flex mt-3 flex-row-reverse">
                     <LargeIconButton
                       @click="handleDeleteSection(sectionIndex)"
-                      heading="Delete Section"
+                      text="Delete Section"
                       iconPath="media/icons/duotune/arrows/arr024.svg"
                       :color="'danger'"
                       iconSize="1"
@@ -195,7 +194,7 @@
 
                 <LargeIconButton
                   @click="handleAddSection()"
-                  :heading="'Add Section'"
+                  :text="'Add Section'"
                   :iconPath="'media/icons/duotune/arrows/arr024.svg'"
                   :color="'primary'"
                   iconSize="3"
@@ -249,15 +248,18 @@
 import { defineComponent, ref, watchEffect, computed } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { CodingActions } from "@/store/enums/StoreCodingEnums";
 import { ElForm } from "element-plus";
 import patientDocumentTemplateTypes from "@/core/data/patient-document-template-types";
+import CKEditor from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default defineComponent({
   name: "create-document-template-modal",
-  components: {},
+  components: {
+    ckeditor: CKEditor.component,
+  },
   setup() {
     const store = useStore();
     const formRef = ref<typeof ElForm | null>(null);
@@ -390,6 +392,7 @@ export default defineComponent({
       codes,
       loadingICD,
       patientDocumentTemplateTypes,
+      ClassicEditor,
     };
   },
 });

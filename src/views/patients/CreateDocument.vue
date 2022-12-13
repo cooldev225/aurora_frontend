@@ -284,6 +284,10 @@
               </label>
 
               <el-form-item v-if="section.use_autotext">
+                <label class="text-muted fs-6 fw-bold mb-2 d-block">
+                  Autotexts
+                </label>
+
                 <el-select
                   class="w-100"
                   multiple
@@ -299,10 +303,13 @@
               </el-form-item>
 
               <el-form-item prop="note">
-                <el-input
-                  type="textarea"
+                <label class="text-muted fs-6 fw-bold mb-2 d-block">
+                  Free Text
+                </label>
+
+                <ckeditor
+                  :editor="ClassicEditor"
                   v-model="section.free_text_default"
-                  placeholder="Free Text"
                 />
               </el-form-item>
             </div>
@@ -386,9 +393,12 @@ import IAppointment from "@/store/interfaces/IAppointment";
 import { ElForm } from "element-plus";
 import { FormRulesMap } from "element-plus/es/components/form/src/form.type";
 import { PatientActions } from "@/store/enums/StorePatientEnums";
+import CKEditor from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default defineComponent({
   components: {
+    ckeditor: CKEditor.component,
     ReportPreviewModal,
   },
   setup() {
@@ -770,6 +780,7 @@ export default defineComponent({
       toSentenceCase,
       searchDoctorAddressBook,
       handleSelect,
+      ClassicEditor,
     };
   },
 });

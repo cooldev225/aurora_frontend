@@ -23,7 +23,7 @@
         to="/settings/document-templates"
         class="btn btn-light-primary m-2"
       >
-        Patient Report Templates
+        Patient Document Templates
       </router-link>
     </div>
 
