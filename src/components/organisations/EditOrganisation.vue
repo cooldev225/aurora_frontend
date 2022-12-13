@@ -82,8 +82,7 @@ import {
   watch,
 } from "vue";
 import { useStore } from "vuex";
-import { useRouter, useRoute } from "vue-router";
-import Swal from "sweetalert2/dist/sweetalert2.min.js";
+import { useRoute } from "vue-router";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import { Actions } from "@/store/enums/StoreEnums";
 
@@ -98,7 +97,6 @@ export default defineComponent({
   components: {},
   setup() {
     const store = useStore();
-    const router = useRouter();
     const route = useRoute();
     const formRef = ref<null | HTMLFormElement>(null);
     const loading = ref<boolean>(false);
