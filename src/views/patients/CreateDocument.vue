@@ -487,6 +487,7 @@ export default defineComponent({
 
     const submit = () => {
       loading.value = true;
+
       if (!formRef.value) {
         loading.value = false;
         return;
@@ -573,6 +574,8 @@ export default defineComponent({
             .finally(() => {
               loading.value = false;
             });
+        } else {
+          loading.value = false;
         }
       });
     };
