@@ -5,7 +5,9 @@
     <div class="card-body pt-9 pb-0">
       <!--begin::Details-->
       <div class="row">
-        <div :class="{ 'col-sm-6': currentUser.role === 'organizationAdmin' }">
+        <div
+          :class="{ 'col-sm-6': currentUser.role === 'organizationManager' }"
+        >
           <el-form
             @submit.prevent="submit()"
             :model="formData"
@@ -104,7 +106,7 @@
           </el-form>
         </div>
 
-        <div v-if="currentUser.role === 'organizationAdmin'" class="col-sm-6">
+        <div v-if="currentUser.role === 'organizationManager'" class="col-sm-6">
           <el-form
             @submit.prevent="updatePin()"
             :model="pinFormData"
@@ -265,7 +267,7 @@ export default defineComponent({
     });
 
     const getUserPin = () => {
-      if (currentUser.value.role !== "organizationAdmin") {
+      if (currentUser.value.role !== "organizationManager") {
         return;
       }
 
