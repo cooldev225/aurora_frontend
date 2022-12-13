@@ -1,5 +1,22 @@
 <template>
   <CardSection>
+    <div
+      v-if="params.confirmation_status === 'PENDING'"
+      class="d-flex justify-content-end"
+    >
+      <!-- DATE RANGE FILTER SELECT-->
+      <el-select
+        class="w-20 mb-6"
+        placeholder="Select Date Range"
+        v-model="dateRangeFilter"
+      >
+        <template v-for="type in dateRangeFilterTypes" :key="type.value">
+          <el-option :value="type.value" :label="type.label">
+            {{ type.label }}
+          </el-option>
+        </template>
+      </el-select>
+    </div>
     <Datatable
       :table-header="tableHeader"
       :table-data="tableData"
@@ -50,6 +67,7 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
 import { AppointmentActions } from "@/store/enums/StoreAppointmentEnums";
+import dateRangeFilterTypes from "@/core/data/date-range-filter-types";
 
 export default defineComponent({
   name: "admin-main",
@@ -91,6 +109,7 @@ export default defineComponent({
     const tableData = ref([]);
     const appointments = computed(() => store.getters.getAptList);
     const loading = ref(true);
+    const dateRangeFilter = ref("Week");
 
     onMounted(() => {
       store.dispatch(AppointmentActions.LIST, props.params).then(() => {
@@ -120,6 +139,8 @@ export default defineComponent({
       tableHeader,
       tableData,
       hasActionsSlot,
+      dateRangeFilterTypes,
+      dateRangeFilter,
     };
   },
 });

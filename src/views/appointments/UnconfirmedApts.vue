@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import AppointmentList from "@/views/appointments/AppointmentList.vue";
@@ -24,6 +24,7 @@ export default defineComponent({
   components: { AppointmentList },
   setup() {
     const store = useStore();
+
     onMounted(() => {
       setCurrentPageBreadcrumbs("Unconfirmed Appointments", ["Booking"]);
     });
