@@ -116,7 +116,8 @@ export default class DocumentModule extends VuexModule implements Documents {
           return data.data;
         })
         .catch(({ response }) => {
-          return displayServerError(response, "previewing a patient document");
+          displayServerError(response, "previewing a patient document");
+          return Promise.reject();
         });
     }
   }

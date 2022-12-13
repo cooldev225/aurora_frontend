@@ -564,11 +564,15 @@ export default defineComponent({
             document_type: documentType.toString().toUpperCase(),
           };
 
-          store.dispatch(DocumentActions.PATIENT_PREVIEW, data).then((data) => {
-            loading.value = false;
-            documentPreviewFileName.value = data;
-            handlePreviewModal();
-          });
+          store
+            .dispatch(DocumentActions.PATIENT_PREVIEW, data)
+            .then((data) => {
+              documentPreviewFileName.value = data;
+              handlePreviewModal();
+            })
+            .finally(() => {
+              loading.value = false;
+            });
         }
       });
     };
