@@ -1490,6 +1490,7 @@ export default defineComponent({
     const aptData = computed(() => store.getters.getAptSelected);
     const aptList = computed(() => store.getters.getAptList);
     const bookingData = computed(() => store.getters.bookingDatas);
+    const orgData = computed(() => store.getters.userOrganization);
 
     // Setting modal Heading and Ids
     const setTitle = () => {
@@ -1622,12 +1623,12 @@ export default defineComponent({
         aptInfoData.value.mbs_code = "";
         apt_type.value = "";
       } else {
+        appointment_time.value = orgData.value.appointment_length;
         appointment_name.value = _selected.name;
         appointmentType.value = _selected.type;
         appointment_type_quote.value = _selected?.default_items_quote ?? 0;
         _appointment_time.value = Number(
-          appointment_length[_selected.appointment_time] *
-            appointment_time.value
+          appointment_time.value * _selected.appointment_length_as_number
         );
         arrival_time.value = Number(_selected.arrival_time);
         aptInfoData.value.clinical_code = _selected.clinical_code;
