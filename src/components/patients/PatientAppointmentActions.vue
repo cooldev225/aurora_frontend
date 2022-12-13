@@ -73,7 +73,7 @@ export default defineComponent({
       required: true,
       type: Object as PropType<IPatient>,
     },
-    documentTemplates: {
+    templates: {
       required: true,
       type: Array as PropType<Array<IDocumentTemplate>>,
     },
@@ -83,11 +83,11 @@ export default defineComponent({
     const userRole = computed(() => store.getters.userRole);
 
     const hasReportTemplates = computed(() => {
-      if (!props.documentTemplates) {
+      if (!props.templates) {
         return false;
       }
 
-      const templates = props.documentTemplates.filter(
+      const templates = props.templates.filter(
         (template) => template.type == "REPORT"
       );
 
@@ -95,11 +95,11 @@ export default defineComponent({
     });
 
     const hasLetterTemplates = computed(() => {
-      if (!props.documentTemplates) {
+      if (!props.templates) {
         return false;
       }
 
-      const templates = props.documentTemplates.filter(
+      const templates = props.templates.filter(
         (template) => template.type == "LETTER"
       );
 
@@ -107,11 +107,11 @@ export default defineComponent({
     });
 
     const hasReferralTemplates = computed(() => {
-      if (!props.documentTemplates) {
+      if (!props.templates) {
         return false;
       }
 
-      const templates = props.documentTemplates.filter(
+      const templates = props.templates.filter(
         (template) => template.type == "REFERRAL"
       );
 

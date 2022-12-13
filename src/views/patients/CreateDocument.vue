@@ -14,6 +14,56 @@
     <!--begin::Card header-->
     <!--begin::Card body-->
     <div class="card-body">
+      <div class="mb-8">
+        <div class="d-flex flex-column flex-sm-row gap-4">
+          <div class="col-sm-6">
+            <div class="d-flex flex-column gap-4">
+              <label class="text-muted fs-6 fw-bold mb-2 d-block">
+                Appointment
+              </label>
+
+              <InfoSection heading="Date">
+                {{ appointmentData?.aus_formatted_date }},
+                {{ appointmentData?.start_time }}
+              </InfoSection>
+
+              <InfoSection heading="Clinic">
+                {{ appointmentData?.clinic?.name }}
+              </InfoSection>
+
+              <InfoSection
+                v-if="documentType != 'referral'"
+                heading="Referring Doctor"
+              >
+                {{ appointmentData?.referral?.doctor_address_book_name }}
+              </InfoSection>
+            </div>
+          </div>
+
+          <div class="col-sm-6 mt-6 mt-sm-0">
+            <div class="d-flex flex-column gap-4">
+              <label class="text-muted fs-6 fw-bold mb-2 d-block">
+                Patient
+              </label>
+
+              <InfoSection heading="Name">
+                {{ appointmentData?.patient_name.full }}
+              </InfoSection>
+
+              <InfoSection heading="Date of Birth">
+                {{
+                  moment(patientData?.date_of_birth)
+                    .format("DD/MM/YYYY")
+                    .toString()
+                }}
+              </InfoSection>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <el-divider />
+
       <el-form
         @submit.prevent="submit()"
         :model="formData"
@@ -48,6 +98,7 @@
               placeholder="Title"
             />
           </InputWrapper>
+
           <InputWrapper
             required
             class="fill-out"
@@ -174,67 +225,51 @@
                 </template>
               </el-autocomplete>
             </InputWrapper>
-
-            <InputWrapper class="fill-out" label="Include:" prop="include">
-              <div class="d-flex">
-                <el-checkbox
-                  size="large"
-                  class="col-6"
-                  v-model="formData.patient_demographic"
-                  :checked="false"
-                >
-                  Patient Demographic
-                </el-checkbox>
-
-                <el-checkbox
-                  size="large"
-                  class="col-6"
-                  v-model="formData.current_medications"
-                  :checked="false"
-                >
-                  Current Medications
-                </el-checkbox>
-              </div>
-
-              <div class="d-flex">
-                <el-checkbox
-                  size="large"
-                  class="col-6"
-                  v-model="formData.patient_allergies"
-                  :checked="false"
-                >
-                  Patient Allergies
-                </el-checkbox>
-
-                <el-checkbox
-                  size="large"
-                  class="col-6"
-                  v-model="formData.past_medical_history"
-                  :checked="false"
-                >
-                  Past Medical history
-                </el-checkbox>
-              </div>
-            </InputWrapper>
           </template>
 
+          <InputWrapper class="fill-out" label="Include:" prop="include">
+            <div class="d-flex">
+              <el-checkbox
+                size="large"
+                class="col-6"
+                v-model="formData.patient_demographic"
+                :checked="false"
+              >
+                Patient Demographic
+              </el-checkbox>
+
+              <el-checkbox
+                size="large"
+                class="col-6"
+                v-model="formData.current_medications"
+                :checked="false"
+              >
+                Current Medications
+              </el-checkbox>
+            </div>
+
+            <div class="d-flex">
+              <el-checkbox
+                size="large"
+                class="col-6"
+                v-model="formData.patient_allergies"
+                :checked="false"
+              >
+                Patient Allergies
+              </el-checkbox>
+
+              <el-checkbox
+                size="large"
+                class="col-6"
+                v-model="formData.past_medical_history"
+                :checked="false"
+              >
+                Past Medical history
+              </el-checkbox>
+            </div>
+          </InputWrapper>
+
           <el-divider />
-
-          <div class="d-flex flex-column gap-2 mb-6">
-            <InfoSection heading="Patient">
-              {{ patientData?.title }} {{ patientData?.first_name }}
-              {{ patientData?.last_name }},
-              {{
-                moment(patientData?.date_of_birth)
-                  .format("DD/MM/YYYY")
-                  .toString()
-              }}
-            </InfoSection>
-
-            <InfoSection heading="Doctor Address Book">
-              {{ appointmentData?.referral?.doctor_address_book_name }}
-            </InfoSection>
-          </div>
 
           <div
             v-for="section in reportSections"

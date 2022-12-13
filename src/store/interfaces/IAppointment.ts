@@ -1,6 +1,8 @@
 import IAppointmentReferral from "./IAppointmentReferral";
 import IAppointmentType from "./IAppointmentType";
 import IClinic from "./IClinic";
+import IPatientDetails from "./IPatientDetails";
+import IPatientName from "./IPatientName";
 export default interface IAppointment {
   id: number;
   patient_id: number;
@@ -21,6 +23,7 @@ export default interface IAppointment {
   arrival_time: string;
   start_time: string;
   end_time: string;
+  aus_formatted_date: string;
   formatted_appointment_time: string;
   note: string;
   collecting_person_name: string;
@@ -32,4 +35,6 @@ export default interface IAppointment {
   charge_type: string;
   action: string;
   step: number;
+  patient_name: IPatientName;
+  patient_details: IPatientDetails;
 }
