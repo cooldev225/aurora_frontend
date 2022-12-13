@@ -85,7 +85,6 @@
                   :patientInfoData="patientInfoData"
                   :specialist="cur_specialist"
                   :appointmentName="appointment_name"
-                  :startTime="start_time"
                 />
                 <!--end::Appointment Overview-->
                 <el-form-item label="Appointment wait listed :">
@@ -1405,11 +1404,6 @@ export default defineComponent({
       ],
     });
 
-    const appointment_length = reactive({
-      SINGLE: 1,
-      DOUBLE: 2,
-      TRIPLE: 3,
-    });
     const appointment_time = ref(30);
     const _stepperObj = ref(null);
     const createAptRef = ref(null);
@@ -1583,15 +1577,11 @@ export default defineComponent({
         cur_specialist.value = aptData.value.specialist;
         for (let key in patientInfoData.value)
           patientInfoData.value[key] = aptData.value.patient[key];
-        /*
-
-         Set Billing options here when user edit
-         */
         //for (let key in billingInfoData.value)
         // billingInfoData.value[key] = aptData.value.patient.billing[0][key];
         for (let key in otherInfoData.value)
           otherInfoData.value[key] = aptData.value.referral[key];
-        // for (let key in patientInfoData.value)
+
         aptInfoData.value.clinic_id = aptData.value.clinic_id;
         aptInfoData.value.clinic_name = aptData.value.clinic.name;
         specialist_name.value = aptData.value.specialist.full_name;
@@ -1635,6 +1625,11 @@ export default defineComponent({
         aptInfoData.value.mbs_code = _selected.mbs_code;
         apt_type.value = _selected.type;
       }
+
+      if (props.modalId == "modal_edit_apt") {
+        updateAptTime(aptData.value.start_time, aptData.value.end_time);
+      }
+
       end_time.value = moment(start_time.value, "HH:mm")
         .add(_appointment_time.value, "minutes")
         .format("HH:mm")
@@ -1775,7 +1770,10 @@ export default defineComponent({
       if (cur_appointment_type_id.value == "") {
         overlapping_cnt.value = bookingData.overlapping_cnt;
       }
-      if (bookingData.selected_specialist) {
+      if (
+        bookingData.selected_specialist &&
+        props.modalId === "modal_create_apt"
+      ) {
         cur_specialist.value = bookingData.selected_specialist;
         if (bookingData.selected_specialist.anesthetist) {
           anesthetist.value = bookingData.selected_specialist.anesthetist;
@@ -2206,7 +2204,7 @@ export default defineComponent({
           aptInfoData.value.specialist_id === apt.specialist_id &&
           aptInfoData.value.clinic_id === apt.clinic_id
         ) {
-          if (startTime < apt.end_time && apt.start_time <= endTime) {
+          if (startTime < apt.end_time && apt.start_time < endTime) {
             return apt;
           }
         }
