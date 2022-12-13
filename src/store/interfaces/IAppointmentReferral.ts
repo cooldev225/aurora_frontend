@@ -13,5 +13,6 @@ export default interface IAppointmentReferral {
   patient_document_file_path: string;
   doctor_address_book: IDoctorAddressBook;
   doctor_address_book_id: number;
+  doctor_address_book_name: string;
   referral_file: string;
 }

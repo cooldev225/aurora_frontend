@@ -82,7 +82,11 @@
         </template>
         <template v-slot:cell-report="{ row: item }">
           <div class="d-flex flex-column">
-            <PatientAppointmentActions :appointment="item" :patient="patient" />
+            <PatientAppointmentActions
+              :appointment="item"
+              :patient="patient"
+              :templates="documentTemplates"
+            />
             <a
               v-if="item.procedure_approval_status !== 'NOT_RELEVANT'"
               @click="handlePreAdmissionTest(item)"
@@ -117,6 +121,7 @@ import { PatientActions } from "@/store/enums/StorePatientEnums";
 import PatientAppointmentActions from "@/components/patients/PatientAppointmentActions.vue";
 import ViewReferralButton from "@/components/patients/patientAppointmentActions/ViewReferralButton.vue";
 import CollectingPersonButton from "@/components/patients/patientAppointmentActions/CollectingPersonButton.vue";
+import { Actions } from "@/store/enums/StoreEnums";
 export default defineComponent({
   name: "patient-appointments",
   components: {
@@ -130,6 +135,9 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const patient = computed(() => store.getters.selectedPatient);
+    const documentTemplates = computed(
+      () => store.getters.getDocumentTemplateList
+    );
 
     const userRole = computed(() => store.getters.userRole);
     const tableHeader = ref([
@@ -177,6 +185,7 @@ export default defineComponent({
 
       const id = route.params.id;
       store.dispatch(PatientActions.VIEW, id);
+      store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
     });
 
     return {
@@ -185,6 +194,7 @@ export default defineComponent({
       userRole,
       handlePreAdmissionTest,
       patient,
+      documentTemplates,
     };
   },
 });

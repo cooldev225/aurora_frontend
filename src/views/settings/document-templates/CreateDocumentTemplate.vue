@@ -1,10 +1,10 @@
 <template>
   <div
     class="modal fade"
-    id="modal_add_report_template"
+    id="modal_add_document_template"
     tabindex="-1"
     aria-hidden="true"
-    ref="createReportTemplateModalRef"
+    ref="createDocumentTemplateModalRef"
     data-bs-backdrop="static"
   >
     <!--begin::Modal dialog-->
@@ -50,7 +50,7 @@
               data-kt-scroll-wrappers="#kt_modal_add_customer_scroll"
               data-kt-scroll-offset="300px"
             >
-              <div class="report-template-wrapper">
+              <div class="document-template-wrapper">
                 <!--begin::Input group-->
                 <div class="fv-row col-12 mb-5">
                   <!--begin::Input-->
@@ -59,8 +59,35 @@
                       v-model="formData.title"
                       class="w-100"
                       type="text"
-                      placeholder="Report Template Title"
+                      placeholder="Document Template Title"
                     />
+                  </el-form-item>
+                  <!--end::Input-->
+                </div>
+                <!--end::Input group-->
+
+                <!--begin::Input group-->
+                <div class="fv-row col-12 mb-5">
+                  <!--begin::Input-->
+                  <el-form-item prop="type">
+                    <el-select
+                      class="w-100"
+                      placeholder="Select Document Type"
+                      v-model="formData.type"
+                    >
+                      <template
+                        v-for="docType in patientDocumentTemplateTypes"
+                        :key="docType.value"
+                      >
+                        <el-option
+                          :value="docType.value"
+                          :label="docType.label"
+                        >
+                          <inline-svg class="me-5" :src="docType.icon" />
+                          {{ docType.label }}
+                        </el-option>
+                      </template>
+                    </el-select>
                   </el-form-item>
                   <!--end::Input-->
                 </div>
@@ -68,85 +95,96 @@
 
                 <div
                   class="border border-5 border-muted mb-10 p-10"
-                  v-for="(reportSection, sectionIndex) in formData.sections"
+                  v-for="(documentSection, sectionIndex) in formData.sections"
                   :key="sectionIndex"
                 >
-                  <el-form-item :prop="'section-' + sectionIndex">
+                  <el-form-item :prop="'section-' + sectionIndex" class="mb-4">
                     <el-input
-                      v-model="reportSection.title"
+                      v-model="documentSection.title"
                       class="w-100"
                       type="text"
                       placeholder="Section Title"
                     />
                   </el-form-item>
 
-                  <el-divider />
+                  <div class="fv-row col-12">
+                    <el-form-item>
+                      <el-checkbox
+                        type="checkbox"
+                        v-model="documentSection.use_autotext"
+                        label="Use autotexts?"
+                      />
+                    </el-form-item>
+                  </div>
+
+                  <el-divider class="my-3" />
 
                   <el-form-item>
-                    <el-input
-                      type="textarea"
-                      v-model="reportSection.free_text_default"
-                      placeholder="Write Free Text Default"
-                    />
+                    <label class="text-muted fs-6 fw-bold mb-2 d-block">
+                      Free Text Default
+                    </label>
+                    <ckeditor :editor="ClassicEditor" v-model="formData.body" />
                   </el-form-item>
 
-                  <h3 class="mb-4" style="font-size: 1.5rem">Auto Texts</h3>
+                  <template v-if="documentSection.use_autotext">
+                    <h3 class="mb-4" style="font-size: 1.5rem">Auto Texts</h3>
 
-                  <div
-                    class="report-template-auto-text-wrapper text-nowrap mb-5"
-                    v-for="(
-                      autoText, autoTextIndex
-                    ) in reportSection.auto_texts"
-                    :key="autoTextIndex"
-                  >
-                    <div class="d-flex flex-row col-11">
-                      <el-input
-                        v-model="autoText.text"
-                        class="flex-grow-1 me-2"
-                        type="text"
-                        placeholder="Enter Auto Text"
-                      />
-                      <el-select
-                        class="w-100"
-                        remote
-                        filterable
-                        v-model="autoText.icd_10_code"
-                        :remote-method="searchCodes"
-                        :loading="loadingICD"
-                      >
-                        <el-option
-                          v-for="item in codes"
-                          :key="item[0]"
-                          :label="item[0] + ' - ' + item[1]"
-                          :value="item[0]"
+                    <div
+                      class="document-template-auto-text-wrapper text-nowrap mb-5"
+                      v-for="(
+                        autoText, autoTextIndex
+                      ) in documentSection.auto_texts"
+                      :key="autoTextIndex"
+                    >
+                      <div class="d-flex flex-row col-11">
+                        <el-input
+                          v-model="autoText.text"
+                          class="flex-grow-1 me-2"
+                          type="text"
+                          placeholder="Enter Auto Text"
                         />
-                      </el-select>
-                      <div class="ms-2">
-                        <button
-                          @click="
-                            handleDeleteAutoText(sectionIndex, autoTextIndex)
-                          "
-                          class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                        <el-select
+                          class="w-100"
+                          remote
+                          filterable
+                          v-model="autoText.icd_10_code"
+                          :remote-method="searchCodes"
+                          :loading="loadingICD"
                         >
-                          <span class="svg-icon svg-icon-3">
-                            <InlineSVG icon="bin" />
-                          </span>
-                        </button>
+                          <el-option
+                            v-for="item in codes"
+                            :key="item[0]"
+                            :label="item[0] + ' - ' + item[1]"
+                            :value="item[0]"
+                          />
+                        </el-select>
+                        <div class="ms-2">
+                          <button
+                            @click="
+                              handleDeleteAutoText(sectionIndex, autoTextIndex)
+                            "
+                            class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                          >
+                            <span class="svg-icon svg-icon-3">
+                              <InlineSVG icon="bin" />
+                            </span>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <LargeIconButton
-                    @click="handleAddAutoText(sectionIndex)"
-                    heading="Add AutoText"
-                    iconPath="media/icons/duotune/arrows/arr024.svg"
-                    :color="'success'"
-                    iconSize="1"
-                  />
+                    <LargeIconButton
+                      @click="handleAddAutoText(sectionIndex)"
+                      text="Add AutoText"
+                      iconPath="media/icons/duotune/arrows/arr024.svg"
+                      :color="'success'"
+                      iconSize="1"
+                    />
+                  </template>
 
                   <div class="d-flex mt-3 flex-row-reverse">
                     <LargeIconButton
                       @click="handleDeleteSection(sectionIndex)"
-                      heading="Delete Section"
+                      text="Delete Section"
                       iconPath="media/icons/duotune/arrows/arr024.svg"
                       :color="'danger'"
                       iconSize="1"
@@ -156,7 +194,7 @@
 
                 <LargeIconButton
                   @click="handleAddSection()"
-                  :heading="'Add Section'"
+                  :text="'Add Section'"
                   :iconPath="'media/icons/duotune/arrows/arr024.svg'"
                   :color="'primary'"
                   iconSize="3"
@@ -173,7 +211,7 @@
             <button
               type="reset"
               data-bs-dismiss="modal"
-              id="kt_modal_add_report_template_cancel"
+              id="kt_modal_add_document_template_cancel"
               class="btn btn-light me-3"
             >
               Cancel
@@ -206,21 +244,27 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref, watchEffect, computed } from "vue";
 import { useStore } from "vuex";
 import { hideModal } from "@/core/helpers/dom";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 import { Actions } from "@/store/enums/StoreEnums";
 import { CodingActions } from "@/store/enums/StoreCodingEnums";
+import { ElForm } from "element-plus";
+import patientDocumentTemplateTypes from "@/core/data/patient-document-template-types";
+import CKEditor from "@ckeditor/ckeditor5-vue";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
 export default defineComponent({
-  name: "create-report-template-modal",
-  components: {},
+  name: "create-document-template-modal",
+  components: {
+    ckeditor: CKEditor.component,
+  },
   setup() {
     const store = useStore();
-    const formRef = ref(null);
-    const createReportTemplateModalRef = ref(null);
-    const formData = computed(() => store.getters.getReportTemplateSelected);
+    const formRef = ref<typeof ElForm | null>(null);
+    const createDocumentTemplateModalRef = ref(null);
+    const formData = computed(() => store.getters.getDocumentTemplateSelected);
     const loading = ref(false);
 
     let is_create = false;
@@ -229,7 +273,10 @@ export default defineComponent({
     const codes = ref();
     const loadingICD = ref(false);
 
-    const modalTexts = ref({});
+    const modalTexts = ref<Record<string, string>>({
+      title: "",
+      submit: "",
+    });
 
     const rules = ref({
       title: [
@@ -242,11 +289,12 @@ export default defineComponent({
     });
 
     const handleAddSection = () => {
-      let new_section = {};
-
-      new_section.title = "";
-      new_section.free_text_default = "";
-      new_section.auto_texts = [];
+      let new_section = {
+        title: "",
+        free_text_default: "",
+        auto_texts: [] as Array<Record<string, string>>,
+        use_autotext: true,
+      };
 
       formData.value.sections.push(new_section);
     };
@@ -256,10 +304,10 @@ export default defineComponent({
     };
 
     const handleAddAutoText = (sectionIndex) => {
-      let new_auto_text = {};
-
-      new_auto_text.text = "";
-      new_auto_text.icd_10_code = "";
+      let new_auto_text = {
+        text: "",
+        icd_10_code: "",
+      };
 
       formData.value.sections[sectionIndex].auto_texts.push(new_auto_text);
     };
@@ -277,55 +325,22 @@ export default defineComponent({
         if (valid) {
           loading.value = true;
 
-          if (is_create) {
-            store
-              .dispatch(Actions.REPORT_TEMPLATES.CREATE, formData.value)
-              .then(() => {
-                loading.value = false;
-                store.dispatch(Actions.REPORT_TEMPLATES.LIST);
-                Swal.fire({
-                  text: "Successfully Created!",
-                  icon: "success",
-                  buttonsStyling: false,
-                  confirmButtonText: "Ok, got it!",
-                  customClass: {
-                    confirmButton: "btn btn-primary",
-                  },
-                }).then(() => {
-                  hideModal(createReportTemplateModalRef.value);
-                });
-              })
-              .catch(({ response }) => {
-                loading.value = false;
-                console.log(response.data.error);
-              });
-          } else {
-            store
-              .dispatch(Actions.REPORT_TEMPLATES.UPDATE, formData.value)
-              .then(() => {
-                loading.value = false;
-                store.dispatch(Actions.REPORT_TEMPLATES.LIST);
-                Swal.fire({
-                  text: "Successfully Updated!",
-                  icon: "success",
-                  buttonsStyling: false,
-                  confirmButtonText: "Ok, got it!",
-                  customClass: {
-                    confirmButton: "btn btn-primary",
-                  },
-                }).then(() => {
-                  hideModal(createReportTemplateModalRef.value);
-                });
-              })
-              .catch(({ response }) => {
-                loading.value = false;
-                console.log(response.data.error);
-              });
-          }
+          const action = is_create
+            ? Actions.DOCUMENT_TEMPLATES.CREATE
+            : Actions.DOCUMENT_TEMPLATES.UPDATE;
 
-          formRef.value.resetFields();
-        } else {
-          // this.context.commit(Mutations.PURGE_AUTH);
+          store
+            .dispatch(action, formData.value)
+            .then(() => {
+              hideModal(createDocumentTemplateModalRef.value);
+            })
+            .finally(() => {
+              loading.value = false;
+
+              if (formRef.value) {
+                formRef.value.resetFields();
+              }
+            });
         }
       });
     };
@@ -334,15 +349,11 @@ export default defineComponent({
       is_create = formData.value.id > 0 ? false : true;
 
       if (is_create) {
-        modalTexts.value = {
-          title: "Create Report Template",
-          submit: "Create",
-        };
+        modalTexts.value.title = "Create Document Template";
+        modalTexts.value.submit = "Create";
       } else {
-        modalTexts.value = {
-          title: "Edit Report Template",
-          submit: "Update",
-        };
+        modalTexts.value.title = "Edit Document Template";
+        modalTexts.value.submit = "Update";
       }
     });
 
@@ -371,7 +382,7 @@ export default defineComponent({
       rules,
       formRef,
       loading,
-      createReportTemplateModalRef,
+      createDocumentTemplateModalRef,
       submit,
       handleAddSection,
       handleDeleteSection,
@@ -380,6 +391,8 @@ export default defineComponent({
       searchCodes,
       codes,
       loadingICD,
+      patientDocumentTemplateTypes,
+      ClassicEditor,
     };
   },
 });

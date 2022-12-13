@@ -25,14 +25,11 @@
         :enable-items-per-page-dropdown="true"
       >
         <template v-slot:cell-title="{ row: item }">
-          {{ item.title }}
+          <div class="d-flex align-items-center">
+            {{ item.title }}
+          </div>
         </template>
-        <template v-slot:cell-subject="{ row: item }">
-          {{ item.subject }}
-        </template>
-        <template v-slot:cell-body="{ row: item }">
-          {{ item.body }}
-        </template>
+
         <template v-slot:cell-action="{ row: item }">
           <button
             @click="handleEdit(item)"
@@ -55,7 +52,7 @@
       </Datatable>
     </div>
   </div>
-  <EditLetterTemplate />
+  <CreateDocumentTemplate />
 </template>
 
 <script>
@@ -63,17 +60,16 @@ import { defineComponent, onMounted, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { setCurrentPageBreadcrumbs } from "@/core/helpers/breadcrumb";
 import Datatable from "@/components/kt-datatable/KTDatatable.vue";
-import EditLetterTemplate from "@/views/settings/letter-templates/EditLetterTemplate.vue";
+import CreateDocumentTemplate from "@/views/settings/document-templates/CreateDocumentTemplate.vue";
 import { Modal } from "bootstrap";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
-import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default defineComponent({
-  name: "letter-templates",
+  name: "document-templates",
 
   components: {
     Datatable,
-    EditLetterTemplate,
+    CreateDocumentTemplate,
   },
 
   setup() {
@@ -85,86 +81,64 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: "Subject",
-        key: "subject",
-        sortable: true,
-      },
-      {
-        name: "Body",
-        key: "body",
-        sortable: true,
-      },
-      {
         name: "Action",
         key: "action",
       },
     ]);
 
     const tableData = ref([]);
-    const letterTemplates = computed(() => store.getters.getLetterTemplateList);
+    const documentTemplates = computed(
+      () => store.getters.getDocumentTemplateList
+    );
 
     const handleAdd = () => {
-      //add templates
       const new_item = {
         id: 0,
         title: "",
-        subject: "",
-        body: "",
-        _title: "Create Letter Template",
-        _button: "Save",
-        _submit: Actions.LETTER_TEMPLATE.CREATE,
-        _submit_text: "Successfully Created!",
+        sections: [],
       };
 
-      store.commit(Mutations.SET_LETTER_TEMPLATE.SELECT, new_item);
+      store.commit(Mutations.SET_DOCUMENT_TEMPLATES.SELECT, {
+        template: new_item,
+        appointment: null,
+        headerFooter: null,
+      });
       const modal = new Modal(
-        document.getElementById("modal_edit_letter_template")
+        document.getElementById("modal_add_document_template")
       );
       modal.show();
     };
 
     const handleEdit = (item) => {
-      //edit templates
-      item._title = "Edit Letter Template";
-      item._button = "Update";
-      item._submit = Actions.LETTER_TEMPLATE.UPDATE;
-      item._submit_text = "Successfully Updated!";
-
-      store.commit(Mutations.SET_LETTER_TEMPLATE.SELECT, item);
+      store.commit(Mutations.SET_DOCUMENT_TEMPLATES.SELECT, {
+        template: item,
+        appointment: null,
+        headerFooter: null,
+      });
       const modal = new Modal(
-        document.getElementById("modal_edit_letter_template")
+        document.getElementById("modal_add_document_template")
       );
       modal.show();
     };
 
     const handleDelete = (id) => {
-      //delete templates
       store
-        .dispatch(Actions.LETTER_TEMPLATE.DELETE, id)
+        .dispatch(Actions.DOCUMENT_TEMPLATES.DELETE, id)
         .then(() => {
-          store.dispatch(Actions.LETTER_TEMPLATE.LIST);
-          Swal.fire({
-            text: "Successfully Deleted!",
-            icon: "success",
-            buttonsStyling: false,
-            confirmButtonText: "Ok, got it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-          });
+          store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
         })
-        .catch(({ response }) => {
-          console.log(response.data.error);
+        .catch((response) => {
+          console.log(response);
         });
     };
 
     onMounted(() => {
-      setCurrentPageBreadcrumbs("Letter Templates", ["Settings"]);
-      store.dispatch(Actions.LETTER_TEMPLATE.LIST);
+      setCurrentPageBreadcrumbs("Document Templates", ["Settings"]);
+      store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
     });
 
     watchEffect(() => {
-      tableData.value = letterTemplates;
+      tableData.value = documentTemplates.value;
     });
 
     return { tableHeader, tableData, handleAdd, handleEdit, handleDelete };

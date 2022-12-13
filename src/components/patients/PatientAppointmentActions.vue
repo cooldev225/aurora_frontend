@@ -2,9 +2,25 @@
   <!--Specialist only actions-->
   <template v-if="userRole == 'specialist'">
     <AddRecallButton :appointment="appointment" :patient="patient" />
-    <AddLetterButton :patient="patient" />
     <AddAudioButton :appointment="appointment" :patient="patient" />
-    <CreateReportButton :appointment="appointment" :patient="patient" />
+    <CreateDocumentButton
+      :appointment="appointment"
+      :patient="patient"
+      document-type="letter"
+      :disabled="!hasLetterTemplates"
+    />
+    <CreateDocumentButton
+      :appointment="appointment"
+      :patient="patient"
+      document-type="report"
+      :disabled="!hasReportTemplates"
+    />
+    <CreateDocumentButton
+      :appointment="appointment"
+      :patient="patient"
+      document-type="referral"
+      :disabled="!hasReferralTemplates"
+    />
   </template>
 
   <!--Admin only actions-->
@@ -28,24 +44,23 @@
 import { defineComponent, computed, PropType } from "vue";
 import store from "@/store";
 import PreAdmissionFormButton from "./patientAppointmentActions/PreAdmissionFormButton.vue";
-import CreateReportButton from "./patientAppointmentActions/CreateReportButton.vue";
+import CreateDocumentButton from "./patientAppointmentActions/CreateDocumentButton.vue";
 import PrintLabelButton from "./patientAppointmentActions/PrintLabelButton.vue";
 import AddRecallButton from "./patientAppointmentActions/AddRecallButton.vue";
-import AddLetterButton from "./patientAppointmentActions/AddLetterButton.vue";
 import AddAudioButton from "./patientAppointmentActions/AddAudioButton.vue";
 import PrintHospitalCertificateButton from "./patientAppointmentActions/PrintHospitalCertificateButton.vue";
 import MakePaymentButton from "./patientAppointmentActions/MakePaymentButton.vue";
 import IAppointment from "@/store/interfaces/IAppointment";
 import IPatient from "@/store/interfaces/IPatient";
+import IDocumentTemplate from "@/store/interfaces/IDocumentTemplate";
 export default defineComponent({
   name: "patient-appointment-actions",
   components: {
     PreAdmissionFormButton,
-    CreateReportButton,
+    CreateDocumentButton,
     PrintLabelButton,
     PrintHospitalCertificateButton,
     AddRecallButton,
-    AddLetterButton,
     AddAudioButton,
     MakePaymentButton,
   },
@@ -58,11 +73,57 @@ export default defineComponent({
       required: true,
       type: Object as PropType<IPatient>,
     },
+    templates: {
+      required: true,
+      type: Array as PropType<Array<IDocumentTemplate>>,
+    },
   },
 
-  setup() {
+  setup(props) {
     const userRole = computed(() => store.getters.userRole);
-    return { userRole };
+
+    const hasReportTemplates = computed(() => {
+      if (!props.templates) {
+        return false;
+      }
+
+      const templates = props.templates.filter(
+        (template) => template.type == "REPORT"
+      );
+
+      return templates.length > 0;
+    });
+
+    const hasLetterTemplates = computed(() => {
+      if (!props.templates) {
+        return false;
+      }
+
+      const templates = props.templates.filter(
+        (template) => template.type == "LETTER"
+      );
+
+      return templates.length > 0;
+    });
+
+    const hasReferralTemplates = computed(() => {
+      if (!props.templates) {
+        return false;
+      }
+
+      const templates = props.templates.filter(
+        (template) => template.type == "REFERRAL"
+      );
+
+      return templates.length > 0;
+    });
+
+    return {
+      userRole,
+      hasReportTemplates,
+      hasLetterTemplates,
+      hasReferralTemplates,
+    };
   },
 });
 </script>

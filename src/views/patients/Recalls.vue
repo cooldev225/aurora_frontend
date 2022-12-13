@@ -30,12 +30,12 @@
       :enable-items-per-page-dropdown="false"
     >
       <template v-slot:cell-patient="{ row: recall }">
-        {{ recall.summery.patient_name }}
+        {{ recall.summary.patient_name }}
       </template>
       <template v-slot:cell-appointment="{ row: recall }">
-        {{ recall.summery.appointment_type }} @
-        {{ recall.summery.appointment_clinic }}
-        {{ recall.summery.appointment_date }}
+        {{ recall.summary.appointment_type }} @
+        {{ recall.summary.appointment_clinic }}
+        {{ recall.summary.appointment_date }}
       </template>
       <template v-slot:cell-reason="{ row: recall }">
         {{ recall.reason }}

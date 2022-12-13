@@ -288,7 +288,7 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch(AppointmentActions.APPOINTMENT_TYPES.LIST);
-      store.dispatch(Actions.REPORT_TEMPLATES.LIST);
+      store.dispatch(Actions.DOCUMENT_TEMPLATES.LIST);
       store.dispatch(Actions.SCHEDULE_ITEM.LIST);
     });
 
