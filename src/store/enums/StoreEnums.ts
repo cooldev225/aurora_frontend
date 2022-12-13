@@ -49,10 +49,6 @@ const Actions = {
   },
 
   ORG_ADMIN: {
-    LIST: "listOrgAdmin",
-    CREATE: "createOrgAdmin",
-    DELETE: "deleteOrgAdmin",
-    UPDATE: "updateOrgAdmin",
     UPLOAD_IMAGE: "uploadImage",
     LOAD_ORGANIZATION_DATA: "loadOrganizationData",
     ORGANIZATION: {
