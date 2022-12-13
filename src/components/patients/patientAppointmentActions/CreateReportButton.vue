@@ -1,8 +1,13 @@
 <template>
-  <LargeIconButton text="Create Report" @click="handleReport()" />
+  <LargeIconButton
+    text="Create Report"
+    @click="handleReport()"
+    :loading="loading"
+  />
 </template>
 
 <script lang="ts">
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 export default {
   props: {
@@ -17,17 +22,28 @@ export default {
   },
   setup(props) {
     const router = useRouter();
+    const loading = ref<boolean>(false);
+
     const handleReport = () => {
-      router.push({
-        name: "patients-document",
-        params: {
-          patientId: props.patient.id,
-          appointmentId: props.appointment.id,
-        },
-      });
+      loading.value = true;
+
+      // router
+      //   .push({
+      //     name: "patients-document",
+      //     params: {
+      //       patientId: props.patient.id,
+      //       appointmentId: props.appointment.id,
+      //     },
+      //   })
+      //   .finally(() => {
+      //     loading.value = false;
+      //   });
     };
 
-    return { handleReport };
+    return {
+      handleReport,
+      loading,
+    };
   },
 };
 </script>

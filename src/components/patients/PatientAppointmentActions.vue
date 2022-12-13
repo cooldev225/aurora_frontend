@@ -7,16 +7,19 @@
       :appointment="appointment"
       :patient="patient"
       document-type="letter"
+      :disabled="!hasLetterTemplates"
     />
     <CreateDocumentButton
       :appointment="appointment"
       :patient="patient"
       document-type="report"
+      :disabled="!hasReportTemplates"
     />
     <CreateDocumentButton
       :appointment="appointment"
       :patient="patient"
       document-type="referral"
+      :disabled="!hasReferralTemplates"
     />
   </template>
 
@@ -49,6 +52,7 @@ import PrintHospitalCertificateButton from "./patientAppointmentActions/PrintHos
 import MakePaymentButton from "./patientAppointmentActions/MakePaymentButton.vue";
 import IAppointment from "@/store/interfaces/IAppointment";
 import IPatient from "@/store/interfaces/IPatient";
+import IDocumentTemplate from "@/store/interfaces/IDocumentTemplate";
 export default defineComponent({
   name: "patient-appointment-actions",
   components: {
@@ -69,11 +73,57 @@ export default defineComponent({
       required: true,
       type: Object as PropType<IPatient>,
     },
+    documentTemplates: {
+      required: true,
+      type: Array as PropType<Array<IDocumentTemplate>>,
+    },
   },
 
-  setup() {
+  setup(props) {
     const userRole = computed(() => store.getters.userRole);
-    return { userRole };
+
+    const hasReportTemplates = computed(() => {
+      if (!props.documentTemplates) {
+        return false;
+      }
+
+      const templates = props.documentTemplates.filter(
+        (template) => template.type == "REPORT"
+      );
+
+      return templates.length > 0;
+    });
+
+    const hasLetterTemplates = computed(() => {
+      if (!props.documentTemplates) {
+        return false;
+      }
+
+      const templates = props.documentTemplates.filter(
+        (template) => template.type == "LETTER"
+      );
+
+      return templates.length > 0;
+    });
+
+    const hasReferralTemplates = computed(() => {
+      if (!props.documentTemplates) {
+        return false;
+      }
+
+      const templates = props.documentTemplates.filter(
+        (template) => template.type == "REFERRAL"
+      );
+
+      return templates.length > 0;
+    });
+
+    return {
+      userRole,
+      hasReportTemplates,
+      hasLetterTemplates,
+      hasReferralTemplates,
+    };
   },
 });
 </script>
