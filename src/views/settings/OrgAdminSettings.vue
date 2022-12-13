@@ -57,6 +57,15 @@
         <h3 class="card-title">General Settings</h3>
       </div>
       <router-link
+        to="/settings/organization"
+        class="btn btn-light-primary m-2"
+      >
+        Organisation Settings
+      </router-link>
+      <router-link to="/clinics" class="btn btn-light-primary m-2">
+        Manage Clinics
+      </router-link>
+      <router-link
         to="/settings/doctor-address-books"
         class="btn btn-light-primary m-2"
       >

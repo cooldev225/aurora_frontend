@@ -2,7 +2,7 @@ const ClinicRoutes = [
   {
     path: "/clinics",
     name: "clinics",
-    component: () => import("@/views/organisation-admin/Clinics.vue"),
+    component: () => import("@/views/settings/clinics/Clinics.vue"),
   },
   {
     path: "/clinics/create",
@@ -17,7 +17,7 @@ const ClinicRoutes = [
   {
     path: "/clinics/rooms/:id",
     name: "clinic-rooms",
-    component: () => import("@/views/organisation-admin/Rooms.vue"),
+    component: () => import("@/views/settings/clinics/Rooms.vue"),
   },
 ];
 

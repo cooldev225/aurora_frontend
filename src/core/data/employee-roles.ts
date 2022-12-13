@@ -1,6 +1,5 @@
 export const employeeRoles = [
   { value: 1, label: "Admin" },
-  { value: 2, label: "Organization Admin" },
   { value: 3, label: "Organization Manager" },
   { value: 4, label: "Receptionist" },
   { value: 5, label: "Specialist" },

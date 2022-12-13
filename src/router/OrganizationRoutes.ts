@@ -15,12 +15,7 @@ const OrganizationRoutes = [
     component: () => import("@/components/organisations/EditOrganisation.vue"),
   },
   {
-    path: "/organisationAdmins",
-    name: "organisationAdmins",
-    component: () => import("@/views/organisation-admin/Admins.vue"),
-  },
-  {
-    path: "/organization",
+    path: "settings/organization",
     name: "organization",
     component: () => import("@/views/organization/Organization.vue"),
   },
