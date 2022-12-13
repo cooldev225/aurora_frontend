@@ -171,7 +171,22 @@ export default defineComponent({
     };
 
     const handleDeleteSection = (sectionIndex) => {
-      formData.value.sections.splice(sectionIndex, 1);
+      Swal.fire({
+        text: `Are you sure you want to delete this section?`,
+        icon: "question",
+        buttonsStyling: false,
+        confirmButtonText: "Yes",
+        showCancelButton: true,
+        cancelButtonText: "No",
+        customClass: {
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-secondary",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          formData.value.sections.splice(sectionIndex, 1);
+        }
+      });
     };
 
     const submit = () => {
