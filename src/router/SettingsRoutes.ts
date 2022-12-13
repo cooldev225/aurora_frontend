@@ -18,10 +18,10 @@ const SettingsRoutes = [
       ),
   },
   {
-    path: "/settings/report-templates",
-    name: "reportTemplates",
+    path: "/settings/document-templates",
+    name: "documentTemplates",
     component: () =>
-      import("@/views/settings/report-templates/ReportTemplates.vue"),
+      import("@/views/settings/document-templates/DocumentTemplates.vue"),
   },
   {
     path: "/settings/patient-print-label-setting",
@@ -64,12 +64,6 @@ const SettingsRoutes = [
     name: "anesthetic-questions",
     component: () =>
       import("@/views/settings/anesthetic-questions/AnestheticQuestions.vue"),
-  },
-  {
-    path: "/settings/letter-templates",
-    name: "letterTypes",
-    component: () =>
-      import("@/views/settings/letter-templates/LetterTemplates.vue"),
   },
   {
     path: "/settings/doctor-address-books",

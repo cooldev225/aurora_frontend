@@ -1,16 +1,15 @@
 <template>
-  <LargeIconButton text="Create Report" @click="handleReport()" />
-  <ReportModal></ReportModal>
+  <LargeIconButton
+    text="Create Report"
+    @click="handleReport()"
+    :loading="loading"
+  />
 </template>
 
 <script lang="ts">
-import { Modal } from "bootstrap";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import ReportModal from "@/views/patients/modals/ReportTemplateSelectModal.vue";
-import store from "@/store";
-import { Actions } from "@/store/enums/StoreEnums";
 export default {
-  components: { ReportModal },
   props: {
     appointment: {
       required: true,
@@ -23,20 +22,28 @@ export default {
   },
   setup(props) {
     const router = useRouter();
+    const loading = ref<boolean>(false);
+
     const handleReport = () => {
-      store.dispatch(Actions.REPORT_TEMPLATES.LIST);
-      // const modal = new Modal(document.getElementById("modal_report"));
-      // modal.show();
-      router.push({
-        name: "patients-report",
-        params: {
-          patientId: props.patient.id,
-          appointmentId: props.appointment.id,
-        },
-      });
+      loading.value = true;
+
+      // router
+      //   .push({
+      //     name: "patients-document",
+      //     params: {
+      //       patientId: props.patient.id,
+      //       appointmentId: props.appointment.id,
+      //     },
+      //   })
+      //   .finally(() => {
+      //     loading.value = false;
+      //   });
     };
 
-    return { handleReport };
+    return {
+      handleReport,
+      loading,
+    };
   },
 };
 </script>

@@ -20,10 +20,10 @@
         Notification Settings
       </router-link>
       <router-link
-        to="/settings/report-templates"
+        to="/settings/document-templates"
         class="btn btn-light-primary m-2"
       >
-        Patient Report Templates
+        Patient Document Templates
       </router-link>
     </div>
 
@@ -48,12 +48,6 @@
         class="btn btn-light-primary m-2"
       >
         Pre-Admission Consent
-      </router-link>
-      <router-link
-        to="/settings/letter-templates"
-        class="btn btn-light-primary m-2"
-      >
-        Letter Templates
       </router-link>
     </div>
   </div>
